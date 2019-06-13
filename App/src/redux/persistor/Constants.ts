@@ -1,0 +1,1 @@
+export const FILESTORAGE_KEY = "FileStorageKey";

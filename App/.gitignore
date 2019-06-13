@@ -1,0 +1,12 @@
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p12
+*.key
+*.mobileprovision
+app.json
+compile/
+config/aws.json
+!config/app.json
+.DS_Store

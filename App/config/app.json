@@ -1,0 +1,78 @@
+{
+  "expo": {
+    "name": "TABLER.WORLD Mobile",
+    "privacy": "unlisted",
+    "sdkVersion": "33.0.0",
+    "description": "'One community, one web' has evolved from a dream and a vision to a hard fact solution. Two years ago all associations of RTI came together and gave a core team a great task to produce a solution that would empower all our members to table and connect online. You will be the first to adopt, adapt and improve on a tabling and administration platform by tablers for tablers as we take a giant leap forward – Bringing Tabling into the 21st century!",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "extra": {
+      "region": "",
+      "identityPoolId": "",
+      "userPoolId": "",
+      "userPoolWebClientId": "",
+      "api": "",
+      "sentry": "",
+      "analytics": "",
+      "profile": "https://rti.roundtable.world/de/members/#id#/",
+      "world": "https://rti.roundtable.world/de/"
+    },
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "assets/**/*.png",
+      "assets/**/*.ttf",
+      "assets/**/*.md"
+    ],
+    "scheme": "tablerworld",
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch"
+        ],
+        "LSApplicationQueriesSchemes": [
+          "googlechrome",
+          "googlechromes",
+          "tg",
+          "sgnl",
+          "whatsapp",
+          "ms-outlook",
+          "googlegmail",
+          "http",
+          "https",
+          "tel",
+          "sms",
+          "comgooglemaps"
+        ]
+      }
+    },
+    "android": {
+      "permissions": [
+        "READ_CONTACTS",
+        "WRITE_CONTACTS",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR",
+        "VIBRATE"
+      ]
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#f2f2f2"
+    }
+  }
+}

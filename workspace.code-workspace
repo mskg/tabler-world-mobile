@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "Backend"
+		},
+		{
+			"path": "Authentication"
+		},
+		{
+			"path": "App"
+		},
+		{
+			"path": "config"
+		}
+	],
+	"settings": {}
+}

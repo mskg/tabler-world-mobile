@@ -1,0 +1,51 @@
+import { defaultDataIdFromObject, InMemoryCache, IntrospectionFragmentMatcher } from "apollo-cache-inmemory";
+
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+    introspectionQueryResultData:
+    {
+        ["__schema"]: {
+            types: [
+                {
+                    "kind": "INTERFACE",
+                    "name": "MemberListView",
+                    "possibleTypes": [
+                        {
+                            "name": "Member"
+                        }
+                    ]
+                },
+            ]
+        }
+    }
+});
+
+export const cache = new InMemoryCache({
+    fragmentMatcher,
+
+    dataIdFromObject: object => {
+        switch (object.__typename) {
+            case 'Association':
+                //@ts-ignore
+                if (object.association == null) return defaultDataIdFromObject(object);
+                //@ts-ignore
+                return `${object.__typename}:${object.association}`;
+
+            default:
+                return defaultDataIdFromObject(object); // fall back to default handling
+        }
+    },
+
+    cacheRedirects: {
+        Query: {
+            Club: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Club', id: args }),
+
+            Member: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Member', id: args }),
+
+            Members: (_, args, { getCacheKey }) =>
+                args.ids.map(id =>
+                    getCacheKey({ __typename: 'Member', id: id }))
+        }
+    }
+});

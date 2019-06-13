@@ -1,0 +1,228 @@
+service: tabler-world-rds
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: eu-west-1
+  stage: dev
+  stackName: tabler-world-rds
+
+# Define variables here for lisibility
+custom:
+  CIDR: 10
+
+  Username: dba
+  Password: dev-serverless-changeme
+
+  # this is hardcoded here. We don't create databases this way
+  DBName: dev
+  DBInstance: tabler-world
+
+resources:
+  Resources:
+    # Route
+    InternetGateway:
+      Type: AWS::EC2::InternetGateway
+
+    VPCGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId:
+          Ref: VPC
+        InternetGatewayId:
+          Ref: InternetGateway
+
+    DefaultPublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: VPC
+
+    DefaultPublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId:
+          Ref: DefaultPublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: InternetGateway
+
+    # VPC config
+    VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: ${self:custom.CIDR}.0.0.0/16
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        InstanceTenancy: default
+
+    SubnetA:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${self:provider.region}a
+        CidrBlock: ${self:custom.CIDR}.0.0.0/24
+
+    SubnetB:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${self:provider.region}b
+        CidrBlock: ${self:custom.CIDR}.0.1.0/24
+
+    SubnetC:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${self:provider.region}c
+        CidrBlock: ${self:custom.CIDR}.0.2.0/24
+
+    SubnetARouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetA
+        RouteTableId:
+          Ref: DefaultPublicRouteTable
+
+    SubnetBRouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetB
+        RouteTableId:
+          Ref: DefaultPublicRouteTable
+
+    SubnetCRouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetC
+        RouteTableId:
+          Ref: DefaultPublicRouteTable
+
+    SubnetGroup:
+        Type: AWS::RDS::DBSubnetGroup
+        Properties:
+          DBSubnetGroupDescription: ${self:custom.DBName}
+          SubnetIds:
+            - Ref: SubnetA
+            - Ref: SubnetB
+            - Ref: SubnetC
+
+    DatabaseSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: ${self:provider.stackName}
+        GroupDescription: ${self:custom.DBName}
+        VpcId:
+          Ref: VPC
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            FromPort: -1
+            ToPort: -1
+            CidrIp: 0.0.0.0/0
+
+    # lambda access via sg policy
+    DatabaseSecurityGroupIngress:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId:
+            Fn::GetAtt:
+                - DatabaseSecurityGroup
+                - GroupId
+        IpProtocol: -1
+        FromPort: -1
+        ToPort: -1
+        SourceSecurityGroupId:
+          Ref: DatabaseSecurityGroup
+
+    DBInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceIdentifier: ${self:custom.DBInstance}
+
+        DBName: ${self:custom.DBName}
+        AllocatedStorage: 5
+        StorageEncrypted: true
+
+        DBInstanceClass: db.t2.small
+
+        DBSubnetGroupName:
+          Ref: SubnetGroup
+        VPCSecurityGroups:
+          - Ref: DatabaseSecurityGroup
+
+        Engine: postgres
+        EngineVersion: 10.6
+
+        MasterUsername: ${self:custom.Username}
+        MasterUserPassword: ${self:custom.Password}
+
+        AllowMajorVersionUpgrade: false
+        AutoMinorVersionUpgrade: true
+        EnableIAMDatabaseAuthentication: true
+        EnablePerformanceInsights: true
+
+        PubliclyAccessible: true
+        StorageType: gp2
+
+  Outputs:
+    DatabaseInstance:
+      Value:
+        Ref: DBInstance
+      Export:
+        Name: DatabaseInstance
+
+    # variable
+    DatabaseHost:
+      Value:
+        Fn::GetAtt:
+          - DBInstance
+          - Endpoint.Address
+      Export:
+        Name: DatabaseHostId
+
+    DatabasePort:
+      Value:
+        Fn::GetAtt:
+          - DBInstance
+          - Endpoint.Port
+      Export:
+        Name: DatabasePortId
+
+    DatabaseVPC:
+      Value:
+        Ref: VPC
+      Export:
+        Name: DatabaseVPCId
+
+    DatabaseSubnetA:
+      Value:
+        Ref: SubnetA
+      Export:
+        Name: DatabaseSubnetAId
+
+    DatabaseSubnetB:
+      Value:
+        Ref: SubnetB
+      Export:
+        Name: DatabaseSubnetBId
+
+    DatabaseSubnetC:
+      Value:
+        Ref: SubnetC
+      Export:
+        Name: DatabaseSubnetCId
+
+    DatabaseSecurityGroup:
+      Value:
+        Ref: DatabaseSecurityGroup
+      Export:
+        Name: DatabaseSecurityGroupId

@@ -1,0 +1,9 @@
+.nyc_output
+mochawesome-report/
+coverage/
+node_modules/
+dist/
+npm-debug.log
+.serverless
+.webpack
+.dynamodb

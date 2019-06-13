@@ -1,0 +1,356 @@
+service: tabler-world-api
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-iam-roles-per-function
+  - serverless-plugin-aws-alerts
+  - serverless-dynamodb-local
+
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+
+  webpack:
+    includeModules: true
+    keepOutputDirectory: true
+
+  api_host: ${env:API_HOST}
+  api_pagesize: ${env:API_READ_BATCH}
+  batch_size: ${env:API_BATCH}
+  api_key: ${env:API_KEY}
+
+  email: ${env:ALERT_EMAIL}
+
+  db_host_import:
+    Fn::ImportValue: DatabaseHostId
+  db_user_default: lambda_${self:custom.stage}
+
+  pool:
+    Fn::ImportValue: CognitoUserPoolArn-${self:custom.stage}
+
+  db_host: ${env:DB_HOST, self:custom.db_host_import}
+  db_user: ${env:DB_USER, self:custom.db_user_default}
+  db_database: ${env:DB_DATBASE, self:custom.stage}
+  db_password: ${env:DB_PASSWORD}
+  cache_table: tablerworld-gqlqc-${self:custom.stage}
+
+  cron_rate:
+    dev: rate(24 hours)
+    test: rate(12 hours)
+    prod: rate(4 hours)
+
+  cron_enabled:
+    dev: false
+    test: true
+    prod: true
+
+  alerts:
+    stages:
+      - test
+      - prod
+
+    topics:
+      alarm:
+        topic: ${self:service}-${self:custom.stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${self:custom.email}
+
+    alarms:
+      - functionErrors
+      - processTimeouts
+
+    definitions:
+      processTimeouts:
+        metric: processTimeouts
+        threshold: 0
+        statistic: Minimum
+        period: 60
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanThreshold
+        pattern: 'Process exited before completing'
+
+  dynamodb:
+    noStart: false
+    start:
+      # host: localhost
+      port: 8000
+      sharedDb: true
+      migrate: true
+      seed: false
+    stages:
+      - dev
+
+# individually would result in the same package three times
+package:
+  individually: false
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+
+  runtime: nodejs10.x
+
+  memorySize: 128
+  timeout: 20
+  versionFunctions: false
+
+  apiGateway:
+    minimumCompressionSize: 1024
+
+  # global vpc definition
+  vpc:
+    securityGroupIds:
+      - Fn::ImportValue: DatabaseSecurityGroupId
+    subnetIds:
+      - Fn::ImportValue: DatabaseSubnetAId
+      - Fn::ImportValue: DatabaseSubnetBId
+      - Fn::ImportValue: DatabaseSubnetCId
+
+  # global role definition to access RDS
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-db:connect
+      Resource:
+        # arn:aws:rds-db:region:account-id:dbuser:DbiResourceId/db-user-name
+        # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+        Fn::Join:
+          - ""
+          - - "arn:aws:rds-db:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":dbuser:"
+            - "*/"
+            - ${self:custom.db_user}
+
+functions:
+  #
+  # Update database
+  #
+  database-update:
+    handler: src/sql/lambda.handler
+    timeout: 600
+
+    environment:
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+      db_role: tw_read_${self:custom.stage}
+
+  #
+  # Import reader
+  #
+  import-reader:
+    handler: src/schedule/reader.handler
+    timeout: 600
+
+    environment:
+      api_key: ${self:custom.api_key}
+      api_host: ${self:custom.api_host}
+      batch_size: ${self:custom.batch_size}
+      api_pagesize: ${self:custom.api_pagesize}
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+
+    events:
+      - schedule:
+          name: update-tabler-world-tabler-${self:custom.stage}
+          description: Updates contact data from TABLER.WORLD
+
+          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            mode: incremental
+            type: tabler
+
+      - schedule:
+          name: update-tabler-world-clubs-${self:custom.stage}
+          description: Updates contact data from TABLER.WORLD
+
+          rate: rate(24 hours)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            mode: full
+            type: clubs
+
+  #
+  # Send push notifications
+  #
+  send-notifications:
+    handler: src/notifications/send.handler
+    timeout: 600
+
+    environment:
+      # AWS_REGION: provided automatically
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+
+    events:
+      # - http:
+      #     path: send-notifications
+      #     method: get
+      #     cors: true
+      - schedule:
+          name: send-tabler-world-notifications-${self:custom.stage}
+          description: Sends push notifications from TABLER.WORLD
+
+          ## 11 UTC => 9 GMT+2
+          rate: cron(0 11 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+  #
+  # Check push notifications
+  #
+  check-notifications:
+    handler: src/notifications/check.handler
+    timeout: 600
+
+    environment:
+      # AWS_REGION: provided automatically
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+
+    events:
+      # - http:
+      #     path: check-notifications
+      #     method: get
+      #     cors: true
+      - schedule:
+        name: check-tabler-world-notifications-${self:custom.stage}
+        description: Checks delivery status of push notifications
+
+        rate: "rate(6 hour)"
+        enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+
+  graphql:
+    handler: src/graphql/lambda.handler
+    timeout: 30
+
+    environment:
+      # AWS_REGION: provided automatically
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+      cache_table: ${self:custom.cache_table}
+
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource:
+          - "Fn::GetAtt": [ graphqlsqTable, Arn ]
+
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+      - http:
+          path: graphql
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+resources:
+  Resources:
+    graphqlsqTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.cache_table}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+    SendDashnotificationsLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    CheckDashnotificationsLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    ImportDashreaderLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    GraphqlLogGroup:
+      Properties:
+        RetentionInDays: "14"
+
+    DatabaseDashupdateLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: ${self:custom.stage}
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - ${self:custom.pool}
+
+  Outputs:
+    ApiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: ApiGatewayRestApiId-${self:custom.stage}
+
+    ApiGatewayRestApiRootResourceId:
+      Value:
+         Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId
+      Export:
+        Name: ApiGatewayRestApiRootResourceId-${self:custom.stage}
+
+    ApiArn:
+      Value:
+        Fn::GetAtt:
+          # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
+          - GraphqlLambdaFunction
+          - Arn
+      Export:
+        Name: ApiArn-${self:custom.stage}

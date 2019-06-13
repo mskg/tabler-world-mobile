@@ -1,0 +1,128 @@
+
+
+import _ from 'lodash';
+import { IMember } from '../model/IMember';
+import { HashMap } from '../model/Maps';
+import { normalizeForSearch } from './normalizeForSearch';
+import { Predicate, Predicates } from "./Predicates";
+
+export type SectionData = {
+    title: string,
+    data: IMember[],
+}[];
+
+function isChar(c) {
+    return c >= 'A' && c <= 'Z';
+}
+
+function sectionFrom(s): string {
+    // we must replace äöü
+    const c = normalizeForSearch(s)
+        .substring(0, 1)
+        .toUpperCase();
+
+    return isChar(c) ? c : "#";
+}
+
+export class MemberDataSource {
+    _data: SectionData;
+    // _flat: ITabler[];
+    _sections: string[];
+
+    public constructor(
+        private member: HashMap<IMember>,
+        private _filter: Predicate = Predicates.all,
+        private sortByField = "lastname",
+        private groupByfield = "lastname") {
+
+        // this._flat = [];
+        this._data = [];
+        this._sections = [];
+
+        this.update();
+    }
+
+    public set filter(predicate: Predicate) {
+        this._filter = predicate;
+    }
+
+    public set groupBy(field: string) {
+        this.groupByfield = field;
+    }
+
+    public set sortBy(field: string) {
+        this.sortByField = field;
+    }
+
+    public section(s: string): IMember[] {
+        return _(this._data)
+            .filter(f => f.title == s)
+            .map(t => t.data)
+            .flatMap()
+            .toArray()
+            .value();
+    }
+
+    public get sections(): string[] {
+        return this._sections;
+    }
+
+    public get data(): SectionData {
+        return this._data;
+    }
+
+    // public get flat(): ITabler[] {
+    //     return this._flat;
+    // }
+
+    public update(member?: HashMap<IMember>) {
+        this.member = member || this.member;
+        this.calc();
+    }
+
+    calc() {
+        // we preserve all array instances
+        // only array, not instances are duplicated
+        const old = [...this._data];
+
+        this._data.splice(0, this._data.length);
+        this._data.push(... _(this.member)
+            .values()
+            .filter(v => typeof(v) !== "number") //length attribute
+            .filter(this._filter || Predicates.all())
+            .sortBy(t => (t[this.sortByField] || "").toUpperCase())
+            .groupBy(t => sectionFrom(t[this.groupByfield]))
+            .mapValues(t => {
+                var newId = sectionFrom(t[0][this.groupByfield]);
+                const section = _.find(old, s => s.title == newId) || {
+                    title: newId,
+                    data: [],
+                };
+
+                section.data.splice(0, section.data.length);
+                section.data.push(...t);
+
+                return section;
+            })
+            .sortBy(s => isChar(s.title) ? s.title : "a") // A < a
+            .toArray()
+            .value()
+        );
+
+        // // expensive?
+        // this._flat.splice(0, this._flat.length);
+        // this._flat.push(... _(this._data)
+        //     .map(d => d.data)
+        //     .flatMap()
+        //     .toArray()
+        //     .value()
+        // );
+
+        this._sections.splice(0, this._sections.length);
+        this._sections.push(... _(this._data)
+            .map(s => s.title)
+            .toArray()
+            .value()
+        );
+    }
+}
