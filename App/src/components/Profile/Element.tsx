@@ -11,7 +11,10 @@ type ActionProps = {
 
 export const Element = ({ field, text, onPress }: ActionProps) => {
     let display = typeof(text) !== "string";
-    if (!display && text != null) display = (text as string).trim() !== "";
+    if (!display && text != null) {display = (text as string).trim() !== "";}
+    else if (text == null) {display = false;}
+
+    console.log(display, "#", text, "#")
 
     if (display) {
         return (
