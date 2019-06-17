@@ -23,7 +23,7 @@ custom:
   
   db_host: ${env:DB_HOST, self:custom.db_host_import}
   db_user: ${env:DB_USER, self:custom.db_user_default}
-  db_database: ${env:DB_DATBASE, self:custom.stage}
+  db_database: ${env:DB_DATABASE, self:custom.stage}
   db_password: ${env:DB_PASSWORD}
 
   alerts:
