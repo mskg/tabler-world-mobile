@@ -4,6 +4,12 @@ import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHel
 const countries = require("./countries/en.json");
 
 const en = {
+    Whoops: {
+        title: "Whoops?",
+        try: "Try Again",
+        partialData: "Failed to load data from server, showing partial result",
+    },
+
     NavigationStyle: {
         fontSize: 12,
         textAlign: 'center',
@@ -333,7 +339,7 @@ const en = {
 
     Members: {
         me: "My profile on TABLER.WORLD",
-        noresults: "No Results",
+        noresults: "No data available.",
         search: "Search...",
         title: "Members",
     },

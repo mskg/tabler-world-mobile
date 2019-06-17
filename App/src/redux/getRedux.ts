@@ -1,3 +1,6 @@
+import { Store } from 'redux';
+import { IAppState } from '../model/IAppState';
+
 let storeRef: any;
 let persistorRef: any;
 let sagaMiddlewareRef: any;
@@ -17,7 +20,7 @@ export function setSagaMiddleware(ref) {
 /**
  * Break cycling dependencies
  */
-export function getReduxStore() {
+export function getReduxStore(): Store<IAppState> {
     return storeRef;
 }
 

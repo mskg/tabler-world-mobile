@@ -8,14 +8,16 @@ import { connect } from 'react-redux';
 import { Audit } from "../../analytics/Audit";
 import { IAuditor } from '../../analytics/Types';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
-import { GoHomeErrorBoundary } from '../../components/ErrorBoundary';
+import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
+import { I18N } from '../../i18n/translation';
 import { addTablerLRU } from '../../redux/actions/history';
 import { IProfileParams } from '../../redux/actions/navigation';
+import { addSnack } from '../../redux/actions/snacks';
 import { ActionsFab } from './ActionsFab';
 import { Profile } from './Profile';
 import { GetMemberQuery, GetMemberQueryType, MembersOverviewFragment } from './Queries';
@@ -63,7 +65,15 @@ export class MemberBase extends React.Component<Props> {
 
         return (
             <ProfileHeader
-                avatar={member ? <AnimatedAvatar member={member} /> : undefined}
+                avatar={member ?
+                    <AnimatedAvatar
+                        member={member}
+                        containerStyle={{
+                            backgroundColor: this.props.theme.colors.background,
+                            elevation: 3,
+                        }}
+                    />
+                    : undefined}
 
                 title={member ? member.firstname + " " + member.lastname : undefined}
                 line1={member ? member.club.name : undefined}
@@ -122,6 +132,7 @@ class MemberQueryWithPreview extends PureComponent<{
     children: ReactElement<StateProps>,
     id: number,
     fetchPolicy?: WatchQueryFetchPolicy,
+    addSnack: typeof addSnack,
 }> {
     render() {
         return (
@@ -131,11 +142,10 @@ class MemberQueryWithPreview extends PureComponent<{
                     id: this.props.id
                 }}
             >
-                {({ client, loading, data }) => {
+                {({ client, loading, data, error }) => {
                     let preview = null;
 
-                    logger.debug("render");
-                    if (loading && (data == null || data.Member == null)) {
+                    if ((loading || error) && (data == null || data.Member == null)) {
                         try {
                             preview = client.readFragment({
                                 id: "Member:" + this.props.id,
@@ -147,6 +157,14 @@ class MemberQueryWithPreview extends PureComponent<{
                         catch (e) {
                             logger.error(e, "Failed to load preview");
                         }
+                    }
+
+                    if (error && !preview) { throw error; }
+                    else if (error && preview) {
+                        setTimeout(() =>
+                            this.props.addSnack({
+                                message: I18N.Whoops.partialData,
+                            }));
                     }
 
                     return React.cloneElement(
@@ -161,6 +179,11 @@ class MemberQueryWithPreview extends PureComponent<{
     }
 }
 
-const MemberQueryWithPreviewAndInvalidation = withCacheInvalidation("members", MemberQueryWithPreview);
+const MemberQueryWithPreviewAndInvalidation = withGoHomeErrorBoundary(
+    withCacheInvalidation("members", connect(
+        null, { addSnack }
+    )(MemberQueryWithPreview))
+);
 
 export const MemberScreen = withNavigation(MemberScreenBase);
+

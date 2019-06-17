@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Image, Platform, StyleSheet, View } from "react-native";
+import { Animated, Image, ImageResizeMode, Platform, StyleSheet, View } from "react-native";
 import { Theme } from 'react-native-paper';
 import { Categories, Logger } from '../../helper/Logger';
 import CacheManager from "./CacheManager";
@@ -14,6 +14,7 @@ type ImageProps = {
   transitionDuration?: number;
 
   theme: Theme,
+  resizeMode?: ImageResizeMode,
 };
 
 type ImageState = {
@@ -52,18 +53,21 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
   }
 
   componentDidUpdate(prevProps: ImageProps, prevState: ImageState) {
-    const { preview } = this.props;
-    const { uri } = this.state;
+    // const { preview } = this.props;
+    // const { uri } = this.state;
 
     if (this.props.uri !== prevProps.uri) { // || this.props.preview !== prevProps.preview) {
+      logger.debug("Received new image");
+
       this.setState({uri: undefined, intensity: new Animated.Value(0)});
       this.load(this.props, ++this.requestId);
-    } else if (uri && preview && prevState.uri === undefined) {
-      this.startAnimation();
     }
+    // else if (uri && preview && prevState.uri === undefined) {
+    //   this.startAnimation();
+    // }
   }
 
-  startAnimation() {
+  _startAnimation= () => {
     const { transitionDuration } = this.props;
     const { intensity } = this.state;
 
@@ -97,7 +101,9 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
           <Image
             source={{ uri }}
             style={style || styles.imageStyles}
-            fadeDuration={hasPreview ? 0 : undefined}
+            onLoadEnd={this._startAnimation}
+            fadeDuration={hasPreview? 0 : undefined}
+            resizeMode={this.props.resizeMode || "contain"}
           />
         )}
 
@@ -121,7 +127,6 @@ const styles = StyleSheet.create({
   },
 
   imageStyles: {
-    resizeMode: "contain",
     position: "absolute",
     top: 0, bottom: 0,
     left: 0, right: 0,

@@ -21,20 +21,7 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
   }
 
   render() {
-    let { source, theme, label, size } = this.props;
-    const { colors } = theme;
-
-    if (source == null || source == "") {
-      return (
-        <Avatar.Text
-          style={{
-            backgroundColor: this.props.theme.colors.backdrop,
-          }}
-          size={size}
-          label={label}
-        />
-      );
-    }
+    let { source, label, size } = this.props;
 
     return (
       <Surface
@@ -42,9 +29,6 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
           width: size,
           height: size,
           borderRadius: size / 2,
-          color: colors.primary,
-          backgroundColor: this.props.theme.colors.surface,
-          // overflow: 'hidden',
           elevation: 3,
         }, this.props.style]}
       >
@@ -57,7 +41,7 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
               label={label}
             />
           }
-
+          resizeMode="contain"
           theme={this.props.theme}
           style={
             [styles.imageStyles,
@@ -77,7 +61,6 @@ export const ClubAvatar = withTheme(ClubAvatarBase);
 
 const styles = StyleSheet.create({
   imageStyles: {
-    resizeMode: "contain",
     position: "absolute",
     top: 0, bottom: 0,
     left: 0, right: 0,

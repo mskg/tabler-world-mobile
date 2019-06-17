@@ -1,3 +1,18 @@
+# v0.8
+Beta build, for internal testing only
+
+# Improvements
+- Show error page, and retry operations on network failures
+- Show club/member screens with available offline data, only
+- Less flickering on Android for avatar animations, fixes #43
+
+# Fixes
+- NPE in area page
+- Permissions for contacts on Android, fixes #41
+
+## Operations
+- Check email before token creation, resolves #44
+
 # v0.7
 Beta build, for internal testing only
 

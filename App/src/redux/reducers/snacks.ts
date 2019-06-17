@@ -1,4 +1,4 @@
-import { flatMap } from 'lodash';
+import { flatMap, uniqBy } from 'lodash';
 import * as actions from '../actions/snacks';
 import { INITIAL_STATE } from '../initialState';
 
@@ -25,12 +25,12 @@ export function snackReducer(
         error = error.message;
       }
 
-      return [...state, ...flatMap([error]).map(e => ({
+      return uniqBy([...state, ...flatMap([error]).map(e => ({
         message: e,
-      }))]
+      }))], t => t.message)
 
     case actions.addSnack.type:
-      return [...state, action.payload];
+      return uniqBy([...state, action.payload], t => t.message);
 
     case actions.shiftSnack.type:
       const newState = [...state];

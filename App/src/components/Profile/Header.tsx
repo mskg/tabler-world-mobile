@@ -110,7 +110,6 @@ class ProfileHeaderBase extends React.Component<Props> {
                             {!loading && React.cloneElement(Avatar, {
                                 size: imageTranslate,
                                 background: this.props.theme.colors.backdrop,
-                                containerStyle: styles.avatar,
                             })}
                         </Placeholder>
 

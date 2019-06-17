@@ -45,6 +45,7 @@ class MemberRoleCover extends React.Component<Props> {
                         <CachedImage
                             theme={this.props.theme}
                             uri={this.props.pic}
+                            resizeMode="cover"
                             {...rest}
                             style={[styles.image, coverStyle]} />
                     }
@@ -119,7 +120,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         justifyContent: 'flex-end',
-        resizeMode: 'cover',
     },
 });
 

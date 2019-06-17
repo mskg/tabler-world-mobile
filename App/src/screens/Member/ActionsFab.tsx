@@ -1,6 +1,8 @@
 import Constants from 'expo-constants';
 import * as Contacts from 'expo-contacts';
+import * as Permissions from 'expo-permissions';
 import * as React from 'react';
+import { Alert } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { FABGroup } from '../../components/FABGroup';
@@ -45,10 +47,20 @@ class ActionsFabBase extends React.Component<Props> {
   }
 
   _contact = async () => {
-    const contact = await mapMemberToContact(this.props.member);
+    let { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
-    //@ts-ignore
-    Contacts.presentFormAsync(null, contact);
+    if (status !== 'granted') {
+      Alert.alert(I18N.Settings.contactpermissions)
+    }
+    else {
+      const contact = await mapMemberToContact(this.props.member);
+      //@ts-ignore
+      Contacts.presentFormAsync(null, contact, {
+        shouldShowLinkedContacts: true,
+        allowsEditing: true,
+        allowsActions: true,
+      });
+    }
   }
 
   render() {

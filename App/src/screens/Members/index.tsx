@@ -8,6 +8,7 @@ import { connect, MapStateToProps } from 'react-redux';
 import { Audit } from "../../analytics/Audit";
 import { IAuditor } from '../../analytics/Types';
 import { AlphabeticScrollBar } from '../../components/AlphabetJumpbar';
+import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { renderItem } from '../../components/ListRenderer';
 import { MemberSectionList } from '../../components/MemberSectionList';
 import { ScreenWithHeader } from '../../components/Screen';
@@ -219,4 +220,4 @@ const WithQuery = ({fetchPolicy}) => (
     </Query>
 );
 
-export const MembersScreen = withCacheInvalidation("members", WithQuery);
+export const MembersScreen = withWhoopsErrorBoundary(withCacheInvalidation("members", WithQuery));

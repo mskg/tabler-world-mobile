@@ -2,18 +2,27 @@ import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 import { randomDigits } from 'crypto-secure-random-digit';
 import { SES } from 'aws-sdk';
 import { sendEmail } from './sendEmail';
+import { withDatabase } from '../withDatabase';
 
 export const ses = new SES();
-export const handler: CognitoUserPoolTriggerHandler = async (event) => {
+export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
+    let secretLoginCode: string = "";
 
-    let secretLoginCode: string;
     if (!event.request.session || !event.request.session.length) {
-        // This is a new auth session
-        // Generate a new secret login code and mail it to the user
-        secretLoginCode = randomDigits(6).join('');
-        await sendEmail(event.request.userAttributes.email, secretLoginCode);
-    } else {
+        await withDatabase(context, async (client) => {
+            const res = await client.query(
+                "select * from profiles where rtemail = $1 and removed = FALSE",
+                [event.request.userAttributes.email]);
 
+            if (res.rowCount !== 1) {
+                throw new Error("Sorry, we don't know you.");
+            }
+            // This is a new auth session
+            // Generate a new secret login code and mail it to the user
+            secretLoginCode = randomDigits(6).join('');
+            await sendEmail(event.request.userAttributes.email, secretLoginCode);
+        });
+    } else {
         // There's an existing session. Don't generate new digits but
         // re-use the code from the current session. This allows the user to
         // make a mistake when keying in the code and to then retry, rather

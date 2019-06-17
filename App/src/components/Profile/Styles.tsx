@@ -1,10 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-    avatar: {
-        elevation: 3,
-    },
-
     container: {
         flex: 1,
         alignItems: 'center',

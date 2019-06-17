@@ -6,6 +6,7 @@ import { Card, Paragraph, Theme, withTheme } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { Accordion } from '../../components/Accordion';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
+import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
@@ -88,6 +89,8 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
         return (
             <Query<GetAssociationsQueryType> query={GetAssociationsQuery} fetchPolicy={this.props.fetchPolicy}>
                 {({ loading, error, data, refetch }) => {
+                    if (error) throw error;
+
                     return (
                         <FlatList
                             contentContainerStyle={styles.container}
@@ -115,5 +118,7 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
 }
 
 export const AssociationsScreen = withNavigation(withTheme(
-    withCacheInvalidation("associations", AssociationsScreenBase)
+    withWhoopsErrorBoundary(
+        withCacheInvalidation("associations", AssociationsScreenBase)
+    )
 ));

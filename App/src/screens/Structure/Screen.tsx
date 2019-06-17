@@ -33,7 +33,7 @@ class ScreenWithBarBase extends React.Component<Props> {
 
                     indicatorStyle={{
                         backgroundColor: this.props.theme.colors.accent,
-                        color: this.props.theme.colors.accent,
+                        // color: this.props.theme.colors.accent,
                     }}
 
                     labelStyle={{

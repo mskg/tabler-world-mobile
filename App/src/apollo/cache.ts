@@ -23,6 +23,8 @@ export const cache = new InMemoryCache({
     fragmentMatcher,
 
     dataIdFromObject: object => {
+        // console.log(defaultDataIdFromObject(object));
+
         switch (object.__typename) {
             case 'Association':
                 //@ts-ignore
@@ -37,6 +39,12 @@ export const cache = new InMemoryCache({
 
     cacheRedirects: {
         Query: {
+            Association: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Association', id: args }),
+
+            Area: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Area', id: args }),
+
             Club: (_, args, { getCacheKey }) =>
                 getCacheKey({ __typename: 'Club', id: args }),
 

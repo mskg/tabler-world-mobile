@@ -127,7 +127,7 @@ class ConfirmBase extends PureComponent<Props, State> {
     }
 }`,
                     fetchPolicy: "network-only",
-                    errorPolicy: "all",
+                    errorPolicy: "none",
                 });
 
                 if (whoAmI == null) throw new Error("user is null");

@@ -5,6 +5,7 @@ import { Checkbox, Divider, List, Text, Theme, TouchableRipple, withTheme } from
 import { connect } from 'react-redux';
 import { Audit } from "../../analytics/Audit";
 import { IAuditor } from '../../analytics/Types';
+import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { StandardHeader } from '../../components/Header';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -137,22 +138,24 @@ export class FilterScreenBase extends React.Component<Props, State> {
                         />
                     </List.Section>
 
-                    <List.Section title={I18N.Filter.area}>
-                        <Query query={AreasQuery} fetchPolicy={this.props.fetchPolicy}>
-                            {({ loading, data, /*error, data, */refetch }) => {
-                                return (<FlatList
-                                    data={data.Areas || []}
+                    <Query query={AreasQuery} fetchPolicy={this.props.fetchPolicy}>
+                        {({ loading, data, error, refetch }) => {
+                            if (loading || error) return null;
+
+                            // we ignore the errors here for now
+                            return (<List.Section title={I18N.Filter.area}>
+                                <FlatList
+                                    data={data ? (data.Areas || []) : []}
                                     extraData={this.props.filter}
                                     renderItem={this._renderItem}
                                     keyExtractor={this._keyExtractor}
                                     refreshing={loading}
                                     onRefresh={refetch}
                                     bounces={false}
-                                />);
-                            }}
-                        </Query>
-
-                    </List.Section>
+                                />
+                            </List.Section>);
+                        }}
+                    </Query>
                 </ScrollView>
 
                 <StandardHeader
@@ -203,4 +206,6 @@ export const FilterScreen = connect(
         toggleDistrict,
         toggleOwnTable,
     })(withTheme(
-        withCacheInvalidation("areas", FilterScreenBase)));
+        withWhoopsErrorBoundary(
+            withCacheInvalidation("areas", FilterScreenBase))
+    ));

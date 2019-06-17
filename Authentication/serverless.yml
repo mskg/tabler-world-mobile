@@ -21,9 +21,10 @@ custom:
     Fn::ImportValue:
         DatabaseHostId
   
-  db_host: ${self:custom.db_host_import, env:DB_HOST}
-  db_user: lambda_${self:custom.stage}
-  db_database: ${self:custom.stage}
+  db_host: ${env:DB_HOST, self:custom.db_host_import}
+  db_user: ${env:DB_USER, self:custom.db_user_default}
+  db_database: ${env:DB_DATBASE, self:custom.stage}
+  db_password: ${env:DB_PASSWORD}
 
   alerts:
     stages:
@@ -57,6 +58,48 @@ provider:
   timeout: 20
   versionFunctions: false
 
+  environment:
+    db_host: ${self:custom.db_host}
+    db_user: ${self:custom.db_user}
+    db_database: ${self:custom.db_database}
+    db_password: ${self:custom.db_password}
+
+  vpc:
+    securityGroupIds:
+      - Fn::ImportValue: DatabaseSecurityGroupId
+    subnetIds:
+      - Fn::ImportValue: DatabaseSubnetAId
+      - Fn::ImportValue: DatabaseSubnetBId
+      - Fn::ImportValue: DatabaseSubnetCId
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:SendEMail
+        - ses:SendRawEmail
+      Resource: 
+        - "*"
+      Condition:
+        'ForAllValues:StringLike':
+          'ses:Recipients':
+            - "*.roundtable.world"
+
+    - Effect: Allow
+      Action:
+        - rds-db:connect
+      Resource:
+        # arn:aws:rds-db:region:account-id:dbuser:DbiResourceId/db-user-name
+        # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+        Fn::Join:
+          - ""
+          - - "arn:aws:rds-db:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":dbuser:"
+            - "*/"
+            - ${self:custom.db_user}
+          
 functions:
   #
   # Auth Challenge
@@ -67,19 +110,7 @@ functions:
     environment:
       SES_FROM_ADDRESS: ${self:custom.SES_FROM_ADDRESS}
 
-    iamRoleStatementsInherit: true
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - ses:SendEMail
-          - ses:SendRawEmail
-        Resource: 
-          - "*"
-        Condition:
-          'ForAllValues:StringLike':
-            'ses:Recipients':
-              - "*.roundtable.world"
-  
+    # global vpc definition
     events:
       - cognitoUserPool:
           pool: MyUserPool
@@ -92,52 +123,6 @@ functions:
       - cognitoUserPool:
           pool: MyUserPool
           trigger: VerifyAuthChallengeResponse
-
-  #
-  # PreAuthentication
-  #
-  pre-authentication:
-    handler: src/pre-authentication/lambda.handler
-
-    environment:
-      # AWS_REGION: provided automatically
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-  
-    # global vpc definition
-    vpc:
-      securityGroupIds:
-        - Fn::ImportValue: DatabaseSecurityGroupId
-      subnetIds:
-        - Fn::ImportValue: DatabaseSubnetAId
-        - Fn::ImportValue: DatabaseSubnetBId
-        - Fn::ImportValue: DatabaseSubnetCId
-
-    # global role definition to access RDS
-
-    iamRoleStatementsInherit: true
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - rds-db:connect
-        Resource:
-          # arn:aws:rds-db:region:account-id:dbuser:DbiResourceId/db-user-name
-          # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
-          Fn::Join:
-            - ""
-            - - "arn:aws:rds-db:"
-              - ${self:provider.region}
-              - ":"
-              - Ref: "AWS::AccountId"
-              - ":dbuser:"
-              - "*/"
-              - ${self:custom.db_user}
-  
-    events:
-      - cognitoUserPool:
-          pool: MyUserPool
-          trigger: PreAuthentication
 
   #
   # PreSignUp
@@ -153,10 +138,6 @@ functions:
 resources:
   Resources:
     ChallengeLogGroup:
-      Properties:
-        RetentionInDays: "30"
-
-    PreDashauthenticationLogGroup:
       Properties:
         RetentionInDays: "30"
 

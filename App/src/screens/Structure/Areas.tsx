@@ -5,6 +5,7 @@ import { FlatList, View } from 'react-native';
 import { Card, Theme, withTheme } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
+import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { CardTitle } from './CardTitle';
@@ -57,6 +58,8 @@ class AreasScreenBase extends React.Component<Props, State> {
         return (
             <Query<GetAreasQueryType> query={GetAreasQuery} fetchPolicy={this.props.fetchPolicy}>
                 {({ loading, error, data, refetch }) => {
+                    if (error) throw error;
+
                     return (
                         <FlatList
                             contentContainerStyle={styles.container}
@@ -81,5 +84,5 @@ class AreasScreenBase extends React.Component<Props, State> {
 }
 
 export const AreasScreen = withNavigation(withTheme(
-    withCacheInvalidation("areas", AreasScreenBase)
+    withWhoopsErrorBoundary(withCacheInvalidation("areas", AreasScreenBase))
 ));

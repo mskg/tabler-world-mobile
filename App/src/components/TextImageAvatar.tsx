@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet } from 'react-native';
 import { Avatar, Surface, Theme, withTheme } from "react-native-paper";
 import { CachedImage } from "./Image/CachedImage";
 
@@ -12,29 +13,13 @@ type Props = {
 
   background?: string;
   style?: any;
-  containerStyle: any;
+  containerStyle?: any;
 };
 
 class TextImageAvatarBase extends React.PureComponent<Props> {
 
   render() {
-    let { source, theme, label, size, style, containerStyle } = this.props;
-    const { colors } = theme;
-
-    // if (source == null || source == "") {
-    //   return (
-    //     <Avatar.Text
-    //       style={{
-    //         backgroundColor: this.props.background
-    //           ? this.props.background
-    //           : this.props.theme.colors.primary,
-    //         ...(style || {})
-    //       }}
-    //       size={size}
-    //       label={label}
-    //     />
-    //   );
-    // }
+    let { source, label, size, style, containerStyle } = this.props;
 
     return (
       <Surface
@@ -42,9 +27,7 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
           width: size,
           height: size,
           borderRadius: size / 2,
-          color: colors.primary,
-          // elevation: 10,
-          ...(containerStyle || {})
+          ...(containerStyle || {}),
         }}
       >
         <CachedImage
@@ -57,17 +40,21 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
                   : this.props.theme.colors.primary,
                 ...(style || {})
               }}
+
               size={size}
               label={label}
             />
           }
+
           theme={this.props.theme}
-          style={{
+          resizeMode="cover"
+
+          style={[styles.imageStyles, {
             width: size,
             height: size,
             borderRadius: size / 2,
             ...(style || {})
-          }}
+          }]}
         />
       </Surface>
     );
@@ -75,3 +62,13 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
 }
 
 export const TextImageAvatar = withTheme(TextImageAvatarBase);
+
+
+const styles = StyleSheet.create({
+  imageStyles: {
+    // position: "absolute",
+    // top: 0, bottom: 0,
+    // left: 0, right: 0,
+    // overflow: 'hidden',
+  }
+});

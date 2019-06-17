@@ -1,9 +1,9 @@
 // @flow
-import React from 'react';
-import { View } from 'react-native';
+import React, { ErrorInfo } from 'react';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { homeScreen } from '../redux/actions/navigation';
+import { Whoops } from './Whoops';
 
 type Props = {
     children?: React.ReactNode,
@@ -20,34 +20,46 @@ export class ErrorBoundary extends React.Component<Props, State> {
         return { error, hasError: true }
     }
 
-    componentDidCatch(error: Error, info: { componentStack: string }) {
-        console.log("***************** ERROR **************", error);
-
-        if (typeof this.props.onError === 'function') {
-            this.props.onError.call(this, error, info.componentStack)
-        }
+    componentDidCatch(error: Error, _info: ErrorInfo) {
+        // if (typeof this.props.onError === 'function') {
+        //     this.props.onError(this.state.error);
+        // } else {
+        this.setState({ hasError: true, error: error });
+        // }
     }
 
     resetError: Function = () => {
-        this.setState({ error: null, hasError: false })
+        if (typeof this.props.onError === 'function') {
+            this.props.onError(this.state.error);
+        } else {
+            this.setState({ error: null, hasError: false });
+        }
     }
 
     render() {
         const { FallbackComponent } = this.props;
+        try {
+            return this.state.hasError
+                ? <FallbackComponent
+                    error={this.state.error}
+                    resetError={this.resetError}
+                />
+                : this.props.children;
 
-        return this.state.hasError
-            ? <FallbackComponent
-                error={this.state.error}
+        }
+        catch (e) {
+            return <FallbackComponent
+                error={e}
                 resetError={this.resetError}
             />
-            : this.props.children
+        }
     }
 }
 
 class GoHomeErrorBoundaryBase extends React.Component<{ homeScreen, children, navigation }> {
     render() {
         return (
-            <ErrorBoundary onError={() => this.props.homeScreen()} FallbackComponent={View}>
+            <ErrorBoundary onError={() => this.props.homeScreen()} FallbackComponent={Whoops}>
                 {this.props.children}
             </ErrorBoundary>
         );
@@ -61,8 +73,20 @@ export function withGoHomeErrorBoundary(WrappedComponent) {
         render() {
             return (
                 <GoHomeErrorBoundary>
-                    <WrappedComponent />
+                    <WrappedComponent {...this.props} />
                 </GoHomeErrorBoundary>
+            );
+        }
+    };
+}
+
+export function withWhoopsErrorBoundary(WrappedComponent) {
+    return class extends React.PureComponent {
+        render() {
+            return (
+                <ErrorBoundary FallbackComponent={Whoops}>
+                    <WrappedComponent {...this.props} />
+                </ErrorBoundary>
             );
         }
     };

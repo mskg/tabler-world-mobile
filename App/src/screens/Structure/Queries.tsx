@@ -154,6 +154,7 @@ export const ClubOverviewFragment = gql`
         logo
 
         area {
+            id
             name
             area
         }

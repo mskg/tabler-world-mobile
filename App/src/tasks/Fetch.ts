@@ -1,6 +1,5 @@
-import * as TaskManager from 'expo-task-manager'
-import * as BackgroundFetch from 'expo-background-fetch'
-import { Platform } from 'react-native';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
 import { Audit } from "../analytics/Audit";
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
 import { Categories, Logger } from '../helper/Logger';
@@ -11,14 +10,16 @@ const FETCH_TASKNAME = "update-contacts";
 const logger = new Logger(Categories.Sagas.Fetch);
 const INTERVAL = 60 * 60 * (24 / 4);
 
-async function runBackgroundSaga() {
+async function runBackgroundFetch() {
     const timer = Audit.timer(FETCH_TASKNAME);
     try {
         logger.debug("Running");
         Audit.trackEvent(FETCH_TASKNAME);
 
         const client = await bootstrapApollo();
-        await client.cache.reset();
+
+        // remove for testing purposes
+        // await client.cache.reset();
 
         const q1 = client.query({
             query: GetMembersQuery,
@@ -59,12 +60,7 @@ async function runBackgroundSaga() {
 
 export async function registerFetchTask() {
     try {
-        if (Platform.OS !== 'ios') {
-            logger.log("Background execution only supported on IOS");
-            return;
-        }
-
-        TaskManager.defineTask(FETCH_TASKNAME, runBackgroundSaga);
+        TaskManager.defineTask(FETCH_TASKNAME, runBackgroundFetch);
 
         const status = await BackgroundFetch.getStatusAsync();
         switch (status) {

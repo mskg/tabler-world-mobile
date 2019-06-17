@@ -14,7 +14,7 @@ export const Element = ({ field, text, onPress }: ActionProps) => {
     if (!display && text != null) {display = (text as string).trim() !== "";}
     else if (text == null) {display = false;}
 
-    console.log(display, "#", text, "#")
+    // console.log(display, "#", text, "#")
 
     if (display) {
         return (

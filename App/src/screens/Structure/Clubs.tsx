@@ -6,7 +6,7 @@ import { Button, Card, Searchbar, Theme, withTheme } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { RoleAccordionSection } from '../../components/Club/RoleAccordionSection';
-import { GoHomeErrorBoundary } from '../../components/ErrorBoundary';
+import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
@@ -195,14 +195,14 @@ const ConnectedClubScreen = connect(null, {
     homeScreen,
 })(withNavigation(withTheme(ClubsScreenBase)));
 
-export const ClubsScreenWithQuery = ({fetchPolicy}) => (
-    <GoHomeErrorBoundary>
-        <Query<GetClubsQueryType> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
-            {({ loading, data, /*error, data, */refetch }) => {
-                return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
-            }}
-        </Query>
-    </GoHomeErrorBoundary>
+export const ClubsScreenWithQuery = ({ fetchPolicy }) => (
+    <Query<GetClubsQueryType> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
+        {({ loading, data, error, refetch }) => {
+            if (error) throw error;
+
+            return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
+        }}
+    </Query>
 );
 
-export const ClubsScreen = withCacheInvalidation("clubs", ClubsScreenWithQuery);
+export const ClubsScreen = withWhoopsErrorBoundary(withCacheInvalidation("clubs", ClubsScreenWithQuery));

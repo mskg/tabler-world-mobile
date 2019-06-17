@@ -11,6 +11,7 @@ type MemberAvatarProps = {
   size?: number;
   background?: string;
   style?: any;
+  containerStyle?: any;
 };
 
 export class MemberAvatar extends React.PureComponent<MemberAvatarProps> {

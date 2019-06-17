@@ -7,6 +7,7 @@ import { withNavigation } from "react-navigation";
 import { connect } from 'react-redux';
 import { Audit } from "../../analytics/Audit";
 import { IAuditor } from '../../analytics/Types';
+import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { FilterSection, FilterTag } from "../../components/FilterSection";
 import { StandardHeader } from '../../components/Header';
 import ListSubheader from "../../components/ListSubheader";
@@ -56,6 +57,7 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros;
 
 class SearchScreenBase extends React.Component<Props, State> {
+    mounted= true;
     audit: IAuditor;
 
     state = {
@@ -75,6 +77,7 @@ class SearchScreenBase extends React.Component<Props, State> {
     }
 
     componentDidMount() {
+        this.mounted = true;
         // if called without blur, settimeout, keyboard will never get dismissed?
         if (this._searchBar) {
             setTimeout(() => {
@@ -88,6 +91,7 @@ class SearchScreenBase extends React.Component<Props, State> {
 
     componentWillUnmount() {
         this.audit.submit();
+        this.mounted= false;
     }
 
     _searchBar!: Searchbar | null;
@@ -104,6 +108,12 @@ class SearchScreenBase extends React.Component<Props, State> {
     );
 
     _adjustSearch = _.debounce((text, filters: FilterTag[]) => {
+        if (!this.mounted) {
+            // due to async nature, we can already be unmounted
+            return;
+        }
+
+
         this.audit.increment("adjust");
 
         if (text != "" && text != null) {
@@ -233,8 +243,12 @@ class SearchScreenBase extends React.Component<Props, State> {
                         areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
                         clubs: this.state.filterTags.filter((f: FilterTag) => f.type === "table").map((f: FilterTag) => f.value),
                         roles: this.state.filterTags.filter((f: FilterTag) => f.type === "role").map((f: FilterTag) => f.value),
-                    }}>
-                        {({ loading, data: { SearchMember: result }, fetchMore, /*error, data, */refetch }) => {
+                    }}
+                    >
+                        {({ loading, data, fetchMore, error, refetch }) => {
+                            if (error) throw error;
+
+                            const result = data && data.SearchMember != null ? data.SearchMember : null;
                             const newData = result ? result.nodes : [];
 
                             return (
@@ -323,7 +337,10 @@ class SearchScreenBase extends React.Component<Props, State> {
                             <ScrollView style={{ minHeight: "100%" }}>
                                 <Divider />
                                 <Query query={FiltersQuery} fetchPolicy={this.props.fetchPolicy}>
-                                    {({ loading, data, /*error, data, */refetch }) => {
+                                    {({ loading, data, error, refetch }) => {
+                                        // ok for now
+                                        if (error) return null;
+
                                         if (data == null
                                             || data.Roles == null
                                             || data.Areas == null
@@ -413,6 +430,8 @@ export const SearchScreen = connect(
     }), {
         addTablerSearch,
         showProfile,
-    })(withNavigation(withTheme(
-        withCacheInvalidation("utility", SearchScreenBase)
-    )));
+    })(withNavigation(
+        withTheme(
+            withWhoopsErrorBoundary(
+                withCacheInvalidation("utility", SearchScreenBase))
+        )));

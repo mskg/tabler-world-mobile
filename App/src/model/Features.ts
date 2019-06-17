@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 
 export enum Features {
     ContactSync,
@@ -8,7 +7,7 @@ export enum Features {
 }
 
 export function isFeatureEnabled(feature: Features) {
-    if (feature === Features.BackgroundFetch && Platform.OS === "ios") {
+    if (feature === Features.BackgroundFetch) {
         return true;
     }
 

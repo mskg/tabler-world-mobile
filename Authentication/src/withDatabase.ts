@@ -6,7 +6,7 @@ import Pool from "pg-pool";
 
 let pool: any = null;
 
-export async function withClient<T>(ctx: Context, func: (client: Client) => Promise<T>): Promise<T> {
+export async function withDatabase<T>(ctx: Context, func: (client: Client) => Promise<T>): Promise<T> {
     if (pool == null) {
         console.log("Pool does not exist.");
 

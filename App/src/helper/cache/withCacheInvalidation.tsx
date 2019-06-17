@@ -62,7 +62,7 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
         let policy: WatchQueryFetchPolicy | undefined;
 
         if (older) {
-            policy = "network-only";
+            policy = "cache-and-network";
             logger.log("*** REFETCHING DATA ***", policy);
 
             client.writeData({
@@ -71,7 +71,7 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
                         __typename: 'LastSync',
                         [this.props.field]: Date.now()
                     }
-                }
+                },
             });
         } else {
             logger.log("*** DATA IS VALID ***",

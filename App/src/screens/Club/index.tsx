@@ -3,13 +3,17 @@ import { Query } from 'react-apollo';
 import { Animated } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { ClubAvatar } from '../../components/ClubAvatar';
-import { GoHomeErrorBoundary } from '../../components/ErrorBoundary';
+import { GoHomeErrorBoundary, withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
+import { Categories, Logger } from '../../helper/Logger';
+import { I18N } from '../../i18n/translation';
 import { IClubParams } from '../../redux/actions/navigation';
+import { addSnack } from '../../redux/actions/snacks';
 import { ClubOverviewFragment } from '../Structure/Queries';
 import { ClubDetails } from './ClubDetails';
 import { GetClubQuery, GetClubQueryType, RolesFragment } from './Queries';
@@ -27,6 +31,7 @@ type StateProps = {
 type Props = OwnProps & StateProps;
 
 const AnimatedAvatar = Animated.createAnimatedComponent(ClubAvatar);
+const logger = new Logger(Categories.Screens.Club);
 
 class ClubBase extends React.Component<Props> {
     _renderHeader = (scrollY: Animated.AnimatedAddition, distance: number) => {
@@ -89,11 +94,16 @@ export class ClubScreenBase extends React.Component<NavigationInjectedProps<IClu
     }
 }
 
-export const ClubScreen = withNavigation(ClubScreenBase);
+export const ClubScreen = withWhoopsErrorBoundary(withNavigation(ClubScreenBase));
 
-class ClubQueryWithPreview extends PureComponent<{ children: ReactElement<StateProps>, id: string, fetchPolicy: any, }> {
+class ClubQueryWithPreview extends PureComponent<{
+    children: ReactElement<StateProps>,
+    id: string,
+    fetchPolicy: any,
+    addSnack: typeof addSnack,
+}> {
     render() {
-       return (
+        return (
             <Query<GetClubQueryType>
                 query={GetClubQuery}
                 variables={{
@@ -101,10 +111,10 @@ class ClubQueryWithPreview extends PureComponent<{ children: ReactElement<StateP
                 }}
                 fetchPolicy={this.props.fetchPolicy}
             >
-                {({ client, loading, data }) => {
+                {({ client, loading, data, error }) => {
                     let preview: any = undefined;
 
-                    if (loading) {
+                    if (loading || error) {
                         let club: any = null;
                         let roles: any = null;
 
@@ -114,6 +124,7 @@ class ClubQueryWithPreview extends PureComponent<{ children: ReactElement<StateP
                                 fragment: ClubOverviewFragment,
                             });
                         } catch (e) {
+                            logger.error(e, "Could not read fragment ClubOverviewFragment");
                         }
 
                         try {
@@ -125,6 +136,7 @@ class ClubQueryWithPreview extends PureComponent<{ children: ReactElement<StateP
                                     fragment: RolesFragment,
                                 });
                         } catch (e) {
+                            logger.error(e, "Could not read fragment RoleDetails");
                         }
 
                         if (club != null) {
@@ -137,10 +149,18 @@ class ClubQueryWithPreview extends PureComponent<{ children: ReactElement<StateP
                         }
                     }
 
+                    if (error && !preview) { throw error; }
+                    else if (error && preview) {
+                        setTimeout(() =>
+                            this.props.addSnack({
+                                message: I18N.Whoops.partialData,
+                            }));
+                    }
+
                     return React.cloneElement(
                         this.props.children, {
                             loading: loading,
-                            club: loading ? undefined : data,
+                            club: (loading || error) ? undefined : data,
                             preview: preview,
                         });
                 }}
@@ -148,4 +168,8 @@ class ClubQueryWithPreview extends PureComponent<{ children: ReactElement<StateP
         );
     }
 }
-const ClubQueryWithPreviewAndInvalidation = withCacheInvalidation("clubs", ClubQueryWithPreview);
+
+const ClubQueryWithPreviewAndInvalidation = withCacheInvalidation("clubs",
+    connect(
+        null, { addSnack }
+    )(ClubQueryWithPreview));

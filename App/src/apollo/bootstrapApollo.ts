@@ -2,13 +2,12 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { CachePersistor } from 'apollo-cache-persist';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
-import { BatchHttpLink } from "apollo-link-batch-http";
+import { createHttpLink } from "apollo-link-http";
 import { createPersistedQueryLink } from "apollo-link-persisted-queries";
-import { RetryLink } from 'apollo-link-retry';
 import Constants from 'expo-constants';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
-import { authLink } from './authLink';
+import { fetchAuth } from './authLink';
 import { cache } from './cache';
 import { errorLink } from './errorLink';
 import { Resolvers } from './resolver';
@@ -41,14 +40,22 @@ export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObj
 
   const links = ApolloLink.from([
     errorLink,
-    authLink,
-    new RetryLink({
-      delay: {
-        jitter: true
-      }
+    // authLink,
+
+    // new RetryLink({
+    //   delay: {
+    //     jitter: true
+    //   }
+    // }),
+
+    createPersistedQueryLink({
     }),
-    createPersistedQueryLink(),
-    new BatchHttpLink({ uri: api + "/graphql" })
+
+    createHttpLink({
+        uri: api + "/graphql",
+        fetch: fetchAuth,
+        // batchInterval: 100,
+    })
   ]);
 
   client = new ApolloClient({
@@ -60,7 +67,7 @@ export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObj
 
     defaultOptions: {
       mutate: {
-        errorPolicy: "all",
+        errorPolicy: "none",
         fetchPolicy: "no-cache",
       },
 
@@ -70,7 +77,7 @@ export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObj
       },
 
       watchQuery: {
-        errorPolicy: "all",
+        errorPolicy: "none",
       }
     }
   });
