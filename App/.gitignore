@@ -10,3 +10,4 @@ compile/
 config/aws.json
 !config/app.json
 .DS_Store
+deployment.json
