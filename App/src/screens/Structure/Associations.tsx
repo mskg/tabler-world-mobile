@@ -11,7 +11,7 @@ import { CachedImage } from '../../components/Image/CachedImage';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { I18N } from '../../i18n/translation';
-import { RoleNames } from '../../model/IMember';
+import { RoleNames } from '../../model/IRole';
 import { GetAssociationsQuery, GetAssociationsQueryType, GetAssociationsQueryType_Association } from './Queries';
 import { styles } from './Styles';
 

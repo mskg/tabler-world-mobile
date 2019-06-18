@@ -36,7 +36,7 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
         const client = cachedAolloClient();
 
         const query = GetLastSyncQuery(this.props.field);
-        const age = (this.props.maxAge || DefaultAges[this.props.field] || 60*24) * MS_PER_MINUTE;
+        const age = (this.props.maxAge || DefaultAges[this.props.field] || 60 * 24) * MS_PER_MINUTE;
 
         let data: any = null;
 
@@ -65,14 +65,16 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
             policy = "cache-and-network";
             logger.log("*** REFETCHING DATA ***", policy);
 
-            client.writeData({
-                data: {
-                    LastSync: {
-                        __typename: 'LastSync',
-                        [this.props.field]: Date.now()
-                    }
-                },
-            });
+            // defer update
+            setTimeout(() =>
+                client.writeData({
+                    data: {
+                        LastSync: {
+                            __typename: 'LastSync',
+                            [this.props.field]: Date.now()
+                        }
+                    },
+                }));
         } else {
             logger.log("*** DATA IS VALID ***",
                 "age", age / MS_PER_MINUTE,

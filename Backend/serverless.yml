@@ -240,6 +240,7 @@ functions:
   graphql:
     handler: src/graphql/lambda.handler
     timeout: 30
+    memorySize: 256
 
     environment:
       # AWS_REGION: provided automatically

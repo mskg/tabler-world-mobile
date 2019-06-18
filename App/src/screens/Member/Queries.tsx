@@ -1,4 +1,9 @@
 import gql from 'graphql-tag';
+import { IAddress } from "../../model/IAddress";
+import { ICompany } from "../../model/ICompany";
+import { IEducation } from "../../model/IEducation";
+import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
+import { IRole } from '../../model/IRole';
 
 export const MembersOverviewFragment = gql`
     fragment MembersOverviewFragment on Member {
@@ -11,6 +16,7 @@ export const MembersOverviewFragment = gql`
         club {
            id
            name
+           club
        }
 
        area {
@@ -110,28 +116,17 @@ export type GetMemberQueryType = {
 };
 
 export type GetMemberQueryType_Address = {
-    city?: string;
-    country?: string;
-    postal_code?: string;
-    street1?: string;
-    street2?: string;
-};
+} & IAddress;
 
 export type GetMemberQueryType_Company = {
-    name: string;
-    email?: string;
-    phone?: string;
-    // sector?: string;
-    function?: string;
-    // begin_date?: Date;
     address: GetMemberQueryType_Address;
-};
+} & ICompany;
 
 export type GetMemberQueryType_Education = {
     school: string;
     education: string;
     address: GetMemberQueryType_Address;
-};
+} & IEducation;
 
 export type GetMemberQueryType_Communication = {
     type: string;
@@ -146,38 +141,12 @@ export type GetMemberQueryType_SocialMedia = {
 }
 
 export type GetMemberQueryType_Role = {
-    name: string,
+} & IRole;
 
-    level: string,
-    group: string, // Board, VIP, etc.
-
-    ref: {
-        id: string,
-        name: string,
-        type: 'club' | 'assoc' | 'area',
-    }
-};
+;
 
 export type GetMemberQueryType_Member = {
-    id: number;
-    pic?: string;
-
-    area: {
-        name: string,
-    },
-
-    association: {
-        name: string,
-    },
-
-    club: {
-        name: string,
-        id: string,
-    },
-
     title: string;
-    firstname: string;
-    lastname: string;
 
     address?: GetMemberQueryType_Address;
 
@@ -189,7 +158,6 @@ export type GetMemberQueryType_Member = {
     rtemail: string;
 
     partner?: string;
-    roles?: GetMemberQueryType_Role[];
 
     modifiedon: Date;
 
@@ -197,4 +165,4 @@ export type GetMemberQueryType_Member = {
     educations?: GetMemberQueryType_Education[];
 
     socialmedia?: GetMemberQueryType_SocialMedia
-};
+} & IMemberOverviewFragment;

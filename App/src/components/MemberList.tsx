@@ -2,10 +2,9 @@ import React from 'react';
 import { FlatList, ListRenderItemInfo, Platform } from "react-native";
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from "react-navigation";
-import { connect, MapStateToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { I18N } from '../i18n/translation';
-import { IAppState } from '../model/IAppState';
-import { IMember } from '../model/IMember';
+import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
 import { extractKey, renderDivider, renderItem } from './ListRenderer';
@@ -17,38 +16,34 @@ type OwnProps = {
     theme: Theme,
 
     section?: string,
-    showMe: boolean,
+    me?: IWhoAmI ,
 
-    data: IMember[],
+    data: IMemberOverviewFragment[],
     extraData?: any,
 
     refreshing?: boolean,
     onRefresh?: () => void,
 
-    renderItem?: (member: IMember, onPress: any) => React.ReactNode,
-    onItemSelected?: (member: IMember) => void,
+    renderItem?: (member: IMemberOverviewFragment, onPress: any) => React.ReactNode,
+    onItemSelected?: (member: IMemberOverviewFragment) => void,
 
     onEndReached?: () => any;
-};
-
-type StateProps = {
-    me: IWhoAmI | undefined,
 };
 
 type DispatchPros = {
     showProfile: typeof showProfile
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+type Props = OwnProps & DispatchPros & NavigationInjectedProps;
 
 export class MemberListBase extends React.Component<Props> {
-    _flatList!: FlatList<IMember> | null;
+    _flatList!: FlatList<IMemberOverviewFragment> | null;
 
     constructor(props: Props) {
         super(props);
     }
 
-    _onPress = (item: IMember) => {
+    _onPress = (item: IMemberOverviewFragment) => {
         if (this.props.onItemSelected != null) {
             this.props.onItemSelected(item);
         }
@@ -57,7 +52,7 @@ export class MemberListBase extends React.Component<Props> {
         }
     };
 
-    _renderItem = (c: ListRenderItemInfo<IMember>) => {
+    _renderItem = (c: ListRenderItemInfo<IMemberOverviewFragment>) => {
         return this.props.renderItem != null ?
             this.props.renderItem(c.item, this._onPress)
             : renderItem(c.item, this.props.theme, this._onPress);
@@ -74,8 +69,8 @@ export class MemberListBase extends React.Component<Props> {
     };
 
     _renderHeader = () => {
-        const { me, showMe } = this.props;
-        const canShowMe = me != null && me.firstname && showMe;
+        const { me } = this.props;
+        const canShowMe = me != null && me.firstname;
 
         return canShowMe ? <MeListItem theme={this.props.theme} me={this.props.me as IWhoAmI} /> : null;
     };
@@ -113,13 +108,7 @@ export class MemberListBase extends React.Component<Props> {
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state: IAppState): StateProps => {
-    return {
-        me: state.auth.user,
-    }
-};
-
 export const MemberList = withNavigation(withTheme(connect(
-    mapStateToProps, {
+    null, {
         showProfile
     })(MemberListBase)));

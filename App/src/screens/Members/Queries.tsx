@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { IWhoAmI } from '../../model/IWhoAmI';
 import { MembersOverviewFragment } from '../Member/Queries';
 
 export const GetLastSyncQuery = gql`
@@ -9,17 +10,34 @@ export const GetLastSyncQuery = gql`
     }
 `;
 
-export const GetMembersQuery = gql`
-  query GetMembersQuery {
-    Me {
+export const MeFragment = gql`
+    fragment MeFragment on Member {
         id
         pic
+
+        association {
+            association
+        }
+
+        area {
+            id
+            area
+        }
+
         club {
             id
             club
         }
+
         firstname
         lastname
+    }
+`;
+
+export const GetMembersQuery = gql`
+  query GetMembersQuery {
+    Me {
+       ...MeFragment
     }
 
     MembersOverview {
@@ -28,21 +46,16 @@ export const GetMembersQuery = gql`
   }
 
   ${MembersOverviewFragment}
+  ${MeFragment}
 `;
 
 export type GetMembersQueryType = {
-    Me: {
-        id: number,
-        pic?: string,
-        club: {
-            id: number,
-            club: number,
-        }
-        firstname: string,
-        lastname: string,
-    },
+    Me: GetMembersQueryType_Me,
     MembersOverview: GetMembersQueryType_MembersOverview,
 };
+
+export type GetMembersQueryType_Me = {
+} & IWhoAmI;
 
 export type GetMembersQueryType_Role = {
     name: string,

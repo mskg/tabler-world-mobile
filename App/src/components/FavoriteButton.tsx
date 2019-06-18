@@ -2,16 +2,16 @@ import React from 'react';
 import { IconButton, Theme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../model/IAppState';
-import { IMember } from '../model/IMember';
+import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
 import { HashMap } from '../model/Maps';
 import { toggleFavorite } from '../redux/actions/filter';
 
-const testIsFavorite = (member: IMember, favorites: HashMap<boolean>) => {
+const testIsFavorite = (member: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
     return favorites[member.id] === true;
 }
 
 type Props = {
-    member: IMember,
+    member: IMemberOverviewFragment,
     favorites: HashMap<boolean>,
     toggleFavorite: typeof toggleFavorite,
     theme: Theme,

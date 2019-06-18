@@ -1,14 +1,13 @@
 
 
 import _ from 'lodash';
-import { IMember } from '../model/IMember';
-import { HashMap } from '../model/Maps';
-import { normalizeForSearch } from './normalizeForSearch';
+import { normalizeForSearch } from '../../helper/normalizeForSearch';
+import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
 import { Predicate, Predicates } from "./Predicates";
 
 export type SectionData = {
     title: string,
-    data: IMember[],
+    data: IMemberOverviewFragment[],
 }[];
 
 function isChar(c) {
@@ -30,7 +29,7 @@ export class MemberDataSource {
     _sections: string[];
 
     public constructor(
-        private member: HashMap<IMember>,
+        private member: IMemberOverviewFragment[],
         private _filter: Predicate = Predicates.all,
         private sortByField = "lastname",
         private groupByfield = "lastname") {
@@ -54,7 +53,7 @@ export class MemberDataSource {
         this.sortByField = field;
     }
 
-    public section(s: string): IMember[] {
+    public section(s: string): IMemberOverviewFragment[] {
         return _(this._data)
             .filter(f => f.title == s)
             .map(t => t.data)
@@ -75,7 +74,7 @@ export class MemberDataSource {
     //     return this._flat;
     // }
 
-    public update(member?: HashMap<IMember>) {
+    public update(member?: IMemberOverviewFragment[]) {
         this.member = member || this.member;
         this.calc();
     }
@@ -87,8 +86,6 @@ export class MemberDataSource {
 
         this._data.splice(0, this._data.length);
         this._data.push(... _(this.member)
-            .values()
-            .filter(v => typeof(v) !== "number") //length attribute
             .filter(this._filter || Predicates.all())
             .sortBy(t => (t[this.sortByField] || "").toUpperCase())
             .groupBy(t => sectionFrom(t[this.groupByfield]))

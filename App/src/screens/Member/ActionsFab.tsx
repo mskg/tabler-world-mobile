@@ -10,21 +10,22 @@ import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
 import { IAppState } from '../../model/IAppState';
-import { IMember } from '../../model/IMember';
+import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
 import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
+import { GetMemberQueryType_Member } from './Queries';
 
 type Props = {
   top: number,
 
-  member: IMember
+  member: GetMemberQueryType_Member
   theme: Theme,
 
   toggleFavorite: typeof toggleFavorite,
   favorites: HashMap<boolean>,
 }
 
-const testIsFavorite = (tabler: IMember, favorites: HashMap<boolean>) => {
+const testIsFavorite = (tabler: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
   return tabler != null && favorites[tabler.id] === true;
 }
 

@@ -55,7 +55,15 @@ from profiles
 where
         association = $1
     and club = $2
-    and removed = FALSE`, [association, club]);
+    and removed = FALSE
+    and id in (
+        select id from structure_tabler_roles
+        where
+            groupname = 'Members'
+        and name = 'Member'
+        and levelid = $3
+        and isvalid = TRUE
+    )`, [association, club, `${association}_${club}`]);
 
                 if (res.rows.length == 0) {
                     return null

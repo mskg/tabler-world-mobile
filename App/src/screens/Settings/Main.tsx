@@ -1,7 +1,5 @@
-import { NormalizedCacheObject } from 'apollo-cache-inmemory';
-import { ApolloClient } from 'apollo-client';
-import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Alert, ScrollView, View } from "react-native";
 import { Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
@@ -9,7 +7,7 @@ import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Audit } from "../../analytics/Audit";
 import { IAuditor } from '../../analytics/Types';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient, getPersistor } from '../../apollo/bootstrapApollo';
 import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
 import { LinkingHelper } from '../../helper/LinkingHelper';
@@ -83,8 +81,18 @@ export class MainSettingsScreenBase extends React.Component<Props, State> {
                     onPress: async () => {
                         this.audit.trackAction("Remove data");
 
-                        const client: ApolloClient<NormalizedCacheObject> = await bootstrapApollo();
+                        const client = cachedAolloClient();
                         await client.cache.reset();
+                        await getPersistor().purge();
+
+                        // this forces an update of existing views
+                        client.writeData({
+                            data: {
+                                LastSync: {
+                                    __typename: 'LastSync',
+                                }
+                            },
+                        });
                     }
                 },
             ],

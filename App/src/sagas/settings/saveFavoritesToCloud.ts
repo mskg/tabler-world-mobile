@@ -3,7 +3,7 @@ import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import { select } from 'redux-saga/effects';
 import { Audit } from "../../analytics/Audit";
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
 import * as filterActions from '../../redux/actions/filter';
@@ -27,7 +27,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
 
     logger.debug(favorites, result);
 
-    const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
+    const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
     yield client.mutate({
         mutation: gql`
 mutation PutSetting($input: SettingInput!) {

@@ -3,14 +3,14 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider, Theme } from 'react-native-paper';
-import { IMember } from '../model/IMember';
+import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
 import { Section } from './List/Section';
 import { MemberListItem } from "./Member/MemberListItem";
 
 export function renderItem(
-    item: IMember | string,
+    item: IMemberOverviewFragment | string,
     theme: Theme,
-    onPress?: (item: IMember) => void,
+    onPress?: (item: IMemberOverviewFragment) => void,
     margin?: number,
     height?: number,
     ) {
@@ -32,6 +32,6 @@ export function renderDivider(theme: Theme) {
     </View>
 }
 
-export function extractKey(item: IMember | string) {
+export function extractKey(item: IMemberOverviewFragment | string) {
     return typeof (item) === "string" ? item : item.id.toString();
 }

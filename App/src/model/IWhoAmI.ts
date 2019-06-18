@@ -13,8 +13,7 @@ export interface IWhoAmI {
         association: string,
     },
 
-    rtemail: string;
-    pic: string;
+    pic?: string;
 
     firstname: string;
     lastname: string;

@@ -1,12 +1,4 @@
-import { IWhoAmI } from '../../model/IWhoAmI';
 import { createAction } from './action';
-
-/**
- * Replace user state
- */
-export const replaceUser = createAction<'@@user/replace', IWhoAmI>(
-  '@@user/replace'
-);
 
 /**
  * Authentication state signIn

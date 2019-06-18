@@ -2,7 +2,7 @@ import React from "react";
 import { View } from 'react-native';
 import { Chip, Text, Theme, withTheme } from "react-native-paper";
 import { connect } from 'react-redux';
-import { IRole } from "../../model/IMember";
+import { IRole } from "../../model/IRole";
 import { showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
 

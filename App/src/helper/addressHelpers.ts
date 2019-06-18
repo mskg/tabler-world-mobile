@@ -1,6 +1,8 @@
 import { Platform } from 'react-native';
 import { I18N } from '../i18n/translation';
-import { IAddress, ICompany, IEducation } from '../model/IMember';
+import { IAddress } from "../model/IAddress";
+import { ICompany } from "../model/ICompany";
+import { IEducation } from "../model/IEducation";
 import { OpenLink } from './OpenLink';
 
 export function formatAddress(address: IAddress | undefined) {

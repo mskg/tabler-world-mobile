@@ -4,16 +4,12 @@ import { INITIAL_STATE } from '../initialState';
 export function userReducer(
   state = INITIAL_STATE.auth,
   action:
-    | typeof actions.replaceUser.shape
     | typeof actions.singedIn.shape
     | typeof actions.confirmSignIn.shape
     | typeof actions.signin.shape
 
 ): typeof INITIAL_STATE.auth {
   switch (action.type) {
-    case actions.replaceUser.type:
-      return { ...state, user: action.payload };
-
     case actions.signin.type:
       return { ...state, state: "signin" };
 
