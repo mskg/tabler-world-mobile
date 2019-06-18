@@ -5,7 +5,7 @@ import { Notifications } from 'expo';
 import * as SecureStore from 'expo-secure-store';
 import { AsyncStorage } from 'react-native';
 import { put } from 'redux-saga/effects';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient, getPersistor } from '../../apollo/bootstrapApollo';
 import * as actions from '../../redux/actions/user';
 import { getReduxPersistor } from '../../redux/getRedux';
 import { FILESTORAGE_KEY } from '../../redux/persistor/Constants';
@@ -27,8 +27,9 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
   yield getReduxPersistor().purge();
   yield getReduxPersistor().flush();
 
-  const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
+  const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
   yield client.cache.reset();
+  getPersistor().purge();
 
   yield Notifications.cancelAllScheduledNotificationsAsync();
 }

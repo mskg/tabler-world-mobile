@@ -1,14 +1,12 @@
 import Analytics from '@aws-amplify/analytics';
-import * as Localization from 'expo-localization';
 import Constants from 'expo-constants';
+import * as Localization from 'expo-localization';
 import React, { PureComponent } from "react";
 import { Platform } from 'react-native';
 import { connect } from "react-redux";
-import ExpoSentry from "sentry-expo";
 import Reloader from '../components/Reloader';
 import { Categories, Logger } from "../helper/Logger";
 import { IAppState } from "../model/IAppState";
-import { IWhoAmI } from "../model/IWhoAmI";
 import { INITIAL_STATE } from "../redux/initialState";
 import ConfirmSignIn from "./ConfirmSignIn";
 import SignIn from "./SignIn";
@@ -16,7 +14,7 @@ import SignIn from "./SignIn";
 type Props = {
   authState: typeof INITIAL_STATE.auth.state;
   app: React.ReactElement;
-  user?: IWhoAmI;
+  // user?: IWhoAmI;
   optOutAnalytics: boolean,
 };
 
@@ -25,7 +23,7 @@ type State = {};
 const logger = new Logger(Categories.UIComponents.Authenticator);
 class AuthenticatorBase extends PureComponent<Props, State> {
   componentDidMount() {
-    if (this.props.authState === "singedIn" && this.props.user) {
+    if (this.props.authState === "singedIn") {
       this.configureContext(this.props);
     }
   }
@@ -33,10 +31,10 @@ class AuthenticatorBase extends PureComponent<Props, State> {
   configureContext(nextProps) {
     logger.debug("setting usercontext");
 
-    ExpoSentry.setUserContext({
-      id: nextProps.user.id.toString(),
-      username: nextProps.user.email
-    });
+    // ExpoSentry.setUserContext({
+    //   id: nextProps.user.id.toString(),
+    //   username: nextProps.user.email
+    // });
 
     if (nextProps.optOutAnalytics) {
       Analytics.disable();
@@ -45,7 +43,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
       Analytics.updateEndpoint({
         address: Constants.installationId,
-        userId: nextProps.user.id.toString(),
+        // userId: nextProps.user.id.toString(),
 
         attributes: {
           channel: Constants.manifest.releaseChannel,
@@ -100,6 +98,5 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
 export const Authenticator = connect((state: IAppState) => ({
   authState: state.auth.state,
-  user: state.auth.user,
   optOutAnalytics: state.settings.optOutAnalytics,
 }))(AuthenticatorBase);

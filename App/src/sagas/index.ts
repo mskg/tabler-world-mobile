@@ -4,7 +4,6 @@ import { Categories, Logger } from '../helper/Logger';
 import { getReduxPersistor } from '../redux/getRedux';
 import { pushTokenSaga } from './pushTokenSaga';
 import { settingsSaga } from './settingsSaga';
-import { snacksSaga } from './snacksSaga';
 import { appStateSaga } from './state';
 import { userSaga } from './userSaga';
 
@@ -43,7 +42,6 @@ export function* rootSaga() {
     userSaga,
     pushTokenSaga,
     settingsSaga,
-    snacksSaga,
     appStateSaga,
   ];
 

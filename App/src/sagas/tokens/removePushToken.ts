@@ -2,7 +2,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import { AsyncStorage } from 'react-native';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { TOKEN_KEY } from '../../tasks/Const';
 import { logger } from './logger';
 
@@ -16,7 +16,7 @@ export function* removePushToken() {
     logger.debug("removeToken", token);
 
     try {
-        const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
+        const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
         yield client.mutate({
             mutation: gql`
 mutation removeToken($token: String!) {

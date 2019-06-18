@@ -4,25 +4,12 @@ import { IAppState } from '../model/IAppState';
 export const INITIAL_STATE: IAppState = {
   updateAvailable: false,
 
-  // offline: {
-  //   busy: false,
-  //   lastTransaction: -1,
-  //   online: true,
-  //   outbox: [],
-  //   retryCount: 0,
-  //   retryScheduled: false
-  // },
-
   snacks: [],
 
   auth: {
     state: "signin",
     username: undefined,
     signinState: undefined,
-    //@ts-ignore
-    user: {
-      id: 0,
-    },
   },
 
   searchHistory: {

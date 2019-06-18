@@ -1,12 +1,12 @@
 import React from "react";
 import { Theme } from "react-native-paper";
-import { IMember } from "../../model/IMember";
+import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
 
 export type MemberItemBaseProps = {
   theme: Theme;
-  member: IMember;
+  member: IMemberOverviewFragment;
 
-  onPress: (member: IMember) => void;
+  onPress: (member: IMemberOverviewFragment) => void;
 
   right?: (props: {
     size: number;

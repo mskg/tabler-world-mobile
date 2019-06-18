@@ -1,4 +1,3 @@
-import { IMember } from '../../model/IMember';
 import { createAction } from './action';
 
 // export const addDistrict = createAction<'@@filter/tabler/add', string>(
@@ -33,7 +32,7 @@ export const toggleFavorites = createAction<'@@filter/tabler/favorites/toggle'>(
 /**
  * Enable/disable a favorite
  */
-export const toggleFavorite = createAction<'@@filter/tabler/favorite/toggle', IMember>(
+export const toggleFavorite = createAction<'@@filter/tabler/favorite/toggle', {id: number}>(
   '@@filter/tabler/favorite/toggle'
 );
 

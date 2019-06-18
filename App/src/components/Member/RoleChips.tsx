@@ -1,7 +1,7 @@
 import color from "color";
 import React from "react";
 import { Theme } from "react-native-paper";
-import { IRole } from "../../model/IMember";
+import { IRole } from "../../model/IRole";
 import { RoleChip } from './RoleChip';
 
 type Props = {

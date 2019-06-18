@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { IAssociationRole } from '../model/IAssociation';
-import { RoleOrderByMapping } from '../model/IMember';
+import { IAssociationRole } from '../model/IAssociationRole';
+import { RoleOrderByMapping } from '../model/IRole';
 import { Categories, Logger } from './Logger';
 
 const logger = new Logger(Categories.Screens.Structure);

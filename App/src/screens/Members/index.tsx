@@ -14,13 +14,15 @@ import { MemberSectionList } from '../../components/MemberSectionList';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
-import { MemberDataSource } from '../../helper/MemberDataSource';
-import { Predicates } from '../../helper/Predicates';
 import { I18N } from '../../i18n/translation';
 import { IAppState } from '../../model/IAppState';
+import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
+import { IWhoAmI } from '../../model/IWhoAmI';
 import { HashMap } from '../../model/Maps';
 import { showFilter, showSearch } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
+import { MemberDataSource } from './MemberDataSource';
+import { Predicates } from './Predicates';
 import { GetMembersQuery, GetMembersQueryType } from './Queries';
 
 const logger = new Logger(Categories.Screens.Contacts);
@@ -29,6 +31,7 @@ type State = {
     letter: string | undefined,
     forceUpdate: boolean,
     dataSource: MemberDataSource,
+    me?: IWhoAmI,
 };
 
 type OwnProps = {
@@ -65,18 +68,7 @@ export class MembersScreenBase extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        logger.debug("constructor",
-            "fav?", props.showFavorites,
-            "own?", props.showOwntable,
-            "areas", props.areas);
-
-        const dataSource = new MemberDataSource(props.data.MembersOverview,
-            Predicates.or(
-                props.showFavorites ? Predicates.favorite(this.props.favorites) : null,
-                props.showOwntable && props.data.Me != null ? Predicates.sametable(props.data.Me.club.club) : null,
-                props.areas != null ? Predicates.area(props.areas) : Predicates.all,
-            ));
-
+        const dataSource = new MemberDataSource([]);
         dataSource.sortBy = this.props.sortBy;
         dataSource.groupBy = this.props.sortBy;
 
@@ -86,6 +78,11 @@ export class MembersScreenBase extends React.Component<Props, State> {
             letter: _.first(dataSource.sections),
         };
 
+        this.state = {
+            ...this.state,
+            ...this.calculateNewState(props),
+        }
+
         this.audit = Audit.screen("Members");
     }
 
@@ -94,11 +91,6 @@ export class MembersScreenBase extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        logger.debug("componentWillReceiveProps",
-            "fav?", nextProps.showFavorites,
-            "own?", nextProps.showOwntable,
-            "areas", nextProps.areas);
-
         // const forceUpdate = false
         //     || this.props.data.Me != nextProps.data.Me
         //     || this.props.showFavorites != nextProps.showFavorites
@@ -109,31 +101,41 @@ export class MembersScreenBase extends React.Component<Props, State> {
         //     || this.props.theme != nextProps.theme;
 
         const forceUpdate = true;
+        this.setState({
+            ...this.calculateNewState(nextProps),
+            forceUpdate: !this.state.forceUpdate,
+        });
+    }
+
+    calculateNewState(nextProps: Props) {
+        logger.debug("componentWillReceiveProps",
+            "fav?", nextProps.showFavorites,
+            "own?", nextProps.showOwntable,
+            "areas", nextProps.areas);
+
+        const data = nextProps.data != null && nextProps.data.MembersOverview != null ? nextProps.data.MembersOverview : [];
+        const me = nextProps.data != null && nextProps.data.Me != null ? nextProps.data.Me : undefined;
+        logger.debug(me);
 
         this.state.dataSource.filter = Predicates.or(
             nextProps.showFavorites ? Predicates.favorite(this.props.favorites) : null,
-            nextProps.showOwntable && nextProps.data != null && nextProps.data.Me != null
-                ? Predicates.sametable(nextProps.data.Me.club.club) : null,
+            nextProps.showOwntable && me != null && me.club != null ? Predicates.sametable(me.club.club) : null,
             nextProps.areas != null ? Predicates.area(nextProps.areas) : Predicates.all,
         );
 
         this.state.dataSource.sortBy = nextProps.sortBy;
         this.state.dataSource.groupBy = nextProps.sortBy;
 
-        this.state.dataSource.update(nextProps.data ? nextProps.data.MembersOverview : []);
+        this.state.dataSource.update(data as IMemberOverviewFragment[]);
 
         const res = this.state.dataSource.data.filter(s => s.title == this.state.letter);
-        this.setState({
+
+        return {
             letter: res != null && res.length !== 0
                 ? this.state.letter
                 : _.first(this.state.dataSource.sections),
-        });
-
-        if (forceUpdate) {
-            this.setState({
-                forceUpdate: !this.state.forceUpdate
-            });
-        }
+            me,
+        };
     }
 
     _jumptoLetterDirect = (letter: string | undefined): void => {
@@ -171,6 +173,7 @@ export class MembersScreenBase extends React.Component<Props, State> {
                         setRef={ref => this._sectionList = ref}
                         extraData={this.state.forceUpdate}
                         showMe={true}
+                        me={this.state.me}
                         refreshing={this.props.loading}
                         data={this.state.dataSource.data}
                         onRefresh={this.props.refresh}
@@ -212,10 +215,23 @@ const ConnectedMembersScreen = connect(
     })(withNavigation(withTheme(MembersScreenBase)));
 
 
-const WithQuery = ({fetchPolicy}) => (
+const WithQuery = ({ fetchPolicy }) => (
     <Query<GetMembersQueryType> query={GetMembersQuery} fetchPolicy={fetchPolicy}>
-        {({ loading, data, /*error, data, */refetch }) => {
-            return <ConnectedMembersScreen loading={loading} data={data} refresh={refetch} />
+        {({ loading, data, error, refetch }) => {
+            logger.debug("render");
+            let isLoading = loading;
+
+            if (error) throw error;
+            if (!loading && (data == null || data.MembersOverview == null)) {
+                setTimeout(() => {
+                    logger.debug("********** Refetching");
+                    refetch();
+                });
+
+                isLoading = true;
+            }
+
+            return <ConnectedMembersScreen loading={isLoading} data={data} refresh={refetch} />
         }}
     </Query>
 );

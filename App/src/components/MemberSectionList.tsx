@@ -2,18 +2,18 @@ import React from 'react';
 import { Dimensions, Platform, RefreshControl, StyleSheet } from "react-native";
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from "react-navigation";
-import { connect, MapStateToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { DataProvider, LayoutProvider, RecyclerListView } from 'recyclerlistview';
 import StickyContainer from 'recyclerlistview/dist/reactnative/core/StickyContainer';
 import { Logger } from '../helper/Logger';
-import { SectionData } from '../helper/MemberDataSource';
 import { I18N } from '../i18n/translation';
-import { IAppState } from '../model/IAppState';
-import { IMember } from '../model/IMember';
+import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
+import { SectionData } from '../screens/Members/MemberDataSource';
 import { SECTION_HEIGHT } from './List/Section';
 import { renderItem } from './ListRenderer';
+import { FullScreenLoading } from './Loading';
 import { MeListItem, ME_ITEM_HEIGHT } from './MeListItem';
 import { CHIP_HEIGHT, ITEM_HEIGHT, ITEM_HEIGHT_TAGS } from './Member/Dimensions';
 import { EmptyComponent } from './NoResults';
@@ -25,27 +25,23 @@ type State = {
 
 type OwnProps = {
     theme: Theme,
-    showMe: boolean,
+    me?: IWhoAmI,
     data: SectionData,
 
     extraData?: any,
     refreshing: boolean,
 
     onRefresh?: () => void,
-    onItemSelected?: (member: IMember) => void,
+    onItemSelected?: (member: IMemberOverviewFragment) => void,
 
     setRef?: (ref) => void;
-};
-
-type StateProps = {
-    me: IWhoAmI | undefined,
 };
 
 type DispatchPros = {
     showProfile: typeof showProfile,
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+type Props = OwnProps & DispatchPros & NavigationInjectedProps;
 const ME_ITEM = "###ME###";
 
 enum ItemType {
@@ -80,7 +76,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                     if (data === ME_ITEM) { return ItemType.Me }
                     else { return ItemType.Section; }
                 } else {
-                    const roles = (data != null && (data as IMember).roles) || [];
+                    const roles = (data != null && (data as IMemberOverviewFragment).roles) || [];
                     if (roles.length == 0) return ItemType.Small;
 
                     const length = roles.reduce(
@@ -146,7 +142,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         const newData: any[] = [];
         const sections: number[] = [];
 
-        const canShowMe = props.me != null && props.me.firstname && props.showMe;
+        const canShowMe = props.me != null && props.me.firstname;
         if (canShowMe) {
             newData.push(ME_ITEM);
         }
@@ -207,7 +203,9 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
 
     render() {
-        if (this.props.data.length == 0 && !this.props.showMe) {
+        if (this.props.data.length == 0 && !this.props.me) {
+            if (this.props.refreshing) return <FullScreenLoading />
+
             return (<EmptyComponent title={I18N.Members.noresults} />);
         }
 
@@ -224,6 +222,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                     rowRenderer={this._rowRenderer}
 
                     scrollViewProps={{
+                        refreshing: this.props.refreshing,
                         refreshControl: (
                             <RefreshControl
                                 refreshing={this.props.refreshing}
@@ -237,13 +236,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state: IAppState): StateProps => {
-    return {
-        me: state.auth.user,
-    }
-};
-
 export const MemberSectionList = withNavigation(withTheme(connect(
-    mapStateToProps, {
+    null, {
         showProfile,
     })(MemberSectionListBase)));

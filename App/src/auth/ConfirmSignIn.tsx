@@ -1,18 +1,17 @@
 import Auth from '@aws-amplify/auth';
 import { Linking } from 'expo';
-import gql from 'graphql-tag';
 import React, { PureComponent } from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { Audit } from '../analytics/Audit';
 import { IAuditor } from '../analytics/Types';
-import { bootstrapApollo } from '../apollo/bootstrapApollo';
+import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
 import { restoreFavorites } from '../redux/actions/settings';
-import { replaceUser, signin, singedIn } from '../redux/actions/user';
+import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
 import { styles } from "./Styles";
@@ -20,7 +19,6 @@ import { styles } from "./Styles";
 type Props = {
     theme: Theme,
     authState: any,
-    updateUser: typeof replaceUser;
     singedIn: typeof singedIn;
     signin: typeof signin,
     restoreFavorites: typeof restoreFavorites,
@@ -101,43 +99,10 @@ class ConfirmBase extends PureComponent<Props, State> {
             try {
                 this.audit.trackAction("Confirm");
 
-                const client = await bootstrapApollo();
-                const whoAmI = await client.query({
-                    query: gql`query WhoAmILogin {
-    Me {
-        id
-        lastname
-        firstname
-        pic
-        rtemail
+                const client = cachedAolloClient();
+                await client.cache.reset();
+                await getPersistor().purge();
 
-        area {
-            id
-            area
-        }
-
-        association {
-            association
-        }
-
-        club {
-            id
-            club
-        }
-    }
-}`,
-                    fetchPolicy: "network-only",
-                    errorPolicy: "none",
-                });
-
-                if (whoAmI == null) throw new Error("user is null");
-
-                logger.log(whoAmI.data.Me);
-
-                delete whoAmI.data.Me["__typename"];
-                this.props.updateUser(whoAmI.data.Me);
-
-                // this.props.restoreFavorites();
                 this.props.singedIn();
             }
             catch (e) {
@@ -222,7 +187,6 @@ export default connect(
         authState: state.auth.signinState,
     }),
     {
-        updateUser: replaceUser,
         restoreFavorites,
         singedIn,
         signin

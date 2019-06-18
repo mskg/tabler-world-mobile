@@ -1,10 +1,10 @@
 
 
 import _ from 'lodash';
-import { IMember } from '../model/IMember';
-import { HashMap } from '../model/Maps';
+import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
+import { HashMap } from '../../model/Maps';
 
-export type Predicate = (member: IMember) => boolean;
+export type Predicate = (member: IMemberOverviewFragment) => boolean;
 
 export class Predicates {
     public static readonly all = () => true;
@@ -15,7 +15,7 @@ export class Predicates {
 
         return reduced.length == 0
             ? Predicates.all
-            : (member: IMember) => {
+            : (member: IMemberOverviewFragment) => {
                 return _.find(reduced, o => o(member) == true) != null;
             }
     }
@@ -25,19 +25,19 @@ export class Predicates {
 
         return reduced.length == 0
             ? Predicates.all
-            : (member: IMember) => {
+            : (member: IMemberOverviewFragment) => {
                 return _.find(reduced, o => o(member) == false) == null;
             }
     }
 
     public static favorite(favorites: HashMap<boolean>): Predicate {
-        return (member: IMember) => {
+        return (member: IMemberOverviewFragment) => {
             return favorites[member.id] === true;
         }
     }
 
     public static sametable(club: number): Predicate {
-        return (member: IMember) => {
+        return (member: IMemberOverviewFragment) => {
             return member.club.club == club;
         }
     }
@@ -49,17 +49,17 @@ export class Predicates {
     }
 
     public static role(roles: HashMap<boolean, string> | null): Predicate {
-        return (member: IMember) => {
+        return (member: IMemberOverviewFragment) => {
             return roles == null ||
             (member.roles != null && _.find(member.roles, role => roles[role.name] === true) != null);
         }
     }
 
     public static table(tables: HashMap<boolean, string|number>): Predicate {
-        return (member: IMember) => {
+        return (member: IMemberOverviewFragment) => {
             return tables == null
-            || tables[member.club] === true
-            || tables[member.clubname] === true
+            || tables[member.club.club] === true
+            || tables[member.club.name] === true
         }
     }
 }

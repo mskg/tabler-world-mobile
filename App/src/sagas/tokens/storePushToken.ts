@@ -3,7 +3,7 @@ import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import { AsyncStorage } from 'react-native';
 import { select, take } from 'redux-saga/effects';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { IAppState } from '../../model/IAppState';
 import * as actions from '../../redux/actions/settings';
 import * as userActions from '../../redux/actions/user';
@@ -20,7 +20,7 @@ export function* storePushToken(arg: typeof actions.storePushToken.shape) {
     logger.debug("storeToken", arg.payload);
 
     try {
-        const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
+        const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
         yield client.mutate({
             mutation: gql`
 mutation addToken($token: String!) {

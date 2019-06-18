@@ -1,4 +1,4 @@
-import { IBankAccount } from '../model/IMember';
+import { IBankAccount } from "../model/IBankAccount";
 
 export function formatBank(address: IBankAccount | undefined) {
     if (address == null) {
