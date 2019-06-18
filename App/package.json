@@ -2,19 +2,18 @@
   "name": "@mskg/tabler-world-mobile",
   "version": "0.0.1",
   "private": true,
-  "main": "node_modules/expo/AppEntry.js",
   "author": "Markus Kling",
+  "main": "node_modules/expo/AppEntry.js",
+
   "scripts": {
     "start": "ntl",
     "licenses": "license-checker --production --direct --markdown > ./assets/docs/licenses.md",
     "config:aws": ". ~/.bashrc && aws cloudformation list-exports > ./config/aws.json",
     "config": "npm run config:aws && npm run config:app",
     "config:app": "env-cmd --no-override ../config/.env node config/create.js",
-    "expo": "npm run config && expo start",
-    "publish": "npm run config && env-cmd ../config/.env cross-env-shell \"expo publish --release-channel \\$EXPO_RELEASE_CHANNEL\"",
-    "upload:ios": "npm run config && env-cmd ../config/.env cross-env-shell \"expo upload:ios --sku \\$APP_IOS_BUNDLE --language English\"",
-    "upload:android": "npm run config && env-cmd ../config/.env cross-env-shell \"expo upload:android\""
+    "expo": "npm run config && expo start"
   },
+
   "dependencies": {
     "@aws-amplify/analytics": "^1.2.16",
     "@aws-amplify/auth": "^1.2.24",

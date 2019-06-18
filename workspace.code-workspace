@@ -11,7 +11,9 @@
 		},
 		{
 			"path": "config"
-		}
-	],
+		},
+		{
+			"path": "README.MD"
+}	],
 	"settings": {}
 }
