@@ -1,7 +1,9 @@
 {
   "name": "@mskg/tabler-world-authentication",
+  "author": "Markus Kling",
   "version": "0.0.1",
   "private": true,
+
   "dependencies": {
     "aws-sdk": "^2.382.0",
     "crypto-secure-random-digit": "^1.0.7",
@@ -37,6 +39,5 @@
     "pack": "env-cmd --no-override ../config/.env cross-env-shell \"serverless package --verbose\"",
     "remove": "env-cmd --no-override ../config/.env cross-env-shell \"serverless remove --verbose\"",
     "start": "ntl"
-  },
-  "author": "Markus Kling"
+  }
 }

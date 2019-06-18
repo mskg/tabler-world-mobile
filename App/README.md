@@ -1,11 +1,17 @@
+# App
 
 ## DEV Environment
 
-1. Configure aws default credentials for deployment
-1. ```npm start config```
-    - Creates ```config/aws.json```
-    - Creates ```app.json```
-1. ```expo start```
+1. Configure aws default credentials
+1. `npm install -g expo-cli` (once, should be kept same version)
+1. `npm start config` (fetches configuration information from Amazon)
+    - Creates `config/aws.json`
+    - Creates `app.json`
+1. `expo start`
+    - `i` (to launch iOS simulator and install appp)
+    - `a` (to launch Android simulator and install app)
+
+If you want to use the locaal
 
 ## Android Emulator
 
@@ -45,11 +51,6 @@ for f in ~/.android/avd/*.avd/config.ini; do echo 'hw.keyboard=yes' >> "$f"; don
 
 7. Run the image
 
-```
+```bash
 emulator -avd expo
 ```
-
-8. Tap `a` in expo to install the app
-
-
-

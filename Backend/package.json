@@ -1,5 +1,6 @@
 {
   "name": "@mskg/tabler-world-backend",
+  "author": "Markus Kling",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -55,6 +56,5 @@
     "dev": "env-cmd --no-override ../config/.env cross-env-shell \"serverless offline start --verbose --noTimeout\"",
     "dynamodb": "env-cmd --no-override ../config/.env cross-env-shell \"serverless dynamodb start\"",
     "start": "ntl"
-  },
-  "author": "Markus Kling"
+  }
 }
