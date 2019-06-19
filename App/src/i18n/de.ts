@@ -75,7 +75,7 @@ const de: I18NType = {
         place: (n1, n2) => n1 > 1 ? `Treffpunkt ${n2}` : "Treffpunkt",
 
         meetings: "Monatliche Treffen am",
-        expand: "Alle anzeigene"
+        expand: "Alle anzeigen"
     },
 
     World: {

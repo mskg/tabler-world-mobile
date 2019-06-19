@@ -16,9 +16,11 @@
     "graphql-playground-middleware-lambda": "^1.7.13",
     "graphql-tools": "^4.0.4",
     "lodash": "^4.17.11",
+    "node-gzip": "^1.1.2",
     "pg": "^7.8.1",
     "pg-pool": "^2.0.6",
-    "serverless-offline-direct-lambda": "0.0.1"
+    "serverless-offline-direct-lambda": "0.0.1",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.26",

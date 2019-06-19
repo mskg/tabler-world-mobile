@@ -13,6 +13,7 @@
 ## Operations
 - Reworked deployment
 - Enlarged memory size of GraphQL functions to 256MB
+- Server side caching
 
 # v0.8
 Beta build, for internal testing only

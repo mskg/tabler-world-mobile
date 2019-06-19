@@ -42,11 +42,11 @@ export const MemberSyncResolver = {
     Query: {
         Members: async (_root: any, args: MembersArgs, context: IApolloContext) => {
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     let { cursor, limit: strLimit, state: ts } = args;
 
-                    const filterContext = await context.filterContext(client);
+                    const filterContext = await context.filterContext();
                     context.logger.log("diffMembers", "ts", ts, "cursor", cursor, "limit", strLimit);
 
                     // the ts that we have been given

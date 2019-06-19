@@ -1,9 +1,12 @@
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
-import { Client } from "pg";
 import { resolveUser } from "./auth/resolveUser";
+import { cacheInstance } from "./cache/instance";
+import { TTLs } from "./cache/TTLs";
+import { writeThrough } from "./cache/writeThrough";
 import { Logger } from "./logging/Logger";
 import { FilterContext } from "./privacy/FilterContext";
 import { getFilterContext } from "./rds/filterContext";
+import { useDatabase } from "./rds/useDatabase";
 import { IApolloContext } from "./types/IApolloContext";
 import { IPrincipal } from "./types/IPrincipal";
 
@@ -17,20 +20,31 @@ export const constructContext = ({ event, context }: Params): IApolloContext => 
 
     const cache: { [key: string]: any } = {};
     const principal: IPrincipal = { email: resolvedEmail };
+    const requestCache = {};
 
     return ({
         lambdaEvent: event,
         lambdaContext: context,
 
+        cache: cacheInstance,
         logger,
-        cache: {},
+        requestCache,
         principal,
 
-        filterContext: async (client: Client) => {
+        filterContext: async () => {
             let ctx: FilterContext | undefined = cache["filterContext"];
 
             if (ctx == null) {
-                ctx = await getFilterContext(client, principal);
+                ctx = await writeThrough(
+                    {
+                        cache: cacheInstance,
+                        logger
+                    },
+                    `Principal_${principal.email}`,
+                    () => useDatabase({logger, requestCache}, (client) => getFilterContext(client, principal)),
+                    TTLs.FilterContext, // 1 hour
+                );
+
                 cache["filterContext"] = ctx;
             }
 

@@ -12,7 +12,7 @@ import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/E
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
-import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
+import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { addTablerLRU } from '../../redux/actions/history';
@@ -142,7 +142,7 @@ class MemberQueryWithPreview extends PureComponent<{
                     id: this.props.id
                 }}
             >
-                {({ client, loading, data, error }) => {
+                {({ client, loading, data, error, refetch }) => {
                     let preview = null;
 
                     if ((loading || error) && (data == null || data.Member == null)) {
@@ -167,6 +167,12 @@ class MemberQueryWithPreview extends PureComponent<{
                             }));
                     }
 
+                    if (data && data.Member != null) {
+                        if (!isRecordValid("member", data.Member.LastSync)) {
+                            setTimeout(() => refetch());
+                        }
+                    }
+
                     return React.cloneElement(
                         this.props.children, {
                             loading: loading,
@@ -180,9 +186,9 @@ class MemberQueryWithPreview extends PureComponent<{
 }
 
 const MemberQueryWithPreviewAndInvalidation = withGoHomeErrorBoundary(
-    withCacheInvalidation("members", connect(
+    connect(
         null, { addSnack }
-    )(MemberQueryWithPreview))
+    )(MemberQueryWithPreview)
 );
 
 export const MemberScreen = withNavigation(MemberScreenBase);

@@ -17,7 +17,7 @@ export const SettingsResolver = {
     Query: {
         Setting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     const result = await client.query(`
 SELECT jsonb_extract_path(settings, $2) as value
@@ -31,7 +31,7 @@ WHERE username = $1`,
 
         Settings: async (_root: any, _args: any, context: IApolloContext) => {
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     const result = await client.query(`
 SELECT settings as value
@@ -56,7 +56,7 @@ WHERE username = $1`,
     Mutation: {
         removeSetting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     await client.query(`
 UPDATE appsettings
@@ -73,7 +73,7 @@ WHERE username = $1
             if (args == null) return;
 
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
 
                     await client.query(`

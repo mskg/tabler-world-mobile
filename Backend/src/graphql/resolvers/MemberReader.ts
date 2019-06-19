@@ -1,14 +1,46 @@
 import DataLoader from "dataloader";
 import _ from "lodash";
+import { TTLs } from "../cache/TTLs";
+import { writeThrough } from "../cache/writeThrough";
 import { filter } from "../privacy/filter";
 import { useDatabase } from "../rds/useDatabase";
 import { IApolloContext } from "../types/IApolloContext";
 
+// const gzipPromise = (input: any) => {
+//     const promise = new Promise(function (resolve, reject) {
+//         gzip(input, { level: 9 }, function (error, result) {
+//             if (!error) resolve(result);
+//             else reject(error);
+//         });
+//     });
+
+//     return promise;
+// };
+
+// const ungzipPromise = (input: any) => {
+//     const promise = new Promise(function (resolve, reject) {
+//         unzip(input, function (error, result) {
+//             if (!error) resolve(result);
+//             else reject(error);
+//         });
+//     });
+
+//     return promise;
+// };
+
 export class MemberReader {
     memberLoader: DataLoader<number, any>;
+    rawLoader: DataLoader<number, any>;
 
     constructor(private context: IApolloContext, private columns: string = "*") {
         this.memberLoader = new DataLoader(
+            (ids) => this.readCached(ids),
+            {
+                cacheKeyFn: (k: any) => parseInt(k, 10)
+            }
+        );
+
+        this.rawLoader = new DataLoader(
             (ids) => this.rawReadMany(ids),
             {
                 cacheKeyFn: (k: any) => parseInt(k, 10)
@@ -19,38 +51,68 @@ export class MemberReader {
     public async readAll(): Promise<any[] | null> {
         this.context.logger.log("readAll");
 
-        return useDatabase(
-            this.context.logger,
+
+        return await useDatabase(
+            this.context,
             async (client) => {
-                const filterContext = await this.context.filterContext(client);
+                this.context.logger.log("executing readAll");
 
                 const res = await client.query(`
 select ${this.columns}
 from profiles
 where
-    removed = FALSE`, []);
+removed = FALSE`, []);
 
-                if (res.rows.length == 0) {
-                    return null
-                }
-
-                return res.rows.map(
-                    r => filter(filterContext, r)
-                );
+                return res.rows;
             }
         );
+
+        //     try {
+        //         // try {
+        //         const zipped = await writeThrough(
+        //             this.context,
+        //             "MembersOverview",
+        //             async () =>
+        //                 await gzipPromise(
+        //                     JSON.stringify(
+        //                         await useDatabase(
+        //                             this.context,
+        //                             async (client) => {
+        //                                 this.context.logger.log("executing readAll");
+
+        //                                 const res = await client.query(`
+        // select ${this.columns}
+        // from profiles
+        // where
+        //     removed = FALSE`, []);
+
+        //                                 return res.rows;
+        //                             }
+        //                         ))),
+        //             TTLs.MemberOverview);
+
+        //         return await JSON.parse(
+        //             await ungzipPromise(zipped) as string);
+        //     } catch (e) {
+        //         this.context.logger.error(e);
+
+        //         this.context.cache.delete("MembersOverview");
+        //         // return this.readAll();
+        //         return [];
+        //     }
     }
 
     public async readClub(association: string, club: number): Promise<any[] | null> {
         this.context.logger.log("readClub", association, club);
 
-        return useDatabase(
-            this.context.logger,
-            async (client) => {
-                const filterContext = await this.context.filterContext(client);
-
-                const res = await client.query(`
-select ${this.columns}
+        const ids = await writeThrough(
+            this.context,
+            `Club_Members_${association}_${club}`,
+            () => useDatabase(
+                this.context,
+                async (client) => {
+                    const res = await client.query(`
+select id
 from profiles
 where
         association = $1
@@ -65,21 +127,12 @@ where
         and isvalid = TRUE
     )`, [association, club, `${association}_${club}`]);
 
-                if (res.rows.length == 0) {
-                    return null
+                    return res.rows.map(r => r["id"]) as number[];
                 }
-
-                const filtered = res.rows.map(
-                    r => filter(filterContext, r)
-                );
-
-                filtered.forEach(r =>
-                    this.memberLoader.prime(r["id"], r)
-                );
-
-                return filtered;
-            }
+            )
         );
+
+        return this.readMany(ids);
     }
 
     async readMany(ids: number[]): Promise<any[]> {
@@ -92,14 +145,33 @@ where
         return this.memberLoader.load(id);
     }
 
+    readCached(ids: number[]) {
+        return Promise.all(
+            ids.map((id) =>
+                writeThrough(
+                    this.context,
+                    `Member_${id}`,
+                    async () => {
+                        // this optimizes to read all if one is missing
+                        // they normally only come in a pack
+                        await this.rawLoader.loadMany(ids);
+                        return await this.rawLoader.load(id);
+                    },
+                    TTLs.Member,
+                )
+            )
+        ).then(async (members) => {
+            const filterContext = await this.context.filterContext();
+            return members.map(member => filter(filterContext, member));
+        })
+    }
+
     async rawReadMany(ids: number[]): Promise<any[]> {
         this.context.logger.log("rawReadMany", ids);
 
         return useDatabase(
-            this.context.logger,
+            this.context,
             async (client) => {
-                const filterContext = await this.context.filterContext(client);
-
                 const res = await client.query(`
 select ${this.columns}
 from profiles
@@ -107,9 +179,7 @@ where
         id = ANY($1)
     and removed = FALSE`, [ids]);
 
-                // original order must be preserved
                 return _(res.rows)
-                    .map(r => filter(filterContext, r))
                     .sortBy(r => ids.indexOf(r["id"]))
                     .toArray()
                     .value();

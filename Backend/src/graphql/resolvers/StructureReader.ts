@@ -1,5 +1,8 @@
 import _ from "lodash";
+import { TTLs } from "../cache/TTLs";
+import { Mutex } from "../Mutex";
 import { useDatabase } from "../rds/useDatabase";
+import { IApolloContext } from "../types/IApolloContext";
 import { ILogger } from "../types/ILogger";
 
 enum RoleNames {
@@ -57,34 +60,47 @@ function sortRoles(roles?: any[]) {
 }
 
 export class StructureReader {
+    loadMutex = new Mutex();
+    deserializeMutex = new Mutex();
+
     loaded: boolean = false;
     normalized: boolean = false;
 
     data: any;
+
     associations: { [key: string]: any } = {};
     areas: { [key: string]: any } = {};
     clubs: { [key: string]: any } = {};
 
-    constructor (private logger: ILogger) {
+    constructor(private logger: ILogger, private context: IApolloContext) {
     }
 
     async load() {
         if (this.loaded) return;
         this.logger.log("Fetching structure data");
 
-        await useDatabase(
-            this.logger,
-            async (client) => {
-                const res = await client.query("select structure from structure", []);
-                if (res.rowCount !== 1) {
-                    throw new Error("Coud not load structure");
-                }
+        const unlock = await this.loadMutex.lock();
+        try {
+            if (this.loaded) return;
 
-                this.data = res.rows[0]["structure"];
-                this.loaded = true;
-                this.logger.log("Fetching structure data -> done");
-            }
-        )
+            this.data = await useDatabase(
+                this.context,
+                async (client) => {
+                    const res = await client.query("select structure from structure", []);
+                    if (res.rowCount !== 1) {
+                        throw new Error("Coud not load structure");
+                    }
+
+                    return res.rows[0]["structure"];
+                }
+            );
+
+            this.loaded = true;
+            this.logger.log("Fetching structure data -> done");
+        }
+        finally {
+            unlock();
+        }
     }
 
     public async rootData() {
@@ -131,13 +147,8 @@ export class StructureReader {
         return this.clubs[id];
     }
 
-    async normalize() {
-        if (this.normalized) return;
-        await this.load();
-        if (this.normalized) return;
-
+    fillLocalData() {
         this.logger.log("Normalizing");
-        this.normalized = true;
 
         this.data.forEach((subassoc: any) => {
             this.associations[subassoc.association] = {
@@ -193,8 +204,37 @@ export class StructureReader {
                     }
                 });
             });
-
         });
+    }
 
+    async normalize() {
+        if (this.normalized) return;
+
+        const unlock = await this.deserializeMutex.lock();
+        try {
+            if (this.normalized) return;
+
+            const associations = await this.context.cache.get("Structure_Associations");
+            const areas = await this.context.cache.get("Structure_Areas");
+            const clubs = await this.context.cache.get("Structure_Clubs");
+
+            if (areas != null && associations != null && clubs != null) {
+                this.areas = JSON.parse(areas);
+                this.associations = JSON.parse(associations);
+                this.clubs = JSON.parse(clubs);
+            } else {
+                await this.load();
+                this.fillLocalData();
+
+                this.context.cache.set("Structure_Associations", JSON.stringify(this.associations), {ttl: TTLs.Structure});
+                this.context.cache.set("Structure_Areas", JSON.stringify(this.areas), {ttl: TTLs.Structure});
+                this.context.cache.set("Structure_Clubs", JSON.stringify(this.clubs), {ttl: TTLs.Structure});
+            }
+
+            this.normalized = true;
+        }
+        finally {
+            unlock();
+        }
     }
 }
