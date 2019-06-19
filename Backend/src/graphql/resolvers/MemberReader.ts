@@ -67,39 +67,39 @@ removed = FALSE`, []);
             }
         );
 
-    //     try {
-    //         // try {
-    //         const zipped = await writeThrough(
-    //             this.context,
-    //             "MembersOverview",
-    //             async () =>
-    //                 await gzipPromise(
-    //                     JSON.stringify(
-    //                         await useDatabase(
-    //                             this.context,
-    //                             async (client) => {
-    //                                 this.context.logger.log("executing readAll");
+        //     try {
+        //         // try {
+        //         const zipped = await writeThrough(
+        //             this.context,
+        //             "MembersOverview",
+        //             async () =>
+        //                 await gzipPromise(
+        //                     JSON.stringify(
+        //                         await useDatabase(
+        //                             this.context,
+        //                             async (client) => {
+        //                                 this.context.logger.log("executing readAll");
 
-    //                                 const res = await client.query(`
-    // select ${this.columns}
-    // from profiles
-    // where
-    //     removed = FALSE`, []);
+        //                                 const res = await client.query(`
+        // select ${this.columns}
+        // from profiles
+        // where
+        //     removed = FALSE`, []);
 
-    //                                 return res.rows;
-    //                             }
-    //                         ))),
-    //             TTLs.MemberOverview);
+        //                                 return res.rows;
+        //                             }
+        //                         ))),
+        //             TTLs.MemberOverview);
 
-    //         return await JSON.parse(
-    //             await ungzipPromise(zipped) as string);
-    //     } catch (e) {
-    //         this.context.logger.error(e);
+        //         return await JSON.parse(
+        //             await ungzipPromise(zipped) as string);
+        //     } catch (e) {
+        //         this.context.logger.error(e);
 
-    //         this.context.cache.delete("MembersOverview");
-    //         // return this.readAll();
-    //         return [];
-    //     }
+        //         this.context.cache.delete("MembersOverview");
+        //         // return this.readAll();
+        //         return [];
+        //     }
     }
 
     public async readClub(association: string, club: number): Promise<any[] | null> {
@@ -145,21 +145,25 @@ where
         return this.memberLoader.load(id);
     }
 
-    async readCached(ids: number[]) {
-        const filterContext = await this.context.filterContext();
-
+    readCached(ids: number[]) {
         return Promise.all(
-            ids.map(async (id) =>
-                filter(
-                    filterContext,
-                    await writeThrough(
-                        this.context,
-                        `Member_${id}`,
-                        () => this.rawLoader.load(id),
-                        TTLs.Member,
-                    ))
+            ids.map((id) =>
+                writeThrough(
+                    this.context,
+                    `Member_${id}`,
+                    async () => {
+                        // this optimizes to read all if one is missing
+                        // they normally only come in a pack
+                        await this.rawLoader.loadMany(ids);
+                        return await this.rawLoader.load(id);
+                    },
+                    TTLs.Member,
+                )
             )
-        )
+        ).then(async (members) => {
+            const filterContext = await this.context.filterContext();
+            return members.map(member => filter(filterContext, member));
+        })
     }
 
     async rawReadMany(ids: number[]): Promise<any[]> {

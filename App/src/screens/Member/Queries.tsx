@@ -48,56 +48,58 @@ export const GetMemberQuery = gql`
     Member(id: $id) {
         ...MembersOverviewFragment
 
-       birthdate
-       partner
+        LastSync @client
 
-       emails {
-           type
-           value
-       }
+        birthdate
+        partner
 
-       phonenumbers {
-           type
-           value
-       }
+        emails {
+            type
+            value
+        }
 
-       rtemail
+        phonenumbers {
+            type
+            value
+        }
 
-       partner
+        rtemail
 
-       address {
-           postal_code
-           city
-           country
-           street1
-           street2
-       }
+        partner
 
-       companies {
-           name
-           email
-           phone
-           function
-           address {
+        address {
+            postal_code
+            city
+            country
+            street1
+            street2
+        }
+
+        companies {
+            name
+            email
+            phone
+            function
+            address {
                 postal_code
                 city
                 country
                 street1
                 street2
-           }
-       }
+            }
+        }
 
-       educations {
-           school
-           education
-           address {
+        educations {
+            school
+            education
+            address {
                 postal_code
                 city
                 country
                 street1
                 street2
-           }
-       }
+            }
+        }
 
         socialmedia {
             twitter
@@ -146,6 +148,8 @@ export type GetMemberQueryType_Role = {
 ;
 
 export type GetMemberQueryType_Member = {
+    LastSync: number;
+
     title: string;
 
     address?: GetMemberQueryType_Address;

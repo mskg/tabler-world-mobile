@@ -49,6 +49,7 @@ export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObj
     // }),
 
     createPersistedQueryLink({
+      useGETForHashedQueries: true,
     }),
 
     createHttpLink({

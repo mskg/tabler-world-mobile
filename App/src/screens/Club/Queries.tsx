@@ -51,6 +51,8 @@ export const GetClubQuery = gql`
     Club(id: $id) {
         ...ClubOverviewDetails
 
+        LastSync @client
+
         website
         facebook
         instagram
@@ -127,6 +129,8 @@ export type GetClubQueryType_Account = {
 }
 
 export type GetClubQueryType_Club = {
+    LastSync: number;
+
     id: string,
     club: number,
     name: string,
