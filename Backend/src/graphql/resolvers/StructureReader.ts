@@ -226,9 +226,10 @@ export class StructureReader {
                 await this.load();
                 this.fillLocalData();
 
-                this.context.cache.set("Structure_Associations", JSON.stringify(this.associations), {ttl: TTLs.Structure});
-                this.context.cache.set("Structure_Areas", JSON.stringify(this.areas), {ttl: TTLs.Structure});
-                this.context.cache.set("Structure_Clubs", JSON.stringify(this.clubs), {ttl: TTLs.Structure});
+                const ttl = Math.floor(Date.now() / 1000) + TTLs.Structure;
+                this.context.cache.set("Structure_Associations", JSON.stringify(this.associations), { ttl });
+                this.context.cache.set("Structure_Areas", JSON.stringify(this.areas), { ttl });
+                this.context.cache.set("Structure_Clubs", JSON.stringify(this.clubs), { ttl });
             }
 
             this.normalized = true;

@@ -81,10 +81,17 @@ export class DynamoDBCache implements KeyValueCache<string> {
         if (
             reply &&
             reply.Items &&
-            reply.Items[0] &&
-            reply.Items[0].data
+            reply.Items[0]
         ) {
-            return reply.Items[0].data;
+            const item = reply.Items[0];
+
+            // compare ttl
+            if (item.ttl && item.ttl < Math.floor(Date.now() / 1000)) {
+                console.log("[Cache] item", id, "was expired.");
+                return undefined;
+            }
+
+            return item.data;
         }
 
         return;
