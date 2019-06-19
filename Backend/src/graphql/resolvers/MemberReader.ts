@@ -129,7 +129,8 @@ where
 
                     return res.rows.map(r => r["id"]) as number[];
                 }
-            )
+            ),
+            TTLs.Structure,
         );
 
         return this.readMany(ids);
