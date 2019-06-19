@@ -10,8 +10,8 @@ export class TraceRequestExtension extends GraphQLExtension<IApolloContext> {
         if (queryString && queryString.indexOf("IntrospectionQuery") > 0) { return; }
         if (!queryString) { return; }
 
-        context.logger.log(queryString);
-        if (variables) { context.logger.log(variables); }
+        context.logger.log("Query", queryString);
+        if (variables) { context.logger.log("Variables", variables); }
     }
 
     // willSendResponse({ _context }: {

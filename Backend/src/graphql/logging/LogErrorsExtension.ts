@@ -24,8 +24,8 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
             const { context, graphqlResponse } = o;
 
             if (graphqlResponse.errors) {
-                const query = context.cache["queryString"] || print(context.cache["queryString"]);
-                const variables = context.cache["variables"];
+                const query = context.requestCache["queryString"] || print(context.requestCache["queryString"]);
+                const variables = context.requestCache["variables"];
 
                 graphqlResponse.errors.forEach(
                     err => context.logger.error("Query", query, "Variables", variables, "Error", err));

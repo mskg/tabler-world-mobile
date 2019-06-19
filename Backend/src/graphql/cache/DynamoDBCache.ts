@@ -20,6 +20,10 @@ export class DynamoDBCache implements KeyValueCache<string> {
         options?: { ttl?: number },
     ) {
         console.log("[Cache] set", id, options);
+        if (data == null || data.length > (400*1024 - id.length - 50)) {
+            console.log("[Cache] entry too large", data.length, "ignoring");
+            return;
+        }
 
         const params = {
             ...this.tableOptions,
@@ -51,8 +55,9 @@ export class DynamoDBCache implements KeyValueCache<string> {
 
         await this.client.delete({
             TableName: this.tableOptions.tableName,
-            Key: { S: id.toString() },
-        });
+            Key: { id },
+
+        }).promise();
     }
 
     public async get(id: string): Promise<string | undefined> {
@@ -71,15 +76,15 @@ export class DynamoDBCache implements KeyValueCache<string> {
             })
             .promise();
 
+        // console.log(reply);
         // reply is null if key is not found
         if (
             reply &&
             reply.Items &&
             reply.Items[0] &&
-            reply.Items[0].data &&
-            reply.Items[0].data.S
+            reply.Items[0].data
         ) {
-            return reply.Items[0].data.S;
+            return reply.Items[0].data;
         }
 
         return;

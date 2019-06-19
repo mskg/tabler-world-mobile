@@ -9,7 +9,7 @@ export const TokenResolver = {
     Mutation: {
         addToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     // merges the token with all existing tokens
                     // duplicate tokens are removed
@@ -35,7 +35,7 @@ ON CONFLICT (username) DO UPDATE
             if (args == null) return;
 
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     // merges the token with all existing tokens
                     // duplicate tokens are removed

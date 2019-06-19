@@ -95,7 +95,7 @@ export const SearchMemberResolver = {
             // }
 
             return useDatabase(
-                context.logger,
+                context,
                 async (client) => {
                     const res = await client.query(`
 select  ${cols.join(',')}

@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
-import { DynamoDBCache } from './cache/DynamoDBCache';
+import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
@@ -23,25 +23,14 @@ const server = new ApolloServer({
     resolvers,
   }),
 
-  cacheControl: {
-    defaultMaxAge: 60*60*24,
-    stripFormattedExtensions: false,
-    calculateHttpHeaders: false,
-  },
+  // cacheControl: {
+  //   // defaultMaxAge: 60*60*24,
+  //   stripFormattedExtensions: false,
+  //   calculateHttpHeaders: false,
+  // },
 
   persistedQueries: {
-    cache: new DynamoDBCache({
-      region: process.env.AWS_REGION,
-      // endpoint:
-      //   process.env.IS_OFFLINE === 'true'
-      //   ? 'http://localhost:8000'
-      //   : undefined
-    },
-    {
-      tableName: process.env.cache_table || 'typescript',
-      ttl: 0
-    }
-    ),
+    cache: cacheInstance
   },
 
   extensions,

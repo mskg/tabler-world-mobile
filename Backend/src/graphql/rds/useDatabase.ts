@@ -5,17 +5,27 @@ import Pool from "pg-pool";
 import { ILogger } from "../types/ILogger";
 
 let pool: any = null;
+const KEY = "__db";
 
-export async function useDatabase<T>(logger: ILogger, func: (client: Client) => Promise<T>): Promise<T> {
+export async function useDatabase<T>(
+    context: {logger: ILogger, requestCache: {[key: string]: any}},
+    func: (client: Client) => Promise<T>
+): Promise<T> {
+    const cachedCon = context.requestCache[KEY];
+    if (cachedCon) {
+        context.logger.log("Using cached connection");
+        return await func(cachedCon);
+    }
+
     if (pool == null) {
-        logger.log("[POOL]", "Bootstrapping pool");
+        context.logger.log("[POOL]", "Bootstrapping pool");
 
         function PLClient() {
-            logger.log("[POOL]", "Creating new connection");
+            context.logger.log("[POOL]", "Creating new connection");
 
             let password = process.env.db_password;
             if (password == null || password === "") {
-                logger.log("[POOL]", "-> with token");
+                context.logger.log("[POOL]", "-> with token");
 
                 const sign = new RDS.Signer();
                 password = sign.getAuthToken({
@@ -48,8 +58,9 @@ export async function useDatabase<T>(logger: ILogger, func: (client: Client) => 
 
     try {
         con = await pool.connect();
-        con.on("error", (...args: any[]) => logger.error("[SQL]", ...args));
+        context.requestCache[KEY] = con;
 
+        con.on("error", (...args: any[]) => context.logger.error("[SQL]", ...args));
         return await func(con);
     } finally {
         try {
@@ -58,7 +69,7 @@ export async function useDatabase<T>(logger: ILogger, func: (client: Client) => 
             }
         }
         catch (e) {
-            logger.error("[POOL]", "Failed to close connection", e);
+            context.logger.error("[POOL]", "Failed to close connection", e);
         }
     }
 }
