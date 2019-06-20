@@ -42,14 +42,14 @@ class ProfileHeaderBase extends React.Component<Props> {
 
         const imageTranslate = scrollY.interpolate({
             inputRange: [0, distance],
-            outputRange: [IMAGE_SIZE * 4, HEADER_HEIGHT - 10],
+            outputRange: [IMAGE_SIZE * 4 + 20, HEADER_HEIGHT - 10],
             extrapolate: 'clamp',
         });
 
         const paddingTop = scrollY.interpolate({
             inputRange: [0, distance],
             outputRange: [
-                TOTAL_HEADER_HEIGHT - IMAGE_SIZE,
+                TOTAL_HEADER_HEIGHT - IMAGE_SIZE - 20,
                 HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6 - 10
             ],
             extrapolate: 'clamp',
