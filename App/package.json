@@ -9,7 +9,7 @@
     "licenses": "license-checker --production --direct --markdown > ./assets/docs/licenses.md",
     "config:aws": ". ~/.bashrc && aws cloudformation list-exports > ./config/aws.json",
     "config": "npm run config:aws && npm run config:app",
-    "config:app": "env-cmd --no-override ../config/.env node config/create.js",
+    "config:app": "env-cmd --no-override ../config/.env,../config/.env.local node config/create.js",
     "expo": "npm run config && expo start"
   },
   "dependencies": {

@@ -5,7 +5,7 @@ import { logger, Metrics, Params } from './Types';
 export function trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
     if (__DEV__) {
         logger.debug("Show Screen", screen, attributes);
-        return;
+        // return;
     }
 
     Analytics.record({
@@ -24,7 +24,7 @@ export function trackPageView(screen: string, attributes?: Params, metrics?: Met
 export function trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
     if (__DEV__) {
         logger.debug("Track Event", event);
-        return;
+        // return;
     }
 
     Analytics.record({
@@ -43,7 +43,7 @@ export function trackEvent(event: string, attributes?: Params, metrics?: Metrics
 export function trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
     if (__DEV__) {
         logger.debug("Track Action", screen, action, attributes);
-        return;
+        // return;
     }
 
     Analytics.record({
