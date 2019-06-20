@@ -33,7 +33,7 @@ function decode(val: string | undefined, def: number, min?: number, max?: number
 }
 
 function encode(val: any) {
-    const buff = new Buffer(PREFIX + val.toString());
+    const buff = Buffer.from(PREFIX + val.toString());
     return buff.toString('base64');
 }
 

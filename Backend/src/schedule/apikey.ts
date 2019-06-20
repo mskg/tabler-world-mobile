@@ -15,7 +15,7 @@ export function getKey(): Promise<string> {
 
         return new Promise<string>((resolve, reject) => {
             const kms = new KMS();
-            kms.decrypt({ CiphertextBlob: new Buffer(encrypted, 'base64') }, (kmsErr, kmsData) => {
+            kms.decrypt({ CiphertextBlob: Buffer.from(encrypted, 'base64') }, (kmsErr, kmsData) => {
                 if (kmsErr) {
                     console.log('Decrypt error:', kmsErr);
                     reject(kmsErr);

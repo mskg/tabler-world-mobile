@@ -2,6 +2,7 @@ import { Context } from "aws-lambda";
 import { readFileSync } from "fs";
 import { withClient } from "../helper/withClient";
 import { withTransaction } from "../helper/withTransaction";
+import { writeJobLog } from "../helper/writeJobLog";
 
 const fileNames = [
     require("./00 setup.pgsql"),
@@ -13,6 +14,7 @@ const fileNames = [
     require("./05 structure.pgsql"),
     require("./06 notifications_birthdays.pgsql"),
     require("./07 search.pgsql"),
+    require("./08 jobs.pgsql"),
 ];
 
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
@@ -33,11 +35,21 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                 console.log("done.");
             }
 
+            await writeJobLog(client, "update::database");
             console.log("finished");
         });
 
         return true;
     } catch (e) {
+        try {
+            await withClient(context, async (client) => {
+                await writeJobLog(client, "update::database", false, {
+                    error: e
+                });
+            })
+        }
+        catch { }
+
         console.error(e);
         throw e;
     }
