@@ -1,12 +1,12 @@
 import React from 'react';
 import { Animated, View } from "react-native";
 import { Headline, Subheading, Surface, Theme, withTheme } from 'react-native-paper';
-import { Header } from '../../components/Header';
 import { Circle } from '../../components/Placeholder/Circle';
 import { Line } from '../../components/Placeholder/Line';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Categories, Logger } from '../../helper/Logger';
 import { HeaderStyles, HEADER_HEIGHT, HEADER_MARGIN_TOP, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
+import { Header } from '../Header';
 import { IMAGE_SIZE, MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from './Dimensions';
 import { styles } from './Styles';
 
@@ -50,7 +50,7 @@ class ProfileHeaderBase extends React.Component<Props> {
             inputRange: [0, distance],
             outputRange: [
                 TOTAL_HEADER_HEIGHT - IMAGE_SIZE,
-                HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6
+                HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6 - 10
             ],
             extrapolate: 'clamp',
         });
@@ -180,15 +180,20 @@ class ProfileHeaderBase extends React.Component<Props> {
                     </View>
                 </AnimatedSurface>
 
-                {Fab && React.cloneElement(Fab, { top: fabTop })}
-
+                {/*
+                    We need to hide the right size of the menu, otherwise the
+                    click events for the picture will not occur
+                */}
                 <Header
-                    style={HeaderStyles.topBar}
+                    style={[HeaderStyles.topBar, { right: undefined }]}
                     showAppBar={true}
                     showLine={false}
                     backgroundColor="transparent"
                     showBack={true}
-                    title="" />
+                    title=""
+                />
+
+                {Fab && React.cloneElement(Fab, { top: fabTop })}
             </React.Fragment>
         );
     }

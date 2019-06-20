@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     },
 
     title: {
-        paddingTop: 16,
+        paddingTop: 16-10,
         marginVertical: 0,
     },
 

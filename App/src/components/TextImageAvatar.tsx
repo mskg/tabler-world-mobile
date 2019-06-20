@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from 'react-native';
 import { Avatar, Surface, Theme, withTheme } from "react-native-paper";
 import { CachedImage } from "./Image/CachedImage";
 
@@ -49,12 +48,12 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
           theme={this.props.theme}
           resizeMode="cover"
 
-          style={[styles.imageStyles, {
+          style={{
             width: size,
             height: size,
             borderRadius: size / 2,
             ...(style || {})
-          }]}
+          }}
         />
       </Surface>
     );
@@ -62,13 +61,3 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
 }
 
 export const TextImageAvatar = withTheme(TextImageAvatarBase);
-
-
-const styles = StyleSheet.create({
-  imageStyles: {
-    // position: "absolute",
-    // top: 0, bottom: 0,
-    // left: 0, right: 0,
-    // overflow: 'hidden',
-  }
-});

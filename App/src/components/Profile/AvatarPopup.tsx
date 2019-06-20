@@ -1,32 +1,42 @@
 import React from 'react';
-import { View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { showPictureSceen } from "../../redux/actions/navigation";
 
 type AvatarPopupProps = {
     title: string,
+    size: number,
     pic?: string,
     showPictureSceen: typeof showPictureSceen,
+    children: any,
 };
 
 class AvatarPopupBase extends React.Component<AvatarPopupProps> {
     //@ts-ignore
-    _showScreen = () => this.props.showPictureSceen(this.props.pic, this.props.title);
+    _showScreen = () => {
+        // debugger
+        requestAnimationFrame(() =>
+            this.props.showPictureSceen(this.props.pic, this.props.title)
+        );
+    }
 
     render() {
+        const { title, pic, showPictureSceen, children, size, ...other } = this.props;
+
         return (
+            // <Portal>
             <TouchableWithoutFeedback
-                disabled={this.props.pic == null || this.props.pic === ""}
-                onPress={this._showScreen}
+                onPress={pic == null || pic === "" ? undefined : this._showScreen}
+                style={{margin: 10}}
             >
-                {/* Needs a view as child to trigger touch event */}
-                <View>
-                    {
-                        React.cloneElement(this.props.children, { ...this.props })
-                    }
-                </View>
+                {
+                    React.cloneElement(children, {
+                        size,
+                        ...other
+                    })
+                }
             </TouchableWithoutFeedback>
+            // </Portal >
         );
     }
 }
