@@ -41,6 +41,4 @@ mutation PutSetting($input: SettingInput!) {
             }
         },
     });
-
-    // yield put(saveFavorites(Object.keys(favorites).map(e => parseInt(e, 10))));
 }

@@ -11,6 +11,7 @@
 - Removed WhoAmI state, resolves #11
 - Reworked loading animation for members in clubs screen
 - Pictures on member/club page can now be "zoomed"
+- Favorites are restored from cloud after relogin, reinstallation, resolves #10
 
 ## Operations
 - Reworked deployment

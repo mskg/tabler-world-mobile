@@ -4,6 +4,7 @@ export enum AuditEventName {
     MakeCall = "Make Call",
     SendEMail = "Send EMail",
 
+    RestoreSettings = "Restore Settings",
     SaveFavorites = "Save Favorites",
     BackgroundSync = "Background Sync",
 }

@@ -10,7 +10,7 @@ import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
-import { restoreFavorites } from '../redux/actions/settings';
+import { restoreSettings } from '../redux/actions/settings';
 import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
@@ -21,7 +21,7 @@ type Props = {
     authState: any,
     singedIn: typeof singedIn;
     signin: typeof signin,
-    restoreFavorites: typeof restoreFavorites,
+    restoreSettings: typeof restoreSettings,
 };
 
 type State = {
@@ -99,6 +99,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 await client.cache.reset();
                 await getPersistor().purge();
 
+                this.props.restoreSettings();
                 this.props.singedIn();
             }
             catch (e) {
@@ -183,7 +184,7 @@ export default connect(
         authState: state.auth.signinState,
     }),
     {
-        restoreFavorites,
+        restoreSettings,
         singedIn,
         signin
     }
