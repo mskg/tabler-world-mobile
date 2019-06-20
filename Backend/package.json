@@ -49,14 +49,14 @@
     "dist/"
   ],
   "scripts": {
-    "test-export": "env-cmd --no-override ../config/.env,../config/.env.local cross-env-shell \"ts-node --project ./tsconfig.json scripts/export\"",
+    "test-export": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && ts-node --project ./tsconfig.json scripts/export\"",
     "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
     "deploy-func:app": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f app --verbose\"",
     "deploy-func:graphql": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f graphql --verbose\"",
     "deploy-func:reader": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f import-reader --verbose\"",
     "remove": "env-cmd --no-override ../config/.env cross-env-shell \"serverless remove --verbose\"",
-    "dev": "env-cmd --no-override ../config/.env,../config/.env.local cross-env-shell \"serverless offline start --verbose --noTimeout\"",
-    "dynamodb": "env-cmd --no-override ../config/.env,../config/.env.local cross-env-shell \"serverless dynamodb start\"",
+    "dev": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && serverless offline start --verbose --noTimeout\"",
+    "dynamodb": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && serverless dynamodb start\"",
     "start": "ntl"
   }
 }
