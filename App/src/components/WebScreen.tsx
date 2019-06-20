@@ -1,25 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { Component } from 'react';
+import React from 'react';
 import { WebView } from 'react-native';
 import { Appbar, withTheme } from 'react-native-paper';
-import { Audit } from "../analytics/Audit";
-import { IAuditor } from '../analytics/Types';
+import { AuditedScreen } from '../analytics/AuditedScreen';
+import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
 import { ScreenWithHeader } from './Screen';
 
 const logger = new Logger(Categories.UIComponents.WebScreen);
-export class WebScreenBase extends Component<{theme, url, title}, {url}> {
-    audit: IAuditor;
-    ref;
+
+export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
+    ref: any;
 
     constructor(props) {
-        super(props);
+        super(props, AuditScreenName.Web);
 
         this.state = {
             url: this.props.url
         }
-
-        this.audit = Audit.screen("Web");
     }
 
     componentDidMount() {

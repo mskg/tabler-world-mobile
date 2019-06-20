@@ -4,8 +4,7 @@ import React from 'react';
 import { View } from "react-native";
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor, logger } from '../../analytics/Types';
+import { logger } from '../../analytics/Types';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
@@ -36,9 +35,6 @@ type OwnProps = {
 };
 
 type StateProps = {
-    // toggleFavorite: typeof toggleFavorite,
-    // favorites: HashMap<boolean>,
-
     messagingApp?: string,
     browserApp?: string,
     phoneApp?: string,
@@ -64,8 +60,7 @@ type Sections = {
 }[];
 
 @connectActionSheet
-export class ProfileBase extends React.Component<Props, State> {
-    audit: IAuditor;
+class ProfileBase extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -74,8 +69,6 @@ export class ProfileBase extends React.Component<Props, State> {
             numbers: collectPhones(props.member).map(n => n.value),
             emails: collectEMails(props.member).map(n => n.value),
         }
-
-        this.audit = Audit.screen("Contact");
     }
 
     componentWillUpdate(nextProps: Props) {
@@ -262,7 +255,8 @@ export class ProfileBase extends React.Component<Props, State> {
 
     render() {
         const { member } = this.props;
-        if (this.props.member == null || this.props.loading) {
+
+        if (member == null || this.props.loading) {
             return <View style={{ paddingTop: 32, paddingBottom: 32 }}>
                 <Placeholder ready={false} previewComponent={
                     <>

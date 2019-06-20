@@ -25,7 +25,6 @@ function sectionFrom(s): string {
 
 export class MemberDataSource {
     _data: SectionData;
-    // _flat: ITabler[];
     _sections: string[];
 
     public constructor(
@@ -70,10 +69,6 @@ export class MemberDataSource {
         return this._data;
     }
 
-    // public get flat(): ITabler[] {
-    //     return this._flat;
-    // }
-
     public update(member?: IMemberOverviewFragment[]) {
         this.member = member || this.member;
         this.calc();
@@ -105,15 +100,6 @@ export class MemberDataSource {
             .toArray()
             .value()
         );
-
-        // // expensive?
-        // this._flat.splice(0, this._flat.length);
-        // this._flat.push(... _(this._data)
-        //     .map(d => d.data)
-        //     .flatMap()
-        //     .toArray()
-        //     .value()
-        // );
 
         this._sections.splice(0, this._sections.length);
         this._sections.push(... _(this._data)

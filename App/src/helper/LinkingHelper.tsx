@@ -1,5 +1,6 @@
 import { Linking } from "expo";
 import { Audit } from "../analytics/Audit";
+import { AuditEventName } from '../analytics/AuditEventName';
 import { Categories, Logger } from './Logger';
 
 const logger = new Logger(Categories.Helpers.Linking);
@@ -128,7 +129,7 @@ export class LinkingHelper {
         const url = MessagingUrls[app || MessagingApps.Default](number);
         logger.debug(app, number, url);
 
-        Audit.trackEvent("createSMS", {
+        Audit.trackEvent(AuditEventName.CreateSMS, {
             app: app || MessagingApps.Default,
         });
 
@@ -143,7 +144,7 @@ export class LinkingHelper {
         const url = WebAppUrls[app || WebApps.Default](urlToOpen);
         logger.debug(app, urlToOpen, url);
 
-        Audit.trackEvent("openUrl", {
+        Audit.trackEvent(AuditEventName.OpenUrl, {
             app: app || WebApps.Default,
         });
 
@@ -158,7 +159,7 @@ export class LinkingHelper {
         const url = CallAppUrls[app || CallApps.Default](party);
         logger.debug(app, party, url);
 
-        Audit.trackEvent("makeCall", {
+        Audit.trackEvent(AuditEventName.MakeCall, {
             app: app || CallApps.Default,
         });
 
@@ -171,7 +172,7 @@ export class LinkingHelper {
         const url = MailAppUrls[app || MailApps.Default](party);
         logger.debug(app, party, url);
 
-        Audit.trackEvent("sendEMail", {
+        Audit.trackEvent(AuditEventName.SendEMail, {
             app: app || MailApps.Default,
         });
 

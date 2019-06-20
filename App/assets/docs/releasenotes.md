@@ -9,11 +9,13 @@
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
+- Reworked loading animation for members in clubs screen
 
 ## Operations
 - Reworked deployment
 - Enlarged memory size of GraphQL functions to 256MB
 - Server side caching
+- Auditing enabled for new screens
 
 # v0.8
 Beta build, for internal testing only

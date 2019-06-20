@@ -22,7 +22,7 @@ import { styles } from './Styles';
 
 type Props = {
     theme: Theme,
-    club: GetClubQueryType_Club,
+    club?: GetClubQueryType_Club,
     loading: boolean,
 };
 

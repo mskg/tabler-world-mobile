@@ -1,34 +1,27 @@
-import { WatchQueryFetchPolicy } from 'apollo-client';
-import React, { PureComponent, ReactElement } from 'react';
-import { Query } from 'react-apollo';
+import React from 'react';
 import { Animated } from "react-native";
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
-import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
-import { I18N } from '../../i18n/translation';
 import { addTablerLRU } from '../../redux/actions/history';
 import { IProfileParams } from '../../redux/actions/navigation';
-import { addSnack } from '../../redux/actions/snacks';
 import { ActionsFab } from './ActionsFab';
+import { MemberQueryWithPreviewAndInvalidation } from './MemberQueryWithPreview';
 import { Profile } from './Profile';
-import { GetMemberQuery, GetMemberQueryType, MembersOverviewFragment } from './Queries';
-
-const logger = new Logger(Categories.Screens.Member);
+import { GetMemberQueryType } from './Queries';
 
 type OwnProps = {
     theme: Theme,
 };
 
-type StateProps = {
+export type StateProps = {
     loading: boolean;
 
     id: number;
@@ -38,25 +31,22 @@ type StateProps = {
     addTablerLRU: typeof addTablerLRU;
 };
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps & NavigationInjectedProps<IProfileParams>;
 
 const AnimatedFab = Animated.createAnimatedComponent(ActionsFab);
 const AnimatedAvatar = Animated.createAnimatedComponent(MemberAvatar);
 
-export class MemberBase extends React.Component<Props> {
-    audit: IAuditor;
-
+export class MemberBase extends AuditedScreen<Props> {
     state = {
     };
 
     constructor(props) {
-        super(props);
-        this.audit = Audit.screen("Contact");
+        super(props, AuditScreenName.Member);
     }
 
     componentDidMount() {
-        this.audit.submit();
         this.props.addTablerLRU(this.props.id);
+        this.audit.submit({ id: this.props.id.toString() });
     }
 
     _renderHeader = (scrollY: Animated.AnimatedAddition, distance: number) => {
@@ -94,6 +84,7 @@ export class MemberBase extends React.Component<Props> {
     _renderContent = () => {
         const member = this.props.member || this.props.preview;
 
+        //@ts-ignore
         return <Profile
             member={member != null ? member.Member : undefined}
             theme={this.props.theme}
@@ -112,7 +103,9 @@ export class MemberBase extends React.Component<Props> {
     }
 }
 
-const Member = connect(null, { addTablerLRU })(withTheme(MemberBase));
+const Member = connect(null, { addTablerLRU })(
+    withTheme(
+        MemberBase));
 
 export class MemberScreenBase extends React.Component<NavigationInjectedProps<IProfileParams>> {
     render() {
@@ -128,68 +121,5 @@ export class MemberScreenBase extends React.Component<NavigationInjectedProps<IP
     }
 }
 
-class MemberQueryWithPreview extends PureComponent<{
-    children: ReactElement<StateProps>,
-    id: number,
-    fetchPolicy?: WatchQueryFetchPolicy,
-    addSnack: typeof addSnack,
-}> {
-    render() {
-        return (
-            <Query<GetMemberQueryType>
-                query={GetMemberQuery}
-                variables={{
-                    id: this.props.id
-                }}
-            >
-                {({ client, loading, data, error, refetch }) => {
-                    let preview = null;
-
-                    if ((loading || error) && (data == null || data.Member == null)) {
-                        try {
-                            preview = client.readFragment({
-                                id: "Member:" + this.props.id,
-                                fragment: MembersOverviewFragment
-                            });
-
-                            logger.log("found preview", preview);
-                        }
-                        catch (e) {
-                            logger.error(e, "Failed to load preview");
-                        }
-                    }
-
-                    if (error && !preview) { throw error; }
-                    else if (error && preview) {
-                        setTimeout(() =>
-                            this.props.addSnack({
-                                message: I18N.Whoops.partialData,
-                            }));
-                    }
-
-                    if (data && data.Member != null) {
-                        if (!isRecordValid("member", data.Member.LastSync)) {
-                            setTimeout(() => refetch());
-                        }
-                    }
-
-                    return React.cloneElement(
-                        this.props.children, {
-                            loading: loading,
-                            member: loading ? undefined : data,
-                            preview: preview ? { Member: preview } : undefined,
-                        });
-                }}
-            </Query >
-        );
-    }
-}
-
-const MemberQueryWithPreviewAndInvalidation = withGoHomeErrorBoundary(
-    connect(
-        null, { addSnack }
-    )(MemberQueryWithPreview)
-);
-
-export const MemberScreen = withNavigation(MemberScreenBase);
-
+export const MemberScreen = withGoHomeErrorBoundary(
+    withNavigation(MemberScreenBase));

@@ -9,7 +9,6 @@ import { ClubsScreen } from './Structure/Clubs';
 import { Routes } from './Structure/Routes';
 import { StructureScreen } from './Structure/Screen';
 
-
 /**
  * MaterialTopTabBar does not allov customization of label container.
  * We override the numberOfLines here

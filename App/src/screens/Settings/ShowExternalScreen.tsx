@@ -2,22 +2,17 @@ import React from 'react';
 import { WebView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { ScreenWithHeader } from '../../components/Screen';
 
-export class ShowExternalScreenBase extends React.PureComponent<{ theme } & NavigationInjectedProps> {
-    audit: IAuditor;
-
+class ShowExternalScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps> {
     constructor(props) {
-        super(props);
-
-        this.audit = Audit.screen("Show External");
+        super(props, AuditScreenName.ShowExternal);
     }
 
     componentDidMount() {
-        this.audit.setParam("title", this.props.navigation.getParam("title"));
-        this.audit.submit();
+        this.audit.submit({ "title": this.props.navigation.getParam("title") });
     }
 
     render() {
@@ -28,7 +23,7 @@ export class ShowExternalScreenBase extends React.PureComponent<{ theme } & Navi
             }}>
                 <WebView
                     startInLoadingState={true}
-                    source={{uri: this.props.navigation.getParam("source")}}
+                    source={{ uri: this.props.navigation.getParam("source") }}
                     mixedContentMode={"never"}
                 />
             </ScreenWithHeader>
@@ -36,4 +31,5 @@ export class ShowExternalScreenBase extends React.PureComponent<{ theme } & Navi
     }
 }
 
-export const ShowExternalScreen = withNavigation(withTheme(ShowExternalScreenBase));
+export const ShowExternalScreen = withNavigation(
+    withTheme(ShowExternalScreenBase));

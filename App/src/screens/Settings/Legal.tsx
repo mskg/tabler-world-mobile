@@ -2,42 +2,21 @@ import React from 'react';
 import { ScrollView, View } from "react-native";
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
 import { I18N } from '../../i18n/translation';
 import { NextScreen } from './Action';
 import { Routes } from './Routes';
 
-type State = {
-};
-
-type OwnProps = {
+type Props = {
     theme: Theme,
 };
 
-type StateProps = {
-};
-
-type DispatchPros = {
-};
-
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
-
-export class LegalScreenBase extends React.Component<Props, State> {
-    audit: IAuditor;
-
-    state = {
-    };
-
+class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
     constructor(props) {
-        super(props);
-        this.audit = Audit.screen("Legal");
-    }
-
-    componentDidMount() {
-        this.audit.submit();
+        super(props, AuditScreenName.Legal);
     }
 
     render() {

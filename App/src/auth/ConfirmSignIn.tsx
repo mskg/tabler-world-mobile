@@ -1,11 +1,11 @@
 import Auth from '@aws-amplify/auth';
 import { Linking } from 'expo';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { Audit } from '../analytics/Audit';
-import { IAuditor } from '../analytics/Types';
+import { AuditedScreen } from '../analytics/AuditedScreen';
+import { AuditScreenName } from '../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
@@ -34,11 +34,9 @@ type State = {
 
 const logger = new Logger(Categories.Screens.ConfirmSignIn);
 
-class ConfirmBase extends PureComponent<Props, State> {
-    audit: IAuditor;
-
+class ConfirmBase extends AuditedScreen<Props, State> {
     constructor(props) {
-        super(props);
+        super(props, AuditScreenName.ConfirmSignIn);
 
         this.state = {
             code: '',
@@ -47,8 +45,6 @@ class ConfirmBase extends PureComponent<Props, State> {
             tries: 3,
             error: null,
         }
-
-        this.audit = Audit.screen("Confirm SignIn");
     }
 
     _handleOpenURL = (event) => {

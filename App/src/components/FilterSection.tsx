@@ -4,8 +4,10 @@ import { StyleSheet, View } from "react-native";
 import { Checkbox, Divider, Text, TouchableRipple } from 'react-native-paper';
 import { Accordion } from "./Accordion";
 
+export type FilterTagType = "area" | "role" | "table";
+
 export type FilterTag = {
-    type: "area" | "role" | "table",
+    type: FilterTagType,
     value: string,
 };
 

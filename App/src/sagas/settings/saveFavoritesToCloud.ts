@@ -3,6 +3,7 @@ import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import { select } from 'redux-saga/effects';
 import { Audit } from "../../analytics/Audit";
+import { AuditEventName } from '../../analytics/AuditEventName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
@@ -16,7 +17,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
     const favorites: HashMap<boolean> = yield select(
         (state: IAppState) => state.filter.member.favorites);
 
-    Audit.trackEvent("Saga saveFavoritesToCloud", undefined, {
+    Audit.trackEvent(AuditEventName.SaveFavorites, undefined, {
         count: Object.keys(favorites).length,
     });
 

@@ -31,7 +31,6 @@ export const styles = StyleSheet.create({
         marginVertical: 4
     },
 
-
     divider: {
         marginLeft: 16,
     },
