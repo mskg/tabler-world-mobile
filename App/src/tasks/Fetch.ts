@@ -22,27 +22,28 @@ async function runBackgroundFetch() {
         // remove for testing purposes
         // await client.cache.reset();
 
-        const q1 = client.query({
+        await client.query({
             query: GetMembersQuery,
             fetchPolicy: "network-only",
         });
+        await getPersistor().persist();
 
-        const q2 =  client.query({
+        await client.query({
             query: GetClubsQuery,
             fetchPolicy: "network-only",
         });
+        await getPersistor().persist();
 
-        const q3 =  client.query({
+        await client.query({
             query: GetAreasQuery,
             fetchPolicy: "network-only",
         });
+        await getPersistor().persist();
 
-        const q4 =  client.query({
+        await client.query({
             query: GetAssociationsQuery,
             fetchPolicy: "network-only",
         });
-
-        await Promise.all([q1,q2,q3,q4]);
         await getPersistor().persist();
 
         const result = BackgroundFetch.Result.NewData;
@@ -53,7 +54,7 @@ async function runBackgroundFetch() {
         return result;
     } catch (error) {
         logger.error(error, FETCH_TASKNAME);
-        timer.submit({ result: BackgroundFetch.Result.Failed });
+        timer.submit({ result: BackgroundFetch.Result.Failed.toString() });
 
         return BackgroundFetch.Result.Failed;
     }
@@ -73,19 +74,13 @@ export async function registerFetchTask() {
             default: {
                 logger.debug("Background execution allowed");
 
-                let tasks = await TaskManager.getRegisteredTasksAsync();
-                if (tasks.find(f => f.taskName === FETCH_TASKNAME) == null) {
-                    logger.log("Registering task");
-                    await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME);
+                await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME, {
+                    minimumInterval: INTERVAL,
+                    startOnBoot: true,
+                    stopOnTerminate: true,
+                });
 
-                    tasks = await TaskManager.getRegisteredTasksAsync();
-                    logger.debug("Registered tasks", tasks);
-                } else {
-                    logger.log(`Task ${FETCH_TASKNAME} already registered, skipping`);
-                }
-
-                logger.log("Setting interval to", INTERVAL);
-                await BackgroundFetch.setMinimumIntervalAsync(INTERVAL);
+                logger.debug("Registered task", FETCH_TASKNAME);
             }
         }
     } catch (e) {
