@@ -40,7 +40,6 @@ class RolesBase extends React.PureComponent<Props> {
     }
 }
 
-
 export const Roles = connect(undefined, {
     showClub
 })(withTheme(RolesBase));

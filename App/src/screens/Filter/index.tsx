@@ -1,10 +1,10 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { FlatList, ListRenderItemInfo, ScrollView, StyleSheet, View } from "react-native";
-import { Checkbox, Divider, List, Text, Theme, TouchableRipple, withTheme } from 'react-native-paper';
+import { FlatList, ListRenderItemInfo, ScrollView, View } from "react-native";
+import { Checkbox, Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { StandardHeader } from '../../components/Header';
 import { Screen } from '../../components/Screen';
@@ -14,10 +14,8 @@ import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
 import { toggleAll, toggleDistrict, toggleFavorites, toggleOwnTable } from '../../redux/actions/filter';
 import { HeaderStyles } from '../../theme/dimensions';
+import { Element } from './Element';
 import { AreasQuery } from './Queries';
-
-type State = {
-};
 
 type OwnProps = {
 };
@@ -39,34 +37,9 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros;
 
-const Element = ({ theme, title, onPress, right }: {
-    theme, title, onPress, right?
-}) => (
-        <TouchableRipple
-            style={{ backgroundColor: theme.colors.surface }}
-            onPress={() => requestAnimationFrame(() => onPress())}
-        >
-            <View style={[styles.row]} pointerEvents="none">
-                <Text>{title}</Text>
-                {right}
-            </View>
-        </TouchableRipple>
-    );
-
-
-export class FilterScreenBase extends React.Component<Props, State> {
-    audit: IAuditor;
-
-    state = {
-    };
-
+class FilterScreenBase extends AuditedScreen<Props> {
     constructor(props) {
-        super(props);
-        this.audit = Audit.screen("Contacts");
-    }
-
-    componentDidMount() {
-        this.audit.submit();
+        super(props, AuditScreenName.FilterMember);
     }
 
     _renderItem = (c: ListRenderItemInfo<any>) => {
@@ -168,33 +141,6 @@ export class FilterScreenBase extends React.Component<Props, State> {
     }
 }
 
-const styles = StyleSheet.create({
-    first: {
-        marginTop: 16,
-    },
-
-    section: {
-        marginBottom: 16,
-    },
-
-    title: {
-        paddingVertical: 16,
-        paddingHorizontal: 16,
-    },
-
-    row: {
-        flex: 0,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        // paddingVertical: 8,
-        paddingLeft: 16,
-        paddingRight: 8,
-        height: 50,
-    },
-});
-
-
 export const FilterScreen = connect(
     (state: IAppState) => ({
         filter: state.filter.member.area,
@@ -205,7 +151,7 @@ export const FilterScreen = connect(
         toggleFavorites,
         toggleDistrict,
         toggleOwnTable,
-    })(withTheme(
+    })(
         withWhoopsErrorBoundary(
-            withCacheInvalidation("areas", FilterScreenBase))
-    ));
+            withCacheInvalidation("areas", withTheme(FilterScreenBase)))
+    );

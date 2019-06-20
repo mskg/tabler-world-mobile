@@ -3,26 +3,19 @@ import _ from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
 import { Chip, Theme } from 'react-native-paper';
-import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Accordion } from '../../components/Accordion';
 import { I18N } from '../../i18n/translation';
-import { IAppState } from '../../model/IAppState';
 import { showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
 
 type Props = {
     theme: Theme,
-    navigation: any,
-
-    clubs: {id: string, name: string, club: number}[],
+    clubs: { id: string, name: string, club: number }[],
     showClub: typeof showClub,
 };
 
-type State = {
-};
-
-class ClubsSectionBase extends React.Component<Props, State> {
+class ClubsSectionBase extends React.Component<Props> {
     render() {
         if (this.props.clubs == null || this.props.clubs.length == 0) return null;
 
@@ -40,7 +33,7 @@ class ClubsSectionBase extends React.Component<Props, State> {
                                 {club.name}
                             </Chip>
                         ))
-                        .value()
+                            .value()
                     }
                 </View>
             </Accordion>
@@ -48,8 +41,5 @@ class ClubsSectionBase extends React.Component<Props, State> {
     }
 }
 
-export const ClubsSection = connect(
-    (state: IAppState) => ({
-    }), {
-        showClub
-    })(withNavigation(withTheme(ClubsSectionBase)));
+export const ClubsSection = connect(null, { showClub })(
+    withTheme(ClubsSectionBase));

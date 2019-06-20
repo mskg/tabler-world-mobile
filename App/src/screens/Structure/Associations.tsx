@@ -3,7 +3,8 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Card, Paragraph, Theme, withTheme } from 'react-native-paper';
-import { withNavigation } from 'react-navigation';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Accordion } from '../../components/Accordion';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
@@ -25,7 +26,12 @@ type Props = {
     fetchPolicy: any,
 };
 
-class AssociationsScreenBase extends React.Component<Props, State> {
+class AssociationsScreenBase extends AuditedScreen<Props, State> {
+
+    constructor(props) {
+        super(props, AuditScreenName.Associations);
+    }
+
     _renderItem = (params) => {
         const item: GetAssociationsQueryType_Association = params.item;
 
@@ -117,8 +123,7 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
     }
 }
 
-export const AssociationsScreen = withNavigation(withTheme(
+export const AssociationsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("associations", AssociationsScreenBase)
-    )
-));
+        withCacheInvalidation("associations",
+            withTheme(AssociationsScreenBase)));

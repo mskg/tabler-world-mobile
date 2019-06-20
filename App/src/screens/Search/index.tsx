@@ -3,12 +3,11 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, ListRenderItemInfo, Modal, ScrollView, TouchableWithoutFeedback, View } from "react-native";
 import { Appbar, Chip, Divider, List, Searchbar, Text, Theme, withTheme } from 'react-native-paper';
-import { withNavigation } from "react-navigation";
 import { connect } from 'react-redux';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
-import { FilterSection, FilterTag } from "../../components/FilterSection";
+import { FilterSection, FilterTag, FilterTagType } from "../../components/FilterSection";
 import { StandardHeader } from '../../components/Header';
 import ListSubheader from "../../components/ListSubheader";
 import { InlineLoading } from '../../components/Loading';
@@ -39,7 +38,6 @@ type State = {
 };
 
 type OwnProps = {
-    navigation: any,
     theme: Theme,
 };
 
@@ -56,11 +54,10 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros;
 
-class SearchScreenBase extends React.Component<Props, State> {
-    mounted= true;
-    audit: IAuditor;
+class SearchScreenBase extends AuditedScreen<Props, State> {
+    mounted = true;
 
-    state = {
+    state: State = {
         query: "",
         debouncedQuery: "",
 
@@ -72,26 +69,28 @@ class SearchScreenBase extends React.Component<Props, State> {
     };
 
     constructor(props) {
-        super(props);
-        this.audit = Audit.screen("Search Member");
+        super(props, AuditScreenName.MemberSearch);
     }
 
     componentDidMount() {
         this.mounted = true;
+
         // if called without blur, settimeout, keyboard will never get dismissed?
-        if (this._searchBar) {
+        if (this._searchBar != null) {
             setTimeout(() => {
-                this._searchBar.blur();
-                this._searchBar.focus();
+                if (this._searchBar != null) {
+                    this._searchBar.blur();
+                    this._searchBar.focus();
+                }
             });
         }
 
         logger.debug("Logged");
+        this.audit.submit();
     }
 
     componentWillUnmount() {
-        this.audit.submit();
-        this.mounted= false;
+        this.mounted = false;
     }
 
     _searchBar!: Searchbar | null;
@@ -171,7 +170,7 @@ class SearchScreenBase extends React.Component<Props, State> {
 
     _keyExtractor = (item: string) => item;
 
-    _onToggleTag = (type, value: string) => {
+    _onToggleTag = (type: FilterTagType, value: string) => {
         logger.debug("toggle", type, value);
         this.audit.increment(`toggle ${type}`);
 
@@ -198,7 +197,6 @@ class SearchScreenBase extends React.Component<Props, State> {
     render() {
         return (
             <Screen>
-                {/* <ScrollView style={{ paddingBottom: TOTAL_HEADER_HEIGHT }}> */}
                 {this.state.filterTags.length > 0 &&
                     <TouchableWithoutFeedback onPress={this._showFilterDialog}>
                         <>
@@ -253,10 +251,8 @@ class SearchScreenBase extends React.Component<Props, State> {
 
                             return (
                                 <MemberList
-                                    showMe={false}
                                     data={newData}
 
-                                    // extraData={this.state.update}
                                     onItemSelected={this._itemSelected}
                                     renderItem={this._renderMatch.bind(this)}
 
@@ -305,7 +301,6 @@ class SearchScreenBase extends React.Component<Props, State> {
                         }}
                     </Query>
                 }
-                {/* </ScrollView> */}
 
                 <Modal
                     visible={this.state.showFilter}
@@ -344,7 +339,9 @@ class SearchScreenBase extends React.Component<Props, State> {
                                         if (data == null
                                             || data.Roles == null
                                             || data.Areas == null
-                                            || data.Clubs == null) return <InlineLoading />;
+                                            || data.Clubs == null) {
+                                            return (<View style={{ marginHorizontal: 16 }}><InlineLoading /></View>);
+                                        }
 
                                         return (
                                             <>
@@ -430,8 +427,10 @@ export const SearchScreen = connect(
     }), {
         addTablerSearch,
         showProfile,
-    })(withNavigation(
-        withTheme(
-            withWhoopsErrorBoundary(
-                withCacheInvalidation("utility", SearchScreenBase))
-        )));
+    })(
+        withWhoopsErrorBoundary(
+            withCacheInvalidation("utility",
+                withTheme(SearchScreenBase)
+            )
+        )
+    );

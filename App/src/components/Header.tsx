@@ -65,7 +65,9 @@ export class HeaderBase extends React.Component<Props & NavigationInjectedProps>
                         }
                         {this.props.content != null
                             ? this.props.content
-                            : <Appbar.Content titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={this.props.title} />
+                            : this.props.title ?
+                                <Appbar.Content titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={this.props.title} />
+                                : null
                         }
                     </Appbar>
                 }

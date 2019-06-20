@@ -3,6 +3,17 @@ import en, { I18NType } from './en';
 const countries = require("./countries/de.json");
 
 const de: I18NType = {
+    Whoops: {
+        title: "Oooops?",
+        try: "Wiederholen",
+        partialData: "Daten konnten nicht geladen werden. Es werden gespeicherte Daten angezeigt.",
+    },
+
+    Image: {
+        Member: "Mitgliedsinformationen",
+        Club: "Tischinformationen"
+    },
+
     NavigationStyle: {
         paddingHorizontal: 4,
         fontSize: 10,

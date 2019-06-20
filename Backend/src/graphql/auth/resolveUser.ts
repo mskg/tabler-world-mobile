@@ -9,7 +9,7 @@ export function resolveUser(event: APIGatewayProxyEvent) {
 
     let resolvedEmail = null;
 
-    if (event.requestContext.stage == "dev" && authorizer.principalId === "offlineContext_authorizer_principalId") {
+    if (process.env.IS_OFFLINE === 'true' && authorizer.principalId === "offlineContext_authorizer_principalId") {
         console.warn("********* AUTHENTICATION DEBUG MODE *********");
         resolvedEmail = process.env.API_DEBUG_USER;
     }

@@ -183,7 +183,7 @@ resources:
         # Generate a name based on the stage
         IdentityPoolName: TablerWorld IdentityPool ${self:custom.stage}
         # Don't allow unathenticated users
-        AllowUnauthenticatedIdentities: false
+        AllowUnauthenticatedIdentities: true
         # Link to our User Pool
         CognitoIdentityProviders:
           - ClientId:
@@ -204,8 +204,45 @@ resources:
             Fn::GetAtt:
               - CognitoAuthRole
               - Arn
-            
+
+          unauthenticated:
+            Fn::GetAtt:
+              - CognitoPublicRole
+              - Arn
+
     # IAM role used for authenticated users
+    CognitoPublicRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Federated: 'cognito-identity.amazonaws.com'
+              Action:
+                - 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: CognitoIdentityPool
+                'ForAnyValue:StringLike':
+                  'cognito-identity.amazonaws.com:amr': unauthenticated
+
+        Policies:
+          - PolicyName: CognitoAuthorizedPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - mobileanalytics:PutEvents
+                    - mobiletargeting:PutEvents
+                    - mobiletargeting:UpdateEndpoint
+                  Resource: '*'
+
+
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
@@ -236,24 +273,9 @@ resources:
                     - cognito-sync:*
                     - cognito-identity:*
                     - mobiletargeting:UpdateEndpoint
+                    - mobiletargeting:PutEvents
                   Resource: '*'
-                
-                # Allow users to invoke our API
-                # -> changed, removed for cognito
-                # - Effect: 'Allow'
-                #   Action:
-                #     - 'execute-api:Invoke'
-                #   Resource:
-                #     Fn::Join:
-                #       - ''
-                #       -
-                #         - 'arn:aws:execute-api:'
-                #         - Ref: AWS::Region
-                #         - ':'
-                #         - Ref: AWS::AccountId
-                #         - ':'
-                #         - Fn::ImportValue: ApiGatewayRestApiId-${self:custom.stage}
-                #         - '/*'
+
 
   # Print out the Id of the User Pool and Identity Pool that are created
   Outputs:

@@ -1,11 +1,11 @@
 import Auth from '@aws-amplify/auth';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import uuid4 from "uuid4";
-import { Audit } from '../analytics/Audit';
-import { IAuditor } from '../analytics/Types';
+import { AuditedScreen } from '../analytics/AuditedScreen';
+import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
@@ -28,22 +28,15 @@ type State = {
 
 const logger = new Logger(Categories.Screens.SignIn);
 
-class SignInBase extends PureComponent<Props, State> {
-    audit: IAuditor;
-
+class SignInBase extends AuditedScreen<Props, State> {
     constructor(props: Props) {
-        super(props);
-        this.audit = Audit.screen("SignIn");
+        super(props, AuditScreenName.SignIn);
 
         this.state = {
             username: props.username,
             working: false,
             error: null,
         }
-    }
-
-    componentDidMount() {
-        this.audit.submit();
     }
 
     async getRandomString(bytes: number) {

@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     },
 
     title: {
-        paddingTop: 16,
+        paddingTop: 16-10,
         marginVertical: 0,
     },
 
@@ -30,7 +30,6 @@ export const styles = StyleSheet.create({
     subTitlePlaceholder: {
         marginVertical: 4
     },
-
 
     divider: {
         marginLeft: 16,

@@ -3,7 +3,8 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Card, Theme, withTheme } from 'react-native-paper';
-import { withNavigation } from 'react-navigation';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -19,12 +20,16 @@ type State = {};
 
 type Props = {
     theme: Theme,
-    navigation: any,
     refreshing: boolean,
     fetchPolicy?: any
 };
 
-class AreasScreenBase extends React.Component<Props, State> {
+class AreasScreenBase extends AuditedScreen<Props, State> {
+
+    constructor(props) {
+        super(props, AuditScreenName.Areas);
+    }
+
     _renderItem = (params) => {
         const item: GetAreasQueryType_Area = params.item;
 
@@ -83,6 +88,7 @@ class AreasScreenBase extends React.Component<Props, State> {
     }
 }
 
-export const AreasScreen = withNavigation(withTheme(
-    withWhoopsErrorBoundary(withCacheInvalidation("areas", AreasScreenBase))
-));
+export const AreasScreen =
+    withWhoopsErrorBoundary(
+        withCacheInvalidation("areas",
+            withTheme(AreasScreenBase)));

@@ -3,27 +3,22 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import DocViewer from '../../components/DocsViewer';
+import { InlineLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
 
 const logger = new Logger(Categories.Screens.Docs);
 
 type State = {
-    text: string,
+    text?: string,
 }
-export class ShowMDScreenBase extends React.PureComponent<{ theme } & NavigationInjectedProps, State> {
-    audit: IAuditor;
-
+class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps, State> {
     constructor(props) {
-        super(props)
-        this.state = {
-            text: "Loading...",
-        }
-
-        this.audit = Audit.screen("Show MD");
+        super(props, AuditScreenName.ShowMD)
+        this.state = {}
     }
 
     async componentDidMount() {
@@ -52,7 +47,12 @@ export class ShowMDScreenBase extends React.PureComponent<{ theme } & Navigation
                 showBack: true,
             }}>
                 <ScrollView style={{ padding: 10, backgroundColor: this.props.theme.colors.surface }}>
-                    <DocViewer text={this.state.text} />
+                    {this.state.text &&
+                        <DocViewer text={this.state.text} />
+                    }
+                    {!this.state.text &&
+                        <InlineLoading />
+                    }
                 </ScrollView>
             </ScreenWithHeader>
         );

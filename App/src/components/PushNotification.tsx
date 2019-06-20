@@ -286,7 +286,6 @@ const styles = StyleSheet.create({
         right: HORIZONTAL_MARGIN,
 
         top: CONTAINER_MARGIN_TOP,
-        zIndex: 1000,
     },
 
     surface: {

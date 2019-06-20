@@ -1,6 +1,7 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { Audit } from "../analytics/Audit";
+import { AuditEventName } from '../analytics/AuditEventName';
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
 import { Categories, Logger } from '../helper/Logger';
 import { GetMembersQuery } from '../screens/Members/Queries';
@@ -11,10 +12,10 @@ const logger = new Logger(Categories.Sagas.Fetch);
 const INTERVAL = 60 * 60 * (24 / 4);
 
 async function runBackgroundFetch() {
-    const timer = Audit.timer(FETCH_TASKNAME);
+    const timer = Audit.timer(AuditEventName.BackgroundSync);
     try {
         logger.debug("Running");
-        Audit.trackEvent(FETCH_TASKNAME);
+        Audit.trackEvent(AuditEventName.BackgroundSync);
 
         const client = await bootstrapApollo();
 

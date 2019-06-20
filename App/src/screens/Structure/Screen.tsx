@@ -1,6 +1,6 @@
 import color from 'color';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { MaterialTopTabBar } from 'react-navigation';
 import { StandardHeader } from '../../components/Header';
@@ -11,6 +11,7 @@ type Props = {
     theme: Theme,
     title: string,
 }
+
 class ScreenWithBarBase extends React.Component<Props> {
     render() {
         const titleColor = color(this.props.theme.colors.text)
@@ -26,30 +27,22 @@ class ScreenWithBarBase extends React.Component<Props> {
                 <MaterialTopTabBar
                     allowFontScaling={false}
                     showIcon={false}
-                    // scrollEnabled={true}
 
                     activeTintColor={this.props.theme.colors.accent}
                     inactiveTintColor={titleColor}
 
                     indicatorStyle={{
                         backgroundColor: this.props.theme.colors.accent,
-                        // color: this.props.theme.colors.accent,
                     }}
 
                     labelStyle={{
                         fontFamily: this.props.theme.fonts.medium,
-                        // fontSize: 17,
                     }}
 
-                    tabStyle={{
-                        // padding: 0,
-                        // margin: 0,
-                    }}
 
                     style={
                         {
                             backgroundColor: this.props.theme.colors.primary,
-                            // height: HEADER_HEIGHT,
                         }
                     }
                     {...this.props} />
@@ -78,27 +71,3 @@ class ScreenWithBarBase extends React.Component<Props> {
 }
 
 export const StructureScreen = withTheme(ScreenWithBarBase);
-
-const styles = StyleSheet.create({
-    top: {
-        flex: 1,
-        height: 65,
-        // backgroundColor: "red",
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: "flex-start",
-        // marginTop: 6,
-        paddingHorizontal: 8,
-    },
-
-    search: {
-        flex: 1,
-    },
-
-    searchbar: {
-        height: 40,
-        borderRadius: 5,
-        elevation: 1,
-
-    },
-});

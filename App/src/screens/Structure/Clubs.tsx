@@ -3,8 +3,9 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Card, Searchbar, Theme, withTheme } from 'react-native-paper';
-import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName as ScreenName } from '../../analytics/AuditScreenName';
 import { RoleAccordionSection } from '../../components/Club/RoleAccordionSection';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
@@ -27,7 +28,6 @@ type State = {
 
 type Props = {
     theme: Theme,
-    navigation: any,
     showClub: typeof showClub,
 
     loading: boolean,
@@ -35,9 +35,9 @@ type Props = {
     data?: GetClubsQueryType,
 };
 
-class ClubsScreenBase extends React.Component<Props, State> {
+class ClubsScreenBase extends AuditedScreen<Props, State> {
     constructor(props) {
-        super(props);
+        super(props, ScreenName.Clubs);
 
         this.state = {
             search: "",
@@ -193,9 +193,9 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
 const ConnectedClubScreen = connect(null, {
     showClub,
     homeScreen,
-})(withNavigation(withTheme(ClubsScreenBase)));
+})(withTheme(ClubsScreenBase));
 
-export const ClubsScreenWithQuery = ({ fetchPolicy }) => (
+const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     <Query<GetClubsQueryType> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
         {({ loading, data, error, refetch }) => {
             if (error) throw error;
@@ -205,4 +205,5 @@ export const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     </Query>
 );
 
-export const ClubsScreen = withWhoopsErrorBoundary(withCacheInvalidation("clubs", ClubsScreenWithQuery));
+export const ClubsScreen = withWhoopsErrorBoundary(
+    withCacheInvalidation("clubs", ClubsScreenWithQuery));

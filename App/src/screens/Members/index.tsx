@@ -3,10 +3,9 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Vibration } from 'react-native';
 import { Appbar, Colors, Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, withNavigation } from "react-navigation";
-import { connect, MapStateToProps } from 'react-redux';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { connect } from 'react-redux';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AlphabeticScrollBar } from '../../components/AlphabetJumpbar';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { renderItem } from '../../components/ListRenderer';
@@ -36,19 +35,18 @@ type State = {
 
 type OwnProps = {
     theme: Theme,
+
+    data?: GetMembersQueryType,
+    loading: boolean,
+
+    refresh: () => any,
 };
 
 type StateProps = {
-    data: GetMembersQueryType,
-
-    loading: boolean,
-    refresh: () => any,
-
     areas: HashMap<boolean, string> | null,
     favorites: HashMap<boolean>,
     showFavorites: boolean,
     showOwntable: boolean,
-    lastSync: Date | null,
 
     sortBy: string,
     diplayFirstNameFirst: boolean,
@@ -59,14 +57,13 @@ type DispatchPros = {
     showFilter: typeof showFilter;
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+type Props = OwnProps & StateProps & DispatchPros;
 
-export class MembersScreenBase extends React.Component<Props, State> {
+class MembersScreenBase extends AuditedScreen<Props, State> {
     _sectionList!: any;
-    audit: IAuditor;
 
     constructor(props: Props) {
-        super(props);
+        super(props, AuditScreenName.MemberList);
 
         const dataSource = new MemberDataSource([]);
         dataSource.sortBy = this.props.sortBy;
@@ -82,12 +79,6 @@ export class MembersScreenBase extends React.Component<Props, State> {
             ...this.state,
             ...this.calculateNewState(props),
         }
-
-        this.audit = Audit.screen("Members");
-    }
-
-    componentDidMount() {
-        this.audit.submit();
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -172,7 +163,6 @@ export class MembersScreenBase extends React.Component<Props, State> {
                     <MemberSectionList
                         setRef={ref => this._sectionList = ref}
                         extraData={this.state.forceUpdate}
-                        showMe={true}
                         me={this.state.me}
                         refreshing={this.props.loading}
                         data={this.state.dataSource.data}
@@ -195,8 +185,8 @@ export class MembersScreenBase extends React.Component<Props, State> {
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state: IAppState): StateProps => {
-    return {
+const ConnectedMembersScreen = connect(
+    (state: IAppState): StateProps => ({
         showFavorites: state.filter.member.showFavorites,
         showOwntable: state.filter.member.showOwntable,
 
@@ -205,17 +195,14 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state
 
         sortBy: state.settings.sortByLastName ? "lastname" : "firstname",
         diplayFirstNameFirst: state.settings.diplayFirstNameFirst,
-    }
-};
-
-const ConnectedMembersScreen = connect(
-    mapStateToProps, {
+    }),
+    {
         showSearch,
         showFilter,
-    })(withNavigation(withTheme(MembersScreenBase)));
+    }
+)(withTheme(MembersScreenBase));
 
-
-const WithQuery = ({ fetchPolicy }) => (
+const MembersQuery = ({ fetchPolicy }) => (
     <Query<GetMembersQueryType> query={GetMembersQuery} fetchPolicy={fetchPolicy}>
         {({ loading, data, error, refetch }) => {
             logger.debug("render");
@@ -236,4 +223,6 @@ const WithQuery = ({ fetchPolicy }) => (
     </Query>
 );
 
-export const MembersScreen = withWhoopsErrorBoundary(withCacheInvalidation("members", WithQuery));
+const MembersQueryWithCacheInvalidation = withCacheInvalidation("members", MembersQuery);
+
+export const MembersScreen = withWhoopsErrorBoundary(MembersQueryWithCacheInvalidation);

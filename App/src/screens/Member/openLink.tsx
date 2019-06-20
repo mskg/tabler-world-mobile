@@ -8,21 +8,6 @@ export enum LinkType {
     EMail = 4
 }
 
-// export function canOpenLink(type: LinkType) {
-//     switch (type) {
-//         case LinkType.Internet:
-//             return OpenLink.canOpenUrl();
-//         case LinkType.EMail:
-//             return OpenLink.canEmail();
-//         case LinkType.Phone:
-//             return OpenLink.canCall();
-//         case LinkType.Message:
-//             return OpenLink.canSendMessage();
-//     }
-//     return false;
-// }
-
-
 export function openLinkWithApp(protocol: LinkType, app: string, text: string) {
     switch (protocol) {
         case LinkType.EMail:

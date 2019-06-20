@@ -1,6 +1,9 @@
 import { trackAction, trackPageView } from './CognitoAnalytics';
 import { IAuditor, Metrics, Params } from './Types';
 
+/**
+ * Audit Screen usage
+ */
 export class SceenAudit implements IAuditor {
     metrics = {};
     params = {};
@@ -16,6 +19,7 @@ export class SceenAudit implements IAuditor {
         if (!this.metrics[metric]) {
             this.metrics[metric] = 0;
         }
+
         this.metrics[metric] = this.metrics[metric] + 1;
     }
 
@@ -24,6 +28,12 @@ export class SceenAudit implements IAuditor {
     }
 
     public submit(params?: Params, metrics?: Metrics) {
-        trackPageView(this.screen, this.params, this.metrics);
+        trackPageView(this.screen, {
+            ...this.params,
+            ...(params || {})
+        }, {
+            ...this.metrics,
+            ...(metrics || {})
+        });
     }
 }

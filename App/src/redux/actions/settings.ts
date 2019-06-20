@@ -24,6 +24,6 @@ export const storePushToken = createAction<'@@settings/pushToken', string>(
   '@@settings/pushToken'
 );
 
-export const restoreFavorites = () => createAction<'@@settings/restoreFavorites'>(
-  '@@settings/restoreFavorites'
+export const restoreSettings = createAction<'@@settings/restoreSettings'>(
+  '@@settings/restoreSettings'
 );

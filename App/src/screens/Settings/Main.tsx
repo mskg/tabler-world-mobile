@@ -5,8 +5,8 @@ import { Alert, ScrollView, View } from "react-native";
 import { Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Audit } from "../../analytics/Audit";
-import { IAuditor } from '../../analytics/Types';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../../apollo/bootstrapApollo';
 import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
@@ -39,7 +39,6 @@ type OwnProps = {
 
 type StateProps = {
     settings: SettingsState,
-    // lastSync: Date | null,
 };
 
 type DispatchPros = {
@@ -49,9 +48,7 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
-export class MainSettingsScreenBase extends React.Component<Props, State> {
-    audit: IAuditor;
-
+class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     state = {
         smsOptions: [{ label: "", value: "", }],
         browserOptions: [{ label: "", value: "", }],
@@ -60,8 +57,16 @@ export class MainSettingsScreenBase extends React.Component<Props, State> {
     };
 
     constructor(props) {
-        super(props);
-        this.audit = Audit.screen("Settings");
+        super(props, AuditScreenName.Settings);
+    }
+
+    componentDidMount() {
+        this.buildSMSOptions();
+        this.buildMail();
+        this.buildWebOptions();
+        this.buildCallOptions();
+
+        this.audit.submit();
     }
 
     _clearSyncFlags = () => {
@@ -162,15 +167,6 @@ export class MainSettingsScreenBase extends React.Component<Props, State> {
         });
 
         this.props.updateSetting(type);
-    }
-
-    componentDidMount() {
-        this.buildSMSOptions();
-        this.buildMail();
-        this.buildWebOptions();
-        this.buildCallOptions();
-
-        this.audit.submit();
     }
 
     async buildSMSOptions() {
@@ -432,9 +428,8 @@ export class MainSettingsScreenBase extends React.Component<Props, State> {
     }
 }
 
-export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps>(
-    (state: IAppState) => ({
-        // lastSync: state.members.lastSync,
+export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
+    (state) => ({
         settings: state.settings
     }),
     {
