@@ -8,8 +8,10 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { MemberAvatar } from '../../components/MemberAvatar';
+import { AvatarPopup } from "../../components/Profile/AvatarPopup";
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
+import { I18N } from '../../i18n/translation';
 import { addTablerLRU } from '../../redux/actions/history';
 import { IProfileParams } from '../../redux/actions/navigation';
 import { ActionsFab } from './ActionsFab';
@@ -36,7 +38,7 @@ type Props = OwnProps & StateProps & NavigationInjectedProps<IProfileParams>;
 const AnimatedFab = Animated.createAnimatedComponent(ActionsFab);
 const AnimatedAvatar = Animated.createAnimatedComponent(MemberAvatar);
 
-export class MemberBase extends AuditedScreen<Props> {
+class MemberBase extends AuditedScreen<Props> {
     state = {
     };
 
@@ -56,13 +58,15 @@ export class MemberBase extends AuditedScreen<Props> {
         return (
             <ProfileHeader
                 avatar={member ?
-                    <AnimatedAvatar
-                        member={member}
-                        containerStyle={{
-                            backgroundColor: this.props.theme.colors.background,
-                            elevation: 3,
-                        }}
-                    />
+                    <AvatarPopup title={I18N.Image.Member} pic={member.pic}>
+                        <AnimatedAvatar
+                            member={member}
+                            containerStyle={{
+                                backgroundColor: this.props.theme.colors.background,
+                                elevation: 3,
+                            }}
+                        />
+                    </AvatarPopup>
                     : undefined}
 
                 title={member ? member.firstname + " " + member.lastname : undefined}

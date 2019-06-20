@@ -8,6 +8,7 @@ import { ClubScreen } from '../screens/Club';
 import { FilterScreen } from '../screens/Filter';
 import { MemberScreen } from '../screens/Member';
 import { MembersScreen } from '../screens/Members';
+import { PictureScreen } from '../screens/Picture';
 import { SearchScreen } from '../screens/Search';
 import SettingsScreen from '../screens/Settings';
 import StructureScreen from '../screens/Structure';
@@ -79,6 +80,7 @@ const Navigator = createAppContainer(createStackNavigator(
         [Routes.Search]: { screen: SearchScreen },
         [Routes.Filter]: { screen: FilterScreen },
         [Routes.Club]: { screen: ClubScreen },
+        [Routes.Picture]: { screen: PictureScreen },
     },
     {
         initialRouteName: Routes.Home,

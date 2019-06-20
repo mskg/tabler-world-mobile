@@ -5,6 +5,7 @@ export enum AuditScreenName {
     Member          = "Members/Member",
     Club            = "Structure/Club",
     Web             = "Web",
+    Picture         = "Picture",
 
     Associations    = "Structure/Associations",
     Areas           = "Structure/Areas",

@@ -39,10 +39,6 @@ class ScreenWithBarBase extends React.Component<Props> {
                         fontFamily: this.props.theme.fonts.medium,
                     }}
 
-                    tabStyle={{
-                        // padding: 0,
-                        // margin: 0,
-                    }}
 
                     style={
                         {

@@ -10,6 +10,11 @@ const en = {
         partialData: "Failed to load data from server, showing partial result",
     },
 
+    Image: {
+        Member: "Member Info",
+        Club: "Club Info"
+    },
+
     NavigationStyle: {
         fontSize: 12,
         textAlign: 'center',

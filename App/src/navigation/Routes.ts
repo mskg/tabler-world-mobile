@@ -5,4 +5,5 @@ export enum Routes {
     Docs = "docs",
     Filter = "filter",
     Club = "club",
+    Picture = "picture",
 }

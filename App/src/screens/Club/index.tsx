@@ -7,8 +7,10 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { ClubAvatar } from '../../components/ClubAvatar';
 import { GoHomeErrorBoundary, withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { AvatarPopup } from '../../components/Profile/AvatarPopup';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
+import { I18N } from '../../i18n/translation';
 import { IClubParams } from '../../redux/actions/navigation';
 import { ClubDetails } from './ClubDetails';
 import { ClubQueryWithPreviewAndInvalidation } from './ClubQueryWithPreview';
@@ -46,11 +48,13 @@ class ClubBase extends AuditedScreen<Props> {
 
         return (
             <ProfileHeader
-                avatar={club
-                    ? <AnimatedAvatar
-                        label={club.club}
-                        source={club.logo}
-                    />
+                avatar={club ?
+                    <AvatarPopup title={I18N.Image.Club} pic={club.logo}>
+                        <AnimatedAvatar
+                            label={club.club}
+                            source={club.logo}
+                        />
+                    </AvatarPopup>
                     : undefined
                 }
 

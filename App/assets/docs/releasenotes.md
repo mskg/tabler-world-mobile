@@ -10,6 +10,7 @@
 ## Improvements
 - Removed WhoAmI state, resolves #11
 - Reworked loading animation for members in clubs screen
+- Pictures on member/club page can now be "zoomed"
 
 ## Operations
 - Reworked deployment
