@@ -1,7 +1,9 @@
 import { Context } from "aws-lambda";
 import Expo, { ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
 import { Client } from 'pg';
+import { StopWatch } from "../helper/StopWatch";
 import { withClient } from "../helper/withClient";
+import { writeJobLog } from "../helper/writeJobLog";
 
 let expo = new Expo();
 
@@ -55,6 +57,10 @@ type BirthdayPayload = {
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
     try {
         return await withClient(context, async (client) => {
+            let errors = 0;
+            let hardFails = 0;
+            const watch = new StopWatch();
+
             const result = await client.query("select * from notification_birthdays");
             let messages: ExpoPushMessage[] = [];
 
@@ -112,6 +118,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
 
                         if (ticket.status === "error" && ticket.details != null) {
                             // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+                            ++errors;
 
                             if (ticket.details.error === "DeviceNotRegistered") {
                                 const pushToken = chunk[i].to;
@@ -128,13 +135,30 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                         }
                     }
                 } catch (error) {
+                    ++hardFails;
                     console.error(error);
                 }
             }
 
+            await writeJobLog(client, "notifications::sendBirthday", true, {
+                recipients: result.rowCount,
+                errors,
+                hardFails,
+                executionTime: watch.stop(),
+            });
+
             return true;
         });
     } catch (e) {
+        try {
+            await withClient(context, async (client) => {
+                await writeJobLog(client, "notifications::sendBirthday", false, {
+                    error: e
+                });
+            })
+        }
+        catch { }
+
         console.error(e);
         throw e;
     }

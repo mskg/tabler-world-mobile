@@ -20,6 +20,7 @@ BEGIN;
 \i '05 structure.pgsql'
 \i '06 notifications_birthdays.pgsql'
 \i '07 search.pgsql'
+\i '08 jobs.pgsql'
 
 select count(*) as tablers from tabler;
 select count(*) as profiles from profiles;

@@ -2,7 +2,9 @@ import { Context } from "aws-lambda";
 import Expo, { ExpoPushTicket } from 'expo-server-sdk';
 import _ from "lodash";
 import { Client } from "pg";
+import { StopWatch } from "../helper/StopWatch";
 import { withClient } from "../helper/withClient";
+import { writeJobLog } from "../helper/writeJobLog";
 
 let expo = new Expo();
 
@@ -29,6 +31,12 @@ WHERE tokens @> ARRAY[$1]`,
 export async function handler(_event: any, context: Context, _callback: (error: any, success?: any) => void) {
     try {
         return await withClient(context, async (client) => {
+            let errors = 0;
+            let hardFails = 0;
+            let recipients = 0;
+
+            const watch = new StopWatch();
+
             const result = await client.query("select * from notification_receipts");
 
             for (let row of result.rows) {
@@ -45,6 +53,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                     // NOTE: Not all tickets have IDs; for example, tickets for notifications
                     // that could not be enqueued will have error information and no receipt ID.
                     if (ticket.status === "ok" && ticket.id) {
+                        ++recipients;
                         receiptIds.push(ticket.id);
                     }
                 }
@@ -65,7 +74,10 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                                 continue;
                             } else if (receipt.status === 'error') {
                                 console.error(`There was an error sending a notification: ${receipt.message}`);
+
                                 if (receipt.details && receipt.details.error) {
+                                    ++errors;
+
                                     // The error codes are listed in the Expo documentation:
                                     // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
                                     // You must handle the errors appropriately.
@@ -90,6 +102,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                             }
                         }
                     } catch (error) {
+                        ++hardFails;
                         console.error(error);
                     }
                 }
@@ -97,9 +110,26 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                 await client.query("delete from notification_receipts where id = $1", [rr.id]);
             }
 
+            await writeJobLog(client, "notifications::check", true, {
+                records: result.rowCount,
+                errors,
+                hardFails,
+                recipients,
+                executionTime: watch.stop(),
+            });
+
             return true;
         });
     } catch (e) {
+        try {
+            await withClient(context, async (client) => {
+                await writeJobLog(client, "notifications::check", false, {
+                    error: e
+                });
+            })
+        }
+        catch { }
+
         console.error(e);
         throw e;
     }
