@@ -104,7 +104,18 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
             "own?", nextProps.showOwntable,
             "areas", nextProps.areas);
 
-        const data = nextProps.data != null && nextProps.data.MembersOverview != null ? nextProps.data.MembersOverview : [];
+        const data = nextProps.data != null && nextProps.data.MembersOverview != null
+            ? nextProps.data.MembersOverview
+            : [];
+
+        if (nextProps.data && nextProps.data.OwnTable != null) {
+            data.push(...nextProps.data.OwnTable);
+        }
+
+        if (nextProps.data && nextProps.data.FavoriteMembers != null) {
+            data.push(...nextProps.data.FavoriteMembers);
+        }
+
         const me = nextProps.data != null && nextProps.data.Me != null ? nextProps.data.Me : undefined;
         logger.debug(me);
 
@@ -117,7 +128,9 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.state.dataSource.sortBy = nextProps.sortBy;
         this.state.dataSource.groupBy = nextProps.sortBy;
 
-        this.state.dataSource.update(data as IMemberOverviewFragment[]);
+        this.state.dataSource.update(
+            _(data).uniqBy(d => d.id).value() as IMemberOverviewFragment[]
+        );
 
         const res = this.state.dataSource.data.filter(s => s.title == this.state.letter);
 
@@ -202,16 +215,26 @@ const ConnectedMembersScreen = connect(
     }
 )(withTheme(MembersScreenBase));
 
-const MembersQuery = ({ fetchPolicy }) => (
-    <Query<GetMembersQueryType> query={GetMembersQuery} fetchPolicy={fetchPolicy}>
+const MembersQuery = ({ fetchPolicy, areas }) => (
+    <Query<GetMembersQueryType>
+        query={GetMembersQuery}
+        fetchPolicy={fetchPolicy}
+        variables={{
+            areas: areas != null ? _(areas)
+                .keys()
+                .filter(k => k !== "length")
+                .map(a => a.replace(/[^\d]/g, ""))
+                .map(a => parseInt(a, 10))
+                .value()
+            : null,
+        }}
+    >
         {({ loading, data, error, refetch }) => {
-            logger.debug("render");
             let isLoading = loading;
 
             if (error) throw error;
             if (!loading && (data == null || data.MembersOverview == null)) {
                 setTimeout(() => {
-                    logger.debug("********** Refetching");
                     refetch();
                 });
 
@@ -223,6 +246,11 @@ const MembersQuery = ({ fetchPolicy }) => (
     </Query>
 );
 
-const MembersQueryWithCacheInvalidation = withCacheInvalidation("members", MembersQuery);
+const MembersQueryWithCacheInvalidation = withCacheInvalidation(
+    "members",
+    connect((s: IAppState) => ({
+        areas: s.filter.member.area
+    }))(MembersQuery)
+);
 
 export const MembersScreen = withWhoopsErrorBoundary(MembersQueryWithCacheInvalidation);

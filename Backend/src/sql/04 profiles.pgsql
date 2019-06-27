@@ -185,3 +185,11 @@ TABLESPACE pg_default;
 CREATE INDEX idx_email_removed
 ON public.profiles USING btree (rtemail, removed)
 TABLESPACE pg_default;
+
+CREATE INDEX idx_profiles_association_area
+ON public.profiles USING btree (association, area, removed)
+TABLESPACE pg_default;
+
+CREATE INDEX idx_profiles_association
+ON public.profiles USING btree (association, removed)
+TABLESPACE pg_default;

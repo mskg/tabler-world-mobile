@@ -36,7 +36,7 @@ export const INITIAL_STATE: IAppState = {
     member: {
       showFavorites: true,
       showOwntable: true,
-      area: null,
+      area: [],
       favorites: {},
     }
   }

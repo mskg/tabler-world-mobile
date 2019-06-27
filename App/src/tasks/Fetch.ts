@@ -1,15 +1,42 @@
+import { NormalizedCacheObject } from 'apollo-cache-inmemory';
+import ApolloClient, { OperationVariables } from 'apollo-client';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
+import { DocumentNode } from 'graphql';
+import _ from 'lodash';
 import { Audit } from "../analytics/Audit";
 import { AuditEventName } from '../analytics/AuditEventName';
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
+import { MaxTTL } from '../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../helper/Logger';
+import { getReduxStore } from '../redux/getRedux';
 import { GetMembersQuery } from '../screens/Members/Queries';
 import { GetAreasQuery, GetAssociationsQuery, GetClubsQuery } from '../screens/Structure/Queries';
 
 const FETCH_TASKNAME = "update-contacts";
 const logger = new Logger(Categories.Sagas.Fetch);
 const INTERVAL = 60 * 60 * (24 / 4);
+
+async function updateCache(client: ApolloClient<NormalizedCacheObject>, query: DocumentNode, field: keyof typeof MaxTTL, variables?: OperationVariables) {
+    logger.log("Fetching", field);
+
+    await client.query({
+        query,
+        fetchPolicy: "network-only",
+        variables,
+    });
+
+    await client.writeData({
+        data: {
+            LastSync: {
+                __typename: 'LastSync',
+                [field]: Date.now()
+            }
+        },
+    });
+
+    await getPersistor().persist();
+}
 
 async function runBackgroundFetch() {
     const timer = Audit.timer(AuditEventName.BackgroundSync);
@@ -19,32 +46,22 @@ async function runBackgroundFetch() {
 
         const client = await bootstrapApollo();
 
-        // remove for testing purposes
-        // await client.cache.reset();
+        const areas = getReduxStore().getState().filter.member.area;
 
-        await client.query({
-            query: GetMembersQuery,
-            fetchPolicy: "network-only",
+        // could be fetched in one query
+        await updateCache(client, GetMembersQuery, "members", {
+            areas: areas != null ? _(areas)
+                .keys()
+                .filter(k => k !== "length")
+                .map(a => a.replace(/[^\d]/g, ""))
+                .map(a => parseInt(a, 10))
+                .value()
+                : null
         });
-        await getPersistor().persist();
 
-        await client.query({
-            query: GetClubsQuery,
-            fetchPolicy: "network-only",
-        });
-        await getPersistor().persist();
-
-        await client.query({
-            query: GetAreasQuery,
-            fetchPolicy: "network-only",
-        });
-        await getPersistor().persist();
-
-        await client.query({
-            query: GetAssociationsQuery,
-            fetchPolicy: "network-only",
-        });
-        await getPersistor().persist();
+        await updateCache(client, GetClubsQuery, "clubs");
+        await updateCache(client, GetAreasQuery, "areas");
+        await updateCache(client, GetAssociationsQuery, "associations");
 
         const result = BackgroundFetch.Result.NewData;
 

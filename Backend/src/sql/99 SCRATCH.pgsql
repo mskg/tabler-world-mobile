@@ -21,3 +21,8 @@ select * from notification_birthdays
 select * from jobhistory
 order by runon desc
 limit 10
+
+
+
+select jsonb_array_elements_text(settings->'favorites')::int
+from usersettings

@@ -7,6 +7,7 @@ const de: I18NType = {
         title: "Oooops?",
         try: "Wiederholen",
         partialData: "Daten konnten nicht geladen werden. Es werden gespeicherte Daten angezeigt.",
+        refresh: "Aktualisieren"
     },
 
     Image: {
@@ -176,6 +177,8 @@ const de: I18NType = {
             facebook: "Facebook",
             instagram: "Instagram",
             twitter: "Twitter",
+
+            clipboard: "Text kopiert",
         },
     },
 

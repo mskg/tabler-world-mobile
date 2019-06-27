@@ -10,9 +10,7 @@ export const constructContext = ({ event, context }: Params): IApolloContext => 
     let principal = resolveUser(event);
 
     const logger = new Logger(event.requestContext.requestId, principal.id);
-    logger.log("Resolved user", principal);
-
-    const requestCache = {};
+    logger.log("Constructing new context for principal", principal);
 
     return ({
         lambdaEvent: event,
@@ -20,7 +18,7 @@ export const constructContext = ({ event, context }: Params): IApolloContext => 
 
         cache: cacheInstance,
         logger,
-        requestCache,
+        requestCache: {},
         principal,
     });
 }

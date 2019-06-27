@@ -8,6 +8,8 @@
 - Club page no longer shows honory members as members, fixes #8
 - Removed null value from favorites
 - Removed // from tel url, fixes #20
+- Workarrounds for Android behavior of text selection, resolves #21
+- Fixed cache invalidation not resolving local data
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
@@ -15,6 +17,8 @@
 - Pictures on member/club page can now be "zoomed"
 - Favorites are restored from cloud after relogin, reinstallation, resolves #10
 - Reworked filtering and authentication via lambda, resolves #19
+- Local data is now based on members filter (no area, local table and favorites by default)
+- Allow retry in case of fetch errors on detail pages (member, club)
 
 ## Operations
 - Reworked deployment
@@ -24,6 +28,7 @@
 - Custom domain and certificates for api
 - Enforced rate limiting
 - Removed schema introspection from production
+- Removed double pooling in favor of pgbouncer
 
 # v0.8
 Beta build, for internal testing only

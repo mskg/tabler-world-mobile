@@ -115,10 +115,18 @@ export const Member = gql`
         companies: [Company]
     }
 
-    extend type Query {
-        MembersOverview: [MemberListView!]!
-        # Members(state: String, cursor: String, limit: Int): PaggedMemberResult!
+    input MemberFilterInput {
+        areas: [Int!]
+    }
 
+    extend type Query {
+        #MembersList (filter: MemberFilterInput!): [MemberListView!]!
+
+        OwnTable: [Member!]!
+        FavoriteMembers: [Member!]!
+
+        # leave for compat with existing clint
+        MembersOverview(filter: MemberFilterInput): [MemberListView!]!
 
         Member (id: Int!): Member
         Members (ids: [Int]!): [Member!]

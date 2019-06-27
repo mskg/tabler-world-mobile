@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { IWhoAmI } from '../../model/IWhoAmI';
-import { MembersOverviewFragment } from '../Member/Queries';
+import { FullDetailsFragment, MembersOverviewFragment } from '../Member/Queries';
 
 export const GetLastSyncQuery = gql`
     query LastSync {
@@ -35,23 +35,37 @@ export const MeFragment = gql`
 `;
 
 export const GetMembersQuery = gql`
-  query GetMembersQuery {
+  query GetMembersQuery ($areas: [Int!]) {
     Me {
        ...MeFragment
     }
 
-    MembersOverview {
+    OwnTable {
+        ...MembersOverviewFragment
+        ...FullDetailsFragment
+    }
+
+    FavoriteMembers {
+        ...MembersOverviewFragment
+        ...FullDetailsFragment
+    }
+
+    MembersOverview (filter:{areas: $areas}) {
         ...MembersOverviewFragment
     }
   }
 
+  ${FullDetailsFragment}
   ${MembersOverviewFragment}
   ${MeFragment}
 `;
 
 export type GetMembersQueryType = {
     Me: GetMembersQueryType_Me,
-    MembersOverview: GetMembersQueryType_MembersOverview,
+    MembersOverview: GetMembersQueryType_MembersOverview[],
+
+    OwnTable: GetMembersQueryType_MembersOverview[],
+    FavoriteMembers: GetMembersQueryType_MembersOverview[],
 };
 
 export type GetMembersQueryType_Me = {
