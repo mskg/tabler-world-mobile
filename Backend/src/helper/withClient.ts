@@ -2,62 +2,43 @@
 import { Context } from "aws-lambda";
 import { RDS } from "aws-sdk";
 import { Client } from "pg";
-import Pool from "pg-pool";
-
-let pool: any = null;
 
 export async function withClient<T>(ctx: Context, func: (client: Client) => Promise<T>): Promise<T> {
-    if (pool == null) {
-        console.log("Pool does not exist.");
-
-        function PLClient() {
-            console.log("Creating new connection");
-
-            let password = process.env.db_password;
-            if (password == null || password === "") {
-                console.log("-> with token");
-
-                const sign = new RDS.Signer();
-                password = sign.getAuthToken({
-                    region: process.env.AWS_REGION,
-                    hostname: process.env.db_host,
-                    port: 5432,
-                    username: process.env.db_user,
-                });
-            }
-
-            return new Client({
-                host: process.env.db_host,
-                port: 5432,
-                user: process.env.db_user,
-                database: process.env.db_database,
-                ssl: true,
-                password: password,
-            });
-        }
-
-        //@ts-ignore (wrong!)
-        // times must be shorter than execution time?
-        pool = new Pool({
-            idleTimeoutMillis: 60 * 1000,
-            connectionTimeoutMillis: 10 * 1000,
-        }, PLClient);
-    }
     ctx.callbackWaitsForEmptyEventLoop = false;
 
-    let con: any = null;
+    let password = process.env.db_password;
+    if (password == null || password === "") {
+        console.log("[withDatabase]", "-> with token");
+
+        const sign = new RDS.Signer();
+        password = sign.getAuthToken({
+            region: process.env.AWS_REGION,
+            hostname: process.env.db_host,
+            port: 5432,
+            username: process.env.db_user,
+        });
+    }
+
+    const client = new Client({
+        host: process.env.db_host,
+        port: 5432,
+        user: process.env.db_user,
+        database: process.env.db_database,
+        ssl: true,
+        password,
+    });
 
     try {
-        con = await pool.connect();
-        return await func(con);
+        await client.connect();
+
+        client.on("error", (...args: any[]) => console.error("[withDatabase] [SQL]", ...args));
+        return await func(client);
     } finally {
         try {
-            if (con != null) {
-                await con.release();
-            }
+            await client.end();
         }
         catch (e) {
-            console.error("Failed to close connection", e);
+            console.error("[withDatabase]", "Failed to close connection", e);
         }
     }
 }

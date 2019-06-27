@@ -46,7 +46,6 @@ export const MemberSyncResolver = {
                 async (client) => {
                     let { cursor, limit: strLimit, state: ts } = args;
 
-                    const filterContext = await context.filterContext();
                     context.logger.log("diffMembers", "ts", ts, "cursor", cursor, "limit", strLimit);
 
                     // the ts that we have been given
@@ -115,7 +114,7 @@ export const MemberSyncResolver = {
                                 };
                             }
 
-                            return filter(filterContext, r);
+                            return filter(context.principal, r);
                         }),
                         response_metadata: metadata,
                     };

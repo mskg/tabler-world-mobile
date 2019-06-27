@@ -18,4 +18,8 @@ export const SearchMember = gql`
         nodes: [MemberListView]
         pageInfo: PageInfo!
     }
+
+    extend type Query {
+        SearchMember(query: MemberQueryInput!, after: String): SearchMemberConnection!
+    }
 `;

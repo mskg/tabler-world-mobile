@@ -15,7 +15,7 @@ type OwnProps = {
 };
 
 type StateProps = {
-    errors: ISnack[],
+    snacks: ISnack[],
 };
 
 type DispatchPros = {
@@ -29,7 +29,7 @@ export class SnacksBase extends React.Component<Props, State> {
 
     constructor(props) {
         super(props);
-        this.state = { visible: this.props.errors.length > 0 };
+        this.state = { visible: this.props.snacks.length > 0 };
     }
 
     componentDidMount() {
@@ -41,7 +41,7 @@ export class SnacksBase extends React.Component<Props, State> {
     }
 
     componentWillUpdate(nextProps) {
-        if (nextProps.errors !== this.props.errors) {
+        if (nextProps.snacks !== this.props.snacks) {
             // give time to fade-in
             setTimeout(() => {
                 // need to check if component is still there
@@ -49,7 +49,7 @@ export class SnacksBase extends React.Component<Props, State> {
                 // authentication errors
                 if (this.mounted) {
                     this.setState({
-                        visible: nextProps.errors.length > 0
+                        visible: nextProps.snacks.length > 0
                     });
                 }
             }, 200);
@@ -64,18 +64,30 @@ export class SnacksBase extends React.Component<Props, State> {
     }
 
     render() {
+        if (this.props.navigation != null)
+        console.log(this.props.navigation != null);
+
+        const snack = this.props.snacks && this.props.snacks.length > 0 ? this.props.snacks[0] : undefined;
+        if (!snack) return null;
+
         return (
             <Portal>
                 <Snackbar
                     style={{ bottom: BOTTOM_HEIGHT + 10 }}
                     visible={this.state.visible}
                     onDismiss={this._onDismiss}
-                    duration={Snackbar.DURATION_MEDIUM}
-                    action={{
-                        label: I18N.SnackBar.dismiss,
-                        onPress: () => { },
-                    }}>
-                    {this.props.errors.length > 0 ? this.props.errors[0].message : null}
+                    duration={snack.duration || Snackbar.DURATION_MEDIUM}
+
+                    action={snack.action
+                        ? snack.action
+                        : snack.hideAction
+                            ? undefined
+                            : {
+                                label: I18N.SnackBar.dismiss,
+                                onPress: () => { },
+                            }}>
+
+                    {snack.message}
                 </Snackbar>
             </Portal>
         );
@@ -84,7 +96,7 @@ export class SnacksBase extends React.Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state: IAppState): StateProps => {
     return {
-        errors: state.snacks,
+        snacks: state.snacks,
     }
 };
 

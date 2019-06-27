@@ -9,6 +9,7 @@ import { FABGroup } from '../../components/FABGroup';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../model/Features';
 import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
 import { HashMap } from '../../model/Maps';
@@ -85,11 +86,13 @@ class ActionsFabBase extends React.Component<Props> {
             color: isFav ? this.props.theme.colors.accent : undefined
           },
 
-          {
-            icon: 'contacts',
-            label: I18N.Member.Actions.contact,
-            onPress: this._contact
-          },
+          isFeatureEnabled(Features.SendToAdressbook)
+            ? {
+              icon: 'contacts',
+              label: I18N.Member.Actions.contact,
+              onPress: this._contact
+            }
+            : undefined,
 
           OpenLink.canOpenUrl() ?
             {

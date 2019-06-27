@@ -1,7 +1,7 @@
 import { ActionSheetProps, connectActionSheet } from '@expo/react-native-action-sheet';
 import _ from 'lodash';
 import React from 'react';
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { logger } from '../../analytics/Types';
@@ -397,7 +397,7 @@ class ProfileBase extends React.Component<Props, State> {
                                     <Element
                                         key={i + "-" + j}
                                         field={v.field}
-                                        onPress={v.onPress}
+                                        onPress={v.onPress || (Platform.OS == "android" ? s.onPress : undefined)}
                                         text={v.text} />
                                 ))
                             }

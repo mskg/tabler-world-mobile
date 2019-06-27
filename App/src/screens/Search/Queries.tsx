@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { MembersOverviewFragment } from '../Member/Queries';
 
 export const AreasQuery = gql`
     query AreasQuery {
@@ -70,36 +71,7 @@ export const SearchQuery = gql`
     query Search($text: String!, $after: String, $areas: [String], $roles: [String], $clubs: [String]) {
         SearchMember(query: { text: $text, areas: $areas, roles: $roles, clubs: $clubs }, after: $after) @connection(key: "SearchMember") {
             nodes {
-                ... on MemberListView {
-                    id
-                    pic
-
-                    firstname
-                    lastname
-
-                    club {
-                        id
-                        club
-                        name
-                    }
-
-                    area {
-                        id
-                        area
-                    }
-
-                    roles {
-                        name
-                        level
-                        group
-
-                        ref {
-                            id
-                            name
-                            type
-                        }
-                    }
-                }
+                ...MembersOverviewFragment
             }
 
             pageInfo {
@@ -108,4 +80,6 @@ export const SearchQuery = gql`
             }
         }
     }
+
+    ${MembersOverviewFragment}
 `;

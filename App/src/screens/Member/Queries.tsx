@@ -43,12 +43,9 @@ export const MembersOverviewFragment = gql`
     }
 `;
 
-export const GetMemberQuery = gql`
-  query Member($id: Int!) {
-    Member(id: $id) {
-        ...MembersOverviewFragment
-
-        LastSync @client
+export const FullDetailsFragment = gql`
+    fragment FullDetailsFragment on Member {
+        # LastSync @client
 
         birthdate
         partner
@@ -108,8 +105,20 @@ export const GetMemberQuery = gql`
             instagram
         }
     }
+`;
+
+
+export const GetMemberQuery = gql`
+  query Member($id: Int!) {
+    Member(id: $id) {
+        LastSync @client
+
+        ...MembersOverviewFragment
+        ...FullDetailsFragment
+    }
   }
 
+  ${FullDetailsFragment}
   ${MembersOverviewFragment}
 `;
 

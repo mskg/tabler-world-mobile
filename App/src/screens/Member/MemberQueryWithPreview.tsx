@@ -15,36 +15,50 @@ class MemberQueryWithPreview extends PureComponent<{
     addSnack: typeof addSnack;
 }> {
     render() {
-        return (<Query<GetMemberQueryType> query={GetMemberQuery} variables={{
-            id: this.props.id
-        }}>
+        return (<Query<GetMemberQueryType>
+            query={GetMemberQuery}
+            variables={{
+                id: this.props.id
+            }}
+        >
             {({ client, loading, data, error, refetch }) => {
                 let preview = null;
+
                 if ((loading || error) && (data == null || data.Member == null)) {
                     try {
                         preview = client.readFragment({
                             id: "Member:" + this.props.id,
                             fragment: MembersOverviewFragment
                         });
+
                         logger.log("found preview", preview);
                     }
                     catch (e) {
                         logger.log(e, "Failed to read fragment");
                     }
                 }
+
                 if (error && !preview) {
                     throw error;
                 }
                 else if (error && preview) {
                     setTimeout(() => this.props.addSnack({
                         message: I18N.Whoops.partialData,
+                        action: {
+                            label: I18N.Whoops.refresh,
+                            onPress: () => refetch({
+                                id: this.props.id
+                            }),
+                        }
                     }));
                 }
+
                 if (data && data.Member != null) {
                     if (!isRecordValid("member", data.Member.LastSync)) {
                         setTimeout(() => refetch());
                     }
                 }
+
                 return React.cloneElement(this.props.children, {
                     loading: loading,
                     member: loading ? undefined : data,
@@ -56,4 +70,4 @@ class MemberQueryWithPreview extends PureComponent<{
 }
 
 export const MemberQueryWithPreviewAndInvalidation =
-        connect(null, { addSnack })(MemberQueryWithPreview);
+    connect(null, { addSnack })(MemberQueryWithPreview);

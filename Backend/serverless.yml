@@ -6,6 +6,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-plugin-aws-alerts
   - serverless-dynamodb-local
+  - serverless-domain-manager
 
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -27,19 +28,31 @@ custom:
     Fn::ImportValue: DatabaseHostId
   db_user_default: lambda_${self:custom.stage}
 
-  pool:
-    Fn::ImportValue: CognitoUserPoolArn-${self:custom.stage}
-
   db_host: ${env:DB_HOST, self:custom.db_host_import}
   db_user: ${env:DB_USER, self:custom.db_user_default}
   db_database: ${env:DB_DATABASE, self:custom.stage}
   db_password: ${env:DB_PASSWORD}
   cache_table: tablerworld-gqlqc-${self:custom.stage}
 
+  domainname: ${self:custom.stage}.api.tabler-world.mskg.app
+
   cron_rate:
     dev: rate(24 hours)
     test: rate(12 hours)
     prod: rate(4 hours)
+
+  throttle:
+    dev:
+      burstLimit: 10
+      rateLimit: 5
+
+    test:
+      burstLimit: 40
+      rateLimit: 20
+
+    prod:
+      burstLimit: 200
+      rateLimit: 100
 
   cron_enabled:
     dev: false
@@ -83,6 +96,12 @@ custom:
     stages:
       - dev
 
+  customDomain:
+    domainName: ${self:custom.domainname}
+    certificateName: '*.api.tabler-world.mskg.app'
+    createRoute53Record: true
+    endpointType: 'regional'
+
 # individually would result in the same package three times
 package:
   individually: false
@@ -95,11 +114,23 @@ provider:
   runtime: nodejs10.x
 
   memorySize: 128
-  timeout: 20
   versionFunctions: false
+
+  apiKeys:
+    - keys:
+      - name: tabler-world-api-${self:custom.stage}
+        value: tabler-world-api-key-lambda-authorizer-${self:custom.stage}
 
   apiGateway:
     minimumCompressionSize: 1024
+    apiKeySourceType: AUTHORIZER
+
+  # Limited by API Keys
+  usagePlan:
+    - keys:
+        throttle:
+          burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
+          rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
 
   # global vpc definition
   vpc:
@@ -271,18 +302,20 @@ functions:
           method: post
           cors: true
           authorizer:
-            type: COGNITO_USER_POOLS
+            type: CUSTOM
             authorizerId:
-              Ref: ApiGatewayAuthorizer
+              Ref: CustomApiGatewayAuthorizer
+          private: true
 
       - http:
           path: graphql
           method: get
           cors: true
           authorizer:
-            type: COGNITO_USER_POOLS
+            type: CUSTOM
             authorizerId:
-              Ref: ApiGatewayAuthorizer
+              Ref: CustomApiGatewayAuthorizer
+          private: true
 
 resources:
   Resources:
@@ -324,20 +357,41 @@ resources:
       Properties:
         RetentionInDays: "7"
 
-    ApiGatewayAuthorizer:
+    LambdaPermissionAuthorizerApiGateway:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName:
+          Fn::ImportValue: AuthorizerArn-${self:custom.stage}
+        Action: lambda:InvokeFunction
+        Principal: apigateway.amazonaws.com
+
+    # https://docs.amazonaws.cn/en_us/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html
+    CustomApiGatewayAuthorizer:
       DependsOn:
         - ApiGatewayRestApi
       Type: AWS::ApiGateway::Authorizer
       Properties:
-        Name: ${self:custom.stage}
+        Name: lambda-${self:custom.stage}
         IdentitySource: method.request.header.Authorization
+        AuthorizerResultTtlInSeconds: 3600
         RestApiId:
           Ref: ApiGatewayRestApi
-        Type: COGNITO_USER_POOLS
-        ProviderARNs:
-          - ${self:custom.pool}
+        Type: TOKEN
+        AuthorizerUri:
+         Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
+            - "/invocations"
 
   Outputs:
+    ApiUrl:
+      Value: ${self:custom.domainname}
+      Export:
+        Name: ApiUrl-${self:custom.stage}
+
     ApiGatewayRestApiId:
       Value:
         Ref: ApiGatewayRestApi

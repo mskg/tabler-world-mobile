@@ -14,17 +14,17 @@ export const TokenResolver = {
                     // merges the token with all existing tokens
                     // duplicate tokens are removed
                     await client.query(`
-INSERT INTO appsettings(username, tokens)
+INSERT INTO usersettings(id, tokens)
 VALUES ($1, ARRAY[$2])
-ON CONFLICT (username) DO UPDATE
+ON CONFLICT (id) DO UPDATE
     SET tokens =
     (
         SELECT ARRAY(
-            SELECT DISTINCT unnest(array_cat(appsettings.tokens, excluded.tokens))
+            SELECT DISTINCT unnest(array_cat(usersettings.tokens, excluded.tokens))
         ORDER BY 1)
     )`,
                         //@ts-ignore
-                        [context.principal.email, args.token]);
+                        [context.principal.id, args.token]);
 
                     return true;
                 }
@@ -40,16 +40,16 @@ ON CONFLICT (username) DO UPDATE
                     // merges the token with all existing tokens
                     // duplicate tokens are removed
                     await client.query(`
-UPDATE appsettings
+UPDATE usersettings
 SET tokens =
 (
     select array_agg(elem)
     from unnest(tokens) elem
     where elem <> $2 and elem is not null
 )
-WHERE username = $1`,
+WHERE id = $1`,
                         //@ts-ignore
-                        [context.principal.email, args.token]);
+                        [context.principal.id, args.token]);
 
                     return true;
                 }

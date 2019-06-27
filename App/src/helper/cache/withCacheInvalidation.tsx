@@ -43,7 +43,7 @@ export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
         logger.debug(type, "*** REFETCHING DATA ***");
         return false;
     } else {
-        logger.log(type, "*** DATA IS VALID ***",
+        logger.log(type, "*** IS VALID ***",
             "age", age / MS_PER_MINUTE,
             "last fetch", new Date(val),
             "not older than", new Date(compareDate));
@@ -79,15 +79,16 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
         const client = cachedAolloClient();
 
         const syncDate = this.checkLastSync(client);
-        const older = isRecordValid(this.props.field, syncDate);
+        const valid = isRecordValid(this.props.field, syncDate);
 
         let policy: WatchQueryFetchPolicy | undefined;
 
-        if (older) {
+        if (!valid) {
             policy = "cache-and-network";
 
             // defer update
-            setTimeout(() =>
+            setTimeout(() => {
+                logger.debug(this.props.field, "*** SETTING NEW TIMESTAMP ***");
                 client.writeData({
                     data: {
                         LastSync: {
@@ -95,7 +96,8 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
                             [this.props.field]: Date.now()
                         }
                     },
-                }));
+                })
+            }, 100);
         }
 
         return policy;

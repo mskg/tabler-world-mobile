@@ -15,6 +15,14 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
 REFRESH MATERIALIZED VIEW structure_tabler_roles;
 REFRESH MATERIALIZED VIEW structure;
 
+select * from notification_birthdays
+
 
 select * from jobhistory
-order by runon
+order by runon desc
+limit 10
+
+
+
+select jsonb_array_elements_text(settings->'favorites')::int
+from usersettings

@@ -1,5 +1,6 @@
 import { merge } from "lodash";
 import { AddressResolver } from "./Address";
+import { JobsResolver } from "./Jobs";
 import { MemberResolver } from "./Member";
 import { RolesResolver } from "./Roles";
 import { SearchMemberResolver } from "./Search";
@@ -17,4 +18,5 @@ export const resolvers = merge(
     TokenResolver,
     SettingsResolver,
     AddressResolver,
+    JobsResolver,
 );

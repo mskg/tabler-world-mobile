@@ -74,7 +74,7 @@ export const Member = gql`
 
     type Member implements MemberListView {
         id: Int!
-        removed: Boolean
+        #removed: Boolean
 
         pic: String
 
@@ -113,5 +113,22 @@ export const Member = gql`
         socialmedia: SocialMedia
         educations: [Education]
         companies: [Company]
+    }
+
+    input MemberFilterInput {
+        areas: [Int!]
+    }
+
+    extend type Query {
+        #MembersList (filter: MemberFilterInput!): [MemberListView!]!
+
+        OwnTable: [Member!]!
+        FavoriteMembers: [Member!]!
+
+        # leave for compat with existing clint
+        MembersOverview(filter: MemberFilterInput): [MemberListView!]!
+
+        Member (id: Int!): Member
+        Members (ids: [Int]!): [Member!]
     }
 `;

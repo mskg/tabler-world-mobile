@@ -39,17 +39,17 @@ export const cache = new InMemoryCache({
 
     cacheRedirects: {
         Query: {
-            Association: (_, args, { getCacheKey }) =>
-                getCacheKey({ __typename: 'Association', id: args }),
+            // Association: (_, args, { getCacheKey }) =>
+            //     getCacheKey({ __typename: 'Association', id: args.id }),
 
-            Area: (_, args, { getCacheKey }) =>
-                getCacheKey({ __typename: 'Area', id: args }),
+            // Area: (_, args, { getCacheKey }) =>
+            //     getCacheKey({ __typename: 'Area', id: args.id }),
 
             Club: (_, args, { getCacheKey }) =>
-                getCacheKey({ __typename: 'Club', id: args }),
+                getCacheKey({ __typename: 'Club', id: args.id }),
 
             Member: (_, args, { getCacheKey }) =>
-                getCacheKey({ __typename: 'Member', id: args }),
+                getCacheKey({ __typename: 'Member', id: args.id }),
 
             Members: (_, args, { getCacheKey }) =>
                 args.ids.map(id =>

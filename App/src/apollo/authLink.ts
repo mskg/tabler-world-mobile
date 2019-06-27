@@ -13,6 +13,7 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
     try {
         const session = await Auth.currentSession();
         const cred = await Auth.currentCredentials();
+
         const token = session.getIdToken().getJwtToken();
 
         // logger.debug(session.getRefreshToken());

@@ -2,10 +2,12 @@ import { ApolloServer } from 'apollo-server-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
 import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
+import { NoIntrospection } from './helper/NoIntrospection';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
 import { resolvers } from './resolvers';
 import { schema } from './schema';
+
 
 const extensions: any[] = [
   () => new LogErrorsExtension(),
@@ -22,6 +24,8 @@ const server = new ApolloServer({
     typeDefs: schema,
     resolvers,
   }),
+
+  validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
 
   // cacheControl: {
   //   // defaultMaxAge: 60*60*24,

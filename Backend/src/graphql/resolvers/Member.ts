@@ -2,23 +2,50 @@ import { IApolloContext } from "../types/IApolloContext";
 import { getMemberReader } from "./helper";
 import { MemberReader } from "./MemberReader";
 
-type MembersArgs = {
-    state?: string,
-    cursor?: string,
-    limit?: number,
-}
+// type MembersArgs = {
+//     state?: string,
+//     cursor?: string,
+//     limit?: number,
+// };
 
 type IdArgs = {
     id: number,
-}
+};
 
 type IdsArgs = {
     ids: number[],
-}
+};
+
+type MemberFilter = {
+    filter: {
+        areas?: number[],
+    }
+};
+
+const cols = [
+    "id",
+
+    "pic",
+
+    "firstname",
+    "lastname",
+
+    "association",
+    "associationname",
+
+    "area",
+    "areaname",
+
+    "club",
+    "clubname",
+
+    "roles"
+];
+
 
 export const MemberResolver = {
     Member: {
-        area: (root: any, _args: IdArgs, _context: IApolloContext) => {
+        area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 id: root.association + "_" + root.area,
                 association: root.association,
@@ -27,7 +54,7 @@ export const MemberResolver = {
             }
         },
 
-        club: (root: any, _args: IdArgs, _context: IApolloContext) => {
+        club: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 id: root.association + "_" + root.club,
                 club: root.club, // needs to be added to allow subsent resolvers to work
@@ -37,7 +64,7 @@ export const MemberResolver = {
             }
         },
 
-        association: (root: any, _args: IdArgs, _context: IApolloContext) => {
+        association: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 name: root.associationname,
                 association: root.association,
@@ -46,28 +73,22 @@ export const MemberResolver = {
     },
 
     Query: {
-        MembersOverview: async (_root: any, _args: MembersArgs, context: IApolloContext) => {
-            const cols = [
-                "id",
+        MembersOverview: async (_root: any, args: MemberFilter, context: IApolloContext) => {
+            const mr = new MemberReader(context, cols.join(","));
 
-                "pic",
+            if (args.filter != null && args.filter.areas != null) {
+                return mr.readByTableAndAreas(args.filter.areas);
+            }
 
-                "firstname",
-                "lastname",
+            return mr.readAll();
+        },
 
-                "association",
-                "associationname",
+        FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
+            return getMemberReader(context).readFavorites();
+        },
 
-                "area",
-                "areaname",
-
-                "club",
-                "clubname",
-
-                "roles"
-            ];
-
-            return new MemberReader(context, cols.join(",")).readAll();
+        OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
+            return getMemberReader(context).readClub(context.principal.association, context.principal.club);
         },
 
         Members: (_root: any, args: IdsArgs, context: IApolloContext) => {

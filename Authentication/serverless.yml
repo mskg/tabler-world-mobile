@@ -102,6 +102,16 @@ provider:
           
 functions:
   #
+  # Authorizer
+  #
+  authorizer: 
+    handler: src/authorizer/lambda.handler
+
+    environment:
+      UserPoolId:
+        Ref: CognitoUserPoolMyUserPool   
+
+  #
   # Auth Challenge
   #
   challenge:
@@ -279,6 +289,14 @@ resources:
 
   # Print out the Id of the User Pool and Identity Pool that are created
   Outputs:
+    AuthorizerArn:
+      Value:
+        Fn::GetAtt:
+          - AuthorizerLambdaFunction
+          - Arn
+      Export:
+        Name: AuthorizerArn-${self:custom.stage}        
+
     UserPoolArn:
       Value:
         Fn::GetAtt: 

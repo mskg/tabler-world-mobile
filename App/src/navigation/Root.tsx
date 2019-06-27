@@ -85,6 +85,7 @@ const Navigator = createAppContainer(createStackNavigator(
     {
         initialRouteName: Routes.Home,
         headerMode: 'none',
+
     }
 ));
 

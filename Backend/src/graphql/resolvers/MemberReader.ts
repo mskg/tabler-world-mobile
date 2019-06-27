@@ -6,28 +6,6 @@ import { filter } from "../privacy/filter";
 import { useDatabase } from "../rds/useDatabase";
 import { IApolloContext } from "../types/IApolloContext";
 
-// const gzipPromise = (input: any) => {
-//     const promise = new Promise(function (resolve, reject) {
-//         gzip(input, { level: 9 }, function (error, result) {
-//             if (!error) resolve(result);
-//             else reject(error);
-//         });
-//     });
-
-//     return promise;
-// };
-
-// const ungzipPromise = (input: any) => {
-//     const promise = new Promise(function (resolve, reject) {
-//         unzip(input, function (error, result) {
-//             if (!error) resolve(result);
-//             else reject(error);
-//         });
-//     });
-
-//     return promise;
-// };
-
 export class MemberReader {
     memberLoader: DataLoader<number, any>;
     rawLoader: DataLoader<number, any>;
@@ -48,9 +26,56 @@ export class MemberReader {
         );
     }
 
-    public async readAll(): Promise<any[] | null> {
+    public async readFavorites(): Promise<any[] | null> {
         this.context.logger.log("readAll");
 
+        return await useDatabase(
+            this.context,
+            async (client) => {
+                this.context.logger.log("executing readFavorites");
+
+                const res = await client.query(`
+select settings->'favorites' as favorites
+from usersettings
+where id = $1`, [this.context.principal.id]);
+
+
+                if (res.rowCount == 0) return [];
+
+                return this.memberLoader.loadMany(
+                    res.rows[0]["favorites"]
+                );
+            }
+        );
+    }
+
+    public async readByTableAndAreas(areas?: number[]): Promise<any[] | null> {
+        this.context.logger.log("readAll");
+
+        return await useDatabase(
+            this.context,
+            async (client) => {
+                this.context.logger.log("executing readByTableAndAreas");
+
+                const res = await client.query(`
+select ${this.columns}
+from profiles
+where
+        association = $1
+    and area = ANY ($2::int[])
+    and removed = FALSE`, [
+                        this.context.principal.association,
+                        areas,
+
+                    ]);
+
+                return res.rows;
+            }
+        );
+    }
+
+    public async readAll(): Promise<any[] | null> {
+        this.context.logger.log("readAll");
 
         return await useDatabase(
             this.context,
@@ -61,45 +86,12 @@ export class MemberReader {
 select ${this.columns}
 from profiles
 where
-removed = FALSE`, []);
+    association = $1
+and removed = FALSE`, [this.context.principal.association]);
 
                 return res.rows;
             }
         );
-
-        //     try {
-        //         // try {
-        //         const zipped = await writeThrough(
-        //             this.context,
-        //             "MembersOverview",
-        //             async () =>
-        //                 await gzipPromise(
-        //                     JSON.stringify(
-        //                         await useDatabase(
-        //                             this.context,
-        //                             async (client) => {
-        //                                 this.context.logger.log("executing readAll");
-
-        //                                 const res = await client.query(`
-        // select ${this.columns}
-        // from profiles
-        // where
-        //     removed = FALSE`, []);
-
-        //                                 return res.rows;
-        //                             }
-        //                         ))),
-        //             TTLs.MemberOverview);
-
-        //         return await JSON.parse(
-        //             await ungzipPromise(zipped) as string);
-        //     } catch (e) {
-        //         this.context.logger.error(e);
-
-        //         this.context.cache.delete("MembersOverview");
-        //         // return this.readAll();
-        //         return [];
-        //     }
     }
 
     public async readClub(association: string, club: number): Promise<any[] | null> {
@@ -161,9 +153,8 @@ where
                     TTLs.Member,
                 )
             )
-        ).then(async (members) => {
-            const filterContext = await this.context.filterContext();
-            return members.map(member => filter(filterContext, member));
+        ).then((members) => {
+            return members.map(member => filter(this.context.principal, member));
         })
     }
 

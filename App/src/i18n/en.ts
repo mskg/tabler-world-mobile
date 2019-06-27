@@ -8,6 +8,7 @@ const en = {
         title: "Whoops?",
         try: "Try Again",
         partialData: "Failed to load data from server, showing partial result",
+        refresh: "Refresh"
     },
 
     Image: {
@@ -175,6 +176,8 @@ const en = {
             facebook: "facebook",
             instagram: "instagram",
             twitter: "twitter",
+
+            clipboard: "Copied text",
         },
     },
 

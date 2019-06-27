@@ -3,10 +3,8 @@ import { gql } from 'apollo-server-lambda';
 export const Settings = gql`
     scalar SettingValue
 
-    enum SettingNames {
-        club
-        assoc
-        area
+    enum SettingName {
+        favorites
     }
 
     input SettingInput {
@@ -15,7 +13,12 @@ export const Settings = gql`
     }
 
     type Setting {
-        name: String!
+        name: SettingName!
         value: SettingValue!
+    }
+
+    extend type Query {
+        Settings: [Setting!]
+        Setting (name: SettingName!): SettingValue
     }
 `;

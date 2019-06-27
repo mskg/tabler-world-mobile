@@ -73,4 +73,13 @@ export const Structure = gql`
 
         members: [Member]
     }
+
+    extend type Query {
+        Associations: [Association!]
+        Clubs: [Club!]
+        Areas: [Area!]
+        Roles: [String!]
+
+        Club (id: String!): Club
+    }
 `;

@@ -21,7 +21,7 @@ export function* restoreSettingsFromCloud(a: typeof settingsActions.restoreSetti
     const result = yield client.query({
         query: gql`
 query Settings {
-  Setting (name: "favorites")
+  Setting (name: favorites)
 }`,
         fetchPolicy: "network-only"
     });
