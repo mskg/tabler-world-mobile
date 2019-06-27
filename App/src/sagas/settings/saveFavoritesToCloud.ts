@@ -24,7 +24,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
     const result = Object
         .keys(favorites)
         .map(f => parseInt(f, 10))
-        .filter(f => f != NaN && typeof (f) === "number");
+        .filter(f => !isNaN(f) && typeof (f) === "number");
 
     logger.debug(favorites, result);
 
