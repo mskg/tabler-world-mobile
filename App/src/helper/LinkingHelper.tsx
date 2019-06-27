@@ -42,7 +42,7 @@ export enum CallApps {
 }
 
 export const CallAppUrls = {
-    [CallApps.Default]: (nbr) => `tel://${normalizePhone(nbr)}`,
+    [CallApps.Default]: (nbr) => `tel:${normalizePhone(nbr)}`,
 }
 
 

@@ -7,6 +7,7 @@
 - Show own table now shows correct data, fixes #1
 - Club page no longer shows honory members as members, fixes #8
 - Removed null value from favorites
+- Removed // from tel url, fixes #20
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
