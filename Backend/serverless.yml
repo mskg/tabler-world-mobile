@@ -304,7 +304,7 @@ functions:
           authorizer:
             type: CUSTOM
             authorizerId:
-              Ref: ApiGatewayAuthorizer
+              Ref: CustomApiGatewayAuthorizer
           private: true
 
       - http:
@@ -314,7 +314,7 @@ functions:
           authorizer:
             type: CUSTOM
             authorizerId:
-              Ref: ApiGatewayAuthorizer
+              Ref: CustomApiGatewayAuthorizer
           private: true
 
 resources:
@@ -366,12 +366,12 @@ resources:
         Principal: apigateway.amazonaws.com
 
     # https://docs.amazonaws.cn/en_us/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html
-    ApiGatewayAuthorizer:
+    CustomApiGatewayAuthorizer:
       DependsOn:
         - ApiGatewayRestApi
       Type: AWS::ApiGateway::Authorizer
       Properties:
-        Name: ${self:custom.stage}
+        Name: lambda-${self:custom.stage}
         IdentitySource: method.request.header.Authorization
         AuthorizerResultTtlInSeconds: 3600
         RestApiId:
