@@ -16,10 +16,12 @@ export const styles = StyleSheet.create({
     title: {
         paddingTop: 16-10,
         marginVertical: 0,
+        paddingHorizontal: 16,
     },
 
     subTitle: {
         marginVertical: 0,
+        paddingHorizontal: 16,
     },
 
     titlePlaceholder: {
