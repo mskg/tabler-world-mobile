@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { TTLs } from "../cache/TTLs";
-import { Mutex } from "../Mutex";
+import { Mutex } from "../helper/Mutex";
 import { useDatabase } from "../rds/useDatabase";
 import { IApolloContext } from "../types/IApolloContext";
 import { ILogger } from "../types/ILogger";

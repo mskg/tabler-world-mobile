@@ -23,7 +23,7 @@ type BirthdayNotification = {
 
 async function removeToken(client: Client, email: string, token: string) {
     return await client.query(`
-UPDATE appsettings
+UPDATE usersettings
 SET tokens =
 (
     select array_agg(elem)

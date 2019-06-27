@@ -1,9 +1,9 @@
+import { IPrincipal } from "../types/IPrincipal";
 import { FieldNames } from "./FieldNames";
-import { FilterContext } from "./FilterContext";
 import { FilterLevel } from "./FilterLevel";
 import { AnyType } from "./WhiteList";
 
-export function calculateLevel(ctx: FilterContext, tabler: AnyType): FilterLevel {
+export function calculateLevel(ctx: IPrincipal, tabler: AnyType): FilterLevel {
     if (tabler[FieldNames.Id] === ctx.id) {
         return FilterLevel.SamePerson;
     }

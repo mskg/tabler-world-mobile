@@ -35,7 +35,7 @@ select u.id as userid, u.rtemail rtemail, a.tokens, p.id as bid, p.firstname, p.
 from
     notification_all_birthdays p,
     profiles u,
-    appsettings a
+    usersettings a
 
 where
         p.birthdate = birthdate(current_date)
@@ -64,7 +64,7 @@ where
         )
     )
 
-    and a.username = u.rtemail
+    and a.id = u.id
     and u.removed = false
 ;
 

@@ -3,19 +3,23 @@
   "author": "Markus Kling",
   "version": "0.0.1",
   "private": true,
-
   "dependencies": {
     "aws-sdk": "^2.382.0",
     "crypto-secure-random-digit": "^1.0.7",
     "fs": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.1",
     "pg": "^7.9.0",
-    "pg-pool": "^2.0.6"
+    "pg-pool": "^2.0.6",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
+    "@types/jsonwebtoken": "^8.3.2",
     "@types/node": "^10.12.29",
     "@types/pg": "^7.4.13",
     "@types/pg-pool": "0.0.3",
+    "@types/request": "^2.48.1",
     "cross-env": "^5.2.0",
     "env-cmd": "^8.0.2",
     "file-loader": "^3.0.1",

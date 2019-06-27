@@ -23,8 +23,7 @@ const patch = [
     { op: "replace", path: "/expo/extra/identityPoolId", value: findAWSValue(`CognitoIdentityPool-${channel}`) },
     { op: "replace", path: "/expo/extra/userPoolWebClientId", value: findAWSValue(`CognitoUserPoolClient-${channel}`) },
 
-    { op: "replace", path: "/expo/extra/api", value: process.env.APP_API ||
-        `https://${findAWSValue("ApiGatewayRestApiId-" + channel)}.execute-api.eu-west-1.amazonaws.com/${channel}` },
+    { op: "replace", path: "/expo/extra/api", value: process.env.APP_API || `https://${findAWSValue("ApiUrl-" + channel)}` },
 
     { op: "replace", path: "/expo/extra/sentry", value: process.env.SENTRY },
     { op: "replace", path: "/expo/extra/analytics", value: process.env.ANALYTICS_APPID },

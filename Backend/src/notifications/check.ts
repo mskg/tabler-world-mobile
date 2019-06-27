@@ -17,7 +17,7 @@ type Receipts = {
 async function removeToken(client: Client, token: string) {
     console.log("Removing token", token);
     return await client.query(`
-UPDATE appsettings
+UPDATE usersettings
 SET tokens =
 (
     select array_agg(elem)

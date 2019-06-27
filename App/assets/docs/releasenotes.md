@@ -6,18 +6,23 @@
 - Cache invalidation now triggers rendercylce asynchronous
 - Show own table now shows correct data, fixes #1
 - Club page no longer shows honory members as members, fixes #8
+- Removed null value from favorites
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
 - Reworked loading animation for members in clubs screen
 - Pictures on member/club page can now be "zoomed"
 - Favorites are restored from cloud after relogin, reinstallation, resolves #10
+- Reworked filtering and authentication via lambda, resolves #19
 
 ## Operations
 - Reworked deployment
 - Enlarged memory size of GraphQL functions to 256MB
 - Server side caching
 - Auditing enabled for new screens
+- Custom domain and certificates for api
+- Enforced rate limiting
+- Removed schema introspection from production
 
 # v0.8
 Beta build, for internal testing only

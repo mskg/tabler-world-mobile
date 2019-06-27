@@ -1,7 +1,7 @@
 import { ILogger } from "../types/ILogger";
 
 export class Logger implements ILogger {
-    constructor(private id: string, private user: string) {}
+    constructor(private id: string, private user: any) {}
 
     public log(...args: any[]) {
         console.log(`[LOG] [${this.id}] [${this.user}]`, ...args);

@@ -21,9 +21,9 @@ export const SettingsResolver = {
                 async (client) => {
                     const result = await client.query(`
 SELECT jsonb_extract_path(settings, $2) as value
-FROM appsettings
-WHERE username = $1`,
-                        [context.principal.email, args.name]);
+FROM usersettings
+WHERE id = $1`,
+                        [context.principal.id, args.name]);
                     return result.rows.length == 1 ? result.rows[0].value : null;
                 }
             );
@@ -35,9 +35,9 @@ WHERE username = $1`,
                 async (client) => {
                     const result = await client.query(`
 SELECT settings as value
-FROM appsettings
-WHERE username = $1`,
-                        [context.principal.email]);
+FROM usersettings
+WHERE id = $1`,
+                        [context.principal.id]);
 
                     const val = result.rows.length == 1
                         ? result.rows[0].value
@@ -59,11 +59,11 @@ WHERE username = $1`,
                 context,
                 async (client) => {
                     await client.query(`
-UPDATE appsettings
+UPDATE usersettings
 SET settings = settings - $2
-WHERE username = $1
+WHERE id = $1
                         `,
-                        [context.principal.email, args.name]);
+                        [context.principal.id, args.name]);
                     return true;
                 }
             )
@@ -77,11 +77,11 @@ WHERE username = $1
                 async (client) => {
 
                     await client.query(`
-INSERT INTO appsettings(username, settings)
+INSERT INTO usersettings(id, settings)
 VALUES ($1, jsonb_set('{}', $3, $2))
-ON CONFLICT (username) DO UPDATE
+ON CONFLICT (id) DO UPDATE
     SET settings = jsonb_set(excluded.settings, $3, $2)`,
-                        [context.principal.email, JSON.stringify(args.setting.value), `{${args.setting.name}}`]);
+                        [context.principal.id, JSON.stringify(args.setting.value), `{${args.setting.name}}`]);
 
                     return true;
                 }

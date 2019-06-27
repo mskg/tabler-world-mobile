@@ -74,7 +74,7 @@ export const Member = gql`
 
     type Member implements MemberListView {
         id: Int!
-        removed: Boolean
+        #removed: Boolean
 
         pic: String
 
@@ -113,5 +113,14 @@ export const Member = gql`
         socialmedia: SocialMedia
         educations: [Education]
         companies: [Company]
+    }
+
+    extend type Query {
+        MembersOverview: [MemberListView!]!
+        # Members(state: String, cursor: String, limit: Int): PaggedMemberResult!
+
+
+        Member (id: Int!): Member
+        Members (ids: [Int]!): [Member!]
     }
 `;

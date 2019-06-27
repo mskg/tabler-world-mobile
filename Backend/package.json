@@ -34,6 +34,7 @@
     "file-loader": "^3.0.1",
     "ntl": "^3.2.4",
     "serverless": "^1.44.1",
+    "serverless-domain-manager": "^3.2.6",
     "serverless-dynamodb-local": "^0.2.38",
     "serverless-iam-roles-per-function": "^2.0.1",
     "serverless-offline": "^4.10.5",
@@ -51,7 +52,6 @@
   "scripts": {
     "test-export": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && ts-node --project ./tsconfig.json scripts/export\"",
     "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
-    "deploy-func:app": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f app --verbose\"",
     "deploy-func:graphql": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f graphql --verbose\"",
     "deploy-func:reader": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f import-reader --verbose\"",
     "remove": "env-cmd --no-override ../config/.env cross-env-shell \"serverless remove --verbose\"",

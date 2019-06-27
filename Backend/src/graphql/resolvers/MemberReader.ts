@@ -161,9 +161,8 @@ where
                     TTLs.Member,
                 )
             )
-        ).then(async (members) => {
-            const filterContext = await this.context.filterContext();
-            return members.map(member => filter(filterContext, member));
+        ).then((members) => {
+            return members.map(member => filter(this.context.principal, member));
         })
     }
 
