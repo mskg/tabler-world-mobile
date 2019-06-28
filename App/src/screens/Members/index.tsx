@@ -22,7 +22,7 @@ import { showFilter, showSearch } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { MemberDataSource } from './MemberDataSource';
 import { Predicates } from './Predicates';
-import { GetMembersQuery, GetMembersQueryType } from './Queries';
+import { GetMembersQuery, GetMembersQueryType, GetOfflineMembersQuery, GetOfflineMembersQueryType } from './Queries';
 
 const logger = new Logger(Categories.Screens.Contacts);
 
@@ -37,6 +37,8 @@ type OwnProps = {
     theme: Theme,
 
     data?: GetMembersQueryType,
+    offlineData?: GetOfflineMembersQueryType,
+
     loading: boolean,
 
     refresh: () => any,
@@ -108,12 +110,12 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
             ? nextProps.data.MembersOverview
             : [];
 
-        if (nextProps.data && nextProps.data.OwnTable != null) {
-            data.push(...nextProps.data.OwnTable);
+        if (nextProps.offlineData && nextProps.offlineData.OwnTable != null) {
+            data.push(...nextProps.offlineData.OwnTable);
         }
 
-        if (nextProps.data && nextProps.data.FavoriteMembers != null) {
-            data.push(...nextProps.data.FavoriteMembers);
+        if (nextProps.offlineData && nextProps.offlineData.FavoriteMembers != null) {
+            data.push(...nextProps.offlineData.FavoriteMembers);
         }
 
         const me = nextProps.data != null && nextProps.data.Me != null ? nextProps.data.Me : undefined;
@@ -124,7 +126,6 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
             nextProps.showOwntable && me != null && me.club != null ? Predicates.sametable(me.club.club) : null,
             nextProps.areas != null ? Predicates.area(nextProps.areas) : Predicates.all,
         );
-
         this.state.dataSource.sortBy = nextProps.sortBy;
         this.state.dataSource.groupBy = nextProps.sortBy;
 
@@ -215,33 +216,52 @@ const ConnectedMembersScreen = connect(
     }
 )(withTheme(MembersScreenBase));
 
+// processing time is too slow if we add the @client directive
+// to a query with many records.
 const MembersQuery = ({ fetchPolicy, areas }) => (
-    <Query<GetMembersQueryType>
-        query={GetMembersQuery}
+    <Query<GetOfflineMembersQueryType>
+        query={GetOfflineMembersQuery}
         fetchPolicy={fetchPolicy}
-        variables={{
-            areas: areas != null ? _(areas)
-                .keys()
-                .filter(k => k !== "length")
-                .map(a => a.replace(/[^\d]/g, ""))
-                .map(a => parseInt(a, 10))
-                .value()
-            : null,
-        }}
     >
-        {({ loading, data, error, refetch }) => {
-            let isLoading = loading;
-
-            if (error) throw error;
-            if (!loading && (data == null || data.MembersOverview == null)) {
+        {({ loading: oLoading, data: oData, error: oError, refetch: oRefetch }) => {
+            if (!oLoading && (oData == null || oData.OwnTable == null || oData.FavoriteMembers == null)) {
                 setTimeout(() => {
-                    refetch();
+                    oRefetch();
                 });
-
-                isLoading = true;
             }
 
-            return <ConnectedMembersScreen loading={isLoading} data={data} refresh={refetch} />
+            return <Query<GetMembersQueryType>
+                query={GetMembersQuery}
+                fetchPolicy={fetchPolicy}
+                variables={{
+                    areas: areas != null ? _(areas)
+                        .keys()
+                        .filter(k => k !== "length")
+                        .map(a => a.replace(/[^\d]/g, ""))
+                        .map(a => parseInt(a, 10))
+                        .value()
+                        : null,
+                }}
+            >
+                {({ loading, data, error, refetch }) => {
+                    let isLoading = loading || oLoading;
+
+                    if (error || oError) throw (error || oError);
+                    if (!loading && (data == null || data.MembersOverview == null)) {
+                        setTimeout(() => {
+                            refetch();
+                        });
+
+                        isLoading = true;
+                    }
+
+                    return <ConnectedMembersScreen
+                        loading={isLoading}
+                        data={data}
+                        offlineData={oData}
+                        refresh={() => {refetch(); oRefetch();}} />
+                }}
+            </Query>
         }}
     </Query>
 );

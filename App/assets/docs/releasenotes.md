@@ -19,6 +19,7 @@
 - Reworked filtering and authentication via lambda, resolves #19
 - Local data is now based on members filter (no area, local table and favorites by default)
 - Allow retry in case of fetch errors on detail pages (member, club)
+- Optimized local caching for favorites, and club members
 
 ## Operations
 - Reworked deployment
@@ -29,6 +30,7 @@
 - Enforced rate limiting
 - Removed schema introspection from production
 - Removed double pooling in favor of pgbouncer
+- X-Ray tracing for backend(s)
 
 # v0.8
 Beta build, for internal testing only

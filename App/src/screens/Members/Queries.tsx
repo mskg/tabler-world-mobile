@@ -40,6 +40,17 @@ export const GetMembersQuery = gql`
        ...MeFragment
     }
 
+    MembersOverview (filter:{areas: $areas}) {
+        ...MembersOverviewFragment
+    }
+  }
+
+  ${MembersOverviewFragment}
+  ${MeFragment}
+`;
+
+export const GetOfflineMembersQuery = gql`
+  query GetOfflineMembersQuery {
     OwnTable {
         ...MembersOverviewFragment
         ...FullDetailsFragment
@@ -49,21 +60,18 @@ export const GetMembersQuery = gql`
         ...MembersOverviewFragment
         ...FullDetailsFragment
     }
-
-    MembersOverview (filter:{areas: $areas}) {
-        ...MembersOverviewFragment
-    }
   }
 
   ${FullDetailsFragment}
   ${MembersOverviewFragment}
-  ${MeFragment}
 `;
 
 export type GetMembersQueryType = {
     Me: GetMembersQueryType_Me,
     MembersOverview: GetMembersQueryType_MembersOverview[],
+};
 
+export type GetOfflineMembersQueryType = {
     OwnTable: GetMembersQueryType_MembersOverview[],
     FavoriteMembers: GetMembersQueryType_MembersOverview[],
 };
