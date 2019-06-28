@@ -39,11 +39,13 @@ select settings->'favorites' as favorites
 from usersettings
 where id = $1`, [this.context.principal.id]);
 
-
                 if (res.rowCount == 0) return [];
+                const favorites: number[] = res.rows[0]["favorites"];
+
+                if (favorites == null || favorites.length === 0) return [];
 
                 return this.memberLoader.loadMany(
-                    res.rows[0]["favorites"]
+                    favorites.filter(f => typeof(f) === "number" && !isNaN(f))
                 );
             }
         );
