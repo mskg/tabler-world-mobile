@@ -5,7 +5,9 @@ function normalizePhone(p: string): string | undefined {
     if (p == null) return undefined;
 
     let nbrs = p.replace(/[^\d]/g, "");
-    nbrs = nbrs.replace(/^(49)|0/, "");
+    nbrs = nbrs.replace(/[^\d]/g, "");
+    nbrs = nbrs.replace(/^(49)/, "");
+    nbrs = nbrs.replace(/^0*/, "");
 
     return nbrs;
 }
@@ -16,7 +18,7 @@ export function collectPhones(member?: GetMemberQueryType_Member): GetMemberQuer
     return _(member.phonenumbers || [])
         .concat(
             (member.companies || []).map(
-                (c: GetMemberQueryType_Company) => c.phone
+                (c: GetMemberQueryType_Company) => c.phone != null && c.phone !== ""
                     ? ({
                         type: "work",
                         value: c.phone,
@@ -34,21 +36,19 @@ export function collectEMails(member?: GetMemberQueryType_Member): GetMemberQuer
     if (member == null) return [];
 
     return _([{
-            type: "rt",
-            value: member.rtemail,
-        }])
+        type: "rt",
+        value: member.rtemail,
+    }])
         .concat(member.emails || [])
         .concat(
             (member.companies || []).map(
-                (c: GetMemberQueryType_Company) => c.email
-                    ? ({
-                        type: "work",
-                        value: c.email,
-                    })
-                    : undefined
+                (c: GetMemberQueryType_Company) => ({
+                    type: "work",
+                    value: c.email,
+                })
             )
         )
-        .filter(Boolean)
+        .filter(r => r.value != null && r.value != "")
         .uniqBy(v => v.value)
         .toArray()
         .value();

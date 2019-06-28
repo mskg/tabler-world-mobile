@@ -10,6 +10,8 @@
 - Removed // from tel url, fixes #20
 - Workarrounds for Android behavior of text selection, resolves #21
 - Fixed cache invalidation not resolving local data
+- Removed entries with no RT email, fixes #33
+- Empty countrycode produces empty export dialog, fixes #32
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
