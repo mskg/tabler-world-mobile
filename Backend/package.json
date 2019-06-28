@@ -9,17 +9,15 @@
     "apollo-server-caching": "^0.4.0",
     "apollo-server-lambda": "^2.6.1",
     "aws-sdk": "^2.414.0",
+    "aws-xray-sdk": "^2.3.3",
     "dataloader": "^1.4.0",
     "date-and-time": "^0.7.0",
     "expo-server-sdk": "^3.3.0",
     "graphql": "^14.3.1",
-    "graphql-playground-middleware-lambda": "^1.7.13",
     "graphql-tools": "^4.0.4",
     "lodash": "^4.17.11",
     "node-gzip": "^1.1.2",
-    "pg": "^7.8.1",
-    "serverless-offline-direct-lambda": "0.0.1",
-    "zlib": "^1.0.5"
+    "pg": "^7.8.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.26",
@@ -32,6 +30,7 @@
     "file-loader": "^3.0.1",
     "ntl": "^3.2.4",
     "serverless": "^1.44.1",
+    "serverless-offline-direct-lambda": "0.0.1",
     "serverless-domain-manager": "^3.2.6",
     "serverless-dynamodb-local": "^0.2.38",
     "serverless-iam-roles-per-function": "^2.0.1",

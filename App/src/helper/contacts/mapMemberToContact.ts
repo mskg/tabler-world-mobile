@@ -52,7 +52,7 @@ export async function mapMemberToContact(member: GetMemberQueryType_Member): Pro
                 street: [member.address.street1, member.address.street2].filter(Boolean).join('\n'),
                 city: member.address.city,
                 postalCode: member.address.postal_code,
-                isoCountryCode: member.address.country,
+                isoCountryCode: I18N.Countries.translate(member.address.country || "de"),
             }],
         }
 

@@ -45,7 +45,7 @@ export const MembersOverviewFragment = gql`
 
 export const FullDetailsFragment = gql`
     fragment FullDetailsFragment on Member {
-        # LastSync @client
+        LastSync @client
 
         birthdate
         partner
@@ -111,8 +111,6 @@ export const FullDetailsFragment = gql`
 export const GetMemberQuery = gql`
   query Member($id: Int!) {
     Member(id: $id) {
-        LastSync @client
-
         ...MembersOverviewFragment
         ...FullDetailsFragment
     }

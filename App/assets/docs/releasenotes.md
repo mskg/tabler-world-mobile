@@ -10,6 +10,8 @@
 - Removed // from tel url, fixes #20
 - Workarrounds for Android behavior of text selection, resolves #21
 - Fixed cache invalidation not resolving local data
+- Removed entries with no RT email, fixes #33
+- Empty countrycode produces empty export dialog, fixes #32
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
@@ -19,6 +21,7 @@
 - Reworked filtering and authentication via lambda, resolves #19
 - Local data is now based on members filter (no area, local table and favorites by default)
 - Allow retry in case of fetch errors on detail pages (member, club)
+- Optimized local caching for favorites, and club members
 
 ## Operations
 - Reworked deployment
@@ -29,6 +32,7 @@
 - Enforced rate limiting
 - Removed schema introspection from production
 - Removed double pooling in favor of pgbouncer
+- X-Ray tracing for backend(s)
 
 # v0.8
 Beta build, for internal testing only

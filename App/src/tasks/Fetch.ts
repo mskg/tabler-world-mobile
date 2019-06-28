@@ -10,7 +10,7 @@ import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
 import { MaxTTL } from '../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../helper/Logger';
 import { getReduxStore } from '../redux/getRedux';
-import { GetMembersQuery } from '../screens/Members/Queries';
+import { GetMembersQuery, GetOfflineMembersQuery } from '../screens/Members/Queries';
 import { GetAreasQuery, GetAssociationsQuery, GetClubsQuery } from '../screens/Structure/Queries';
 
 const FETCH_TASKNAME = "update-contacts";
@@ -46,9 +46,9 @@ async function runBackgroundFetch() {
 
         const client = await bootstrapApollo();
 
-        const areas = getReduxStore().getState().filter.member.area;
+        await updateCache(client, GetOfflineMembersQuery, "members");
 
-        // could be fetched in one query
+        const areas = getReduxStore().getState().filter.member.area;
         await updateCache(client, GetMembersQuery, "members", {
             areas: areas != null ? _(areas)
                 .keys()

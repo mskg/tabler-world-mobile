@@ -1,8 +1,9 @@
 import { KeyValueCache } from 'apollo-server-core';
-import DynamoDB, { DocumentClient, TableName } from 'aws-sdk/clients/dynamodb';
+import DynamoDB, { TableName } from 'aws-sdk/clients/dynamodb';
+import { DocumentClient } from '../xray/DynamoDB';
 
 export class DynamoDBCache implements KeyValueCache<string> {
-    client: DocumentClient;
+    client: DynamoDB.DocumentClient;
 
     constructor(
         serviceConfigOptions: DynamoDB.Types.ClientConfiguration,
@@ -11,7 +12,7 @@ export class DynamoDBCache implements KeyValueCache<string> {
             ttl: number,
         },
     ) {
-        this.client = new DynamoDB.DocumentClient(serviceConfigOptions);
+        this.client = new DocumentClient(serviceConfigOptions);
     }
 
     public async set(

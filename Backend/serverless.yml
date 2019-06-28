@@ -116,6 +116,10 @@ provider:
   memorySize: 128
   versionFunctions: false
 
+  tracing:
+    apiGateway: true
+    # function is done on function level
+
   apiKeys:
     - keys:
       - name: tabler-world-api-${self:custom.stage}
@@ -158,6 +162,18 @@ provider:
             - ":dbuser:"
             - "*/"
             - ${self:custom.db_user}
+
+    # tracing AWSXrayWriteOnlyAccess
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+        - xray:GetSamplingRules
+        - xray:GetSamplingTargets
+        - xray:GetSamplingStatisticSummaries
+
+      Resource:
+        - "*"
 
 functions:
   #
@@ -272,6 +288,7 @@ functions:
     handler: src/graphql/lambda.handler
     timeout: 30
     memorySize: 256
+    tracing: Active
 
     environment:
       # AWS_REGION: provided automatically
@@ -281,6 +298,7 @@ functions:
       db_password: ${self:custom.db_password}
       cache_table: ${self:custom.cache_table}
 
+    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -291,6 +309,7 @@ functions:
           - dynamodb:PutItem
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
+
         # Restrict our IAM role permissions to
         # the specific table for the stage
         Resource:
