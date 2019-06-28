@@ -33,6 +33,7 @@
 - Removed schema introspection from production
 - Removed double pooling in favor of pgbouncer
 - X-Ray tracing for backend(s)
+- Switched Analytics from Cognito to Amplitude
 
 # v0.8
 Beta build, for internal testing only

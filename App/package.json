@@ -6,10 +6,11 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "ntl",
+    "bump-cli": "npm i -g expo-cli && npm i expo-cli -D",
     "licenses": "license-checker --production --direct --markdown > ./assets/docs/licenses.md",
     "config:aws": ". ~/.bashrc && aws cloudformation list-exports > ./config/aws.json",
     "config": "npm run config:aws && npm run config:app",
-    "config:app": "env-cmd --no-override ../config/.env.local \"source ../config/.env.local && node config/create.js\"",
+    "config:app": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && node config/create.js\"",
     "expo": "npm run config && expo start"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "apollo-utilities": "^1.3.2",
     "crypto-js": "^3.1.9-1",
     "expo": "^33.0.0",
+    "expo-analytics-amplitude": "^5.0.1",
     "expo-asset": "^5.0.1",
     "expo-background-fetch": "^5.0.1",
     "expo-constants": "^5.0.1",

@@ -3,6 +3,7 @@ import { Animated } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { ClubAvatar } from '../../components/ClubAvatar';
@@ -37,8 +38,15 @@ class ClubBase extends AuditedScreen<Props> {
     }
 
     componentDidMount() {
+        const clubProp = this.props.club || this.props.preview;
+        const club = clubProp ? clubProp.Club : undefined;
+
         this.audit.submit({
-            id: this.props.id
+            id: this.props.id,
+
+            [AuditPropertyNames.Club]: club ? club.name : "",
+            [AuditPropertyNames.Association]: club ? club.association.name : "",
+            [AuditPropertyNames.Area]: club ? club.area.name : "",
         });
     }
 

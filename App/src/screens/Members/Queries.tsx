@@ -17,6 +17,7 @@ export const MeFragment = gql`
 
         association {
             association
+            name
         }
 
         area {
@@ -27,6 +28,7 @@ export const MeFragment = gql`
         club {
             id
             club
+            name
         }
 
         firstname

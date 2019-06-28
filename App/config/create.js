@@ -26,7 +26,8 @@ const patch = [
     { op: "replace", path: "/expo/extra/api", value: process.env.APP_API || `https://${findAWSValue("ApiUrl-" + channel)}` },
 
     { op: "replace", path: "/expo/extra/sentry", value: process.env.SENTRY },
-    { op: "replace", path: "/expo/extra/analytics", value: process.env.ANALYTICS_APPID },
+    { op: "replace", path: "/expo/extra/cognitoAnalytics", value: process.env.ANALYTICS_APPID },
+    { op: "replace", path: "/expo/extra/amplitudeAnalytics", value: process.env.AMPLITUDE_KEY },
 
     { op: "add", path: "/expo/ios/bundleIdentifier", value:  process.env.APP_IOS_BUNDLE },
 
@@ -47,7 +48,8 @@ const patch = [
 ];
 
 patch.forEach(v => {
-    if (v.value === "" || v.value == null) {
+    if ((v.value === "" || v.value == null) && !v.path.match(/Analytics/)) {
+        console.error(`Check env '${v.path}' not available`);
         throw `Check env '${v.path}' not available`;
     }
 })

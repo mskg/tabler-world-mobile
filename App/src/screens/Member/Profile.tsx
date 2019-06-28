@@ -4,7 +4,7 @@ import React from 'react';
 import { Platform, View } from "react-native";
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { logger } from '../../analytics/Types';
+import { logger } from "../../analytics/logger";
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
