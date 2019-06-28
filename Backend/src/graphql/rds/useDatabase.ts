@@ -1,21 +1,13 @@
 
-import { RDS } from "aws-sdk";
-import { Client } from "pg";
+import { Client as PGClient } from "pg";
 import { ILogger } from "../types/ILogger";
+import { Client, RDS } from "../xray/Client";
 
 // const KEY = "__db";
-
 export async function useDatabase<T>(
-    context: { logger: ILogger, requestCache: { [key: string]: any } },
-    func: (client: Client) => Promise<T>
+    context: { logger: ILogger /*, requestCache: { [key: string]: any } */},
+    func: (client: PGClient) => Promise<T>
 ): Promise<T> {
-    // const cachedCon = context.requestCache[KEY];
-
-    // if (cachedCon) {
-    //     context.logger.log("************************************* [DB] using cached connection");
-    //     return await func(cachedCon);
-    // }
-
     let password = process.env.db_password;
     if (password == null || password === "") {
         context.logger.log("[DB]", "-> with token");
@@ -44,7 +36,6 @@ export async function useDatabase<T>(
         await client.connect();
         client.on("error", (...args: any[]) => context.logger.error("[SQL]", ...args));
 
-        // context.requestCache[KEY] = client;
         return await func(client);
     } finally {
         try {
