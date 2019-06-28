@@ -4,6 +4,7 @@ import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
@@ -48,7 +49,17 @@ class MemberBase extends AuditedScreen<Props> {
 
     componentDidMount() {
         this.props.addTablerLRU(this.props.id);
-        this.audit.submit({ id: this.props.id.toString() });
+
+        const memberProp = this.props.member || this.props.preview;
+        const member = memberProp ? memberProp.Member : undefined;
+
+        this.audit.submit({
+            id: this.props.id.toString(),
+
+            [AuditPropertyNames.Club]: member ? member.club.name : "",
+            [AuditPropertyNames.Association]: member ? member.association.name : "",
+            [AuditPropertyNames.Area]: member ? member.area.name : "",
+        });
     }
 
     _renderHeader = (scrollY: Animated.AnimatedAddition, distance: number) => {

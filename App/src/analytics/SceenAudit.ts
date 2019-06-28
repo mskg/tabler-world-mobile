@@ -1,4 +1,5 @@
-import { trackAction, trackPageView } from './CognitoAnalytics';
+import { IAnalyticsProvider } from './IAuditor';
+import { logger } from "./logger";
 import { IAuditor, Metrics, Params } from './Types';
 
 /**
@@ -8,7 +9,7 @@ export class SceenAudit implements IAuditor {
     metrics = {};
     params = {};
 
-    constructor(private screen: string) {
+    constructor(private provider: IAnalyticsProvider, private screen: string) {
     }
 
     public setParam(name: string, value: string | string[]) {
@@ -24,16 +25,30 @@ export class SceenAudit implements IAuditor {
     }
 
     public trackAction(action: string, params?: Params, metrics?: Metrics) {
-        trackAction(this.screen, action, params, metrics);
+        if (!this.provider) { return; }
+
+        try {
+            this.provider.trackAction(this.screen, action, params, metrics);
+        }
+        catch (e) {
+            logger.error(e, "trackAction failed");
+        }
     }
 
     public submit(params?: Params, metrics?: Metrics) {
-        trackPageView(this.screen, {
-            ...this.params,
-            ...(params || {})
-        }, {
-            ...this.metrics,
-            ...(metrics || {})
-        });
+        if (!this.provider) { return; }
+
+        try {
+            this.provider.trackPageView(this.screen, {
+                ...this.params,
+                ...(params || {})
+            }, {
+                    ...this.metrics,
+                    ...(metrics || {})
+                });
+        }
+        catch (e) {
+            logger.error(e, "trackAction failed");
+        }
     }
 }

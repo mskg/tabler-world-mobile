@@ -1,13 +1,17 @@
-import Analytics from '@aws-amplify/analytics';
 import Constants from 'expo-constants';
 import * as Localization from 'expo-localization';
+import gql from 'graphql-tag';
 import React, { PureComponent } from "react";
-import { Platform } from 'react-native';
 import { connect } from "react-redux";
+import ExpoSentry from "sentry-expo";
+import { Audit } from '../analytics/Audit';
+import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
+import { cachedAolloClient } from '../apollo/bootstrapApollo';
 import Reloader from '../components/Reloader';
 import { Categories, Logger } from "../helper/Logger";
 import { IAppState } from "../model/IAppState";
 import { INITIAL_STATE } from "../redux/initialState";
+import { MeFragment } from '../screens/Members/Queries';
 import ConfirmSignIn from "./ConfirmSignIn";
 import SignIn from "./SignIn";
 
@@ -31,40 +35,54 @@ class AuthenticatorBase extends PureComponent<Props, State> {
   configureContext(nextProps) {
     logger.debug("setting usercontext");
 
-    // ExpoSentry.setUserContext({
-    //   id: nextProps.user.id.toString(),
-    //   username: nextProps.user.email
-    // });
-
     if (nextProps.optOutAnalytics) {
-      Analytics.disable();
+      Audit.disable();
     } else {
-      Analytics.enable();
+      Audit.enable();
 
-      Analytics.updateEndpoint({
-        address: Constants.installationId,
-        // userId: nextProps.user.id.toString(),
+      // only place where those are used
+      const appProps = {
+        "[App] Channel": Constants.manifest.releaseChannel,
+        "[App] Version": Constants.manifest.version || 'dev',
+        "[App] Locale": Localization.locale.toLocaleLowerCase(),
+      };
 
-        attributes: {
-          channel: Constants.manifest.releaseChannel,
-        },
+      const client = cachedAolloClient();
+      client.query({
+        query: gql`
+          query Me {
+            Me {
+              ...MeFragment
+            }
+          }
 
-        demographic: {
-          appVersion: Constants.manifest.revisionId,
-          locale: Localization.locale.toLocaleLowerCase(),
+          ${MeFragment}
+        `,
+        fetchPolicy: "cache-first",
+      }).then(result => {
+        if (result.errors) {
+          result.errors.forEach(e => logger.error(e, "Could not load me"));
+          throw new Error("Could not load me");
+        }
 
-          platform: Platform.OS,
-          platformVersion: Platform.Version,
+        logger.log("Updating user profile");
+        Audit.updateUser(
+          result.data.Me.id,
+          {
+            ...appProps,
+            [AuditPropertyNames.Association]: result.data.Me.association.name,
+            [AuditPropertyNames.Area]: result.data.Me.area.name,
+            [AuditPropertyNames.Club]: result.data.Me.club.name,
+          }
+        );
 
-          modelVersion: Constants.deviceYearClass.toString(),
-        },
-
-        // userAttributes: {
-        //   club: nextProps.user.club.club,
-        //   association: nextProps.user.association.association,
-        //   area: nextProps.user.area.area,
-        // },
-      });
+        ExpoSentry.setUserContext({
+          id: result.data.Me.id,
+        });
+      }).catch(e => {
+        Audit.updateUser(undefined, appProps);
+        logger.error(e, "Could not load me");
+      })
     }
   }
 

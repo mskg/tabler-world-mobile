@@ -1,4 +1,3 @@
-import { Categories, Logger } from '../helper/Logger';
 
 export interface IAuditor extends IAuditSubmit {
     increment(metric: string);
@@ -9,8 +8,6 @@ export interface IAuditor extends IAuditSubmit {
 export interface IAuditSubmit {
     submit(params?: Params, metrics?: Metrics);
 }
-
-export const logger = new Logger(Categories.Audit);
 
 export type Params = {
     [key: string]: string | string[],

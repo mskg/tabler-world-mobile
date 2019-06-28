@@ -1,61 +1,90 @@
 import Analytics from '@aws-amplify/analytics';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 import { EventType } from "./EventType";
-import { logger, Metrics, Params } from './Types';
+import { IAnalyticsProvider } from './IAuditor';
+import { logger } from "./logger";
+import { Metrics, Params } from './Types';
 
-export function trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
-    if (__DEV__) {
-        logger.debug("Show Screen", screen, attributes);
-        // return;
+export class CognitoAnalytics implements IAnalyticsProvider {
+    constructor(region: string, appId: string) {
+        logger.log("Boostrapping CognitoAnalytics");
+
+        Analytics.configure({
+            autoSessionRecord: true,
+
+            AWSPinpoint: {
+                appId,
+                region,
+            }
+        });
     }
 
-    Analytics.record({
-        name: `Show Screen`,
-        attributes: {
-            ...(attributes || {}),
-            screen,
-            eventType: EventType.PageView,
-        },
-        metrics: {
-            ...(metrics || {}),
-        }
-    });
-}
-
-export function trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
-    if (__DEV__) {
-        logger.debug("Track Event", event);
-        // return;
+    enable() {
+        Analytics.enable();
     }
 
-    Analytics.record({
-        name: "Event",
-        attributes: {
-            ...(attributes || {}),
-            event,
-            eventType: EventType.Event,
-        },
-        metrics: {
-            ...(metrics || {}),
-        }
-    });
-}
-
-export function trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
-    if (__DEV__) {
-        logger.debug("Track Action", screen, action, attributes);
-        // return;
+    disable() {
+        Analytics.disable();
     }
 
-    Analytics.record({
-        name: `Action on Screen`,
-        attributes: {
-            ...(attributes || {}),
-            action,
-            screen,
-            eventType: EventType.Action,
-        },
-        metrics: {
-            ...(metrics || {}),
-        }
-    });
+    updateUser(id: string, attributes?: Params) {
+        Analytics.updateEndpoint({
+            address: id || Constants.installationId,
+
+            attributes: attributes || {},
+
+            demographic: {
+                appVersion: Constants.manifest.revisionId,
+
+                platform: Platform.OS,
+                platformVersion: Platform.Version,
+
+                modelVersion: (Constants.deviceYearClass || 0).toString(),
+            },
+        });
+    }
+
+    trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
+        Analytics.record({
+            name: `Show Screen`,
+            attributes: {
+                ...(attributes || {}),
+                screen,
+                eventType: EventType.PageView,
+            },
+            metrics: {
+                ...(metrics || {}),
+            }
+        });
+    }
+
+    trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
+        Analytics.record({
+            name: "Event",
+            attributes: {
+                ...(attributes || {}),
+                event,
+                eventType: EventType.Event,
+            },
+            metrics: {
+                ...(metrics || {}),
+            }
+        });
+    }
+
+    trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
+        Analytics.record({
+            name: `Action on Screen`,
+            attributes: {
+                ...(attributes || {}),
+                action,
+                screen,
+                eventType: EventType.Action,
+            },
+            metrics: {
+                ...(metrics || {}),
+            }
+        });
+    }
 }

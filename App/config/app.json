@@ -15,7 +15,8 @@
       "userPoolWebClientId": "",
       "api": "",
       "sentry": "",
-      "analytics": "",
+      "cognitoAnalytics": "",
+      "amplitudeAnalytics": "",
       "profile": "https://rti.roundtable.world/de/members/#id#/",
       "world": "https://rti.roundtable.world/de/"
     },
