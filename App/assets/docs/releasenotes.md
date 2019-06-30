@@ -12,6 +12,8 @@
 - Fixed cache invalidation not resolving local data
 - Removed entries with no RT email, fixes #33
 - Empty countrycode produces empty export dialog, fixes #32
+- Fixed async bootstrapping behavior of analytics
+- Fixed analytics not accepting non-string values
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
@@ -22,6 +24,7 @@
 - Local data is now based on members filter (no area, local table and favorites by default)
 - Allow retry in case of fetch errors on detail pages (member, club)
 - Optimized local caching for favorites, and club members
+- Harmonized analytics API
 
 ## Operations
 - Reworked deployment
