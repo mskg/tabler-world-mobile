@@ -1,0 +1,9 @@
+
+POST http://localhost:3000/buildfinished
+Content-Type: application/json
+
+{
+    "status": "finished",
+    "id": "buildUrl",
+    "artifactUrl": "https://somewhat/url/artifactUrl"
+}
