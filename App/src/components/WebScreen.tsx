@@ -3,6 +3,7 @@ import React from 'react';
 import { WebView } from 'react-native';
 import { Appbar, withTheme } from 'react-native-paper';
 import { AuditedScreen } from '../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
 import { ScreenWithHeader } from './Screen';
@@ -21,8 +22,8 @@ export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
     }
 
     componentDidMount() {
-        this.audit.setParam("title", this.props.title);
-        this.audit.setParam("url", this.props.url);
+        this.audit.setParam(AuditPropertyNames.Title, this.props.title);
+        this.audit.setParam(AuditPropertyNames.Url, this.props.url);
         this.audit.submit();
     }
 

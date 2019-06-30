@@ -4,6 +4,7 @@ import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import uuid4 from "uuid4";
+import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
@@ -49,7 +50,7 @@ class SignInBase extends AuditedScreen<Props, State> {
         logger.debug('Try sign In for ' + username);
 
         try {
-            this.audit.trackAction("signIn");
+            this.audit.trackAction(ActionNames.SignIn);
             const user = await Auth.signIn(username as string);
             logger.debug("signIn response", user);
 
@@ -59,7 +60,7 @@ class SignInBase extends AuditedScreen<Props, State> {
             });
         }
         catch (err) {
-            this.audit.trackAction("signIn failed");
+            this.audit.trackAction(ActionNames.SignInFailed);
             if (doThrow) throw err;
 
             logger.error(err, "Error signIn");
@@ -78,24 +79,19 @@ class SignInBase extends AuditedScreen<Props, State> {
         catch (err) {
             // which is ok here
             if (err.code === "UserNotFoundException") {
-                this.audit.trackAction("SignUp");
+                this.audit.trackAction(ActionNames.SignUp);
 
                 const newUser = {
                     username: username as string,
                     password: await this.getRandomString(30),
-                };
-
-                // contains sensitive data!
-                // logger.log("creating", newUser);
+                }
 
                 try {
                     await Auth.signUp(newUser);
                     await this.signIn();
-
-                    this.audit.trackAction("SignUp");
                 }
                 catch (signUpError) {
-                    this.audit.trackAction("SignUp failed");
+                    this.audit.trackAction(ActionNames.SignUpFailed);
 
                     logger.error(signUpError, "Error signUp");
                     this.setState({ error: signUpError.message || signUpError, working: false, });

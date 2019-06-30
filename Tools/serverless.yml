@@ -1,0 +1,127 @@
+service: tabler-world-tools
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-iam-roles-per-function
+  - serverless-dynamodb-local
+
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+
+  webpack:
+    includeModules: true
+    keepOutputDirectory: true
+
+  table: buildhooks
+  key: ${env:EXPO_WEBHOOK_SECRET}
+
+  throttle:
+    dev:
+      burstLimit: 10
+      rateLimit: 5
+
+  dynamodb:
+    noStart: false
+    start:
+      # host: localhost
+      port: 8000
+      sharedDb: true
+      migrate: true
+      seed: false
+    stages:
+      - dev
+
+# individually would result in the same package three times
+package:
+  individually: false
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+  stackName: tabler-world-tools
+
+  runtime: nodejs10.x
+
+  memorySize: 128
+  versionFunctions: false
+
+  apiKeys:
+    - keys:
+      - name: tabler-world-tools
+
+  apiGateway:
+    minimumCompressionSize: 1024
+
+  # Limited by API Keys
+  usagePlan:
+    - keys:
+        throttle:
+          burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
+          rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
+
+functions:
+  approvalgate:
+    handler: src/approvalgate/lambda.handler
+    timeout: 30
+
+    environment:
+      table: ${self:custom.table}
+      SECRET_WEBHOOK_KEY: ${self:custom.key}
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource:
+          - "Fn::GetAtt": [ approvalgateTable, Arn ]
+
+    events:
+      - http:
+          path: register
+          method: post
+          cors: true
+          private: true
+
+      - http:
+          path: buildfinished
+          method: post
+          cors: true
+          private: false
+
+resources:
+  Resources:
+    approvalgateTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.table}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+    ApprovalgateLogGroup:
+      Properties:
+        RetentionInDays: "14"

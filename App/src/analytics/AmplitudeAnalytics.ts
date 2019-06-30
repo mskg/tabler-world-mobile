@@ -1,15 +1,36 @@
 import * as Amplitude from 'expo-analytics-amplitude';
+import { AuditPropertyNames } from './AuditPropertyNames';
 import { EventType } from "./EventType";
 import { IAnalyticsProvider } from './IAuditor';
 import { logger } from "./logger";
 import { Metrics, Params } from './Types';
 
+const ensureStrings = (o: any) => {
+    if (o == null) return null;
+    const result = {};
+
+    Object.keys(o).forEach(key => {
+        let val = o[key];
+
+        if (typeof (val) !== "string" && val != null) {
+            val = val.toString();
+        }
+
+        result[key] = val || "";
+    });
+
+    return Object.keys(result).length > 0 ? result : null;
+}
+
 export class AmplitudeAnalytics implements IAnalyticsProvider {
     disabled: boolean = false;
+    init: Promise<void>;
 
     constructor(apiKey: string) {
         logger.log("Boostrapping AmplitudeAnalytics");
-        Amplitude.initialize(apiKey);
+        this.init = Amplitude
+            .initialize(apiKey)
+            .then(() => logger.log("Amplitude initialized"));
     }
 
     enable() {
@@ -24,57 +45,61 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
         if (this.disabled) { return; }
 
         if (id != null) {
-            Amplitude.setUserId(id);
+            // ensure it's a string
+            this.init.then(() => Amplitude.setUserId("" + id));
         }
 
-        if (attributes) {
-            Amplitude.setUserProperties(attributes);
+        const reduced = ensureStrings(attributes);
+        if (reduced) {
+            delete reduced[AuditPropertyNames.Version];
+
+            this.init.then(() => Amplitude.setUserProperties(reduced));
         }
     }
 
     trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
         if (this.disabled) { return; }
 
-        Amplitude.logEventWithProperties(
+        this.init.then(() => Amplitude.logEventWithProperties(
             `View ${screen}`,
             {
-                ...(attributes || {}),
-                ...(metrics || {}),
+                ...(ensureStrings(attributes) || {}),
+                ...(ensureStrings(metrics) || {}),
 
-                eventType: EventType.PageView,
-                screen,
+                [AuditPropertyNames.EventType]: EventType.PageView,
+                // [AuditPropertyNames.View]: screen,
             }
-        );
+        ));
     }
 
     trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
         if (this.disabled) { return; }
 
-        Amplitude.logEventWithProperties(
+        this.init.then(() => Amplitude.logEventWithProperties(
             `Event ${event}`,
             {
-                ...(attributes || {}),
-                ...(metrics || {}),
+                ...(ensureStrings(attributes) || {}),
+                ...(ensureStrings(metrics) || {}),
 
-                eventType: EventType.Event,
-                event,
+                // [AuditPropertyNames.Event]: event,
+                [AuditPropertyNames.EventType]: EventType.Event,
             }
-        );
+        ));
     }
 
     trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
         if (this.disabled) { return; }
 
-        Amplitude.logEventWithProperties(
-            `View ${action} ${action}`,
+        this.init.then(() => Amplitude.logEventWithProperties(
+            `Action ${screen} ${action}`,
             {
-                ...(attributes || {}),
-                ...(metrics || {}),
+                ...(ensureStrings(attributes) || {}),
+                ...(ensureStrings(metrics) || {}),
 
-                action,
-                screen,
-                eventType: EventType.Action,
+                // [AuditPropertyNames.Action]: action,
+                [AuditPropertyNames.View]: screen,
+                [AuditPropertyNames.EventType]: EventType.Action,
             }
-        );
+        ));
     }
 }

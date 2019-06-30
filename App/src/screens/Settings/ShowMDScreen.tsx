@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import DocViewer from '../../components/DocsViewer';
 import { InlineLoading } from '../../components/Loading';
@@ -23,7 +24,7 @@ class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps
 
     async componentDidMount() {
         try {
-            this.audit.setParam("title", this.props.navigation.getParam("title"));
+            this.audit.setParam(AuditPropertyNames.Title, this.props.navigation.getParam("title"));
 
             let asset = Asset.fromModule(this.props.navigation.getParam("source"));
             await asset.downloadAsync();

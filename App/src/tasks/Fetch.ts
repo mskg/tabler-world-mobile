@@ -6,6 +6,7 @@ import { DocumentNode } from 'graphql';
 import _ from 'lodash';
 import { Audit } from "../analytics/Audit";
 import { AuditEventName } from '../analytics/AuditEventName';
+import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
 import { MaxTTL } from '../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../helper/Logger';
@@ -66,12 +67,12 @@ async function runBackgroundFetch() {
         const result = BackgroundFetch.Result.NewData;
 
         logger.debug("done", result);
-        timer.submit({ result: result.toString() });
+        timer.submit({ [AuditPropertyNames.BackgroundFetchResult]: result.toString() });
 
         return result;
     } catch (error) {
         logger.error(error, FETCH_TASKNAME);
-        timer.submit({ result: BackgroundFetch.Result.Failed.toString() });
+        timer.submit({ [AuditPropertyNames.BackgroundFetchResult]: BackgroundFetch.Result.Failed.toString() });
 
         return BackgroundFetch.Result.Failed;
     }

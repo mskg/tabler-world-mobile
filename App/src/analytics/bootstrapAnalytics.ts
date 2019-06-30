@@ -1,9 +1,7 @@
 
 import Constants from 'expo-constants';
 import { Categories, Logger } from '../helper/Logger';
-import { AmplitudeAnalytics } from './AmplitudeAnalytics';
 import { Audit } from './Audit';
-import { CognitoAnalytics } from './CognitoAnalytics';
 import { IAnalyticsProvider } from './IAuditor';
 import { LogWrapper } from './LogWrapper';
 
@@ -21,13 +19,17 @@ export function bootstrapAnalytics() {
   let provider: IAnalyticsProvider | undefined;
 
   if (cognitoAnalytics != null && cognitoAnalytics != "") {
-    provider = new CognitoAnalytics(
+    const analytics = require ('./CognitoAnalytics');
+
+    provider = new analytics.CognitoAnalytics(
       region, cognitoAnalytics
     );
   }
 
   if (amplitudeAnalytics != null && amplitudeAnalytics != "") {
-    provider = new AmplitudeAnalytics(
+    const analytics = require ('./AmplitudeAnalytics');
+
+    provider = new analytics.AmplitudeAnalytics(
       amplitudeAnalytics
     );
   }

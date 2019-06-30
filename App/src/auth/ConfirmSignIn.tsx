@@ -4,6 +4,7 @@ import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
@@ -52,7 +53,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
         logger.debug(path, queryParams);
 
         if (path == "confirm") {
-            this.audit.trackAction("E-Mail Link");
+            this.audit.trackAction(ActionNames.LogonEmailLink);
 
             this.setState({code: queryParams["code"] as string});
             this._confirm();
@@ -93,7 +94,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
             await Auth.currentSession();
 
             try {
-                this.audit.trackAction("Confirm");
+                this.audit.trackAction(ActionNames.LogonConfirm);
 
                 const client = cachedAolloClient();
                 await client.cache.reset();
@@ -104,7 +105,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
             }
             catch (e) {
                 logger.error(e, "failed to login");
-                this.audit.trackAction("Confirm failed");
+                this.audit.trackAction(ActionNames.LogonConfirmFailed);
 
                 this.setState({
                     error: I18N.SignIn.accessDenied,

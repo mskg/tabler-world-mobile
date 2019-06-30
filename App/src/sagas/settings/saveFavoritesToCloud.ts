@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { select } from 'redux-saga/effects';
 import { Audit } from "../../analytics/Audit";
 import { AuditEventName } from '../../analytics/AuditEventName';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
@@ -18,7 +19,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
         (state: IAppState) => state.filter.member.favorites);
 
     Audit.trackEvent(AuditEventName.SaveFavorites, undefined, {
-        count: Object.keys(favorites).length,
+        [AuditPropertyNames.NumerofFavorites]: Object.keys(favorites).length,
     });
 
     const result = Object

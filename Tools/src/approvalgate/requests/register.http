@@ -1,0 +1,15 @@
+
+
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "buildUrl": "https://somewhat/url/buildUrl",
+    "planUri": "planUri",
+    "projectId": "projectId",
+    "hubName": "hubName",
+    "planId": "planId",
+    "taskInstanceId": "taskInstanceId",
+    "jobId": "jobId",
+    "token": "token"
+}

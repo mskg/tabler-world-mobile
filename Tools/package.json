@@ -1,0 +1,41 @@
+{
+  "name": "@mskg/tabler-world-tools",
+  "author": "Markus Kling",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "aws-sdk": "^2.414.0",
+    "crypto": "^1.0.1",
+    "lodash": "^4.17.11",
+    "safe-compare": "^1.1.4"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.26",
+    "@types/node": "^11.10.4",
+    "cross-env": "^5.2.0",
+    "env-cmd": "^8.0.2",
+    "file-loader": "^3.0.1",
+    "ntl": "^3.2.4",
+    "serverless": "^1.44.1",
+    "serverless-domain-manager": "^3.2.6",
+    "serverless-dynamodb-local": "^0.2.38",
+    "serverless-iam-roles-per-function": "^2.0.1",
+    "serverless-offline": "^4.10.5",
+    "serverless-offline-direct-lambda": "0.0.1",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-webpack": "^5.3.0",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.32.1",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",    "remove": "serverless remove --verbose",
+    "dev": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && serverless offline start --verbose --noTimeout --noAuth\"",
+    "dynamodb": "serverless dynamodb install",
+    "start": "ntl"
+  }
+}

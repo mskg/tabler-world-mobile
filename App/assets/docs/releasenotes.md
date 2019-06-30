@@ -12,6 +12,9 @@
 - Fixed cache invalidation not resolving local data
 - Removed entries with no RT email, fixes #33
 - Empty countrycode produces empty export dialog, fixes #32
+- Fixed async bootstrapping behavior of analytics
+- Fixed analytics not accepting non-string values
+- Fixed graphql TTL times beeing minutes, not hours
 
 ## Improvements
 - Removed WhoAmI state, resolves #11
@@ -22,6 +25,7 @@
 - Local data is now based on members filter (no area, local table and favorites by default)
 - Allow retry in case of fetch errors on detail pages (member, club)
 - Optimized local caching for favorites, and club members
+- Harmonized analytics API
 
 ## Operations
 - Reworked deployment
@@ -34,6 +38,7 @@
 - Removed double pooling in favor of pgbouncer
 - X-Ray tracing for backend(s)
 - Switched Analytics from Cognito to Amplitude
+- Added approval gates for VSTS deployment
 
 # v0.8
 Beta build, for internal testing only

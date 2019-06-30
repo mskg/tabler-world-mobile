@@ -5,7 +5,9 @@ import { Alert, ScrollView, View } from "react-native";
 import { Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import { ActionNames } from '../../analytics/ActionNames';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../../apollo/bootstrapApollo';
 import Assets from '../../Assets';
@@ -70,8 +72,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _clearSyncFlags = () => {
-        this.audit.trackAction("Show remove data");
-
         Alert.alert(
             I18N.Settings.sync.title,
             I18N.Settings.sync.text,
@@ -84,7 +84,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     text: I18N.Settings.confirm,
                     style: 'destructive',
                     onPress: async () => {
-                        this.audit.trackAction("Remove data");
+                        this.audit.trackAction(ActionNames.RemoveData);
 
                         const client = cachedAolloClient();
                         await client.cache.reset();
@@ -105,8 +105,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _confirmUnload = () => {
-        this.audit.trackAction("Show logout");
-
         Alert.alert(
             I18N.Settings.logout.title,
             I18N.Settings.logout.text,
@@ -119,7 +117,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     text: I18N.Settings.confirm,
                     style: 'destructive',
                     onPress: () => {
-                        this.audit.trackAction("Logout");
+                        this.audit.trackAction(ActionNames.Logout);
                         this.props.logoutUser();
                     }
                 },
@@ -161,9 +159,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
             return;
         }
 
-        this.audit.trackAction("Change Setting", {
-            setting: type.name,
-            value: (type.value || "").toString(),
+        this.audit.trackAction(ActionNames.ChangeSetting, {
+            [AuditPropertyNames.Setting]: type.name,
+            [AuditPropertyNames.SettingValue]: (type.value || "").toString(),
         });
 
         this.props.updateSetting(type);
