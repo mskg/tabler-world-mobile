@@ -82,7 +82,7 @@
     "babel-preset-expo": "^5.0.0",
     "cross-env": "^5.2.0",
     "env-cmd": "^8.0.2",
-    "expo-cli": "^2.20.11",
+    "expo-cli": "^2.21.1",
     "fast-json-patch": "^2.1.0",
     "jest-expo": "^32.0.0",
     "license-checker": "^25.0.1",
