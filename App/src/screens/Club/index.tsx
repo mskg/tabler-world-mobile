@@ -42,8 +42,7 @@ class ClubBase extends AuditedScreen<Props> {
         const club = clubProp ? clubProp.Club : undefined;
 
         this.audit.submit({
-            id: this.props.id,
-
+            [AuditPropertyNames.Id]: this.props.id,
             [AuditPropertyNames.Club]: club ? club.name : "",
             [AuditPropertyNames.Association]: club ? club.association.name : "",
             [AuditPropertyNames.Area]: club ? club.area.name : "",

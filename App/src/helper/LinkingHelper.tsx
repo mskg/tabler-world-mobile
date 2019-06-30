@@ -1,6 +1,7 @@
 import { Linking } from "expo";
 import { Audit } from "../analytics/Audit";
 import { AuditEventName } from '../analytics/AuditEventName';
+import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { Categories, Logger } from './Logger';
 
 const logger = new Logger(Categories.Helpers.Linking);
@@ -130,7 +131,7 @@ export class LinkingHelper {
         logger.debug(app, number, url);
 
         Audit.trackEvent(AuditEventName.CreateSMS, {
-            app: app || MessagingApps.Default,
+            [AuditPropertyNames.LinkingApp]: app || MessagingApps.Default,
         });
 
         if (await Linking.canOpenURL(url)) {
@@ -145,7 +146,7 @@ export class LinkingHelper {
         logger.debug(app, urlToOpen, url);
 
         Audit.trackEvent(AuditEventName.OpenUrl, {
-            app: app || WebApps.Default,
+            [AuditPropertyNames.LinkingApp]: app || WebApps.Default,
         });
 
         if (await Linking.canOpenURL(url)) {
@@ -160,7 +161,7 @@ export class LinkingHelper {
         logger.debug(app, party, url);
 
         Audit.trackEvent(AuditEventName.MakeCall, {
-            app: app || CallApps.Default,
+            [AuditPropertyNames.LinkingApp]: app || CallApps.Default,
         });
 
         if (await Linking.canOpenURL(url)) {
@@ -173,7 +174,7 @@ export class LinkingHelper {
         logger.debug(app, party, url);
 
         Audit.trackEvent(AuditEventName.SendEMail, {
-            app: app || MailApps.Default,
+            [AuditPropertyNames.LinkingApp]: app || MailApps.Default,
         });
 
         if (await Linking.canOpenURL(url)) {

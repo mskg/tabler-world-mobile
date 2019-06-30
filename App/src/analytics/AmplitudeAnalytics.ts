@@ -1,8 +1,29 @@
 import * as Amplitude from 'expo-analytics-amplitude';
+import { AuditPropertyNames } from './AuditPropertyNames';
 import { EventType } from "./EventType";
 import { IAnalyticsProvider } from './IAuditor';
 import { logger } from "./logger";
 import { Metrics, Params } from './Types';
+
+const ensureStrings = (o: any) => {
+    if (o == null) return null;
+
+    const result = {};
+
+    Object.keys(o).forEach(key => {
+        let val = o[key];
+
+        if (typeof(val) !== "string") {
+            val = val.toString();
+        }
+
+        if (val !== null) {
+            result[key] = val;
+        }
+    });
+
+    return Object.keys(result).length > 0 ? result : null;
+}
 
 export class AmplitudeAnalytics implements IAnalyticsProvider {
     disabled: boolean = false;
@@ -24,11 +45,14 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
         if (this.disabled) { return; }
 
         if (id != null) {
-            Amplitude.setUserId(id);
+            // ensure it's a string
+            Amplitude.setUserId("" + id);
         }
 
-        if (attributes) {
-            Amplitude.setUserProperties(attributes);
+        const reduced = ensureStrings(attributes);
+        if (reduced) {
+            delete reduced[AuditPropertyNames.Version];
+            Amplitude.setUserProperties(reduced);
         }
     }
 
@@ -38,11 +62,11 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
         Amplitude.logEventWithProperties(
             `View ${screen}`,
             {
-                ...(attributes || {}),
-                ...(metrics || {}),
+                ...(ensureStrings(attributes) || {}),
+                ...(ensureStrings(metrics) || {}),
 
-                eventType: EventType.PageView,
-                screen,
+                [AuditPropertyNames.EventType]: EventType.PageView,
+                // [AuditPropertyNames.View]: screen,
             }
         );
     }
@@ -53,11 +77,11 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
         Amplitude.logEventWithProperties(
             `Event ${event}`,
             {
-                ...(attributes || {}),
-                ...(metrics || {}),
+                ...(ensureStrings(attributes) || {}),
+                ...(ensureStrings(metrics) || {}),
 
-                eventType: EventType.Event,
-                event,
+                // [AuditPropertyNames.Event]: event,
+                [AuditPropertyNames.EventType]: EventType.Event,
             }
         );
     }
@@ -66,14 +90,14 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
         if (this.disabled) { return; }
 
         Amplitude.logEventWithProperties(
-            `View ${action} ${action}`,
+            `Action ${screen} ${action}`,
             {
-                ...(attributes || {}),
-                ...(metrics || {}),
+                ...(ensureStrings(attributes) || {}),
+                ...(ensureStrings(metrics) || {}),
 
-                action,
-                screen,
-                eventType: EventType.Action,
+                // [AuditPropertyNames.Action]: action,
+                [AuditPropertyNames.View]: screen,
+                [AuditPropertyNames.EventType]: EventType.Action,
             }
         );
     }

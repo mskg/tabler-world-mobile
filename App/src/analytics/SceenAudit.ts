@@ -1,3 +1,5 @@
+import { ActionNames } from './ActionNames';
+import { AuditPropertyNames } from './AuditPropertyNames';
 import { IAnalyticsProvider } from './IAuditor';
 import { logger } from "./logger";
 import { IAuditor, Metrics, Params } from './Types';
@@ -12,7 +14,7 @@ export class SceenAudit implements IAuditor {
     constructor(private provider: IAnalyticsProvider, private screen: string) {
     }
 
-    public setParam(name: string, value: string | string[]) {
+    public setParam(name: AuditPropertyNames, value: string | string[]) {
         this.params[name] = value;
     }
 
@@ -24,7 +26,7 @@ export class SceenAudit implements IAuditor {
         this.metrics[metric] = this.metrics[metric] + 1;
     }
 
-    public trackAction(action: string, params?: Params, metrics?: Metrics) {
+    public trackAction(action: ActionNames, params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
 
         try {

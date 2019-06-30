@@ -1,5 +1,6 @@
 import { IAnalyticsProvider } from './IAuditor';
 import { logger } from "./logger";
+import { MetricNames } from "./MetricNames";
 import { Metrics, Params } from './Types';
 
 export class TimerEvent {
@@ -17,7 +18,7 @@ export class TimerEvent {
         try {
             this.provider.trackEvent(this.event, params, {
                 ...(metrics || {}),
-                duration: Date.now() - this.start,
+                [MetricNames.Duration]: Date.now() - this.start,
             });
         }
         catch (e) {

@@ -42,9 +42,9 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
       // only place where those are used
       const appProps = {
-        "[App] Channel": Constants.manifest.releaseChannel,
-        "[App] Version": Constants.manifest.version || 'dev',
-        "[App] Locale": Localization.locale.toLocaleLowerCase(),
+        [AuditPropertyNames.Channel]: Constants.manifest.releaseChannel,
+        [AuditPropertyNames.Version]: Constants.manifest.version || 'dev',
+        [AuditPropertyNames.Locale]: Localization.locale.toLocaleLowerCase(),
       };
 
       const client = cachedAolloClient();
