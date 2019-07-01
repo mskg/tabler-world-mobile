@@ -39,6 +39,7 @@ export function withApollo(App) {
             }
 
             return (
+                //@ts-ignore
                 <ApolloProvider client={client}>
                     <App />
                 </ApolloProvider>

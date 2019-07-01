@@ -3,11 +3,16 @@ import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
+import { Club } from '../../model/graphql/Club';
+import { ClubOverviewFragment as ClubOverviewFragmentType } from '../../model/graphql/ClubOverviewFragment';
+import { RolesFragment as RolesFragmentType } from '../../model/graphql/RolesFragment';
+import { ClubOverviewFragment } from "../../queries/ClubOverviewFragment";
+import { GetClubQuery } from '../../queries/GetClubQuery';
+import { RolesFragment } from "../../queries/RolesFragment";
 import { addSnack } from '../../redux/actions/snacks';
-import { ClubOverviewFragment } from '../Structure/Queries';
 import { StateProps } from './index';
 import { logger } from "./logger";
-import { GetClubQuery, GetClubQueryType, RolesFragment } from './Queries';
+
 
 class ClubQueryWithPreview extends PureComponent<{
     children: ReactElement<StateProps>;
@@ -16,16 +21,17 @@ class ClubQueryWithPreview extends PureComponent<{
     addSnack: typeof addSnack;
 }> {
     render() {
-        return (<Query<GetClubQueryType> query={GetClubQuery} variables={{
+        return (<Query<Club> query={GetClubQuery} variables={{
             id: this.props.id
         }} fetchPolicy={this.props.fetchPolicy}>
             {({ client, loading, data, error, refetch }) => {
                 let preview: any = undefined;
                 if (loading || error) {
-                    let club: any = null;
-                    let roles: any = null;
+                    let club: ClubOverviewFragmentType | null = null;
+                    let roles: RolesFragmentType | null = null;
+
                     try {
-                        club = client.readFragment({
+                        club = client.readFragment<ClubOverviewFragmentType>({
                             id: 'Club:' + this.props.id,
                             fragment: ClubOverviewFragment,
                         });
@@ -35,7 +41,7 @@ class ClubQueryWithPreview extends PureComponent<{
                     }
                     try {
                         roles =
-                            client.readFragment({
+                            client.readFragment<RolesFragmentType>({
                                 //@ts-ignore
                                 id: 'Club:' + this.props.id,
                                 fragmentName: "RoleDetails",

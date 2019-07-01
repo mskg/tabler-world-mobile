@@ -2,8 +2,8 @@ import React from "react";
 import { View } from 'react-native';
 import { Chip, Theme, withTheme } from "react-native-paper";
 import { connect } from 'react-redux';
+import { GetMemberQueryType_Member } from "../../queries/GetMemberQuery";
 import { showClub } from '../../redux/actions/navigation';
-import { GetMemberQueryType_Member } from "./Queries";
 import { styles } from './Styles';
 
 type Props = {

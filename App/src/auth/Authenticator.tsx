@@ -10,8 +10,8 @@ import { cachedAolloClient } from '../apollo/bootstrapApollo';
 import Reloader from '../components/Reloader';
 import { Categories, Logger } from "../helper/Logger";
 import { IAppState } from "../model/IAppState";
+import { MeFragment } from "../queries/MeFragment";
 import { INITIAL_STATE } from "../redux/initialState";
-import { MeFragment } from '../screens/Members/Queries';
 import ConfirmSignIn from "./ConfirmSignIn";
 import SignIn from "./SignIn";
 

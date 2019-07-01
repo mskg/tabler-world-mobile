@@ -5,16 +5,16 @@ import { RoleAvatar } from './RoleAvatar';
 
 type BoardMember = {
     id: number,
-    pic?: string,
-    firstname: string,
-    lastname: string,
+    pic?: string | null,
+    firstname: string | null,
+    lastname: string | null,
 };
 
 type Props = {
     roles: {
         role: string,
         member: BoardMember
-    }[],
+    }[] | null,
     items: number,
 };
 

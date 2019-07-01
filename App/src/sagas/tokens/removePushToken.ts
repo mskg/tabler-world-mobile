@@ -3,6 +3,7 @@ import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import { AsyncStorage } from 'react-native';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { RemoveToken, RemoveTokenVariables } from '../../model/graphql/RemoveToken';
 import { TOKEN_KEY } from '../../tasks/Const';
 import { logger } from './logger';
 
@@ -17,9 +18,9 @@ export function* removePushToken() {
 
     try {
         const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
-        yield client.mutate({
+        yield client.mutate<RemoveToken, RemoveTokenVariables>({
             mutation: gql`
-mutation removeToken($token: String!) {
+mutation RemoveToken($token: String!) {
     removeToken(token: $token)
 }`,
             variables: {

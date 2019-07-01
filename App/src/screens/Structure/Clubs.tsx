@@ -13,9 +13,10 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { Categories, Logger } from "../../helper/Logger";
 import { normalizeForSearch } from '../../helper/normalizeForSearch';
 import { I18N } from '../../i18n/translation';
+import { Clubs, Clubs_Clubs } from '../../model/graphql/Clubs';
+import { GetClubsQuery } from '../../queries/GetClubsQuery';
 import { homeScreen, showClub } from '../../redux/actions/navigation';
 import { CardTitle } from './CardTitle';
-import { GetClubsQuery, GetClubsQueryType, GetClubsQueryType_Club } from './Queries';
 import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Structure);
@@ -23,7 +24,7 @@ const logger = new Logger(Categories.Screens.Structure);
 type State = {
     search: string,
     debouncedSearch: string,
-    filtered: GetClubsQueryType_Club[],
+    filtered: Clubs_Clubs[],
 };
 
 type Props = {
@@ -32,7 +33,7 @@ type Props = {
 
     loading: boolean,
     refresh: () => any,
-    data?: GetClubsQueryType,
+    data?: Clubs | null,
 };
 
 class ClubsScreenBase extends AuditedScreen<Props, State> {
@@ -58,7 +59,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _renderItem = (params) => {
-        const item: GetClubsQueryType_Club = params.item;
+        const item: Clubs_Clubs = params.item;
 
         // remove RT
         const name = item.name.substring(item.name.indexOf(' ') + 1);
@@ -96,15 +97,13 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                 <RoleAccordionSection group={I18N.Structure.board} groupDetails="board" club={item.id} />
                 <RoleAccordionSection group={I18N.Structure.assist} groupDetails="boardassistants" club={item.id} />
 
-                {/* <View style={styles.bottom} /> */}
-
                 <Card.Actions style={styles.action}>
                     <Button color={this.props.theme.colors.accent} onPress={showClub}>{I18N.Structure.details}</Button>
                 </Card.Actions>
             </Card>);
     }
 
-    _key = (item: GetClubsQueryType_Club, index: number) => {
+    _key = (item: Clubs_Clubs, index: number) => {
         return item.id;
     }
 
@@ -124,7 +123,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         return found;
     }
 
-    makeSearchTexts(c: GetClubsQueryType_Club): string[] {
+    makeSearchTexts(c: Clubs_Clubs): string[] {
         return [
             c.name,
             c.area.name,
@@ -132,12 +131,12 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         ].filter(Boolean);
     }
 
-    filterData(data, text?: string): GetClubsQueryType_Club[] {
+    filterData(data?: Clubs | null, text?: string): Clubs_Clubs[] {
         if (data == null) { return []; }
 
         //@ts-ignore
         return _(data.Clubs)
-            .map((item: GetClubsQueryType_Club) => {
+            .map((item: Clubs_Clubs) => {
                 var match = _.find(
                     this.makeSearchTexts(item),
                     this._normalizedSearch(text || ""));
@@ -148,10 +147,12 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                 } : null;
             })
             .filter(r => r != null)
-            .orderBy((a: GetClubsQueryType_Club) =>
-                (data != null && (text === "" || text == null) && data.Me.club.club == a.club)
+            .orderBy((a) =>
+                (
+                    a != null && data != null && (text === "" || text == null) && data.Me.club.club == a.club)
                     ? 0
-                    : a.club)
+                    : a ? a.club : -1
+            )
             .toArray()
             .value();
     }
@@ -196,7 +197,7 @@ const ConnectedClubScreen = connect(null, {
 })(withTheme(ClubsScreenBase));
 
 const ClubsScreenWithQuery = ({ fetchPolicy }) => (
-    <Query<GetClubsQueryType> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
+    <Query<Clubs> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
         {({ loading, data, error, refetch }) => {
             if (error) throw error;
 

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const AreasQuery = gql`
-    query AreasQuery {
+export const GetAreasFilterQuery = gql`
+    query AreasFilter {
         Areas {
             id
             area

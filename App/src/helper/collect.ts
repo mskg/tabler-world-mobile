@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { GetMemberQueryType_Communication, GetMemberQueryType_Company, GetMemberQueryType_Member } from '../screens/Member/Queries';
+import { Member_Member, Member_Member_companies, Member_Member_emails, Member_Member_phonenumbers } from '../model/graphql/Member';
 
-function normalizePhone(p: string): string | undefined {
+function normalizePhone(p: string | null): string | undefined {
     if (p == null) return undefined;
 
     let nbrs = p.replace(/[^\d]/g, "");
@@ -12,39 +12,42 @@ function normalizePhone(p: string): string | undefined {
     return nbrs;
 }
 
-export function collectPhones(member?: GetMemberQueryType_Member): GetMemberQueryType_Communication[] {
+export function collectPhones(member?: Member_Member | null): Member_Member_phonenumbers[] {
     if (member == null || member.phonenumbers == null) return [];
 
     return _(member.phonenumbers || [])
         .concat(
             (member.companies || []).map(
-                (c: GetMemberQueryType_Company) => c.phone != null && c.phone !== ""
+                (c: Member_Member_companies) => c.phone != null && c.phone !== ""
                     ? ({
                         type: "work",
-                        value: c.phone,
+                        value: c.phone || '',
+                        __typename: "CommunicationElement" as 'CommunicationElement',
                     })
                     : undefined
             )
         )
-        .filter(Boolean)
+        .filter(v => v != null)
         .uniqBy(v => normalizePhone(v.value))
         .toArray()
         .value();
 }
 
-export function collectEMails(member?: GetMemberQueryType_Member): GetMemberQueryType_Communication[] {
+export function collectEMails(member?: Member_Member | null): Member_Member_emails[] {
     if (member == null) return [];
 
     return _([{
+        __typename: 'CommunicationElement' as 'CommunicationElement',
         type: "rt",
         value: member.rtemail,
     }])
         .concat(member.emails || [])
         .concat(
             (member.companies || []).map(
-                (c: GetMemberQueryType_Company) => ({
+                (c: Member_Member_companies) => ({
                     type: "work",
-                    value: c.email,
+                    value: c.email || '',
+                    __typename: 'CommunicationElement' as 'CommunicationElement',
                 })
             )
         )

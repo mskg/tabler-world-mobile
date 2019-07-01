@@ -14,15 +14,18 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { MeFragment } from '../../model/graphql/MeFragment';
+import { MembersByAreas } from '../../model/graphql/MembersByAreas';
+import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
-import { IWhoAmI } from '../../model/IWhoAmI';
 import { HashMap } from '../../model/Maps';
+import { GetMembersByAreasQuery } from "../../queries/GetMembersByAreasQuery";
+import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
 import { showFilter, showSearch } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { MemberDataSource } from './MemberDataSource';
 import { Predicates } from './Predicates';
-import { GetMembersQuery, GetMembersQueryType, GetOfflineMembersQuery, GetOfflineMembersQueryType } from './Queries';
 
 const logger = new Logger(Categories.Screens.Contacts);
 
@@ -30,14 +33,14 @@ type State = {
     letter: string | undefined,
     forceUpdate: boolean,
     dataSource: MemberDataSource,
-    me?: IWhoAmI,
+    me?: MeFragment,
 };
 
 type OwnProps = {
     theme: Theme,
 
-    data?: GetMembersQueryType,
-    offlineData?: GetOfflineMembersQueryType,
+    data?: MembersByAreas,
+    offlineData?: OfflineMembers,
 
     loading: boolean,
 
@@ -219,7 +222,7 @@ const ConnectedMembersScreen = connect(
 // processing time is too slow if we add the @client directive
 // to a query with many records.
 const MembersQuery = ({ fetchPolicy, areas }) => (
-    <Query<GetOfflineMembersQueryType>
+    <Query<OfflineMembers>
         query={GetOfflineMembersQuery}
         fetchPolicy={fetchPolicy}
     >
@@ -230,8 +233,8 @@ const MembersQuery = ({ fetchPolicy, areas }) => (
                 });
             }
 
-            return <Query<GetMembersQueryType>
-                query={GetMembersQuery}
+            return <Query<MembersByAreas>
+                query={GetMembersByAreasQuery}
                 fetchPolicy={fetchPolicy}
                 variables={{
                     areas: areas != null ? _(areas)

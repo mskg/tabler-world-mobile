@@ -5,7 +5,7 @@ import { Categories, Logger } from './Logger';
 
 const logger = new Logger(Categories.Screens.Structure);
 
-export function sortRoles(roles?: IAssociationRole[]): IAssociationRole[] | undefined {
+export function sortRoles(roles?: IAssociationRole[] | null): IAssociationRole[] | undefined {
     if (roles == null || roles.length === 0) return undefined;
 
     const sorted = _(roles)
@@ -36,7 +36,7 @@ type Role = {
     }
 };
 
-export function sortGroupRoles<T extends Role>(roles?: T[]): T[] | undefined {
+export function sortGroupRoles<T extends Role>(roles?: T[] | null): T[] | undefined {
     if (roles == null || roles.length === 0) return undefined;
 
     const sorted = _(roles)

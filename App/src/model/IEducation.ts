@@ -1,6 +1,3 @@
-import { IAddress } from './IAddress';
-export interface IEducation {
-    school: string;
-    education: string;
-    address: IAddress;
-}
+
+export { Member_Member_educations as IEducation } from "./graphql/Member";
+

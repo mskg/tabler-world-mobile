@@ -14,11 +14,11 @@ type Props = {
 
     // member: IMember,
 
-    pic?: string,
-    firstname?: string,
-    lastname?: string,
+    pic?: string | null,
+    firstname?: string | null,
+    lastname?: string | null,
 
-    label?: string,
+    label?: string | null,
 };
 
 class MemberRoleCover extends React.Component<Props> {

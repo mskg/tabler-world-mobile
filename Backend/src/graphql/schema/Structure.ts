@@ -12,20 +12,20 @@ export const Structure = gql`
         association: String!
         name: String!
 
-        areas: [Area]!
-        board: [AssociationRole]
-        boardassistants: [AssociationRole]
+        areas: [Area!]!
+        board: [AssociationRole!]!
+        boardassistants: [AssociationRole!]!
     }
 
     type Area {
-        id: String
+        id: String!
 
         association: Association!
         area: Int!
         name: String!
 
-        clubs: [Club]!
-        board: [AssociationRole]
+        clubs: [Club!]!
+        board: [AssociationRole!]!
     }
 
     type ClubInfo {
@@ -68,10 +68,10 @@ export const Structure = gql`
 
         info: ClubInfo
 
-        board: [AssociationRole]
-        boardassistants: [AssociationRole]
+        board: [AssociationRole!]!
+        boardassistants: [AssociationRole!]
 
-        members: [Member]
+        members: [Member!]
     }
 
     extend type Query {

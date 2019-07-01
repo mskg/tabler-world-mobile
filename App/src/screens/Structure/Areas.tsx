@@ -9,9 +9,10 @@ import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
+import { Areas, Areas_Areas } from '../../model/graphql/Areas';
+import { GetAreasQuery } from "../../queries/GetAreasQuery";
 import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
-import { GetAreasQuery, GetAreasQueryType, GetAreasQueryType_Area } from './Queries';
 import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Structure);
@@ -31,7 +32,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
     }
 
     _renderItem = (params) => {
-        const item: GetAreasQueryType_Area = params.item;
+        const item: Areas_Areas = params.item;
 
         return (
             <Card key={item.id} style={styles.card}>
@@ -55,13 +56,13 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
         );
     }
 
-    _key = (item: GetAreasQueryType_Area, index: number) => {
+    _key = (item: Areas_Areas, index: number) => {
         return item.id;
     }
 
     render() {
         return (
-            <Query<GetAreasQueryType> query={GetAreasQuery} fetchPolicy={this.props.fetchPolicy}>
+            <Query<Areas> query={GetAreasQuery} fetchPolicy={this.props.fetchPolicy}>
                 {({ loading, error, data, refetch }) => {
                     if (error) throw error;
 

@@ -14,21 +14,21 @@ import { formatAddress, showAddress } from "../../helper/addressHelpers";
 import { formatBank } from '../../helper/formatBank';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
+import { Club_Club } from '../../model/graphql/Club';
 import { IAddress } from "../../model/IAddress";
 import { IAppState } from '../../model/IAppState';
 import { ExpandableElement } from './ExpandableElement';
-import { GetClubQueryType_Club } from './Queries';
 import { styles } from './Styles';
 
 type Props = {
     theme: Theme,
-    club?: GetClubQueryType_Club,
+    club?: Club_Club | null,
     loading: boolean,
 };
 
 class ClubDetailsBase extends React.Component<Props> {
 
-    handleAddress = (address?: IAddress) => () => {
+    handleAddress = (address?: IAddress | null) => () => {
         showAddress(address);
     }
 
@@ -79,7 +79,13 @@ class ClubDetailsBase extends React.Component<Props> {
                 && assist.find(b => m.id === b.member.id) == null
         );
 
-        const { first_meeting, second_meeting, charter_date, national_godparent, international_godparent } = club.info || {};
+        const { first_meeting, second_meeting, charter_date, national_godparent, international_godparent } = club.info || {
+            first_meeting: null,
+            second_meeting: null,
+            charter_date: null,
+            national_godparent: null,
+            international_godparent: null,
+        };
 
         return (<>
             <View style={styles.actions}>

@@ -6,7 +6,6 @@ import { Query } from "./Query";
 import { SearchMember } from "./Search";
 import { Settings } from "./Settings";
 import { Structure } from "./Structure";
-import { SyncMember } from "./SyncMember";
 
 export const schema = [
     gql`
@@ -15,7 +14,7 @@ export const schema = [
     Query,
     Member,
     Structure,
-    SyncMember,
+    // SyncMember,
     SearchMember,
     Mutation,
     Settings,

@@ -4,10 +4,10 @@ import { Theme } from 'react-native-paper';
 import { ActionButton } from '../../components/ActionButton';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
-import { GetMemberQueryType_SocialMedia } from './Queries';
+import { Member_Member_socialmedia } from '../../model/graphql/Member';
 import { styles } from './Styles';
 
-export const Social = ({ social, theme }: { social: GetMemberQueryType_SocialMedia | undefined, theme: Theme }) => {
+export const Social = ({ social, theme }: { social: Member_Member_socialmedia | undefined | null, theme: Theme }) => {
     if (social == null) { return null; }
     if (!social.facebook
         && !social.instagram

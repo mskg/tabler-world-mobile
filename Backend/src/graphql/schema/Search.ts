@@ -4,9 +4,9 @@ export const SearchMember = gql`
     input MemberQueryInput {
         text: String
 
-        roles: [String]
-        areas: [String]
-        clubs: [String]
+        roles: [String!]
+        areas: [String!]
+        clubs: [String!]
     }
 
     type PageInfo {
@@ -15,7 +15,7 @@ export const SearchMember = gql`
     }
 
     type SearchMemberConnection {
-        nodes: [MemberListView]
+        nodes: [MemberListView!]!
         pageInfo: PageInfo!
     }
 

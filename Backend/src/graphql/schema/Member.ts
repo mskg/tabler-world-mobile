@@ -100,19 +100,19 @@ export const Member = gql`
 
         birthdate: Date
 
-        phonenumbers: [CommunicationElement]
-        emails: [CommunicationElement]
+        phonenumbers: [CommunicationElement!]
+        emails: [CommunicationElement!]
 
         rtemail: String
         partner: String
 
-        roles: [Role]
+        roles: [Role!]
 
         modifiedon: Date
 
         socialmedia: SocialMedia
-        educations: [Education]
-        companies: [Company]
+        educations: [Education!]
+        companies: [Company!]
     }
 
     input MemberFilterInput {
@@ -129,6 +129,6 @@ export const Member = gql`
         MembersOverview(filter: MemberFilterInput): [MemberListView!]!
 
         Member (id: Int!): Member
-        Members (ids: [Int]!): [Member!]
+        Members (ids: [Int!]!): [Member!]
     }
 `;

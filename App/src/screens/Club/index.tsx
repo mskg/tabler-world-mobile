@@ -12,10 +12,10 @@ import { AvatarPopup } from '../../components/Profile/AvatarPopup';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
 import { I18N } from '../../i18n/translation';
+import { Club as ClubType } from '../../model/graphql/Club';
 import { IClubParams } from '../../redux/actions/navigation';
 import { ClubDetails } from './ClubDetails';
 import { ClubQueryWithPreviewAndInvalidation } from './ClubQueryWithPreview';
-import { GetClubQueryType } from './Queries';
 
 type OwnProps = {
     theme: Theme,
@@ -24,8 +24,8 @@ type OwnProps = {
 export type StateProps = {
     id: string,
     loading: boolean;
-    club?: GetClubQueryType;
-    preview?: GetClubQueryType;
+    club?: ClubType;
+    preview?: ClubType;
 };
 
 type Props = OwnProps & StateProps;

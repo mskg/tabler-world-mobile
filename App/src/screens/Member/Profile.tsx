@@ -14,11 +14,11 @@ import { collectEMails, collectPhones } from '../../helper/collect';
 import { LinkingHelper } from '../../helper/LinkingHelper';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
+import { Member_Member } from '../../model/graphql/Member';
 import { IAddress } from "../../model/IAddress";
 import { IAppState } from '../../model/IAppState';
 import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from "./openLink";
 import { Organization } from './Organization';
-import { GetMemberQueryType_Member } from './Queries';
 import { Roles } from './Roles';
 import { Social } from './Social';
 
@@ -30,7 +30,7 @@ type State = {
 type OwnProps = {
     theme: Theme,
 
-    member?: GetMemberQueryType_Member,
+    member?: Member_Member | null,
     loading: boolean,
 };
 
@@ -222,7 +222,7 @@ class ProfileBase extends React.Component<Props, State> {
             LinkType.EMail);
     };
 
-    handleAddress = (address?: IAddress) => () => {
+    handleAddress = (address?: IAddress | null) => () => {
         showAddress(address);
     }
 

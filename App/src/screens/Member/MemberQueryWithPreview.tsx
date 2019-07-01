@@ -4,9 +4,12 @@ import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
+import { Member } from '../../model/graphql/Member';
+import { MemberOverviewFragment as MemberOverviewFragmentType } from '../../model/graphql/MemberOverviewFragment';
+import { GetMemberQuery } from '../../queries/GetMemberQuery';
+import { MemberOverviewFragment } from "../../queries/MemberOverviewFragment";
 import { addSnack } from '../../redux/actions/snacks';
 import { logger } from "./logger";
-import { GetMemberQuery, GetMemberQueryType, MembersOverviewFragment } from './Queries';
 
 class MemberQueryWithPreview extends PureComponent<{
     children: ReactElement;
@@ -15,20 +18,20 @@ class MemberQueryWithPreview extends PureComponent<{
     addSnack: typeof addSnack;
 }> {
     render() {
-        return (<Query<GetMemberQueryType>
+        return (<Query<Member>
             query={GetMemberQuery}
             variables={{
                 id: this.props.id
             }}
         >
             {({ client, loading, data, error, refetch }) => {
-                let preview = null;
+                let preview: MemberOverviewFragmentType | null = null;
 
                 if ((loading || error) && (data == null || data.Member == null)) {
                     try {
-                        preview = client.readFragment({
+                        preview = client.readFragment<MemberOverviewFragmentType>({
                             id: "Member:" + this.props.id,
-                            fragment: MembersOverviewFragment
+                            fragment: MemberOverviewFragment
                         });
 
                         logger.log("found preview", preview);

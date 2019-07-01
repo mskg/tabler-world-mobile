@@ -361,7 +361,7 @@ const en = {
     },
 
     Countries: {
-        translate: (c: string | undefined) => {
+        translate: (c: string | undefined | null) => {
             if (c == null) return null;
             return countries.countries[c.toUpperCase()] || c;
         }
