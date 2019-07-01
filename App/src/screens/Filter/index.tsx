@@ -10,12 +10,13 @@ import { StandardHeader } from '../../components/Header';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
+import { AreasFilter } from '../../model/graphql/AreasFilter';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
+import { GetAreasFilterQuery } from '../../queries/GetAreasFilterQuery';
 import { toggleAll, toggleDistrict, toggleFavorites, toggleOwnTable } from '../../redux/actions/filter';
 import { HeaderStyles } from '../../theme/dimensions';
 import { Element } from './Element';
-import { AreasQuery } from './Queries';
 
 type OwnProps = {
 };
@@ -111,7 +112,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
                         />
                     </List.Section>
 
-                    <Query query={AreasQuery} fetchPolicy={this.props.fetchPolicy}>
+                    <Query<AreasFilter> query={GetAreasFilterQuery} fetchPolicy={this.props.fetchPolicy}>
                         {({ loading, data, error, refetch }) => {
                             if (loading || error) return null;
 

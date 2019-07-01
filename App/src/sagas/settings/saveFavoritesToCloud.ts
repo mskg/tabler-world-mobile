@@ -4,8 +4,9 @@ import gql from 'graphql-tag';
 import { select } from 'redux-saga/effects';
 import { Audit } from "../../analytics/Audit";
 import { AuditEventName } from '../../analytics/AuditEventName';
-import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
+import { MetricNames } from '../../analytics/MetricNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { PutSetting, PutSettingVariables } from '../../model/graphql/PutSetting';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
 import * as filterActions from '../../redux/actions/filter';
@@ -19,7 +20,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
         (state: IAppState) => state.filter.member.favorites);
 
     Audit.trackEvent(AuditEventName.SaveFavorites, undefined, {
-        [AuditPropertyNames.NumerofFavorites]: Object.keys(favorites).length,
+        [MetricNames.NumerofFavorites]: Object.keys(favorites).length,
     });
 
     const result = Object
@@ -30,7 +31,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
     logger.debug(favorites, result);
 
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
-    yield client.mutate({
+    yield client.mutate<PutSetting, PutSettingVariables>({
         mutation: gql`
 mutation PutSetting($input: SettingInput!) {
     putSetting (setting: $input)

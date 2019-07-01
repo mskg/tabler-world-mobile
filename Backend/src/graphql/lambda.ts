@@ -50,6 +50,7 @@ const server = new ApolloServer({
   },
 
   tracing: EXECUTING_OFFLINE,
+  // mockEntireSchema: EXECUTING_OFFLINE,
 
   extensions,
   context: constructContext,

@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { AsyncStorage } from 'react-native';
 import { select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { AddToken, AddTokenVariables } from '../../model/graphql/AddToken';
 import { IAppState } from '../../model/IAppState';
 import * as actions from '../../redux/actions/settings';
 import * as userActions from '../../redux/actions/user';
@@ -21,9 +22,9 @@ export function* storePushToken(arg: typeof actions.storePushToken.shape) {
 
     try {
         const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
-        yield client.mutate({
+        yield client.mutate<AddToken, AddTokenVariables>({
             mutation: gql`
-mutation addToken($token: String!) {
+mutation AddToken($token: String!) {
     addToken(token: $token)
 }`,
             variables: {

@@ -13,12 +13,12 @@ import { AvatarPopup } from "../../components/Profile/AvatarPopup";
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
 import { I18N } from '../../i18n/translation';
+import { Member as MemberType } from '../../model/graphql/Member';
 import { addTablerLRU } from '../../redux/actions/history';
 import { IProfileParams } from '../../redux/actions/navigation';
 import { ActionsFab } from './ActionsFab';
 import { MemberQueryWithPreviewAndInvalidation } from './MemberQueryWithPreview';
 import { Profile } from './Profile';
-import { GetMemberQueryType } from './Queries';
 
 type OwnProps = {
     theme: Theme,
@@ -28,8 +28,8 @@ export type StateProps = {
     loading: boolean;
 
     id: number;
-    member?: GetMemberQueryType;
-    preview?: GetMemberQueryType;
+    member?: MemberType;
+    preview?: MemberType;
 
     addTablerLRU: typeof addTablerLRU;
 };

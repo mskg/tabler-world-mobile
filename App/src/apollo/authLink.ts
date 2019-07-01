@@ -5,8 +5,6 @@ import { logoutUser } from "../redux/actions/user";
 import { getReduxStore } from "../redux/getRedux";
 import { logger } from "./logger";
 
-const client = Constants.name + " v" + Constants.manifest.version;
-
 export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promise<Response> => {
     // throw "failed";
 
@@ -23,7 +21,8 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
             ...(options || {}),
             headers: {
                 ...(options || {}).headers,
-                "X-Client": client,
+                "X-Client-Name": Constants.name,
+                "X-Client-Version": Constants.manifest.version || "dev",
                 Authorization: token,
             }
         }

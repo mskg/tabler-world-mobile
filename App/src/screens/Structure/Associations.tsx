@@ -12,8 +12,9 @@ import { CachedImage } from '../../components/Image/CachedImage';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { I18N } from '../../i18n/translation';
+import { Associations, Associations_Associations } from '../../model/graphql/Associations';
 import { RoleNames } from '../../model/IRole';
-import { GetAssociationsQuery, GetAssociationsQueryType, GetAssociationsQueryType_Association } from './Queries';
+import { GetAssociationsQuery } from "../../queries/GetAssociationsQuery";
 import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Structure);
@@ -33,7 +34,7 @@ class AssociationsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _renderItem = (params) => {
-        const item: GetAssociationsQueryType_Association = params.item;
+        const item: Associations_Associations = params.item;
 
         return (
             <Card key={item.association} style={styles.card}>
@@ -87,13 +88,13 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
         );
     }
 
-    _key = (item: GetAssociationsQueryType_Association, index: number) => {
+    _key = (item: Associations_Associations, index: number) => {
         return item.association;
     }
 
     render() {
         return (
-            <Query<GetAssociationsQueryType> query={GetAssociationsQuery} fetchPolicy={this.props.fetchPolicy}>
+            <Query<Associations> query={GetAssociationsQuery} fetchPolicy={this.props.fetchPolicy}>
                 {({ loading, error, data, refetch }) => {
                     if (error) throw error;
 

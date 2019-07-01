@@ -11,7 +11,8 @@
     "config:aws": ". ~/.bashrc && aws cloudformation list-exports > ./config/aws.json",
     "config": "npm run config:aws && npm run config:app",
     "config:app": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && node config/create.js\"",
-    "expo": "npm run config && expo start"
+    "expo": "npm run config && expo start",
+    "codegen": "rm -f src/model/graphql/*.ts && npx apollo client:codegen --target=typescript --outputFlat src/model/graphql"
   },
   "dependencies": {
     "@aws-amplify/analytics": "^1.2.16",
@@ -79,6 +80,7 @@
     "@types/react-native": "^0.57.38",
     "@types/react-navigation": "^3.0.4",
     "@types/react-redux": "^7.0.1",
+    "apollo": "^2.15.0",
     "babel-preset-expo": "^5.0.0",
     "cross-env": "^5.2.0",
     "env-cmd": "^8.0.2",

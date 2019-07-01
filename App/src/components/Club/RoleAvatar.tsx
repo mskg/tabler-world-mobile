@@ -13,9 +13,9 @@ type Props = {
 
     member: {
         id: number,
-        pic?: string,
-        firstname: string,
-        lastname: string,
+        pic?: string | null,
+        firstname: string | null,
+        lastname: string | null,
     },
 
     theme: Theme,

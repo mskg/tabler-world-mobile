@@ -13,7 +13,7 @@ type Props = {
     groupDetails: "board" | "boardassistants",
     expanded?: boolean,
     club: string,
-    fetchPolicy: any,
+    fetchPolicy?: any,
 };
 
 type State = {

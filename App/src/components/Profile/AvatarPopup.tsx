@@ -5,17 +5,16 @@ import { showPictureSceen } from "../../redux/actions/navigation";
 
 type AvatarPopupProps = {
     title: string,
-    size: number,
-    pic?: string,
+    size?: number,
+    pic?: string | null,
     showPictureSceen: typeof showPictureSceen,
     children: any,
 };
 
 class AvatarPopupBase extends React.Component<AvatarPopupProps> {
-    //@ts-ignore
     _showScreen = () => {
-        // debugger
         requestAnimationFrame(() =>
+            //@ts-ignore
             this.props.showPictureSceen(this.props.pic, this.props.title)
         );
     }
@@ -27,6 +26,7 @@ class AvatarPopupBase extends React.Component<AvatarPopupProps> {
             // <Portal>
             <TouchableWithoutFeedback
                 onPress={pic == null || pic === "" ? undefined : this._showScreen}
+                disabled={pic == null || pic === ""}
                 style={{margin: 10}}
             >
                 {

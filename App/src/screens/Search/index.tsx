@@ -6,6 +6,7 @@ import { Appbar, Chip, Divider, List, Searchbar, Text, Theme, withTheme } from '
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import { MetricNames } from '../../analytics/MetricNames';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { FilterSection, FilterTag, FilterTagType } from "../../components/FilterSection";
 import { StandardHeader } from '../../components/Header';
@@ -17,12 +18,15 @@ import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { Filters } from '../../model/graphql/Filters';
+import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
 import { IAppState } from '../../model/IAppState';
+import { GetFiltersQuery } from "../../queries/GetFiltersQuery";
+import { SearchMemberQuery } from "../../queries/SearchMemberQuery";
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
 import { LRU } from './LRU';
-import { FiltersQuery, SearchQuery } from './Queries';
 import { styles } from './styles';
 
 const logger = new Logger(Categories.Screens.Search);
@@ -112,11 +116,8 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             return;
         }
 
-
-        this.audit.increment("adjust");
-
         if (text != "" && text != null) {
-            this.audit.increment("search text");
+            this.audit.increment(MetricNames.Count);
         }
 
         this.setState({
@@ -172,7 +173,9 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
 
     _onToggleTag = (type: FilterTagType, value: string) => {
         logger.debug("toggle", type, value);
-        this.audit.increment(`toggle ${type}`);
+
+        //@ts-ignore
+        this.audit.increment(`Toggle ${type}`);
 
         const tags = [...this.state.filterTags];
 
@@ -188,7 +191,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     _showFilterDialog = () => {
-        this.audit.increment(`filter dialog`);
+        this.audit.increment(MetricNames.ShowFilterDialog);
 
         if (this._searchBar) { this._searchBar.blur(); }
         this.setState({ showFilter: !this.state.showFilter });
@@ -235,7 +238,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                 }
 
                 {this.state.searching &&
-                    <Query query={SearchQuery} fetchPolicy="network-only" variables={{
+                    <Query<SearchMember, SearchMemberVariables> query={SearchMemberQuery} fetchPolicy="network-only" variables={{
                         text: this.state.debouncedQuery,
                         after: null,
                         areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
@@ -260,12 +263,12 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                     onRefresh={refetch}
 
                                     onEndReached={() => {
-                                        logger.log("Cursor is", result.pageInfo);
+                                        logger.log("Cursor is", result ? result.pageInfo : null);
 
                                         fetchMore({
                                             variables: {
                                                 text: this.state.debouncedQuery,
-                                                after: result.pageInfo.endCursor,
+                                                after: result ? result.pageInfo.endCursor : null,
                                                 areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
                                                 clubs: this.state.filterTags.filter((f: FilterTag) => f.type === "table").map((f: FilterTag) => f.value),
                                                 roles: this.state.filterTags.filter((f: FilterTag) => f.type === "role").map((f: FilterTag) => f.value),
@@ -331,7 +334,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                             </View>
                             <ScrollView style={{ minHeight: "100%" }}>
                                 <Divider />
-                                <Query query={FiltersQuery} fetchPolicy={this.props.fetchPolicy}>
+                                <Query<Filters> query={GetFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
                                     {({ loading, data, error, refetch }) => {
                                         // ok for now
                                         if (error) return null;

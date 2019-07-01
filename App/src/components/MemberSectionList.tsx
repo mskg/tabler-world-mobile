@@ -7,6 +7,7 @@ import { DataProvider, LayoutProvider, RecyclerListView } from 'recyclerlistview
 import StickyContainer from 'recyclerlistview/dist/reactnative/core/StickyContainer';
 import { Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
+import { MeFragment } from '../model/graphql/MeFragment';
 import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
@@ -25,7 +26,7 @@ type State = {
 
 type OwnProps = {
     theme: Theme,
-    me?: IWhoAmI,
+    me?: MeFragment,
     data: SectionData,
 
     extraData?: any,

@@ -10,9 +10,13 @@ import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
 import { MaxTTL } from '../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../helper/Logger';
+import { MembersByAreasVariables } from '../model/graphql/MembersByAreas';
+import { GetAreasQuery } from "../queries/GetAreasQuery";
+import { GetAssociationsQuery } from "../queries/GetAssociationsQuery";
+import { GetClubsQuery } from '../queries/GetClubsQuery';
+import { GetMembersByAreasQuery } from "../queries/GetMembersByAreasQuery";
+import { GetOfflineMembersQuery } from '../queries/GetOfflineMembersQuery';
 import { getReduxStore } from '../redux/getRedux';
-import { GetMembersQuery, GetOfflineMembersQuery } from '../screens/Members/Queries';
-import { GetAreasQuery, GetAssociationsQuery, GetClubsQuery } from '../screens/Structure/Queries';
 
 const FETCH_TASKNAME = "update-contacts";
 const logger = new Logger(Categories.Sagas.Fetch);
@@ -50,7 +54,7 @@ async function runBackgroundFetch() {
         await updateCache(client, GetOfflineMembersQuery, "members");
 
         const areas = getReduxStore().getState().filter.member.area;
-        await updateCache(client, GetMembersQuery, "members", {
+        await updateCache(client, GetMembersByAreasQuery, "members", {
             areas: areas != null ? _(areas)
                 .keys()
                 .filter(k => k !== "length")
@@ -58,7 +62,7 @@ async function runBackgroundFetch() {
                 .map(a => parseInt(a, 10))
                 .value()
                 : null
-        });
+        } as MembersByAreasVariables);
 
         await updateCache(client, GetClubsQuery, "clubs");
         await updateCache(client, GetAreasQuery, "areas");

@@ -10,16 +10,16 @@ import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
+import { Member_Member } from '../../model/graphql/Member';
 import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
 import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
-import { GetMemberQueryType_Member } from './Queries';
 
 type Props = {
   top: number,
 
-  member: GetMemberQueryType_Member
+  member: Member_Member
   theme: Theme,
 
   toggleFavorite: typeof toggleFavorite,

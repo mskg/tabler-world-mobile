@@ -1,6 +1,6 @@
 import * as Contacts from 'expo-contacts';
 import { I18N } from '../../i18n/translation';
-import { GetMemberQueryType_Member } from '../../screens/Member/Queries';
+import { GetMemberQueryType_Member } from '../../queries/GetMemberQuery';
 import { collectEMails, collectPhones } from '../collect';
 import { downloadPic } from './downloadPic';
 import { logger } from './logger';

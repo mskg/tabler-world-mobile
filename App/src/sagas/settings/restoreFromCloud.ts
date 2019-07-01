@@ -1,10 +1,11 @@
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
-import { ApolloClient } from 'apollo-client';
+import { ApolloClient, ApolloQueryResult } from 'apollo-client';
 import gql from 'graphql-tag';
 import { put } from 'redux-saga/effects';
 import { Audit } from "../../analytics/Audit";
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { GetFavoritesSetting } from '../../model/graphql/GetFavoritesSetting';
 import * as filterActions from '../../redux/actions/filter';
 import * as settingsActions from '../../redux/actions/settings';
 import { logger } from './logger';
@@ -18,9 +19,9 @@ export function* restoreSettingsFromCloud(a: typeof settingsActions.restoreSetti
 
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
 
-    const result = yield client.query({
+    const result: ApolloQueryResult<GetFavoritesSetting> = yield client.query<GetFavoritesSetting>({
         query: gql`
-query Settings {
+query GetFavoritesSetting {
   Setting (name: favorites)
 }`,
         fetchPolicy: "network-only"

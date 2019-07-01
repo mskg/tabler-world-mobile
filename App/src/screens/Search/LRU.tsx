@@ -8,9 +8,10 @@ import { RoleAvatar } from '../../components/Club/RoleAvatar';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { LRUMembers } from '../../model/graphql/LRUMembers';
 import { IAppState } from '../../model/IAppState';
+import { GetLRUMembersQuery } from '../../queries/GetLRUMembersQuery';
 import { showProfile } from '../../redux/actions/navigation';
-import { LRUQuery, LRUQueryType } from './Queries';
 
 const logger = new Logger(Categories.Screens.Search);
 
@@ -35,7 +36,7 @@ const widthMax = Dimensions.get("window").width / 2 - 32 - 18;
 class LRUBase extends React.Component<Props> {
     render() {
         return (
-            <Query<LRUQueryType> query={LRUQuery} variables={{
+            <Query<LRUMembers> query={GetLRUMembersQuery} variables={{
                 ids: this.props.lru,
             }} fetchPolicy={this.props.fetchPolicy}>
                 {({ loading, data }) => {

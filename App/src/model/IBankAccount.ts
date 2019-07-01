@@ -1,7 +1,2 @@
-export interface IBankAccount {
-    name: String;
-    owner: String;
-    iban: String;
-    bic: String;
-    currency: String;
-}
+export { Club_Club_account as IBankAccount } from "./graphql/Club";
+
