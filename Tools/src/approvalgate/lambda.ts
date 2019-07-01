@@ -3,14 +3,16 @@ import { buildFinished } from './build/buildFinished';
 import { registerBuild } from './register/registerBuild';
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
+  let result;
+
   if (event.resource == "/register") {
-    await registerBuild(event);
+    result = await registerBuild(event);
   }
   else if (event.resource == "/buildfinished") {
-    await buildFinished(event);
+    result = await buildFinished(event);
   }
 
-  return {
+  return result || {
     statusCode: 200,
     body: JSON.stringify({ result: 'OK' }),
   };

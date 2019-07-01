@@ -33,7 +33,8 @@
     "dist/"
   ],
   "scripts": {
-    "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",    "remove": "serverless remove --verbose",
+    "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
+    "remove": "serverless remove --verbose",
     "dev": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && serverless offline start --verbose --noTimeout --noAuth\"",
     "dynamodb": "serverless dynamodb install",
     "start": "ntl"

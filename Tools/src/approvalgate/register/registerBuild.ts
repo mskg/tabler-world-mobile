@@ -1,8 +1,8 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { store } from '../store/instance';
 import { StartParams } from "./StartParams";
 
-export async function registerBuild(event: APIGatewayProxyEvent) {
+export async function registerBuild(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult>  {
   if (event.body == null) throw new Error("Body is null?");
   console.log("registering build", event.body);
 
@@ -13,5 +13,10 @@ export async function registerBuild(event: APIGatewayProxyEvent) {
     ttl: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 1 day
   });
 
-  console.log("done.");
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      id,
+    })
+  }
 }

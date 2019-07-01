@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import crypto from 'crypto';
 import { request } from "https";
 import safeCompare from 'safe-compare';
@@ -9,7 +9,7 @@ import { BuildParams } from "./BuildParams";
 /**
  * Notify VSTS build gate that the build has finished
  */
-export async function buildFinished(event: APIGatewayProxyEvent) {
+export async function buildFinished(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   if (event.body == null) throw new Error("Body is null?");
 
   if (process.env.IS_OFFLINE !== "true" && process.env.SKIP_WEBHOOK_KEY !== "true") {
@@ -34,7 +34,7 @@ export async function buildFinished(event: APIGatewayProxyEvent) {
     "name": "TaskCompleted",
     "taskId": build.TaskInstanceId,
     "jobId": build.JobId,
-    "result": "succeeded"
+    "result": params.status == "finished" ? "succeeded" : "failed"
   };
 
   const postData = JSON.stringify(result);
@@ -69,4 +69,10 @@ export async function buildFinished(event: APIGatewayProxyEvent) {
     req.write(postData);
     req.end();
   });
+
+  return {
+    statusCode: 200,
+    // original build result
+    body: event.body
+  }
 }
