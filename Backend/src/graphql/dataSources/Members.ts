@@ -94,8 +94,8 @@ where id = $1`, [this.context.principal.id]);
             association = $1
         and area = ANY ($2::int[])
         and removed = FALSE`, [
+                                this.context.principal.association,
                                 areas,
-
                             ]);
 
                         return res.rows;
