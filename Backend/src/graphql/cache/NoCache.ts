@@ -1,8 +1,9 @@
 import { KeyValueCache } from 'apollo-server-core';
+import { CacheData, CacheValues, IManyKeyValueCache } from "./CacheTypes";
 
 // we still support the query cache
-export class NoCache implements KeyValueCache<string> {
-    cache: {[key: string]: string} = {};
+export class NoCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
+    cache: { [key: string]: string } = {};
 
     public async set(
         id: string,
@@ -14,6 +15,23 @@ export class NoCache implements KeyValueCache<string> {
 
     public async delete(id: string): Promise<boolean | void> {
         delete this.cache[id];
+    }
+
+    public async getMany(ids: string[]): Promise<CacheValues> {
+        return ids.reduce((p: any, c: string) => {
+            const v = this.get(c);
+            if (v) {
+                p[c] = v;
+            }
+
+            return p;
+        }, {});
+    }
+
+    public async setMany(data: CacheData<string>[]): Promise<void> {
+        data.forEach(d =>
+            this.cache[d.id] = d.data
+        );
     }
 
     public async get(

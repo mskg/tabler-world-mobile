@@ -1,6 +1,6 @@
 import { NavigationActions } from 'react-navigation';
 import { I18N } from '../../i18n/translation';
-import { Routes } from '../../navigation/Routes';
+import { HomeRoutes } from '../../navigation/Routes';
 
 export interface IProfileParams {
     tabler: number,
@@ -10,13 +10,17 @@ export interface IClubParams {
     club: string,
 }
 
+export interface IAlbumParams {
+    album: number,
+}
+
 export interface IPictureParams {
     title: string,
     picture: string,
 }
 
 export const showProfile = (tablerId: number) => NavigationActions.navigate({
-    routeName: Routes.Contact,
+    routeName: HomeRoutes.Contact,
     key: "tabler:"+tablerId.toString(),
     params: {
         tabler: tablerId
@@ -24,7 +28,7 @@ export const showProfile = (tablerId: number) => NavigationActions.navigate({
 });
 
 export const showPictureSceen = (pic: string, title?: string) => NavigationActions.navigate({
-    routeName: Routes.Picture,
+    routeName: HomeRoutes.Picture,
     params: {
         picture: pic,
         title: title || I18N.Image.Member
@@ -32,21 +36,29 @@ export const showPictureSceen = (pic: string, title?: string) => NavigationActio
 });
 
 export const homeScreen = () => NavigationActions.navigate({
-    routeName: Routes.Home,
+    routeName: HomeRoutes.Home,
 });
 
 export const showSearch = () => NavigationActions.navigate({
-    routeName: Routes.Search
+    routeName: HomeRoutes.Search
 });
 
 export const showFilter = () => NavigationActions.navigate({
-    routeName: Routes.Filter
+    routeName: HomeRoutes.Filter
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({
-    routeName: Routes.Club,
+    routeName: HomeRoutes.Club,
     key: "club:"+id,
     params: {
         club: id
     } as IClubParams,
+});
+
+export const showAlbum = (id: number) => NavigationActions.navigate({
+    routeName: HomeRoutes.Album,
+    key: "album:"+id,
+    params: {
+        album: id
+    } as IAlbumParams,
 });

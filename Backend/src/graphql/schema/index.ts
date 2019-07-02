@@ -1,4 +1,5 @@
 import { gql } from "apollo-server-core";
+import { Albums } from "./Albums";
 import { Jobs } from "./Jobs";
 import { Member } from "./Member";
 import { Mutation } from "./Mutation";
@@ -19,4 +20,5 @@ export const schema = [
     Mutation,
     Settings,
     Jobs,
+    Albums,
 ];

@@ -4,7 +4,7 @@ import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderStyles, TOTAL_HEADER_HEIGHT } from '../theme/dimensions';
 
-type Props = {
+export type Props = {
     title?: string,
     backgroundColor?: string,
     showBack?: React.ReactElement | boolean,
@@ -12,10 +12,9 @@ type Props = {
     content?: any,
     style?: any,
     showLine?: boolean,
-    theme: Theme,
 };
 
-export class HeaderBase extends React.Component<Props & NavigationInjectedProps> {
+export class HeaderBase extends React.Component<Props & NavigationInjectedProps & { theme: Theme }> {
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }

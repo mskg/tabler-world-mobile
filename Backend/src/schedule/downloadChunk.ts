@@ -60,6 +60,7 @@ export async function downloadChunk(url?: string, method?: string, postdata?: st
                     res.on('end', async () => {
                         try {
                             var json = JSON.parse(data);
+                            console.log(json);
 
                             const results = [];
                             results.push(... (json.results || json));

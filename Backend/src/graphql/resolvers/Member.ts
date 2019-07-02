@@ -1,6 +1,4 @@
 import { IApolloContext } from "../types/IApolloContext";
-import { getMemberReader } from "./helper";
-import { MemberReader } from "./MemberReader";
 
 // type MembersArgs = {
 //     state?: string,
@@ -21,27 +19,6 @@ type MemberFilter = {
         areas?: number[],
     }
 };
-
-const cols = [
-    "id",
-
-    "pic",
-
-    "firstname",
-    "lastname",
-
-    "association",
-    "associationname",
-
-    "area",
-    "areaname",
-
-    "club",
-    "clubname",
-
-    "roles"
-];
-
 
 export const MemberResolver = {
     Member: {
@@ -74,29 +51,27 @@ export const MemberResolver = {
 
     Query: {
         MembersOverview: async (_root: any, args: MemberFilter, context: IApolloContext) => {
-            const mr = new MemberReader(context, cols.join(","));
-
             if (args.filter != null && args.filter.areas != null) {
-                return mr.readByTableAndAreas(args.filter.areas);
+                return context.dataSources.members.readByTableAndAreas(args.filter.areas);
             }
 
-            return mr.readAll();
+            return context.dataSources.members.readAll();
         },
 
         FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            return getMemberReader(context).readFavorites();
+            return context.dataSources.members.readFavorites();
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            return getMemberReader(context).readClub(context.principal.association, context.principal.club);
+            return context.dataSources.members.readClub(context.principal.association, context.principal.club);
         },
 
         Members: (_root: any, args: IdsArgs, context: IApolloContext) => {
-            return getMemberReader(context).readMany(args.ids);
+            return context.dataSources.members.readMany(args.ids);
         },
 
         Member: (_root: any, args: IdArgs, context: IApolloContext) => {
-            return getMemberReader(context).readOne(args.id);
+            return context.dataSources.members.readOne(args.id);
         },
     }
 }

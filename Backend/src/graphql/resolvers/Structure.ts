@@ -1,6 +1,5 @@
 import * as DateParser from 'date-and-time';
 import { IApolloContext } from "../types/IApolloContext";
-import { getMemberReader, getStructureReader } from "./helper";
 
 type ById = {
     id: string,
@@ -10,22 +9,22 @@ export const StructureResolver = {
     Query: {
         Associations: (_root: any, _args: any, context: IApolloContext) => {
             context.logger.log("Associations");
-            return getStructureReader(context).allAssociations();
+            return context.dataSources.structure.allAssociations();
         },
 
         Clubs: (_root: any, _args: any, context: IApolloContext) => {
             context.logger.log("Clubs");
-            return getStructureReader(context).allClubs();
+            return context.dataSources.structure.allClubs();
         },
 
         Areas: (_root: any, _args: any, context: IApolloContext) => {
             context.logger.log("Areas");
-            return getStructureReader(context).allAreas();
+            return context.dataSources.structure.allAreas();
         },
 
         Club: (_root: any, args: ById, context: IApolloContext) => {
             context.logger.log("Club", args.id);
-            return getStructureReader(context).getClub(args.id);
+            return context.dataSources.structure.getClub(args.id);
         },
     },
 
@@ -33,7 +32,7 @@ export const StructureResolver = {
         areas: async (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log(root);
 
-            const mgr = await getStructureReader(context);
+            const mgr = await context.dataSources.structure;
             return root.areas.map((r: any) => mgr.getArea(r));
         },
     },
@@ -45,18 +44,18 @@ export const StructureResolver = {
 
         area: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Area Loading", root);
-            return getStructureReader(context).getArea(
+            return context.dataSources.structure.getArea(
                 root.association + "_" + root.area
             )
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Association Loading", root);
-            return getStructureReader(context).getAssociation(root.association);
+            return context.dataSources.structure.getAssociation(root.association);
         },
 
         members: (root: any, _args: any, context: IApolloContext) => {
-            return getMemberReader(context).readClub(
+            return context.dataSources.members.readClub(
                 root.association, root.club
             );
         },
@@ -76,7 +75,7 @@ export const StructureResolver = {
 
     AssociationRole: {
         member: (root: any, _args: any, context: IApolloContext) => {
-            return getMemberReader(context).readOne(root.member);
+            return context.dataSources.members.readOne(root.member);
         },
     },
 
@@ -86,7 +85,7 @@ export const StructureResolver = {
         },
 
         clubs: async (root: any, _args: any, context: IApolloContext) => {
-            const mgr = await getStructureReader(context);
+            const mgr = await context.dataSources.structure;
             if (root.clubs) return root.clubs.map((r: any) => mgr.getClub(r));
 
             // we're coming from member!
@@ -95,7 +94,7 @@ export const StructureResolver = {
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
-            return getStructureReader(context).getAssociation(root.association);
+            return context.dataSources.structure.getAssociation(root.association);
         },
     }
 }

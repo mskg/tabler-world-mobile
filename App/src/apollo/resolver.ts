@@ -15,6 +15,7 @@ export const typeDefs = gql`
         areas: Int!
         associations: Int!
         utility: Int!
+        albums: Int!
     }
 
     extend type Query {
@@ -24,6 +25,10 @@ export const typeDefs = gql`
         LastSync: Int!
     }
     extend type Club {
+        LastSync: Int!
+    }
+
+    extend type Album {
         LastSync: Int!
     }
 `;
@@ -38,6 +43,10 @@ export const Resolvers = {
     },
 
     Club: {
+        LastSync: lastUpdate
+    },
+
+    Album: {
         LastSync: lastUpdate
     }
 };

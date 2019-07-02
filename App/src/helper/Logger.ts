@@ -42,6 +42,7 @@ export class Categories {
     }
 
     public static Screens = class {
+        public static readonly Albums = Categories._UI + "/Albums";
         public static readonly SignIn = Categories._UI + "/SignIn";
         public static readonly ConfirmSignIn = Categories._UI + "/ConfirmSignIn";
         public static readonly Setting = Categories._UI + "/Settings";

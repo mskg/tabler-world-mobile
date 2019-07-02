@@ -29,7 +29,7 @@ async function writeThroughCache<T>(
     context.cache.set(
         key,
         resultSerialized,
-        ttl ? { ttl: Math.floor(Date.now() / 1000) + ttl } : undefined
+        ttl ? { ttl } : undefined
     );
 
     return result;

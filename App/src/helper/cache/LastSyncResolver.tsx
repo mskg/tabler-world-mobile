@@ -9,5 +9,6 @@ export const LastSyncResolver = () => {
         areas: Date.now(),
         associations: Date.now(),
         utility: Date.now(),
+        albums: Date.now(),
     };
 };

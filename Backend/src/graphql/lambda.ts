@@ -1,13 +1,16 @@
+import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
 import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
+import { dataSources } from './datasources';
 import { EXECUTING_OFFLINE } from './helper/isOffline';
 import { NoIntrospection } from './helper/NoIntrospection';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
 import { resolvers } from './resolvers';
 import { schema } from './schema';
+import { IApolloContext } from './types/IApolloContext';
 import { isXrayEnabled } from './xray/aws';
 import { XRayRequestExtension } from './xray/XRayExtension';
 
@@ -45,9 +48,13 @@ const server = new ApolloServer({
   //   calculateHttpHeaders: false,
   // },
 
+  cache: cacheInstance,
+
   persistedQueries: {
     cache: cacheInstance
   },
+
+  dataSources: dataSources as unknown as () => DataSources<IApolloContext>,
 
   tracing: EXECUTING_OFFLINE,
   // mockEntireSchema: EXECUTING_OFFLINE,
