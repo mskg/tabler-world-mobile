@@ -12,6 +12,8 @@ export const constructContext = ({ event, context }: Params): IApolloContext => 
     const logger = new Logger(event.requestContext.requestId, principal.id);
     logger.log("Constructing new context for principal", principal);
 
+    //datasources is provided by Apollo
+    //@ts-ignore
     return ({
         lambdaEvent: event,
         lambdaContext: context,

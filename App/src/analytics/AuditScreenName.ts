@@ -1,4 +1,7 @@
 export enum AuditScreenName {
+    Album           = "Albums/Album",
+    AlbumList       = "Albums/List",
+
     SignIn          = "Auth/SignIn",
     ConfirmSignIn   = "Auth/Confirm",
 

@@ -94,6 +94,20 @@ const de: I18NType = {
         title: "TABLER.WORLD",
     },
 
+    Albums: {
+        title: "Alben",
+        details: "Album anzeigen",
+    },
+
+    Album: {
+        title: "Album",
+    },
+
+    ReadMore: {
+        more: "Mehr anzeigen",
+        less: "Weniger",
+    },
+
     Member: {
         Menu: {
             email: "Sende E-mail",
@@ -211,9 +225,15 @@ const de: I18NType = {
 
     Settings: {
         title: "Einstellungen",
+
         logout: {
             title: "Abmeldung bestätigen!",
             text: "Wir werden ALLE lokalen Daten entfernen. Diese Aktion kann nicht rückgängig gemacht werden.",
+        },
+
+        reload: {
+            title: "Neustart erforderlich",
+            text: "Für dieses Feature müssen wir die App neu starten.",
         },
 
         sync: {
@@ -240,10 +260,12 @@ const de: I18NType = {
             apps: "Bevorzugte Applikationen wählen",
             contacts: "Mitglieder",
             colors: "Farben",
+            experiments: "Experimente"
         },
 
         texts: {
             contacts: "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.",
+            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.WORLD App. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
         },
 
         contactpermissions: "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
@@ -267,6 +289,8 @@ const de: I18NType = {
             syncOwnTable: "Tischmitglieder synchronisieren",
             sortOrder: "Sortierung",
             displayOrder: "Anzeige",
+
+            experiment_albums: "Alben"
         },
 
         ReleaseNotes: "Versionshinweise (Englisch)",
@@ -305,7 +329,7 @@ const de: I18NType = {
     },
 
     Countries: {
-        translate: (c: string | undefined) => {
+        translate: (c: string | undefined | null) => {
             if (c == null) return null;
             return countries.countries[c.toUpperCase()] || c;
         }

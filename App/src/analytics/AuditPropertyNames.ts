@@ -1,4 +1,6 @@
 export enum AuditPropertyNames {
+    Album = "[Albums] Name",
+
     Club = "[Structure] Club",
     Area = "[Structure] Area",
     Association = "[Structure] Association",

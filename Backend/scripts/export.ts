@@ -8,7 +8,7 @@ async function handleChunk(data: any[]) {
 }
 
 async function test() {
-    const url = "https://api.roundtable.world/v1/admin/levels/clubs/";
+    const url = "https://api.d9-de.roundtable.world/v1/admin/albums/4/";
         const payload = undefined;
     // const payload = null; JSON.stringify({
     //     "operator": "AND",

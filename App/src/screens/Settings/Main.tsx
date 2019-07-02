@@ -1,3 +1,4 @@
+import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
@@ -138,6 +139,29 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
     _updateMode = async () => {
         this.updateSetting({ name: "darkMode", value: !this.props.settings.darkMode });
+    }
+
+    _updateExperimentAlbums = async () => {
+        this.updateSetting({ name: "experiment_albums", value: !this.props.settings.experiment_albums });
+
+        Alert.alert(
+            I18N.Settings.reload.title,
+            I18N.Settings.reload.text,
+            [
+                {
+                    text: I18N.Settings.cancel,
+                    style: 'cancel',
+                },
+                {
+                    text: I18N.Settings.confirm,
+                    style: 'destructive',
+                    onPress: async () => {
+                        await getPersistor().persist();
+                        Updates.reloadFromCache();
+                    }
+                },
+            ],
+        );
     }
 
     _updateSyncOwntable = async () => {
@@ -378,7 +402,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         <Divider />
                     </List.Section>
 
-                    { isFeatureEnabled(Features.ContactSync) &&
+                    {isFeatureEnabled(Features.ContactSync) &&
                         <List.Section title={I18N.Settings.sections.sync}>
                             <Text style={styles.text}>{I18N.Settings.texts.contacts}</Text>
 
@@ -410,6 +434,24 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
                     }
+
+                    <List.Section title={I18N.Settings.sections.experiments}>
+                        <Text style={styles.text}>{I18N.Settings.texts.experiments}</Text>
+                        <Divider />
+                        <Element
+                            theme={this.props.theme}
+                            field={I18N.Settings.fields.experiment_albums}
+                            text={
+                                <Switch
+                                    color={this.props.theme.colors.accent}
+                                    style={{ marginTop: -4, marginRight: -4 }}
+                                    value={this.props.settings.experiment_albums}
+                                    onValueChange={this._updateExperimentAlbums}
+                                />
+                            }
+                        />
+                        <Divider />
+                    </List.Section>
 
                     <List.Section title={I18N.Settings.sections.reset}>
                         <Divider />

@@ -1,4 +1,14 @@
-# v0.9
+# v0.9 RC5
+Beta build, for internal testing only
+
+## Improvements
+- Experimental implementationn of Albums
+
+## Operations
+- Optimized caching for lists
+
+# v0.9 RC1..4
+Beta build, for internal testing only
 
 ## Fixes
 - Show correct loading indicator on members page

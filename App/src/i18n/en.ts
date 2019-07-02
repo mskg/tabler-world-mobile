@@ -93,6 +93,20 @@ const en = {
         title: "TABLER.WORLD",
     },
 
+    Albums: {
+        title: "Albums",
+        details: "Show Album",
+    },
+
+    Album: {
+        title: "Album",
+    },
+
+    ReadMore: {
+        more: "Read more",
+        less: "Hide",
+    },
+
     Member: {
         Menu: {
             email: "Send e-mail",
@@ -215,6 +229,11 @@ const en = {
             text: "We will remove all your data. This action cannot be undone.",
         },
 
+        reload: {
+            title: "Reload required",
+            text: "To enable that feature, we must restart the App.",
+        },
+
         sync: {
             title: "We will remove all local data!",
             text: "This action cannot be undone.",
@@ -297,10 +316,12 @@ const en = {
             apps: "Default Apps",
             contacts: "Members",
             colors: "Colors",
+            experiments: "Experiments"
         },
 
         texts: {
             contacts: "Members can be synchronized to your phone's default Contacts' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.",
+            experiments: "These are experimental and unsupported features of the TABLER.WORLD app and may dissapear at any time."
         },
 
         contactpermissions: "Cannot access Contacts. Please grant permission through the phone's settings area.",
@@ -323,6 +344,8 @@ const en = {
             syncOwnTable: "Synchronize own Table's Members",
             sortOrder: "Sort Order",
             displayOrder: "Display Order",
+
+            experiment_albums: "Albums"
         },
 
         ReleaseNotes: "Release Notes",

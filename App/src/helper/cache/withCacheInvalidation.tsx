@@ -23,6 +23,9 @@ type CacheInvalidationProps = {
 }
 
 export const MaxTTL = {
+    albums: 60 * 4,
+    album: 60*4,
+
     members: 60 * 12,
 
     member: 60 * 12,

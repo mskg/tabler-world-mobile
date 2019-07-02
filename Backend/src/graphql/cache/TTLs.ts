@@ -1,5 +1,8 @@
+const HOUR = 60*60;
+
 export const TTLs = {
-    MemberOverview: 60 * 60 * 4,
-    Member: 60 * 60 * 4,
-    Structure: 60 * 60 * 24,
-}
+    MemberOverview: HOUR * 2,
+    Member: HOUR * 4,
+    Structure: HOUR * 24,
+    Albums: HOUR * 4,
+};

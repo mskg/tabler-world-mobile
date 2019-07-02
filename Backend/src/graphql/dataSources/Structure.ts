@@ -1,3 +1,4 @@
+import { DataSource, DataSourceConfig } from "apollo-datasource";
 import _ from "lodash";
 import { TTLs } from "../cache/TTLs";
 import { Mutex } from "../helper/Mutex";
@@ -59,7 +60,10 @@ function sortRoles(roles?: any[]) {
     return sorted;
 }
 
-export class StructureReader {
+export class StructureDataSource extends DataSource<IApolloContext> {
+    context!: IApolloContext;
+    logger!: ILogger;
+
     loadMutex = new Mutex();
     deserializeMutex = new Mutex();
 
@@ -72,7 +76,9 @@ export class StructureReader {
     areas: { [key: string]: any } = {};
     clubs: { [key: string]: any } = {};
 
-    constructor(private logger: ILogger, private context: IApolloContext) {
+    public initialize(config: DataSourceConfig<IApolloContext>) {
+        this.context = config.context;
+        this.logger = config.context.logger;
     }
 
     async load() {
@@ -214,9 +220,14 @@ export class StructureReader {
         try {
             if (this.normalized) return;
 
-            const associations = await this.context.cache.get("Structure_Associations");
-            const areas = await this.context.cache.get("Structure_Areas");
-            const clubs = await this.context.cache.get("Structure_Clubs");
+            const result = await this.context.cache.getMany([
+                "Structure_Associations",
+                "Structure_Areas",
+                "Structure_Clubs"]);
+
+            const associations = result["Structure_Associations"];
+            const areas = result["Structure_Areas"];
+            const clubs = result["Structure_Clubs"];
 
             if (areas != null && associations != null && clubs != null) {
                 this.areas = JSON.parse(areas);
@@ -226,10 +237,11 @@ export class StructureReader {
                 await this.load();
                 this.fillLocalData();
 
-                const ttl = Math.floor(Date.now() / 1000) + TTLs.Structure;
-                this.context.cache.set("Structure_Associations", JSON.stringify(this.associations), { ttl });
-                this.context.cache.set("Structure_Areas", JSON.stringify(this.areas), { ttl });
-                this.context.cache.set("Structure_Clubs", JSON.stringify(this.clubs), { ttl });
+                await this.context.cache.setMany([
+                    {id: "Structure_Associations", data: JSON.stringify(this.associations), options: { ttl: TTLs.Structure } },
+                    {id: "Structure_Areas", data: JSON.stringify(this.areas), options: { ttl: TTLs.Structure } },
+                    {id: "Structure_Clubs", data: JSON.stringify(this.clubs), options: { ttl: TTLs.Structure } },
+                ]);
             }
 
             this.normalized = true;

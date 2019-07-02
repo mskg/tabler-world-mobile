@@ -11,7 +11,9 @@ export type SettingsType =
   | { name: "emailApp", value: string | undefined }
   | { name: "phoneApp", value: string | undefined }
 
-  | { name: "darkMode", value: boolean };
+  | { name: "darkMode", value: boolean }
+  | { name: "experiment_albums", value: boolean }
+;
 
 /**
  * Update a setting in the state

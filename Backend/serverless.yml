@@ -297,6 +297,8 @@ functions:
       db_database: ${self:custom.db_database}
       db_password: ${self:custom.db_password}
       cache_table: ${self:custom.cache_table}
+      api_key: ${self:custom.api_key}
+      api_host: ${self:custom.api_host}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
