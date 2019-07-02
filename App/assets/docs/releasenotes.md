@@ -1,4 +1,4 @@
-# v0.9 RC5
+# v0.9 RC6
 Beta build, for internal testing only
 
 ## Improvements
@@ -7,7 +7,7 @@ Beta build, for internal testing only
 ## Operations
 - Optimized caching for lists
 
-# v0.9 RC1..4
+# v0.9 RC1..5
 Beta build, for internal testing only
 
 ## Fixes
