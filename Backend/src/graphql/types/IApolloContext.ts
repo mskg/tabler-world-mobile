@@ -1,7 +1,7 @@
 import { KeyValueCache } from "apollo-server-core";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 import { IManyKeyValueCache } from "../cache/CacheTypes";
-import { IDataSources } from "../datasources";
+import { IDataSources } from "../dataSources";
 import { ILogger } from "./ILogger";
 import { IPrincipal } from "./IPrincipal";
 

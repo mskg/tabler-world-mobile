@@ -3,7 +3,7 @@ import { ApolloServer } from 'apollo-server-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
 import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
-import { dataSources } from './datasources';
+import { dataSources } from './dataSources';
 import { EXECUTING_OFFLINE } from './helper/isOffline';
 import { NoIntrospection } from './helper/NoIntrospection';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
