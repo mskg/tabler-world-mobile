@@ -13,7 +13,7 @@ if (EXECUTING_OFFLINE && process.env.XRAY_DISABLED !== "true") {
     xPG = require("pg");
 } else {
     XRAY = require("aws-xray-sdk");
-    XRAY.setStreamingThreshold(parseInt(process.env.XRAY_STREAMING_THRESHOLD || "10", 10));
+    XRAY.setStreamingThreshold(parseInt(process.env.XRAY_STREAMING_THRESHOLD || "0", 10));
 
     isXrayEnabled = true;
 
