@@ -311,6 +311,8 @@ functions:
           - dynamodb:PutItem
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
 
         # Restrict our IAM role permissions to
         # the specific table for the stage
