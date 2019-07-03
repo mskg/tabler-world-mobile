@@ -1,6 +1,8 @@
 import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
+import { ProxyHandler } from 'aws-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
+import warmer from 'lambda-warmer';
 import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
@@ -63,9 +65,19 @@ const server = new ApolloServer({
   context: constructContext,
 });
 
-export const handler = server.createHandler({
+const serverHandler = server.createHandler({
   cors: {
     origin: '*',
     credentials: true,
   },
 });
+
+export const handler: ProxyHandler = (event, context, callback) => {
+  warmer(event).then((isWarmer: boolean) => {
+    if (isWarmer) {
+      callback(null, { statusCode: 200, body: 'warmed' });
+    } else {
+      serverHandler(event, context, callback);
+    }
+  });
+}
