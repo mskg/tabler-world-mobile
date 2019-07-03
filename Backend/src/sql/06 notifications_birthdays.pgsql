@@ -64,6 +64,11 @@ where
         )
     )
 
+    and (
+        -- must have a valid push token
+        array_length(a.tokens, 1) > 0
+    )
+
     and a.id = u.id
     and u.removed = false
 ;

@@ -253,8 +253,8 @@ functions:
           name: send-tabler-world-notifications-${self:custom.stage}
           description: Sends push notifications from TABLER.WORLD
 
-          ## 11 UTC => 9 GMT+2
-          rate: cron(0 11 * * ? *)
+          ## 07 UTC => 9 GMT+2
+          rate: cron(0 07 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
   #
@@ -277,11 +277,11 @@ functions:
       #     method: get
       #     cors: true
       - schedule:
-        name: check-tabler-world-notifications-${self:custom.stage}
-        description: Checks delivery status of push notifications
+          name: check-tabler-world-notifications-${self:custom.stage}
+          description: Checks delivery status of push notifications
 
-        rate: "rate(6 hour)"
-        enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+          rate: rate(6 hours)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
 
   graphql:

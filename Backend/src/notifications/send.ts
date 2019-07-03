@@ -21,7 +21,7 @@ type BirthdayNotification = {
     lastname: string,
 }
 
-async function removeToken(client: Client, email: string, token: string) {
+async function removeToken(client: Client, id: number, token: string) {
     return await client.query(`
 UPDATE usersettings
 SET tokens =
@@ -30,9 +30,9 @@ SET tokens =
     from unnest(tokens) elem
     where elem <> $2 and elem is not null
 )
-WHERE username = $1`,
+WHERE id = $1`,
         //@ts-ignore
-        [email, token]);
+        [id, token]);
 }
 
 async function putReceipts(client: Client, tickets: ExpoPushTicket[]) {
@@ -48,7 +48,7 @@ type BirthdayPayload = {
     body: string,
     reason: 'birthday',
     payload: {
-        email: string,
+        userid: number,
         date: Date,
         id: number,
     },
@@ -76,7 +76,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                         console.error(`Removing token ${pushToken} for ${br.rtemail}`);
 
                         invalides[pushToken] = true;
-                        await removeToken(client, br.rtemail, pushToken);
+                        await removeToken(client, br.userid, pushToken);
                         continue;
                     }
 
@@ -92,7 +92,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                             body: Message.text(br.firstname + " " + br.lastname),
                             reason: 'birthday',
                             payload: {
-                                email: br.rtemail,
+                                userid: br.userid,
                                 date: new Date(),
                                 id: br.bid,
                             },
@@ -125,12 +125,12 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                                 if (invalides[pushToken] === true) continue;
 
                                 const data = chunk[i].data as BirthdayPayload;
-                                const email = data.payload.email;
+                                const userid = data.payload.userid;
 
                                 invalides[pushToken] = true;
-                                console.error(`Removing token ${pushToken} for ${email}`);
+                                console.error(`Removing token ${pushToken} for ${userid}`);
 
-                                await removeToken(client, email, pushToken);
+                                await removeToken(client, userid, pushToken);
                             }
                         }
                     }
