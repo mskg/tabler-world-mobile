@@ -16,6 +16,7 @@
     "expo-server-sdk": "^3.3.0",
     "graphql": "^14.3.1",
     "graphql-tools": "^4.0.4",
+    "lambda-warmer": "^1.1.2",
     "lodash": "^4.17.11",
     "node-gzip": "^1.1.2",
     "pg": "^7.8.1"

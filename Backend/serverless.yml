@@ -59,6 +59,11 @@ custom:
     test: true
     prod: true
 
+  warm_enabled:
+    dev: false
+    test: true
+    prod: true
+
   alerts:
     stages:
       - test
@@ -302,6 +307,21 @@ functions:
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "lambda:InvokeFunction"
+        Resource:
+          Fn::Join:
+            - ""
+            - - "arn:aws:lambda:"
+              - ${self:provider.region}
+              - ":"
+              - Ref: "AWS::AccountId"
+              - ":function:"
+              - "tabler-world-api-test-"
+              - ${self:custom.stage}
+              - "-graphql"
+
       - Effect: Allow
         Action:
           - dynamodb:DescribeTable
@@ -339,6 +359,14 @@ functions:
             authorizerId:
               Ref: CustomApiGatewayAuthorizer
           private: true
+
+      - schedule:
+          name: warm-tabler-world-tabler-graphql-${self:custom.stage}
+          rate: rate(15 minutes)
+          enabled: ${self:custom.warm_enabled.${self:custom.stage}}
+          input:
+            warmer: true
+            concurrency: 1
 
 resources:
   Resources:
