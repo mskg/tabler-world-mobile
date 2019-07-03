@@ -13,7 +13,6 @@ const GetLastSyncQuery = (field) => gql`
     }
 `;
 
-export const MS_PER_MINUTE = 60000;
 type FieldType = keyof typeof MaxTTL;
 
 type CacheInvalidationProps = {
@@ -22,24 +21,28 @@ type CacheInvalidationProps = {
     children: any,
 }
 
+export const MS_PER_MINUTE = 60000;
+const hours = (hours: number) => 60 * hours * MS_PER_MINUTE;
+
 export const MaxTTL = {
-    albums: 60 * 4,
-    album: 60*4,
+    albums: hours(4),
+    album: hours(4),
 
-    members: 60 * 12,
+    members: hours(12),
+    member: hours(12),
 
-    member: 60 * 12,
-    club: 60 * 24,
+    associations: hours(24),
+    areas: hours(24),
 
-    clubs: 60 * 24,
-    areas: 60 * 24,
-    associations: 60 * 24,
+    clubs: hours(24),
+    club: hours(24),
 
-    utility: 60 * 4,
+
+    utility: hours(4),
 }
 
 export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
-    const age = MaxTTL[type] * MS_PER_MINUTE;
+    const age = MaxTTL[type];
     const compareDate = Date.now() - age;
 
     if (val <= compareDate) {

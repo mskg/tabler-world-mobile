@@ -1,8 +1,9 @@
 const HOUR = 60*60;
+const hours = (hours: number) => hours * HOUR;
 
 export const TTLs = {
-    MemberOverview: HOUR * 2,
-    Member: HOUR * 4,
-    Structure: HOUR * 24,
-    Albums: HOUR * 4,
+    MemberOverview: hours(2),
+    Member: hours(4),
+    Structure: hours(24),
+    Albums: hours(4),
 };
