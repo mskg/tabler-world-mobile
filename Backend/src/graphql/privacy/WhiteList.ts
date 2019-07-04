@@ -6,15 +6,20 @@ import { hasAccess } from "./hasAccess";
 export type AnyType = { [key: string]: any };
 type WhiteListFunction = (level: FilterLevel, t: AnyType) => string[];
 
-export const WhiteList: WhiteListFunction[] = [
-    // system fields
-    () => ["id", "area", "areaname", "association", "associationname", "club", "clubname", "roles", "modifiedon"],
+const system_fields = [
+    "id", "area", "areaname", "association", "associationname", "club", "clubname", "roles", "modifiedon"
+];
 
-    // standard profile
-    () => ["firstname", "lastname", "pic", "rtemail", "socialmedia"],
+const standard_fields = [
+    "firstname", "lastname", "pic", "rtemail", "socialmedia"
+];
+
+const unprotected = [...system_fields, ...standard_fields];
+
+export const WhiteList: WhiteListFunction[] = [
+    () => unprotected,
 
     // birth_place
-
     (level, tabler) => {
         const priv = getPrivacySetting(tabler, "company-position");
         return hasAccess(priv, level) ? ["companies"] : [];
