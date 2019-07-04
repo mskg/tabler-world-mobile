@@ -1,6 +1,7 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
 import _ from "lodash";
+import { makeCacheKey } from "../cache/makeCacheKey";
 import { TTLs } from "../cache/TTLs";
 import { writeThrough } from "../cache/writeThrough";
 import { filter } from "../privacy/filter";
@@ -81,7 +82,7 @@ where id = $1`, [this.context.principal.id]);
 
         const results = await Promise.all(areas.map(a =>
             writeThrough(this.context,
-                `Members::area_${this.context.principal.association}_${a}`,
+                makeCacheKey("Members", [this.context.principal.association, "area", a]),
                 async () => await useDatabase(
                     this.context,
                     async (client) => {
@@ -105,37 +106,13 @@ where id = $1`, [this.context.principal.id]);
         ));
 
         return _(results).flatMap().value();
-
-//         return await writeThrough(this.context,
-//             `Members::readByTableAndAreas_${areas.join(',')}`,
-//             async () => await useDatabase(
-//                 this.context,
-//                 async (client) => {
-//                     this.context.logger.log("executing readByTableAndAreas");
-
-//                     const res = await client.query(`
-// select ${cols.join(',')}
-// from profiles
-// where
-//         association = $1
-//     and area = ANY ($2::int[])
-//     and removed = FALSE`, [
-//                             this.context.principal.association,
-//                             areas,
-
-//                         ]);
-
-//                     return res.rows;
-//                 }
-//             ),
-//             TTLs.MemberOverview);
     }
 
     public async readAll(): Promise<any[] | null> {
         this.context.logger.log("readAll");
 
         return await writeThrough(this.context,
-            "Members::readAll",
+            makeCacheKey("Members", [this.context.principal.association, "all"]),
             async () => await useDatabase(
                 this.context,
                 async (client) => {
@@ -159,7 +136,7 @@ and removed = FALSE`, [this.context.principal.association]);
 
         const ids = await writeThrough(
             this.context,
-            `Club_Members_${association}_${club}`,
+            makeCacheKey("Members", [this.context.principal.association, "club", club]),
             () => useDatabase(
                 this.context,
                 async (client) => {
@@ -199,7 +176,7 @@ where
     }
 
     async readCached(ids: number[]) {
-        const keyValue = (id: number) => `Member_${id}`;
+        const keyValue = (id: number) => makeCacheKey("Member", [id]);
 
         const result = await this.context.cache.getMany(
             ids.map(id => keyValue(id)));

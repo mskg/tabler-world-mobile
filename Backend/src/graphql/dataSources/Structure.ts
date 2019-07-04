@@ -1,6 +1,6 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import _ from "lodash";
-import { TTLs } from "../cache/TTLs";
+import { makeCacheKey } from "../cache/makeCacheKey";
 import { Mutex } from "../helper/Mutex";
 import { useDatabase } from "../rds/useDatabase";
 import { IApolloContext } from "../types/IApolloContext";
@@ -220,28 +220,30 @@ export class StructureDataSource extends DataSource<IApolloContext> {
         try {
             if (this.normalized) return;
 
-            const result = await this.context.cache.getMany([
-                "Structure_Associations",
-                "Structure_Areas",
-                "Structure_Clubs"]);
+            const key = makeCacheKey("Structure", ["all"]);
 
-            const associations = result["Structure_Associations"];
-            const areas = result["Structure_Areas"];
-            const clubs = result["Structure_Clubs"];
+            const result = await this.context.cache.get(
+                key
+            );
 
-            if (areas != null && associations != null && clubs != null) {
-                this.areas = JSON.parse(areas);
-                this.associations = JSON.parse(associations);
-                this.clubs = JSON.parse(clubs);
+            if (result) {
+                const parsed = JSON.parse(result);
+
+                this.associations = parsed.associations;
+                this.areas = parsed.areas;
+                this.clubs = parsed.clubs;
             } else {
                 await this.load();
                 this.fillLocalData();
 
-                await this.context.cache.setMany([
-                    {id: "Structure_Associations", data: JSON.stringify(this.associations), options: { ttl: TTLs.Structure } },
-                    {id: "Structure_Areas", data: JSON.stringify(this.areas), options: { ttl: TTLs.Structure } },
-                    {id: "Structure_Clubs", data: JSON.stringify(this.clubs), options: { ttl: TTLs.Structure } },
-                ]);
+                await this.context.cache.set(
+                    key,
+                    JSON.stringify({
+                        associations: this.associations,
+                        areas: this.areas,
+                        clubs: this.clubs,
+                    })
+                );
             }
 
             this.normalized = true;
