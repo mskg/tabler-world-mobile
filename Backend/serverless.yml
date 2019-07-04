@@ -61,8 +61,8 @@ custom:
 
   warm_enabled:
     dev: false
-    test: true
-    prod: true
+    test: false
+    prod: false
 
   alerts:
     stages:
