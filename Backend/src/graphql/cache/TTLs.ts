@@ -6,4 +6,10 @@ export const TTLs = {
     Member: hours(4),
     Structure: hours(24),
     Albums: hours(4),
+
+    // everything else
+    Default: hours(24*2),
+
+    // some overlap here
+    Memory: hours(1),
 };

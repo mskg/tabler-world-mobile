@@ -27,7 +27,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
         if (ttl !== 0) {
             console.log(
-                "[Cache] item", t.id, "valid for",
+                "[DynamoDBCache] item", t.id, "valid for",
                 Math.round(ttl / 60 / 60 * 100) / 100,
                 "h");
 
@@ -39,11 +39,11 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
     private checkTTL({ ttl, id }: { id: string, ttl?: number }): boolean {
         if (ttl && ttl < Math.floor(Date.now() / 1000)) {
-            console.log("[Cache] item", id, "was expired.");
+            console.log("[DynamoDBCache] item", id, "was expired.");
             return false;
         } else if (ttl) {
             console.log(
-                "[Cache] item", id, "valid for",
+                "[DynamoDBCache] item", id, "valid for",
                 Math.round((ttl - Math.floor(Date.now() / 1000)) / 60 / 60 * 100) / 100,
                 "h");
         }
@@ -67,7 +67,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         data: string,
         options?: CacheOptions,
     ) {
-        console.log("[Cache] set", id, options);
+        console.log("[DynamoDBCache] set", id, options);
 
         const chunks = this.chunkSubstr(data, 350 * 1024);
         if (chunks.length > 1) {
@@ -79,7 +79,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                 ...chunks.map((c, i) => this.addTTL({
                     id: `${id}_${i}`,
                     data: c,
-                }), options)
+                }, options))
             ]);
         } else {
             await this.client
@@ -96,7 +96,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
 
     public async setMany(data: CacheData<string>[]) {
-        console.log("[Cache] setMany", data.map(data => data.id).join(', '));
+        console.log("[DynamoDBCache] setMany", data.map(data => data.id).join(', '));
 
         const chunks = _.chunk(data, 25);
         for (let chunk of chunks) {
@@ -116,7 +116,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
             do {
                 if (result.UnprocessedItems && Object.keys(result.UnprocessedItems).length > 0) {
-                    console.log("[Cache] retrying write operation");
+                    console.log("[DynamoDBCache] retrying write operation");
 
                     result = await this.client.batchWrite({
                         RequestItems: result.UnprocessedItems
@@ -130,7 +130,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async delete(id: string): Promise<boolean | void> {
-        console.log("[Cache] delete", id);
+        console.log("[DynamoDBCache] delete", id);
 
         await this.client.delete({
             TableName: this.tableOptions.tableName,
@@ -140,7 +140,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async getMany(ids: string[]): Promise<CacheValues> {
-        console.log("[Cache] getMany", ids.join(', '));
+        console.log("[DynamoDBCache] getMany", ids.join(', '));
 
         const chunks = _.chunk(ids, 100);
         let result = {};
@@ -175,7 +175,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
             do {
                 if (chunkResult.UnprocessedKeys && Object.keys(chunkResult.UnprocessedKeys).length > 0) {
-                    console.log("[Cache] retrying get operation");
+                    console.log("[DynamoDBCache] retrying get operation");
 
                     chunkResult = await this.client.batchGet({
                         RequestItems: chunkResult.UnprocessedKeys
@@ -197,7 +197,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async get(id: string): Promise<string | undefined> {
-        console.log("[Cache] get", id);
+        console.log("[DynamoDBCache] get", id);
 
         const reply = await this.client
             .query({
@@ -221,7 +221,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             if (this.checkTTL(item as any)) {
                 if ((item.data as string).startsWith("chunks:")) {
                     const count = parseInt(item.data.substr("chunks:".length), 10);
-                    console.log("[Cache] found chunk", id, item.data, count);
+                    console.log("[DynamoDBCache] found chunk", id, item.data, count);
 
                     const result = await this.getMany(
                         //@ts-ignore

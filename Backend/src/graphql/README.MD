@@ -6,6 +6,7 @@
 
 ## Cache
 - `DISABLE_CACHE=false`
+- `MEMORY_CACHE_SIZE=128000000`
 
 ## DB
 - `db_host`
