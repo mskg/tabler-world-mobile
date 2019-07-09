@@ -9,6 +9,7 @@ import { AuditEventName } from '../analytics/AuditEventName';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
 import { MaxTTL } from '../helper/cache/withCacheInvalidation';
+import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { MembersByAreasVariables } from '../model/graphql/MembersByAreas';
 import { GetAreasQuery } from "../queries/GetAreasQuery";
@@ -44,6 +45,11 @@ async function updateCache(client: ApolloClient<NormalizedCacheObject>, query: D
 }
 
 async function runBackgroundFetch() {
+    if (await isDemoModeEnabled()) {
+        logger.debug("Demonstration mode -> exit");
+        return BackgroundFetch.Result.NoData;
+    }
+
     const timer = Audit.timer(AuditEventName.BackgroundSync);
     try {
         logger.debug("Running");
