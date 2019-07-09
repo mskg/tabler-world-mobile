@@ -2,8 +2,8 @@ import { ApolloServer } from 'apollo-server-lambda';
 import { addMockFunctionsToSchema, makeExecutableSchema } from 'graphql-tools';
 import { NoIntrospection } from './helper/NoIntrospection';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
-import { mocks } from "./logging/mock/mocks";
-import { resolvers } from './logging/mock/resolvers';
+import { mocks } from "./mock/mocks";
+import { resolvers } from './mock/resolvers';
 import { schema } from './schema';
 
 const executableSchema = makeExecutableSchema({
