@@ -4,10 +4,10 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from "apollo-link-http";
 import { createPersistedQueryLink } from "apollo-link-persisted-queries";
-import Constants from 'expo-constants';
+import { getConfigValue } from '../helper/Configuration';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
-import { fetchAuth } from './authLink';
+import { fetchAuth, fetchAuthDemo } from './authLink';
 import { cache } from './cache';
 import { errorLink } from './errorLink';
 import { Resolvers } from './resolver';
@@ -23,8 +23,8 @@ export function cachedAolloClient() {
   return client;
 }
 
-export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObject>> {
-  if (client != null) return client;
+export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<NormalizedCacheObject>> {
+  if (client != null && demoMode == undefined) return client;
 
   persistor = new CachePersistor({
     cache,
@@ -35,29 +35,21 @@ export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObj
     maxSize: 0,
   });
 
-  const extra = Constants.manifest.extra || {};
-  let { api } = extra;
+  const api = getConfigValue("api");
 
+  //@ts-ignore
   const links = ApolloLink.from([
     errorLink,
-    // authLink,
 
-    // new RetryLink({
-    //   delay: {
-    //     jitter: true
-    //   }
-    // }),
-
-    createPersistedQueryLink({
+    !demoMode ? createPersistedQueryLink({
       useGETForHashedQueries: true,
-    }),
+    }) : undefined,
 
     createHttpLink({
-        uri: api + "/graphql",
-        fetch: fetchAuth,
-        // batchInterval: 100,
+        uri: api + (demoMode ? "/graphql-demo" : "/graphql"),
+        fetch: !demoMode ? fetchAuth: fetchAuthDemo,
     })
-  ]);
+  ].filter(f => f != undefined));
 
   client = new ApolloClient({
     cache,

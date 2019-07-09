@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import * as Contacts from 'expo-contacts';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
@@ -6,6 +5,7 @@ import { Alert } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { FABGroup } from '../../components/FABGroup';
+import { getConfigValue } from '../../helper/Configuration';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
@@ -41,10 +41,10 @@ class ActionsFabBase extends React.Component<Props> {
 
   _handleWeb = () => {
     const { member } = this.props;
-    const extra = Constants.manifest.extra;
+    const profile = getConfigValue("profile");
 
     OpenLink.url(
-      (extra != null ? extra["profile"] : null || "").replace("#id#", member.id)
+      profile.replace("#id#", member.id.toString())
     );
   }
 

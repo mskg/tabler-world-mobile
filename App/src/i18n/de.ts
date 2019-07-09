@@ -43,6 +43,14 @@ const de: I18NType = {
         codeWrong: "Authorisierungscode konnte nicht verifiziert werden, Du must von vorne anfangen.",
         accessDenied: "Mit dieser Anmeldungen kannst Du diese App nicht verweden. Wenn Du das Gefühl hast, dass das nicht stimmmen kann, dann kontaktiere das TABLER.WORLD Team bitte via E-Mail.",
         codeVerify: (tries) => `Der Authorisierungscode konnte nicht verifiziert werden. Du hast noch ${tries} Versuche übrig.`,
+
+        demoMode: "App ausprobieren",
+        join: "Mitglied werden?",
+
+        demo: {
+            title: "Demonstration",
+            text: "Nach Bestätigung wird die App neu gestartet. Zum Verlassen, bitte unter Einstellungen | abmelden wählen."
+        }
     },
 
     Structure: {
@@ -229,6 +237,8 @@ const de: I18NType = {
         logout: {
             title: "Abmeldung bestätigen!",
             text: "Wir werden ALLE lokalen Daten entfernen. Diese Aktion kann nicht rückgängig gemacht werden.",
+            button: "ABMELDEN",
+            demo: "Du benutzt die App im Demonstrationsmodus. Um diesen zu verlassen, bitte abmelden.",
         },
 
         reload: {

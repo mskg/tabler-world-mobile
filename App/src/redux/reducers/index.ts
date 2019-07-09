@@ -1,10 +1,9 @@
-import { AsyncStorage } from 'react-native';
 import { PersistConfig, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { migrateToNull, MIGRATE_VERSION } from '../migrations';
-import { DocumentDir, EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
+import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
 import { settingsReducer } from './settings';
@@ -16,10 +15,12 @@ const authUserConfig: PersistConfig = {
     key: 'auth',
     keyPrefix: '',
     blacklist: ["signinState"],
+
     // storage: encryptedStorage,
     storage: isFeatureEnabled(Features.EncryptedStorage)
-        ? EncryptedFileStorage(DocumentDir)
-        : AsyncStorage,
+        ? EncryptedFileStorage()
+        : storage,
+
     timeout: 0,
 };
 

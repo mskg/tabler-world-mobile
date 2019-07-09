@@ -7,7 +7,9 @@ import ExpoSentry from "sentry-expo";
 import { Audit } from '../analytics/Audit';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { cachedAolloClient } from '../apollo/bootstrapApollo';
+import Loading from '../components/Loading';
 import Reloader from '../components/Reloader';
+import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from "../helper/Logger";
 import { IAppState } from "../model/IAppState";
 import { MeFragment } from "../queries/MeFragment";
@@ -22,14 +24,29 @@ type Props = {
   optOutAnalytics: boolean,
 };
 
-type State = {};
+type State = {
+  demoMode?: boolean,
+};
 
 const logger = new Logger(Categories.UIComponents.Authenticator);
 class AuthenticatorBase extends PureComponent<Props, State> {
-  componentDidMount() {
+
+  state: State = {};
+
+  async componentDidMount() {
     if (this.props.authState === "singedIn") {
       this.configureContext(this.props);
     }
+
+    const demoMode = await isDemoModeEnabled();
+
+    if (demoMode) {
+      Audit.disable();
+    } else {
+      Audit.enable();
+    }
+
+    this.setState({ demoMode });
   }
 
   configureContext(nextProps) {
@@ -93,7 +110,11 @@ class AuthenticatorBase extends PureComponent<Props, State> {
   }
 
   render() {
-    if (this.props.authState === "confirm") {
+    if (this.state.demoMode == null) {
+      return <Loading />
+    }
+
+    if (!this.state.demoMode === true && this.props.authState === "confirm") {
       return (
         <>
           <Reloader />
@@ -101,7 +122,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
         </>
       );
     }
-    else if (this.props.authState === "signin") {
+    else if (!this.state.demoMode === true && this.props.authState === "signin") {
       return (
         <>
           <Reloader />

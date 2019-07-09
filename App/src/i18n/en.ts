@@ -43,6 +43,14 @@ const en = {
         codeWrong: "Code verification failed, you have to restart.",
         accessDenied: "You cannot use this app with your login. If you feel that this is wrong, please member the TABLER.WORLD team via e-mail.",
         codeVerify: (tries) => `Could not verify code, ${tries} tries left.`,
+
+        demoMode: "Try the App",
+        join: "How to join Round Table?",
+
+        demo: {
+            title: "Demo Mode",
+            text: "After confirmation, we will restart the application. To exit the demo, goto Settings | Logout."
+        }
     },
 
     Structure: {
@@ -227,6 +235,8 @@ const en = {
         logout: {
             title: "Please confirm your logout!",
             text: "We will remove all your data. This action cannot be undone.",
+            button: "LOGOUT",
+            demo: "You are using the app in demonstration mode. To leave this mode, please log out.",
         },
 
         reload: {

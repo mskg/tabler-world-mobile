@@ -19,6 +19,19 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
         throw new Error("Unauthorized (token)");
     }
 
+    if (token.startsWith("DEMO ")) {
+        const awsAccountId = context.invokedFunctionArn.split(":")[4];
+
+        var policy = new AuthPolicy("demo", awsAccountId, apiOptions);
+        policy.allowMethod(HttpVerb.OPTIONS, "/graphql-demo");
+        policy.allowMethod(HttpVerb.POST, "/graphql-demo");
+    
+        const result = policy.build();
+        result.usageIdentifierKey = token.substring("DEMO ".length);
+
+        return result;
+    }
+
     //Fail if the token is not jwt
     var decodedJwt = jwt.decode(token, { complete: true }) as Token;
     if (!decodedJwt) {
@@ -71,7 +84,6 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
     //     resource += apiGatewayArnTmp[3];
     // }
 
-    //For more information on specifics of generating policy, refer to blueprint for API Gateway's Custom authorizer in Lambda console
     var policy = new AuthPolicy(principalId, awsAccountId, apiOptions);
     policy.allowMethod(HttpVerb.OPTIONS, "/graphql");
     policy.allowMethod(HttpVerb.GET, "/graphql");
@@ -100,7 +112,7 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
         };
 
         // this enforces rate throtteling on the API
-        result.usageIdentifierKey = "tabler-world-api-key-lambda-authorizer-" + apiGatewayArnTmp[1]; // stage
+        result.usageIdentifierKey = "tabler-world-api-lambda-authorizer-" + apiGatewayArnTmp[1]; // stage
 
         return result;
     });

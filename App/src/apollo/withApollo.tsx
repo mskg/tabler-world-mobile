@@ -1,5 +1,6 @@
 import React from 'react';
 import { ApolloProvider } from "react-apollo";
+import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { bootstrapApollo, getPersistor } from './bootstrapApollo';
 
@@ -12,7 +13,7 @@ export function withApollo(App) {
         }
 
         async componentDidMount() {
-            const client = await bootstrapApollo();
+            const client = await bootstrapApollo(await isDemoModeEnabled());
 
             try {
                 await getPersistor().restore();

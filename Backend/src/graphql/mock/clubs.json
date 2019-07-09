@@ -1,0 +1,188 @@
+[
+    {
+        "id": 0,
+        "area": 1,
+        "name": "Port Dominique",
+        "pic": null
+    },
+    {
+        "id": 1,
+        "area": 1,
+        "name": "Lake Norwood",
+        "pic": "http://lorempixel.com/500/480/city?random=25801"
+    },
+    {
+        "id": 2,
+        "area": 1,
+        "name": "Port Thurmanberg",
+        "pic": "http://lorempixel.com/500/480/city?random=14693"
+    },
+    {
+        "id": 3,
+        "area": 1,
+        "name": "South Marianebury",
+        "pic": null
+    },
+    {
+        "id": 4,
+        "area": 1,
+        "name": "Robelhaven",
+        "pic": "http://lorempixel.com/500/480/city?random=7007"
+    },
+    {
+        "id": 5,
+        "area": 1,
+        "name": "Funkhaven",
+        "pic": "http://lorempixel.com/500/480/city?random=59467"
+    },
+    {
+        "id": 6,
+        "area": 1,
+        "name": "New Patience",
+        "pic": null
+    },
+    {
+        "id": 7,
+        "area": 1,
+        "name": "South Johathan",
+        "pic": "http://lorempixel.com/500/480/city?random=16373"
+    },
+    {
+        "id": 8,
+        "area": 1,
+        "name": "Marvinchester",
+        "pic": null
+    },
+    {
+        "id": 9,
+        "area": 1,
+        "name": "Augustashire",
+        "pic": "http://lorempixel.com/500/480/city?random=36203"
+    },
+    {
+        "id": 10,
+        "area": 1,
+        "name": "Kilbackfurt",
+        "pic": "http://lorempixel.com/500/480/city?random=8040"
+    },
+    {
+        "id": 11,
+        "area": 1,
+        "name": "New Jewelville",
+        "pic": null
+    },
+    {
+        "id": 12,
+        "area": 2,
+        "name": "South Catherine",
+        "pic": null
+    },
+    {
+        "id": 13,
+        "area": 2,
+        "name": "Dickifort",
+        "pic": null
+    },
+    {
+        "id": 14,
+        "area": 3,
+        "name": "Jeradburgh",
+        "pic": null
+    },
+    {
+        "id": 15,
+        "area": 3,
+        "name": "South Tristin",
+        "pic": null
+    },
+    {
+        "id": 16,
+        "area": 3,
+        "name": "Port Anabellemouth",
+        "pic": "http://lorempixel.com/500/480/city?random=19431"
+    },
+    {
+        "id": 17,
+        "area": 3,
+        "name": "Lake Paolo",
+        "pic": null
+    },
+    {
+        "id": 18,
+        "area": 3,
+        "name": "Jenkinston",
+        "pic": "http://lorempixel.com/500/480/city?random=73526"
+    },
+    {
+        "id": 19,
+        "area": 3,
+        "name": "Nelsonbury",
+        "pic": "http://lorempixel.com/500/480/city?random=65612"
+    },
+    {
+        "id": 20,
+        "area": 3,
+        "name": "East Jarredburgh",
+        "pic": "http://lorempixel.com/500/480/city?random=1409"
+    },
+    {
+        "id": 21,
+        "area": 3,
+        "name": "Fletahaven",
+        "pic": "http://lorempixel.com/500/480/city?random=6342"
+    },
+    {
+        "id": 22,
+        "area": 4,
+        "name": "Martyberg",
+        "pic": null
+    },
+    {
+        "id": 23,
+        "area": 4,
+        "name": "Myrtismouth",
+        "pic": "http://lorempixel.com/500/480/city?random=97613"
+    },
+    {
+        "id": 24,
+        "area": 5,
+        "name": "Rickeyberg",
+        "pic": null
+    },
+    {
+        "id": 25,
+        "area": 5,
+        "name": "Labadiechester",
+        "pic": "http://lorempixel.com/500/480/city?random=89031"
+    },
+    {
+        "id": 26,
+        "area": 5,
+        "name": "Nicholausbury",
+        "pic": null
+    },
+    {
+        "id": 27,
+        "area": 5,
+        "name": "South Wiltonmouth",
+        "pic": "http://lorempixel.com/500/480/city?random=39608"
+    },
+    {
+        "id": 28,
+        "area": 5,
+        "name": "South Kyra",
+        "pic": "http://lorempixel.com/500/480/city?random=74224"
+    },
+    {
+        "id": 29,
+        "area": 6,
+        "name": "East Kamrenbury",
+        "pic": null
+    },
+    {
+        "id": 30,
+        "area": 6,
+        "name": "East Zola",
+        "pic": "http://lorempixel.com/500/480/city?random=42246"
+    }
+]

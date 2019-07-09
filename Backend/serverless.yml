@@ -34,7 +34,8 @@ custom:
   db_password: ${env:DB_PASSWORD}
   cache_table: tablerworld-gqlqc-${self:custom.stage}
 
-  domainname: ${self:custom.stage}.api.tabler-world.mskg.app
+  domainname: ${self:custom.stage}-api.app.roundtable.world
+  demo_api_key: ${env:DEMO_API_KEY}
 
   cron_rate:
     dev: rate(24 hours)
@@ -123,12 +124,16 @@ provider:
 
   tracing:
     apiGateway: true
-    # function is done on function level
 
   apiKeys:
-    - keys:
-      - name: tabler-world-api-${self:custom.stage}
-        value: tabler-world-api-key-lambda-authorizer-${self:custom.stage}
+    - app:
+      - name: tabler-world-api-lambda-authorizer-${self:custom.stage}
+        # this is hardcoded also in code, move?
+        value: tabler-world-api-lambda-authorizer-${self:custom.stage}
+
+    - demo:
+      - name: tabler-world-demo-${self:custom.stage}
+        value: ${self:custom.demo_api_key}
 
   apiGateway:
     minimumCompressionSize: 1024
@@ -136,10 +141,16 @@ provider:
 
   # Limited by API Keys
   usagePlan:
-    - keys:
+    - app:
         throttle:
           burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
           rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
+
+    - demo:
+        throttle:
+          burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
+          rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
+
 
   # global vpc definition
   vpc:
@@ -288,6 +299,21 @@ functions:
           rate: rate(6 hours)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
+  graphql-demo:
+    handler: src/graphql/lambda-mock.handler
+    timeout: 15
+    memorySize: 128
+
+    events:
+        - http:
+            path: graphql-demo
+            method: post
+            authorizer:
+              type: CUSTOM
+              authorizerId:
+                Ref: CustomApiGatewayAuthorizer
+            cors: true
+            private: true
 
   graphql:
     handler: src/graphql/lambda.handler
@@ -397,6 +423,10 @@ resources:
         RetentionInDays: "7"
 
     ImportDashreaderLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    GraphqlDashdemoLogGroup:
       Properties:
         RetentionInDays: "7"
 

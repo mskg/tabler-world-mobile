@@ -1,9 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, ScrollView, View } from "react-native";
-import { Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
+import { Alert, ScrollView, Text as NativeText, View } from "react-native";
+import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../analytics/ActionNames';
@@ -13,6 +14,7 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../../apollo/bootstrapApollo';
 import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 import { LinkingHelper } from '../../helper/LinkingHelper';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
@@ -34,6 +36,8 @@ type State = {
     browserOptions: any[],
     callOptions: any[],
     emailOptions: any[],
+    showExperiments: boolean,
+    demoMode: boolean,
 };
 
 type OwnProps = {
@@ -57,6 +61,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         browserOptions: [{ label: "", value: "", }],
         callOptions: [{ label: "", value: "", }],
         emailOptions: [{ label: "", value: "", }],
+        showExperiments: false,
+        demoMode: false,
     };
 
     constructor(props) {
@@ -68,6 +74,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.buildMail();
         this.buildWebOptions();
         this.buildCallOptions();
+        this.checkDemoMode();
 
         this.audit.submit();
     }
@@ -243,10 +250,32 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.setState({ callOptions: result });
     }
 
+    async checkDemoMode() {
+        const demo = await isDemoModeEnabled();
+        this.setState({ showExperiments: !demo, demoMode: demo });
+    }
+
     render() {
         return (
             <ScreenWithHeader header={{ title: I18N.Settings.title }}>
                 <ScrollView>
+                    {this.state.demoMode &&
+                        <Banner
+                            visible={true}
+                            actions={[
+                                {
+                                    label: <NativeText style={{color: this.props.theme.colors.accent}}>{I18N.Settings.logout.button}</NativeText>,
+                                    onPress: this._confirmUnload,
+                                  },
+                            ]}
+                            image={({ size }) =>
+                                <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                            }
+                        >
+                            {I18N.Settings.logout.demo}
+                        </Banner>
+                    }
+
                     <List.Section title={I18N.Settings.sections.about}>
                         <Divider />
                         <Element
@@ -435,23 +464,25 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         </List.Section>
                     }
 
-                    <List.Section title={I18N.Settings.sections.experiments}>
-                        <Text style={styles.text}>{I18N.Settings.texts.experiments}</Text>
-                        <Divider />
-                        <Element
-                            theme={this.props.theme}
-                            field={I18N.Settings.fields.experiment_albums}
-                            text={
-                                <Switch
-                                    color={this.props.theme.colors.accent}
-                                    style={{ marginTop: -4, marginRight: -4 }}
-                                    value={this.props.settings.experiment_albums}
-                                    onValueChange={this._updateExperimentAlbums}
-                                />
-                            }
-                        />
-                        <Divider />
-                    </List.Section>
+                    {this.state.showExperiments &&
+                        <List.Section title={I18N.Settings.sections.experiments}>
+                            <Text style={styles.text}>{I18N.Settings.texts.experiments}</Text>
+                            <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.Settings.fields.experiment_albums}
+                                text={
+                                    <Switch
+                                        color={this.props.theme.colors.accent}
+                                        style={{ marginTop: -4, marginRight: -4 }}
+                                        value={this.props.settings.experiment_albums}
+                                        onValueChange={this._updateExperimentAlbums}
+                                    />
+                                }
+                            />
+                            <Divider />
+                        </List.Section>
+                    }
 
                     <List.Section title={I18N.Settings.sections.reset}>
                         <Divider />

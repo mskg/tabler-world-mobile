@@ -1,5 +1,5 @@
 
-import Constants from 'expo-constants';
+import { getConfigValue } from '../helper/Configuration';
 import { Categories, Logger } from '../helper/Logger';
 import { Audit } from './Audit';
 import { IAnalyticsProvider } from './IAuditor';
@@ -8,8 +8,9 @@ import { LogWrapper } from './LogWrapper';
 const logger = new Logger(Categories.Audit);
 
 export function bootstrapAnalytics() {
-  const extra = Constants.manifest.extra || {};
-  const { region, cognitoAnalytics, amplitudeAnalytics  } = extra;
+  const region = getConfigValue("region");
+  const cognitoAnalytics = getConfigValue("cognitoAnalytics");
+  const amplitudeAnalytics = getConfigValue("amplitudeAnalytics");
 
   logger.log(
     "region", region,
