@@ -5,7 +5,7 @@ import { clubNames } from './data';
 
 export const Area = (root: any, args: any, _context: any, _info: any) => {
   const area = root.area || args.id;
-  console.log("Area", root);
+  // console.log("Area", root);
 
   return {
     id: () => area,

@@ -15,9 +15,9 @@ export const Member = (root: any, args: any, context: any, _info: any) => {
   const member = memberNames[memberId - 1] || {};
   const club = clubNames[member.club - 1] || {};
 
-  if (member.id == null || club.id == null) {
-    console.log("*********************** Member", memberId, root, args);
-  }
+  // if (member.id == null || club.id == null) {
+  //   console.log("*********************** Member", memberId, root, args);
+  // }
 
   return {
     id: memberId,

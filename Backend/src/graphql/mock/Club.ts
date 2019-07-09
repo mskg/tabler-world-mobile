@@ -7,7 +7,7 @@ import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
 
 export const Club = (root: any, args: any, _context: any, _info: any) => {
   const clubId = (root || {}).club || (args || {}).id;
-  console.log("Club", clubId);
+  // console.log("Club", clubId);
 
   const club = clubNames[clubId - 1] || {};
   const members = _(memberNames)
