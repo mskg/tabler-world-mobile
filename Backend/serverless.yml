@@ -301,7 +301,7 @@ functions:
 
   graphql-demo:
     handler: src/graphql/lambda-mock.handler
-    timeout: 5
+    timeout: 15
     memorySize: 128
 
     events:

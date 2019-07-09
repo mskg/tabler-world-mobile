@@ -21,7 +21,7 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
             ...(options || {}),
             headers: {
                 ...(options || {}).headers,
-                "X-Client-Name": Constants.name,
+                "X-Client-Name": Constants.manifest.name,
                 "X-Client-Version": Constants.manifest.version || "dev",
                 Authorization: token,
             }
@@ -54,7 +54,7 @@ export const fetchAuthDemo = async (uri: RequestInfo, options?: RequestInit): Pr
         ...(options || {}),
         headers: {
             ...(options || {}).headers,
-            "X-Client-Name": Constants.name,
+            "X-Client-Name": Constants.manifest.name,
             "X-Client-Version": Constants.manifest.version || "dev",
             Authorization: "DEMO " + getConfigValue("apidemo"),
         }
