@@ -24,6 +24,7 @@ const patch = [
     { op: "replace", path: "/expo/extra/userPoolWebClientId", value: findAWSValue(`CognitoUserPoolClient-${channel}`) },
 
     { op: "replace", path: "/expo/extra/api", value: process.env.APP_API || `https://${findAWSValue("ApiUrl-" + channel)}` },
+    { op: "replace", path: "/expo/extra/apidemo", value: process.env.DEMO_API_KEY },
 
     { op: "replace", path: "/expo/extra/sentry", value: process.env.SENTRY },
     { op: "replace", path: "/expo/extra/cognitoAnalytics", value: process.env.ANALYTICS_APPID },

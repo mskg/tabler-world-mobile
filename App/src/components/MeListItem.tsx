@@ -1,7 +1,7 @@
-import Constants from 'expo-constants';
 import React from 'react';
 import { StyleSheet } from "react-native";
 import { Card, Theme, Title, TouchableRipple } from 'react-native-paper';
+import { getConfigValue } from '../helper/Configuration';
 import { OpenLink } from "../helper/OpenLink";
 import { I18N } from '../i18n/translation';
 import { IWhoAmI } from '../model/IWhoAmI';
@@ -25,11 +25,11 @@ export const ME_ITEM_HEIGHT = 93;
 export class MeListItem extends React.PureComponent<Props, State> {
     render() {
         const { me } = this.props;
-        const extra = Constants.manifest.extra;
+        const profile = getConfigValue("profile");
 
         return (
             <Card style={styles.card}>
-                <TouchableRipple onPress={() => OpenLink.url((extra != null ? extra["profile"] : null || "").replace("#id#", me.id)) }>
+                <TouchableRipple onPress={() => OpenLink.url(profile.replace("#id#", me.id.toString())) }>
                     <Card.Title
                         style={{height: ME_ITEM_HEIGHT}}
                         titleStyle={styles.title}

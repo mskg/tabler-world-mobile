@@ -1,6 +1,5 @@
 import Auth from '@aws-amplify/auth';
 import { Updates } from 'expo';
-import Constants from 'expo-constants';
 import React from 'react';
 import { Alert, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
@@ -9,6 +8,7 @@ import uuid4 from "uuid4";
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
+import { getConfigValue } from '../helper/Configuration';
 import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
@@ -129,7 +129,7 @@ class SignInBase extends AuditedScreen<Props, State> {
     }
 
     _lauchJoin = () => {
-        OpenLink.url(Constants.manifest.extra.join);
+        OpenLink.url(getConfigValue("join"));
     }
 
     render() {

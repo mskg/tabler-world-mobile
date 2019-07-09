@@ -1,10 +1,11 @@
-import Constants from 'expo-constants';
 import ExpoSentry from "sentry-expo";
+import { getConfigValue } from './Configuration';
 
 export function bootStrapSentry() {
-    const extra = Constants.manifest.extra || {};
-    if (extra.sentry !== null && extra.sentry !== "") {
+    const sentry = getConfigValue("sentry");
+
+    if (sentry !== null && sentry !== "") {
         // ExpoSentry.enableInExpoDevelopment = true;
-        ExpoSentry.config(extra.sentry).install();
+        ExpoSentry.config(sentry).install();
     }
 }

@@ -2,7 +2,7 @@
 // import Amplify from 'aws-amplify';
 import Auth from '@aws-amplify/auth';
 import Amplify from '@aws-amplify/core';
-import Constants from 'expo-constants';
+import { getConfigValue } from '../helper/Configuration';
 import { Categories, Logger } from '../helper/Logger';
 import { SecureStorage } from './SecureStorage';
 
@@ -13,8 +13,11 @@ export function bootstrapAuthentication() {
     Amplify.Logger.LOG_LEVEL = 'INFO';
   }
 
-  const extra = Constants.manifest.extra || {};
-  const { region, userPoolId, userPoolWebClientId, api, identityPoolId } = extra;
+  const region = getConfigValue("region");
+  const userPoolId = getConfigValue("userPoolId");
+  const userPoolWebClientId = getConfigValue("userPoolWebClientId");
+  const api = getConfigValue("api");
+  const identityPoolId = getConfigValue("identityPoolId");
 
   logger.log("region", region, "api", api);
   logger.log("pool", userPoolId, "client", userPoolWebClientId, "identity", identityPoolId);

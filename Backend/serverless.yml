@@ -35,6 +35,7 @@ custom:
   cache_table: tablerworld-gqlqc-${self:custom.stage}
 
   domainname: ${self:custom.stage}.api.tabler-world.mskg.app
+  demo_api_key: ${env:DEMO_API_KEY}
 
   cron_rate:
     dev: rate(24 hours)
@@ -131,7 +132,7 @@ provider:
         value: tabler-world-api-key-lambda-authorizer-${self:custom.stage}
 
     - demo:
-      - name: tabler-world-api-demo-${self:custom.stage}
+      - value: ${self:demo_api_key}
 
   apiGateway:
     minimumCompressionSize: 1024
