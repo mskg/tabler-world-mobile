@@ -34,7 +34,7 @@ custom:
   db_password: ${env:DB_PASSWORD}
   cache_table: tablerworld-gqlqc-${self:custom.stage}
 
-  domainname: ${self:custom.stage}.api.tabler-world.mskg.app
+  domainname: ${self:custom.stage}-api.app.roundtable.world
   demo_api_key: ${env:DEMO_API_KEY}
 
   cron_rate:
@@ -124,15 +124,16 @@ provider:
 
   tracing:
     apiGateway: true
-    # function is done on function level
 
   apiKeys:
     - app:
-      - name: tabler-world-api-${self:custom.stage}
-        value: tabler-world-api-key-lambda-authorizer-${self:custom.stage}
+      - name: tabler-world-api-lambda-authorizer-${self:custom.stage}
+        # this is hardcoded also in code, move?
+        value: tabler-world-api-lambda-authorizer-${self:custom.stage}
 
     - demo:
-      - value: ${self:demo_api_key}
+      - name: tabler-world-demo-${self:custom.stage}
+        value: ${self:custom.demo_api_key}
 
   apiGateway:
     minimumCompressionSize: 1024
@@ -307,12 +308,10 @@ functions:
         - http:
             path: graphql-demo
             method: post
-            cors: true
-            private: true
-
-        - http:
-            path: graphql-demo
-            method: get
+            authorizer:
+              type: CUSTOM
+              authorizerId:
+                Ref: CustomApiGatewayAuthorizer
             cors: true
             private: true
 

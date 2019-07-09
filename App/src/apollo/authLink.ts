@@ -48,13 +48,15 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
 };
 
 export const fetchAuthDemo = async (uri: RequestInfo, options?: RequestInit): Promise<Response> => {
+    debugger
+
     const newOptions = {
         ...(options || {}),
         headers: {
             ...(options || {}).headers,
             "X-Client-Name": Constants.name,
             "X-Client-Version": Constants.manifest.version || "dev",
-            "x-api-key": getConfigValue("apidemo"),
+            Authorization: "DEMO " + getConfigValue("apidemo"),
         }
     }
 
