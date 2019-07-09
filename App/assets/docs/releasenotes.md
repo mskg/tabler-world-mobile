@@ -1,9 +1,14 @@
+# v0.9 RC7
+Beta build, for internal testing only
+
+## Improvements
+- Demonstration mode
+
 # v0.9 RC6
 Beta build, for internal testing only
 
 ## Improvements
 - Experimental implementationn of Albums
-- Demonstration mode
 
 ## Operations
 - Optimized caching for lists
