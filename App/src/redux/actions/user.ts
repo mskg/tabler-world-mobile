@@ -30,4 +30,3 @@ export const confirmSignIn = createAction<'@@user/auth/confirmSignIn', {username
 export const logoutUser = createAction<'@@user/auth/logout'>(
   '@@user/auth/logout'
 );
-

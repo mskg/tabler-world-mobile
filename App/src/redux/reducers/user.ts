@@ -7,7 +7,6 @@ export function userReducer(
     | typeof actions.singedIn.shape
     | typeof actions.confirmSignIn.shape
     | typeof actions.signin.shape
-
 ): typeof INITIAL_STATE.auth {
   switch (action.type) {
     case actions.signin.type:

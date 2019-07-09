@@ -29,7 +29,8 @@ export function bootstrapRedux() {
     migrate: migrateToNull
   };
 
-  if (!__DEV__) {
+  // this breaks the experimental navigation option in DEV!
+  if (!__DEV__ || true) {
     persistConfig.blacklist = [...(persistConfig.blacklist || []), "navigation"];
   }
 

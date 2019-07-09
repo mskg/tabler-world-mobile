@@ -14,11 +14,8 @@ const App = createReduxContainer(AppNavigator);
 const mapStateToProps = (state) => ({
   state: state.navigation,
 });
+
 const AppWithNavigationState = connect(mapStateToProps)(App);
 
-export {
-  navReducer,
-  middleware as navMiddleware,
-  AppWithNavigationState as Navigation
-};
+export { navReducer, middleware as navMiddleware, AppWithNavigationState as Navigation };
 

@@ -126,9 +126,12 @@ provider:
     # function is done on function level
 
   apiKeys:
-    - keys:
+    - app:
       - name: tabler-world-api-${self:custom.stage}
         value: tabler-world-api-key-lambda-authorizer-${self:custom.stage}
+
+    - demo:
+      - name: tabler-world-api-demo-${self:custom.stage}
 
   apiGateway:
     minimumCompressionSize: 1024
@@ -136,10 +139,16 @@ provider:
 
   # Limited by API Keys
   usagePlan:
-    - keys:
+    - app:
         throttle:
           burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
           rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
+
+    - demo:
+        throttle:
+          burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
+          rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
+
 
   # global vpc definition
   vpc:
@@ -288,6 +297,23 @@ functions:
           rate: rate(6 hours)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
+  graphql-demo:
+    handler: src/graphql/lambda-mock.handler
+    timeout: 5
+    memorySize: 128
+
+    events:
+        - http:
+            path: graphql-demo
+            method: post
+            cors: true
+            private: true
+
+        - http:
+            path: graphql-demo
+            method: get
+            cors: true
+            private: true
 
   graphql:
     handler: src/graphql/lambda.handler
@@ -397,6 +423,10 @@ resources:
         RetentionInDays: "7"
 
     ImportDashreaderLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    GraphqlDashdemoLogGroup:
       Properties:
         RetentionInDays: "7"
 

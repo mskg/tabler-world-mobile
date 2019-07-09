@@ -38,7 +38,7 @@ async function withCallback<R>(
 }
 
 export const EncryptedFileStorage = (
-    location: string = DocumentDir,
+    location: string = DocumentDir as string,
     folder: string = 'data',
     encrypt: boolean = true,
 ) => {

@@ -7,9 +7,9 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
     // need to save variables
     requestDidStart(o: any) {
         try {
-        o.context.cache["queryString"] = o.queryString;
-        o.context.cache["parsedQuery"] = o.parsedQuery;
-        o.context.cache["variables"] = o.variables;
+            o.context.requestCache["queryString"] = o.queryString;
+            o.context.requestCache["parsedQuery"] = o.parsedQuery;
+            o.context.requestCache["variables"] = o.variables;
         }
         catch (e) {
             o.context.logger.error("Faild to extract query and variables", e);

@@ -23,8 +23,8 @@ export function cachedAolloClient() {
   return client;
 }
 
-export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObject>> {
-  if (client != null) return client;
+export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<NormalizedCacheObject>> {
+  if (client != null && demoMode == undefined) return client;
 
   persistor = new CachePersistor({
     cache,
@@ -38,26 +38,19 @@ export async function bootstrapApollo(): Promise<ApolloClient<NormalizedCacheObj
   const extra = Constants.manifest.extra || {};
   let { api } = extra;
 
+  //@ts-ignore
   const links = ApolloLink.from([
     errorLink,
-    // authLink,
 
-    // new RetryLink({
-    //   delay: {
-    //     jitter: true
-    //   }
-    // }),
-
-    createPersistedQueryLink({
+    !demoMode ? createPersistedQueryLink({
       useGETForHashedQueries: true,
-    }),
+    }) : undefined,
 
     createHttpLink({
-        uri: api + "/graphql",
-        fetch: fetchAuth,
-        // batchInterval: 100,
+        uri: api + (demoMode ? "/graphql-demo" : "/graphql"),
+        fetch: !demoMode ? fetchAuth: undefined,
     })
-  ]);
+  ].filter(f => f != undefined));
 
   client = new ApolloClient({
     cache,

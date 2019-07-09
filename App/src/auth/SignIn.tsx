@@ -1,13 +1,17 @@
 import Auth from '@aws-amplify/auth';
+import { Updates } from 'expo';
+import Constants from 'expo-constants';
 import React from 'react';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import uuid4 from "uuid4";
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
+import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
+import { OpenLink } from '../helper/OpenLink';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
 import { confirmSignIn } from '../redux/actions/user';
@@ -68,6 +72,27 @@ class SignInBase extends AuditedScreen<Props, State> {
         }
     }
 
+    _demo = async () => {
+        Alert.alert(
+            I18N.SignIn.demo.title,
+            I18N.SignIn.demo.text,
+            [
+                {
+                    text: I18N.SignIn.cancel,
+                    style: 'cancel',
+                },
+                {
+                    text: I18N.SignIn.confirm,
+                    style: 'destructive',
+                    onPress: async () => {
+                        await enableDemoMode();
+                        Updates.reloadFromCache();
+                    }
+                },
+            ],
+        );
+    }
+
     _signInOrUp = async () => {
         logger.debug("signInOrUp");
         const { username } = this.state;
@@ -103,6 +128,10 @@ class SignInBase extends AuditedScreen<Props, State> {
         }
     }
 
+    _lauchJoin = () => {
+        OpenLink.url(Constants.manifest.extra.join);
+    }
+
     render() {
         return (
             <Background>
@@ -134,6 +163,16 @@ class SignInBase extends AuditedScreen<Props, State> {
                                 <Text>{this.state.error}</Text>
                             </View>
                         }
+
+                        <View style={styles.demo}>
+                            <TouchableWithoutFeedback onPress={this._demo}>
+                                <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.demoMode}</Text>
+                            </TouchableWithoutFeedback>
+
+                            <TouchableWithoutFeedback onPress={this._lauchJoin}>
+                                <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.join}</Text>
+                            </TouchableWithoutFeedback>
+                        </View>
                     </View>
                 </TouchableWithoutFeedback>
             </Background>
@@ -145,6 +184,6 @@ export default connect(
     (state: IAppState) => ({
         username: state.auth.username,
     }), {
-        confirmSignIn
+        confirmSignIn,
     }
 )(withTheme(SignInBase));

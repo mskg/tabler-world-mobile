@@ -18,7 +18,8 @@
       "cognitoAnalytics": "",
       "amplitudeAnalytics": "",
       "profile": "https://rti.roundtable.world/de/members/#id#/",
-      "world": "https://rti.roundtable.world/de/"
+      "world": "https://rti.roundtable.world/de/",
+      "join": "https://www.round-table.de/bist-du-wir/"
     },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

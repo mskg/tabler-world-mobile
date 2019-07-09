@@ -3,6 +3,7 @@ Beta build, for internal testing only
 
 ## Improvements
 - Experimental implementationn of Albums
+- Demonstration mode
 
 ## Operations
 - Optimized caching for lists
