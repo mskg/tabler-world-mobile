@@ -317,7 +317,7 @@ class ProfileBase extends React.Component<Props, State> {
                 values: [
                     {
                         field: I18N.Member.Fields.roles,
-                        text: member.roles ? <Roles roles={member.roles} /> : undefined
+                        text: member.roles && member.roles.length > 0 ? <Roles roles={member.roles} /> : undefined
                     }
                 ]
             },
