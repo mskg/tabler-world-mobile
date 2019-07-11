@@ -11,6 +11,9 @@ Release candidate.
 - Updated external licenses MD
 - Added about page to legal
 
+## Operations
+- Moved from writethrough to active cache updates
+
 # v0.9 RC7
 Beta build, for internal testing only
 
