@@ -8,6 +8,7 @@ import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
 import { withAuthenticator } from './auth/withAuthenticator';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
+import { withSkakeErrorReport } from './components/ShakeErrorReport';
 import { Snacks } from './components/Snacks';
 import { withPreCached } from './components/withPreCached';
 import { disableFontScaling } from "./helper/disableFontScaling";
@@ -68,7 +69,9 @@ export default withPreCached(
   withApollo(
     withStore(
       withPaperProvider(
-        withAuthenticator(App)
+        withSkakeErrorReport(
+          withAuthenticator(App)
+        )
       )
     )
   )

@@ -10,6 +10,16 @@ const de: I18NType = {
         refresh: "Aktualisieren"
     },
 
+    ErrorReport: {
+        title: "Ein Problem melden",
+        text: "Dein Feedback hilft uns TABLER.WORLD zu verbessern.",
+        report: "Geht etwas nicht?",
+
+        subject: "TABLER.WORLD Client Problem",
+        noMail: "Kann es sein, dass Du keine E-Mails versenden kannst?",
+        template: `Beschreibe bitte was passiert ist:`,
+    },
+
     Image: {
         Member: "Mitgliedsinformationen",
         Club: "Tischinformationen"

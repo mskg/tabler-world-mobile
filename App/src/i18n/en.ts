@@ -11,6 +11,16 @@ const en = {
         refresh: "Refresh"
     },
 
+    ErrorReport: {
+        title: "Report a problem",
+        text: "Your feedback helps us improve TABLER.WORLD.",
+        report: "Something isn't working?",
+
+        subject: "TABLER.WORLD Client Issue",
+        noMail: "You seem to have no mail client installed?",
+        template: `Please describe what happened:`,
+    },
+
     Image: {
         Member: "Member Info",
         Club: "Club Info"

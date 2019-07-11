@@ -43,6 +43,7 @@
     "expo-file-system": "^5.0.1",
     "expo-font": "^5.0.1",
     "expo-localization": "^5.0.1",
+    "expo-mail-composer": "^5.0.1",
     "expo-permissions": "^5.0.1",
     "expo-secure-store": "^5.0.1",
     "expo-sharing": "^5.0.1",

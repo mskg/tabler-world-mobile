@@ -19,6 +19,7 @@ export class Categories {
         public static readonly WebScreen = Categories._Component + "/WebScreen";
         public static readonly Animated = Categories._Component + "/AnimatedHeader";
         public static readonly Notifications = Categories._Component + "/PushNotifications";
+        public static readonly ErrorReport = Categories._Component + "/ErrorReport";
     }
 
     public static Sagas = class {

@@ -20,7 +20,8 @@
       "amplitudeAnalytics": "",
       "profile": "https://rti.roundtable.world/de/members/#id#/",
       "world": "https://rti.roundtable.world/de/",
-      "join": "https://www.round-table.de/bist-du-wir/"
+      "join": "https://www.round-table.de/bist-du-wir/",
+      "support": "support@round-table.de"
     },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
