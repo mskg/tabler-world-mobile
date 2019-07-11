@@ -5,6 +5,7 @@ Release candidate.
 - Toggeling favorites does not immediately update members view
 - LRU members section is shown even with 0 entries
 - Hide roles section on profile page if there are no entries in the list
+- Updated external licenses MD
 
 # v0.9 RC7
 Beta build, for internal testing only

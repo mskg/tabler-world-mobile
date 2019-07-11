@@ -1,694 +1,904 @@
-[@aws-amplify/analytics@1.2.16](https://github.com/aws/aws-amplify) - Apache-2.0
-[@aws-amplify/auth@1.2.24](https://github.com/aws/aws-amplify) - Apache-2.0
-[@aws-amplify/cache@1.0.27](https://github.com/aws/aws-amplify) - Apache-2.0
-[@aws-amplify/core@1.0.27](https://github.com/aws/aws-amplify) - Apache-2.0
-[@babel/code-frame@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-code-frame) - MIT
-[@babel/core@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-core) - MIT
-[@babel/generator@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-generator) - MIT
-[@babel/helper-annotate-as-pure@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-annotate-as-pure) - MIT
-[@babel/helper-builder-binary-assignment-operator-visitor@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor) - MIT
-[@babel/helper-builder-react-jsx@7.3.0](https://github.com/babel/babel/tree/master/packages/babel-helper-builder-react-jsx) - MIT
-[@babel/helper-call-delegate@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-call-delegate) - MIT
-[@babel/helper-create-class-features-plugin@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-helper-create-class-features-plugin) - MIT
-[@babel/helper-define-map@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-define-map) - MIT
-[@babel/helper-explode-assignable-expression@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression) - MIT
-[@babel/helper-function-name@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-function-name) - MIT
-[@babel/helper-get-function-arity@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity) - MIT
-[@babel/helper-hoist-variables@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables) - MIT
-[@babel/helper-member-expression-to-functions@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions) - MIT
-[@babel/helper-module-imports@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports) - MIT
-[@babel/helper-module-transforms@7.2.2](https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms) - MIT
-[@babel/helper-optimise-call-expression@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression) - MIT
-[@babel/helper-plugin-utils@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-plugin-utils) - MIT
-[@babel/helper-regex@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-regex) - MIT
-[@babel/helper-remap-async-to-generator@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-remap-async-to-generator) - MIT
-[@babel/helper-replace-supers@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers) - MIT
-[@babel/helper-simple-access@7.1.0](https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access) - MIT
-[@babel/helper-split-export-declaration@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration) - MIT
-[@babel/helper-wrap-function@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function) - MIT
-[@babel/helpers@7.3.1](https://github.com/babel/babel/tree/master/packages/babel-helpers) - MIT
-[@babel/highlight@7.0.0](https://github.com/babel/babel/tree/master/packages/babel-highlight) - MIT
-[@babel/parser@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-parser) - MIT
-[@babel/plugin-external-helpers@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-external-helpers) - MIT
-[@babel/plugin-proposal-class-properties@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties) - MIT
-[@babel/plugin-proposal-decorators@7.3.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators) - MIT
-[@babel/plugin-proposal-export-default-from@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-export-default-from) - MIT
-[@babel/plugin-proposal-nullish-coalescing-operator@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-nullish-coalescing-opearator) - MIT
-[@babel/plugin-proposal-object-rest-spread@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread) - MIT
-[@babel/plugin-proposal-optional-catch-binding@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-catch-binding) - MIT
-[@babel/plugin-proposal-optional-chaining@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining) - MIT
-[@babel/plugin-syntax-class-properties@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-class-properties) - MIT
-[@babel/plugin-syntax-decorators@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-decorators) - MIT
-[@babel/plugin-syntax-dynamic-import@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import) - MIT
-[@babel/plugin-syntax-export-default-from@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-export-default-from) - MIT
-[@babel/plugin-syntax-flow@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-flow) - MIT
-[@babel/plugin-syntax-jsx@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-jsx) - MIT
-[@babel/plugin-syntax-nullish-coalescing-operator@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-nullish-coalescing-operator) - MIT
-[@babel/plugin-syntax-object-rest-spread@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread) - MIT
-[@babel/plugin-syntax-optional-catch-binding@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding) - MIT
-[@babel/plugin-syntax-optional-chaining@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-chaining) - MIT
-[@babel/plugin-syntax-typescript@7.3.3](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-typescript) - MIT
-[@babel/plugin-transform-arrow-functions@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-arrow-functions) - MIT
-[@babel/plugin-transform-async-to-generator@7.4.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator) - MIT
-[@babel/plugin-transform-block-scoped-functions@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoped-functions) - MIT
-[@babel/plugin-transform-block-scoping@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping) - MIT
-[@babel/plugin-transform-classes@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes) - MIT
-[@babel/plugin-transform-computed-properties@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties) - MIT
-[@babel/plugin-transform-destructuring@7.3.2](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring) - MIT
-[@babel/plugin-transform-exponentiation-operator@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-exponentiation-operator) - MIT
-[@babel/plugin-transform-flow-strip-types@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-flow-strip-types) - MIT
-[@babel/plugin-transform-for-of@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-for-of) - MIT
-[@babel/plugin-transform-function-name@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-function-name) - MIT
-[@babel/plugin-transform-literals@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-literals) - MIT
-[@babel/plugin-transform-member-expression-literals@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-member-expression-literals) - MIT
-[@babel/plugin-transform-modules-commonjs@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-commonjs) - MIT
-[@babel/plugin-transform-object-assign@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-assign) - MIT
-[@babel/plugin-transform-object-super@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super) - MIT
-[@babel/plugin-transform-parameters@7.3.3](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters) - MIT
-[@babel/plugin-transform-property-literals@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-property-literals) - MIT
-[@babel/plugin-transform-react-display-name@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-display-name) - MIT
-[@babel/plugin-transform-react-jsx-source@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx-source) - MIT
-[@babel/plugin-transform-react-jsx@7.3.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx) - MIT
-[@babel/plugin-transform-regenerator@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-regenerator) - MIT
-[@babel/plugin-transform-runtime@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime) - MIT
-[@babel/plugin-transform-shorthand-properties@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-shorthand-properties) - MIT
-[@babel/plugin-transform-spread@7.2.2](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-spread) - MIT
-[@babel/plugin-transform-sticky-regex@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-sticky-regex) - MIT
-[@babel/plugin-transform-template-literals@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-template-literals) - MIT
-[@babel/plugin-transform-typescript@7.3.2](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-typescript) - MIT
-[@babel/plugin-transform-unicode-regex@7.2.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex) - MIT
-[@babel/register@7.4.4](https://github.com/babel/babel/tree/master/packages/babel-register) - MIT
-[@babel/runtime@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-runtime) - MIT
-[@babel/template@7.2.2](https://github.com/babel/babel/tree/master/packages/babel-template) - MIT
-[@babel/traverse@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-traverse) - MIT
-[@babel/types@7.3.4](https://github.com/babel/babel/tree/master/packages/babel-types) - MIT
-[@callstack/react-theme-provider@1.0.7](https://github.com/callstack/react-theme-provider) - MIT
-[@expo/react-native-action-sheet@2.1.0](https://github.com/expo/react-native-action-sheet) - MIT
-[@expo/spawn-async@1.5.0](https://github.com/expo/spawn-async) - MIT
-[@expo/vector-icons@10.0.2](https://github.com/expo/vector-icons) - MIT
-[@expo/websql@1.0.1](https://github.com/nolanlawson/node-websql) - Apache-2.0
-[@mskg/tabler-world-mobile@0.0.1](undefined) - UNLICENSED
-[@react-native-community/cli@1.9.8](https://github.com/react-native-community/react-native-cli) - MIT
-[@react-native-community/netinfo@2.0.10](https://github.com/react-native-community/react-native-netinfo) - MIT
-[@react-navigation/core@3.4.2](https://github.com/react-navigation/react-navigation-core) - MIT
-[@react-navigation/native@3.5.0](https://github.com/react-navigation/react-navigation-native) - MIT
-[@redux-offline/redux-offline@2.5.1](https://github.com/redux-offline/redux-offline) - MIT
-[@redux-saga/core@1.0.2](https://github.com/redux-saga/redux-saga/tree/master/packages/core) - MIT
-[@redux-saga/deferred@1.0.1](https://github.com/redux-saga/redux-saga/tree/master/packages/deferred) - MIT
-[@redux-saga/delay-p@1.0.1](https://github.com/redux-saga/redux-saga/tree/master/packages/delay-p) - MIT
-[@redux-saga/is@1.0.2](https://github.com/redux-saga/redux-saga/tree/master/packages/is) - MIT
-[@redux-saga/symbols@1.0.1](https://github.com/redux-saga/redux-saga/tree/master/packages/symbols) - MIT
-[@redux-saga/types@1.0.2](https://github.com/redux-saga/redux-saga/tree/master/packages/types) - MIT
-[@sentry/cli@1.44.3](https://github.com/getsentry/sentry-cli) - BSD-3-Clause
-[@sentry/wizard@0.12.1](https://github.com/getsentry/sentry-wizard) - MIT
-[@types/fbemitter@2.0.32](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/invariant@2.2.29](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/lodash.zipobject@4.1.6](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/lodash@4.14.134](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/markdown-it@0.0.4](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/node@11.11.0](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/prop-types@15.5.9](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/qs@6.5.3](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/react-native@0.57.38](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/react@16.8.6](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/uuid-js@0.7.2](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/websql@0.0.27](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@types/zen-observable@0.8.0](https://github.com/DefinitelyTyped/DefinitelyTyped) - MIT
-[@unimodules/core@2.0.1](https://github.com/expo/expo) - MIT
-[@unimodules/react-native-adapter@2.0.1](https://github.com/expo/expo) - MIT
-[@wry/context@0.4.3](https://github.com/benjamn/wryware) - MIT
-[@wry/equality@0.1.2](https://github.com/benjamn/wryware) - MIT
-[absolute-path@0.0.0](https://github.com/filearts/node-absolute-path) - MIT
-[accepts@1.3.5](https://github.com/jshttp/accepts) - MIT
-[agent-base@4.2.1](https://github.com/TooTallNate/node-agent-base) - MIT
-[amazon-cognito-identity-js@3.0.12](https://github.com/aws/aws-amplify) - Custom: https://github.com/aws-amplify/amplify-js
-[ansi-colors@1.1.0](https://github.com/doowb/ansi-colors) - MIT
-[ansi-cyan@0.1.1](https://github.com/jonschlinkert/ansi-cyan) - MIT
-[ansi-escapes@3.2.0](https://github.com/sindresorhus/ansi-escapes) - MIT
-[ansi-gray@0.1.1](https://github.com/jonschlinkert/ansi-gray) - MIT
-[ansi-red@0.1.1](https://github.com/jonschlinkert/ansi-red) - MIT
-[ansi-regex@2.1.1](https://github.com/chalk/ansi-regex) - MIT
-[ansi-styles@3.2.1](https://github.com/chalk/ansi-styles) - MIT
-[ansi-wrap@0.1.0](https://github.com/jonschlinkert/ansi-wrap) - MIT
-[ansi@0.3.1](https://github.com/TooTallNate/ansi.js) - MIT
-[anymatch@2.0.0](https://github.com/micromatch/anymatch) - ISC
-[apollo-cache-inmemory@1.6.1](https://github.com/apollographql/apollo-client) - MIT
-[apollo-cache-persist@0.1.1](https://github.com/apollographql/apollo-cache-persist) - MIT
-[apollo-cache@1.3.1](https://github.com/apollographql/apollo-client) - MIT
-[apollo-client@2.6.2](https://github.com/apollographql/apollo-client) - MIT
-[apollo-link-batch-http@1.2.11](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-batch@1.1.12](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-context@1.0.17](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-error@1.1.10](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-http-common@0.2.13](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-http@1.5.14](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-persisted-queries@0.2.2](https://github.com/apollographql/apollo-link-persisted-queries) - MIT
-[apollo-link-retry@2.2.13](https://github.com/apollographql/apollo-link) - MIT
-[apollo-link-state@0.4.2](https://github.com/apollographql/apollo-link-state) - MIT
-[apollo-link@1.2.1](https://github.com/apollographql/apollo-link) - MIT
-[apollo-utilities@1.3.2](https://github.com/apollographql/apollo-client) - MIT
-[are-we-there-yet@1.1.5](https://github.com/iarna/are-we-there-yet) - ISC
-[argparse@1.0.10](https://github.com/nodeca/argparse) - MIT
-[argsarray@0.0.1](https://github.com/calvinmetcalf/argsarray) - WTFPL
-[arr-diff@4.0.0](https://github.com/jonschlinkert/arr-diff) - MIT
-[arr-union@2.1.0](https://github.com/jonschlinkert/arr-union) - MIT
-[array-filter@0.0.1](https://github.com/juliangruber/array-filter) - MIT
-[array-map@0.0.0](https://github.com/substack/array-map) - MIT
-[array-reduce@0.0.0](https://github.com/substack/array-reduce) - MIT
-[array-unique@0.2.1](https://github.com/jonschlinkert/array-unique) - MIT
-[art@0.10.3](https://github.com/sebmarkbage/art) - MIT
-[asap@2.0.6](https://github.com/kriskowal/asap) - MIT
-[assign-symbols@1.0.0](https://github.com/jonschlinkert/assign-symbols) - MIT
-[async-each@1.0.1](https://github.com/paulmillr/async-each) - MIT
-[async@2.6.2](https://github.com/caolan/async) - MIT
-[aws-sdk@2.329.0](https://github.com/aws/aws-sdk-js) - Apache-2.0
-[babel-plugin-module-resolver@3.2.0](https://github.com/tleunen/babel-plugin-module-resolver) - MIT
-[babel-plugin-syntax-trailing-function-commas@7.0.0-beta.0](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-trailing-function-commas) - MIT
-[babel-preset-expo@5.0.0](https://github.com/expo/expo) - MIT
-[babel-preset-fbjs@3.2.0](https://github.com/facebook/fbjs) - MIT
-[babel-runtime@6.26.0](https://github.com/babel/babel/tree/master/packages/babel-runtime) - MIT
-[balanced-match@1.0.0](https://github.com/juliangruber/balanced-match) - MIT
-[base64-js@1.3.0](https://github.com/beatgammit/base64-js) - MIT
-[basic-auth@2.0.1](https://github.com/jshttp/basic-auth) - MIT
-[big-integer@1.6.44](https://github.com/peterolson/BigInteger.js) - Unlicense
-[binary-extensions@1.13.0](https://github.com/sindresorhus/binary-extensions) - MIT
-[blueimp-md5@2.10.0](https://github.com/blueimp/JavaScript-MD5) - MIT
-[bplist-creator@0.0.7](https://github.com/nearinfinity/node-bplist-creator) - MIT
-[bplist-parser@0.1.1](https://github.com/nearinfinity/node-bplist-parser) - MIT
-[brace-expansion@1.1.11](https://github.com/juliangruber/brace-expansion) - MIT
-[braces@1.8.5](https://github.com/jonschlinkert/braces) - MIT
-[bser@2.0.0](https://github.com/facebook/watchman) - Apache-2.0
-[buffer-alloc-unsafe@1.1.0](https://github.com/LinusU/buffer-alloc-unsafe) - MIT
-[buffer-alloc@1.2.0](https://github.com/LinusU/buffer-alloc) - MIT
-[buffer-crc32@0.2.13](https://github.com/brianloveswords/buffer-crc32) - MIT
-[buffer-fill@1.0.0](https://github.com/LinusU/buffer-fill) - MIT
-[buffer-from@1.1.1](https://github.com/LinusU/buffer-from) - MIT
-[buffer@4.9.1](https://github.com/feross/buffer) - MIT
-[bytes@3.0.0](https://github.com/visionmedia/bytes.js) - MIT
-[caller-callsite@2.0.0](https://github.com/sindresorhus/caller-callsite) - MIT
-[caller-path@2.0.0](https://github.com/sindresorhus/caller-path) - MIT
-[callsites@2.0.0](https://github.com/sindresorhus/callsites) - MIT
-[camelcase@4.1.0](https://github.com/sindresorhus/camelcase) - MIT
-[can-use-dom@0.1.0](https://github.com/akiran/can-use-dom) - MIT
-[capture-exit@1.2.0](https://github.com/stefanpenner/capture-exit) - ISC
-[caseless@0.12.0](https://github.com/mikeal/caseless) - Apache-2.0
-[chalk@2.4.2](https://github.com/chalk/chalk) - MIT
-[change-emitter@0.1.6](https://github.com/acdlite/change-emitter) - MIT
-[chardet@0.4.2](https://github.com/runk/node-chardet) - MIT
-[chokidar@2.1.2](https://github.com/paulmillr/chokidar) - MIT
-[cli-cursor@2.1.0](https://github.com/sindresorhus/cli-cursor) - MIT
-[cli-width@2.2.0](https://github.com/knownasilya/cli-width) - ISC
-[cliui@3.2.0](https://github.com/yargs/cliui) - ISC
-[color-convert@1.9.3](https://github.com/Qix-/color-convert) - MIT
-[color-name@1.1.3](https://github.com/dfcreative/color-name) - MIT
-[color-string@1.5.3](https://github.com/Qix-/color-string) - MIT
-[color-support@1.1.3](https://github.com/isaacs/color-support) - ISC
-[color@2.0.1](https://github.com/Qix-/color) - MIT
-[commander@2.19.0](https://github.com/tj/commander.js) - MIT
-[commondir@1.0.1](https://github.com/substack/node-commondir) - MIT
-[compare-versions@3.4.0](https://github.com/omichelsen/compare-versions) - MIT
-[compressible@2.0.16](https://github.com/jshttp/compressible) - MIT
-[compression@1.7.3](https://github.com/expressjs/compression) - MIT
-[concat-map@0.0.1](https://github.com/substack/node-concat-map) - MIT
-[concat-stream@1.6.2](https://github.com/maxogden/concat-stream) - MIT
-[connect@3.7.0](https://github.com/senchalabs/connect) - MIT
-[convert-source-map@1.6.0](https://github.com/thlorenz/convert-source-map) - MIT
-[core-js@1.2.7](https://github.com/zloirock/core-js) - MIT
-[core-util-is@1.0.2](https://github.com/isaacs/core-util-is) - MIT
-[cosmiconfig@5.2.0](https://github.com/davidtheclark/cosmiconfig) - MIT
-[create-react-class@15.6.3](https://github.com/facebook/react) - MIT
-[create-react-context@0.2.3](https://github.com/thejameskyle/create-react-context) - MIT*
-[cross-spawn@6.0.5](https://github.com/moxystudio/node-cross-spawn) - MIT
-[crypto-js@3.1.9-1](https://github.com/brix/crypto-js) - MIT
-[csstype@2.6.3](https://github.com/frenic/csstype) - MIT
-[debug@4.1.1](https://github.com/visionmedia/debug) - MIT
-[decamelize@1.2.0](https://github.com/sindresorhus/decamelize) - MIT
-[decode-uri-component@0.2.0](https://github.com/SamVerschueren/decode-uri-component) - MIT
-[dedent@0.6.0](https://github.com/dmnd/dedent) - MIT
-[deepmerge@2.2.1](https://github.com/KyleAMathews/deepmerge) - MIT
-[delegates@1.0.0](https://github.com/visionmedia/node-delegates) - MIT
-[denodeify@1.2.1](https://github.com/matthew-andrews/denodeify) - MIT
-[depd@1.1.2](https://github.com/dougwilson/nodejs-depd) - MIT
-[destroy@1.0.4](https://github.com/stream-utils/destroy) - MIT
-[dom-walk@0.1.1](https://github.com/Raynos/dom-walk) - MIT
-[ee-first@1.1.1](https://github.com/jonathanong/ee-first) - MIT
-[encodeurl@1.0.2](https://github.com/pillarjs/encodeurl) - MIT
-[encoding@0.1.12](https://github.com/andris9/encoding) - MIT
-[entities@1.1.2](https://github.com/fb55/entities) - BSD-2-Clause
-[envinfo@5.12.1](https://github.com/tabrindle/envinfo) - MIT
-[error-ex@1.3.2](https://github.com/qix-/node-error-ex) - MIT
-[errorhandler@1.5.1](https://github.com/expressjs/errorhandler) - MIT
-[es6-promise@4.2.6](https://github.com/stefanpenner/es6-promise) - MIT
-[es6-promisify@5.0.0](https://github.com/digitaldesignlabs/es6-promisify) - MIT
-[escape-html@1.0.3](https://github.com/component/escape-html) - MIT
-[escape-string-regexp@1.0.5](https://github.com/sindresorhus/escape-string-regexp) - MIT
-[esprima@4.0.1](https://github.com/jquery/esprima) - BSD-2-Clause
-[esutils@2.0.2](https://github.com/estools/esutils) - BSD
-[etag@1.8.1](https://github.com/jshttp/etag) - MIT
-[event-target-shim@1.1.1](https://github.com/mysticatea/event-target-shim) - MIT
-[eventemitter3@3.1.0](https://github.com/primus/eventemitter3) - MIT
-[events@1.1.1](https://github.com/Gozala/events) - MIT
-[exec-sh@0.2.2](https://github.com/tsertkov/exec-sh) - MIT
-[execa@0.7.0](https://github.com/sindresorhus/execa) - MIT
-[expand-brackets@0.1.5](https://github.com/jonschlinkert/expand-brackets) - MIT
-[expand-range@1.8.2](https://github.com/jonschlinkert/expand-range) - MIT
-[expo-ads-admob@5.0.1](https://github.com/expo/expo) - MIT
-[expo-ads-facebook@5.0.1](https://github.com/expo/expo) - MIT
-[expo-analytics-amplitude@5.0.1](https://github.com/expo/expo) - MIT
-[expo-analytics-segment@5.0.1](https://github.com/expo/expo) - MIT
-[expo-app-auth@5.0.1](https://github.com/expo/expo) - MIT
-[expo-app-loader-provider@5.0.1](https://github.com/expo/expo) - MIT
-[expo-asset@5.0.1](https://github.com/expo/expo) - MIT
-[expo-av@5.0.2](https://github.com/expo/expo) - MIT
-[expo-background-fetch@5.0.1](https://github.com/expo/expo) - MIT
-[expo-barcode-scanner@5.0.1](https://github.com/expo/expo) - MIT
-[expo-blur@5.0.1](https://github.com/expo/expo) - MIT
-[expo-brightness@5.0.1](https://github.com/expo/expo) - MIT
-[expo-calendar@5.0.1](https://github.com/expo/expo) - MIT
-[expo-camera@5.0.1](https://github.com/expo/expo) - MIT
-[expo-constants@5.0.1](https://github.com/expo/expo) - MIT
-[expo-contacts@5.0.2](https://github.com/expo/expo) - MIT
-[expo-crypto@5.0.1](https://github.com/expo/expo) - MIT
-[expo-document-picker@5.0.1](https://github.com/expo/expo) - MIT
-[expo-face-detector@5.0.1](https://github.com/expo/expo) - MIT
-[expo-facebook@5.0.1](https://github.com/expo/expo) - MIT
-[expo-file-system@5.0.1](https://github.com/expo/expo) - MIT
-[expo-font@5.0.1](https://github.com/expo/expo) - MIT
-[expo-gl-cpp@5.0.1](https://github.com/expo/expo) - MIT
-[expo-gl@5.0.1](https://github.com/expo/expo) - MIT
-[expo-google-sign-in@5.0.1](https://github.com/expo/expo) - MIT
-[expo-haptics@5.0.1](https://github.com/expo/expo) - MIT
-[expo-image-manipulator@5.0.1](https://github.com/expo/expo) - MIT
-[expo-image-picker@5.0.2](https://github.com/expo/expo) - MIT
-[expo-intent-launcher@5.0.1](https://github.com/expo/expo) - MIT
-[expo-keep-awake@5.0.1](https://github.com/expo/expo) - MIT
-[expo-linear-gradient@5.0.1](https://github.com/expo/expo) - MIT
-[expo-local-authentication@5.0.1](https://github.com/expo/expo) - MIT
-[expo-localization@5.0.1](https://github.com/expo/expo) - MIT
-[expo-location@5.0.1](https://github.com/expo/expo) - MIT
-[expo-mail-composer@5.0.1](https://github.com/expo/expo) - MIT
-[expo-media-library@5.0.1](https://github.com/expo/expo) - MIT
-[expo-payments-stripe@5.0.1](https://github.com/expo/expo) - MIT
-[expo-permissions@5.0.1](https://github.com/expo/expo) - MIT
-[expo-print@5.0.1](https://github.com/expo/expo) - MIT
-[expo-random@5.0.1](https://github.com/expo/expo) - MIT
-[expo-secure-store@5.0.1](https://github.com/expo/expo) - MIT
-[expo-sensors@5.0.1](https://github.com/expo/expo) - MIT
-[expo-sharing@5.0.1](https://github.com/expo/expo) - MIT
-[expo-sms@5.0.1](https://github.com/expo/expo) - MIT
-[expo-speech@5.0.2](https://github.com/expo/expo) - MIT
-[expo-sqlite@5.0.1](https://github.com/expo/expo) - MIT
-[expo-task-manager@5.0.1](https://github.com/expo/expo) - MIT
-[expo-web-browser@5.0.3](https://github.com/expo/expo) - MIT
-[expo@33.0.5](https://github.com/expo/expo) - MIT
-[extend-shallow@3.0.2](https://github.com/jonschlinkert/extend-shallow) - MIT
-[external-editor@2.2.0](https://github.com/mrkmg/node-external-editor) - MIT
-[extglob@0.3.2](https://github.com/jonschlinkert/extglob) - MIT
-[fancy-log@1.3.3](https://github.com/gulpjs/fancy-log) - MIT
-[fast-json-stable-stringify@2.0.0](https://github.com/epoberezkin/fast-json-stable-stringify) - MIT
-[fb-watchman@2.0.0](https://github.com/facebook/watchman) - Apache-2.0
-[fbemitter@2.1.1](https://github.com/facebook/emitter) - BSD-3-Clause
-[fbjs-scripts@1.2.0](https://github.com/facebook/fbjs) - MIT
-[fbjs@0.8.17](https://github.com/facebook/fbjs) - MIT
-[figures@2.0.0](https://github.com/sindresorhus/figures) - MIT
-[filename-regex@2.0.1](https://github.com/regexhq/filename-regex) - MIT
-[fill-range@2.2.4](https://github.com/jonschlinkert/fill-range) - MIT
-[finalhandler@1.1.2](https://github.com/pillarjs/finalhandler) - MIT
-[find-babel-config@1.1.0](https://github.com/tleunen/find-babel-config) - MIT
-[find-cache-dir@2.1.0](https://github.com/avajs/find-cache-dir) - MIT
-[find-up@2.1.0](https://github.com/sindresorhus/find-up) - MIT
-[flow-copy-source@1.3.0](https://github.com/AgentME/flow-copy-source) - MIT
-[fontfaceobserver@2.1.0](https://github.com/bramstein/fontfaceobserver) - BSD-3-Clause
-[for-in@1.0.2](https://github.com/jonschlinkert/for-in) - MIT
-[for-own@0.1.5](https://github.com/jonschlinkert/for-own) - MIT
-[fresh@0.5.2](https://github.com/jshttp/fresh) - MIT
-[fs-copy-file-sync@1.1.1](https://github.com/coderaiser/fs-copy-file-sync) - MIT
-[fs-extra@1.0.0](https://github.com/jprichardson/node-fs-extra) - MIT
-[fs.realpath@1.0.0](https://github.com/isaacs/fs.realpath) - ISC
-[gauge@1.2.7](https://github.com/iarna/gauge) - ISC
-[get-caller-file@1.0.3](https://github.com/stefanpenner/get-caller-file) - ISC
-[get-stream@3.0.0](https://github.com/sindresorhus/get-stream) - MIT
-[glob-base@0.3.0](https://github.com/jonschlinkert/glob-base) - MIT
-[glob-parent@2.0.0](https://github.com/es128/glob-parent) - ISC
-[glob@7.1.3](https://github.com/isaacs/node-glob) - ISC
-[global@4.3.2](https://github.com/Raynos/global) - MIT
-[globals@11.11.0](https://github.com/sindresorhus/globals) - MIT
-[google-maps-infobox@2.0.0](https://github.com/lucasfs7/google-maps-infobox-module) - MIT
-[graceful-fs@4.1.15](https://github.com/isaacs/node-graceful-fs) - ISC
-[graphql-anywhere@4.2.4](https://github.com/apollographql/apollo-client) - MIT
-[graphql-tag@2.10.1](https://github.com/apollostack/graphql-tag) - MIT
-[graphql@14.3.1](https://github.com/graphql/graphql-js) - MIT
-[growly@1.3.0](https://github.com/theabraham/growly) - MIT
-[gud@1.0.0](https://github.com/jamiebuilds/global-unique-id) - MIT
-[has-flag@3.0.0](https://github.com/sindresorhus/has-flag) - MIT
-[has-unicode@2.0.1](https://github.com/iarna/has-unicode) - ISC
-[hash.js@1.1.7](https://github.com/indutny/hash.js) - MIT
-[highlight-words-core@1.2.2](github.com/bvaughn/highlight-words-core) - MIT
-[hoist-non-react-statics@2.5.5](https://github.com/mridgway/hoist-non-react-statics) - BSD-3-Clause
-[hosted-git-info@2.7.1](https://github.com/npm/hosted-git-info) - ISC
-[http-errors@1.6.3](https://github.com/jshttp/http-errors) - MIT
-[https-proxy-agent@2.2.1](https://github.com/TooTallNate/node-https-proxy-agent) - MIT
-[iconv-lite@0.4.24](https://github.com/ashtuchkin/iconv-lite) - MIT
-[ieee754@1.1.8](https://github.com/feross/ieee754) - BSD-3-Clause
-[image-size@0.6.3](https://github.com/image-size/image-size) - MIT
-[immediate@3.2.3](https://github.com/calvinmetcalf/immediate) - MIT
-[import-fresh@2.0.0](https://github.com/sindresorhus/import-fresh) - MIT
-[imurmurhash@0.1.4](https://github.com/jensyt/imurmurhash-js) - MIT
-[inflight@1.0.6](https://github.com/npm/inflight) - ISC
-[inherits@2.0.3](https://github.com/isaacs/inherits) - ISC
-[inquirer@3.3.0](https://github.com/SBoudrias/Inquirer.js) - MIT
-[invariant@2.2.4](https://github.com/zertosh/invariant) - MIT
-[invert-kv@1.0.0](https://github.com/sindresorhus/invert-kv) - MIT
-[is-arrayish@0.2.1](https://github.com/qix-/node-is-arrayish) - MIT
-[is-binary-path@1.0.1](https://github.com/sindresorhus/is-binary-path) - MIT
-[is-directory@0.3.1](https://github.com/jonschlinkert/is-directory) - MIT
-[is-dotfile@1.0.3](https://github.com/jonschlinkert/is-dotfile) - MIT
-[is-equal-shallow@0.1.3](https://github.com/jonschlinkert/is-equal-shallow) - MIT
-[is-extendable@0.1.1](https://github.com/jonschlinkert/is-extendable) - MIT
-[is-extglob@1.0.0](https://github.com/jonschlinkert/is-extglob) - MIT
-[is-fullwidth-code-point@1.0.0](https://github.com/sindresorhus/is-fullwidth-code-point) - MIT
-[is-glob@2.0.1](https://github.com/jonschlinkert/is-glob) - MIT
-[is-number@2.1.0](https://github.com/jonschlinkert/is-number) - MIT
-[is-posix-bracket@0.1.1](https://github.com/jonschlinkert/is-posix-bracket) - MIT
-[is-primitive@2.0.0](https://github.com/jonschlinkert/is-primitive) - MIT
-[is-promise@2.1.0](https://github.com/then/is-promise) - MIT
-[is-stream@1.1.0](https://github.com/sindresorhus/is-stream) - MIT
-[is-typedarray@1.0.0](https://github.com/hughsk/is-typedarray) - MIT
-[is-wsl@1.1.0](https://github.com/sindresorhus/is-wsl) - MIT
-[isarray@1.0.0](https://github.com/juliangruber/isarray) - MIT
-[isexe@2.0.0](https://github.com/isaacs/isexe) - ISC
-[isobject@2.1.0](https://github.com/jonschlinkert/isobject) - MIT
-[isomorphic-fetch@2.2.1](https://github.com/matthew-andrews/isomorphic-fetch) - MIT
-[iterall@1.2.2](https://github.com/leebyron/iterall) - MIT
-[jest-haste-map@24.0.0-alpha.6](https://github.com/facebook/jest) - MIT
-[jest-serializer@23.0.1](https://github.com/facebook/jest) - MIT
-[jest-worker@23.2.0](https://github.com/facebook/jest) - MIT
-[jmespath@0.15.0](https://github.com/jmespath/jmespath.js) - Apache 2.0
-[js-cookie@2.2.0](https://github.com/js-cookie/js-cookie) - MIT
-[js-tokens@4.0.0](https://github.com/lydell/js-tokens) - MIT
-[js-yaml@3.12.1](https://github.com/nodeca/js-yaml) - MIT
-[jsesc@2.5.2](https://github.com/mathiasbynens/jsesc) - MIT
-[json-stable-stringify@1.0.1](https://github.com/substack/json-stable-stringify) - MIT
-[json5@0.5.1](https://github.com/aseemk/json5) - MIT
-[jsonfile@4.0.0](https://github.com/jprichardson/node-jsonfile) - MIT
-[jsonify@0.0.0](https://github.com/substack/jsonify) - Public Domain
-[kefir@3.8.6](https://github.com/kefirjs/kefir) - MIT
-[kind-of@6.0.2](https://github.com/jonschlinkert/kind-of) - MIT
-[klaw@1.3.1](https://github.com/jprichardson/node-klaw) - MIT
-[lcid@1.0.0](https://github.com/sindresorhus/lcid) - MIT
-[linkify-it@2.1.0](https://github.com/markdown-it/linkify-it) - MIT
-[load-json-file@2.0.0](https://github.com/sindresorhus/load-json-file) - MIT
-[locate-path@2.0.0](https://github.com/sindresorhus/locate-path) - MIT
-[lodash.debounce@4.0.8](https://github.com/lodash/lodash) - MIT
-[lodash.isequal@4.5.0](https://github.com/lodash/lodash) - MIT
-[lodash.pad@4.5.1](https://github.com/lodash/lodash) - MIT
-[lodash.padend@4.6.1](https://github.com/lodash/lodash) - MIT
-[lodash.padstart@4.6.1](https://github.com/lodash/lodash) - MIT
-[lodash.throttle@4.1.1](https://github.com/lodash/lodash) - MIT
-[lodash@4.17.11](https://github.com/lodash/lodash) - MIT
-[loose-envify@1.4.0](https://github.com/zertosh/loose-envify) - MIT
-[lottie-ios@2.5.0](https://github.com/airbnb/lottie-ios) - Apache-2.0
-[lottie-react-native@2.6.1](https://github.com/airbnb/lottie-react-native) - Apache-2.0
-[make-dir@2.1.0](https://github.com/sindresorhus/make-dir) - MIT
-[makeerror@1.0.11](https://github.com/daaku/nodejs-makeerror) - BSD-3-Clause
-[markdown-it@8.4.2](https://github.com/markdown-it/markdown-it) - MIT
-[marker-clusterer-plus@2.1.4](https://github.com/mikesaidani/marker-clusterer-plus) - Apache*
-[markerwithlabel@2.0.2](https://github.com/jesstelford/node-MarkerWithLabel) - Apache-2.0
-[math-random@1.0.4](https://github.com/michaelrhodes/math-random) - MIT
-[md5-file@3.2.3](https://github.com/roryrjb/md5-file) - MIT
-[mdurl@1.0.1](https://github.com/markdown-it/mdurl) - MIT
-[mem@1.1.0](https://github.com/sindresorhus/mem) - MIT
-[merge-stream@1.0.1](https://github.com/grncdr/merge-stream) - MIT
-[merge@1.2.1](https://github.com/yeikos/js.merge) - MIT
-[metro-babel-register@0.51.0](https://github.com/facebook/metro) - MIT
-[metro-babel-transformer@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-babel7-plugin-react-transform@0.49.2](undefined) - MIT
-[metro-cache@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-config@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-core@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-memory-fs@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-minify-uglify@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-react-native-babel-preset@0.49.2](https://github.com/facebook/metro) - MIT
-[metro-react-native-babel-transformer@0.51.0](https://github.com/facebook/metro) - MIT
-[metro-resolver@0.51.1](https://github.com/facebook/metro) - MIT
-[metro-source-map@0.51.1](https://github.com/facebook/metro) - MIT
-[metro@0.51.1](https://github.com/facebook/metro) - MIT
-[micromatch@2.3.11](https://github.com/jonschlinkert/micromatch) - MIT
-[mime-db@1.38.0](https://github.com/jshttp/mime-db) - MIT
-[mime-types@2.1.22](https://github.com/jshttp/mime-types) - MIT
-[mime@2.4.4](https://github.com/broofa/node-mime) - MIT
-[mimic-fn@1.2.0](https://github.com/sindresorhus/mimic-fn) - MIT
-[min-document@2.19.0](https://github.com/Raynos/min-document) - MIT
-[minimalistic-assert@1.0.1](https://github.com/calvinmetcalf/minimalistic-assert) - ISC
-[minimatch@3.0.4](https://github.com/isaacs/minimatch) - ISC
-[minimist@1.2.0](https://github.com/substack/minimist) - MIT
-[mkdirp@0.5.1](https://github.com/substack/node-mkdirp) - MIT
-[morgan@1.9.1](https://github.com/expressjs/morgan) - MIT
-[ms@2.1.1](https://github.com/zeit/ms) - MIT
-[mute-stream@0.0.7](https://github.com/isaacs/mute-stream) - ISC
-[negotiator@0.6.1](https://github.com/jshttp/negotiator) - MIT
-[nice-try@1.0.5](https://github.com/electerious/nice-try) - MIT
-[node-fetch@1.7.3](https://github.com/bitinn/node-fetch) - MIT
-[node-int64@0.4.0](https://github.com/broofa/node-int64) - MIT
-[node-modules-regexp@1.0.0](https://github.com/jamestalmage/node-modules-regexp) - MIT
-[node-notifier@5.4.0](https://github.com/mikaelbr/node-notifier) - MIT
-[noop-fn@1.0.0](https://github.com/inikulin/noop-fn) - MIT
-[normalize-package-data@2.5.0](https://github.com/npm/normalize-package-data) - BSD-2-Clause
-[normalize-path@2.1.1](https://github.com/jonschlinkert/normalize-path) - MIT
-[npm-run-path@2.0.2](https://github.com/sindresorhus/npm-run-path) - MIT
-[npmlog@2.0.4](https://github.com/npm/npmlog) - ISC
-[nullthrows@1.1.1](https://github.com/zertosh/nullthrows) - MIT
-[number-is-nan@1.0.1](https://github.com/sindresorhus/number-is-nan) - MIT
-[object-assign@4.1.1](https://github.com/sindresorhus/object-assign) - MIT
-[object.omit@2.0.1](https://github.com/jonschlinkert/object.omit) - MIT
-[on-finished@2.3.0](https://github.com/jshttp/on-finished) - MIT
-[on-headers@1.0.2](https://github.com/jshttp/on-headers) - MIT
-[once@1.4.0](https://github.com/isaacs/once) - ISC
-[onetime@2.0.1](https://github.com/sindresorhus/onetime) - MIT
-[opn@3.0.3](https://github.com/sindresorhus/opn) - MIT
-[optimism@0.9.5](https://github.com/benjamn/optimism) - MIT
-[optimist@0.6.1](https://github.com/substack/node-optimist) - MIT*
-[options@0.0.6](https://github.com/einaros/options.js) - MIT*
-[os-locale@2.1.0](https://github.com/sindresorhus/os-locale) - MIT
-[os-tmpdir@1.0.2](https://github.com/sindresorhus/os-tmpdir) - MIT
-[p-finally@1.0.0](https://github.com/sindresorhus/p-finally) - MIT
-[p-limit@1.3.0](https://github.com/sindresorhus/p-limit) - MIT
-[p-locate@2.0.0](https://github.com/sindresorhus/p-locate) - MIT
-[p-try@1.0.0](https://github.com/sindresorhus/p-try) - MIT
-[parse-glob@3.0.4](https://github.com/jonschlinkert/parse-glob) - MIT
-[parse-json@2.2.0](https://github.com/sindresorhus/parse-json) - MIT
-[parse-node-version@1.0.1](https://github.com/gulpjs/parse-node-version) - MIT
-[parseurl@1.3.2](https://github.com/pillarjs/parseurl) - MIT
-[path-browserify@0.0.1](https://github.com/substack/path-browserify) - MIT
-[path-exists@3.0.0](https://github.com/sindresorhus/path-exists) - MIT
-[path-is-absolute@1.0.1](https://github.com/sindresorhus/path-is-absolute) - MIT
-[path-key@2.0.1](https://github.com/sindresorhus/path-key) - MIT
-[path-parse@1.0.6](https://github.com/jbgutierrez/path-parse) - MIT
-[path-to-regexp@1.7.0](https://github.com/pillarjs/path-to-regexp) - MIT
-[path-type@2.0.0](https://github.com/sindresorhus/path-type) - MIT
-[pify@2.3.0](https://github.com/sindresorhus/pify) - MIT
-[pirates@4.0.1](https://github.com/ariporad/pirates) - MIT
-[pkg-dir@2.0.0](https://github.com/sindresorhus/pkg-dir) - MIT
-[pkg-up@2.0.0](https://github.com/sindresorhus/pkg-up) - MIT
-[plist@3.0.1](https://github.com/TooTallNate/node-plist) - MIT
-[plugin-error@0.1.2](https://github.com/jonschlinkert/plugin-error) - MIT
-[pouchdb-collections@1.0.1](https://github.com/nolanlawson/pouchdb-collections) - UNKNOWN
-[preserve@0.2.0](https://github.com/jonschlinkert/preserve) - MIT
-[pretty-format@23.6.0](https://github.com/facebook/jest) - MIT
-[private@0.1.8](https://github.com/benjamn/private) - MIT
-[process-nextick-args@2.0.0](https://github.com/calvinmetcalf/process-nextick-args) - MIT
-[process@0.5.2](https://github.com/shtylman/node-process) - MIT*
-[progress@2.0.0](https://github.com/visionmedia/node-progress) - MIT
-[promise@7.3.1](https://github.com/then/promise) - MIT
-[prop-types@15.7.2](https://github.com/facebook/prop-types) - MIT
-[proxy-from-env@1.0.0](https://github.com/Rob--W/proxy-from-env) - MIT
-[punycode@2.1.1](https://github.com/bestiejs/punycode.js) - MIT
-[qs@6.6.0](https://github.com/ljharb/qs) - BSD-3-Clause
-[query-string@6.7.0](https://github.com/sindresorhus/query-string) - MIT
-[querystring@0.2.0](https://github.com/Gozala/querystring) - MIT
-[querystringify@2.1.1](https://github.com/unshiftio/querystringify) - MIT
-[r2@2.0.1](https://github.com/mikeal/r2) - Apache-2.0
-[randomatic@3.1.1](https://github.com/jonschlinkert/randomatic) - MIT
-[range-parser@1.2.0](https://github.com/jshttp/range-parser) - MIT
-[raven-js@3.27.2](https://github.com/getsentry/raven-js) - BSD-2-Clause
-[react-apollo@2.5.6](https://github.com/apollographql/react-apollo) - MIT
-[react-clone-referenced-element@1.1.0](https://github.com/ide/react-clone-referenced-element) - MIT
-[react-deep-force-update@1.1.2](https://github.com/gaearon/react-deep-force-update) - MIT
-[react-devtools-core@3.6.1](https://github.com/facebook/react-devtools) - BSD-3-Clause
-[react-google-maps@9.4.5](https://github.com/tomchentw/react-google-maps) - MIT
-[react-is@16.8.3](https://github.com/facebook/react) - MIT
-[react-lifecycles-compat@3.0.4](https://github.com/reactjs/react-lifecycles-compat) - MIT
-[react-native-branch@2.2.5](https://github.com/BranchMetrics/react-native-branch-deep-linking) - MIT
-[react-native-fit-image@1.5.4](https://github.com/huiseoul/react-native-fit-image) - Beerware
-[react-native-gesture-handler@1.2.1](https://github.com/kmagiera/react-native-gesture-handler) - MIT
-[react-native-maps@0.23.0](https://github.com/airbnb/react-native-maps) - MIT*
-[react-native-markdown-renderer@3.2.8](https://github.com/mientjan/react-native-markdown-renderer) - MIT
-[react-native-paper@2.16.0](https://github.com/callstack/react-native-paper) - MIT
-[react-native-picker-select@6.1.0](https://github.com/lawnstarter/react-native-picker-select) - MIT
-[react-native-reanimated@1.0.1](https://github.com/kmagiera/react-native-reanimated) - MIT
-[react-native-safe-area-view@0.14.5](https://github.com/react-community/react-native-safe-area-view) - MIT
-[react-native-safe-module@1.2.0](https://github.com/lelandrichardson/react-native-safe-module) - MIT
-[react-native-screens@1.0.0-alpha.22](https://github.com/kmagiera/react-native-screens) - MIT
-[react-native-section-list-get-item-layout@2.2.3](undefined) - Apache-2.0
-[react-native-sentry@0.42.0](https://github.com/getsentry/react-native-sentry) - MIT
-[react-native-svg@9.4.0](https://github.com/react-native-community/react-native-svg) - MIT
-[react-native-tab-view@1.3.2](https://github.com/react-native-community/react-native-tab-view) - MIT
-[react-native-view-shot@2.6.0](https://github.com/gre/react-native-view-shot) - MIT
-[react-native-webview@5.8.1](https://github.com/react-native-community/react-native-webview) - MIT
-[react-native@0.59.8](https://github.com/facebook/react-native) - MIT
-[react-navigation-drawer@1.2.1](https://github.com/react-navigation/react-navigation-drawer) - MIT
-[react-navigation-material-bottom-tabs@1.0.0](https://github.com/react-navigation/react-navigation-material-bottom-tabs) - MIT
-[react-navigation-redux-helpers@3.0.0](https://github.com/react-navigation/react-navigation-redux-helpers) - BSD-2-Clause
-[react-navigation-stack@1.4.0](https://github.com/react-navigation/react-navigation-stack) - MIT
-[react-navigation-tabs@2.0.0-alpha.0](https://github.com/react-navigation/react-navigation-tabs) - MIT
-[react-navigation@3.11.0](https://github.com/react-navigation/react-navigation) - BSD-2-Clause
-[react-proxy@1.1.8](https://github.com/gaearon/react-proxy) - MIT
-[react-redux@6.0.1](https://github.com/reduxjs/react-redux) - MIT
-[react-transform-hmr@1.0.4](https://github.com/gaearon/react-transform-hmr) - MIT
-[react@16.8.3](https://github.com/facebook/react) - MIT
-[read-env@1.3.0](https://github.com/yatki/read-env) - MIT
-[read-pkg-up@2.0.0](https://github.com/sindresorhus/read-pkg-up) - MIT
-[read-pkg@2.0.0](https://github.com/sindresorhus/read-pkg) - MIT
-[readable-stream@2.3.6](https://github.com/nodejs/readable-stream) - MIT
-[readdirp@2.2.1](https://github.com/paulmillr/readdirp) - MIT
-[recompose@0.26.0](https://github.com/acdlite/recompose) - MIT
-[recyclerlistview@2.0.0-beta.4](https://github.com/Flipkart/recyclerlistview) - Apache-2.0
-[redux-persist@5.10.0](https://github.com/rt2zz/redux-persist) - MIT
-[redux-saga@1.0.2](https://github.com/redux-saga/redux-saga/tree/master/packages/core) - MIT
-[redux@4.0.1](https://github.com/reduxjs/redux) - MIT
-[regenerate-unicode-properties@7.0.0](https://github.com/mathiasbynens/regenerate-unicode-properties) - MIT
-[regenerate@1.4.0](https://github.com/mathiasbynens/regenerate) - MIT
-[regenerator-runtime@0.12.1](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime) - MIT
-[regenerator-transform@0.13.4](https://github.com/facebook/regenerator/tree/master/packages/regenerator-transform) - MIT
-[regex-cache@0.4.4](https://github.com/jonschlinkert/regex-cache) - MIT
-[regexpu-core@4.4.0](https://github.com/mathiasbynens/regexpu-core) - MIT
-[regjsgen@0.5.0](https://github.com/bnjmnt4n/regjsgen) - MIT
-[regjsparser@0.6.0](https://github.com/jviereck/regjsparser) - BSD-2-Clause
-[remove-trailing-separator@1.1.0](https://github.com/darsain/remove-trailing-separator) - ISC
-[repeat-element@1.1.3](https://github.com/jonschlinkert/repeat-element) - MIT
-[repeat-string@1.6.1](https://github.com/jonschlinkert/repeat-string) - MIT
-[require-directory@2.1.1](https://github.com/troygoode/node-require-directory) - MIT
-[require-main-filename@1.0.1](https://github.com/yargs/require-main-filename) - ISC
-[requires-port@1.0.0](https://github.com/unshiftio/requires-port) - MIT
-[reselect@3.0.1](https://github.com/reactjs/reselect) - MIT
-[resolve-from@3.0.0](https://github.com/sindresorhus/resolve-from) - MIT
-[resolve@1.10.0](https://github.com/browserify/resolve) - MIT
-[restore-cursor@2.0.0](https://github.com/sindresorhus/restore-cursor) - MIT
-[rimraf@2.6.3](https://github.com/isaacs/rimraf) - ISC
-[rsvp@3.6.2](https://github.com/tildeio/rsvp.js) - MIT
-[rtl-detect@1.0.2](https://github.com/shadiabuhilal/rtl-detect) - BSD-3-Clause
-[run-async@2.3.0](https://github.com/SBoudrias/run-async) - MIT
-[rx-lite-aggregates@4.0.8](https://github.com/Reactive-Extensions/RxJS) - Apache License, Version 2.0
-[rx-lite@4.0.8](https://github.com/Reactive-Extensions/RxJS) - Apache License, Version 2.0
-[safe-buffer@5.1.2](https://github.com/feross/safe-buffer) - MIT
-[safer-buffer@2.1.2](https://github.com/ChALkeR/safer-buffer) - MIT
-[sane@2.5.2](https://github.com/amasad/sane) - MIT
-[sax@1.1.6](https://github.com/isaacs/sax-js) - ISC
-[scheduler@0.13.3](https://github.com/facebook/react) - MIT
-[scriptjs@2.5.9](https://github.com/ded/script.js) - MIT
-[semver@5.6.0](https://github.com/npm/node-semver) - ISC
-[send@0.16.2](https://github.com/pillarjs/send) - MIT
-[sentry-expo@1.13.0](undefined) - MIT
-[serialize-error@2.1.0](https://github.com/sindresorhus/serialize-error) - MIT
-[serve-static@1.13.2](https://github.com/expressjs/serve-static) - MIT
-[set-blocking@2.0.0](https://github.com/yargs/set-blocking) - ISC
-[setimmediate@1.0.5](https://github.com/YuzuJS/setImmediate) - MIT
-[setprototypeof@1.1.0](https://github.com/wesleytodd/setprototypeof) - ISC
-[shebang-command@1.2.0](https://github.com/kevva/shebang-command) - MIT
-[shebang-regex@1.0.0](https://github.com/sindresorhus/shebang-regex) - MIT
-[shell-quote@1.6.1](https://github.com/substack/node-shell-quote) - MIT
-[shellwords@0.1.1](https://github.com/jimmycuadra/shellwords) - MIT
-[signal-exit@3.0.2](https://github.com/tapjs/signal-exit) - ISC
-[simple-plist@1.0.0](https://github.com/wollardj/node-simple-plist) - MIT
-[simple-swizzle@0.2.2](https://github.com/qix-/node-simple-swizzle) - MIT
-[slash@1.0.0](https://github.com/sindresorhus/slash) - MIT
-[slide@1.1.6](https://github.com/isaacs/slide-flow-control) - ISC
-[source-map-support@0.4.18](https://github.com/evanw/node-source-map-support) - MIT
-[source-map@0.5.7](https://github.com/mozilla/source-map) - BSD-3-Clause
-[spdx-correct@3.1.0](https://github.com/jslicense/spdx-correct.js) - Apache-2.0
-[spdx-exceptions@2.2.0](https://github.com/kemitchell/spdx-exceptions.json) - CC-BY-3.0
-[spdx-expression-parse@3.0.0](https://github.com/jslicense/spdx-expression-parse.js) - MIT
-[spdx-license-ids@3.0.3](https://github.com/shinnn/spdx-license-ids) - CC0-1.0
-[split-on-first@1.1.0](https://github.com/sindresorhus/split-on-first) - MIT
-[sprintf-js@1.0.3](https://github.com/alexei/sprintf.js) - BSD-3-Clause
-[stacktrace-parser@0.1.4](https://github.com/errwischt/stacktrace-parser) - MIT
-[statuses@1.5.0](https://github.com/jshttp/statuses) - MIT
-[stream-buffers@2.2.0](https://github.com/samcday/node-stream-buffer) - Unlicense
-[strict-uri-encode@2.0.0](https://github.com/kevva/strict-uri-encode) - MIT
-[string-width@2.1.1](https://github.com/sindresorhus/string-width) - MIT
-[string_decoder@1.1.1](https://github.com/nodejs/string_decoder) - MIT
-[strip-ansi@3.0.1](https://github.com/chalk/strip-ansi) - MIT
-[strip-bom@3.0.0](https://github.com/sindresorhus/strip-bom) - MIT
-[strip-eof@1.0.0](https://github.com/sindresorhus/strip-eof) - MIT
-[supports-color@5.5.0](https://github.com/chalk/supports-color) - MIT
-[symbol-observable@1.0.4](https://github.com/blesh/symbol-observable) - MIT
-[temp@0.8.3](https://github.com/bruce/node-temp) - MIT
-[throat@4.1.0](https://github.com/ForbesLindesay/throat) - MIT
-[through2@2.0.5](https://github.com/rvagg/through2) - MIT
-[through@2.3.8](https://github.com/dominictarr/through) - MIT
-[time-stamp@1.1.0](https://github.com/jonschlinkert/time-stamp) - MIT
-[tiny-queue@0.2.1](https://github.com/nolanlawson/tiny-queue) - Apache*
-[tmp@0.0.33](https://github.com/raszi/node-tmp) - MIT
-[tmpl@1.0.4](https://github.com/daaku/nodejs-tmpl) - BSD-3-Clause
-[to-fast-properties@2.0.0](https://github.com/sindresorhus/to-fast-properties) - MIT
-[trim-right@1.0.1](https://github.com/sindresorhus/trim-right) - MIT
-[ts-invariant@0.4.2](https://github.com/apollographql/invariant-packages) - MIT
-[ts-object-utils@0.0.5](https://github.com/naqvitalha/ts-object-utils) - ISC
-[tslib@1.9.3](https://github.com/Microsoft/tslib) - Apache-2.0
-[typedarray-to-buffer@3.1.5](https://github.com/feross/typedarray-to-buffer) - MIT
-[typedarray@0.0.6](https://github.com/substack/typedarray) - MIT
-[typescript-compare@0.0.2](https://github.com/ksxnodemodules/typescript-compare) - MIT
-[typescript-logic@0.0.0](https://github.com/ksxnodemodules/typescript-logic) - MIT
-[typescript-tuple@2.2.1](https://github.com/ksxnodemodules/typescript-tuple) - MIT
-[ua-parser-js@0.7.19](https://github.com/faisalman/ua-parser-js) - (GPL-2.0 OR MIT)
-[uc.micro@1.0.6](https://github.com/markdown-it/uc.micro) - MIT
-[uglify-es@3.3.9](https://github.com/mishoo/UglifyJS2.git#harmony) - BSD-2-Clause
-[ultron@1.0.2](https://github.com/unshiftio/ultron) - MIT
-[unicode-canonical-property-names-ecmascript@1.0.4](https://github.com/mathiasbynens/unicode-canonical-property-names-ecmascript) - MIT
-[unicode-match-property-ecmascript@1.0.4](https://github.com/mathiasbynens/unicode-match-property-ecmascript) - MIT
-[unicode-match-property-value-ecmascript@1.0.2](https://github.com/mathiasbynens/unicode-match-property-value-ecmascript) - MIT
-[unicode-property-aliases-ecmascript@1.0.4](https://github.com/mathiasbynens/unicode-property-aliases-ecmascript) - MIT
-[unimodules-barcode-scanner-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-camera-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-constants-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-face-detector-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-file-system-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-font-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-image-loader-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-permissions-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unimodules-sensors-interface@2.0.1](https://github.com/expo/expo) - MIT
-[unpipe@1.0.0](https://github.com/stream-utils/unpipe) - MIT
-[upath@1.1.0](https://github.com/anodynos/upath) - MIT
-[url-parse@1.4.7](https://github.com/unshiftio/url-parse) - MIT
-[url@0.11.0](https://github.com/defunctzombie/node-url) - MIT
-[util-deprecate@1.0.2](https://github.com/TooTallNate/util-deprecate) - MIT
-[utils-merge@1.0.1](https://github.com/jaredhanson/utils-merge) - MIT
-[uuid-js@0.7.5](https://github.com/pnegri/uuid-js) - Apache*
-[uuid4@1.1.4](https://github.com/tracker1/node-uuid4) - ISC
-[uuid@3.3.2](https://github.com/kelektiv/node-uuid) - MIT
-[validate-npm-package-license@3.0.4](https://github.com/kemitchell/validate-npm-package-license.js) - Apache-2.0
-[vary@1.1.2](https://github.com/jshttp/vary) - MIT
-[walker@1.0.7](https://github.com/daaku/nodejs-walker) - Apache-2.0
-[warning@3.0.0](https://github.com/BerkeleyTrue/warning) - BSD-3-Clause
-[watch@0.18.0](https://github.com/mikeal/watch) - Apache-2.0
-[whatwg-fetch@2.0.4](https://github.com/github/fetch) - MIT
-[which-module@2.0.0](https://github.com/nexdrew/which-module) - ISC
-[which@1.3.1](https://github.com/isaacs/node-which) - ISC
-[wordwrap@1.0.0](https://github.com/substack/node-wordwrap) - MIT
-[wrap-ansi@2.1.0](https://github.com/chalk/wrap-ansi) - MIT
-[wrappy@1.0.2](https://github.com/npm/wrappy) - ISC
-[write-file-atomic@1.3.4](https://github.com/iarna/write-file-atomic) - ISC
-[ws@1.1.5](https://github.com/websockets/ws) - MIT
-[xcode@2.0.0](https://github.com/apache/cordova-node-xcode) - Apache-2.0
-[xml2js@0.4.19](https://github.com/Leonidas-from-XIV/node-xml2js) - MIT
-[xmlbuilder@9.0.7](https://github.com/oozcitak/xmlbuilder-js) - MIT
-[xmldoc@0.4.0](https://github.com/nfarina/xmldoc) - MIT
-[xmldom@0.1.27](https://github.com/jindw/xmldom) - LGPL
-[xpipe@1.0.5](https://github.com/nodexo/xpipe) - MIT
-[xtend@4.0.1](https://github.com/Raynos/xtend) - MIT
-[y18n@3.2.1](https://github.com/yargs/y18n) - ISC
-[yargs-parser@7.0.0](https://github.com/yargs/yargs-parser) - ISC
-[yargs@9.0.1](https://github.com/yargs/yargs) - MIT
-[zen-observable-ts@0.8.18](https://github.com/apollographql/apollo-link) - MIT
-[zen-observable@0.8.13](https://github.com/zenparsing/zen-observable) - MIT
-
+- **@aws-amplify/analytics** v1.2.16 by Amazon Web Services under Apache-2.0 license - [repository](https://github.com/aws/aws-amplify)
+- **@aws-amplify/auth** v1.2.24 by Amazon Web Services under Apache-2.0 license - [repository](https://github.com/aws/aws-amplify)
+- **@aws-amplify/cache** v1.0.27 by Amazon Web Services under Apache-2.0 license - [repository](https://github.com/aws/aws-amplify)
+- **@aws-amplify/core** v1.0.27 by Amazon Web Services under Apache-2.0 license - [repository](https://github.com/aws/aws-amplify)
+- **@babel/code-frame** v7.0.0 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-code-frame)
+- **@babel/core** v7.3.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-core)
+- **@babel/generator** v7.3.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-generator)
+- **@babel/helper-annotate-as-pure** v7.0.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-annotate-as-pure)
+- **@babel/helper-builder-binary-assignment-operator-visitor** v7.1.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor)
+- **@babel/helper-builder-react-jsx** v7.3.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-builder-react-jsx)
+- **@babel/helper-call-delegate** v7.1.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-call-delegate)
+- **@babel/helper-create-class-features-plugin** v7.3.4 by The Babel Team under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-create-class-features-plugin)
+- **@babel/helper-define-map** v7.1.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-define-map)
+- **@babel/helper-explode-assignable-expression** v7.1.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression)
+- **@babel/helper-function-name** v7.1.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-function-name)
+- **@babel/helper-get-function-arity** v7.0.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity)
+- **@babel/helper-hoist-variables** v7.0.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables)
+- **@babel/helper-member-expression-to-functions** v7.0.0 by Justin Ridgewell under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions)
+- **@babel/helper-module-imports** v7.0.0 by Logan Smyth under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports)
+- **@babel/helper-module-transforms** v7.2.2 by Logan Smyth under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms)
+- **@babel/helper-optimise-call-expression** v7.0.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression)
+- **@babel/helper-plugin-utils** v7.0.0 by Logan Smyth under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-plugin-utils)
+- **@babel/helper-regex** v7.0.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-regex)
+- **@babel/helper-remap-async-to-generator** v7.1.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-remap-async-to-generator)
+- **@babel/helper-replace-supers** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers)
+- **@babel/helper-simple-access** v7.1.0 by Logan Smyth under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access)
+- **@babel/helper-split-export-declaration** v7.0.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration)
+- **@babel/helper-wrap-function** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function)
+- **@babel/helpers** v7.3.1 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-helpers)
+- **@babel/highlight** v7.0.0 by suchipi under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-highlight)
+- **@babel/parser** v7.3.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-parser)
+- **@babel/plugin-external-helpers** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-external-helpers)
+- **@babel/plugin-proposal-class-properties** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties)
+- **@babel/plugin-proposal-decorators** v7.3.0 by Logan Smyth under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators)
+- **@babel/plugin-proposal-export-default-from** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-export-default-from)
+- **@babel/plugin-proposal-nullish-coalescing-operator** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-nullish-coalescing-opearator)
+- **@babel/plugin-proposal-object-rest-spread** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread)
+- **@babel/plugin-proposal-optional-catch-binding** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-catch-binding)
+- **@babel/plugin-proposal-optional-chaining** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining)
+- **@babel/plugin-syntax-class-properties** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-class-properties)
+- **@babel/plugin-syntax-decorators** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-decorators)
+- **@babel/plugin-syntax-dynamic-import** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import)
+- **@babel/plugin-syntax-export-default-from** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-export-default-from)
+- **@babel/plugin-syntax-flow** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-flow)
+- **@babel/plugin-syntax-jsx** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-jsx)
+- **@babel/plugin-syntax-nullish-coalescing-operator** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-nullish-coalescing-operator)
+- **@babel/plugin-syntax-object-rest-spread** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread)
+- **@babel/plugin-syntax-optional-catch-binding** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding)
+- **@babel/plugin-syntax-optional-chaining** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-chaining)
+- **@babel/plugin-syntax-typescript** v7.3.3 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-typescript)
+- **@babel/plugin-transform-arrow-functions** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-arrow-functions)
+- **@babel/plugin-transform-async-to-generator** v7.4.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator)
+- **@babel/plugin-transform-block-scoped-functions** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoped-functions)
+- **@babel/plugin-transform-block-scoping** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping)
+- **@babel/plugin-transform-classes** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes)
+- **@babel/plugin-transform-computed-properties** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties)
+- **@babel/plugin-transform-destructuring** v7.3.2 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring)
+- **@babel/plugin-transform-exponentiation-operator** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-exponentiation-operator)
+- **@babel/plugin-transform-flow-strip-types** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-flow-strip-types)
+- **@babel/plugin-transform-for-of** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-for-of)
+- **@babel/plugin-transform-function-name** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-function-name)
+- **@babel/plugin-transform-literals** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-literals)
+- **@babel/plugin-transform-member-expression-literals** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-member-expression-literals)
+- **@babel/plugin-transform-modules-commonjs** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-commonjs)
+- **@babel/plugin-transform-object-assign** v7.2.0 by Jed Watson under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-assign)
+- **@babel/plugin-transform-object-super** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super)
+- **@babel/plugin-transform-parameters** v7.3.3 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters)
+- **@babel/plugin-transform-property-literals** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-property-literals)
+- **@babel/plugin-transform-react-display-name** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-display-name)
+- **@babel/plugin-transform-react-jsx-source** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx-source)
+- **@babel/plugin-transform-react-jsx** v7.3.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx)
+- **@babel/plugin-transform-regenerator** v7.3.4 by Ben Newman under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-regenerator)
+- **@babel/plugin-transform-runtime** v7.3.4 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime)
+- **@babel/plugin-transform-shorthand-properties** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-shorthand-properties)
+- **@babel/plugin-transform-spread** v7.2.2 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-spread)
+- **@babel/plugin-transform-sticky-regex** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-sticky-regex)
+- **@babel/plugin-transform-template-literals** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-template-literals)
+- **@babel/plugin-transform-typescript** v7.3.2 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-typescript)
+- **@babel/plugin-transform-unicode-regex** v7.2.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex)
+- **@babel/register** v7.4.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-register)
+- **@babel/runtime** v7.3.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-runtime)
+- **@babel/template** v7.2.2 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-template)
+- **@babel/traverse** v7.3.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-traverse)
+- **@babel/types** v7.3.4 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-types)
+- **@callstack/react-theme-provider** v1.0.7 under MIT license - [repository](https://github.com/callstack/react-theme-provider)
+- **@expo/react-native-action-sheet** v2.1.0 by Jesse Ruder under MIT license - [repository](https://github.com/expo/react-native-action-sheet)
+- **@expo/spawn-async** v1.5.0 by Expo under MIT license - [repository](https://github.com/expo/spawn-async)
+- **@expo/vector-icons** v10.0.2 by Brent Vatne under MIT license - [repository](https://github.com/expo/vector-icons)
+- **@expo/websql** v1.0.1 by Nolan Lawson under Apache-2.0 license - [repository](https://github.com/nolanlawson/node-websql)
+- **@mskg/tabler-world-mobile** v0.0.1 by Markus Kling under UNLICENSED license - [repository](undefined)
+- **@react-native-community/cli** v1.9.8 under MIT license - [repository](https://github.com/react-native-community/react-native-cli)
+- **@react-native-community/netinfo** v2.0.10 by Matt Oakes under MIT license - [repository](https://github.com/react-native-community/react-native-netinfo)
+- **@react-navigation/core** v3.4.2 under MIT license - [repository](https://github.com/react-navigation/react-navigation-core)
+- **@react-navigation/native** v3.5.0 under MIT license - [repository](https://github.com/react-navigation/react-navigation-native)
+- **@redux-offline/redux-offline** v2.5.1 under MIT license - [repository](https://github.com/redux-offline/redux-offline)
+- **@redux-saga/core** v1.0.2 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/core)
+- **@redux-saga/deferred** v1.0.1 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/deferred)
+- **@redux-saga/delay-p** v1.0.1 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/delay-p)
+- **@redux-saga/is** v1.0.2 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/is)
+- **@redux-saga/symbols** v1.0.1 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/symbols)
+- **@redux-saga/types** v1.0.2 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/types)
+- **@sentry/cli** v1.44.3 under BSD-3-Clause license - [repository](https://github.com/getsentry/sentry-cli)
+- **@sentry/wizard** v0.12.1 by Sentry under MIT license - [repository](https://github.com/getsentry/sentry-wizard)
+- **@types/fbemitter** v2.0.32 by kmxz under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/invariant** v2.2.29 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/lodash.zipobject** v4.1.6 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/lodash** v4.14.134 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/markdown-it** v0.0.4 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/node** v11.11.0 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/node** v9.6.49 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/prop-types** v15.5.9 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/qs** v6.5.3 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/react-native** v0.57.38 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/react** v16.8.6 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/uuid-js** v0.7.2 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/websql** v0.0.27 by TeamworkGuy2 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@types/zen-observable** v0.8.0 under MIT license - [repository](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- **@unimodules/core** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **@unimodules/react-native-adapter** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **@wry/context** v0.4.3 by Ben Newman under MIT license - [repository](https://github.com/benjamn/wryware)
+- **@wry/equality** v0.1.2 by Ben Newman under MIT license - [repository](https://github.com/benjamn/wryware)
+- **absolute-path** v0.0.0 by Geoff Goodman under MIT license - [repository](https://github.com/filearts/node-absolute-path)
+- **accepts** v1.3.5 under MIT license - [repository](https://github.com/jshttp/accepts)
+- **accepts** v1.3.7 under MIT license - [repository](https://github.com/jshttp/accepts)
+- **agent-base** v4.2.1 by Nathan Rajlich under MIT license - [repository](https://github.com/TooTallNate/node-agent-base)
+- **amazon-cognito-identity-js** v3.0.12 by Amazon Web Services under Custom: https://github.com/aws-amplify/amplify-js license - [repository](https://github.com/aws/aws-amplify)
+- **ansi-colors** v1.1.0 by Brian Woodward under MIT license - [repository](https://github.com/doowb/ansi-colors)
+- **ansi-cyan** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/ansi-cyan)
+- **ansi-escapes** v3.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/ansi-escapes)
+- **ansi-gray** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/ansi-gray)
+- **ansi-red** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/ansi-red)
+- **ansi-regex** v2.1.1 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/ansi-regex)
+- **ansi-regex** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/ansi-regex)
+- **ansi-regex** v4.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/ansi-regex)
+- **ansi-styles** v2.2.1 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/ansi-styles)
+- **ansi-styles** v3.2.1 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/ansi-styles)
+- **ansi-wrap** v0.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/ansi-wrap)
+- **ansi** v0.3.1 by Nathan Rajlich under MIT license - [repository](https://github.com/TooTallNate/ansi.js)
+- **anymatch** v2.0.0 by Elan Shanker under ISC license - [repository](https://github.com/micromatch/anymatch)
+- **apollo-cache-inmemory** v1.6.1 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **apollo-cache-persist** v0.1.1 by James Reggio under MIT license - [repository](https://github.com/apollographql/apollo-cache-persist)
+- **apollo-cache** v1.3.1 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **apollo-cache** v1.3.2 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **apollo-client** v2.6.2 by Sashko Stubailo under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **apollo-link-batch-http** v1.2.11 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-batch** v1.1.12 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-context** v1.0.17 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-error** v1.1.10 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-http-common** v0.2.13 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-http** v1.5.14 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-persisted-queries** v0.2.2 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-link-persisted-queries)
+- **apollo-link-retry** v2.2.13 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link-state** v0.4.2 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-link-state)
+- **apollo-link** v1.2.1 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-link** v1.2.11 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **apollo-utilities** v1.3.1 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **apollo-utilities** v1.3.2 by James Baxley under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **are-we-there-yet** v1.1.5 by Rebecca Turner under ISC license - [repository](https://github.com/iarna/are-we-there-yet)
+- **argparse** v1.0.10 under MIT license - [repository](https://github.com/nodeca/argparse)
+- **argsarray** v0.0.1 by Calvin Metcalf under WTFPL license - [repository](https://github.com/calvinmetcalf/argsarray)
+- **arr-diff** v1.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/arr-diff)
+- **arr-diff** v2.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/arr-diff)
+- **arr-diff** v4.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/arr-diff)
+- **arr-flatten** v1.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/arr-flatten)
+- **arr-union** v2.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/arr-union)
+- **arr-union** v3.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/arr-union)
+- **array-filter** v0.0.1 by Julian Gruber under MIT license - [repository](https://github.com/juliangruber/array-filter)
+- **array-map** v0.0.0 by James Halliday under MIT license - [repository](https://github.com/substack/array-map)
+- **array-reduce** v0.0.0 by James Halliday under MIT license - [repository](https://github.com/substack/array-reduce)
+- **array-slice** v0.2.3 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/array-slice)
+- **array-unique** v0.2.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/array-unique)
+- **array-unique** v0.3.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/array-unique)
+- **art** v0.10.3 by Sebastian Markbage under MIT license - [repository](https://github.com/sebmarkbage/art)
+- **asap** v2.0.6 under MIT license - [repository](https://github.com/kriskowal/asap)
+- **assign-symbols** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/assign-symbols)
+- **async-each** v1.0.1 by Paul Miller under MIT license - [repository](https://github.com/paulmillr/async-each)
+- **async-limiter** v1.0.0 by Samuel Reed under MIT license - [repository](https://github.com/strml/async-limiter)
+- **async** v2.6.2 by Caolan McMahon under MIT license - [repository](https://github.com/caolan/async)
+- **atob** v2.1.2 by AJ ONeal under (MIT OR Apache-2.0) license - [repository](git://git.coolaj86.com/coolaj86/atob.js)
+- **aws-sdk** v2.329.0 by Amazon Web Services under Apache-2.0 license - [repository](https://github.com/aws/aws-sdk-js)
+- **babel-plugin-module-resolver** v3.2.0 by Tommy Leunen under MIT license - [repository](https://github.com/tleunen/babel-plugin-module-resolver)
+- **babel-plugin-syntax-trailing-function-commas** v7.0.0-beta.0 under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-trailing-function-commas)
+- **babel-preset-expo** v5.0.0 by Expo under MIT license - [repository](https://github.com/expo/expo)
+- **babel-preset-fbjs** v3.2.0 under MIT license - [repository](https://github.com/facebook/fbjs)
+- **babel-runtime** v6.26.0 by Sebastian McKenzie under MIT license - [repository](https://github.com/babel/babel/tree/master/packages/babel-runtime)
+- **balanced-match** v1.0.0 by Julian Gruber under MIT license - [repository](https://github.com/juliangruber/balanced-match)
+- **base64-js** v1.1.2 by T. Jameson Little under MIT license - [repository](https://github.com/beatgammit/base64-js)
+- **base64-js** v1.3.0 by T. Jameson Little under MIT license - [repository](https://github.com/beatgammit/base64-js)
+- **base** v0.11.2 by Jon Schlinkert under MIT license - [repository](https://github.com/node-base/base)
+- **basic-auth** v2.0.1 under MIT license - [repository](https://github.com/jshttp/basic-auth)
+- **big-integer** v1.6.44 by Peter Olson under Unlicense license - [repository](https://github.com/peterolson/BigInteger.js)
+- **binary-extensions** v1.13.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/binary-extensions)
+- **blueimp-md5** v2.10.0 by Sebastian Tschan under MIT license - [repository](https://github.com/blueimp/JavaScript-MD5)
+- **bplist-creator** v0.0.7 by https://github.com/nearinfinity/node-bplist-parser.git under MIT license - [repository](https://github.com/nearinfinity/node-bplist-creator)
+- **bplist-parser** v0.1.1 by Joe Ferner under MIT license - [repository](https://github.com/nearinfinity/node-bplist-parser)
+- **brace-expansion** v1.1.11 by Julian Gruber under MIT license - [repository](https://github.com/juliangruber/brace-expansion)
+- **braces** v1.8.5 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/braces)
+- **braces** v2.3.2 by Jon Schlinkert under MIT license - [repository](https://github.com/micromatch/braces)
+- **bser** v2.0.0 by Wez Furlong under Apache-2.0 license - [repository](https://github.com/facebook/watchman)
+- **buffer-alloc-unsafe** v1.1.0 under MIT license - [repository](https://github.com/LinusU/buffer-alloc-unsafe)
+- **buffer-alloc** v1.2.0 under MIT license - [repository](https://github.com/LinusU/buffer-alloc)
+- **buffer-crc32** v0.2.13 by Brian J. Brennan under MIT license - [repository](https://github.com/brianloveswords/buffer-crc32)
+- **buffer-fill** v1.0.0 under MIT license - [repository](https://github.com/LinusU/buffer-fill)
+- **buffer-from** v1.1.1 under MIT license - [repository](https://github.com/LinusU/buffer-from)
+- **buffer** v4.9.1 by Feross Aboukhadijeh under MIT license - [repository](https://github.com/feross/buffer)
+- **bytes** v3.0.0 by TJ Holowaychuk under MIT license - [repository](https://github.com/visionmedia/bytes.js)
+- **cache-base** v1.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/cache-base)
+- **caller-callsite** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/caller-callsite)
+- **caller-path** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/caller-path)
+- **callsites** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/callsites)
+- **camelcase** v4.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/camelcase)
+- **camelcase** v5.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/camelcase)
+- **camelcase** v5.3.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/camelcase)
+- **can-use-dom** v0.1.0 by Kiran Abburi under MIT license - [repository](https://github.com/akiran/can-use-dom)
+- **capture-exit** v1.2.0 by Stefan Penner under ISC license - [repository](https://github.com/stefanpenner/capture-exit)
+- **caseless** v0.12.0 by Mikeal Rogers under Apache-2.0 license - [repository](https://github.com/mikeal/caseless)
+- **chalk** v1.1.3 under MIT license - [repository](https://github.com/chalk/chalk)
+- **chalk** v2.4.2 under MIT license - [repository](https://github.com/chalk/chalk)
+- **change-emitter** v0.1.6 by Andrew Clark under MIT license - [repository](https://github.com/acdlite/change-emitter)
+- **chardet** v0.4.2 by Dmitry Shirokov under MIT license - [repository](https://github.com/runk/node-chardet)
+- **chardet** v0.7.0 by Dmitry Shirokov under MIT license - [repository](https://github.com/runk/node-chardet)
+- **chokidar** v2.1.2 by Paul Miller under MIT license - [repository](https://github.com/paulmillr/chokidar)
+- **class-utils** v0.3.6 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/class-utils)
+- **cli-cursor** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/cli-cursor)
+- **cli-width** v2.2.0 by Ilya Radchenko under ISC license - [repository](https://github.com/knownasilya/cli-width)
+- **cliui** v3.2.0 by Ben Coe under ISC license - [repository](https://github.com/yargs/cliui)
+- **cliui** v4.1.0 by Ben Coe under ISC license - [repository](https://github.com/yargs/cliui)
+- **code-point-at** v1.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/code-point-at)
+- **collection-visit** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/collection-visit)
+- **color-convert** v1.9.3 by Heather Arthur under MIT license - [repository](https://github.com/Qix-/color-convert)
+- **color-name** v1.1.3 by DY under MIT license - [repository](https://github.com/dfcreative/color-name)
+- **color-string** v1.5.3 by Heather Arthur under MIT license - [repository](https://github.com/Qix-/color-string)
+- **color-support** v1.1.3 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/color-support)
+- **color** v2.0.1 under MIT license - [repository](https://github.com/Qix-/color)
+- **commander** v2.13.0 by TJ Holowaychuk under MIT license - [repository](https://github.com/tj/commander.js)
+- **commander** v2.19.0 by TJ Holowaychuk under MIT license - [repository](https://github.com/tj/commander.js)
+- **commondir** v1.0.1 by James Halliday under MIT license - [repository](https://github.com/substack/node-commondir)
+- **compare-versions** v3.4.0 by Ole Michelsen under MIT license - [repository](https://github.com/omichelsen/compare-versions)
+- **component-emitter** v1.2.1 under MIT license - [repository](https://github.com/component/emitter)
+- **compressible** v2.0.16 under MIT license - [repository](https://github.com/jshttp/compressible)
+- **compression** v1.7.3 under MIT license - [repository](https://github.com/expressjs/compression)
+- **concat-map** v0.0.1 by James Halliday under MIT license - [repository](https://github.com/substack/node-concat-map)
+- **concat-stream** v1.6.2 by Max Ogden under MIT license - [repository](https://github.com/maxogden/concat-stream)
+- **connect** v3.7.0 by TJ Holowaychuk under MIT license - [repository](https://github.com/senchalabs/connect)
+- **convert-source-map** v1.6.0 by Thorsten Lorenz under MIT license - [repository](https://github.com/thlorenz/convert-source-map)
+- **copy-descriptor** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/copy-descriptor)
+- **core-js** v1.2.7 under MIT license - [repository](https://github.com/zloirock/core-js)
+- **core-js** v2.6.5 under MIT license - [repository](https://github.com/zloirock/core-js)
+- **core-js** v2.6.9 under MIT license - [repository](https://github.com/zloirock/core-js)
+- **core-js** v3.1.3 under MIT license - [repository](https://github.com/zloirock/core-js)
+- **core-util-is** v1.0.2 by Isaac Z. Schlueter under MIT license - [repository](https://github.com/isaacs/core-util-is)
+- **cosmiconfig** v5.2.0 by David Clark under MIT license - [repository](https://github.com/davidtheclark/cosmiconfig)
+- **create-react-class** v15.6.3 under MIT license - [repository](https://github.com/facebook/react)
+- **create-react-context** v0.2.3 by James Kyle under MIT* license - [repository](https://github.com/thejameskyle/create-react-context)
+- **cross-spawn** v5.1.0 by IndigoUnited under MIT license - [repository](https://github.com/IndigoUnited/node-cross-spawn)
+- **cross-spawn** v6.0.5 by André Cruz under MIT license - [repository](https://github.com/moxystudio/node-cross-spawn)
+- **crypto-js** v3.1.9-1 by Evan Vosberg under MIT license - [repository](https://github.com/brix/crypto-js)
+- **csstype** v2.6.3 by Fredrik Nicol under MIT license - [repository](https://github.com/frenic/csstype)
+- **debug** v2.6.9 by TJ Holowaychuk under MIT license - [repository](https://github.com/visionmedia/debug)
+- **debug** v3.2.6 by TJ Holowaychuk under MIT license - [repository](https://github.com/visionmedia/debug)
+- **debug** v4.1.1 by TJ Holowaychuk under MIT license - [repository](https://github.com/visionmedia/debug)
+- **decamelize** v1.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/decamelize)
+- **decode-uri-component** v0.2.0 by Sam Verschueren under MIT license - [repository](https://github.com/SamVerschueren/decode-uri-component)
+- **dedent** v0.6.0 by Desmond Brand under MIT license - [repository](https://github.com/dmnd/dedent)
+- **deepmerge** v2.2.1 by Nick Fisher under MIT license - [repository](https://github.com/KyleAMathews/deepmerge)
+- **define-property** v0.2.5 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/define-property)
+- **define-property** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/define-property)
+- **define-property** v2.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/define-property)
+- **delegates** v1.0.0 under MIT license - [repository](https://github.com/visionmedia/node-delegates)
+- **denodeify** v1.2.1 by Matt Andrews under MIT license - [repository](https://github.com/matthew-andrews/denodeify)
+- **depd** v1.1.2 by Douglas Christopher Wilson under MIT license - [repository](https://github.com/dougwilson/nodejs-depd)
+- **destroy** v1.0.4 by Jonathan Ong under MIT license - [repository](https://github.com/stream-utils/destroy)
+- **dom-serializer** v0.1.1 by Felix Boehm under MIT license - [repository](https://github.com/cheeriojs/dom-renderer)
+- **dom-walk** v0.1.1 by Raynos under MIT license - [repository](https://github.com/Raynos/dom-walk)
+- **domelementtype** v1.3.1 by Felix Boehm under BSD-2-Clause license - [repository](https://github.com/fb55/domelementtype)
+- **domhandler** v2.4.2 by Felix Boehm under BSD-2-Clause license - [repository](https://github.com/fb55/DomHandler)
+- **domutils** v1.5.1 by Felix Boehm under BSD* license - [repository](https://github.com/FB55/domutils)
+- **ee-first** v1.1.1 by Jonathan Ong under MIT license - [repository](https://github.com/jonathanong/ee-first)
+- **encodeurl** v1.0.2 under MIT license - [repository](https://github.com/pillarjs/encodeurl)
+- **encoding** v0.1.12 by Andris Reinman under MIT license - [repository](https://github.com/andris9/encoding)
+- **end-of-stream** v1.4.1 by Mathias Buus under MIT license - [repository](https://github.com/mafintosh/end-of-stream)
+- **entities** v1.1.2 by Felix Boehm under BSD-2-Clause license - [repository](https://github.com/fb55/entities)
+- **envinfo** v5.12.1 by tabrindle@gmail.com under MIT license - [repository](https://github.com/tabrindle/envinfo)
+- **error-ex** v1.3.2 under MIT license - [repository](https://github.com/qix-/node-error-ex)
+- **errorhandler** v1.5.1 under MIT license - [repository](https://github.com/expressjs/errorhandler)
+- **es6-promise** v4.2.6 by Yehuda Katz, Tom Dale, Stefan Penner and contributors under MIT license - [repository](https://github.com/stefanpenner/es6-promise)
+- **es6-promisify** v5.0.0 by Mike Hall under MIT license - [repository](https://github.com/digitaldesignlabs/es6-promisify)
+- **escape-html** v1.0.3 under MIT license - [repository](https://github.com/component/escape-html)
+- **escape-string-regexp** v1.0.5 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/escape-string-regexp)
+- **esprima** v4.0.1 by Ariya Hidayat under BSD-2-Clause license - [repository](https://github.com/jquery/esprima)
+- **esutils** v2.0.2 under BSD license - [repository](https://github.com/estools/esutils)
+- **etag** v1.8.1 under MIT license - [repository](https://github.com/jshttp/etag)
+- **event-target-shim** v1.1.1 by Toru Nagashima under MIT license - [repository](https://github.com/mysticatea/event-target-shim)
+- **eventemitter3** v3.1.0 by Arnout Kazemier under MIT license - [repository](https://github.com/primus/eventemitter3)
+- **events** v1.1.1 by Irakli Gozalishvili under MIT license - [repository](https://github.com/Gozala/events)
+- **exec-sh** v0.2.2 by Aleksandr Tsertkov under MIT license - [repository](https://github.com/tsertkov/exec-sh)
+- **execa** v0.7.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/execa)
+- **execa** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/execa)
+- **expand-brackets** v0.1.5 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/expand-brackets)
+- **expand-brackets** v2.1.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/expand-brackets)
+- **expand-range** v1.8.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/expand-range)
+- **expo-ads-admob** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-ads-facebook** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-analytics-amplitude** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-analytics-segment** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-app-auth** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-app-loader-provider** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-asset** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-av** v5.0.2 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-background-fetch** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-barcode-scanner** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-blur** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-brightness** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-calendar** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-camera** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-constants** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-contacts** v5.0.2 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-crypto** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-document-picker** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-face-detector** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-facebook** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-file-system** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-font** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-gl-cpp** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-gl** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-google-sign-in** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-haptics** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-image-manipulator** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-image-picker** v5.0.2 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-intent-launcher** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-keep-awake** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-linear-gradient** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-local-authentication** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-localization** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-location** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-mail-composer** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-media-library** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-payments-stripe** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-permissions** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-print** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-random** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-secure-store** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-sensors** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-sharing** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-sms** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-speech** v5.0.2 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-sqlite** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-task-manager** v5.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo-web-browser** v5.0.3 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **expo** v33.0.5 by Expo under MIT license - [repository](https://github.com/expo/expo)
+- **extend-shallow** v1.1.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/extend-shallow)
+- **extend-shallow** v2.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/extend-shallow)
+- **extend-shallow** v3.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/extend-shallow)
+- **external-editor** v2.2.0 by Kevin Gravier under MIT license - [repository](https://github.com/mrkmg/node-external-editor)
+- **external-editor** v3.0.3 by Kevin Gravier under MIT license - [repository](https://github.com/mrkmg/node-external-editor)
+- **extglob** v0.3.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/extglob)
+- **extglob** v2.0.4 by Jon Schlinkert under MIT license - [repository](https://github.com/micromatch/extglob)
+- **fancy-log** v1.3.3 by Gulp Team under MIT license - [repository](https://github.com/gulpjs/fancy-log)
+- **fast-json-stable-stringify** v2.0.0 by James Halliday under MIT license - [repository](https://github.com/epoberezkin/fast-json-stable-stringify)
+- **fb-watchman** v2.0.0 by Wez Furlong under Apache-2.0 license - [repository](https://github.com/facebook/watchman)
+- **fbemitter** v2.1.1 under BSD-3-Clause license - [repository](https://github.com/facebook/emitter)
+- **fbjs-css-vars** v1.0.2 under MIT license - [repository](https://github.com/facebook/fbjs)
+- **fbjs-scripts** v1.2.0 under MIT license - [repository](https://github.com/facebook/fbjs)
+- **fbjs** v0.8.17 under MIT license - [repository](https://github.com/facebook/fbjs)
+- **fbjs** v1.0.0 under MIT license - [repository](https://github.com/facebook/fbjs)
+- **figures** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/figures)
+- **filename-regex** v2.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/regexhq/filename-regex)
+- **fill-range** v2.2.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/fill-range)
+- **fill-range** v4.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/fill-range)
+- **finalhandler** v1.1.2 by Douglas Christopher Wilson under MIT license - [repository](https://github.com/pillarjs/finalhandler)
+- **find-babel-config** v1.1.0 by Tommy Leunen under MIT license - [repository](https://github.com/tleunen/find-babel-config)
+- **find-cache-dir** v2.1.0 under MIT license - [repository](https://github.com/avajs/find-cache-dir)
+- **find-up** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/find-up)
+- **find-up** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/find-up)
+- **flow-copy-source** v1.3.0 by Chris Cowan under MIT license - [repository](https://github.com/AgentME/flow-copy-source)
+- **fontfaceobserver** v2.1.0 by Bram Stein under BSD-3-Clause license - [repository](https://github.com/bramstein/fontfaceobserver)
+- **for-in** v1.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/for-in)
+- **for-own** v0.1.5 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/for-own)
+- **fragment-cache** v0.2.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/fragment-cache)
+- **fresh** v0.5.2 by TJ Holowaychuk under MIT license - [repository](https://github.com/jshttp/fresh)
+- **fs-copy-file-sync** v1.1.1 by coderaiser under MIT license - [repository](https://github.com/coderaiser/fs-copy-file-sync)
+- **fs-extra** v1.0.0 by JP Richardson under MIT license - [repository](https://github.com/jprichardson/node-fs-extra)
+- **fs-extra** v5.0.0 by JP Richardson under MIT license - [repository](https://github.com/jprichardson/node-fs-extra)
+- **fs-extra** v7.0.1 by JP Richardson under MIT license - [repository](https://github.com/jprichardson/node-fs-extra)
+- **fs.realpath** v1.0.0 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/fs.realpath)
+- **gauge** v1.2.7 by Rebecca Turner under ISC license - [repository](https://github.com/iarna/gauge)
+- **get-caller-file** v1.0.3 by Stefan Penner under ISC license - [repository](https://github.com/stefanpenner/get-caller-file)
+- **get-stream** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/get-stream)
+- **get-stream** v4.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/get-stream)
+- **get-value** v2.0.6 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/get-value)
+- **glob-base** v0.3.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/glob-base)
+- **glob-parent** v2.0.0 by Elan Shanker under ISC license - [repository](https://github.com/es128/glob-parent)
+- **glob-parent** v3.1.0 by Elan Shanker under ISC license - [repository](https://github.com/es128/glob-parent)
+- **glob** v7.1.3 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/node-glob)
+- **global** v4.3.2 by Raynos under MIT license - [repository](https://github.com/Raynos/global)
+- **globals** v11.11.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/globals)
+- **google-maps-infobox** v2.0.0 under MIT license - [repository](https://github.com/lucasfs7/google-maps-infobox-module)
+- **graceful-fs** v4.1.15 under ISC license - [repository](https://github.com/isaacs/node-graceful-fs)
+- **graphql-anywhere** v4.2.4 by Sashko Stubailo under MIT license - [repository](https://github.com/apollographql/apollo-client)
+- **graphql-tag** v2.10.1 under MIT license - [repository](https://github.com/apollostack/graphql-tag)
+- **graphql** v14.3.1 under MIT license - [repository](https://github.com/graphql/graphql-js)
+- **growly** v1.3.0 by Ibrahim Al-Rajhi under MIT license - [repository](https://github.com/theabraham/growly)
+- **gud** v1.0.0 by Jamie Kyle under MIT license - [repository](https://github.com/jamiebuilds/global-unique-id)
+- **has-ansi** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/has-ansi)
+- **has-flag** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/has-flag)
+- **has-unicode** v2.0.1 by Rebecca Turner under ISC license - [repository](https://github.com/iarna/has-unicode)
+- **has-value** v0.3.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/has-value)
+- **has-value** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/has-value)
+- **has-values** v0.1.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/has-values)
+- **has-values** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/has-values)
+- **hash.js** v1.1.7 by Fedor Indutny under MIT license - [repository](https://github.com/indutny/hash.js)
+- **highlight-words-core** v1.2.2 by Brian Vaughn under MIT license - [repository](github.com/bvaughn/highlight-words-core)
+- **hoist-non-react-statics** v2.5.5 by Michael Ridgway under BSD-3-Clause license - [repository](https://github.com/mridgway/hoist-non-react-statics)
+- **hoist-non-react-statics** v3.3.0 by Michael Ridgway under BSD-3-Clause license - [repository](https://github.com/mridgway/hoist-non-react-statics)
+- **hosted-git-info** v2.7.1 by Rebecca Turner under ISC license - [repository](https://github.com/npm/hosted-git-info)
+- **html-entities** v1.2.1 by Marat Dulin under MIT license - [repository](https://github.com/mdevils/node-html-entities)
+- **htmlparser2** v3.10.1 by Felix Boehm under MIT license - [repository](https://github.com/fb55/htmlparser2)
+- **http-errors** v1.6.3 by Jonathan Ong under MIT license - [repository](https://github.com/jshttp/http-errors)
+- **https-proxy-agent** v2.2.1 by Nathan Rajlich under MIT license - [repository](https://github.com/TooTallNate/node-https-proxy-agent)
+- **iconv-lite** v0.4.24 by Alexander Shtuchkin under MIT license - [repository](https://github.com/ashtuchkin/iconv-lite)
+- **ieee754** v1.1.8 by Feross Aboukhadijeh under BSD-3-Clause license - [repository](https://github.com/feross/ieee754)
+- **image-size** v0.6.3 by netroy under MIT license - [repository](https://github.com/image-size/image-size)
+- **immediate** v3.2.3 under MIT license - [repository](https://github.com/calvinmetcalf/immediate)
+- **import-fresh** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/import-fresh)
+- **imurmurhash** v0.1.4 by Jens Taylor under MIT license - [repository](https://github.com/jensyt/imurmurhash-js)
+- **inflight** v1.0.6 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/npm/inflight)
+- **inherits** v2.0.3 under ISC license - [repository](https://github.com/isaacs/inherits)
+- **inquirer** v3.3.0 by Simon Boudrias under MIT license - [repository](https://github.com/SBoudrias/Inquirer.js)
+- **inquirer** v6.3.1 by Simon Boudrias under MIT license - [repository](https://github.com/SBoudrias/Inquirer.js)
+- **invariant** v2.2.4 by Andres Suarez under MIT license - [repository](https://github.com/zertosh/invariant)
+- **invert-kv** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/invert-kv)
+- **invert-kv** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/invert-kv)
+- **is-accessor-descriptor** v0.1.6 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-accessor-descriptor)
+- **is-accessor-descriptor** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-accessor-descriptor)
+- **is-arrayish** v0.2.1 by Qix under MIT license - [repository](https://github.com/qix-/node-is-arrayish)
+- **is-arrayish** v0.3.2 by Qix under MIT license - [repository](https://github.com/qix-/node-is-arrayish)
+- **is-binary-path** v1.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/is-binary-path)
+- **is-buffer** v1.1.6 by Feross Aboukhadijeh under MIT license - [repository](https://github.com/feross/is-buffer)
+- **is-data-descriptor** v0.1.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-data-descriptor)
+- **is-data-descriptor** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-data-descriptor)
+- **is-descriptor** v0.1.6 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-descriptor)
+- **is-descriptor** v1.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-descriptor)
+- **is-directory** v0.3.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-directory)
+- **is-dotfile** v1.0.3 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-dotfile)
+- **is-equal-shallow** v0.1.3 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-equal-shallow)
+- **is-extendable** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-extendable)
+- **is-extendable** v1.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-extendable)
+- **is-extglob** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-extglob)
+- **is-extglob** v2.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-extglob)
+- **is-fullwidth-code-point** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/is-fullwidth-code-point)
+- **is-fullwidth-code-point** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/is-fullwidth-code-point)
+- **is-glob** v2.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-glob)
+- **is-glob** v3.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-glob)
+- **is-glob** v4.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-glob)
+- **is-number** v2.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-number)
+- **is-number** v3.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-number)
+- **is-number** v4.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-number)
+- **is-plain-object** v2.0.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-plain-object)
+- **is-posix-bracket** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-posix-bracket)
+- **is-primitive** v2.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-primitive)
+- **is-promise** v2.1.0 by ForbesLindesay under MIT license - [repository](https://github.com/then/is-promise)
+- **is-stream** v1.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/is-stream)
+- **is-typedarray** v1.0.0 by Hugh Kennedy under MIT license - [repository](https://github.com/hughsk/is-typedarray)
+- **is-windows** v1.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/is-windows)
+- **is-wsl** v1.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/is-wsl)
+- **isarray** v0.0.1 by Julian Gruber under MIT license - [repository](https://github.com/juliangruber/isarray)
+- **isarray** v1.0.0 by Julian Gruber under MIT license - [repository](https://github.com/juliangruber/isarray)
+- **isexe** v2.0.0 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/isexe)
+- **isobject** v2.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/isobject)
+- **isobject** v3.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/isobject)
+- **isomorphic-fetch** v2.2.1 by Matt Andrews under MIT license - [repository](https://github.com/matthew-andrews/isomorphic-fetch)
+- **iterall** v1.2.2 by Lee Byron under MIT license - [repository](https://github.com/leebyron/iterall)
+- **jest-haste-map** v24.0.0-alpha.6 under MIT license - [repository](https://github.com/facebook/jest)
+- **jest-serializer** v24.0.0-alpha.6 under MIT license - [repository](https://github.com/facebook/jest)
+- **jest-serializer** v24.4.0 under MIT license - [repository](https://github.com/facebook/jest)
+- **jest-worker** v24.0.0-alpha.6 under MIT license - [repository](https://github.com/facebook/jest)
+- **jest-worker** v24.6.0 under MIT license - [repository](https://github.com/facebook/jest)
+- **jmespath** v0.15.0 by James Saryerwinnie under Apache 2.0 license - [repository](https://github.com/jmespath/jmespath.js)
+- **js-cookie** v2.2.0 by Klaus Hartl under MIT license - [repository](https://github.com/js-cookie/js-cookie)
+- **js-tokens** v4.0.0 by Simon Lydell under MIT license - [repository](https://github.com/lydell/js-tokens)
+- **js-yaml** v3.13.1 by Vladimir Zapparov under MIT license - [repository](https://github.com/nodeca/js-yaml)
+- **jsesc** v0.5.0 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/jsesc)
+- **jsesc** v2.5.2 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/jsesc)
+- **json-parse-better-errors** v1.0.2 by Kat Marchán under MIT license - [repository](https://github.com/zkat/json-parse-better-errors)
+- **json-stable-stringify** v1.0.1 by James Halliday under MIT license - [repository](https://github.com/substack/json-stable-stringify)
+- **json-stringify-safe** v5.0.1 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/json-stringify-safe)
+- **json5** v0.5.1 by Aseem Kishore under MIT license - [repository](https://github.com/aseemk/json5)
+- **json5** v2.1.0 by Aseem Kishore under MIT license - [repository](https://github.com/json5/json5)
+- **jsonfile** v2.4.0 by JP Richardson under MIT license - [repository](https://github.com/jprichardson/node-jsonfile)
+- **jsonfile** v4.0.0 by JP Richardson under MIT license - [repository](https://github.com/jprichardson/node-jsonfile)
+- **jsonify** v0.0.0 by Douglas Crockford under Public Domain license - [repository](https://github.com/substack/jsonify)
+- **kefir** v3.8.6 by Roman Pominov under MIT license - [repository](https://github.com/kefirjs/kefir)
+- **kind-of** v1.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/kind-of)
+- **kind-of** v3.2.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/kind-of)
+- **kind-of** v4.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/kind-of)
+- **kind-of** v5.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/kind-of)
+- **kind-of** v6.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/kind-of)
+- **klaw** v1.3.1 by JP Richardson under MIT license - [repository](https://github.com/jprichardson/node-klaw)
+- **lcid** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/lcid)
+- **lcid** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/lcid)
+- **linkify-it** v2.1.0 under MIT license - [repository](https://github.com/markdown-it/linkify-it)
+- **load-json-file** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/load-json-file)
+- **locate-path** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/locate-path)
+- **locate-path** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/locate-path)
+- **lodash-es** v4.17.11 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash.debounce** v4.0.8 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash.isequal** v4.5.0 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash.pad** v4.5.1 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash.padend** v4.6.1 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash.padstart** v4.6.1 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash.throttle** v4.1.1 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **lodash** v4.17.11 by John-David Dalton under MIT license - [repository](https://github.com/lodash/lodash)
+- **loose-envify** v1.4.0 by Andres Suarez under MIT license - [repository](https://github.com/zertosh/loose-envify)
+- **lottie-ios** v2.5.0 by Brandon Withrow under Apache-2.0 license - [repository](https://github.com/airbnb/lottie-ios)
+- **lottie-react-native** v2.6.1 by Leland Richardson under Apache-2.0 license - [repository](https://github.com/airbnb/lottie-react-native)
+- **lru-cache** v4.1.5 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/node-lru-cache)
+- **make-dir** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/make-dir)
+- **makeerror** v1.0.11 by Naitik Shah under BSD-3-Clause license - [repository](https://github.com/daaku/nodejs-makeerror)
+- **map-age-cleaner** v0.1.3 by Sam Verschueren under MIT license - [repository](https://github.com/SamVerschueren/map-age-cleaner)
+- **map-cache** v0.2.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/map-cache)
+- **map-visit** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/map-visit)
+- **markdown-it** v8.4.2 under MIT license - [repository](https://github.com/markdown-it/markdown-it)
+- **marker-clusterer-plus** v2.1.4 by Mike Saidani under Apache* license - [repository](https://github.com/mikesaidani/marker-clusterer-plus)
+- **markerwithlabel** v2.0.2 by Jess Telford under Apache-2.0 license - [repository](https://github.com/jesstelford/node-MarkerWithLabel)
+- **math-random** v1.0.4 by Michael Rhodes under MIT license - [repository](https://github.com/michaelrhodes/math-random)
+- **md5-file** v3.2.3 by Rory Bradford under MIT license - [repository](https://github.com/roryrjb/md5-file)
+- **mdurl** v1.0.1 under MIT license - [repository](https://github.com/markdown-it/mdurl)
+- **mem** v1.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/mem)
+- **mem** v4.3.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/mem)
+- **merge-stream** v1.0.1 by Stephen Sugden under MIT license - [repository](https://github.com/grncdr/merge-stream)
+- **merge** v1.2.1 by yeikos under MIT license - [repository](https://github.com/yeikos/js.merge)
+- **metro-babel-register** v0.51.0 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-babel-transformer** v0.51.0 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-babel-transformer** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-babel7-plugin-react-transform** v0.49.2 under MIT license - [repository](undefined)
+- **metro-babel7-plugin-react-transform** v0.51.0 under MIT license - [repository](undefined)
+- **metro-babel7-plugin-react-transform** v0.51.1 under MIT license - [repository](undefined)
+- **metro-cache** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-config** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-core** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-memory-fs** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-minify-uglify** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-react-native-babel-preset** v0.49.2 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-react-native-babel-preset** v0.51.0 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-react-native-babel-preset** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-react-native-babel-transformer** v0.51.0 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-resolver** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro-source-map** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **metro** v0.51.1 under MIT license - [repository](https://github.com/facebook/metro)
+- **micromatch** v2.3.11 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/micromatch)
+- **micromatch** v3.1.10 by Jon Schlinkert under MIT license - [repository](https://github.com/micromatch/micromatch)
+- **mime-db** v1.23.0 under MIT license - [repository](https://github.com/jshttp/mime-db)
+- **mime-db** v1.38.0 under MIT license - [repository](https://github.com/jshttp/mime-db)
+- **mime-db** v1.40.0 under MIT license - [repository](https://github.com/jshttp/mime-db)
+- **mime-types** v2.1.11 under MIT license - [repository](https://github.com/jshttp/mime-types)
+- **mime-types** v2.1.22 under MIT license - [repository](https://github.com/jshttp/mime-types)
+- **mime-types** v2.1.24 under MIT license - [repository](https://github.com/jshttp/mime-types)
+- **mime** v1.4.1 by Robert Kieffer under MIT license - [repository](https://github.com/broofa/node-mime)
+- **mime** v1.6.0 by Robert Kieffer under MIT license - [repository](https://github.com/broofa/node-mime)
+- **mimic-fn** v1.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/mimic-fn)
+- **mimic-fn** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/mimic-fn)
+- **min-document** v2.19.0 by Raynos under MIT license - [repository](https://github.com/Raynos/min-document)
+- **minimalistic-assert** v1.0.1 under ISC license - [repository](https://github.com/calvinmetcalf/minimalistic-assert)
+- **minimatch** v3.0.4 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/minimatch)
+- **minimist** v0.0.10 by James Halliday under MIT license - [repository](https://github.com/substack/minimist)
+- **minimist** v0.0.8 by James Halliday under MIT license - [repository](https://github.com/substack/minimist)
+- **minimist** v1.2.0 by James Halliday under MIT license - [repository](https://github.com/substack/minimist)
+- **mixin-deep** v1.3.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/mixin-deep)
+- **mkdirp** v0.5.1 by James Halliday under MIT license - [repository](https://github.com/substack/node-mkdirp)
+- **morgan** v1.9.1 under MIT license - [repository](https://github.com/expressjs/morgan)
+- **ms** v2.0.0 under MIT license - [repository](https://github.com/zeit/ms)
+- **ms** v2.1.1 under MIT license - [repository](https://github.com/zeit/ms)
+- **mute-stream** v0.0.7 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/mute-stream)
+- **nanomatch** v1.2.13 by Jon Schlinkert under MIT license - [repository](https://github.com/micromatch/nanomatch)
+- **negotiator** v0.6.1 under MIT license - [repository](https://github.com/jshttp/negotiator)
+- **negotiator** v0.6.2 under MIT license - [repository](https://github.com/jshttp/negotiator)
+- **nice-try** v1.0.5 under MIT license - [repository](https://github.com/electerious/nice-try)
+- **node-fetch** v1.7.3 by David Frank under MIT license - [repository](https://github.com/bitinn/node-fetch)
+- **node-fetch** v2.6.0 by David Frank under MIT license - [repository](https://github.com/bitinn/node-fetch)
+- **node-int64** v0.4.0 by Robert Kieffer under MIT license - [repository](https://github.com/broofa/node-int64)
+- **node-modules-regexp** v1.0.0 by James Talmage under MIT license - [repository](https://github.com/jamestalmage/node-modules-regexp)
+- **node-notifier** v5.4.0 by Mikael Brevik under MIT license - [repository](https://github.com/mikaelbr/node-notifier)
+- **noop-fn** v1.0.0 by Ivan Nikulin under MIT license - [repository](https://github.com/inikulin/noop-fn)
+- **normalize-package-data** v2.5.0 by Meryn Stol under BSD-2-Clause license - [repository](https://github.com/npm/normalize-package-data)
+- **normalize-path** v2.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/normalize-path)
+- **normalize-path** v3.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/normalize-path)
+- **npm-run-path** v2.0.2 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/npm-run-path)
+- **npmlog** v2.0.4 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/npm/npmlog)
+- **nullthrows** v1.1.1 by Andres Suarez under MIT license - [repository](https://github.com/zertosh/nullthrows)
+- **number-is-nan** v1.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/number-is-nan)
+- **object-assign** v4.1.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/object-assign)
+- **object-copy** v0.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/object-copy)
+- **object-visit** v1.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/object-visit)
+- **object.omit** v2.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/object.omit)
+- **object.pick** v1.3.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/object.pick)
+- **on-finished** v2.3.0 under MIT license - [repository](https://github.com/jshttp/on-finished)
+- **on-headers** v1.0.2 by Douglas Christopher Wilson under MIT license - [repository](https://github.com/jshttp/on-headers)
+- **once** v1.4.0 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/once)
+- **onetime** v2.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/onetime)
+- **opn** v3.0.3 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/opn)
+- **opn** v5.5.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/opn)
+- **optimism** v0.9.5 by Ben Newman under MIT license - [repository](https://github.com/benjamn/optimism)
+- **optimist** v0.6.1 by James Halliday under MIT* license - [repository](https://github.com/substack/node-optimist)
+- **options** v0.0.6 by Einar Otto Stangvik under MIT* license - [repository](https://github.com/einaros/options.js)
+- **os-locale** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/os-locale)
+- **os-locale** v3.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/os-locale)
+- **os-tmpdir** v1.0.2 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/os-tmpdir)
+- **p-defer** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-defer)
+- **p-finally** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-finally)
+- **p-is-promise** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-is-promise)
+- **p-limit** v1.3.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-limit)
+- **p-limit** v2.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-limit)
+- **p-locate** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-locate)
+- **p-locate** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-locate)
+- **p-try** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-try)
+- **p-try** v2.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/p-try)
+- **parse-glob** v3.0.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/parse-glob)
+- **parse-json** v2.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/parse-json)
+- **parse-json** v4.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/parse-json)
+- **parse-node-version** v1.0.1 by Gulp Team under MIT license - [repository](https://github.com/gulpjs/parse-node-version)
+- **parseurl** v1.3.2 under MIT license - [repository](https://github.com/pillarjs/parseurl)
+- **parseurl** v1.3.3 under MIT license - [repository](https://github.com/pillarjs/parseurl)
+- **pascalcase** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/pascalcase)
+- **path-browserify** v1.0.0 by James Halliday under MIT license - [repository](https://github.com/browserify/path-browserify)
+- **path-dirname** v1.0.2 by Elan Shanker under MIT license - [repository](https://github.com/es128/path-dirname)
+- **path-exists** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/path-exists)
+- **path-is-absolute** v1.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/path-is-absolute)
+- **path-key** v2.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/path-key)
+- **path-parse** v1.0.6 by Javier Blanco under MIT license - [repository](https://github.com/jbgutierrez/path-parse)
+- **path-to-regexp** v1.7.0 under MIT license - [repository](https://github.com/pillarjs/path-to-regexp)
+- **path-type** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/path-type)
+- **pify** v2.3.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/pify)
+- **pify** v4.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/pify)
+- **pirates** v4.0.1 by Ari Porad under MIT license - [repository](https://github.com/ariporad/pirates)
+- **pkg-dir** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/pkg-dir)
+- **pkg-up** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/pkg-up)
+- **plist** v2.0.1 by Nathan Rajlich under MIT license - [repository](https://github.com/TooTallNate/node-plist)
+- **plist** v3.0.1 by Nathan Rajlich under MIT license - [repository](https://github.com/TooTallNate/node-plist)
+- **plugin-error** v0.1.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/plugin-error)
+- **posix-character-classes** v0.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/posix-character-classes)
+- **pouchdb-collections** v1.0.1 by Calvin Metcalf under UNKNOWN license - [repository](https://github.com/nolanlawson/pouchdb-collections)
+- **preserve** v0.2.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/preserve)
+- **pretty-format** v23.6.0 by James Kyle under MIT license - [repository](https://github.com/facebook/jest)
+- **pretty-format** v24.0.0-alpha.6 by James Kyle under MIT license - [repository](https://github.com/facebook/jest)
+- **private** v0.1.8 by Ben Newman under MIT license - [repository](https://github.com/benjamn/private)
+- **process-nextick-args** v2.0.0 under MIT license - [repository](https://github.com/calvinmetcalf/process-nextick-args)
+- **process** v0.5.2 by Roman Shtylman under MIT* license - [repository](https://github.com/shtylman/node-process)
+- **progress** v2.0.0 by TJ Holowaychuk under MIT license - [repository](https://github.com/visionmedia/node-progress)
+- **promise** v7.3.1 by ForbesLindesay under MIT license - [repository](https://github.com/then/promise)
+- **prop-types** v15.5.8 under BSD-3-Clause license - [repository](https://github.com/reactjs/prop-types)
+- **prop-types** v15.7.2 under MIT license - [repository](https://github.com/facebook/prop-types)
+- **proxy-from-env** v1.0.0 by Rob Wu under MIT license - [repository](https://github.com/Rob--W/proxy-from-env)
+- **pseudomap** v1.0.2 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/pseudomap)
+- **pump** v3.0.0 by Mathias Buus Madsen under MIT license - [repository](https://github.com/mafintosh/pump)
+- **punycode** v1.3.2 by Mathias Bynens under MIT license - [repository](https://github.com/bestiejs/punycode.js)
+- **qs** v6.6.0 under BSD-3-Clause license - [repository](https://github.com/ljharb/qs)
+- **query-string** v6.7.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/query-string)
+- **querystring** v0.2.0 by Irakli Gozalishvili under MIT license - [repository](https://github.com/Gozala/querystring)
+- **querystringify** v2.1.1 by Arnout Kazemier under MIT license - [repository](https://github.com/unshiftio/querystringify)
+- **r2** v2.0.1 by Mikeal Rogers under Apache-2.0 license - [repository](https://github.com/mikeal/r2)
+- **randomatic** v3.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/randomatic)
+- **range-parser** v1.2.0 by TJ Holowaychuk under MIT license - [repository](https://github.com/jshttp/range-parser)
+- **raven-js** v3.27.2 under BSD-2-Clause license - [repository](https://github.com/getsentry/raven-js)
+- **react-apollo** v2.5.6 by opensource@apollographql.com under MIT license - [repository](https://github.com/apollographql/react-apollo)
+- **react-clone-referenced-element** v1.1.0 by James Ide under MIT license - [repository](https://github.com/ide/react-clone-referenced-element)
+- **react-deep-force-update** v1.1.2 by Dan Abramov under MIT license - [repository](https://github.com/gaearon/react-deep-force-update)
+- **react-devtools-core** v3.6.1 by Jared Forsyth under BSD-3-Clause license - [repository](https://github.com/facebook/react-devtools)
+- **react-google-maps** v9.4.5 by tomchentw under MIT license - [repository](https://github.com/tomchentw/react-google-maps)
+- **react-is** v16.8.3 under MIT license - [repository](https://github.com/facebook/react)
+- **react-is** v16.8.6 under MIT license - [repository](https://github.com/facebook/react)
+- **react-lifecycles-compat** v3.0.4 under MIT license - [repository](https://github.com/reactjs/react-lifecycles-compat)
+- **react-mixin** v3.1.1 by Frankie Bagnardi under MIT license - [repository](https://github.com/brigand/react-mixin)
+- **react-native-branch** v2.2.5 under MIT license - [repository](https://github.com/BranchMetrics/react-native-branch-deep-linking)
+- **react-native-fit-image** v1.5.4 by Jitae Kim under Beerware license - [repository](https://github.com/huiseoul/react-native-fit-image)
+- **react-native-gesture-handler** v1.2.1 by Krzysztof Magiera under MIT license - [repository](https://github.com/kmagiera/react-native-gesture-handler)
+- **react-native-image-gallery** v2.1.5 by Archriss under ISC license - [repository](https://github.com/archriss/react-native-image-gallery)
+- **react-native-maps** v0.24.2 by Leland Richardson under MIT* license - [repository](https://github.com/react-native-community/react-native-maps)
+- **react-native-markdown-renderer** v3.2.8 by Mient-jan Stelling under MIT license - [repository](https://github.com/mientjan/react-native-markdown-renderer)
+- **react-native-paper** v2.16.0 under MIT license - [repository](https://github.com/callstack/react-native-paper)
+- **react-native-picker-select** v6.1.0 by Michael Lefkowitz under MIT license - [repository](https://github.com/lawnstarter/react-native-picker-select)
+- **react-native-reanimated** v1.0.1 by Krzysztof Magiera under MIT license - [repository](https://github.com/kmagiera/react-native-reanimated)
+- **react-native-render-html** v4.1.2 by Archriss under BSD-2-Clause license - [repository](https://github.com/archriss/react-native-render-html)
+- **react-native-safe-area-view** v0.12.0 by Dave Pack under MIT license - [repository](https://github.com/react-community/react-native-safe-area-view)
+- **react-native-safe-area-view** v0.14.5 by Dave Pack under MIT license - [repository](https://github.com/react-community/react-native-safe-area-view)
+- **react-native-safe-module** v1.2.0 by Leland Richardson under MIT license - [repository](https://github.com/lelandrichardson/react-native-safe-module)
+- **react-native-screens** v1.0.0-alpha.22 by Krzysztof Magiera under MIT license - [repository](https://github.com/kmagiera/react-native-screens)
+- **react-native-section-list-get-item-layout** v2.2.3 by Jan Soendermann under Apache-2.0 license - [repository](undefined)
+- **react-native-sentry** v0.42.0 by Sentry under MIT license - [repository](https://github.com/getsentry/react-native-sentry)
+- **react-native-svg** v9.4.0 under MIT license - [repository](https://github.com/react-native-community/react-native-svg)
+- **react-native-tab-view** v1.3.2 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-native-community/react-native-tab-view)
+- **react-native-tab-view** v1.4.1 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-native-community/react-native-tab-view)
+- **react-native-tab-view** v2.0.3 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-native-community/react-native-tab-view)
+- **react-native-view-shot** v2.6.0 by Gaëtan Renaudeau under MIT license - [repository](https://github.com/gre/react-native-view-shot)
+- **react-native-webview** v5.8.1 by Jamon Holmgren under MIT license - [repository](https://github.com/react-native-community/react-native-webview)
+- **react-native** v0.59.8 under MIT license - [repository](https://github.com/facebook/react-native)
+- **react-navigation-drawer** v1.2.1 under MIT license - [repository](https://github.com/react-navigation/react-navigation-drawer)
+- **react-navigation-material-bottom-tabs** v1.0.0 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-navigation/react-navigation-material-bottom-tabs)
+- **react-navigation-redux-helpers** v3.0.0 by Ashoat Tevosyan under BSD-2-Clause license - [repository](https://github.com/react-navigation/react-navigation-redux-helpers)
+- **react-navigation-stack** v1.4.0 under MIT license - [repository](https://github.com/react-navigation/react-navigation-stack)
+- **react-navigation-tabs** v1.0.0 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-navigation/react-navigation-tabs)
+- **react-navigation-tabs** v1.1.4 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-navigation/react-navigation-tabs)
+- **react-navigation-tabs** v2.0.0-alpha.0 by Satyajit Sahoo under MIT license - [repository](https://github.com/react-navigation/react-navigation-tabs)
+- **react-navigation** v3.11.0 by Adam Miskiewicz under BSD-2-Clause license - [repository](https://github.com/react-navigation/react-navigation)
+- **react-proxy** v1.1.8 by Dan Abramov under MIT license - [repository](https://github.com/gaearon/react-proxy)
+- **react-redux** v6.0.1 by Dan Abramov under MIT license - [repository](https://github.com/reduxjs/react-redux)
+- **react-timer-mixin** v0.13.4 under MIT license - [repository](https://github.com/reactjs/react-timer-mixin)
+- **react-transform-hmr** v1.0.4 by Dan Abramov under MIT license - [repository](https://github.com/gaearon/react-transform-hmr)
+- **react** v16.8.3 under MIT license - [repository](https://github.com/facebook/react)
+- **read-env** v1.3.0 by Mehmet Yatkı under MIT license - [repository](https://github.com/yatki/read-env)
+- **read-pkg-up** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/read-pkg-up)
+- **read-pkg** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/read-pkg)
+- **readable-stream** v2.3.6 under MIT license - [repository](https://github.com/nodejs/readable-stream)
+- **readable-stream** v3.4.0 under MIT license - [repository](https://github.com/nodejs/readable-stream)
+- **readdirp** v2.2.1 by Thorsten Lorenz under MIT license - [repository](https://github.com/paulmillr/readdirp)
+- **recompose** v0.26.0 by Andrew Clark under MIT license - [repository](https://github.com/acdlite/recompose)
+- **recyclerlistview** v2.0.0-beta.4 by naqvitalha under Apache-2.0 license - [repository](https://github.com/Flipkart/recyclerlistview)
+- **redux-persist** v4.10.2 by rt2zz under MIT license - [repository](https://github.com/rt2zz/redux-persist)
+- **redux-persist** v5.10.0 under MIT license - [repository](https://github.com/rt2zz/redux-persist)
+- **redux-saga** v1.0.2 by Yassine ELOUAFI under MIT license - [repository](https://github.com/redux-saga/redux-saga/tree/master/packages/core)
+- **redux** v4.0.1 under MIT license - [repository](https://github.com/reduxjs/redux)
+- **regenerate-unicode-properties** v7.0.0 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/regenerate-unicode-properties)
+- **regenerate** v1.4.0 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/regenerate)
+- **regenerator-runtime** v0.11.1 by Ben Newman under MIT license - [repository](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime)
+- **regenerator-runtime** v0.12.1 by Ben Newman under MIT license - [repository](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime)
+- **regenerator-transform** v0.13.4 by Ben Newman under MIT license - [repository](https://github.com/facebook/regenerator/tree/master/packages/regenerator-transform)
+- **regex-cache** v0.4.4 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/regex-cache)
+- **regex-not** v1.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/regex-not)
+- **regexpu-core** v4.4.0 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/regexpu-core)
+- **regjsgen** v0.5.0 by Benjamin Tan under MIT license - [repository](https://github.com/bnjmnt4n/regjsgen)
+- **regjsparser** v0.6.0 by 'Julian Viereck' under BSD-2-Clause license - [repository](https://github.com/jviereck/regjsparser)
+- **remove-trailing-separator** v1.1.0 by darsain under ISC license - [repository](https://github.com/darsain/remove-trailing-separator)
+- **repeat-element** v1.1.3 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/repeat-element)
+- **repeat-string** v1.6.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/repeat-string)
+- **require-directory** v2.1.1 by Troy Goode under MIT license - [repository](https://github.com/troygoode/node-require-directory)
+- **require-main-filename** v1.0.1 by Ben Coe under ISC license - [repository](https://github.com/yargs/require-main-filename)
+- **requires-port** v1.0.0 by Arnout Kazemier under MIT license - [repository](https://github.com/unshiftio/requires-port)
+- **reselect** v3.0.1 under MIT license - [repository](https://github.com/reactjs/reselect)
+- **resolve-from** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/resolve-from)
+- **resolve-url** v0.2.1 by Simon Lydell under MIT license - [repository](https://github.com/lydell/resolve-url)
+- **resolve** v1.10.0 by James Halliday under MIT license - [repository](https://github.com/browserify/resolve)
+- **restore-cursor** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/restore-cursor)
+- **ret** v0.1.15 by Roly Fentanes under MIT license - [repository](https://github.com/fent/ret.js)
+- **rimraf** v2.2.8 by Isaac Z. Schlueter under MIT license - [repository](https://github.com/isaacs/rimraf)
+- **rimraf** v2.6.3 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/rimraf)
+- **rsvp** v3.6.2 by Tilde, Inc. & Stefan Penner under MIT license - [repository](https://github.com/tildeio/rsvp.js)
+- **rtl-detect** v1.0.2 by Shadi Abu Hilal under BSD-3-Clause license - [repository](https://github.com/shadiabuhilal/rtl-detect)
+- **run-async** v2.3.0 by Simon Boudrias under MIT license - [repository](https://github.com/SBoudrias/run-async)
+- **rx-lite-aggregates** v4.0.8 by Cloud Programmability Team under Apache License, Version 2.0 license - [repository](https://github.com/Reactive-Extensions/RxJS)
+- **rx-lite** v4.0.8 by Cloud Programmability Team under Apache License, Version 2.0 license - [repository](https://github.com/Reactive-Extensions/RxJS)
+- **rxjs** v6.4.0 by Ben Lesh under Apache-2.0 license - [repository](https://github.com/reactivex/rxjs)
+- **safe-buffer** v5.1.2 by Feross Aboukhadijeh under MIT license - [repository](https://github.com/feross/safe-buffer)
+- **safe-regex** v1.1.0 by James Halliday under MIT license - [repository](https://github.com/substack/safe-regex)
+- **safer-buffer** v2.1.2 by Nikita Skovoroda under MIT license - [repository](https://github.com/ChALkeR/safer-buffer)
+- **sane** v3.1.0 by amasad under MIT license - [repository](https://github.com/amasad/sane)
+- **sax** v1.1.6 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/sax-js)
+- **sax** v1.2.1 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/sax-js)
+- **scheduler** v0.13.3 under MIT license - [repository](https://github.com/facebook/react)
+- **scriptjs** v2.5.9 by Dustin Diaz under MIT license - [repository](https://github.com/ded/script.js)
+- **semver** v5.6.0 under ISC license - [repository](https://github.com/npm/node-semver)
+- **send** v0.16.2 by TJ Holowaychuk under MIT license - [repository](https://github.com/pillarjs/send)
+- **sentry-expo** v1.13.0 under MIT license - [repository](undefined)
+- **serialize-error** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/serialize-error)
+- **serve-static** v1.13.2 by Douglas Christopher Wilson under MIT license - [repository](https://github.com/expressjs/serve-static)
+- **set-blocking** v2.0.0 by Ben Coe under ISC license - [repository](https://github.com/yargs/set-blocking)
+- **set-value** v0.4.3 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/set-value)
+- **set-value** v2.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/set-value)
+- **setimmediate** v1.0.5 by YuzuJS under MIT license - [repository](https://github.com/YuzuJS/setImmediate)
+- **setprototypeof** v1.1.0 by Wes Todd under ISC license - [repository](https://github.com/wesleytodd/setprototypeof)
+- **shebang-command** v1.2.0 by Kevin Martensson under MIT license - [repository](https://github.com/kevva/shebang-command)
+- **shebang-regex** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/shebang-regex)
+- **shell-quote** v1.6.1 by James Halliday under MIT license - [repository](https://github.com/substack/node-shell-quote)
+- **shellwords** v0.1.1 by Jimmy Cuadra under MIT license - [repository](https://github.com/jimmycuadra/shellwords)
+- **signal-exit** v3.0.2 by Ben Coe under ISC license - [repository](https://github.com/tapjs/signal-exit)
+- **simple-plist** v0.2.1 by Joe Wollard under MIT license - [repository](https://github.com/wollardj/node-simple-plist)
+- **simple-plist** v1.0.0 by Joe Wollard under MIT license - [repository](https://github.com/wollardj/node-simple-plist)
+- **simple-swizzle** v0.2.2 by Qix under MIT license - [repository](https://github.com/qix-/node-simple-swizzle)
+- **slash** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/slash)
+- **slide** v1.1.6 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/slide-flow-control)
+- **smart-mixin** v2.0.0 by Frankie Bagnardi under MIT license - [repository](undefined)
+- **snapdragon-node** v2.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/snapdragon-node)
+- **snapdragon-util** v3.0.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/snapdragon-util)
+- **snapdragon** v0.8.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/snapdragon)
+- **source-map-resolve** v0.5.2 by Simon Lydell under MIT license - [repository](https://github.com/lydell/source-map-resolve)
+- **source-map-support** v0.5.12 under MIT license - [repository](https://github.com/evanw/node-source-map-support)
+- **source-map-url** v0.4.0 by Simon Lydell under MIT license - [repository](https://github.com/lydell/source-map-url)
+- **source-map** v0.5.7 by Nick Fitzgerald under BSD-3-Clause license - [repository](https://github.com/mozilla/source-map)
+- **source-map** v0.6.1 by Nick Fitzgerald under BSD-3-Clause license - [repository](https://github.com/mozilla/source-map)
+- **spdx-correct** v3.1.0 by Kyle E. Mitchell under Apache-2.0 license - [repository](https://github.com/jslicense/spdx-correct.js)
+- **spdx-exceptions** v2.2.0 by The Linux Foundation under CC-BY-3.0 license - [repository](https://github.com/kemitchell/spdx-exceptions.json)
+- **spdx-expression-parse** v3.0.0 by Kyle E. Mitchell under MIT license - [repository](https://github.com/jslicense/spdx-expression-parse.js)
+- **spdx-license-ids** v3.0.3 by Shinnosuke Watanabe under CC0-1.0 license - [repository](https://github.com/shinnn/spdx-license-ids)
+- **split-on-first** v1.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/split-on-first)
+- **split-string** v3.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/split-string)
+- **sprintf-js** v1.0.3 by Alexandru Marasteanu under BSD-3-Clause license - [repository](https://github.com/alexei/sprintf.js)
+- **stacktrace-parser** v0.1.4 by Georg Tavonius under MIT license - [repository](https://github.com/errwischt/stacktrace-parser)
+- **static-extend** v0.1.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/static-extend)
+- **statuses** v1.4.0 under MIT license - [repository](https://github.com/jshttp/statuses)
+- **statuses** v1.5.0 under MIT license - [repository](https://github.com/jshttp/statuses)
+- **stream-buffers** v2.2.0 by Sam Day under Unlicense license - [repository](https://github.com/samcday/node-stream-buffer)
+- **strict-uri-encode** v2.0.0 by Kevin Mårtensson under MIT license - [repository](https://github.com/kevva/strict-uri-encode)
+- **string-width** v1.0.2 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/string-width)
+- **string-width** v2.1.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/string-width)
+- **string_decoder** v1.1.1 under MIT license - [repository](https://github.com/nodejs/string_decoder)
+- **strip-ansi** v3.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/strip-ansi)
+- **strip-ansi** v4.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/strip-ansi)
+- **strip-ansi** v5.2.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/strip-ansi)
+- **strip-bom** v3.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/strip-bom)
+- **strip-eof** v1.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/strip-eof)
+- **supports-color** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/supports-color)
+- **supports-color** v5.5.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/supports-color)
+- **supports-color** v6.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/supports-color)
+- **symbol-observable** v1.0.4 by Ben Lesh under MIT license - [repository](https://github.com/blesh/symbol-observable)
+- **symbol-observable** v1.2.0 by Ben Lesh under MIT license - [repository](https://github.com/blesh/symbol-observable)
+- **temp** v0.8.3 by Bruce Williams under MIT license - [repository](https://github.com/bruce/node-temp)
+- **throat** v4.1.0 by ForbesLindesay under MIT license - [repository](https://github.com/ForbesLindesay/throat)
+- **through2** v2.0.5 by Rod Vagg under MIT license - [repository](https://github.com/rvagg/through2)
+- **through** v2.3.8 by Dominic Tarr under MIT license - [repository](https://github.com/dominictarr/through)
+- **time-stamp** v1.1.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/time-stamp)
+- **tiny-queue** v0.2.1 by Nolan Lawson under Apache* license - [repository](https://github.com/nolanlawson/tiny-queue)
+- **tmp** v0.0.33 by KARASZI István under MIT license - [repository](https://github.com/raszi/node-tmp)
+- **tmpl** v1.0.4 by Naitik Shah under BSD-3-Clause license - [repository](https://github.com/daaku/nodejs-tmpl)
+- **to-fast-properties** v2.0.0 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/to-fast-properties)
+- **to-object-path** v0.3.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/to-object-path)
+- **to-regex-range** v2.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/micromatch/to-regex-range)
+- **to-regex** v3.0.2 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/to-regex)
+- **trim-right** v1.0.1 by Sindre Sorhus under MIT license - [repository](https://github.com/sindresorhus/trim-right)
+- **ts-invariant** v0.3.3 by Ben Newman under MIT license - [repository](https://github.com/apollographql/invariant-packages)
+- **ts-invariant** v0.4.2 by Ben Newman under MIT license - [repository](https://github.com/apollographql/invariant-packages)
+- **ts-object-utils** v0.0.5 by naqvitalha under ISC license - [repository](https://github.com/naqvitalha/ts-object-utils)
+- **tslib** v1.9.3 by Microsoft Corp. under Apache-2.0 license - [repository](https://github.com/Microsoft/tslib)
+- **typedarray-to-buffer** v3.1.5 by Feross Aboukhadijeh under MIT license - [repository](https://github.com/feross/typedarray-to-buffer)
+- **typedarray** v0.0.6 by James Halliday under MIT license - [repository](https://github.com/substack/typedarray)
+- **typescript-compare** v0.0.2 by Hoàng Văn Khải under MIT license - [repository](https://github.com/ksxnodemodules/typescript-compare)
+- **typescript-logic** v0.0.0 by Hoàng Văn Khải under MIT license - [repository](https://github.com/ksxnodemodules/typescript-logic)
+- **typescript-tuple** v2.2.1 by Hoàng Văn Khải under MIT license - [repository](https://github.com/ksxnodemodules/typescript-tuple)
+- **ua-parser-js** v0.7.19 by Faisal Salman under (GPL-2.0 OR MIT) license - [repository](https://github.com/faisalman/ua-parser-js)
+- **uc.micro** v1.0.6 under MIT license - [repository](https://github.com/markdown-it/uc.micro)
+- **uglify-es** v3.3.9 by Mihai Bazon under BSD-2-Clause license - [repository](https://github.com/mishoo/UglifyJS2.git#harmony)
+- **ultron** v1.0.2 by Arnout Kazemier under MIT license - [repository](https://github.com/unshiftio/ultron)
+- **ultron** v1.1.1 by Arnout Kazemier under MIT license - [repository](https://github.com/unshiftio/ultron)
+- **unicode-canonical-property-names-ecmascript** v1.0.4 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/unicode-canonical-property-names-ecmascript)
+- **unicode-match-property-ecmascript** v1.0.4 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/unicode-match-property-ecmascript)
+- **unicode-match-property-value-ecmascript** v1.0.2 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/unicode-match-property-value-ecmascript)
+- **unicode-property-aliases-ecmascript** v1.0.4 by Mathias Bynens under MIT license - [repository](https://github.com/mathiasbynens/unicode-property-aliases-ecmascript)
+- **unimodules-barcode-scanner-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-camera-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-constants-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-face-detector-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-file-system-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-font-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-image-loader-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-permissions-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **unimodules-sensors-interface** v2.0.1 by 650 Industries, Inc. under MIT license - [repository](https://github.com/expo/expo)
+- **union-value** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/union-value)
+- **universalify** v0.1.2 by Ryan Zimmerman under MIT license - [repository](https://github.com/RyanZim/universalify)
+- **unpipe** v1.0.0 by Douglas Christopher Wilson under MIT license - [repository](https://github.com/stream-utils/unpipe)
+- **unset-value** v1.0.0 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/unset-value)
+- **upath** v1.1.0 by Angelos Pikoulas under MIT license - [repository](https://github.com/anodynos/upath)
+- **urix** v0.1.0 by Simon Lydell under MIT license - [repository](https://github.com/lydell/urix)
+- **url-parse** v1.4.7 by Arnout Kazemier under MIT license - [repository](https://github.com/unshiftio/url-parse)
+- **url** v0.10.3 under MIT license - [repository](https://github.com/defunctzombie/node-url)
+- **url** v0.11.0 under MIT license - [repository](https://github.com/defunctzombie/node-url)
+- **use** v3.1.1 by Jon Schlinkert under MIT license - [repository](https://github.com/jonschlinkert/use)
+- **util-deprecate** v1.0.2 by Nathan Rajlich under MIT license - [repository](https://github.com/TooTallNate/util-deprecate)
+- **utils-merge** v1.0.1 by Jared Hanson under MIT license - [repository](https://github.com/jaredhanson/utils-merge)
+- **uuid-js** v0.7.5 by Patrick Negri under Apache* license - [repository](https://github.com/pnegri/uuid-js)
+- **uuid4** v1.1.4 by Michael J. Ryan under ISC license - [repository](https://github.com/tracker1/node-uuid4)
+- **uuid** v3.0.1 under MIT license - [repository](https://github.com/kelektiv/node-uuid)
+- **uuid** v3.1.0 under MIT license - [repository](https://github.com/kelektiv/node-uuid)
+- **uuid** v3.3.2 under MIT license - [repository](https://github.com/kelektiv/node-uuid)
+- **validate-npm-package-license** v3.0.4 by Kyle E. Mitchell under Apache-2.0 license - [repository](https://github.com/kemitchell/validate-npm-package-license.js)
+- **vary** v1.1.2 by Douglas Christopher Wilson under MIT license - [repository](https://github.com/jshttp/vary)
+- **walker** v1.0.7 by Naitik Shah under Apache-2.0 license - [repository](https://github.com/daaku/nodejs-walker)
+- **warning** v3.0.0 by Berkeley Martinez under BSD-3-Clause license - [repository](https://github.com/BerkeleyTrue/warning)
+- **watch** v0.18.0 by Mikeal Rogers under Apache-2.0 license - [repository](https://github.com/mikeal/watch)
+- **whatwg-fetch** v2.0.4 under MIT license - [repository](https://github.com/github/fetch)
+- **which-module** v2.0.0 by nexdrew under ISC license - [repository](https://github.com/nexdrew/which-module)
+- **which** v1.3.1 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/node-which)
+- **wordwrap** v0.0.3 by James Halliday under MIT license - [repository](https://github.com/substack/node-wordwrap)
+- **wordwrap** v1.0.0 by James Halliday under MIT license - [repository](https://github.com/substack/node-wordwrap)
+- **wrap-ansi** v2.1.0 by Sindre Sorhus under MIT license - [repository](https://github.com/chalk/wrap-ansi)
+- **wrappy** v1.0.2 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/npm/wrappy)
+- **write-file-atomic** v1.3.4 by Rebecca Turner under ISC license - [repository](https://github.com/iarna/write-file-atomic)
+- **ws** v1.1.5 by Einar Otto Stangvik under MIT license - [repository](https://github.com/websockets/ws)
+- **ws** v3.3.3 by Einar Otto Stangvik under MIT license - [repository](https://github.com/websockets/ws)
+- **xcode** v1.0.1-dev by Apache Software Foundation under Apache-2.0 license - [repository](https://github.com/apache/cordova-node-xcode)
+- **xcode** v2.0.0 by Apache Software Foundation under Apache-2.0 license - [repository](https://github.com/apache/cordova-node-xcode)
+- **xml2js** v0.4.19 by Marek Kubica under MIT license - [repository](https://github.com/Leonidas-from-XIV/node-xml2js)
+- **xmlbuilder** v8.2.2 by Ozgur Ozcitak under MIT license - [repository](https://github.com/oozcitak/xmlbuilder-js)
+- **xmlbuilder** v9.0.7 by Ozgur Ozcitak under MIT license - [repository](https://github.com/oozcitak/xmlbuilder-js)
+- **xmldoc** v0.4.0 by Nick Farina under MIT license - [repository](https://github.com/nfarina/xmldoc)
+- **xmldom** v0.1.27 by jindw under LGPL license - [repository](https://github.com/jindw/xmldom)
+- **xpipe** v1.0.5 by Michael Kortstiege under MIT license - [repository](https://github.com/nodexo/xpipe)
+- **xtend** v4.0.1 by Raynos under MIT license - [repository](https://github.com/Raynos/xtend)
+- **y18n** v3.2.1 by Ben Coe under ISC license - [repository](https://github.com/yargs/y18n)
+- **yallist** v2.1.2 by Isaac Z. Schlueter under ISC license - [repository](https://github.com/isaacs/yallist)
+- **yargs-parser** v11.1.1 by Ben Coe under ISC license - [repository](https://github.com/yargs/yargs-parser)
+- **yargs-parser** v7.0.0 by Ben Coe under ISC license - [repository](https://github.com/yargs/yargs-parser)
+- **yargs-parser** v9.0.2 by Ben Coe under ISC license - [repository](https://github.com/yargs/yargs-parser)
+- **yargs** v11.1.0 under MIT license - [repository](https://github.com/yargs/yargs)
+- **yargs** v12.0.5 under MIT license - [repository](https://github.com/yargs/yargs)
+- **yargs** v9.0.1 under MIT license - [repository](https://github.com/yargs/yargs)
+- **zen-observable-ts** v0.8.18 by Evans Hauser under MIT license - [repository](https://github.com/apollographql/apollo-link)
+- **zen-observable** v0.8.13 under MIT license - [repository](https://github.com/zenparsing/zen-observable)
