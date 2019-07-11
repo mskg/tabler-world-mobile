@@ -1,6 +1,9 @@
 # v0.9 RC8
+Release candidate.
+
 ## Fixes
-- Toggeling favorites does not immediatly update members view
+- Toggeling favorites does not immediately update members view
+- LRU members section is shown even with 0 entries
 
 # v0.9 RC7
 Beta build, for internal testing only
