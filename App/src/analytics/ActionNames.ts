@@ -5,7 +5,6 @@ export enum ActionNames {
     SignUp = "Sign-up",
     SignUpFailed = "Sign-up Failed",
 
-
     LogonEmailLink = "Send E-Mail",
 
     LogonConfirm = "Click Confirm",
@@ -15,4 +14,7 @@ export enum ActionNames {
     Logout = "Logout",
 
     ChangeSetting = "Change Setting",
+
+    Timeout = "Timeout",
+    SendErrorReport = "Send Error Report"
 }

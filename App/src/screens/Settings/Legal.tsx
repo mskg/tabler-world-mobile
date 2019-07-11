@@ -46,6 +46,13 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                             })}
                         />
                         <Divider />
+                        <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.about} onPress={
+                            () => this.props.navigation.navigate(Routes.MD, {
+                                title: I18N.Settings.Legal.about,
+                                source: Assets.files.about,
+                            })}
+                        />
+                        <Divider />
                     </List.Section>
 
                     <View style={{ height: 50 }} />

@@ -9,6 +9,7 @@ import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { PutSetting, PutSettingVariables } from '../../model/graphql/PutSetting';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
+import { GetFavoriteMembersQuery } from '../../queries/GetFavoriteMembersQuery';
 import * as filterActions from '../../redux/actions/filter';
 import { logger } from './logger';
 
@@ -42,5 +43,10 @@ mutation PutSetting($input: SettingInput!) {
                 value: result,
             }
         },
+
+        awaitRefetchQueries: false,
+        refetchQueries: [{
+            query: GetFavoriteMembersQuery
+        }]
     });
 }

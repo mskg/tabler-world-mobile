@@ -13,6 +13,7 @@ type Key =
     | "profile"
     | "world"
     | "join"
+    | "support"
 ;
 
 export function getConfigValue(key: Key): string {

@@ -32,7 +32,6 @@ export class MembersDataSource extends DataSource<IApolloContext> {
     context!: IApolloContext;
     memberLoader!: DataLoader<number, any>;
     rawLoader!: DataLoader<number, any>;
-    columns: string = "*";
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -159,7 +158,7 @@ where
                     return res.rows.map(r => r["id"]) as number[];
                 }
             ),
-            TTLs.Structure,
+            TTLs.ClubMembers,
         );
 
         return this.readMany(ids);
@@ -215,7 +214,7 @@ where
             this.context,
             async (client) => {
                 const res = await client.query(`
-select ${this.columns}
+select *
 from profiles
 where
         id = ANY($1)

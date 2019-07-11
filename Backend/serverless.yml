@@ -33,6 +33,7 @@ custom:
   db_database: ${env:DB_DATABASE, self:custom.stage}
   db_password: ${env:DB_PASSWORD}
   cache_table: tablerworld-gqlqc-${self:custom.stage}
+  sqs: tablerworld-cacheupdates-${self:custom.stage}
 
   domainname: ${self:custom.stage}-api.app.roundtable.world
   demo_api_key: ${env:DEMO_API_KEY}
@@ -222,6 +223,19 @@ functions:
       db_user: ${self:custom.db_user}
       db_database: ${self:custom.db_database}
       db_password: ${self:custom.db_password}
+      sqs_queue:
+        Ref: ReadUpdatesQueue
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::GetAtt:
+            - ReadUpdatesQueue
+            - Arn
 
     events:
       - schedule:
@@ -245,6 +259,48 @@ functions:
           input:
             mode: full
             type: clubs
+
+  #
+  # Cache update
+  #
+  cache-update:
+    handler: src/schedule/cacheUpdate.handler
+    timeout: 10
+    memorySize: 128
+    reservedConcurrency: 3
+
+    environment:
+      # AWS_REGION: provided automatically
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+      cache_table: ${self:custom.cache_table}
+      XRAY_DISABLED: true
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+
+        Resource:
+          - "Fn::GetAtt": [ graphqlsqTable, Arn ]
+
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - ReadUpdatesQueue
+              - Arn
 
   #
   # Send push notifications
@@ -299,6 +355,9 @@ functions:
           rate: rate(6 hours)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
+  #
+  # graphql Demo
+  #
   graphql-demo:
     handler: src/graphql/lambda-mock.handler
     timeout: 15
@@ -315,6 +374,9 @@ functions:
             cors: true
             private: true
 
+  #
+  # graphql
+  #
   graphql:
     handler: src/graphql/lambda.handler
     timeout: 30
@@ -413,6 +475,30 @@ resources:
         TimeToLiveSpecification:
           AttributeName: ttl
           Enabled: true
+
+    ReadUpdatesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs}
+        MessageRetentionPeriod: 1209600
+        # 6 times lambda timeout
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - ReadUpdatesQueueDeadLetters
+              - Arn
+          maxReceiveCount: 5
+
+    ReadUpdatesQueueDeadLetters:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs}-dead
+        MessageRetentionPeriod: 1209600
+
+    CacheDashupdateLogGroup:
+      Properties:
+        RetentionInDays: "7"
 
     SendDashnotificationsLogGroup:
       Properties:

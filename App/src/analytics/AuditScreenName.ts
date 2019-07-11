@@ -22,4 +22,6 @@ export enum AuditScreenName {
     Legal           = "Settings/Legal",
     ShowMD          = "Settings/Show MD",
     ShowExternal    = "Settings/Show External",
+
+    ErrorReport     = "ErrorReport",
 }

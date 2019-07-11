@@ -7,7 +7,7 @@
   "scripts": {
     "start": "ntl",
     "bump-cli": "npm i -g expo-cli && npm i expo-cli -D",
-    "licenses": "license-checker --production --direct --markdown > ./assets/docs/licenses.md",
+    "licenses": "license-checker --production --json | node config/3rdparty.js > ./assets/docs/licenses.md",
     "config:aws": ". ~/.bashrc && aws cloudformation list-exports > ./config/aws.json",
     "config": "npm run config:aws && npm run config:app",
     "config:app": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && node config/create.js\"",
@@ -43,6 +43,7 @@
     "expo-file-system": "^5.0.1",
     "expo-font": "^5.0.1",
     "expo-localization": "^5.0.1",
+    "expo-mail-composer": "^5.0.1",
     "expo-permissions": "^5.0.1",
     "expo-secure-store": "^5.0.1",
     "expo-sharing": "^5.0.1",

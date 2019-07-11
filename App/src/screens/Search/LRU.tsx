@@ -42,7 +42,7 @@ class LRUBase extends React.Component<Props> {
                 {({ loading, data }) => {
                     // logger.log(this.props.lru, data, loading);
 
-                    if (data && data.Members != null) {
+                    if (data && data.Members != null && data.Members.length > 0) {
                         return (<List.Section title={I18N.Search.lru}>
                             <View style={{ backgroundColor: this.props.theme.colors.surface }}>
                                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginLeft: 16, paddingTop: 8 }}>
