@@ -1,3 +1,7 @@
+# v0.9 RC8
+## Fixes
+- Toggeling favorites does not immediatly update members view
+
 # v0.9 RC7
 Beta build, for internal testing only
 
