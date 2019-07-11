@@ -14,7 +14,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         serviceConfigOptions: DynamoDB.Types.ClientConfiguration,
         private tableOptions: {
             tableName: TableName,
-            ttl: number,
+            ttl?: number,
         },
     ) {
         this.client = new DocumentClient(serviceConfigOptions);
@@ -23,7 +23,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     private addTTL(t: any, options?: CacheOptions): any {
         const ttl = options && options.ttl
             ? options.ttl
-            : this.tableOptions.ttl;
+            : this.tableOptions.ttl || 0;
 
         if (ttl !== 0) {
             console.log(
@@ -38,10 +38,13 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     private checkTTL({ ttl, id }: { id: string, ttl?: number }): boolean {
-        if (ttl && ttl < Math.floor(Date.now() / 1000)) {
+        // never expires
+        if (ttl === 0 || ttl == null) return true;
+
+        if (ttl < Math.floor(Date.now() / 1000)) {
             console.log("[DynamoDBCache] item", id, "was expired.");
             return false;
-        } else if (ttl) {
+        } else {
             console.log(
                 "[DynamoDBCache] item", id, "valid for",
                 Math.round((ttl - Math.floor(Date.now() / 1000)) / 60 / 60 * 100) / 100,
