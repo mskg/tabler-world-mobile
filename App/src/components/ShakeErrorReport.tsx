@@ -5,6 +5,9 @@ import { Accelerometer } from 'expo-sensors';
 import React from 'react';
 import { Alert, Animated, Dimensions, Easing, Platform, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Portal, Surface, Text, Theme, Title, TouchableRipple, withTheme } from 'react-native-paper';
+import { ActionNames } from '../analytics/ActionNames';
+import { Audit } from '../analytics/Audit';
+import { AuditScreenName } from '../analytics/AuditScreenName';
 import { getConfigValue } from '../helper/Configuration';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
@@ -75,6 +78,7 @@ class ErrorReportBase extends React.Component<Props, State> {
     }
 
     mounted = false;
+    audit = Audit.screen(AuditScreenName.ErrorReport);
 
     componentWillMount() {
         this.mounted = true;
@@ -129,8 +133,13 @@ class ErrorReportBase extends React.Component<Props, State> {
 
     _open = () => {
         if (!this.state.open) {
+            this.audit.submit();
+
             this.setState({ open: true }, this._slide);
-            setTimeout(this._close, TIMEOUT);
+            setTimeout(() => {
+                this.audit.trackAction(ActionNames.Timeout);
+                this._close();
+            }, TIMEOUT);
         }
     }
 
@@ -145,7 +154,7 @@ class ErrorReportBase extends React.Component<Props, State> {
 
     _runSupport = async () => {
         try {
-            await MailComposer.composeAsync({
+            const result = await MailComposer.composeAsync({
                 subject: I18N.ErrorReport.subject,
                 isHtml: true,
                 body: `${I18N.ErrorReport.template}
@@ -159,8 +168,16 @@ Time: ${new Date().toISOString()}
 `.replace(/\n/ig, "<br/>"),
                 recipients: [getConfigValue("support")],
             });
+
+            this.audit.trackAction(ActionNames.SendErrorReport, {
+                Result: result.status
+            });
         }
         catch (e) {
+            this.audit.trackAction(ActionNames.SendErrorReport, {
+                Result: "Error"
+            });
+
             logger.error(e);
             Alert.alert(I18N.ErrorReport.noMail);
         }
