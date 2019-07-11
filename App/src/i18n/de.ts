@@ -308,6 +308,7 @@ const de: I18NType = {
         Legal: {
             title: "Rechtlichtes",
             thirdparty: "Lizenzinformationen zu Drittprodukten",
+            about: "Über diese App",
 
             docs: [
                 {

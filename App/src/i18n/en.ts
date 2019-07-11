@@ -363,6 +363,7 @@ const en = {
         Legal: {
             title: "Legal",
             thirdparty: "Third Party Software Notices and Information",
+            about: "About this App",
 
             docs: [
                 {
