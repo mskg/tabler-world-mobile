@@ -2,13 +2,18 @@ import { Client } from 'pg';
 import { removeEmpty } from './removeEmpty';
 import { Types } from './types';
 
+const clubPK = (c: any) => c["subdomain"].replace(/[^a-z]/ig, "") + "_" + c["subdomain"].replace(/[^0-9]/ig, "");
+const memberPK = (c: any) => c["id"];
+
 export const writeValues = (client: Client, type: Types) => {
+    const pk = type === Types.clubs ? clubPK : memberPK;
+
     return async (data: Array<any>) => {
         console.log("Writing chunk of", data.length, "records");
         const results: any[] = [];
 
         for (let r of data) {
-            const id = r.id || r.subdomain;
+            const id = pk(r);
             console.log(id);
 
             const result = await client.query(`

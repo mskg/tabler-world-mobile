@@ -52,7 +52,7 @@ export const MemberResolver = {
     Query: {
         MembersOverview: async (_root: any, args: MemberFilter, context: IApolloContext) => {
             if (args.filter != null && args.filter.areas != null) {
-                return context.dataSources.members.readByTableAndAreas(args.filter.areas);
+                return context.dataSources.members.readAreas(args.filter.areas);
             }
 
             return context.dataSources.members.readAll();

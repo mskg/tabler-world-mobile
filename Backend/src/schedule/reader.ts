@@ -64,37 +64,29 @@ export async function handler(event: Event, context: Context, _callback: (error:
                 console.log("Found", allModifications.length, "updates");
 
                 var sqs = new SQS();
-                if (event.type === "clubs") {
-                    await sqs.sendMessage({
+
+                const messages = allModifications.map(id => ({
+                    Id: `${event.type}_${id}`,
+                    MessageBody: JSON.stringify({
+                        type: event.type === "clubs" ? "club" : "member",
+                        id: id,
+                    } as QueueEntry),
+                }) as SendMessageBatchRequestEntry);
+
+                const messageChunks = _(messages).chunk(10).value();
+                for (let chunk of messageChunks) {
+                    console.log("Sending chunk");
+
+                    const sendBatch = await sqs.sendMessageBatch({
                         QueueUrl: process.env.sqs_queue as string,
-                        MessageBody: JSON.stringify({
-                            type: "clubs",
-                        } as QueueEntry),
+                        Entries: chunk,
                     }).promise();
-                }
-                else {
-                    const messages = allModifications.map(id => ({
-                        Id: `member_${id}`,
-                        MessageBody: JSON.stringify({
-                            type: "member",
-                            id: id,
-                        } as QueueEntry),
-                    }) as SendMessageBatchRequestEntry);
 
-                    const messageChunks = _(messages).chunk(10).value();
-                    for (let chunk of messageChunks) {
-                        console.log("Sending chunk");
-
-                        const sendBatch = await sqs.sendMessageBatch({
-                            QueueUrl: process.env.sqs_queue as string,
-                            Entries: chunk,
-                        }).promise();
-
-                        if (sendBatch.Failed) {
-                            console.error(sendBatch.Failed);
-                        }
+                    if (sendBatch.Failed) {
+                        console.error(sendBatch.Failed);
                     }
                 }
+                // }
             }
 
             await writeJobLog(client, jobName, true, {

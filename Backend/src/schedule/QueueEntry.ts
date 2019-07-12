@@ -5,6 +5,7 @@ export type QueueEntry =
         id: string | number,
     }
     | {
-        type: "clubs",
+        type: "club",
+        id: string | number,
     }
 ;

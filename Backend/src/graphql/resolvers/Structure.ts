@@ -30,28 +30,26 @@ export const StructureResolver = {
 
     Association: {
         areas: async (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log(root);
-
-            const mgr = await context.dataSources.structure;
-            return root.areas.map((r: any) => mgr.getArea(r));
+            return context.dataSources.structure.allAreas(root.association);
         },
     },
 
     Club: {
-        id: (root: any, _args: any, _context: IApolloContext) => {
-            return root.association + "_" + root.club;
-        },
+        // id: (root: any, _args: any, _context: IApolloContext) => {
+        //     return root.id;
+        // },
 
         area: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Area Loading", root);
             return context.dataSources.structure.getArea(
-                root.association + "_" + root.area
+                root.association, root.area
             )
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Association Loading", root);
-            return context.dataSources.structure.getAssociation(root.association);
+            return context.dataSources.structure.getAssociation(
+                root.association);
         },
 
         members: (root: any, _args: any, context: IApolloContext) => {
@@ -80,17 +78,23 @@ export const StructureResolver = {
     },
 
     Area: {
-        id: (root: any, _args: any, _context: IApolloContext) => {
-            return root.association + "_" + root.area;
-        },
+        // id: (root: any, _args: any, _context: IApolloContext) => {
+        //     return root.association + "_" + root.area;
+        // },
 
         clubs: async (root: any, _args: any, context: IApolloContext) => {
-            const mgr = await context.dataSources.structure;
-            if (root.clubs) return root.clubs.map((r: any) => mgr.getClub(r));
+            console.log(root);
+
+            if (root.clubs) {
+                return Promise.all(
+                        root.clubs.map(async (r: any) =>
+                        await context.dataSources.structure.getClub(r))
+                );
+            }
 
             // we're coming from member!
-            const area = await mgr.getArea(root.association + "_" + root.area);
-            return area.clubs.map((r: any) => mgr.getClub(r));
+            const area = await context.dataSources.structure.getArea(root.association, root.area);
+            return area.clubs.map((r: any) => context.dataSources.structure.getClub(r));
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {

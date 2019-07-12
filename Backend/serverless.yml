@@ -100,6 +100,7 @@ custom:
       sharedDb: true
       migrate: true
       seed: false
+      inMemory: true
     stages:
       - dev
 

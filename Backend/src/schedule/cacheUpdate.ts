@@ -18,12 +18,24 @@ export const handler: SQSHandler = async (event, context, callback) => {
         for (let message of event.Records) {
             const payload = JSON.parse(message.body) as QueueEntry;
 
-            if (payload.type === "clubs") {
+            if (payload.type === "club") {
                 // need to clear that, hardcoded
-                const key = makeCacheKey("Structure", ["all"]);
+                const key = makeCacheKey("Club", [payload.id]);
 
-                console.log("Removing", key);
-                cache.delete(key);
+                const ids = key.split("_");
+                const res = await client.query(
+                    `select * from structure_clubs where association = $1 and club = $2`,
+                    [ids[0], ids[1]]);
+
+                const newClub = res.rows.length == 1 ? res.rows[0] : undefined;
+
+                if (newClub != null) {;
+                    console.log("Updating", key);
+                    cache.set(key, JSON.stringify(newClub));
+                } else {
+                    console.log("Removing", key);
+                    cache.delete(key);
+                }
             } else if (payload.type === "member") {
                 const key = makeCacheKey("Member", [payload.id]);
                 const staleCacheData = await cache.get(key);
@@ -35,7 +47,7 @@ export const handler: SQSHandler = async (event, context, callback) => {
                     if (staleCacheData != null) {
                         // we update the memberlist here
                         const oldMember = JSON.parse(staleCacheData);
-                        const clubKey = makeCacheKey("Members", [oldMember.association, "club", oldMember.club]);
+                        const clubKey = makeCacheKey("Club", [oldMember.association + "_" + oldMember.club]);
 
                         console.log("Removing", clubKey);
                         cache.delete(clubKey);
@@ -49,15 +61,16 @@ export const handler: SQSHandler = async (event, context, callback) => {
                         const oldMember = JSON.parse(staleCacheData);
 
                         if (oldMember.club !== newMember.club) {
-                            const oldClub = makeCacheKey("Members", [oldMember.association, "club", oldMember.club]);
+                            const oldClub = makeCacheKey("Club", [oldMember.association + "_" + oldMember.club]);
                             console.log("Removing", oldClub);
                             cache.delete(oldClub);
-
-                            const newClub = makeCacheKey("Members", [newMember.association, "club", newMember.club]);
-                            console.log("Removing", newClub);
-                            cache.delete(newClub);
                         }
                     }
+
+                    // member list could have changed
+                    const newClub = makeCacheKey("Club", [newMember.association + "_" + newMember.club]);
+                    console.log("Removing", newClub);
+                    cache.delete(newClub);
 
                     console.log("Updating", key);
                     cache.set(key, JSON.stringify(newMember));

@@ -17,6 +17,17 @@ REFRESH MATERIALIZED VIEW structure;
 
 delete from clubs
 
+select * from clubs;
+
+
+select * from structure_areas;
+
+select * from clubs;
+
+
+delete from clubs;
+
+
 select * from notification_birthdays
 
 
