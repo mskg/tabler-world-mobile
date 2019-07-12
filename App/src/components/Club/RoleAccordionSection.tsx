@@ -78,7 +78,7 @@ class RoleAccordionSectionBase extends React.Component<Props, State> {
                                 {
                                     grouped && grouped.map((r, i) => (
                                         <RoleCard
-                                            key={r.member + r.role}
+                                            key={r.member.id + r.role}
                                             member={r.member}
                                             role={r.role}
                                             separator={i !== len - 1}
