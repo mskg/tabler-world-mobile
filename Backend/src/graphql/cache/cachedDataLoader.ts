@@ -43,7 +43,7 @@ export function cachedDataLoader<K>(
             await cache.setMany(
                 loadFromDb.map(r => ({
                     id: keyRecordFunc(r),
-                    data: r,
+                    data: JSON.stringify(r),
                     options: { ttl }
                 }))
             );
