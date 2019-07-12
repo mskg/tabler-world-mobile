@@ -2,10 +2,10 @@
 export type QueueEntry =
     | {
         type: "member",
-        id: string | number,
+        id: number,
     }
     | {
         type: "club",
-        id: string | number,
+        id: string,
     }
 ;

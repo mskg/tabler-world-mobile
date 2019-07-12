@@ -22,7 +22,7 @@ export const handler: SQSHandler = async (event, context, callback) => {
                 // need to clear that, hardcoded
                 const key = makeCacheKey("Club", [payload.id]);
 
-                const ids = key.split("_");
+                const ids = payload.id.split("_");
                 const res = await client.query(
                     `select * from structure_clubs where association = $1 and club = $2`,
                     [ids[0], ids[1]]);
