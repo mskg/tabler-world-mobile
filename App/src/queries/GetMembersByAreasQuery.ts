@@ -3,12 +3,12 @@ import { MeFragment } from './MeFragment';
 import { MemberOverviewFragment } from "./MemberOverviewFragment";
 
 export const GetMembersByAreasQuery = gql`
-  query MembersByAreas ($areas: [Int!]) {
+  query MembersByAreas ($areas: [Int!], $board: Boolean, $areaBoard: Boolean) {
     Me {
        ...MeFragment
     }
 
-    MembersOverview (filter:{areas: $areas}) {
+    MembersOverview (filter:{areas: $areas, nationalBoard: $board, areaBoard: $areaBoard}) {
         ...MemberOverviewFragment
     }
   }

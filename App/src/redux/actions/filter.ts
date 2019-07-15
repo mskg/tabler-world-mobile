@@ -49,3 +49,17 @@ export const toggleOwnTable = createAction<'@@filter/tabler/ownTable/toggle'>(
 export const replaceFavorites = createAction<'@@filter/tabler/favorites/replace', number[]>(
   '@@filter/tabler/favorites/replace'
 );
+
+/**
+ * Enable/disable own association board
+ */
+export const toggleAssociationBoard = createAction<'@@filter/tabler/associationBoard/toggle'>(
+  '@@filter/tabler/associationBoard/toggle'
+);
+
+/**
+ * Enable/disable own area board
+ */
+export const toggleAreaBoard = createAction<'@@filter/tabler/areaBoard/toggle'>(
+  '@@filter/tabler/areaBoard/toggle'
+);

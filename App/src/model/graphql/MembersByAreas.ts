@@ -91,4 +91,6 @@ export interface MembersByAreas {
 
 export interface MembersByAreasVariables {
   areas?: number[] | null;
+  board?: boolean | null;
+  areaBoard?: boolean | null;
 }

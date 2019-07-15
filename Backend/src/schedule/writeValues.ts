@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+rimport { Client } from 'pg';
 import { removeEmpty } from './removeEmpty';
 import { Types } from './types';
 
@@ -30,7 +30,7 @@ DO UPDATE
   SET data = excluded.data, modifiedon = excluded.modifiedon
   WHERE ${type}.data::text <> excluded.data::text
 `, [id, JSON.stringify(removeEmpty(r))]);
-w
+e
             if (result.rowCount == 1) {
                 console.log(id, "modified");
                 results.push({ id, type });

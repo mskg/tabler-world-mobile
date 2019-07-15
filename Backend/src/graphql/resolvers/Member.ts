@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { IApolloContext } from "../types/IApolloContext";
 
 // type MembersArgs = {
@@ -17,6 +18,9 @@ type IdsArgs = {
 type MemberFilter = {
     filter: {
         areas?: number[],
+
+        nationalBoard?: Boolean,
+        areaBoard?: Boolean,
     }
 };
 
@@ -51,8 +55,55 @@ export const MemberResolver = {
 
     Query: {
         MembersOverview: async (_root: any, args: MemberFilter, context: IApolloContext) => {
+            const result = [];
+
             if (args.filter != null && args.filter.areas != null) {
-                return context.dataSources.members.readAreas(args.filter.areas);
+                context.logger.log("areas", args.filter.areas);
+                const areaMembers = await context.dataSources.members.readAreas(args.filter.areas);
+                result.push(... (areaMembers || []));
+            }
+
+            // we make this sync
+            if (args.filter != null && args.filter.areaBoard === true) {
+                context.logger.log("areaBoard", args.filter);
+                const areas = await context.dataSources.structure.allAreas();
+
+                for (let area of areas) {
+                    if (area.board) {
+                        const board = await context.dataSources.members.readMany(
+                            area.board.map((b: any) => b.member));
+
+                        if (board) {
+                            result.push(...board);
+                        }
+                    }
+                }
+            }
+
+            if (args.filter != null && args.filter.nationalBoard === true) {
+                context.logger.log("nationalBoard", args.filter);
+                const associations = await context.dataSources.structure.allAssociations();
+
+                for (let assoc of associations) {
+                    if (assoc.board) {
+                        const board = await context.dataSources.members.readMany(assoc.board.map((b: any) => b.member));
+                        if (board) {
+                            result.push(...board);
+                        }
+                    }
+
+                    if (assoc.boardassistants) {
+                        const boardassistants = await context.dataSources.members.readMany(assoc.boardassistants.map((b: any) => b.member));
+                        if (boardassistants) {
+                            result.push(...boardassistants);
+                        }
+                    }
+                }
+            }
+
+            if (result.length > 0) {
+                context.logger.log("result", result.length, "entries");
+                return _.uniqBy(result, (m) => m.id);
             }
 
             return context.dataSources.members.readAll();

@@ -60,6 +60,9 @@ async function runBackgroundFetch() {
         await updateCache(client, GetOfflineMembersQuery, "members");
 
         const areas = getReduxStore().getState().filter.member.area;
+        const board = getReduxStore().getState().filter.member.showAssociationBoard;
+        const areaBoard = getReduxStore().getState().filter.member.showAreaBoard;
+
         await updateCache(client, GetMembersByAreasQuery, "members", {
             areas: areas != null ? _(areas)
                 .keys()
@@ -67,7 +70,10 @@ async function runBackgroundFetch() {
                 .map(a => a.replace(/[^\d]/g, ""))
                 .map(a => parseInt(a, 10))
                 .value()
-                : null
+                : null,
+
+            areaBoard,
+            board,
         } as MembersByAreasVariables);
 
         await updateCache(client, GetClubsQuery, "clubs");

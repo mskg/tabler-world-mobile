@@ -117,6 +117,9 @@ export const Member = gql`
 
     input MemberFilterInput {
         areas: [Int!]
+
+        nationalBoard: Boolean
+        areaBoard: Boolean
     }
 
     extend type Query {

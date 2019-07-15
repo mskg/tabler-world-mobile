@@ -3,6 +3,7 @@ Release candidate.
 
 ## Improvements
 - Shake to report a problem
+- Filters for association board and -assists
 
 ## Fixes
 - Toggeling favorites does not immediately update members view

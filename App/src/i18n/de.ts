@@ -238,6 +238,9 @@ const de: I18NType = {
         favorites: "Favoriten",
         toggleFavorits: "All Favoriten",
         toggleOwnTable: "Mitglieder meines Tisches",
+
+        toggleAssociationBoard: "Präsidium und Referenten",
+        toggleAreaBoard: "Beirat"
     },
 
 
