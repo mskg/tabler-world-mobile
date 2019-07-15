@@ -68,6 +68,8 @@ export function filterReducer(
           area: state.member.area == null ? [] : null,
           showFavorites: state.member.area == null ? false : true,
           showOwntable: state.member.area == null ? false : true,
+          showAreaBoard: state.member.area == null ? false : true,
+          showAssociationBoard: state.member.area == null ? false : true,
         }
       };
     }
