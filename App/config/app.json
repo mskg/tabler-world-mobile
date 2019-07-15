@@ -36,9 +36,14 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "assets/**/*.png",
-      "assets/**/*.ttf",
-      "assets/**/*.md"
+      "assets/**/icon.png",
+      "assets/**/logo.png",
+      "assets/**/splash.png",
+      "assets/**/background.png",
+      "assets/fonts/**/DejaVuSansCondensed.ttf",
+      "assets/fonts/**/DejaVuSansCondensed-Bold.ttf",
+      "assets/fonts/**/DejaVuSans-ExtraLight.ttf",
+      "assets/docs/**/*.md"
     ],
     "scheme": "tablerworld",
     "ios": {
