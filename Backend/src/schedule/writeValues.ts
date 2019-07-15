@@ -30,7 +30,7 @@ DO UPDATE
   SET data = excluded.data, modifiedon = excluded.modifiedon
   WHERE ${type}.data::text <> excluded.data::text
 `, [id, JSON.stringify(removeEmpty(r))]);
-e
+
             if (result.rowCount == 1) {
                 console.log(id, "modified");
                 results.push({ id, type });
