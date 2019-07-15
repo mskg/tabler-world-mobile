@@ -12,6 +12,7 @@ Release candidate.
 - Hide roles section on profile page if there are no entries in the list
 - Updated external licenses MD
 - Added about page to legal
+- Added screenfactor for iPad devices that roles break correctly
 
 ## Operations
 - Moved from writethrough to active cache updates
