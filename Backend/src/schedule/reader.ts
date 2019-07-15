@@ -11,7 +11,7 @@ import { fetchParallel } from "./fetchParallel";
 import { QueueEntry } from './QueueEntry';
 import { refreshViews } from './refreshViews';
 import { checkPayload, Event, Mode, Modes, Types } from './types';
-import { writeValues } from './writeValues';
+import { ChangePointer, writeValues } from './writeValues';
 
 export async function handler(event: Event, context: Context, _callback: (error: any, success?: any) => void) {
     checkPayload(event);
@@ -35,7 +35,7 @@ export async function handler(event: Event, context: Context, _callback: (error:
             const innerWriter = writeValues(client, event.type as Types);
 
             let total = 0;
-            let allModifications: any[] = [];
+            let allModifications: ChangePointer[] = [];
 
             const writer = async (data: Array<any>) => {
                 total += data ? data.length : 0;
@@ -65,11 +65,12 @@ export async function handler(event: Event, context: Context, _callback: (error:
 
                 var sqs = new SQS();
 
-                const messages = allModifications.map(id => ({
-                    Id: `${event.type}_${id}`,
+                const messages = allModifications.map((cp: ChangePointer) => ({
+                    Id: `${cp.type}_${cp.id}`,
                     MessageBody: JSON.stringify({
+                        // we map types here due to back compatibility
                         type: event.type === "clubs" ? "club" : "member",
-                        id: id,
+                        id: cp.id,
                     } as QueueEntry),
                 }) as SendMessageBatchRequestEntry);
 
