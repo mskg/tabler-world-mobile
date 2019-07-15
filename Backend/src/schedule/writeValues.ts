@@ -1,4 +1,4 @@
-rimport { Client } from 'pg';
+import { Client } from 'pg';
 import { removeEmpty } from './removeEmpty';
 import { Types } from './types';
 
