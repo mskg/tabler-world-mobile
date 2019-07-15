@@ -1,7 +1,7 @@
 import Auth from '@aws-amplify/auth';
 import { Linking } from 'expo';
 import React from 'react';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { ActionNames } from '../analytics/ActionNames';
@@ -55,7 +55,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
         if (path == "confirm") {
             this.audit.trackAction(ActionNames.LogonEmailLink);
 
-            this.setState({code: queryParams["code"] as string});
+            this.setState({ code: queryParams["code"] as string });
             this._confirm();
         }
     }
@@ -139,40 +139,42 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
-                        <Logo />
-                        <Greeting title={I18N.SignIn.confirmTitle} subtitle={I18N.SignIn.checkEmail} />
+                        <KeyboardAvoidingView behavior="position">
+                            <Logo />
+                            <Greeting title={I18N.SignIn.confirmTitle} subtitle={I18N.SignIn.checkEmail} />
 
-                        <View style={styles.inputContainer}>
-                            <Input
-                                placeholder={I18N.SignIn.placeholderCode}
-                                value={this.state.code}
-                                keyboardType='numeric'
-                                onChangeText={text => this.setState({ code: text })}
-                                placeholderTextColor={this.props.theme.colors.placeholder}
-                                style={{ borderBottomColor: this.props.theme.colors.accent }} />
-                        </View>
-
-
-                        <View style={[styles.buttonContainer]}>
-                            <Button
-                                color={this.props.theme.colors.accent}
-                                style={styles.button} mode="contained"
-                                disabled={!this.state.code || this.state.working || this.state.noretry}
-                                loading={this.state.working}
-                                onPress={this._confirm}
-                            >{I18N.SignIn.confirm}</Button>
-
-                            <Button
-                                color={this.props.theme.colors.accent}
-                                style={styles.button} mode="contained"
-                                onPress={() => this.props.signin()}>{I18N.SignIn.cancel}</Button>
-                        </View>
-
-                        {this.state.error &&
-                            <View style={[styles.errorMessage]}>
-                                <Text>{this.state.error}</Text>
+                            <View style={styles.inputContainer}>
+                                <Input
+                                    placeholder={I18N.SignIn.placeholderCode}
+                                    value={this.state.code}
+                                    keyboardType='numeric'
+                                    onChangeText={text => this.setState({ code: text })}
+                                    placeholderTextColor={this.props.theme.colors.placeholder}
+                                    style={{ borderBottomColor: this.props.theme.colors.accent }} />
                             </View>
-                        }
+
+
+                            <View style={[styles.buttonContainer]}>
+                                <Button
+                                    color={this.props.theme.colors.accent}
+                                    style={styles.button} mode="contained"
+                                    disabled={!this.state.code || this.state.working || this.state.noretry}
+                                    loading={this.state.working}
+                                    onPress={this._confirm}
+                                >{I18N.SignIn.confirm}</Button>
+
+                                <Button
+                                    color={this.props.theme.colors.accent}
+                                    style={styles.button} mode="contained"
+                                    onPress={() => this.props.signin()}>{I18N.SignIn.cancel}</Button>
+                            </View>
+
+                            {this.state.error &&
+                                <View style={[styles.errorMessage]}>
+                                    <Text>{this.state.error}</Text>
+                                </View>
+                            }
+                        </KeyboardAvoidingView>
                     </View>
                 </TouchableWithoutFeedback>
             </Background>
