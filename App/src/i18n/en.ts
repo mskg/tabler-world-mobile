@@ -13,10 +13,10 @@ const en = {
 
     ErrorReport: {
         title: "Report a problem",
-        text: "Your feedback helps us improve TABLER.WORLD.",
+        text: "Your feedback helps us improve TABLER.APP.",
         report: "Something isn't working?",
 
-        subject: "TABLER.WORLD Client Issue",
+        subject: "TABLER.APP Issue",
         noMail: "You seem to have no mail client installed?",
         template: `Please describe what happened:`,
     },
@@ -345,7 +345,7 @@ const en = {
 
         texts: {
             contacts: "Members can be synchronized to your phone's default Contacts' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.",
-            experiments: "These are experimental and unsupported features of the TABLER.WORLD app and may dissapear at any time."
+            experiments: "These are experimental and unsupported features of the TABLER.APP and may dissapear at any time."
         },
 
         contactpermissions: "Cannot access Contacts. Please grant permission through the phone's settings area.",

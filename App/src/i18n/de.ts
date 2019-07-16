@@ -12,10 +12,10 @@ const de: I18NType = {
 
     ErrorReport: {
         title: "Ein Problem melden",
-        text: "Dein Feedback hilft uns TABLER.WORLD zu verbessern.",
+        text: "Dein Feedback hilft uns die TABLER.APP zu verbessern.",
         report: "Geht etwas nicht?",
 
-        subject: "TABLER.WORLD Client Problem",
+        subject: "TABLER.APP Problem",
         noMail: "Kann es sein, dass Du keine E-Mails versenden kannst?",
         template: `Beschreibe bitte was passiert ist:`,
     },
@@ -289,7 +289,7 @@ const de: I18NType = {
 
         texts: {
             contacts: "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.",
-            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.WORLD App. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
+            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
         },
 
         contactpermissions: "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
