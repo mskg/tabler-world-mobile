@@ -109,6 +109,7 @@ const en = {
 
     World: {
         title: "TABLER.WORLD",
+        tab: "Online"
     },
 
     Albums: {

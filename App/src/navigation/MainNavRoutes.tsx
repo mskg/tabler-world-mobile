@@ -28,7 +28,7 @@ export const MainNavRoutes = {
     [MainRoutes.World]: {
         screen: WorldScreen,
         navigationOptions: {
-            tabBarLabel: I18N.World.title,
+            tabBarLabel: I18N.World.tab,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-globe" />),
         }
     },

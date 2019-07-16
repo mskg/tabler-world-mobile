@@ -110,6 +110,7 @@ const de: I18NType = {
 
     World: {
         title: "TABLER.WORLD",
+        tab: "Online",
     },
 
     Albums: {
