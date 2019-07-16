@@ -11,6 +11,6 @@ The whole TABLER.WORLD team is always looking forward to your feedback. Suggesti
 We're no longer hard to reach now. Just skake your device :)
 
 Yours in Table
-Markus
+Markus Kling
 
 RT 129 Böblingen / Sindelfingen
