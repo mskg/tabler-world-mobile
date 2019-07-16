@@ -1,0 +1,81 @@
+service: tabler-world-auth-redirect
+
+plugins:
+  - serverless-sync-s3buckets
+
+custom:
+  syncS3Buckets:
+    - bucketRef: StaticSite
+      localDir: ../../src/redirect
+  bucketName: login.app.roundtable.world
+  # hostedZoneName: app.roundtable.world
+  # hostedZoneId: ${env:AUTH_ZONE}
+  # aliasDNSName: s3-website-eu-west-1.amazonaws.com
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stackName: tabler-world-auth-redirect
+  stage: prod
+  region: eu-west-1
+
+resources:
+  Resources:
+    ## Specifying the S3 Bucket
+    StaticSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:custom.bucketName}
+        WebsiteConfiguration:
+          IndexDocument: index.xhtml
+          ErrorDocument: index.xhtml
+
+    StaticSiteS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: StaticSite
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+              - s3:GetObject
+              Resource:
+                Fn::Join: [
+                  "", [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "StaticSite"
+                    },
+                    "/*"
+                  ]
+                ]
+
+    # DnsRecord:
+    #   Type: "AWS::Route53::RecordSet"
+    #   Properties:
+    #     AliasTarget:
+    #       DNSName: ${self:custom.bucketName}
+    #       HostedZoneId: ${self:custom.hostedZoneId}
+    #     HostedZoneName: ${self:custom.hostedZoneName}.
+    #     Name:
+    #       Ref: StaticSite
+    #     Type: 'A'
+
+  Outputs:
+    StaticSiteS3BucketName:
+      Value:
+        'Ref': StaticSite
+    StaticSiteS3BucketDomainName:
+      Value:
+        Fn::GetAtt:
+          - StaticSite
+          - DomainName
+    StaticSiteS3BucketWebsiteURL:
+      Value:
+        Fn::GetAtt:
+          - StaticSite
+          - WebsiteURL
