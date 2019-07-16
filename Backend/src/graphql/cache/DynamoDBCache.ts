@@ -23,7 +23,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     private addTTL(t: any, options?: CacheOptions): any {
         const ttl = options && options.ttl
             ? options.ttl
-            : this.tableOptions.ttl || 0;
+            : (this.tableOptions.ttl || 0);
 
         if (ttl !== 0) {
             console.log(
@@ -39,7 +39,10 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
     private checkTTL({ ttl, id }: { id: string, ttl?: number }): boolean {
         // never expires
-        if (ttl === 0 || ttl == null) return true;
+        if (ttl === 0 || ttl == null) {
+            console.log("[DynamoDBCache] item", id, "never expires.");
+            return true;
+        }
 
         if (ttl < Math.floor(Date.now() / 1000)) {
             console.log("[DynamoDBCache] item", id, "was expired.");
@@ -96,7 +99,6 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                 .promise();
         }
     }
-
 
     public async setMany(data: CacheData<string>[]) {
         console.log("[DynamoDBCache] setMany", data.map(data => data.id).join(', '));
@@ -237,6 +239,8 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
                     return finalResult != "" ? finalResult : undefined;
                 }
+
+                return item.data;
             }
         }
 

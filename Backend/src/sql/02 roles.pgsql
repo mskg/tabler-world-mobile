@@ -1,6 +1,14 @@
 SET ROLE 'tw_read_dev';
 
+------------------------------
+-- CLEANUP
+------------------------------
+
 drop view if exists tabler_roles cascade;
+
+------------------------------
+-- Functions
+------------------------------
 
 CREATE or replace FUNCTION get_role_reference(val text) RETURNS text AS $$
 BEGIN
@@ -48,9 +56,9 @@ $$
 LANGUAGE plpgsql;
 
 
--- drop index idx_tabler_positions;
--- CREATE INDEX idx_tabler_positions ON tabler((data->'rt_global_positions'))
--- TABLESPACE pg_default;
+------------------------------
+-- Roles
+------------------------------
 
 CREATE or replace VIEW tabler_roles
 as

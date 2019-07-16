@@ -1,6 +1,7 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
 import _ from "lodash";
+import { cachedDataLoader } from "../cache/cachedDataLoader";
 import { makeCacheKey } from "../cache/makeCacheKey";
 import { TTLs } from "../cache/TTLs";
 import { writeThrough } from "../cache/writeThrough";
@@ -31,22 +32,35 @@ const cols = [
 export class MembersDataSource extends DataSource<IApolloContext> {
     context!: IApolloContext;
     memberLoader!: DataLoader<number, any>;
-    rawLoader!: DataLoader<number, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
 
-        this.memberLoader = new DataLoader(
-            (ids) => this.readCached(ids),
-            {
-                cacheKeyFn: (k: any) => parseInt(k, 10)
-            }
-        );
+        this.memberLoader = new DataLoader<number, any>(
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey("Member", [k]),
+                (r) => makeCacheKey("Member", [r["id"]]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => {
+                        this.context.logger.log("DB reading members", ids);
 
-        this.rawLoader = new DataLoader(
-            (ids) => this.rawReadMany(ids),
+                        const res = await client.query(`
+    select *
+    from profiles
+    where
+        id = ANY($1)
+    and removed = FALSE
+    `, [ids]);
+
+                        return res.rows;
+                    }
+                ),
+                TTLs.Member,
+            ),
             {
-                cacheKeyFn: (k: any) => parseInt(k, 10)
+                cacheKeyFn: (k: number) => k,
             }
         );
     }
@@ -76,7 +90,7 @@ where id = $1`, [this.context.principal.id]);
         );
     }
 
-    public async readByTableAndAreas(areas: number[]): Promise<any[] | null> {
+    public async readAreas(areas: number[]): Promise<any[] | null> {
         this.context.logger.log("readAll");
 
         const results = await Promise.all(areas.map(a =>
@@ -132,99 +146,32 @@ and removed = FALSE`, [this.context.principal.association]);
 
     public async readClub(association: string, club: number): Promise<any[] | null> {
         this.context.logger.log("readClub", association, club);
+        const clubDetails = await this.context.dataSources.structure.getClub(association + "_" + club);
 
-        const ids = await writeThrough(
-            this.context,
-            makeCacheKey("Members", [this.context.principal.association, "club", club]),
-            () => useDatabase(
-                this.context,
-                async (client) => {
-                    const res = await client.query(`
-select id
-from profiles
-where
-        association = $1
-    and club = $2
-    and removed = FALSE
-    and id in (
-        select id from structure_tabler_roles
-        where
-            groupname = 'Members'
-        and name = 'Member'
-        and levelid = $3
-        and isvalid = TRUE
-    )`, [association, club, `${association}_${club}`]);
-
-                    return res.rows.map(r => r["id"]) as number[];
-                }
-            ),
-            TTLs.ClubMembers,
-        );
-
-        return this.readMany(ids);
+        return this.readMany(clubDetails.members);
     }
 
     async readMany(ids: number[]): Promise<any[]> {
         this.context.logger.log("readMany", ids);
-        return this.memberLoader.loadMany(ids);
+        return (await this.memberLoader.loadMany(ids)).map((member: any) => {
+            if (member == null) return member;
+
+            return filter(
+                this.context.principal,
+                member,
+            )
+        });
     }
 
     public async readOne(id: number): Promise<any | null> {
         this.context.logger.log("readOne", id);
-        return this.memberLoader.load(id);
-    }
 
-    async readCached(ids: number[]) {
-        const keyValue = (id: number) => makeCacheKey("Member", [id]);
+        const member = await this.memberLoader.load(id);
+        if (member == null) return member;
 
-        const result = await this.context.cache.getMany(
-            ids.map(id => keyValue(id)));
-
-        // @ts-ignore
-        const missing: number[] = ids
-            .map(id => result[keyValue(id)] ? undefined : id)
-            .filter(id => id != null);
-
-        if (missing.length > 0) {
-            const missingItems = await this.rawLoader.loadMany(missing);
-
-            missingItems.forEach((v, i) => {
-                result[keyValue(missing[i])] = JSON.stringify(v);
-            });
-
-            await this.context.cache.setMany(missingItems.map((_m, i) => ({
-                id: keyValue(missing[i]),
-                data: result[keyValue(missing[i])],
-                options: {
-                    ttl: TTLs.Member,
-                }
-            })));
-        }
-
-        return ids.map(id => filter(
+        return filter(
             this.context.principal,
-            JSON.parse(result[keyValue(id)])
-        ));
-    }
-
-    async rawReadMany(ids: number[]): Promise<any[]> {
-        this.context.logger.log("rawReadMany", ids);
-
-        return useDatabase(
-            this.context,
-            async (client) => {
-                const res = await client.query(`
-select *
-from profiles
-where
-        id = ANY($1)
-    and removed = FALSE`, [ids]);
-
-                return _(res.rows)
-                    .sortBy(r => ids.indexOf(r["id"]))
-                    .toArray()
-                    .value();
-            }
+            member,
         );
     }
 }

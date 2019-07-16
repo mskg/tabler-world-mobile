@@ -15,7 +15,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { MeFragment } from '../../model/graphql/MeFragment';
-import { MembersByAreas } from '../../model/graphql/MembersByAreas';
+import { MembersByAreas, MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
 import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
@@ -52,6 +52,8 @@ type StateProps = {
     favorites: HashMap<boolean>,
     showFavorites: boolean,
     showOwntable: boolean,
+    showAreaBoard: boolean,
+    showAssociationBoard: boolean,
 
     sortBy: string,
     diplayFirstNameFirst: boolean,
@@ -128,6 +130,8 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
             nextProps.showFavorites ? Predicates.favorite(this.props.favorites) : null,
             nextProps.showOwntable && me != null && me.club != null ? Predicates.sametable(me.club.club) : null,
             nextProps.areas != null ? Predicates.area(nextProps.areas) : Predicates.all,
+            nextProps.showAreaBoard ? Predicates.areaBoard() : null,
+            nextProps.showAssociationBoard ? Predicates.associationBoard() : null,
         );
         this.state.dataSource.sortBy = nextProps.sortBy;
         this.state.dataSource.groupBy = nextProps.sortBy;
@@ -206,6 +210,8 @@ const ConnectedMembersScreen = connect(
     (state: IAppState): StateProps => ({
         showFavorites: state.filter.member.showFavorites,
         showOwntable: state.filter.member.showOwntable,
+        showAssociationBoard: state.filter.member.showAssociationBoard,
+        showAreaBoard: state.filter.member.showAreaBoard,
 
         areas: state.filter.member.area,
         favorites: state.filter.member.favorites,
@@ -221,7 +227,7 @@ const ConnectedMembersScreen = connect(
 
 // processing time is too slow if we add the @client directive
 // to a query with many records.
-const MembersQuery = ({ fetchPolicy, areas }) => (
+const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard  }) => (
     <Query<OfflineMembers>
         query={GetOfflineMembersQuery}
         fetchPolicy={fetchPolicy}
@@ -233,7 +239,7 @@ const MembersQuery = ({ fetchPolicy, areas }) => (
                 });
             }
 
-            return <Query<MembersByAreas>
+            return <Query<MembersByAreas, MembersByAreasVariables>
                 query={GetMembersByAreasQuery}
                 fetchPolicy={fetchPolicy}
                 variables={{
@@ -244,6 +250,9 @@ const MembersQuery = ({ fetchPolicy, areas }) => (
                         .map(a => parseInt(a, 10))
                         .value()
                         : null,
+
+                    board: showAssociationBoard,
+                    areaBoard: showAreaBoard,
                 }}
             >
                 {({ loading, data, error, refetch }) => {
@@ -272,7 +281,9 @@ const MembersQuery = ({ fetchPolicy, areas }) => (
 const MembersQueryWithCacheInvalidation = withCacheInvalidation(
     "members",
     connect((s: IAppState) => ({
-        areas: s.filter.member.area
+        areas: s.filter.member.area,
+        showAssociationBoard: s.filter.member.showAssociationBoard,
+        showAreaBoard: s.filter.member.showAreaBoard,
     }))(MembersQuery)
 );
 

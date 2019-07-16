@@ -8,5 +8,8 @@ export const refreshViews = async (client: Client) => {
     // need to check if this is too much here
     // dequeue in other job?
     await client.query('REFRESH MATERIALIZED VIEW structure_tabler_roles');
-    await client.query('REFRESH MATERIALIZED VIEW structure');
+    await client.query('REFRESH MATERIALIZED VIEW structure_clubs');
+    await client.query('REFRESH MATERIALIZED VIEW structure_associations');
+    await client.query('REFRESH MATERIALIZED VIEW structure_areas');
+    // await client.query('REFRESH MATERIALIZED VIEW structure');
 };

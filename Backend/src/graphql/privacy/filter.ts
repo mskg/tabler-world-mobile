@@ -2,18 +2,23 @@ import { IPrincipal } from "../types/IPrincipal";
 import { calculateLevel } from "./calculateLevel";
 import { AnyType, WhiteList } from "./WhiteList";
 
+const DEBUG = false;
+
 export function filter(context: IPrincipal, member: AnyType): AnyType {
     const level = calculateLevel(context, member);
+    if (DEBUG) console.log("Principal", context, "Member", member, "Level", level);
 
-    return WhiteList.reduce((result, whiteList) => {
-        whiteList(level, member).forEach(field => {
+    const result: AnyType = {};
+    for (let whiteListFunc of WhiteList) {
+        for (let field of whiteListFunc(level, member)) {
             const val = member[field];
+            if (DEBUG) console.log("Field", field, val);
 
             if (val != null && val !== "") {
                 result[field] = val;
             }
-        })
+        }
+    }
 
-        return result;
-    }, {} as AnyType);
+    return result;
 }

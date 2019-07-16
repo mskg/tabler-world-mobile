@@ -15,6 +15,8 @@ export function filterReducer(
     | typeof actions.toggleFavorite.shape
     | typeof actions.toggleOwnTable.shape
     | typeof actions.replaceFavorites.shape
+    | typeof actions.toggleAreaBoard.shape
+    | typeof actions.toggleAssociationBoard.shape
 ): Result {
   switch (action.type) {
     // case actions.addDistrict.type: {
@@ -66,6 +68,8 @@ export function filterReducer(
           area: state.member.area == null ? [] : null,
           showFavorites: state.member.area == null ? false : true,
           showOwntable: state.member.area == null ? false : true,
+          showAreaBoard: state.member.area == null ? false : true,
+          showAssociationBoard: state.member.area == null ? false : true,
         }
       };
     }
@@ -126,6 +130,25 @@ export function filterReducer(
       };
     }
 
+    case actions.toggleAreaBoard.type: {
+      return {
+        ...state,
+        member: {
+          ...state.member,
+          showAreaBoard: !state.member.showAreaBoard,
+        }
+      };
+    }
+
+    case actions.toggleAssociationBoard.type: {
+      return {
+        ...state,
+        member: {
+          ...state.member,
+          showAssociationBoard: !state.member.showAssociationBoard,
+        }
+      };
+    }
 
     default:
       return state;

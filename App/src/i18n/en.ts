@@ -237,6 +237,9 @@ const en = {
         favorites: "Favorites",
         toggleFavorits: "All favorites",
         toggleOwnTable: "My own table",
+
+        toggleAssociationBoard: "Association Board and -Assists",
+        toggleAreaBoard: "Association Board of Advisors",
     },
 
 

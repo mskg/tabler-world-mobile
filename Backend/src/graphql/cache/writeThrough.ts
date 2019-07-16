@@ -1,7 +1,7 @@
 import { KeyValueCache } from "apollo-server-core";
 import { ILogger } from "../types/ILogger";
 
-async function writeThroughCache<T>(
+export async function writeThrough<T>(
     context: {
         cache: KeyValueCache<string>,
         logger: ILogger,
@@ -34,19 +34,3 @@ async function writeThroughCache<T>(
 
     return result;
 }
-
-async function noCache<T>(
-    _context: {
-        cache: KeyValueCache<string>,
-        logger: ILogger,
-    },
-
-    _key: string,
-    resolver: () => Promise<T>,
-    _ttl?: number
-): Promise<T> {
-    return await resolver();
-}
-
-const disableCache = process.env.DISABLE_CACHE === "true";
-export const writeThrough = disableCache ? noCache : writeThroughCache;

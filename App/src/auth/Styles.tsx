@@ -43,6 +43,8 @@ export const styles = StyleSheet.create({
         flex: 0,
         flexDirection: 'row',
         justifyContent: 'flex-start',
+
+        marginBottom: 40,
     },
 
     container: {

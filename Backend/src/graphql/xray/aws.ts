@@ -1,6 +1,20 @@
 // import * as AWS from "aws-sdk";
 // import * as PG from "pg";
+import http from "http";
+import https from "https";
 import { EXECUTING_OFFLINE } from "../helper/isOffline";
+
+// we connect to local HTTP in case of serverless offline
+const agent = EXECUTING_OFFLINE
+    ? new http.Agent({
+        keepAlive: true,
+        maxSockets: Number.POSITIVE_INFINITY,
+    })
+    : new https.Agent({
+        keepAlive: true,
+        rejectUnauthorized: true,
+        maxSockets: Number.POSITIVE_INFINITY,
+    });
 
 let xAWS: any;
 let xPG: any;
@@ -22,6 +36,12 @@ if (EXECUTING_OFFLINE && process.env.XRAY_DISABLED !== "true") {
 
     XRAY.capturePromise();
 }
+
+xAWS.config.update({
+    httpOptions: {
+        agent
+    }
+});
 
 export { xAWS, xPG, isXrayEnabled, XRAY };
 

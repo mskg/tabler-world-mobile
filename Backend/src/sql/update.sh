@@ -1,6 +1,7 @@
 #!/bin/bash
 source ~/.bashrc
 source ../../../config/.env
+source ../../../config/.env.local
 
 # STACK="$(aws cloudformation list-exports)"
 # RDSHOST="$(echo $STACK | jq -r -c '.Exports[] | select(.Name == "DatabaseHostId") | .Value')"
@@ -23,8 +24,10 @@ BEGIN;
 \i '08 jobs.pgsql'
 
 select count(*) as tablers from tabler;
-select count(*) as profiles from profiles;
-select count(*) as structure from structure;
+select count(*) as profiles from profiles where REMOVED = false;
+select count(*) as associations from structure_associations;
+select count(*) as areas from structure_areas;
+select count(*) as clubs from structure_clubs;
 
 COMMIT;
 OMG

@@ -1,7 +1,7 @@
 import Auth from '@aws-amplify/auth';
 import { Updates } from 'expo';
 import React from 'react';
-import { Alert, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import uuid4 from "uuid4";
@@ -137,42 +137,45 @@ class SignInBase extends AuditedScreen<Props, State> {
             <Background>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
-                        <Logo />
-                        <Greeting title={I18N.SignIn.welcomeBack} subtitle={I18N.SignIn.signin} />
+                        <KeyboardAvoidingView behavior="padding" >
+                            <Logo />
+                            <Greeting title={I18N.SignIn.welcomeBack} subtitle={I18N.SignIn.signin} />
 
-                        <View style={styles.inputContainer}>
-                            <Input
-                                placeholder={I18N.SignIn.placeholderEMail}
-                                value={this.state.username}
-                                onChangeText={text => this.setState({ username: text })}
-                                placeholderTextColor={this.props.theme.colors.placeholder}
-                                style={{ borderBottomColor: this.props.theme.colors.accent }} />
-                        </View>
 
-                        <View style={[styles.buttonContainer]}>
-                            <Button
-                                color={this.props.theme.colors.accent}
-                                style={{ ...styles.button }} mode="contained"
-                                onPress={this._signInOrUp}
-                                loading={this.state.working}
-                                disabled={!this.state.username || this.state.working}>{I18N.SignIn.continue}</Button>
-                        </View>
-
-                        {this.state.error &&
-                            <View style={[styles.errorMessage]}>
-                                <Text>{this.state.error}</Text>
+                            <View style={styles.inputContainer}>
+                                <Input
+                                    placeholder={I18N.SignIn.placeholderEMail}
+                                    value={this.state.username}
+                                    onChangeText={text => this.setState({ username: text })}
+                                    placeholderTextColor={this.props.theme.colors.placeholder}
+                                    style={{ borderBottomColor: this.props.theme.colors.accent }} />
                             </View>
-                        }
 
-                        <View style={styles.demo}>
-                            <TouchableWithoutFeedback onPress={this._demo}>
-                                <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.demoMode}</Text>
-                            </TouchableWithoutFeedback>
+                            <View style={[styles.buttonContainer]}>
+                                <Button
+                                    color={this.props.theme.colors.accent}
+                                    style={{ ...styles.button }} mode="contained"
+                                    onPress={this._signInOrUp}
+                                    loading={this.state.working}
+                                    disabled={!this.state.username || this.state.working}>{I18N.SignIn.continue}</Button>
+                            </View>
 
-                            <TouchableWithoutFeedback onPress={this._lauchJoin}>
-                                <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.join}</Text>
-                            </TouchableWithoutFeedback>
-                        </View>
+                            {this.state.error &&
+                                <View style={[styles.errorMessage]}>
+                                    <Text>{this.state.error}</Text>
+                                </View>
+                            }
+
+                            <View style={styles.demo}>
+                                <TouchableWithoutFeedback onPress={this._demo}>
+                                    <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.demoMode}</Text>
+                                </TouchableWithoutFeedback>
+
+                                <TouchableWithoutFeedback onPress={this._lauchJoin}>
+                                    <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.join}</Text>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </KeyboardAvoidingView>
                     </View>
                 </TouchableWithoutFeedback>
             </Background>

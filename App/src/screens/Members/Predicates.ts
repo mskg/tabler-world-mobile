@@ -48,6 +48,18 @@ export class Predicates {
         }
     }
 
+    public static associationBoard(): Predicate {
+        return (member) => {
+            return member.roles != null && member.roles.find(r => r.ref.type === "assoc") != null;
+        }
+    }
+
+    public static areaBoard(): Predicate {
+        return (member) => {
+            return member.roles != null && member.roles.find(r => r.ref.type === "area") != null;
+        }
+    }
+
     public static role(roles: HashMap<boolean, string> | null): Predicate {
         return (member: IMemberOverviewFragment) => {
             return roles == null ||

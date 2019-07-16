@@ -11,7 +11,7 @@ import { fetchParallel } from "./fetchParallel";
 import { QueueEntry } from './QueueEntry';
 import { refreshViews } from './refreshViews';
 import { checkPayload, Event, Mode, Modes, Types } from './types';
-import { writeValues } from './writeValues';
+import { ChangePointer, writeValues } from './writeValues';
 
 export async function handler(event: Event, context: Context, _callback: (error: any, success?: any) => void) {
     checkPayload(event);
@@ -35,7 +35,7 @@ export async function handler(event: Event, context: Context, _callback: (error:
             const innerWriter = writeValues(client, event.type as Types);
 
             let total = 0;
-            let allModifications: any[] = [];
+            let allModifications: ChangePointer[] = [];
 
             const writer = async (data: Array<any>) => {
                 total += data ? data.length : 0;
@@ -64,37 +64,30 @@ export async function handler(event: Event, context: Context, _callback: (error:
                 console.log("Found", allModifications.length, "updates");
 
                 var sqs = new SQS();
-                if (event.type === "clubs") {
-                    await sqs.sendMessage({
+
+                const messages = allModifications.map((cp: ChangePointer) => ({
+                    Id: `${cp.type}_${cp.id}`,
+                    MessageBody: JSON.stringify({
+                        // we map types here due to back compatibility
+                        type: event.type === "clubs" ? "club" : "member",
+                        id: cp.id,
+                    } as QueueEntry),
+                }) as SendMessageBatchRequestEntry);
+
+                const messageChunks = _(messages).chunk(10).value();
+                for (let chunk of messageChunks) {
+                    console.log("Sending chunk");
+
+                    const sendBatch = await sqs.sendMessageBatch({
                         QueueUrl: process.env.sqs_queue as string,
-                        MessageBody: JSON.stringify({
-                            type: "clubs",
-                        } as QueueEntry),
+                        Entries: chunk,
                     }).promise();
-                }
-                else {
-                    const messages = allModifications.map(id => ({
-                        Id: `member_${id}`,
-                        MessageBody: JSON.stringify({
-                            type: "member",
-                            id: id,
-                        } as QueueEntry),
-                    }) as SendMessageBatchRequestEntry);
 
-                    const messageChunks = _(messages).chunk(10).value();
-                    for (let chunk of messageChunks) {
-                        console.log("Sending chunk");
-
-                        const sendBatch = await sqs.sendMessageBatch({
-                            QueueUrl: process.env.sqs_queue as string,
-                            Entries: chunk,
-                        }).promise();
-
-                        if (sendBatch.Failed) {
-                            console.error(sendBatch.Failed);
-                        }
+                    if (sendBatch.Failed) {
+                        console.error(sendBatch.Failed);
                     }
                 }
+                // }
             }
 
             await writeJobLog(client, jobName, true, {

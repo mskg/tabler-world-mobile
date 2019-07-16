@@ -14,7 +14,7 @@ import { AreasFilter } from '../../model/graphql/AreasFilter';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
 import { GetAreasFilterQuery } from '../../queries/GetAreasFilterQuery';
-import { toggleAll, toggleDistrict, toggleFavorites, toggleOwnTable } from '../../redux/actions/filter';
+import { toggleAll, toggleAreaBoard, toggleAssociationBoard, toggleDistrict, toggleFavorites, toggleOwnTable } from '../../redux/actions/filter';
 import { HeaderStyles } from '../../theme/dimensions';
 import { Element } from './Element';
 
@@ -26,6 +26,9 @@ type StateProps = {
     theme: Theme,
     showFavorites: boolean,
     showOwntable: boolean,
+
+    showAssociationBoard: boolean,
+    showAreaBoard: boolean,
 };
 
 type DispatchPros = {
@@ -33,6 +36,10 @@ type DispatchPros = {
     toggleAll: typeof toggleAll;
     toggleFavorites: typeof toggleFavorites;
     toggleOwnTable: typeof toggleOwnTable;
+
+    toggleAreaBoard: typeof toggleAreaBoard;
+    toggleAssociationBoard: typeof toggleAssociationBoard;
+
     fetchPolicy: any,
 };
 
@@ -110,6 +117,32 @@ class FilterScreenBase extends AuditedScreen<Props> {
                                 />
                             }
                         />
+                        <Divider />
+                        <Element
+                            title={I18N.Filter.toggleAssociationBoard}
+                            theme={this.props.theme}
+                            onPress={() => this.props.toggleAssociationBoard()}
+                            right={
+                                <Checkbox
+                                    color={this.props.theme.colors.accent}
+                                    status={this.props.showAssociationBoard ? 'checked' : 'unchecked'}
+                                    onPress={() => { this.props.toggleAssociationBoard(); }}
+                                />
+                            }
+                        />
+                        <Divider />
+                        <Element
+                            title={I18N.Filter.toggleAreaBoard}
+                            theme={this.props.theme}
+                            onPress={() => this.props.toggleAreaBoard()}
+                            right={
+                                <Checkbox
+                                    color={this.props.theme.colors.accent}
+                                    status={this.props.showAreaBoard ? 'checked' : 'unchecked'}
+                                    onPress={() => { this.props.toggleAreaBoard(); }}
+                                />
+                            }
+                        />
                     </List.Section>
 
                     <Query<AreasFilter> query={GetAreasFilterQuery} fetchPolicy={this.props.fetchPolicy}>
@@ -147,11 +180,16 @@ export const FilterScreen = connect(
         filter: state.filter.member.area,
         showFavorites: state.filter.member.showFavorites,
         showOwntable: state.filter.member.showOwntable,
+        showAssociationBoard: state.filter.member.showAssociationBoard,
+        showAreaBoard: state.filter.member.showAreaBoard,
+
     }), {
         toggleAll,
         toggleFavorites,
         toggleDistrict,
         toggleOwnTable,
+        toggleAreaBoard,
+        toggleAssociationBoard,
     })(
         withWhoopsErrorBoundary(
             withCacheInvalidation("areas", withTheme(FilterScreenBase)))
