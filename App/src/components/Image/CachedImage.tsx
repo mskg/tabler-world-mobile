@@ -38,7 +38,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
       const path = await CacheManager.get(uri, options).getPath();
 
       if (this.requestId !== request) {
-        logger.debug("Ignoring image request", uri, "already unloaded");
+        if (__DEV__) { logger.debug("Ignoring image request", uri, "already unloaded"); }
         return;
       }
 
@@ -57,7 +57,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
     // const { uri } = this.state;
 
     if (this.props.uri !== prevProps.uri) { // || this.props.preview !== prevProps.preview) {
-      logger.debug("Received new image");
+      // logger.debug("Received new image");
 
       this.setState({uri: undefined, intensity: new Animated.Value(0)});
       this.load(this.props, ++this.requestId);
