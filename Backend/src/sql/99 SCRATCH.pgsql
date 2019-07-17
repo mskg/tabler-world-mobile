@@ -17,6 +17,8 @@ REFRESH MATERIALIZED VIEW structure;
 
 delete from clubs
 
+select * from profiles where id = 9699;
+
 select * from clubs;
 
 

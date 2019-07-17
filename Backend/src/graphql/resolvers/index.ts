@@ -1,6 +1,7 @@
 import { merge } from "lodash";
 import { AddressResolver } from "./Address";
 import { AlbumsResolver } from "./Albums";
+import { DocumentsResolver } from "./Documents";
 import { JobsResolver } from "./Jobs";
 import { MemberResolver } from "./Member";
 import { RolesResolver } from "./Roles";
@@ -21,4 +22,5 @@ export const resolvers = merge(
     AddressResolver,
     JobsResolver,
     AlbumsResolver,
+    DocumentsResolver,
 );

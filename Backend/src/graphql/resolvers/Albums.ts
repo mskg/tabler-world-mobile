@@ -23,14 +23,14 @@ const removeEmptyTags = (text: string) => {
 export const AlbumsResolver = {
     Query: {
         Albums: async (_root: any, _args: {}, context: IApolloContext) => {
-            return _(await context.dataSources.albums.getAllAlbums())
+            return _(await context.dataSources.tablerWorld.getAllAlbums())
                 .filter(f => f.pictures && f.pictures.length > 0)
                 .reverse()
                 .value();
         },
 
         Album: async (_root: any, args: IdQuery, context: IApolloContext) => {
-            const all = await (context.dataSources.albums.getAllAlbums());
+            const all = await (context.dataSources.tablerWorld.getAllAlbums());
             return all.find((a: any) => a.id == args.id);
         },
     },
