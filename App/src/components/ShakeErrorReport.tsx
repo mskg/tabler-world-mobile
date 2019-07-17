@@ -92,6 +92,7 @@ class ErrorReportBase extends React.Component<Props, State> {
 
     animatedValue = new Animated.Value(0);
     twiggle?: Animated.CompositeAnimation = undefined;
+    closeAction?: NodeJS.Timeout = undefined;
 
     twiggleIcon = () => {
         // if (this.twiggle == null) {
@@ -133,10 +134,12 @@ class ErrorReportBase extends React.Component<Props, State> {
 
     _open = () => {
         if (!this.state.open) {
+            if (this.closeAction) { clearTimeout(this.closeAction); this.closeAction = undefined; }
             this.audit.submit();
 
             this.setState({ open: true }, this._slide);
-            setTimeout(() => {
+
+            this.closeAction = setTimeout(() => {
                 this.audit.trackAction(ActionNames.Timeout);
                 this._close();
             }, TIMEOUT);
@@ -144,6 +147,7 @@ class ErrorReportBase extends React.Component<Props, State> {
     }
 
     _close = () => {
+        if (this.closeAction) { clearTimeout(this.closeAction); this.closeAction = undefined; }
         if (!this.mounted) { return; }
 
         if (this.state.open) {
