@@ -80,7 +80,7 @@
         "VIBRATE"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/icon_adaptive.png",
         "backgroundColor": "#ffffff"
       }
     }
