@@ -7,7 +7,6 @@ import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR
 import { MainNavRoutes } from './MainNavRoutes';
 import { EXPERIMENT_PREFIX, MainRoutes } from './Routes';
 
-
 const Routes = (() => {
     const old = { ...MainNavRoutes };
     return _.omitBy(old, (v, k) => k.startsWith(EXPERIMENT_PREFIX));
@@ -18,12 +17,19 @@ export const MainBottomNavigation = createMaterialBottomTabNavigator(
     {
         initialRouteName: MainRoutes.Members,
         shifting: true,
+
+        drawBehind: false,
+        visible: true,
+        keyboardHidesNavigationBar: false,
+
         renderLabel: ({ color, route }) => {
             return (<Text style={{ ...I18N.NavigationStyle, color }}>{MainNavRoutes[route.routeName].navigationOptions.tabBarLabel}</Text>);
         },
+
         activeColor: ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT,
         barStyle: {
             backgroundColor: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
+            paddingBottom: 0,
         }
     }
 );

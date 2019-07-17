@@ -27,7 +27,9 @@
     </p>
 
     <script>
-        var code = (location.hash || " ").substring(1);
+        var url = new URL(window.location.href);
+        var code = url.searchParams.get("code");
+
         const redirect = "tablerworld://confirm?code=" + code;
 
         window.document.getElementById("href").attributes["href"] = redirect;

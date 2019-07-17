@@ -87,8 +87,8 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
                     // this kills the performance of the "debugger" as
                     // code is executed many many times in every render cycle
-                    // if (__DEV__) { logger.debug(roles, length); }
-                    if (length > 80 * SCREEN_FACTOR) return ItemType.Large3;
+                    // if (__DEV__) { logger.debug((data as IMemberOverviewFragment).lastname, length); }
+                    if (length > 47*2 * SCREEN_FACTOR) return ItemType.Large3;
                     if (length > 47 * SCREEN_FACTOR) return ItemType.Large2;
 
                     return ItemType.Large;
