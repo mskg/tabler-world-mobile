@@ -35,7 +35,7 @@ export class HeaderBase extends React.Component<Props & NavigationInjectedProps 
         return (
             <React.Fragment>
                 <StatusBar
-                    translucent={true}
+                    translucent={false}
                     barStyle={this.props.theme.dark ? "light-content" : "dark-content"}
                     backgroundColor={this.props.backgroundColor
                         ? this.props.backgroundColor

@@ -10,7 +10,7 @@ export default class Loading extends React.PureComponent {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <StatusBar barStyle="dark-content" backgroundColor="white" translucent={true} />
+                <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
                 <Image
                     style={styles.image}
                     source={Assets.images.splash}
