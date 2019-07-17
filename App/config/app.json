@@ -24,7 +24,7 @@
       "support": "support@round-table.de"
     },
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo_iOS.png",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -80,7 +80,7 @@
         "VIBRATE"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon_adaptive.png",
+        "foregroundImage": "./assets/images/logo_Android.png",
         "backgroundColor": "#ffffff"
       }
     }

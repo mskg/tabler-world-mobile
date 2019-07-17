@@ -8,8 +8,8 @@ export default {
     },
 
     images: {
-        icon: require(ASSETS + '/images/icon.png'),
-        logo: require(ASSETS + '/images/logo.png'),
+        icon: require(ASSETS + '/images/logo_iOS.png'),
+        logo: require(ASSETS + '/images/logo_App_Logo.png'),
         splash: require(ASSETS + '/images/splash.png'),
         background: require(ASSETS + '/images/background.png'),
     },
