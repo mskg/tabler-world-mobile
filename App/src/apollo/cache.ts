@@ -23,9 +23,11 @@ export const cache = new InMemoryCache({
     fragmentMatcher,
 
     dataIdFromObject: object => {
-        // console.log(defaultDataIdFromObject(object));
-
         switch (object.__typename) {
+            // has an id field, but that is not a unique id
+            case "RoleRef":
+                return null;
+
             case 'Association':
                 //@ts-ignore
                 if (object.association == null) return defaultDataIdFromObject(object);
