@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from "react";
 import { View } from 'react-native';
 import { Chip, Text, Theme, withTheme } from "react-native-paper";
@@ -26,7 +27,7 @@ class RolesBase extends React.PureComponent<Props> {
     render() {
         return <View style={styles.chipContainer}>
             {
-                (this.props.roles || []).map((r, i) => (
+                _(this.props.roles || []).orderBy(r => r.ref.type === "assoc" ? 1 : r.ref.type === "area" ? 2 : 3).map((r, i) => (
                     <Chip
                         style={[styles.chip, { backgroundColor: this.getColor(r) }]}
                         key={i}
@@ -34,7 +35,7 @@ class RolesBase extends React.PureComponent<Props> {
                     >
                         {r.ref.name} <Text style={{ fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
                     </Chip>
-                ))
+                )).value()
             }
         </View>;
     }
