@@ -78,7 +78,11 @@
         "READ_CALENDAR",
         "WRITE_CALENDAR",
         "VIBRATE"
-      ]
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#ffffff"
+      }
     }
   }
 }
