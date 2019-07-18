@@ -149,7 +149,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _updateExperimentAlbums = async () => {
-        this.updateSetting({ name: "experiment_albums", value: !this.props.settings.experiment_albums });
+        this.updateSetting({ name: "experiments", value: !this.props.settings.experiments });
 
         Alert.alert(
             I18N.Settings.reload.title,
@@ -470,12 +470,12 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.experiment_albums}
+                                field={I18N.Settings.fields.experiments}
                                 text={
                                     <Switch
                                         color={this.props.theme.colors.accent}
                                         style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.experiment_albums}
+                                        value={this.props.settings.experiments}
                                         onValueChange={this._updateExperimentAlbums}
                                     />
                                 }

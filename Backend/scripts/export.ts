@@ -8,7 +8,7 @@ async function handleChunk(data: any[]) {
 }
 
 async function test() {
-    const url = "https://api.rti.roundtable.world/v1/admin/folders/";
+    const url = "https://api.rti.roundtable.world/v1/admin/news/6/";
         const payload = undefined;
     // const payload = null; JSON.stringify({
     //     "operator": "AND",

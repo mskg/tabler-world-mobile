@@ -1,5 +1,6 @@
 import React from 'react';
 import { Animated, Image, StyleSheet, View } from 'react-native';
+import { FullScreenLoading } from '../../components/Loading';
 
 type Props = {
     thumbnailSource: any,
@@ -7,14 +8,21 @@ type Props = {
     style?: any,
 }
 
-class ProgressiveImage extends React.PureComponent<Props> {
+type State = {
+    loaded: boolean
+}
+
+class ProgressiveImage extends React.PureComponent<Props, State> {
     imageAnimated = new Animated.Value(0);
+    state = {loaded: false};
 
     onImageLoad = () => {
         Animated.timing(this.imageAnimated, {
             toValue: 1,
             useNativeDriver: true,
         }).start();
+
+        this.setState({loaded: true});
     }
 
     render() {
@@ -31,8 +39,13 @@ class ProgressiveImage extends React.PureComponent<Props> {
                     {...props}
                     source={thumbnailSource}
                     style={[styles.imageOverlay]}
+                    progressiveRenderingEnabled={true}
                     fadeDuration={0}
                 />
+
+                {!this.state.loaded &&
+                    <FullScreenLoading />
+                }
 
                 <Animated.Image
                     {...props}

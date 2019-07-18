@@ -39,6 +39,8 @@ export const MaxTTL = {
 
 
     utility: hours(4),
+    news: hours(4),
+    newsarticle: hours(4),
 }
 
 export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {

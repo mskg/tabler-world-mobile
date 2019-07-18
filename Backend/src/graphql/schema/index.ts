@@ -1,9 +1,9 @@
 import { gql } from "apollo-server-core";
 import { Albums } from "./Albums";
-import { Documents } from "./Documents";
 import { Jobs } from "./Jobs";
 import { Member } from "./Member";
 import { Mutation } from "./Mutation";
+import { News } from "./News";
 import { Query } from "./Query";
 import { SearchMember } from "./Search";
 import { Settings } from "./Settings";
@@ -22,5 +22,6 @@ export const schema = [
     Settings,
     Jobs,
     Albums,
-    Documents,
+    // Documents,
+    News,
 ];

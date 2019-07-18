@@ -118,6 +118,10 @@ const de: I18NType = {
         details: "Album anzeigen",
     },
 
+    News: {
+        title: "Aktuelles",
+    },
+
     Album: {
         title: "Album",
     },
@@ -314,7 +318,7 @@ const de: I18NType = {
             sortOrder: "Sortierung",
             displayOrder: "Anzeige",
 
-            experiment_albums: "Alben"
+            experiments: "Alben und Neuigkeiten"
         },
 
         ReleaseNotes: "Versionshinweise (Englisch)",

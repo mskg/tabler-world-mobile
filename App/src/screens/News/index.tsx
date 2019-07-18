@@ -1,23 +1,23 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, FlatList, TouchableWithoutFeedback, View } from 'react-native';
-import { Button, Card, Theme, Title, withTheme } from 'react-native-paper';
+import { Dimensions, FlatList, View } from 'react-native';
+import { Button, Card, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
-import { ReadMore } from '../../components/ReadMore';
+import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { I18N } from '../../i18n/translation';
-import { AlbumsOverview, AlbumsOverview_Albums } from '../../model/graphql/AlbumsOverview';
-import { GetAlbumsOverviewQuery } from '../../queries/GetAlbumsQuery';
-import { showAlbum } from '../../redux/actions/navigation';
+import { TopNews, TopNews_TopNews } from '../../model/graphql/TopNews';
+import { GetNewsQuery } from '../../queries/GetNewsQuery';
+import { showAlbum, showNewsArticle } from '../../redux/actions/navigation';
 import { styles } from './Styles';
 
-const logger = new Logger(Categories.Screens.Albums);
+const logger = new Logger(Categories.Screens.News);
 
 type State = {};
 
@@ -27,60 +27,66 @@ type Props = {
     fetchPolicy: any,
 
     showAlbum: typeof showAlbum,
+    showNewsArticle: typeof showNewsArticle,
 };
 
-class AlbumsScreenBase extends AuditedScreen<Props, State> {
+class NewsScreenBase extends AuditedScreen<Props, State> {
 
     constructor(props) {
-        super(props, AuditScreenName.AlbumList);
+        super(props, AuditScreenName.TopNews);
     }
 
     _renderItem = (params) => {
-        const item: AlbumsOverview_Albums = params.item;
-        const showAlbum = () => this.props.showAlbum(item.id);
+        const item: TopNews_TopNews = params.item;
+        const showAlbum = () => item.album && this.props.showAlbum(item.album.id);
+        const showArticle = () => { this.props.showNewsArticle(item.id); return null; };
 
         return (
             <Card key={item.id} style={styles.card}>
-                <TouchableWithoutFeedback onPress={showAlbum}>
-                    <Card.Cover source={{ uri: item.pictures[0].preview_1920 }} style={{
-                        borderTopLeftRadius: 8,
-                        borderTopRightRadius: 8,
-                    }} />
-                </TouchableWithoutFeedback>
-
                 <Card.Title
-                    title={<Title numberOfLines={2}>{item.name}</Title>}
+                    title={item.name}
+                    subtitle={item.createdby.firstname + " " + item.createdby.lastname}
+                    left={({size}) => <MemberAvatar size={size} member={item.createdby} />}
                     style={styles.title}
                 />
 
                 {item.description != null &&
                     <Card.Content>
-                        <ReadMore maxHeight={60} renderRevealedFooter={() => null}>
+                        <View
+                            style={{ maxHeight: 200, overflow: "hidden", }}
+                        >
                             <HTMLView
                                 maxWidth={Dimensions.get("window").width - 32 * 2}
                                 html={item.description}
+                                skipIFrames={true}
                             />
-                        </ReadMore>
+                        </View>
+
+                        <Text style={styles.button} onPress={showArticle}>
+                            {I18N.ReadMore.more}
+                        </Text>
                     </Card.Content>
                 }
 
                 <View style={styles.bottom} />
 
-                <Card.Actions style={styles.action}>
-                    <Button color={this.props.theme.colors.accent} onPress={showAlbum}>{I18N.Albums.details}</Button>
-                </Card.Actions>
+                {false && item.album &&
+                    <Card.Actions style={styles.action}>
+                        <Button color={this.props.theme.colors.accent} onPress={showAlbum}>{I18N.Albums.details}</Button>
+                    </Card.Actions>
+                }
             </Card>
         );
     }
 
-    _key = (item: AlbumsOverview_Albums, index: number) => {
+    _key = (item: TopNews_TopNews, index: number) => {
         return item.id.toString();
     }
 
     render() {
         return (
-            <ScreenWithHeader header={{ title: I18N.Albums.title }}>
-                <Query<AlbumsOverview> query={GetAlbumsOverviewQuery} fetchPolicy={this.props.fetchPolicy}>
+            <ScreenWithHeader header={{ title: I18N.News.title }}>
+                <Query<TopNews> query={GetNewsQuery} fetchPolicy={this.props.fetchPolicy}>
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;
 
@@ -88,7 +94,7 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                             <FlatList
                                 contentContainerStyle={styles.container}
                                 //@ts-ignore
-                                data={data != null ? data.Albums : []}
+                                data={data != null ? data.TopNews : []}
 
                                 refreshing={loading}
                                 onRefresh={refetch}
@@ -104,8 +110,8 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
-export const AlbumsScreen =
+export const NewsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("albums",
+        withCacheInvalidation("news",
             withTheme(
-                connect(null, { showAlbum })(AlbumsScreenBase))));
+                connect(null, { showAlbum, showNewsArticle })(NewsScreenBase))));

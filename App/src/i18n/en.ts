@@ -117,6 +117,10 @@ const en = {
         details: "Show Album",
     },
 
+    News: {
+        title: "News",
+    },
+
     Album: {
         title: "Album",
     },
@@ -369,7 +373,7 @@ const en = {
             sortOrder: "Sort Order",
             displayOrder: "Display Order",
 
-            experiment_albums: "Albums"
+            experiments: "Albums & News"
         },
 
         ReleaseNotes: "Release Notes",

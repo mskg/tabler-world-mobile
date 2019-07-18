@@ -1,4 +1,7 @@
 export enum AuditScreenName {
+    NewsArticle     = "News/Article",
+    TopNews         = "News/TopNews",
+
     Album           = "Albums/Album",
     AlbumList       = "Albums/List",
 

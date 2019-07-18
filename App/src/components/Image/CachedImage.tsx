@@ -10,7 +10,7 @@ type ImageProps = {
   preview?: React.ReactElement;
   options?: DownloadOptions;
 
-  uri?: string;
+  uri?: string | null;
   transitionDuration?: number;
 
   theme: Theme,
@@ -87,8 +87,8 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
     const { preview, style } = this.props;
     const { uri, intensity } = this.state;
 
-    const hasPreview = !!preview;
-    const isImageReady = !!uri;
+    const hasPreview = preview != null;
+    const isImageReady = uri != null;
 
     const opacity = intensity.interpolate({
       inputRange: [0, 100],

@@ -7,6 +7,7 @@ export enum HomeRoutes {
     Club = "club",
     Album = "album",
     Picture = "picture",
+    NewsArticle = "newsarticle",
 }
 
 export enum MainRoutes {
@@ -14,6 +15,7 @@ export enum MainRoutes {
     Structure = "StructureScreen",
     World = "WorldScreen",
     Albums = "EXPERIMENT_PicturesScreen",
+    News = "EXPERIMENT_NewsScreen",
     Settings = "SettingsScreen",
 }
 

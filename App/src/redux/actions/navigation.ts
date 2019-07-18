@@ -10,6 +10,10 @@ export interface IClubParams {
     club: string,
 }
 
+export interface INewsArticleParams {
+    id: number,
+}
+
 export interface IAlbumParams {
     album: number,
 }
@@ -61,4 +65,12 @@ export const showAlbum = (id: number) => NavigationActions.navigate({
     params: {
         album: id
     } as IAlbumParams,
+});
+
+export const showNewsArticle = (id: number) => NavigationActions.navigate({
+    routeName: HomeRoutes.NewsArticle,
+    key: "newsarticle:"+id,
+    params: {
+        id
+    } as INewsArticleParams,
 });

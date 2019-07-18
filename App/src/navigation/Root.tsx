@@ -3,6 +3,7 @@ import { AlbumScreen } from '../screens/Album';
 import { ClubScreen } from '../screens/Club';
 import { FilterScreen } from '../screens/Filter';
 import { MemberScreen } from '../screens/Member';
+import { NewsArticleScreen } from '../screens/NewsArticle';
 import { PictureScreen } from '../screens/Picture';
 import { SearchScreen } from '../screens/Search';
 import { ExperimentsNavigator } from './ExperimentsNavigator';
@@ -17,6 +18,7 @@ const Navigator = createAppContainer(createStackNavigator(
         [HomeRoutes.Club]: { screen: ClubScreen },
         [HomeRoutes.Picture]: { screen: PictureScreen },
         [HomeRoutes.Album]: { screen: AlbumScreen },
+        [HomeRoutes.NewsArticle]: { screen: NewsArticleScreen },
     },
     {
         initialRouteName: HomeRoutes.Home,

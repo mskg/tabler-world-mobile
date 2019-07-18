@@ -4,13 +4,16 @@ import { CacheEntry } from './CacheEntry';
 import { DownloadOptions } from './DownloadOptions';
 
 export default class CacheManager {
-  static entries: { [uri: string]: CacheEntry } = {};
+  // static entries: { [uri: string]: CacheEntry } = {};
 
   static get(uri: string, options: DownloadOptions): CacheEntry {
-    if (!CacheManager.entries[uri]) {
-      CacheManager.entries[uri] = new CacheEntry(uri, options);
-    }
-    return CacheManager.entries[uri];
+    return  new CacheEntry(uri, options);
+
+    // if (!CacheManager.entries[uri]) {
+    //   CacheManager.entries[uri] = new CacheEntry(uri, options);
+    // }
+
+    // return CacheManager.entries[uri];
   }
 
   static async clearCache(): Promise<void> {
@@ -23,5 +26,3 @@ export default class CacheManager {
     return size;
   }
 }
-
-

@@ -27,7 +27,16 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
         return this.get('folders/', undefined,
         {
             cacheOptions: {
-                ttl: TTLs.Albums,
+                ttl: TTLs.Documents,
+            },
+        });
+    }
+
+    async getAllNews(): Promise<Array<any>> {
+        return this.get('news/', undefined,
+        {
+            cacheOptions: {
+                ttl: TTLs.News,
             },
         });
     }

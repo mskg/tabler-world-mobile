@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { removeEmptyTags } from "../helper/removeEmptyTags";
 import { IApolloContext } from "../types/IApolloContext";
 
 type IdQuery = {
@@ -8,17 +9,6 @@ type IdQuery = {
 type TopQuery = {
     top?: number,
 };
-
-const removeEmptyTags = (text: string) => {
-    let removed = text.replace(/<[^\/>]+>[ \n\r\t]*<\/[^>]+>/g, "");
-
-    do {
-        let newRemoved = removed.replace(/<[^\/>]+>[ \n\r\t]*<\/[^>]+>/g, "");
-
-        if (newRemoved != removed) { removed = newRemoved; }
-        else { return newRemoved; }
-    } while (true);
-}
 
 export const AlbumsResolver = {
     Query: {

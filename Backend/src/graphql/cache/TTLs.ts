@@ -11,6 +11,7 @@ export const TTLs = {
     StructureOverview: hours(24),
     Albums: hours(4),
     Documents: hours(4),
+    News: hours(4),
 
     // everything else e.g.
     Default: hours(24*2),
