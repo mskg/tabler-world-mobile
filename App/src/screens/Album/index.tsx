@@ -1,8 +1,9 @@
 import { ScreenOrientation } from 'expo';
 import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, FlatList, Image, Share as ShareNative, View } from 'react-native';
+import { Dimensions, FlatList, Image, Platform, Share as ShareNative, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
 import { Portal, Theme, withTheme } from 'react-native-paper';
@@ -87,13 +88,19 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
       .then(({ uri }) => {
         console.log('Finished downloading to ', uri);
 
-        ShareNative.share({
-          url: uri,
-        });
-        // Sharing.shareAsync(uri, {
-        //   mimeType: 'image/jpeg',
-        //   UTI: 'JPEG',
-        // });
+        if (Platform.OS === "android") {
+          Sharing.shareAsync(
+            uri,
+            {
+              mimeType: "image/jpeg",
+              UTI: "image/jpeg",
+            }
+          );
+        } else {
+          ShareNative.share({
+            url: uri,
+          });
+        }
       })
       .catch(error => {
         console.error(error);
@@ -102,7 +109,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
 
   _pageSelected = (page) => this.setState({ selectedIndex: page });
 
-  _preview = ({image, ...props}) => {
+  _preview = ({ image, ...props }) => {
     // console.log(image);
 
     return <ProgressiveImage
@@ -156,39 +163,30 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
 
               {this.state.viewGallery &&
                 <Portal>
-                  <View style={{ flex: 1 }} >
-                    <Gallery
-                      style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop }}
-                      images={
-                        data != null && data.Album != null
-                          ? data.Album.pictures.map(p => ({
-                            source:
-                            {
-                              uri: p.preview_1920,
-                              preview: p.preview_100,
-                            }
-                          }))
-                          : []
-                      }
+                  <Gallery
+                    style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop,  }}
+                    images={
+                      mapResults(data)
+                    }
 
-                      onPageSelected={this._pageSelected}
-                      onSingleTapConfirmed={this._singleTap}
-                      initialPage={this.state.selectedIndex}
-                      onLongPress={this._longPress}
-                      imageComponent={this._preview}
+                    onPageSelected={this._pageSelected}
+                    onSingleTapConfirmed={this._singleTap}
+                    initialPage={this.state.selectedIndex}
+                    onLongPress={this._longPress}
+                    imageComponent={this._preview}
+                    removeClippedSubviews={false}
 
-                      flatListProps={{
-                        windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
-                        initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
-                        maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
-                        getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
-                          length: Dimensions.get('screen').width,
-                          offset: Dimensions.get('screen').width * index,
-                          index,
-                        }),
-                      }}
-                    />
-                  </View>
+                    flatListProps={{
+                      windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
+                      initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
+                      maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
+                      getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
+                        length: Dimensions.get('screen').width,
+                        offset: Dimensions.get('screen').width * index,
+                        index,
+                      }),
+                    }}
+                  />
                 </Portal>
               }
             </>
@@ -196,6 +194,32 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
         }}
       </Query>
     );
+  }
+}
+
+const mapResults = memoize((data: Album) => data != null && data.Album != null
+  ? data.Album.pictures.map(p => ({
+    source:
+    {
+      uri: p.preview_1920,
+      preview: p.preview_100,
+    }
+  }))
+  : []);
+
+function memoize(func: (data: any) => any) {
+  let result;
+  let cachedData;
+
+  return (newData: any) => {
+    if (newData != cachedData) {
+      logger.log("calculating new data");
+
+      result = func(newData);
+      cachedData = newData;
+    }
+
+    return result;
   }
 }
 

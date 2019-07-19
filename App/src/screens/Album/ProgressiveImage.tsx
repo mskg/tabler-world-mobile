@@ -9,20 +9,17 @@ type Props = {
 }
 
 type State = {
-    loaded: boolean
 }
 
 class ProgressiveImage extends React.PureComponent<Props, State> {
     imageAnimated = new Animated.Value(0);
-    state = {loaded: false};
+    state = { loaded: false };
 
     onImageLoad = () => {
         Animated.timing(this.imageAnimated, {
             toValue: 1,
             useNativeDriver: true,
         }).start();
-
-        this.setState({loaded: true});
     }
 
     render() {
@@ -43,9 +40,7 @@ class ProgressiveImage extends React.PureComponent<Props, State> {
                     fadeDuration={0}
                 />
 
-                {!this.state.loaded &&
-                    <FullScreenLoading />
-                }
+                <FullScreenLoading />
 
                 <Animated.Image
                     {...props}
@@ -54,6 +49,8 @@ class ProgressiveImage extends React.PureComponent<Props, State> {
                     style={[styles.imageOverlay, { opacity: this.imageAnimated }, style]}
 
                     onLoad={this.onImageLoad}
+
+                    progressiveRenderingEnabled={true}
                     fadeDuration={0}
                 />
             </View>
