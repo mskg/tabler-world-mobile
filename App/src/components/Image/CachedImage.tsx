@@ -1,6 +1,5 @@
 import React from "react";
 import { Animated, Image, ImageResizeMode, Platform, StyleSheet, View } from "react-native";
-import { Theme } from 'react-native-paper';
 import { Categories, Logger } from '../../helper/Logger';
 import CacheManager from "./CacheManager";
 import { DownloadOptions } from "./DownloadOptions";
@@ -12,8 +11,6 @@ type ImageProps = {
 
   uri?: string | null;
   transitionDuration?: number;
-
-  theme: Theme,
   resizeMode?: ImageResizeMode,
 };
 
