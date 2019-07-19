@@ -6,6 +6,7 @@ import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
 import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
 import { withAuthenticator } from './auth/withAuthenticator';
+import { StandardStatusBar } from './components/Header';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
@@ -54,6 +55,7 @@ const App = () => {
 
   return (
     <React.Fragment>
+      <StandardStatusBar />
       <Reloader />
       <ActionSheetProvider>
         <Navigation />

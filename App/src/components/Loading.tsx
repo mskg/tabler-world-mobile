@@ -1,6 +1,6 @@
 import { SplashScreen } from "expo";
 import React from "react";
-import { Image, StatusBar, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { ActivityIndicator } from 'react-native-paper';
 import Assets from "../Assets";
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT } from '../theme/colors';
@@ -10,7 +10,6 @@ export default class Loading extends React.PureComponent {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
                 <Image
                     style={styles.image}
                     source={Assets.images.splash}

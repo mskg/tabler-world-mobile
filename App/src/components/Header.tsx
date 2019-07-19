@@ -4,7 +4,7 @@ import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderStyles, TOTAL_HEADER_HEIGHT } from '../theme/dimensions';
 
-export type Props = {
+type Props = {
     title?: string,
     backgroundColor?: string,
     showBack?: React.ReactElement | boolean,
@@ -14,7 +14,7 @@ export type Props = {
     showLine?: boolean,
 };
 
-export class HeaderBase extends React.Component<Props & NavigationInjectedProps & { theme: Theme }> {
+class HeaderBase extends React.Component<Props & NavigationInjectedProps & { theme: Theme }> {
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
@@ -34,15 +34,6 @@ export class HeaderBase extends React.Component<Props & NavigationInjectedProps 
     render() {
         return (
             <React.Fragment>
-                <StatusBar
-                    translucent={false}
-                    barStyle={this.props.theme.dark ? "light-content" : "dark-content"}
-                    backgroundColor={this.props.backgroundColor
-                        ? this.props.backgroundColor
-                        : this.props.theme.colors.primary
-                    }
-                />
-
                 <View style={{
                     ...HeaderStyles.header,
                     backgroundColor: this.props.backgroundColor
@@ -89,3 +80,16 @@ export const Header = withNavigation(withTheme(HeaderBase));
 export const StandardHeader = ({ ...args }) => (
     <Header style={HeaderStyles.topBar} showAppBar={true} {...args} />
 );
+
+class StandardStatusBarBase extends React.PureComponent<{ theme: Theme }> {
+    render() {
+        return (
+            <StatusBar
+                translucent={true}
+                barStyle={this.props.theme.dark ? "light-content" : "dark-content"}
+                backgroundColor="transparent"
+            />);
+    }
+}
+
+export const StandardStatusBar = withTheme(StandardStatusBarBase);
