@@ -1,5 +1,4 @@
 import * as FileSystem from 'expo-file-system';
-import { Mutex } from '../../helper/Mutex';
 import { DownloadOptions } from "./DownloadOptions";
 import { getCacheEntry } from "./getCacheEntry";
 import { logger } from "./logger";
@@ -8,7 +7,7 @@ export class CacheEntry {
     uri: string;
     options: DownloadOptions;
     path: string;
-    mutex: Mutex = new Mutex();
+    // mutex: Mutex = new Mutex();
 
     constructor(uri: string, options: DownloadOptions) {
         this.uri = uri;
@@ -19,9 +18,9 @@ export class CacheEntry {
         const { uri, options } = this;
         const { path, exists, tmpPath } = await getCacheEntry(uri);
 
-        const unlock = await this.mutex.lock();
+        // const unlock = await this.mutex.lock();
 
-        try {
+        // try {
             if (exists) {
                 if (false && __DEV__) {
                     return new Promise(
@@ -57,9 +56,9 @@ export class CacheEntry {
 
             await FileSystem.moveAsync({ from: tmpPath, to: path });
             return path;
-        }
-        finally {
-            unlock();
-        }
+        // }
+        // finally {
+        //     unlock();
+        // }
     }
 }

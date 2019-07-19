@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, FlatList, Image, Platform, Share as ShareNative, View } from 'react-native';
+import { Dimensions, FlatList, Platform, Share as ShareNative, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
 import { Portal, Theme, withTheme } from 'react-native-paper';
@@ -12,17 +12,18 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { CachedImage } from '../../components/Image/CachedImage';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
+import { Square } from '../../components/Placeholder/Square';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
 import { I18N } from '../../i18n/translation';
 import { Album, AlbumVariables, Album_Album_pictures } from '../../model/graphql/Album';
 import { GetAlbumQuery } from '../../queries/GetAlbumQuery';
 import { IAlbumParams } from '../../redux/actions/navigation';
+import { logger } from './logger';
 import ProgressiveImage from './ProgressiveImage';
 import { styles } from './Styles';
-
-const logger = new Logger(Categories.Screens.Albums);
 
 type State = {
   viewGallery: boolean,
@@ -62,7 +63,21 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
     return (
       <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
         <View style={styles.imageContainer}>
-          <Image style={styles.imageThumbnail} resizeMode="cover" source={{ uri: item.preview_100 }} />
+
+          <View style={styles.imageThumbnail}>
+            <CachedImage
+              resizeMode="cover"
+              preview={
+                // android doesn't like the animation here?
+                Platform.OS == "android" ? undefined :
+                <Placeholder ready={false} previewComponent={
+                  <Square width={Dimensions.get("screen").width / 4 - 3} />
+                }
+                />
+              }
+              uri={item.preview_100}
+            />
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -174,7 +189,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                     initialPage={this.state.selectedIndex}
                     onLongPress={this._longPress}
                     imageComponent={this._preview}
-                    removeClippedSubviews={false}
+                    // removeClippedSubviews={false}
 
                     flatListProps={{
                       windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)

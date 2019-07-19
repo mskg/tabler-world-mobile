@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Image, ImageResizeMode, Platform, StyleSheet, View } from "react-native";
+import { Animated, Image, ImageResizeMode, StyleSheet, View } from "react-native";
 import { Categories, Logger } from '../../helper/Logger';
 import CacheManager from "./CacheManager";
 import { DownloadOptions } from "./DownloadOptions";
@@ -17,9 +17,10 @@ type ImageProps = {
 type ImageState = {
   uri?: string;
   intensity: Animated.Value;
+  hidePreview: boolean;
 };
 
-const logger= new Logger(Categories.Helpers.ImageCache);
+const logger = new Logger(Categories.Helpers.ImageCache);
 
 export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
   mounted = true;
@@ -27,7 +28,8 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
 
   state = {
     uri: undefined,
-    intensity: new Animated.Value(0)
+    intensity: new Animated.Value(0),
+    hidePreview: false,
   };
 
   async load({ uri, options = {} }: ImageProps, request: number): Promise<void> {
@@ -40,7 +42,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
       }
 
       if (this.mounted) {
-        this.setState({ uri: path });
+        this.setState({ uri: path, hidePreview: false });
       }
     }
   }
@@ -50,30 +52,25 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
   }
 
   componentDidUpdate(prevProps: ImageProps, prevState: ImageState) {
-    // const { preview } = this.props;
-    // const { uri } = this.state;
-
-    if (this.props.uri !== prevProps.uri) { // || this.props.preview !== prevProps.preview) {
-      // logger.debug("Received new image");
-
-      this.setState({uri: undefined, intensity: new Animated.Value(0)});
+    if (this.props.uri !== prevProps.uri) {
+      this.setState({ uri: undefined, intensity: new Animated.Value(0), hidePreview: false });
       this.load(this.props, ++this.requestId);
     }
-    // else if (uri && preview && prevState.uri === undefined) {
-    //   this.startAnimation();
-    // }
   }
 
-  _startAnimation= () => {
+  _startAnimation = () => {
     const { transitionDuration } = this.props;
     const { intensity } = this.state;
 
     Animated.timing(intensity, {
       duration: transitionDuration || 300,
       toValue: 100,
-      // android does not change the image otherwise
-      useNativeDriver: Platform.OS == "android" ? false : true,
-    }).start();
+      useNativeDriver: true
+    }).start(() => {
+      if (this.mounted) {
+        this.setState({ hidePreview: true });
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -82,7 +79,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
 
   render() {
     const { preview, style } = this.props;
-    const { uri, intensity } = this.state;
+    const { uri, intensity, hidePreview } = this.state;
 
     const hasPreview = preview != null;
     const isImageReady = uri != null;
@@ -99,12 +96,12 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
             source={{ uri }}
             style={style || styles.imageStyles}
             onLoadEnd={this._startAnimation}
-            fadeDuration={hasPreview? 0 : undefined}
+            fadeDuration={hasPreview ? 0 : undefined}
             resizeMode={this.props.resizeMode || "contain"}
           />
         )}
 
-        {hasPreview &&
+        {hasPreview && !hidePreview &&
           <Animated.View style={[styles.container, { opacity }]}>
             {preview}
           </Animated.View>

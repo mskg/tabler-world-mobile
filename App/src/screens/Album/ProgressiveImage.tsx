@@ -1,5 +1,6 @@
 import React from 'react';
-import { Animated, Image, StyleSheet, View } from 'react-native';
+import { Animated } from 'react-native';
+import { CachedImage } from '../../components/Image/CachedImage';
 import { FullScreenLoading } from '../../components/Loading';
 
 type Props = {
@@ -13,60 +14,28 @@ type State = {
 
 class ProgressiveImage extends React.PureComponent<Props, State> {
     imageAnimated = new Animated.Value(0);
-    state = { loaded: false };
-
-    onImageLoad = () => {
-        Animated.timing(this.imageAnimated, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
-    }
 
     render() {
         const {
             thumbnailSource,
             source,
-            style,
-            ...props
         } = this.props;
 
         return (
-            <View>
-                <Image
-                    {...props}
-                    source={thumbnailSource}
-                    style={[styles.imageOverlay]}
-                    progressiveRenderingEnabled={true}
-                    fadeDuration={0}
-                />
+            <CachedImage
+                uri={source.uri}
+                preview={
+                    <>
+                        <CachedImage
+                            uri={thumbnailSource.uri}
+                        />
 
-                <FullScreenLoading />
-
-                <Animated.Image
-                    {...props}
-
-                    source={source}
-                    style={[styles.imageOverlay, { opacity: this.imageAnimated }, style]}
-
-                    onLoad={this.onImageLoad}
-
-                    progressiveRenderingEnabled={true}
-                    fadeDuration={0}
-                />
-            </View>
+                        <FullScreenLoading />
+                    </>
+                }
+            />
         );
     }
 }
 
 export default ProgressiveImage;
-
-const styles = StyleSheet.create({
-    imageOverlay: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 0,
-    },
-});
-
