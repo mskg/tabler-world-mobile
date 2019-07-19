@@ -1,15 +1,11 @@
 // import * as AWS from "aws-sdk";
 // import * as PG from "pg";
-import http from "http";
 import https from "https";
 import { EXECUTING_OFFLINE } from "../helper/isOffline";
 
 // we connect to local HTTP in case of serverless offline
 const agent = EXECUTING_OFFLINE
-    ? new http.Agent({
-        keepAlive: true,
-        maxSockets: Number.POSITIVE_INFINITY,
-    })
+    ? undefined
     : new https.Agent({
         keepAlive: true,
         rejectUnauthorized: true,
