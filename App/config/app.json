@@ -71,9 +71,6 @@
         ]
       }
     },
-    "androidStatusBar": {
-      "backgroundColor": "#ffffff"
-    },
     "android": {
       "permissions": [
         "READ_CONTACTS",
