@@ -146,7 +146,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                 <Input
                                     placeholder={I18N.SignIn.placeholderEMail}
                                     value={this.state.username}
-                                    onChangeText={text => this.setState({ username: text })}
+                                    onChangeText={text => this.setState({ username: (text || "").toLowerCase() })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
                                     style={{ borderBottomColor: this.props.theme.colors.accent }} />
                             </View>
