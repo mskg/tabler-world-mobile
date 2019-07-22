@@ -57,7 +57,6 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
     this.audit.submit({
       [AuditPropertyNames.Album]: album.toString(),
     });
-
   }
 
   _renderItem = (params) => {

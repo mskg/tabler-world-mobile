@@ -1,5 +1,5 @@
 export enum HomeRoutes {
-    Contact = "contact",
+    Member = "contact",
     Home = "home",
     Search = "search",
     Docs = "docs",
@@ -8,6 +8,7 @@ export enum HomeRoutes {
     Album = "album",
     Picture = "picture",
     NewsArticle = "newsarticle",
+    Pair = "pair",
 }
 
 export enum MainRoutes {

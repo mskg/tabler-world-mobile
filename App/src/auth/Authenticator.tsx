@@ -1,6 +1,5 @@
 import Constants from 'expo-constants';
 import * as Localization from 'expo-localization';
-import gql from 'graphql-tag';
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import ExpoSentry from "sentry-expo";
@@ -12,7 +11,7 @@ import Reloader from '../components/Reloader';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from "../helper/Logger";
 import { IAppState } from "../model/IAppState";
-import { MeFragment } from "../queries/MeFragment";
+import { GetMeQuery } from '../queries/MeQuery';
 import { INITIAL_STATE } from "../redux/initialState";
 import ConfirmSignIn from "./ConfirmSignIn";
 import SignIn from "./SignIn";
@@ -66,15 +65,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
       const client = cachedAolloClient();
       client.query({
-        query: gql`
-          query Me {
-            Me {
-              ...MeFragment
-            }
-          }
-
-          ${MeFragment}
-        `,
+        query: GetMeQuery,
         fetchPolicy: "cache-first",
       }).then(result => {
         if (result.errors) {

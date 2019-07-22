@@ -6,6 +6,7 @@ import { FAB, Subheading, Surface, Theme, Title, withTheme } from 'react-native-
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
@@ -36,6 +37,14 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
     constructor(props) {
         super(props, AuditScreenName.NewsArticle);
     }
+
+    componentDidMount() {
+        const { id } = this.props.navigation.state.params as INewsArticleParams;
+
+        this.audit.submit({
+          [AuditPropertyNames.NewsArticle]: id.toString(),
+        });
+      }
 
     render() {
         const { id } = this.props.navigation.state.params as INewsArticleParams;

@@ -63,6 +63,16 @@ const en = {
         }
     },
 
+    Pair: {
+        action: "Exchange contact details",
+        title: "Exchange Contact Details",
+        scan: "Scan Code",
+        me: "My Code",
+
+        request: "Requesting for camera permission",
+        permission: "No access to camera",
+    },
+
     Structure: {
         title: "Directory",
         associations: "Association",
@@ -398,7 +408,6 @@ const en = {
     },
 
     Members: {
-        me: "My profile on TABLER.WORLD",
         noresults: "No data available.",
         search: "Search...",
         title: "Members",

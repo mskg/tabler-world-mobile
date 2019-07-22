@@ -88,6 +88,8 @@ class StandardStatusBarBase extends React.PureComponent<{ theme: Theme }> {
                 translucent={true}
                 barStyle={this.props.theme.dark ? "light-content" : "dark-content"}
                 backgroundColor="transparent"
+                showHideTransition={false}
+                animated={false}
             />);
     }
 }

@@ -24,7 +24,7 @@ export interface IPictureParams {
 }
 
 export const showProfile = (tablerId: number) => NavigationActions.navigate({
-    routeName: HomeRoutes.Contact,
+    routeName: HomeRoutes.Member,
     key: "tabler:"+tablerId.toString(),
     params: {
         tabler: tablerId
@@ -49,6 +49,10 @@ export const showSearch = () => NavigationActions.navigate({
 
 export const showFilter = () => NavigationActions.navigate({
     routeName: HomeRoutes.Filter
+});
+
+export const showPair = () => NavigationActions.navigate({
+    routeName: HomeRoutes.Pair
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({

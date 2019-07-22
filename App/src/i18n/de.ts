@@ -63,6 +63,16 @@ const de: I18NType = {
         }
     },
 
+    Pair: {
+        action: "Visitenkarten tauschen",
+        title: "Visitenkarte tauschen",
+        scan: "Code scannen",
+        me: "Mein Code",
+
+        request: "Berechtigungen für die Kamera",
+        permission: "Keine Berechtigungen für die Kamera",
+    },
+
     Structure: {
         title: "Verzeichnis",
         associations: "Assoziatio...",

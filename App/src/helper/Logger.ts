@@ -54,6 +54,7 @@ export class Categories {
         public static readonly Docs = Categories._UI + "/Docs";
         public static readonly Structure = Categories._UI + "/Structure";
         public static readonly Club = Categories._UI + "/Club";
+        public static readonly Scan = Categories._UI + "/Scan";
     }
 
     public static Helpers = class {
