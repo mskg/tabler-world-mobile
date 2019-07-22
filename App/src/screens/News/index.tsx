@@ -8,6 +8,7 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
 import { MemberAvatar } from '../../components/MemberAvatar';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
@@ -15,6 +16,7 @@ import { I18N } from '../../i18n/translation';
 import { TopNews, TopNews_TopNews } from '../../model/graphql/TopNews';
 import { GetNewsQuery } from '../../queries/GetNewsQuery';
 import { showAlbum, showNewsArticle } from '../../redux/actions/navigation';
+import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.News);
@@ -46,7 +48,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                 <Card.Title
                     title={item.name}
                     subtitle={item.createdby.firstname + " " + item.createdby.lastname}
-                    left={({size}) => <MemberAvatar size={size} member={item.createdby} />}
+                    left={({ size }) => <MemberAvatar size={size} member={item.createdby} />}
                     style={styles.title}
                 />
 
@@ -91,17 +93,22 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                         if (error) throw error;
 
                         return (
-                            <FlatList
-                                contentContainerStyle={styles.container}
-                                //@ts-ignore
-                                data={data != null ? data.TopNews : []}
+                            <Placeholder
+                                ready={data != null && data.TopNews != null}
+                                previewComponent={<CardPlaceholder />}
+                            >
+                                <FlatList
+                                    contentContainerStyle={styles.container}
+                                    //@ts-ignore
+                                    data={data != null ? data.TopNews : []}
 
-                                refreshing={loading}
-                                onRefresh={refetch}
+                                    refreshing={loading}
+                                    onRefresh={refetch}
 
-                                renderItem={this._renderItem}
-                                keyExtractor={this._key}
-                            />
+                                    renderItem={this._renderItem}
+                                    keyExtractor={this._key}
+                                />
+                            </Placeholder>
                         );
                     }}
                 </Query>

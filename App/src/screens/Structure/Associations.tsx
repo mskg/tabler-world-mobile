@@ -9,12 +9,14 @@ import { Accordion } from '../../components/Accordion';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { I18N } from '../../i18n/translation';
 import { Associations, Associations_Associations } from '../../model/graphql/Associations';
 import { RoleNames } from '../../model/IRole';
 import { GetAssociationsQuery } from "../../queries/GetAssociationsQuery";
+import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Structure);
@@ -100,24 +102,29 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                     if (error) throw error;
 
                     return (
-                        <FlatList
-                            contentContainerStyle={styles.container}
-                            //@ts-ignore
-                            data={
-                                _(data != null ? data.Associations : [])
-                                    .orderBy(a => (data != null && data.Me.association.association == a.association)
-                                        ? "aa"
-                                        : a.association)
-                                    .toArray()
-                                    .value()
-                            }
+                        <Placeholder
+                            ready={data != null && data.Associations != null}
+                            previewComponent={<CardPlaceholder />}
+                        >
+                            <FlatList
+                                contentContainerStyle={styles.container}
+                                //@ts-ignore
+                                data={
+                                    _(data != null ? data.Associations : [])
+                                        .orderBy(a => (data != null && data.Me.association.association == a.association)
+                                            ? "aa"
+                                            : a.association)
+                                        .toArray()
+                                        .value()
+                                }
 
-                            refreshing={loading}
-                            onRefresh={refetch}
+                                refreshing={loading}
+                                onRefresh={refetch}
 
-                            renderItem={this._renderItem}
-                            keyExtractor={this._key}
-                        />
+                                renderItem={this._renderItem}
+                                keyExtractor={this._key}
+                            />
+                        </Placeholder>
                     );
                 }}
             </Query>

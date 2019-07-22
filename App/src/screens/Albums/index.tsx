@@ -7,6 +7,7 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ReadMore } from '../../components/ReadMore';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -15,6 +16,7 @@ import { I18N } from '../../i18n/translation';
 import { AlbumsOverview, AlbumsOverview_Albums } from '../../model/graphql/AlbumsOverview';
 import { GetAlbumsOverviewQuery } from '../../queries/GetAlbumsQuery';
 import { showAlbum } from '../../redux/actions/navigation';
+import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Albums);
@@ -85,17 +87,22 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                         if (error) throw error;
 
                         return (
-                            <FlatList
-                                contentContainerStyle={styles.container}
-                                //@ts-ignore
-                                data={data != null ? data.Albums : []}
+                            <Placeholder
+                                ready={data != null && data.Albums != null}
+                                previewComponent={<CardPlaceholder />}
+                            >
+                                <FlatList
+                                    contentContainerStyle={styles.container}
+                                    //@ts-ignore
+                                    data={data != null ? data.Albums : []}
 
-                                refreshing={loading}
-                                onRefresh={refetch}
+                                    refreshing={loading}
+                                    onRefresh={refetch}
 
-                                renderItem={this._renderItem}
-                                keyExtractor={this._key}
-                            />
+                                    renderItem={this._renderItem}
+                                    keyExtractor={this._key}
+                                />
+                            </Placeholder>
                         );
                     }}
                 </Query>
