@@ -2,6 +2,8 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
 import { useKeepAwake } from 'expo-keep-awake';
 import React from 'react';
+import { Platform } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
 import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
@@ -49,6 +51,12 @@ if (isFeatureEnabled(Features.BackgroundFetch)) {
 
 logger.log("Bootstrapping push notifications");
 registerForPushNotificationsAsync();
+
+// https://github.com/expo/expo/issues/2940
+if (Platform.OS === 'android') {
+  //@ts-ignore
+  SafeAreaView.setStatusBarHeight(0);
+}
 
 const App = () => {
   if (__DEV__) useKeepAwake();
