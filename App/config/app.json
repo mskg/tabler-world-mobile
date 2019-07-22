@@ -72,7 +72,7 @@
       }
     },
     "androidStatusBar": {
-      "backgroundColor": "transparent"
+      "backgroundColor": "#ffffff"
     },
     "android": {
       "permissions": [
