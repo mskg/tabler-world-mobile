@@ -3,10 +3,10 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, FlatList, Platform, Share as ShareNative, View } from 'react-native';
+import { Dimensions, FlatList, Platform, SafeAreaView, Share as ShareNative, StatusBar, StyleSheet, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
-import { Portal, Theme, withTheme } from 'react-native-paper';
+import { FAB, IconButton, Portal, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
@@ -28,6 +28,7 @@ import { styles } from './Styles';
 type State = {
   viewGallery: boolean,
   selectedIndex: number,
+  hideButtons: boolean,
 };
 
 type Props = {
@@ -45,6 +46,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
     this.state = {
       viewGallery: false,
       selectedIndex: 0,
+      hideButtons: false,
     };
   }
 
@@ -61,7 +63,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
     const item: Album_Album_pictures = params.item;
 
     return (
-      <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
+      <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, hideButtons: false, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
         <View style={styles.imageContainer}>
 
           <View style={styles.imageThumbnail}>
@@ -70,10 +72,10 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
               preview={
                 // android doesn't like the animation here?
                 Platform.OS == "android" ? undefined :
-                <Placeholder ready={false} previewComponent={
-                  <Square width={Dimensions.get("screen").width / 4 - 3} />
-                }
-                />
+                  <Placeholder ready={false} previewComponent={
+                    <Square width={Dimensions.get("screen").width / 4 - 3} />
+                  }
+                  />
               }
               uri={item.preview_100}
             />
@@ -87,11 +89,14 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
     return index.toString();
   }
 
-  _singleTap = () => this.setState(
-    { viewGallery: false },
-    () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP));
+  _toggleButtons = () => requestAnimationFrame(() => this.setState(
+      { hideButtons: !this.state.hideButtons }));
 
-  _longPress = () => {
+  _hideGallery = () => requestAnimationFrame(() => this.setState(
+    { viewGallery: false },
+    () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)));
+
+  _export = () => requestAnimationFrame(() => {
     if (!this.data || !this.data.Album) return;
 
     const source = this.data.Album.pictures[this.state.selectedIndex].preview_1920;
@@ -120,7 +125,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
       .catch(error => {
         console.error(error);
       });
-  };
+  });
 
   _pageSelected = (page) => this.setState({ selectedIndex: page });
 
@@ -178,30 +183,51 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
 
               {this.state.viewGallery &&
                 <Portal>
+                  <StatusBar hidden={true} />
                   <Gallery
-                    style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop,  }}
-                    images={
-                      mapResults(data)
-                    }
+                    style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop, }}
+                    images={mapResults(data)}
 
                     onPageSelected={this._pageSelected}
-                    onSingleTapConfirmed={this._singleTap}
+                    onSingleTapConfirmed={this._toggleButtons}
                     initialPage={this.state.selectedIndex}
-                    onLongPress={this._longPress}
                     imageComponent={this._preview}
-                    // removeClippedSubviews={false}
 
                     flatListProps={{
                       windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
                       initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
                       maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
-                      getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
-                        length: Dimensions.get('screen').width,
-                        offset: Dimensions.get('screen').width * index,
-                        index,
-                      }),
+                      // initialScrollIndex: this.state.selectedIndex,
+                      // getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
+                      //   length: Dimensions.get('screen').width,
+                      //   offset: Dimensions.get('screen').width * index,
+                      //   index,
+                      // }),
                     }}
                   />
+
+                  {!this.state.hideButtons &&
+                    <>
+                      <SafeAreaView style={[StyleSheet.absoluteFill, {
+                        alignItems: "flex-start",
+                        padding: 8,
+                      }]}>
+                        <IconButton
+                          icon="close"
+                          color={this.props.theme.colors.accent}
+                          onPress={this._hideGallery}
+                        />
+                      </SafeAreaView>
+
+                      <SafeAreaView style={[StyleSheet.absoluteFill, {
+                        alignItems: "flex-end",
+                        justifyContent: "flex-end",
+                        padding: 16,
+                      }]}>
+                        <FAB icon="share" onPress={this._export} />
+                      </SafeAreaView>
+                    </>
+                  }
                 </Portal>
               }
             </>
@@ -216,8 +242,8 @@ const mapResults = memoize((data: Album) => data != null && data.Album != null
   ? data.Album.pictures.map(p => ({
     source:
     {
-      uri: p.preview_1920,
-      preview: p.preview_100,
+      uri: encodeURI(p.preview_1920),
+      preview: encodeURI(p.preview_100),
     }
   }))
   : []);
