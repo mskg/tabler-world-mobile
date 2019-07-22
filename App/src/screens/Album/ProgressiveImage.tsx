@@ -24,9 +24,11 @@ class ProgressiveImage extends React.PureComponent<Props, State> {
         return (
             <CachedImage
                 uri={source.uri}
+                cacheGroup="album"
                 preview={
                     <>
                         <CachedImage
+                            cacheGroup="album"
                             uri={thumbnailSource.uri}
                         />
 

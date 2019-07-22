@@ -30,7 +30,7 @@ export function bootstrapRedux() {
   };
 
   // this breaks the experimental navigation option in DEV!
-  if (!__DEV__) {
+  if (!__DEV__ || true) {
     persistConfig.blacklist = [...(persistConfig.blacklist || []), "navigation"];
   }
 

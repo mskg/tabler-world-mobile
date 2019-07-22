@@ -1,13 +1,16 @@
 import React from "react";
 import { Animated, Image, ImageResizeMode, StyleSheet, View } from "react-native";
 import { Categories, Logger } from '../../helper/Logger';
+import { CacheGroup } from './CacheGroup';
 import CacheManager from "./CacheManager";
 import { DownloadOptions } from "./DownloadOptions";
+
 type ImageProps = {
   style?: any;
 
   preview?: React.ReactElement;
   options?: DownloadOptions;
+  cacheGroup?: CacheGroup;
 
   uri?: string | null;
   transitionDuration?: number;
@@ -32,9 +35,9 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
     hidePreview: false,
   };
 
-  async load({ uri, options = {} }: ImageProps, request: number): Promise<void> {
+  async load({ uri, options = {}, cacheGroup}: ImageProps, request: number): Promise<void> {
     if (uri) {
-      const path = await CacheManager.get(uri, options).getPath();
+      const path = await CacheManager.get(uri, options, cacheGroup).getPath();
 
       if (this.requestId !== request) {
         if (__DEV__) { logger.debug("Ignoring image request", uri, "already unloaded"); }

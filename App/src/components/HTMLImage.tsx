@@ -106,7 +106,7 @@ export default class HTMLImage extends PureComponent<Props, State> {
         // Fetch image dimensions only if they aren't supplied or if with or height is missing
         Image.getSize(
             //source.uri,
-            path,
+            encodeURI(path),
             (originalWidth, originalHeight) => {
                 if (!imagesMaxWidth) {
                     return this.mounted && this.setState({ width: originalWidth, height: originalHeight });
@@ -126,6 +126,7 @@ export default class HTMLImage extends PureComponent<Props, State> {
         return (
             <View style={{ width: this.state.width, height: this.state.height }}>
                 <CachedImage
+                    cacheGroup="news"
                     uri={source.uri}
                     style={[style, { width: this.state.width, height: this.state.height }]}
                     preview={<Placeholder ready={false} previewComponent={<Square width={this.state.width} height={this.state.height} />} />}

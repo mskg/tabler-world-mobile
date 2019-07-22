@@ -43,6 +43,7 @@ class AssociationsScreenBase extends AuditedScreen<Props, State> {
                     <CachedImage
                         theme={this.props.theme}
                         style={styles.image}
+                        cacheGroup="club"
                         uri="https://www.round-table.de/theme/public/assets/frontend/img/logo.png"
                     />
                 </View>

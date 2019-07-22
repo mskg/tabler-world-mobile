@@ -77,9 +77,9 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     <TouchableWithoutFeedback onPress={showClub}>
                         <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                             <CachedImage
-                                theme={this.props.theme}
                                 style={styles.image}
                                 uri={item.logo}
+                                cacheGroup="club"
                             />
                         </View>
                     </TouchableWithoutFeedback>

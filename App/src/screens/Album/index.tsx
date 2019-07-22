@@ -3,10 +3,10 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, FlatList, Platform, SafeAreaView, Share as ShareNative, StatusBar, StyleSheet, View } from 'react-native';
+import { Dimensions, FlatList, Platform, Share as ShareNative, StatusBar, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
-import { FAB, IconButton, Portal, Theme, withTheme } from 'react-native-paper';
+import { IconButton, Portal, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
@@ -21,6 +21,7 @@ import { I18N } from '../../i18n/translation';
 import { Album, AlbumVariables, Album_Album_pictures } from '../../model/graphql/Album';
 import { GetAlbumQuery } from '../../queries/GetAlbumQuery';
 import { IAlbumParams } from '../../redux/actions/navigation';
+import { HEADER_MARGIN_TOP } from '../../theme/dimensions';
 import { logger } from './logger';
 import ProgressiveImage from './ProgressiveImage';
 import { styles } from './Styles';
@@ -69,6 +70,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
           <View style={styles.imageThumbnail}>
             <CachedImage
               resizeMode="cover"
+              cacheGroup="album"
               preview={
                 // android doesn't like the animation here?
                 Platform.OS == "android" ? undefined :
@@ -90,7 +92,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
   }
 
   _toggleButtons = () => requestAnimationFrame(() => this.setState(
-      { hideButtons: !this.state.hideButtons }));
+    { hideButtons: !this.state.hideButtons }));
 
   _hideGallery = () => requestAnimationFrame(() => this.setState(
     { viewGallery: false },
@@ -208,24 +210,27 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
 
                   {!this.state.hideButtons &&
                     <>
-                      <SafeAreaView style={[StyleSheet.absoluteFill, {
-                        alignItems: "flex-start",
-                        padding: 8,
-                      }]}>
-                        <IconButton
-                          icon="close"
-                          color={this.props.theme.colors.accent}
-                          onPress={this._hideGallery}
-                        />
-                      </SafeAreaView>
+                      <IconButton
+                        icon="close"
+                        color={this.props.theme.colors.accent}
+                        onPress={this._hideGallery}
+                        style={{
+                          position: "absolute",
+                          top: HEADER_MARGIN_TOP + 8,
+                          left: 8,
+                        }}
+                      />
 
-                      <SafeAreaView style={[StyleSheet.absoluteFill, {
-                        alignItems: "flex-end",
-                        justifyContent: "flex-end",
-                        padding: 16,
-                      }]}>
-                        <FAB icon="share" onPress={this._export} />
-                      </SafeAreaView>
+                      <IconButton
+                        icon="share"
+                        onPress={this._export}
+                        color={this.props.theme.colors.accent}
+                        style={{
+                          position: "absolute",
+                          top: HEADER_MARGIN_TOP + 8,
+                          right: 8,
+                        }}
+                      />
                     </>
                   }
                 </Portal>
