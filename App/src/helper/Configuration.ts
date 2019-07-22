@@ -19,10 +19,10 @@ type Key =
 
 export function getConfigValue(key: Key): string {
     if (key === "api" && __DEV__) {
-        if (Platform.OS === "android") {
+        if (Platform.OS === "android" && (Constants.deviceName || "").startsWith("Android SDK")) {
             // default redirect to localhost for android emulator
             return "http://10.0.2.2:3000";
-        } else {
+        } else if (Platform.OS === "ios") {
             return "http://localhost:3000";
         }
     }
