@@ -56,6 +56,7 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "black",
         }}>
 
         {hasCameraPermission === null &&
@@ -65,9 +66,18 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
         {hasCameraPermission === false
           ? <Text>{I18N.Pair.permission}</Text>
           : <BarCodeScanner
-              onBarCodeScanned={this.handleBarCodeScanned}
-              style={StyleSheet.absoluteFillObject}
-          />
+            onBarCodeScanned={this.handleBarCodeScanned}
+            style={StyleSheet.absoluteFillObject}
+
+          >
+            {/* <View style={styles.layerTop} />
+            <View style={styles.layerCenter}>
+              <View style={styles.layerLeft} />
+              <View style={styles.focused} />
+              <View style={styles.layerRight} />
+            </View>
+            <View style={styles.layerBottom} /> */}
+          </BarCodeScanner>
         }
       </View>
     );
@@ -86,5 +96,41 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
     }
   };
 }
+
+// const opacity = 'rgba(0, 0, 0, .6)';
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     flexDirection: 'column'
+//   },
+//   layerTop: {
+//     flex: 0.5,
+//     backgroundColor: opacity
+//   },
+
+//   layerCenter: {
+//     flex: 1,
+//     flexDirection: 'row'
+//   },
+
+//   layerLeft: {
+//     flex: 1,
+//     backgroundColor: opacity
+//   },
+
+//   focused: {
+//     flex: 10
+//   },
+
+//   layerRight: {
+//     flex: 1,
+//     backgroundColor: opacity
+//   },
+
+//   layerBottom: {
+//     flex: 0.5,
+//     backgroundColor: opacity
+//   },
+// });
 
 export const ScanScreen = connect(null, { showProfile })(ScanScreenBase);
