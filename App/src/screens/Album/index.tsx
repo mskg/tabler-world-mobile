@@ -60,7 +60,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
   }
 
   _renderItem = (params) => {
-    const item: Album_Album_pictures = params.item;
+    const item = params.item;
 
     return (
       <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, hideButtons: false, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
@@ -78,7 +78,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                   }
                   />
               }
-              uri={item.preview_100}
+              uri={item.source.preview}
             />
           </View>
         </View>
@@ -170,7 +170,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                 <FlatList
                   contentContainerStyle={styles.container}
                   //@ts-ignore
-                  data={data != null && data.Album != null ? data.Album.pictures : []}
+                  data={mapResults(data)}
                   numColumns={4}
 
                   refreshing={loading}
@@ -252,12 +252,12 @@ const mapResults = memoize((data: Album) => data != null && data.Album != null
   }))
   : []);
 
-function memoize(func: (data: any) => any) {
+function memoize(func: (data: Album) => any) {
   let result;
-  let cachedData;
+  let cachedData: Album;
 
-  return (newData: any) => {
-    if (newData != cachedData) {
+  return (newData: Album) => {
+    if (newData != null && (cachedData == null || newData.Album != cachedData.Album)) {
       logger.log("calculating new data");
 
       result = func(newData);
