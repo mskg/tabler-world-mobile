@@ -4,6 +4,7 @@ export const refreshViews = async (client: Client) => {
     console.log("Updating views");
 
     await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY profiles');
+    await client.query('REFRESH MATERIALIZED VIEW profiles_privacysettings');
 
     // need to check if this is too much here
     // dequeue in other job?

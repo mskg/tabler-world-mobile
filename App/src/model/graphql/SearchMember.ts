@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { RoleType } from "./globalTypes";
+import { CompanySector, RoleType } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: SearchMember
@@ -76,4 +76,5 @@ export interface SearchMemberVariables {
   areas?: string[] | null;
   roles?: string[] | null;
   clubs?: string[] | null;
+  sectors?: CompanySector[] | null;
 }

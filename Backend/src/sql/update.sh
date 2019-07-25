@@ -18,6 +18,7 @@ BEGIN;
 \i '01 clubs.pgsql'
 \i '02 roles.pgsql'
 \i '04 profiles.pgsql'
+\i '04 privacy.pgsql'
 \i '05 structure.pgsql'
 \i '06 notifications_birthdays.pgsql'
 \i '07 search.pgsql'

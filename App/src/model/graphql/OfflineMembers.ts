@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { RoleType } from "./globalTypes";
+import { RoleType, CompanySector } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: OfflineMembers
@@ -78,6 +78,7 @@ export interface OfflineMembers_OwnTable_companies {
   email: string | null;
   phone: string | null;
   function: string | null;
+  sector: CompanySector | null;
   address: OfflineMembers_OwnTable_companies_address | null;
 }
 
@@ -197,6 +198,7 @@ export interface OfflineMembers_FavoriteMembers_companies {
   email: string | null;
   phone: string | null;
   function: string | null;
+  sector: CompanySector | null;
   address: OfflineMembers_FavoriteMembers_companies_address | null;
 }
 

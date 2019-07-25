@@ -1,4 +1,6 @@
 import faker from 'faker';
+import _ from 'lodash';
+import { SECTOR_MAPPING } from '../helper/Sectors';
 
 export const Company = () => {
 
@@ -8,8 +10,9 @@ export const Company = () => {
     name: () => name,
     email: () => faker.internet.email(undefined, undefined, faker.internet.domainName()),
     phone: () => faker.phone.phoneNumber(),
-    // sector?
+    sector: () => faker.random.arrayElement(_(SECTOR_MAPPING).values().toArray().value()),
     function: () => faker.commerce.department(),
     begin_date: () => faker.date.past(5).toISOString(),
+    end_date: () => faker.date.future(2).toISOString(),
   }
 };
