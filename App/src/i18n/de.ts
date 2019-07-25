@@ -243,7 +243,7 @@ const de: I18NType = {
         areas: (r) => r > 0 ? `Distrikte (${r})` : "Distrikte",
         tables: (r) => r > 0 ? `Tische (${r})` : "Tische",
 
-        sectors: (r) => r > 0 ? `Sectors (${r})` : "Sectors",
+        sectors: (r) => r > 0 ? `Sparten (${r})` : "Sparte",
 
         sectorNames: {
             "architecturalservices": "Architektur",
