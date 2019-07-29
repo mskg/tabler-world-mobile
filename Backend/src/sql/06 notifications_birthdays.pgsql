@@ -16,16 +16,20 @@ create index idx_profiles_birthdate on profiles(removed, birthdate(birthdate));
 drop view if exists notification_all_birthdays CASCADE;
 
 create or replace view notification_all_birthdays
-as select id, birthdate(birthdate) as birthdate, firstname, lastname, association, area, club, COALESCE((
-    select value->>'level'
-    from jsonb_array_elements(privacysettings::jsonb) t
-    where t.value @> '{"type": "birth_date"}'
-    limit 1
-), 'public') as privacy
-from profiles
+as select
+    profiles.id as id
+    , birthdate(birthdate) as birthdate
+    , firstname
+    , lastname
+    , association
+    , area
+    , club
+    , profiles_privacysettings.birth_date as privacy
+from profiles, profiles_privacysettings
 where
-    removed = FALSE
+        removed = FALSE
     and birthdate is not null
+    and profiles.id = profiles_privacysettings.id
 ;
 
 drop view if exists notification_birthdays cascade;
@@ -40,21 +44,9 @@ from
 where
         p.birthdate = birthdate(current_date)
     and u.id <> p.id -- not for himself
-    and p.privacy <> 'private'
-    and (
-            p.privacy = 'public'
-        or
-        (
-                p.privacy = 'association'
-            and p.association = u.association
-        )
-        or
-        (
-                p.privacy = 'club'
-            and p.association = u.association
-            and p.club = u.club
-        )
-   )
+    and get_profile_access (p.privacy,
+        p.id, p.club, p.association,
+        u.id, u.club, u.association) = true
 
     and (
             a.settings->'favorites' @> ('[' || p.id || ']')::jsonb -- favorite

@@ -41,21 +41,20 @@ class MemberRoleCover extends React.Component<Props> {
         return (
             <Surface style={styles.surface}>
                 <View style={[styles.container, coverStyle, style]}>
-                    {this.props.pic &&
-                        <CachedImage
-                            theme={this.props.theme}
-                            uri={this.props.pic}
-                            resizeMode="cover"
-                            {...rest}
-                            style={[styles.image, coverStyle]} />
-                    }
-
-                    {!(this.props.pic) &&
-                        <Ionicons
-                            color={this.props.theme.colors.backdrop}
-                            size={coverStyle.width + 20}
-                            name="ios-person" />
-                    }
+                    <CachedImage
+                        uri={this.props.pic}
+                        resizeMode="cover"
+                        cacheGroup="avatar"
+                        preview={
+                            <View style={coverStyle}>
+                                <Ionicons
+                                    color={this.props.theme.colors.backdrop}
+                                    size={coverStyle.width + 20}
+                                    name="ios-person" />
+                            </View>
+                        }
+                        {...rest}
+                        style={[styles.image, coverStyle]} />
                 </View>
 
                 <View style={[styles.name, nameStyle, { backgroundColor: this.props.theme.colors.background }]}>

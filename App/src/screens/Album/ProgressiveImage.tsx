@@ -1,5 +1,7 @@
 import React from 'react';
-import { Animated, Image, StyleSheet, View } from 'react-native';
+import { Animated } from 'react-native';
+import { CachedImage } from '../../components/Image/CachedImage';
+import { FullScreenLoading } from '../../components/Loading';
 
 type Props = {
     thumbnailSource: any,
@@ -7,56 +9,35 @@ type Props = {
     style?: any,
 }
 
-class ProgressiveImage extends React.PureComponent<Props> {
-    imageAnimated = new Animated.Value(0);
+type State = {
+}
 
-    onImageLoad = () => {
-        Animated.timing(this.imageAnimated, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
-    }
+class ProgressiveImage extends React.PureComponent<Props, State> {
+    imageAnimated = new Animated.Value(0);
 
     render() {
         const {
             thumbnailSource,
             source,
-            style,
-            ...props
         } = this.props;
 
         return (
-            <View>
-                <Image
-                    {...props}
-                    source={thumbnailSource}
-                    style={[styles.imageOverlay]}
-                    fadeDuration={0}
-                />
+            <CachedImage
+                uri={source.uri}
+                cacheGroup="album"
+                preview={
+                    <>
+                        <CachedImage
+                            cacheGroup="album"
+                            uri={thumbnailSource.uri}
+                        />
 
-                <Animated.Image
-                    {...props}
-
-                    source={source}
-                    style={[styles.imageOverlay, { opacity: this.imageAnimated }, style]}
-
-                    onLoad={this.onImageLoad}
-                    fadeDuration={0}
-                />
-            </View>
+                        <FullScreenLoading />
+                    </>
+                }
+            />
         );
     }
 }
 
 export default ProgressiveImage;
-
-const styles = StyleSheet.create({
-    imageOverlay: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 0,
-    },
-});
-

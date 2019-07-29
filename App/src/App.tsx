@@ -6,6 +6,8 @@ import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
 import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
 import { withAuthenticator } from './auth/withAuthenticator';
+import { fix2940 } from './components/fix2940';
+import { StandardStatusBar } from './components/Header';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
@@ -49,11 +51,14 @@ if (isFeatureEnabled(Features.BackgroundFetch)) {
 logger.log("Bootstrapping push notifications");
 registerForPushNotificationsAsync();
 
+fix2940();
+
 const App = () => {
   if (__DEV__) useKeepAwake();
 
   return (
     <React.Fragment>
+      <StandardStatusBar />
       <Reloader />
       <ActionSheetProvider>
         <Navigation />

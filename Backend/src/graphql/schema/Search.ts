@@ -4,6 +4,7 @@ export const SearchMember = gql`
     input MemberQueryInput {
         text: String
 
+        sectors: [CompanySector!]
         roles: [String!]
         areas: [String!]
         clubs: [String!]

@@ -63,6 +63,16 @@ const en = {
         }
     },
 
+    Pair: {
+        action: "Exchange contact details",
+        title: "Exchange Contact Details",
+        scan: "Scan Code",
+        me: "My Code",
+
+        request: "Requesting for camera permission",
+        permission: "No access to camera",
+    },
+
     Structure: {
         title: "Directory",
         associations: "Association",
@@ -115,6 +125,10 @@ const en = {
     Albums: {
         title: "Albums",
         details: "Show Album",
+    },
+
+    News: {
+        title: "News",
     },
 
     Album: {
@@ -227,6 +241,49 @@ const en = {
         roles: (r) => r > 0 ? `Roles (${r})` : "Roles",
         areas: (r) => r > 0 ? `Areas (${r})` : "Areas",
         tables: (r) => r > 0 ? `Tables (${r})` : "Tables",
+        sectors: (r) => r > 0 ? `Sectors (${r})` : "Sectors",
+
+        sectorNames: {
+            "accountingauditing": "Accounting & Auditing",
+            "administrativesupportservices": "Administrative & Support Services",
+            "advertisingmarketingpublicrelations": "Advertising, Marketing & Public Relations",
+            "aerospaceaviation": "Aerospace/ Aviation",
+            "agricultureforestryfishing": "Agriculture, Forestry & Fishing",
+            "architecturalservices": "Architectural Services",
+            "artsentertainmentmedia": "Arts, Entertainment & Media",
+            "banking": "Banking",
+            "biotechnologypharmaceutical": "Biotechnology & Pharmaceutical",
+            "communitysocialservicesnonprofit": "Community, Social Services & Non-profit",
+            "constructiontradesmining": "Construction, Trades & Mining",
+            "consultingservices": "Consulting Services",
+            "customerservicecallcenter": "Customer Service & Call Center",
+            "design": "Design",
+            "educationtraininglibrary": "Education, Training & Library",
+            "employmentrecruitmentagency": "Employment & Recruitment Agency",
+            "engineering": "Engineering",
+            "financeeconomics": "Finance & Economics",
+            "governmentpolicy": "Government & Policy",
+            "healthsocialcarepractitionertechnician": "Health & Social Care, Practitioner & Technician",
+            "hospitalitytourism": "Hospitality & Tourism",
+            "humanresources": "Human Resources",
+            "industry": "Industry",
+            "informationtechnology": "Information Technology",
+            "installationmaintenancerepair": "Installation, Maintenance & Repair",
+            "insurance": "Insurance",
+            "lawenforcementsecurity": "Law Enforcement & Security",
+            "legal": "Legal",
+            "manufacturingproduction": "Manufacturing & Production",
+            "other": "Other",
+            "personalcare": "Personal Care",
+            "realestate": "Real Estate",
+            "restaurantfoodservice": "Restaurant & Food Service",
+            "retailwholesale": "Retail & Wholesale",
+            "sales": "Sales",
+            "scienceresearch": "Science & Research",
+            "telecommunications": "Telecommunications",
+            "voluntaryservices": "Voluntary Services",
+            "warehousingdistribution": "Warehousing & Distribution"
+        }
     },
 
     Filter: {
@@ -369,7 +426,7 @@ const en = {
             sortOrder: "Sort Order",
             displayOrder: "Display Order",
 
-            experiment_albums: "Albums"
+            experiments: "Albums & News"
         },
 
         ReleaseNotes: "Release Notes",
@@ -394,7 +451,6 @@ const en = {
     },
 
     Members: {
-        me: "My profile on TABLER.WORLD",
         noresults: "No data available.",
         search: "Search...",
         title: "Members",

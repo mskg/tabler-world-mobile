@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from 'react-native-paper';
-import { I18N } from '../../i18n/translation';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
+import { I18N } from '../i18n/translation';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../theme/colors';
 
 type State = {
     shouldShowReadMore: boolean,
@@ -16,6 +16,7 @@ type Props = {
     children: any,
 
     onReady?: VoidFunc;
+
     renderTruncatedFooter?: (click: VoidFunc) => void;
     renderRevealedFooter?: (click: VoidFunc) => void;
 }

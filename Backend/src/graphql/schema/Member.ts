@@ -11,13 +11,55 @@ export const Member = gql`
         street2: String
     }
 
+    enum CompanySector {
+        accountingauditing
+        administrativesupportservices
+        advertisingmarketingpublicrelations
+        aerospaceaviation
+        agricultureforestryfishing
+        architecturalservices
+        artsentertainmentmedia
+        banking
+        biotechnologypharmaceutical
+        communitysocialservicesnonprofit
+        constructiontradesmining
+        consultingservices
+        customerservicecallcenter
+        design
+        educationtraininglibrary
+        employmentrecruitmentagency
+        engineering
+        financeeconomics
+        governmentpolicy
+        healthsocialcarepractitionertechnician
+        hospitalitytourism
+        humanresources
+        industry
+        informationtechnology
+        installationmaintenancerepair
+        insurance
+        lawenforcementsecurity
+        legal
+        manufacturingproduction
+        other
+        personalcare
+        realestate
+        restaurantfoodservice
+        retailwholesale
+        sales
+        scienceresearch
+        telecommunications
+        warehousingdistribution
+    }
+
     type Company {
         name: String!
         email: String
         phone: String
-        sector: String
+        sector: CompanySector
         function: String
         begin_date: Date
+        end_date: Date
         address: Address
     }
 

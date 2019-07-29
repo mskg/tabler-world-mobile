@@ -10,5 +10,6 @@ export const LastSyncResolver = () => {
         associations: Date.now(),
         utility: Date.now(),
         albums: Date.now(),
+        news: Date.now(),
     };
 };

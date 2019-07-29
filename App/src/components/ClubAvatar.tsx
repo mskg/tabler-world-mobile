@@ -34,6 +34,7 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
       >
         <CachedImage
           uri={source}
+          cacheGroup="club"
           preview={
             <Avatar.Text
               style={{ backgroundColor: this.props.theme.colors.backdrop, }}
@@ -42,7 +43,6 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
             />
           }
           resizeMode="contain"
-          theme={this.props.theme}
           style={
             [styles.imageStyles,
             {

@@ -19,4 +19,4 @@ class LoadingScreenBase extends React.Component<NavigationInjectedProps & { expe
     }
 }
 
-export const LoadingScreen = connect((s: IAppState) => ({ experiments: s.settings.experiment_albums }))(LoadingScreenBase);
+export const LoadingScreen = connect((s: IAppState) => ({ experiments: s.settings.experiments }))(LoadingScreenBase);

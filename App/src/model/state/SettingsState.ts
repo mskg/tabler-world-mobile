@@ -10,6 +10,6 @@ export type SettingsState = {
   emailApp?: string;
 
   darkMode: boolean;
-  experiment_albums?: boolean;
+  experiments?: boolean;
   optOutAnalytics: boolean;
 }

@@ -338,7 +338,7 @@ class ProfileBase extends React.Component<Props, State> {
                 disableRipple: true,
                 values: (member.companies || []).map(
                     p => ({
-                        field: I18N.Member.Fields.companies,
+                        field: I18N.Member.Fields.companies + (p.sector ? ` (${I18N.Search.sectorNames[p.sector]})` : ""),
                         text: formatCompany(p),
                         onPress: OpenLink.canOpenUrl() ? this.handleAddress(p.address) : undefined,
                     })

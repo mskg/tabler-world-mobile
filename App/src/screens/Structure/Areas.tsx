@@ -7,10 +7,12 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { Areas, Areas_Areas } from '../../model/graphql/Areas';
 import { GetAreasQuery } from "../../queries/GetAreasQuery";
+import { CardPlaceholder } from './CardPlaceholder';
 import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
 import { styles } from './Styles';
@@ -67,21 +69,26 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                     if (error) throw error;
 
                     return (
-                        <FlatList
-                            contentContainerStyle={styles.container}
-                            //@ts-ignore
-                            data={
-                                _(data != null ? data.Areas : [])
-                                    // my own area goes on top
-                                    .orderBy((a) => (data != null && data.Me.area.area == a.area) ? 0 : a.area)
-                                    .toArray()
-                                    .value()
-                            }
-                            refreshing={loading}
-                            onRefresh={refetch}
-                            renderItem={this._renderItem}
-                            keyExtractor={this._key}
-                        />
+                        <Placeholder
+                            ready={data != null && data.Areas != null}
+                            previewComponent={<CardPlaceholder />}
+                        >
+                            <FlatList
+                                contentContainerStyle={styles.container}
+                                //@ts-ignore
+                                data={
+                                    _(data != null ? data.Areas : [])
+                                        // my own area goes on top
+                                        .orderBy((a) => (data != null && data.Me.area.area == a.area) ? 0 : a.area)
+                                        .toArray()
+                                        .value()
+                                }
+                                refreshing={loading}
+                                onRefresh={refetch}
+                                renderItem={this._renderItem}
+                                keyExtractor={this._key}
+                            />
+                        </Placeholder>
                     )
                 }}
             </Query>

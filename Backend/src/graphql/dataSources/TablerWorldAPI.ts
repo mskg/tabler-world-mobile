@@ -3,7 +3,7 @@ import { getKey } from '../../schedule/apikey';
 import { TTLs } from '../cache/TTLs';
 import { IApolloContext } from '../types/IApolloContext';
 
-export class AlbumsAPI extends RESTDataSource<IApolloContext> {
+export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     constructor() {
         super();
         this.baseURL = `https://${process.env.api_host || process.env.API_HOST}/v1/admin/`;
@@ -19,6 +19,24 @@ export class AlbumsAPI extends RESTDataSource<IApolloContext> {
         {
             cacheOptions: {
                 ttl: TTLs.Albums,
+            },
+        });
+    }
+
+    async getAllDocuments(): Promise<Array<any>> {
+        return this.get('folders/', undefined,
+        {
+            cacheOptions: {
+                ttl: TTLs.Documents,
+            },
+        });
+    }
+
+    async getAllNews(): Promise<Array<any>> {
+        return this.get('news/', undefined,
+        {
+            cacheOptions: {
+                ttl: TTLs.News,
             },
         });
     }

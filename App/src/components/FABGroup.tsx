@@ -21,6 +21,9 @@ type Props = {
   onStateChange: (state: { open: boolean }) => any,
   visible?: boolean,
 
+  direction?: "top-down" | "bottom-up",
+  hideBackdrop?: boolean,
+
   style?: any,
   fabStyle?: any,
   areaStyle?: any,
@@ -115,14 +118,14 @@ class FABGroupBase extends React.Component<Props, State> {
     const labelColor = theme.dark
       ? colors.text
       : color(colors.text)
-          .fade(0.54)
-          .rgb()
-          .string();
+        .fade(0.54)
+        .rgb()
+        .string();
     const backdropOpacity = open
       ? this.state.backdrop.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.65],
-        })
+        inputRange: [0, 1],
+        outputRange: [0, 0.65],
+      })
       : this.state.backdrop;
 
     const opacities = this.state.animations;
@@ -130,9 +133,9 @@ class FABGroupBase extends React.Component<Props, State> {
       opacity =>
         open
           ? opacity.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.8, 1],
-            })
+            inputRange: [0, 1],
+            outputRange: [0.8, 1],
+          })
           : 1
     );
 
@@ -144,7 +147,7 @@ class FABGroupBase extends React.Component<Props, State> {
             pointerEvents={open ? 'auto' : 'none'}
             style={[
               styles.backdrop,
-              {
+              this.props.hideBackdrop ? undefined : {
                 opacity: backdropOpacity,
                 backgroundColor: colors.backdrop,
               },
@@ -152,20 +155,22 @@ class FABGroupBase extends React.Component<Props, State> {
           />
         </TouchableWithoutFeedback>
         <SafeAreaView pointerEvents="box-none" style={[styles.safeArea, areaStyle]}>
-        <FAB
-            onPress={() => {
-              onPress && onPress();
-              this._toggle();
-            }}
-            icon={icon}
-            color={this.props.color}
-            accessibilityLabel={accessibilityLabel}
-            accessibilityTraits="button"
-            accessibilityComponentType="button"
-            accessibilityRole="button"
-            style={[styles.fab, fabStyle]}
-            visible={visible}
-          />
+          {this.props.direction !== "bottom-up" &&
+            <FAB
+              onPress={() => {
+                onPress && onPress();
+                this._toggle();
+              }}
+              icon={icon}
+              color={this.props.color}
+              accessibilityLabel={accessibilityLabel}
+              accessibilityTraits="button"
+              accessibilityComponentType="button"
+              accessibilityRole="button"
+              style={[styles.fab, fabStyle]}
+              visible={visible}
+            />
+          }
 
           <View pointerEvents={open ? 'box-none' : 'none'}>
             {actions.map((it, i) => (
@@ -179,8 +184,8 @@ class FABGroupBase extends React.Component<Props, State> {
                     style={[
                       styles.label,
                       {
-                        transform: [{ scale: scales[actions.length - 1 - i] }],
-                        opacity: opacities[actions.length - 1 - i],
+                        transform: [{ scale: this.props.direction == "bottom-up" ? scales[i] : scales[actions.length - 1 - i] }],
+                        opacity: this.props.direction == "bottom-up" ? opacities[i] : opacities[actions.length - 1 - i],
                       },
                     ]}
                     onPress={() => {
@@ -205,8 +210,8 @@ class FABGroupBase extends React.Component<Props, State> {
                   color={it.color}
                   style={[
                     {
-                      transform: [{ scale: scales[actions.length - 1 - i] }],
-                      opacity: opacities[actions.length - 1 - i],
+                      transform: [{ scale: this.props.direction == "bottom-up" ? scales[i] : scales[actions.length - 1 - i] }],
+                      opacity: this.props.direction == "bottom-up" ? opacities[i] : opacities[actions.length - 1 - i],
                       backgroundColor: theme.colors.surface,
                     },
                     it.style,
@@ -227,6 +232,22 @@ class FABGroupBase extends React.Component<Props, State> {
               </View>
             ))}
           </View>
+          {this.props.direction === "bottom-up" &&
+            <FAB
+              onPress={() => {
+                onPress && onPress();
+                this._toggle();
+              }}
+              icon={icon}
+              color={this.props.color}
+              accessibilityLabel={accessibilityLabel}
+              accessibilityTraits="button"
+              accessibilityComponentType="button"
+              accessibilityRole="button"
+              style={[styles.fab, fabStyle]}
+              visible={visible}
+            />
+          }
         </SafeAreaView>
       </View>
     );

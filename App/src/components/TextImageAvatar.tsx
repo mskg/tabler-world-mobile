@@ -5,7 +5,7 @@ import { CachedImage } from "./Image/CachedImage";
 type Props = {
   theme: Theme;
 
-  source: string | undefined;
+  source: string | undefined | null;
   label: string;
 
   size: number;
@@ -31,6 +31,7 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
       >
         <CachedImage
           uri={source}
+          cacheGroup="avatar"
           preview={
             <Avatar.Text
               style={{
@@ -45,7 +46,6 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
             />
           }
 
-          theme={this.props.theme}
           resizeMode="cover"
 
           style={{

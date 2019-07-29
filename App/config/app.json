@@ -77,7 +77,8 @@
         "WRITE_CONTACTS",
         "READ_CALENDAR",
         "WRITE_CALENDAR",
-        "VIBRATE"
+        "VIBRATE",
+        "CAMERA"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo_Android.png",

@@ -4,7 +4,7 @@ import { Fade } from './Fade';
 type Props = {
     ready: boolean,
     previewComponent: React.ReactNode,
-    children: any,
+    children?: any,
 }
 
 export class Placeholder extends React.PureComponent<Props> {

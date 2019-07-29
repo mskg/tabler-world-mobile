@@ -14,7 +14,6 @@ import { showProfile } from '../redux/actions/navigation';
 import { SectionData } from '../screens/Members/MemberDataSource';
 import { SECTION_HEIGHT } from './List/Section';
 import { renderItem } from './ListRenderer';
-import { FullScreenLoading } from './Loading';
 import { MeListItem, ME_ITEM_HEIGHT } from './MeListItem';
 import { CHIP_HEIGHT, ITEM_HEIGHT, ITEM_HEIGHT_TAGS } from './Member/Dimensions';
 import { EmptyComponent } from './NoResults';
@@ -206,8 +205,6 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
     render() {
         if (this.props.data.length == 0 && !this.props.me) {
-            if (this.props.refreshing) return <FullScreenLoading />
-
             return (<EmptyComponent title={I18N.Members.noresults} />);
         }
 

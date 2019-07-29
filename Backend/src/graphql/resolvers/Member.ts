@@ -53,6 +53,12 @@ export const MemberResolver = {
         },
     },
 
+    Company: {
+        sector:  (root: any, _args: {}, _context: IApolloContext) => {
+            return root.sector ? root.sector.replace(/-/ig, "") : null
+        },
+    },
+
     Query: {
         MembersOverview: async (_root: any, args: MemberFilter, context: IApolloContext) => {
             const result = [];

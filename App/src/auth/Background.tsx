@@ -1,16 +1,13 @@
 import React from 'react';
-import { Image, ImageBackground, StatusBar, View } from 'react-native';
+import { Image, ImageBackground, View } from 'react-native';
 import { Headline, Subheading } from 'react-native-paper';
 import Assets from '../Assets';
 import { styles } from './Styles';
 
 export const Background = ({ children }) => (
-    <>
-        <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
-        <ImageBackground source={Assets.images.background} resizeMode="cover" style={{ width: '100%', height: '100%' }}>
-            {children}
-        </ImageBackground>
-    </>
+    <ImageBackground source={Assets.images.background} resizeMode="cover" style={{ width: '100%', height: '100%' }}>
+        {children}
+    </ImageBackground>
 );
 
 

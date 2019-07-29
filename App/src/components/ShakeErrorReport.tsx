@@ -14,7 +14,7 @@ import { I18N } from '../i18n/translation';
 
 const logger = new Logger(Categories.UIComponents.ErrorReport);
 
-const SHAKE_SPEED = 250;
+const SHAKE_SPEED = 350;
 class ShakeEvent {
     static addListener(handler) {
         let
