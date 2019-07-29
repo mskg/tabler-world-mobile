@@ -46,7 +46,7 @@ class MemberRoleCover extends React.Component<Props> {
                         resizeMode="cover"
                         cacheGroup="avatar"
                         preview={
-                            <View style={coverStyle}>
+                            <View style={[styles.container, coverStyle]}>
                                 <Ionicons
                                     color={this.props.theme.colors.backdrop}
                                     size={coverStyle.width + 20}
