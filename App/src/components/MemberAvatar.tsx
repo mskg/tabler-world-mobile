@@ -44,7 +44,7 @@ export const MeAvatar = (props: MeAvatarProps) => {
       size={size != null ? size : 38}
       source={me.pic}
       label={(
-        (me.firstname || "").substr(0, 1) +  (me.firstname || "").substr(0, 1)
+        (me.firstname || "").substr(0, 1) +  (me.lastname || "").substr(0, 1)
       ).toUpperCase()}
       {...others}
     />
