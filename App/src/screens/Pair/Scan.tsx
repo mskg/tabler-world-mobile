@@ -43,7 +43,7 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
 
   getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
+    this.setState({ hasCameraPermission: status === 'granted', visible: true });
   };
 
   render() {

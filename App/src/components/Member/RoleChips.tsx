@@ -12,7 +12,7 @@ type Props = {
 
 export class RoleChips extends React.PureComponent<Props> {
     render() {
-        if (this.props.roles == null || this.props.roles.length === 0) return;
+        if (this.props.roles == null || this.props.roles.length === 0) return null;
 
         const chipColor = color(this.props.theme.colors.text)
             .alpha(0.87)
