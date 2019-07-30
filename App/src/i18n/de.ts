@@ -107,8 +107,8 @@ const de: I18NType = {
 
         charter: "Datum der Chartner",
 
-        national: "Internationaler Patentisch",
-        international: "Nationaler Patentisch",
+        national: "Nationaler Patentisch",
+        international: "Internationaler Patentisch",
 
         account: "Bankverbindung",
 
