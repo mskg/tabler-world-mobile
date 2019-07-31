@@ -11,6 +11,7 @@ const fileNames = [
     require("./01 clubs.pgsql"),
     require("./02 roles.pgsql"),
     require("./04 profiles.pgsql"),
+    require("./04 privacy.pgsql"),
     require("./05 structure.pgsql"),
     require("./06 notifications_birthdays.pgsql"),
     require("./07 search.pgsql"),

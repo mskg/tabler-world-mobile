@@ -19,6 +19,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Filters } from '../../model/graphql/Filters';
+import { CompanySector } from '../../model/graphql/globalTypes';
 import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
 import { IAppState } from '../../model/IAppState';
 import { GetFiltersQuery } from "../../queries/GetFiltersQuery";
@@ -244,6 +245,9 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                         areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
                         clubs: this.state.filterTags.filter((f: FilterTag) => f.type === "table").map((f: FilterTag) => f.value),
                         roles: this.state.filterTags.filter((f: FilterTag) => f.type === "role").map((f: FilterTag) => f.value),
+                        sectors: this.state.filterTags.filter((f: FilterTag) => f.type === "sector").map((f: FilterTag) =>
+                            _(I18N.Search.sectorNames).findKey(v => v == f.value) as CompanySector
+                        ),
                     }}
                     >
                         {({ loading, data, fetchMore, error, refetch }) => {
@@ -272,6 +276,9 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                 areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
                                                 clubs: this.state.filterTags.filter((f: FilterTag) => f.type === "table").map((f: FilterTag) => f.value),
                                                 roles: this.state.filterTags.filter((f: FilterTag) => f.type === "role").map((f: FilterTag) => f.value),
+                                                sectors: this.state.filterTags.filter((f: FilterTag) => f.type === "sector").map((f: FilterTag) =>
+                                                    _(I18N.Search.sectorNames).findKey(v => v == f.value) as CompanySector
+                                                ),
                                             },
 
                                             updateQuery: (previousResult, { fetchMoreResult }) => {
@@ -358,7 +365,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                 />
 
                                                 <Divider />
-
                                                 <FilterSection
                                                     title={I18N.Search.areas(data.Areas.length)}
                                                     type="area"
@@ -369,7 +375,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                 />
 
                                                 <Divider />
-
                                                 <FilterSection
                                                     title={I18N.Search.tables(data.Clubs.length)}
                                                     type="table"
@@ -378,10 +383,21 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
                                                 />
+
+                                                <Divider />
+                                                <FilterSection
+                                                    title={I18N.Search.sectors(Object.keys(I18N.Search.sectorNames).length)}
+                                                    type="sector"
+                                                    filter={this.state.filterTags}
+                                                    data={_(I18N.Search.sectorNames).values().sort().toArray().value()}
+                                                    onToggle={this._onToggleTag}
+                                                    theme={this.props.theme}
+                                                />
                                             </>
                                         );
                                     }}
                                 </Query>
+
                                 <Divider />
                             </ScrollView>
                         </List.Section>

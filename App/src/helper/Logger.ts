@@ -43,6 +43,7 @@ export class Categories {
     }
 
     public static Screens = class {
+        public static readonly News = Categories._UI + "/News";
         public static readonly Albums = Categories._UI + "/Albums";
         public static readonly SignIn = Categories._UI + "/SignIn";
         public static readonly ConfirmSignIn = Categories._UI + "/ConfirmSignIn";
@@ -53,6 +54,7 @@ export class Categories {
         public static readonly Docs = Categories._UI + "/Docs";
         public static readonly Structure = Categories._UI + "/Structure";
         public static readonly Club = Categories._UI + "/Club";
+        public static readonly Scan = Categories._UI + "/Scan";
     }
 
     public static Helpers = class {

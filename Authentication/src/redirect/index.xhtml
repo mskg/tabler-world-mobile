@@ -1,0 +1,41 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="https://static.roundtable.world/static/images/email/style.css">
+    </link>
+</head>
+
+<body style="padding: 10px">
+    <p style="font-size: 16px; line-height: 24px; margin: 0 0 16px; text-align: center;">
+        <img src="https://static.roundtable.world/static/images/logo/rti-large.png"
+            style="-ms-interpolation-mode: bicubic; outline: none; text-decoration: none; width: 300px; max-width: 300px; margin-bottom: 0px;"
+            width="300" />
+    </p>
+    <p>
+        <p style="font-size: 16px;line-height: 24px; margin: 30px 0 16px;color:#515151;">
+            <p>We try to open the TABLER.APP with the following Security code: <b id="display"></b>. If that doesn't work automatically, please click the link below.
+            </p>
+        </p>
+
+        <div
+            style="background-color: #E94B52; padding: 5px; width: 150px; vertical-align: middle; text-align: center; color: white;">
+            <a id="href" style="color: white;">Use code in App</a>
+        </div>
+    </p>
+
+    <script>
+        var url = new URL(window.location.href);
+        var code = url.searchParams.get("code");
+
+        const redirect = "tablerworld://confirm?code=" + code;
+
+        window.document.getElementById("href").attributes["href"] = redirect;
+        window.document.getElementById("display").innerHTML = code;
+
+        window.location.replace(redirect);
+    </script>
+</body>
+</html>

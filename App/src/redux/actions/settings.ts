@@ -12,7 +12,7 @@ export type SettingsType =
   | { name: "phoneApp", value: string | undefined }
 
   | { name: "darkMode", value: boolean }
-  | { name: "experiment_albums", value: boolean }
+  | { name: "experiments", value: boolean }
 ;
 
 /**

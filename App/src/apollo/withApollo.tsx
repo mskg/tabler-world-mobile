@@ -1,10 +1,14 @@
 import React from 'react';
 import { ApolloProvider } from "react-apollo";
+import { AsyncStorage } from 'react-native';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { bootstrapApollo, getPersistor } from './bootstrapApollo';
 
 const logger = new Logger(Categories.Api);
+
+const SCHEMA_VERSION = '1'; // Must be a string.
+const SCHEMA_VERSION_KEY = 'apollo-schema-version';
 
 export function withApollo(App) {
     return class extends React.PureComponent {
@@ -14,15 +18,28 @@ export function withApollo(App) {
 
         async componentDidMount() {
             const client = await bootstrapApollo(await isDemoModeEnabled());
+            const persistor = getPersistor();
 
             try {
-                await getPersistor().restore();
+                const currentVersion = await AsyncStorage.getItem(SCHEMA_VERSION_KEY);
+
+                if (currentVersion === SCHEMA_VERSION) {
+                    // We're good to go and can restore the cache.
+                    await persistor.restore();
+                } else {
+                    // We'll want to purge the outdated persisted cache
+                    await persistor.purge();
+                    await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
+                }
+
+                await persistor.restore();
             }
             catch (e) {
                 logger.error(e, "Failed to restore cache");
 
                 try {
-                    getPersistor().purge();
+                    persistor.purge();
+                    await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
                 }
                 catch { }
             }

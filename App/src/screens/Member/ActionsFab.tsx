@@ -77,7 +77,7 @@ class ActionsFabBase extends React.Component<Props> {
         }}
 
         open={this.state.open}
-        icon={'menu'}
+        icon={this.state.open ? 'close' : "menu"}
         actions={[
           {
             icon: 'star',

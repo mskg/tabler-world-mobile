@@ -23,9 +23,11 @@ export const cache = new InMemoryCache({
     fragmentMatcher,
 
     dataIdFromObject: object => {
-        // console.log(defaultDataIdFromObject(object));
-
         switch (object.__typename) {
+            // has an id field, but that is not a unique id
+            case "RoleRef":
+                return null;
+
             case 'Association':
                 //@ts-ignore
                 if (object.association == null) return defaultDataIdFromObject(object);
@@ -39,11 +41,8 @@ export const cache = new InMemoryCache({
 
     cacheRedirects: {
         Query: {
-            // Association: (_, args, { getCacheKey }) =>
-            //     getCacheKey({ __typename: 'Association', id: args.id }),
-
-            // Area: (_, args, { getCacheKey }) =>
-            //     getCacheKey({ __typename: 'Area', id: args.id }),
+            NewsArticle: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'NewsArticle', id: args.id }),
 
             Club: (_, args, { getCacheKey }) =>
                 getCacheKey({ __typename: 'Club', id: args.id }),

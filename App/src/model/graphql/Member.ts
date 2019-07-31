@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { RoleType } from "./globalTypes";
+import { RoleType, CompanySector } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: Member
@@ -78,6 +78,7 @@ export interface Member_Member_companies {
   email: string | null;
   phone: string | null;
   function: string | null;
+  sector: CompanySector | null;
   address: Member_Member_companies_address | null;
 }
 

@@ -9,6 +9,7 @@ import { AuditScreenName as ScreenName } from '../../analytics/AuditScreenName';
 import { RoleAccordionSection } from '../../components/Club/RoleAccordionSection';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
 import { normalizeForSearch } from '../../helper/normalizeForSearch';
@@ -16,6 +17,7 @@ import { I18N } from '../../i18n/translation';
 import { Clubs, Clubs_Clubs } from '../../model/graphql/Clubs';
 import { GetClubsQuery } from '../../queries/GetClubsQuery';
 import { homeScreen, showClub } from '../../redux/actions/navigation';
+import { CardPlaceholder } from './CardPlaceholder';
 import { CardTitle } from './CardTitle';
 import { styles } from './Styles';
 
@@ -77,9 +79,9 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     <TouchableWithoutFeedback onPress={showClub}>
                         <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                             <CachedImage
-                                theme={this.props.theme}
                                 style={styles.image}
                                 uri={item.logo}
+                                cacheGroup="club"
                             />
                         </View>
                     </TouchableWithoutFeedback>
@@ -166,27 +168,32 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
 
     render() {
         return (
-            <View style={{ width: '100%', height: '100%' }}>
-                <FlatList
-                    contentContainerStyle={styles.container}
-                    data={this.state.filtered}
-                    ListHeaderComponent={
-                        <Searchbar
-                            style={[styles.searchbar]}
-                            selectionColor={this.props.theme.colors.accent}
-                            placeholder={I18N.Search.search}
-                            autoCorrect={false}
+            <Placeholder
+                ready={this.props.data != null && this.props.data.Clubs != null}
+                previewComponent={<CardPlaceholder />}
+            >
+                <View style={{ width: '100%', height: '100%' }}>
+                    <FlatList
+                        contentContainerStyle={styles.container}
+                        data={this.state.filtered}
+                        ListHeaderComponent={
+                            <Searchbar
+                                style={[styles.searchbar]}
+                                selectionColor={this.props.theme.colors.accent}
+                                placeholder={I18N.Search.search}
+                                autoCorrect={false}
 
-                            value={this.state.search}
-                            onChangeText={this._search}
-                        />
-                    }
-                    refreshing={this.props.loading}
-                    onRefresh={this.props.refresh}
-                    renderItem={this._renderItem}
-                    keyExtractor={this._key}
-                />
-            </View>
+                                value={this.state.search}
+                                onChangeText={this._search}
+                            />
+                        }
+                        refreshing={this.props.loading}
+                        onRefresh={this.props.refresh}
+                        renderItem={this._renderItem}
+                        keyExtractor={this._key}
+                    />
+                </View>
+            </Placeholder>
         );
     }
 }

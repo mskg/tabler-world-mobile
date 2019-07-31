@@ -14,7 +14,6 @@ import { showProfile } from '../redux/actions/navigation';
 import { SectionData } from '../screens/Members/MemberDataSource';
 import { SECTION_HEIGHT } from './List/Section';
 import { renderItem } from './ListRenderer';
-import { FullScreenLoading } from './Loading';
 import { MeListItem, ME_ITEM_HEIGHT } from './MeListItem';
 import { CHIP_HEIGHT, ITEM_HEIGHT, ITEM_HEIGHT_TAGS } from './Member/Dimensions';
 import { EmptyComponent } from './NoResults';
@@ -87,9 +86,9 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
                     // this kills the performance of the "debugger" as
                     // code is executed many many times in every render cycle
-                    // if (__DEV__) { logger.debug(roles, length); }
-                    if (length > 80 * SCREEN_FACTOR) return ItemType.Large3;
-                    if (length > 47 * SCREEN_FACTOR) return ItemType.Large2;
+                    // if (__DEV__) { logger.debug((data as IMemberOverviewFragment).lastname, length); }
+                    if (length >= 47*2 * SCREEN_FACTOR) return ItemType.Large3;
+                    if (length >= 47 * SCREEN_FACTOR) return ItemType.Large2;
 
                     return ItemType.Large;
                 }
@@ -206,8 +205,6 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
     render() {
         if (this.props.data.length == 0 && !this.props.me) {
-            if (this.props.refreshing) return <FullScreenLoading />
-
             return (<EmptyComponent title={I18N.Members.noresults} />);
         }
 

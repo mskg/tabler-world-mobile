@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { Checkbox, Divider, Text, TouchableRipple } from 'react-native-paper';
 import { Accordion } from "./Accordion";
 
-export type FilterTagType = "area" | "role" | "table";
+export type FilterTagType = "area" | "role" | "table" | "sector";
 
 export type FilterTag = {
     type: FilterTagType,
@@ -18,7 +18,7 @@ const Element = ({ theme, title, onPress, right }: {
             style={{ backgroundColor: color(theme.colors.background).alpha(0.35).rgb().string() }}
             onPress={() => requestAnimationFrame(() => onPress())}>
             <View style={[styles.row]} pointerEvents="none">
-                <Text style={{ width: MAX_WIDTH }} numberOfLines={1}>{title}</Text>
+                <Text style={{ width: MAX_WIDTH }} numberOfLines={2}>{title}</Text>
                 {right}
             </View>
         </TouchableRipple>

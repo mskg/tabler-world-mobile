@@ -12,6 +12,10 @@ export const ExperimentsNavigation = createMaterialBottomTabNavigator(
         initialRouteName: MainRoutes.Members,
         shifting: true,
 
+        drawBehind: false,
+        visible: true,
+        keyboardHidesNavigationBar: false,
+
         renderLabel: ({ color, route }) => {
             return (<Text style={{ ...I18N.NavigationStyle, color }}>{MainNavRoutes[route.routeName].navigationOptions.tabBarLabel}</Text>);
         },
@@ -20,5 +24,6 @@ export const ExperimentsNavigation = createMaterialBottomTabNavigator(
 
         barStyle: {
             backgroundColor: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
+            paddingBottom: 0,
         }
     });

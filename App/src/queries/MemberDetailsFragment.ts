@@ -37,6 +37,7 @@ export const MemberDetailsFragment = gql`
             email
             phone
             function
+            sector
             address {
                 postal_code
                 city

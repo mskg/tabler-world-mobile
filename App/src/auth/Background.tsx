@@ -21,9 +21,9 @@ export const Logo = () => (
     </View>
 );
 
-export const Greeting = ({title, subtitle}) => (
+export const Greeting = ({ title, subtitle }) => (
     <React.Fragment>
-    <Headline style={styles.greeting}>{title}</Headline>
-    <Subheading style={styles.greeting2}>{subtitle}</Subheading>
+        <Headline style={styles.greeting}>{title}</Headline>
+        <Subheading style={styles.greeting2}>{subtitle}</Subheading>
     </React.Fragment>
 );

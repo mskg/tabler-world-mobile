@@ -1,0 +1,102 @@
+import * as WebBrowser from "expo-web-browser";
+import React from 'react';
+import { WebView } from 'react-native';
+import { Theme, withTheme } from 'react-native-paper';
+import HTML from 'react-native-render-html';
+import { _constructStyles } from 'react-native-render-html/src/HTMLStyles';
+import HTMLImage from './HTMLImage';
+
+type State = {};
+
+type Props = {
+    html: String,
+    theme: Theme,
+    maxWidth: number,
+    skipIFrames?: boolean,
+};
+
+class HTMLViewBase extends React.Component<Props, State> {
+    render() {
+        return <HTML
+            staticContentMaxWidth={this.props.maxWidth}
+            imagesMaxWidth={this.props.maxWidth}
+
+            html={this.props.html}
+
+            allowFontScaling={false}
+            baseFontStyle={{
+                fontFamily: this.props.theme.fonts.regular,
+                // fontSize: 12,
+            }}
+
+            onLinkPress={async (_a, url, _other) => await WebBrowser.openBrowserAsync(url)}
+
+            tagsStyles={
+                {
+                    p: { paddingBottom: 8, margin: 0 },
+                    b: {
+                        fontFamily: this.props.theme.fonts.medium
+                    },
+                    strong: {
+                        fontFamily: this.props.theme.fonts.medium
+                    },
+                }
+            }
+
+            renderers={{
+                img: (htmlAttribs, _children, _convertedCSSStyles, passProps = {}) => {
+                    if (!htmlAttribs.src) {
+                        return false;
+                    }
+
+                    const style = _constructStyles({
+                        tagName: 'img',
+                        htmlAttribs,
+                        passProps,
+                        styleSet: 'IMAGE'
+                    });
+
+                    const { src, alt, width, height } = htmlAttribs;
+
+                    return (
+                        <HTMLImage
+                            source={{ uri: src }}
+                            width={width}
+                            height={height}
+                            style={style}
+                            {...passProps}
+                        />
+                    );
+                },
+
+                iframe: (htmlAttribs, _children, _convertedCSSStyles, passProps) => {
+                    if (this.props.skipIFrames) return false;
+
+                    const { staticContentMaxWidth } = passProps;
+                    const { height, width } = htmlAttribs;
+
+                    let newHeight = 200;
+                    let newWidth = this.props.maxWidth;
+
+                    // recalculate width based on factoring with new widtth
+                    if (height && width) {
+                        newHeight = height * (staticContentMaxWidth / width);
+                    }
+
+                    const source = htmlAttribs.srcdoc ? { html: htmlAttribs.srcdoc } : { uri: htmlAttribs.src };
+
+                    return (
+                        <WebView
+                            mediaPlaybackRequiresUserAction={true}
+                            startInLoadingState={true}
+                            key={passProps.key}
+                            source={source}
+                            style={{ width: newWidth, height: newHeight }} />
+                    );
+                }
+            }}
+        />
+    }
+}
+
+export const HTMLView = withTheme(HTMLViewBase);

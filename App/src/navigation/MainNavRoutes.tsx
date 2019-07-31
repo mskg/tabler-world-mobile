@@ -3,6 +3,7 @@ import React from 'react';
 import { I18N } from '../i18n/translation';
 import { AlbumsScreen } from '../screens/Albums';
 import { MembersScreen } from '../screens/Members';
+import { NewsScreen } from '../screens/News';
 import SettingsScreen from '../screens/Settings';
 import StructureScreen from '../screens/Structure';
 import { WorldScreen } from '../screens/World';
@@ -25,11 +26,11 @@ export const MainNavRoutes = {
         }
     },
 
-    [MainRoutes.World]: {
-        screen: WorldScreen,
+    [MainRoutes.News]: {
+        screen: NewsScreen,
         navigationOptions: {
-            tabBarLabel: I18N.World.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-globe" />),
+            tabBarLabel: I18N.News.title,
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-paper" />)
         }
     },
 
@@ -37,7 +38,15 @@ export const MainNavRoutes = {
         screen: AlbumsScreen,
         navigationOptions: {
             tabBarLabel: I18N.Albums.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-albums" />)
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-image" />)
+        }
+    },
+
+    [MainRoutes.World]: {
+        screen: WorldScreen,
+        navigationOptions: {
+            tabBarLabel: I18N.World.tab,
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-globe" />),
         }
     },
 

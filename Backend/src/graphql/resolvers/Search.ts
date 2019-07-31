@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { SECTOR_MAPPING } from "../helper/Sectors";
 import { useDatabase } from "../rds/useDatabase";
 import { IApolloContext } from "../types/IApolloContext";
 
@@ -10,6 +11,8 @@ type SearchInput = {
         roles: string[],
         areas: string[],
         clubs: string[],
+
+        sectors: string[],
     }
 }
 
@@ -89,10 +92,29 @@ export const SearchMemberResolver = {
                 filters.push(`id in (select id from structure_tabler_roles where name = ANY ($${parameters.length}))`);
             }
 
-            // if (args.query.areas != null && args.query.areas.length > 0) {
-            //     parameters.push(args.query.areas);
-            //     filters.push(`areaname = ANY ($${parameters.length})`);
-            // }
+            if (args.query.sectors != null && args.query.sectors.length > 0) {
+                parameters.push(args.query.sectors.map(s => (JSON.stringify([{sector: SECTOR_MAPPING[s]}]))));
+                const sectorsId = parameters.length;
+
+                parameters.push(context.principal.id);
+                parameters.push(context.principal.club);
+                parameters.push(context.principal.association);
+
+                filters.push(`id in (
+select sectorprofiles.id
+from profiles sectorprofiles, profiles_privacysettings sectorpricacy
+where
+        sectorprofiles.id = sectorpricacy.id
+    and sectorprofiles.removed = false
+    and get_profile_access(sectorpricacy.company,
+        sectorprofiles.id, sectorprofiles.club, sectorprofiles.association,
+        $${sectorsId+1}, $${sectorsId+2}, $${sectorsId+3}
+    ) = true
+    and sectorprofiles.companies @> ANY($${sectorsId}::jsonb[])
+)`);
+            }
+
+            // context.logger.log("Query is", filters.join(' AND '));
 
             return useDatabase(
                 context,

@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { RoleType } from "./globalTypes";
+import { RoleType, CompanySector } from "./globalTypes";
 
 // ====================================================
 // GraphQL fragment: MemberDetailsFragment
@@ -78,6 +78,7 @@ export interface MemberDetailsFragment_companies {
   email: string | null;
   phone: string | null;
   function: string | null;
+  sector: CompanySector | null;
   address: MemberDetailsFragment_companies_address | null;
 }
 

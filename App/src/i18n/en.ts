@@ -13,10 +13,10 @@ const en = {
 
     ErrorReport: {
         title: "Report a problem",
-        text: "Your feedback helps us improve TABLER.WORLD.",
+        text: "Your feedback helps us improve TABLER.APP.",
         report: "Something isn't working?",
 
-        subject: "TABLER.WORLD Client Issue",
+        subject: "TABLER.APP Issue",
         noMail: "You seem to have no mail client installed?",
         template: `Please describe what happened:`,
     },
@@ -61,6 +61,16 @@ const en = {
             title: "Demo Mode",
             text: "After confirmation, we will restart the application. To exit the demo, goto Settings | Logout."
         }
+    },
+
+    Pair: {
+        action: "Exchange contact details",
+        title: "Exchange Contact Details",
+        scan: "Scan Code",
+        me: "My Code",
+
+        request: "Requesting for camera permission",
+        permission: "No access to camera",
     },
 
     Structure: {
@@ -109,11 +119,16 @@ const en = {
 
     World: {
         title: "TABLER.WORLD",
+        tab: "Online"
     },
 
     Albums: {
         title: "Albums",
         details: "Show Album",
+    },
+
+    News: {
+        title: "News",
     },
 
     Album: {
@@ -226,6 +241,49 @@ const en = {
         roles: (r) => r > 0 ? `Roles (${r})` : "Roles",
         areas: (r) => r > 0 ? `Areas (${r})` : "Areas",
         tables: (r) => r > 0 ? `Tables (${r})` : "Tables",
+        sectors: (r) => r > 0 ? `Sectors (${r})` : "Sectors",
+
+        sectorNames: {
+            "accountingauditing": "Accounting & Auditing",
+            "administrativesupportservices": "Administrative & Support Services",
+            "advertisingmarketingpublicrelations": "Advertising, Marketing & Public Relations",
+            "aerospaceaviation": "Aerospace/ Aviation",
+            "agricultureforestryfishing": "Agriculture, Forestry & Fishing",
+            "architecturalservices": "Architectural Services",
+            "artsentertainmentmedia": "Arts, Entertainment & Media",
+            "banking": "Banking",
+            "biotechnologypharmaceutical": "Biotechnology & Pharmaceutical",
+            "communitysocialservicesnonprofit": "Community, Social Services & Non-profit",
+            "constructiontradesmining": "Construction, Trades & Mining",
+            "consultingservices": "Consulting Services",
+            "customerservicecallcenter": "Customer Service & Call Center",
+            "design": "Design",
+            "educationtraininglibrary": "Education, Training & Library",
+            "employmentrecruitmentagency": "Employment & Recruitment Agency",
+            "engineering": "Engineering",
+            "financeeconomics": "Finance & Economics",
+            "governmentpolicy": "Government & Policy",
+            "healthsocialcarepractitionertechnician": "Health & Social Care, Practitioner & Technician",
+            "hospitalitytourism": "Hospitality & Tourism",
+            "humanresources": "Human Resources",
+            "industry": "Industry",
+            "informationtechnology": "Information Technology",
+            "installationmaintenancerepair": "Installation, Maintenance & Repair",
+            "insurance": "Insurance",
+            "lawenforcementsecurity": "Law Enforcement & Security",
+            "legal": "Legal",
+            "manufacturingproduction": "Manufacturing & Production",
+            "other": "Other",
+            "personalcare": "Personal Care",
+            "realestate": "Real Estate",
+            "restaurantfoodservice": "Restaurant & Food Service",
+            "retailwholesale": "Retail & Wholesale",
+            "sales": "Sales",
+            "scienceresearch": "Science & Research",
+            "telecommunications": "Telecommunications",
+            "voluntaryservices": "Voluntary Services",
+            "warehousingdistribution": "Warehousing & Distribution"
+        }
     },
 
     Filter: {
@@ -344,7 +402,7 @@ const en = {
 
         texts: {
             contacts: "Members can be synchronized to your phone's default Contacts' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.",
-            experiments: "These are experimental and unsupported features of the TABLER.WORLD app and may dissapear at any time."
+            experiments: "These are experimental and unsupported features of the TABLER.APP and may dissapear at any time."
         },
 
         contactpermissions: "Cannot access Contacts. Please grant permission through the phone's settings area.",
@@ -368,7 +426,7 @@ const en = {
             sortOrder: "Sort Order",
             displayOrder: "Display Order",
 
-            experiment_albums: "Albums"
+            experiments: "Albums & News"
         },
 
         ReleaseNotes: "Release Notes",
@@ -393,7 +451,6 @@ const en = {
     },
 
     Members: {
-        me: "My profile on TABLER.WORLD",
         noresults: "No data available.",
         search: "Search...",
         title: "Members",

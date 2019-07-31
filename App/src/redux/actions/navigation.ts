@@ -10,6 +10,10 @@ export interface IClubParams {
     club: string,
 }
 
+export interface INewsArticleParams {
+    id: number,
+}
+
 export interface IAlbumParams {
     album: number,
 }
@@ -20,7 +24,7 @@ export interface IPictureParams {
 }
 
 export const showProfile = (tablerId: number) => NavigationActions.navigate({
-    routeName: HomeRoutes.Contact,
+    routeName: HomeRoutes.Member,
     key: "tabler:"+tablerId.toString(),
     params: {
         tabler: tablerId
@@ -47,6 +51,10 @@ export const showFilter = () => NavigationActions.navigate({
     routeName: HomeRoutes.Filter
 });
 
+export const showPair = () => NavigationActions.navigate({
+    routeName: HomeRoutes.Pair
+});
+
 export const showClub = (id: string) => NavigationActions.navigate({
     routeName: HomeRoutes.Club,
     key: "club:"+id,
@@ -61,4 +69,12 @@ export const showAlbum = (id: number) => NavigationActions.navigate({
     params: {
         album: id
     } as IAlbumParams,
+});
+
+export const showNewsArticle = (id: number) => NavigationActions.navigate({
+    routeName: HomeRoutes.NewsArticle,
+    key: "newsarticle:"+id,
+    params: {
+        id
+    } as INewsArticleParams,
 });

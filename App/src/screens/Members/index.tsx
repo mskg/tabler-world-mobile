@@ -10,6 +10,7 @@ import { AlphabeticScrollBar } from '../../components/AlphabetJumpbar';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { renderItem } from '../../components/ListRenderer';
 import { MemberSectionList } from '../../components/MemberSectionList';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
@@ -25,6 +26,7 @@ import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
 import { showFilter, showSearch } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { MemberDataSource } from './MemberDataSource';
+import { MemberListPlaceholder } from "./MemberListPlaceholder";
 import { Predicates } from './Predicates';
 
 const logger = new Logger(Categories.Screens.Contacts);
@@ -181,25 +183,35 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                             ]
                     }
                 }>
-                    <MemberSectionList
-                        setRef={ref => this._sectionList = ref}
-                        extraData={this.state.forceUpdate}
-                        me={this.state.me}
-                        refreshing={this.props.loading}
-                        data={this.state.dataSource.data}
-                        onRefresh={this.props.refresh}
-                    />
+                    <Placeholder ready={
+                        this.props.data != null
+                        && this.props.data.MembersOverview != null
+                        && this.props.data.Me != null
+                        && (
+                            !this.props.loading
+                            || this.state.dataSource.data != null
+                        )
+                    } previewComponent={<MemberListPlaceholder />}>
+                        <MemberSectionList
+                            setRef={ref => this._sectionList = ref}
+                            extraData={this.state.forceUpdate}
+                            me={this.state.me}
+                            refreshing={this.props.loading}
+                            data={this.state.dataSource.data}
+                            onRefresh={this.props.refresh}
+                        />
 
-                    <AlphabeticScrollBar
-                        isPortrait={false}
-                        reverse={false}
-                        font={this.props.theme.fonts.medium}
-                        fontColor={Colors.lightBlue700}
-                        top={TOTAL_HEADER_HEIGHT}
-                        fontSize={11}
-                        supports={this.state.dataSource.sections}
-                        onScroll={this._jumptoLetterDirect}
-                    />
+                        <AlphabeticScrollBar
+                            isPortrait={false}
+                            reverse={false}
+                            font={this.props.theme.fonts.medium}
+                            fontColor={Colors.lightBlue700}
+                            top={TOTAL_HEADER_HEIGHT}
+                            fontSize={11}
+                            supports={this.state.dataSource.sections}
+                            onScroll={this._jumptoLetterDirect}
+                        />
+                    </Placeholder>
                 </ScreenWithHeader>
             </React.Fragment>
         );
@@ -227,7 +239,7 @@ const ConnectedMembersScreen = connect(
 
 // processing time is too slow if we add the @client directive
 // to a query with many records.
-const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard  }) => (
+const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard }) => (
     <Query<OfflineMembers>
         query={GetOfflineMembersQuery}
         fetchPolicy={fetchPolicy}
@@ -271,7 +283,7 @@ const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard 
                         loading={isLoading}
                         data={data}
                         offlineData={oData}
-                        refresh={() => {refetch(); oRefetch();}} />
+                        refresh={() => { refetch(); oRefetch(); }} />
                 }}
             </Query>
         }}

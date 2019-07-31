@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "TABLER.WORLD Mobile",
+    "name": "TABLER.APP",
     "privacy": "unlisted",
-    "sdkVersion": "33.0.0",
+    "sdkVersion": "34.0.0",
     "description": "'One community, one web' has evolved from a dream and a vision to a hard fact solution. Two years ago all associations of RTI came together and gave a core team a great task to produce a solution that would empower all our members to table and connect online. You will be the first to adopt, adapt and improve on a tabling and administration platform by tablers for tablers as we take a giant leap forward – Bringing Tabling into the 21st century!",
     "platforms": [
       "ios",
@@ -24,7 +24,7 @@
       "support": "support@round-table.de"
     },
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo_iOS.png",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -77,11 +77,13 @@
         "WRITE_CONTACTS",
         "READ_CALENDAR",
         "WRITE_CALENDAR",
-        "VIBRATE"
-      ]
-    },
-    "androidStatusBar": {
-      "backgroundColor": "#f2f2f2"
+        "VIBRATE",
+        "CAMERA"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo_Android.png",
+        "backgroundColor": "#ffffff"
+      }
     }
   }
 }

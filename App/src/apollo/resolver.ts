@@ -16,6 +16,7 @@ export const typeDefs = gql`
         associations: Int!
         utility: Int!
         albums: Int!
+        news: Int!
     }
 
     extend type Query {
@@ -29,6 +30,10 @@ export const typeDefs = gql`
     }
 
     extend type Album {
+        LastSync: Int!
+    }
+
+    extend type NewsArticle {
         LastSync: Int!
     }
 `;
@@ -47,6 +52,10 @@ export const Resolvers = {
     },
 
     Album: {
+        LastSync: lastUpdate
+    },
+
+    NewsArticle: {
         LastSync: lastUpdate
     }
 };

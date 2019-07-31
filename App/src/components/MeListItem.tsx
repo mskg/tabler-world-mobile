@@ -1,10 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet } from "react-native";
 import { Card, Theme, Title, TouchableRipple } from 'react-native-paper';
+import { connect } from 'react-redux';
 import { getConfigValue } from '../helper/Configuration';
-import { OpenLink } from "../helper/OpenLink";
 import { I18N } from '../i18n/translation';
 import { IWhoAmI } from '../model/IWhoAmI';
+import { showPair } from '../redux/actions/navigation';
 import { MeAvatar } from './MemberAvatar';
 
 type State = {
@@ -12,6 +14,7 @@ type State = {
 
 type OwnProps = {
     theme: Theme,
+    showPair: typeof showPair,
 };
 
 type StateProps = {
@@ -22,22 +25,25 @@ type Props = OwnProps & StateProps;
 
 export const ME_ITEM_HEIGHT = 93;
 
-export class MeListItem extends React.PureComponent<Props, State> {
+class MeListItemBase extends React.PureComponent<Props, State> {
     render() {
         const { me } = this.props;
         const profile = getConfigValue("profile");
 
         return (
             <Card style={styles.card}>
-                <TouchableRipple onPress={() => OpenLink.url(profile.replace("#id#", me.id.toString())) }>
+                <TouchableRipple onPress={this.props.showPair}>
                     <Card.Title
                         style={{height: ME_ITEM_HEIGHT}}
                         titleStyle={styles.title}
                         subtitleStyle={styles.subTitle}
 
                         title={<Title>{me.firstname} {me.lastname}</Title>}
-                        subtitle={I18N.Members.me}
+                        subtitle={I18N.Pair.action}
                         left={() => <MeAvatar me={this.props.me} size={48 + 16} background={this.props.theme.colors.backdrop} />}
+
+                        rightStyle={styles.right}
+                        right={({size}) => <Ionicons name="md-qr-scanner" size={size} />}
                     />
                 </TouchableRipple>
             </Card>
@@ -45,7 +51,13 @@ export class MeListItem extends React.PureComponent<Props, State> {
     }
 }
 
+export const MeListItem = connect(null, { showPair })(MeListItemBase);
+
 const styles = StyleSheet.create({
+    right: {
+        marginRight: 38,
+    },
+
     card: {
         height: ME_ITEM_HEIGHT,
         paddingVertical: 0,

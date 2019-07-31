@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { removeEmptyTags } from "../helper/removeEmptyTags";
 import { IApolloContext } from "../types/IApolloContext";
 
 type IdQuery = {
@@ -9,28 +10,17 @@ type TopQuery = {
     top?: number,
 };
 
-const removeEmptyTags = (text: string) => {
-    let removed = text.replace(/<[^\/>]+>[ \n\r\t]*<\/[^>]+>/g, "");
-
-    do {
-        let newRemoved = removed.replace(/<[^\/>]+>[ \n\r\t]*<\/[^>]+>/g, "");
-
-        if (newRemoved != removed) { removed = newRemoved; }
-        else { return newRemoved; }
-    } while (true);
-}
-
 export const AlbumsResolver = {
     Query: {
         Albums: async (_root: any, _args: {}, context: IApolloContext) => {
-            return _(await context.dataSources.albums.getAllAlbums())
+            return _(await context.dataSources.tablerWorld.getAllAlbums())
                 .filter(f => f.pictures && f.pictures.length > 0)
                 .reverse()
                 .value();
         },
 
         Album: async (_root: any, args: IdQuery, context: IApolloContext) => {
-            const all = await (context.dataSources.albums.getAllAlbums());
+            const all = await (context.dataSources.tablerWorld.getAllAlbums());
             return all.find((a: any) => a.id == args.id);
         },
     },

@@ -28,7 +28,9 @@ export class PictureScreenBase extends AuditedScreen<{ theme } & NavigationInjec
                 showBack: true,
             }}>
                 <View style={[styles.container, { backgroundColor: this.props.theme.colors.surface }]}>
-                    <CachedImage theme={this.props.theme} uri={picture} resizeMode="contain" />
+                    <CachedImage
+                        uri={picture}
+                        resizeMode="contain" />
                 </View>
             </ScreenWithHeader>
         );

@@ -12,10 +12,10 @@ const de: I18NType = {
 
     ErrorReport: {
         title: "Ein Problem melden",
-        text: "Dein Feedback hilft uns TABLER.WORLD zu verbessern.",
+        text: "Dein Feedback hilft uns die TABLER.APP zu verbessern.",
         report: "Geht etwas nicht?",
 
-        subject: "TABLER.WORLD Client Problem",
+        subject: "TABLER.APP Problem",
         noMail: "Kann es sein, dass Du keine E-Mails versenden kannst?",
         template: `Beschreibe bitte was passiert ist:`,
     },
@@ -63,6 +63,16 @@ const de: I18NType = {
         }
     },
 
+    Pair: {
+        action: "Visitenkarten tauschen",
+        title: "Visitenkarte tauschen",
+        scan: "Code scannen",
+        me: "Mein Code",
+
+        request: "Berechtigungen für die Kamera",
+        permission: "Keine Berechtigungen für die Kamera",
+    },
+
     Structure: {
         title: "Verzeichnis",
         associations: "Assoziatio...",
@@ -97,8 +107,8 @@ const de: I18NType = {
 
         charter: "Datum der Chartner",
 
-        national: "Internationaler Patentisch",
-        international: "Nationaler Patentisch",
+        national: "Nationaler Patentisch",
+        international: "Internationaler Patentisch",
 
         account: "Bankverbindung",
 
@@ -110,11 +120,16 @@ const de: I18NType = {
 
     World: {
         title: "TABLER.WORLD",
+        tab: "Online",
     },
 
     Albums: {
         title: "Alben",
         details: "Album anzeigen",
+    },
+
+    News: {
+        title: "Aktuelles",
     },
 
     Album: {
@@ -227,6 +242,50 @@ const de: I18NType = {
         roles: (r) => r > 0 ? `Rollen (${r})` : "Rollen",
         areas: (r) => r > 0 ? `Distrikte (${r})` : "Distrikte",
         tables: (r) => r > 0 ? `Tische (${r})` : "Tische",
+
+        sectors: (r) => r > 0 ? `Sparten (${r})` : "Sparte",
+
+        sectorNames: {
+            "architecturalservices": "Architektur",
+            "banking": "Bankwesen",
+            "constructiontradesmining": "Bau, Handel und Minenarbeit",
+            "consultingservices": "Beratung/Consulting",
+            "biotechnologypharmaceutical": "Biotechnologie und Pharmazie",
+            "accountingauditing": "Buchhaltung/Finanzen",
+            "design": "Design",
+            "scienceresearch": "Forschung",
+            "voluntaryservices": "Freiwilligendienst, Voluntariat",
+            "hospitalitytourism": "Gastgewerbe und Tourismus",
+            "healthsocialcarepractitionertechnician": "Gesundheits- und Sozialwesen",
+            "retailwholesale": "Groß- und Einzelhandel",
+            "installationmaintenancerepair": "Handwerk",
+            "realestate": "Immobilienverwaltung",
+            "industry": "Industrie",
+            "informationtechnology": "Informationstechnologie",
+            "engineering": "Ingenieurswesen",
+            "customerservicecallcenter": "Kundendienst / Call Center",
+            "artsentertainmentmedia": "Kunst, Unterhaltung und Medien",
+            "warehousingdistribution": "Lagerung und Vertieb",
+            "agricultureforestryfishing": "Land-, Forst-, Fischereiwirtschaft",
+            "aerospaceaviation": "Luftfahrt/Raumfahrt",
+            "communitysocialservicesnonprofit": "öffentlicher Dienst, gemeinnützige Einrichtungen",
+            "employmentrecruitmentagency": "Personalvermittlung",
+            "humanresources": "Personalwesen",
+            "personalcare": "Pflegeberufe",
+            "manufacturingproduction": "Produktion und Herstellung",
+            "legal": "Rechtswesen",
+            "governmentpolicy": "Regierung und Politik",
+            "restaurantfoodservice": "Restaurant und Lebensmittel",
+            "educationtraininglibrary": "Schulung, Training, Bibliothek",
+            "other": "Sonstiges",
+            "lawenforcementsecurity": "Strafverfolgung und Sicherheit",
+            "telecommunications": "Telekommunikation",
+            "insurance": "Versicherung",
+            "sales": "Vertrieb",
+            "administrativesupportservices": "Verwaltung",
+            "advertisingmarketingpublicrelations": "Werbung, Marketing, PR",
+            "financeeconomics": "Wirtschaft und Finanzen"
+        }
     },
 
     Filter: {
@@ -288,7 +347,7 @@ const de: I18NType = {
 
         texts: {
             contacts: "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.",
-            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.WORLD App. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
+            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
         },
 
         contactpermissions: "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
@@ -313,7 +372,7 @@ const de: I18NType = {
             sortOrder: "Sortierung",
             displayOrder: "Anzeige",
 
-            experiment_albums: "Alben"
+            experiments: "Alben und Neuigkeiten"
         },
 
         ReleaseNotes: "Versionshinweise (Englisch)",

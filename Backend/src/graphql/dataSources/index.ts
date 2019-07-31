@@ -1,17 +1,17 @@
-import { AlbumsAPI } from "./Albums";
 import { MembersDataSource } from "./Members";
 import { StructureDataSource } from "./Structure";
+import { TablerWorldAPI } from "./TablerWorldAPI";
 
 export const dataSources = (): IDataSources => {
     return {
         members: new MembersDataSource(),
-        albums: new AlbumsAPI(),
+        tablerWorld: new TablerWorldAPI(),
         structure: new StructureDataSource(),
     };
 };
 
 export interface IDataSources {
     members: MembersDataSource,
-    albums: AlbumsAPI,
+    tablerWorld: TablerWorldAPI,
     structure: StructureDataSource,
 }
