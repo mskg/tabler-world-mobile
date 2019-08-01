@@ -1,25 +1,28 @@
+import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, TouchableWithoutFeedback, View } from 'react-native';
-import { Button, Card, Searchbar, Theme, withTheme } from 'react-native-paper';
+import { Button, Card, IconButton, Searchbar, Surface, Theme, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { AuditedScreen } from '../../analytics/AuditedScreen';
-import { AuditScreenName as ScreenName } from '../../analytics/AuditScreenName';
-import { RoleAccordionSection } from '../../components/Club/RoleAccordionSection';
-import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
-import { CachedImage } from '../../components/Image/CachedImage';
-import { Placeholder } from '../../components/Placeholder/Placeholder';
-import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
-import { normalizeForSearch } from '../../helper/normalizeForSearch';
-import { I18N } from '../../i18n/translation';
-import { Clubs, Clubs_Clubs } from '../../model/graphql/Clubs';
-import { GetClubsQuery } from '../../queries/GetClubsQuery';
-import { homeScreen, showClub } from '../../redux/actions/navigation';
-import { CardPlaceholder } from './CardPlaceholder';
-import { CardTitle } from './CardTitle';
-import { styles } from './Styles';
+import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenName';
+import { RoleAccordionSection } from '../../../components/Club/RoleAccordionSection';
+import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
+import { CachedImage } from '../../../components/Image/CachedImage';
+import { Placeholder } from '../../../components/Placeholder/Placeholder';
+import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
+import { Categories, Logger } from "../../../helper/Logger";
+import { normalizeForSearch } from '../../../helper/normalizeForSearch';
+import { I18N } from '../../../i18n/translation';
+import { Clubs, Clubs_Clubs } from '../../../model/graphql/Clubs';
+import { GetClubsQuery } from '../../../queries/GetClubsQuery';
+import { homeScreen, showClub } from '../../../redux/actions/navigation';
+import { CardPlaceholder } from '../CardPlaceholder';
+import { CardTitle } from '../CardTitle';
+import { styles } from '../Styles';
+import { Routes } from './Routes';
 
 const logger = new Logger(Categories.Screens.Structure);
 
@@ -36,7 +39,7 @@ type Props = {
     loading: boolean,
     refresh: () => any,
     data?: Clubs | null,
-};
+} & NavigationInjectedProps;
 
 class ClubsScreenBase extends AuditedScreen<Props, State> {
     constructor(props) {
@@ -59,6 +62,8 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
             });
         }
     }
+
+    _showMap = () => requestAnimationFrame(() => this.props.navigation.navigate(Routes.Map));
 
     _renderItem = (params) => {
         const item: Clubs_Clubs = params.item;
@@ -168,32 +173,46 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
 
     render() {
         return (
-            <Placeholder
-                ready={this.props.data != null && this.props.data.Clubs != null}
-                previewComponent={<CardPlaceholder />}
-            >
-                <View style={{ width: '100%', height: '100%' }}>
+            <View style={{ width: '100%', height: '100%', backgroundColor: this.props.theme.colors.background }}>
+                <Placeholder
+                    ready={this.props.data != null && this.props.data.Clubs != null}
+                    previewComponent={<CardPlaceholder />}
+                >
                     <FlatList
                         contentContainerStyle={styles.container}
                         data={this.state.filtered}
                         ListHeaderComponent={
-                            <Searchbar
-                                style={[styles.searchbar]}
-                                selectionColor={this.props.theme.colors.accent}
-                                placeholder={I18N.Search.search}
-                                autoCorrect={false}
+                            <View style={{ flexDirection: "row" }}>
+                                <Searchbar
+                                    style={[styles.searchbar]}
+                                    selectionColor={this.props.theme.colors.accent}
+                                    placeholder={I18N.Search.search}
+                                    autoCorrect={false}
 
-                                value={this.state.search}
-                                onChangeText={this._search}
-                            />
+                                    value={this.state.search}
+                                    onChangeText={this._search}
+                                />
+
+                                <Surface style={styles.switchLayoutButton}>
+                                    <IconButton
+                                        icon={({ size, color }) =>
+                                            <Ionicons
+                                                name="md-map"
+                                                size={size}
+                                                color={color}
+                                            />}
+                                        onPress={this._showMap}
+                                    />
+                                </Surface>
+                            </View>
                         }
                         refreshing={this.props.loading}
                         onRefresh={this.props.refresh}
                         renderItem={this._renderItem}
                         keyExtractor={this._key}
                     />
-                </View>
-            </Placeholder>
+                </Placeholder>
+            </View>
         );
     }
 }
@@ -201,7 +220,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
 const ConnectedClubScreen = connect(null, {
     showClub,
     homeScreen,
-})(withTheme(ClubsScreenBase));
+})(withTheme(withNavigation(ClubsScreenBase)));
 
 const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     <Query<Clubs> query={GetClubsQuery} fetchPolicy={fetchPolicy}>

@@ -83,6 +83,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo_Android.png",
         "backgroundColor": "#ffffff"
+      },
+      "config":{
+        "googleMaps": {}
       }
     }
   }

@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from 'react-navigation';
 import { I18N } from '../i18n/translation';
 import { AreasScreen } from './Structure/Areas';
 import { AssociationsScreen } from './Structure/Associations';
-import { ClubsScreen } from './Structure/Clubs';
+import ClubsScreen from './Structure/Clubs';
 import { Routes } from './Structure/Routes';
 import { StructureScreen } from './Structure/Screen';
 

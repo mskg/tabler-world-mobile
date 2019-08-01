@@ -546,7 +546,7 @@ resources:
             Fn::GetAtt:
               - EncodeAddressQueueDeadLetters
               - Arn
-          maxReceiveCount: 5
+          maxReceiveCount: 30
 
     EncodeAddressQueueDeadLetters:
       Type: AWS::SQS::Queue
