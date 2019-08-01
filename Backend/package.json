@@ -21,6 +21,7 @@
     "lambda-warmer": "^1.1.2",
     "lodash": "^4.17.11",
     "lru-cache": "^5.1.1",
+    "node-geocoder": "^3.23.0",
     "node-gzip": "^1.1.2",
     "pg": "^7.8.1"
   },
@@ -31,6 +32,7 @@
     "@types/graphql": "^14.2.0",
     "@types/lru-cache": "^5.1.0",
     "@types/node": "^11.10.4",
+    "@types/node-geocoder": "^3.19.1",
     "@types/pg": "^7.4.13",
     "cross-env": "^5.2.0",
     "env-cmd": "^8.0.2",
@@ -55,6 +57,7 @@
   ],
   "scripts": {
     "test-export": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && ts-node --project ./tsconfig.json scripts/export\"",
+    "test-geo": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && ts-node --project ./tsconfig.json scripts/geocode\"",
     "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
     "deploy-func:graphql": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f graphql --verbose\"",
     "deploy-func:reader": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f import-reader --verbose\"",

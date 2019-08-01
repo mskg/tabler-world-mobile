@@ -6,24 +6,24 @@ import { Client } from "pg";
 export async function withDatabase<T>(ctx: Context, func: (client: Client) => Promise<T>): Promise<T> {
     ctx.callbackWaitsForEmptyEventLoop = false;
 
-    let password = process.env.db_password;
+    let password = process.env.db_password || process.env.DB_PASSWORD;
     if (password == null || password === "") {
         console.log("[withDatabase]", "-> with token");
 
         const sign = new RDS.Signer();
         password = sign.getAuthToken({
             region: process.env.AWS_REGION,
-            hostname: process.env.db_host,
+            hostname: process.env.db_host || process.env.DB_HOST,
             port: 5432,
-            username: process.env.db_user,
+            username: process.env.db_user || process.env.DB_USER,
         });
     }
 
     const client = new Client({
-        host: process.env.db_host,
+        host: process.env.db_host || process.env.DB_HOST,
         port: 5432,
-        user: process.env.db_user,
-        database: process.env.db_database,
+        user: process.env.db_user || process.env.DB_USER,
+        database: process.env.db_database || process.env.DB_DATABASE,
         ssl: true,
         password,
     });

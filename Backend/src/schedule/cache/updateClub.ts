@@ -1,3 +1,4 @@
+import { SQS } from "aws-sdk";
 import { Client } from "pg";
 import { makeCacheKey } from "../../graphql/cache/makeCacheKey";
 import { cache } from "./cacheInstance";
@@ -29,6 +30,17 @@ export async function updateClub(client: Client, assoc: string, club: number) {
     if (newClub != null) {
         console.log("Updating", key);
         cache.set(key, JSON.stringify(newClub));
+
+        const addresses = [
+            newClub.meetingplace1,
+            newClub.meetingplace2,
+        ];
+
+        var sqs = new SQS();
+        await sqs.sendMessage({
+            QueueUrl: process.env.geocode_queue as string,
+            MessageBody: JSON.stringify(addresses)
+        }).promise();
     }
     else {
         console.log("Removing", key);

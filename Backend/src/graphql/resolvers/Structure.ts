@@ -1,4 +1,5 @@
 import * as DateParser from 'date-and-time';
+import { addressHash } from '../../geo/addressHash';
 import { IApolloContext } from "../types/IApolloContext";
 
 type ById = {
@@ -35,9 +36,23 @@ export const StructureResolver = {
     },
 
     Club: {
-        // id: (root: any, _args: any, _context: IApolloContext) => {
-        //     return root.id;
-        // },
+        longitude: async (root: any, _args: any, context: IApolloContext) => {
+            const hash = addressHash(root.meetingplace1);
+            context.logger.log(root, hash);
+
+            if (hash == null) return null;
+
+            const coordinates = await context.dataSources.geocoder.readOne(hash);
+            return coordinates ? coordinates.longitude : null;
+        },
+
+        latitude: async (root: any, _args: any, context: IApolloContext) => {
+            const hash = addressHash(root.meetingplace1);
+            if (hash == null) return null;
+
+            const coordinates = await context.dataSources.geocoder.readOne(hash);
+            return coordinates ? coordinates.latitude : null;
+        },
 
         area: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Area Loading", root);

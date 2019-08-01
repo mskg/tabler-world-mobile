@@ -1,5 +1,5 @@
+import { addressHash } from "../../geo/addressHash";
 import { IApolloContext } from "../types/IApolloContext";
-
 
 function doTrim(s: string | undefined): string | null {
     if (s == null) return null;
@@ -45,6 +45,24 @@ export const AddressResolver = {
 
         postal_code: (root: any, _args: any, _context: IApolloContext) => {
             return doTrim(root.postal_code);
+        },
+
+        longitude: async (root: any, _args: any, context: IApolloContext) => {
+            const hash = addressHash(root);
+            context.logger.log(root, hash);
+
+            if (hash == null) return null;
+
+            const coordinates = await context.dataSources.geocoder.readOne(hash);
+            return coordinates ? coordinates.longitude : null;
+        },
+
+        latitude: async (root: any, _args: any, context: IApolloContext) => {
+            const hash = addressHash(root);
+            if (hash == null) return null;
+
+            const coordinates = await context.dataSources.geocoder.readOne(hash);
+            return coordinates ? coordinates.latitude : null;
         },
     },
 }

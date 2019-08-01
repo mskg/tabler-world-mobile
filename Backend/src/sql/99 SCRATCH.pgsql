@@ -91,3 +91,10 @@ from
 
 select companies
 from profiles
+
+
+select md5('abc')
+
+
+select * from geocodes
+where query ilike '%Havestehuder Weg 44%'
