@@ -1,7 +1,7 @@
 import { makeCacheKey } from "../cache/makeCacheKey";
 import { TTLs } from "../cache/TTLs";
 import { writeThrough } from "../cache/writeThrough";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 export const RolesResolver = {
@@ -12,7 +12,7 @@ export const RolesResolver = {
                 makeCacheKey("Structure", ["roles", context.principal.association]),
                 () =>
 
-                    useDatabase(
+                useDataService(
                         context,
                         async (client) => {
                             const res = await client.query(
