@@ -16,6 +16,7 @@ const fileNames = [
     require("./06 notifications_birthdays.pgsql"),
     require("./07 search.pgsql"),
     require("./08 jobs.pgsql"),
+    require("./09 geocode.pgsql"),
 ];
 
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {

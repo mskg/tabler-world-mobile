@@ -23,6 +23,7 @@ BEGIN;
 \i '06 notifications_birthdays.pgsql'
 \i '07 search.pgsql'
 \i '08 jobs.pgsql'
+\i '09 geocode.pgsql'
 
 select count(*) as tablers from tabler;
 select count(*) as profiles from profiles where REMOVED = false;

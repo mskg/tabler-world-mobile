@@ -35,4 +35,4 @@ async function runGecode(address: IAddress): Promise<NodeGeocoder.Entry[]> {
 }
 
 // compare https://operations.osmfoundation.org/policies/nominatim/
-export const geocode = AsyncThrottle(runGecode, 1100, 1);
+export const geocode = AsyncThrottle(runGecode, 2000, 1);

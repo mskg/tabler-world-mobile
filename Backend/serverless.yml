@@ -321,7 +321,7 @@ functions:
   #
   geocode:
     handler: src/geo/lambda.handler
-    timeout: 120
+    timeout: 20 # batchSize 1, elements 10
     memorySize: 128
     reservedConcurrency: 1
 
@@ -339,6 +339,7 @@ functions:
             Fn::GetAtt:
               - EncodeAddressQueue
               - Arn
+          batchSize: 1
 
   #
   # Send push notifications
@@ -533,6 +534,7 @@ resources:
       Properties:
         QueueName: ${self:custom.sqs}-dead
         MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 0
 
     EncodeAddressQueue:
       Type: AWS::SQS::Queue
@@ -540,19 +542,20 @@ resources:
         QueueName: ${self:custom.sqs_geo}
         MessageRetentionPeriod: 1209600
         # 6 times lambda timeout
-        VisibilityTimeout: 120
+        VisibilityTimeout: 20
         RedrivePolicy:
           deadLetterTargetArn:
             Fn::GetAtt:
               - EncodeAddressQueueDeadLetters
               - Arn
-          maxReceiveCount: 30
+          maxReceiveCount: 1
 
     EncodeAddressQueueDeadLetters:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: ${self:custom.sqs_geo}-dead
         MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 0
 
     GeocodeLogGroup:
       Properties:
