@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type QuerySettings = {
@@ -16,7 +16,7 @@ type SettingInput = {
 export const SettingsResolver = {
     Query: {
         Setting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     const result = await client.query(`
@@ -30,7 +30,7 @@ WHERE id = $1`,
         },
 
         Settings: async (_root: any, _args: any, context: IApolloContext) => {
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     const result = await client.query(`
@@ -55,7 +55,7 @@ WHERE id = $1`,
 
     Mutation: {
         removeSetting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     await client.query(`
@@ -72,7 +72,7 @@ WHERE id = $1
         putSetting: async (_root: any, args: SettingInput, context: IApolloContext) => {
             if (args == null) return;
 
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
 

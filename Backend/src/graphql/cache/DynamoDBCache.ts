@@ -1,19 +1,18 @@
 import { CacheOptions } from 'apollo-datasource-rest/dist/RESTDataSource';
 import { KeyValueCache } from 'apollo-server-core';
-import { AWSError } from 'aws-sdk';
-import DynamoDB, { TableName } from 'aws-sdk/clients/dynamodb';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import _ from 'lodash';
 import { DocumentClient } from '../xray/DynamoDB';
 import { CacheData, CacheValues, IManyKeyValueCache } from "./CacheTypes";
 
+type PromiseResult<D, E> = D & {$response: AWS.Response<D, E>};
+
 export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
-    client: DynamoDB.DocumentClient;
+    client: AWS.DynamoDB.DocumentClient;
 
     constructor(
-        serviceConfigOptions: DynamoDB.Types.ClientConfiguration,
+        serviceConfigOptions: AWS.DynamoDB.Types.ClientConfiguration,
         private tableOptions: {
-            tableName: TableName,
+            tableName: AWS.DynamoDB.TableName,
             ttl?: number,
         },
     ) {
@@ -150,7 +149,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         const chunks = _.chunk(ids, 100);
         let result = {};
 
-        const reduceResult = (chunkResult: PromiseResult<DynamoDB.DocumentClient.BatchGetItemOutput, AWSError>) => {
+        const reduceResult = (chunkResult: PromiseResult<AWS.DynamoDB.DocumentClient.BatchGetItemOutput, AWS.AWSError>) => {
             if (chunkResult.Responses && chunkResult.Responses[this.tableOptions.tableName]) {
                 chunkResult.Responses[this.tableOptions.tableName].reduce(
                     (p, c) => {

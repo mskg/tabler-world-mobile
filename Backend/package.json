@@ -9,8 +9,6 @@
     "apollo-server": "^2.6.1",
     "apollo-server-caching": "^0.4.0",
     "apollo-server-lambda": "^2.6.1",
-    "aws-sdk": "^2.414.0",
-    "aws-xray-sdk": "^2.3.3",
     "casual": "^1.6.2",
     "dataloader": "^1.4.0",
     "date-and-time": "^0.7.0",
@@ -21,10 +19,11 @@
     "lambda-warmer": "^1.1.2",
     "lodash": "^4.17.11",
     "lru-cache": "^5.1.1",
-    "node-gzip": "^1.1.2",
-    "pg": "^7.8.1"
+    "pg": "^7.8.1",
+    "aws-xray-sdk": "^2.3.3"
   },
   "devDependencies": {
+    "aws-sdk": "^2.414.0",
     "@types/aws-lambda": "^8.10.26",
     "@types/date-and-time": "^0.6.0",
     "@types/faker": "^4.1.5",
@@ -41,7 +40,6 @@
     "serverless-dynamodb-local": "^0.2.38",
     "serverless-iam-roles-per-function": "^2.0.1",
     "serverless-offline": "^4.10.5",
-    "serverless-offline-direct-lambda": "0.0.1",
     "serverless-plugin-aws-alerts": "^1.2.4",
     "serverless-webpack": "^5.3.0",
     "ts-loader": "^6.0.1",
@@ -56,6 +54,7 @@
   "scripts": {
     "test-export": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && ts-node --project ./tsconfig.json scripts/export\"",
     "deploy": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
+    "package": "env-cmd --no-override ../config/.env cross-env-shell \"serverless package --force --verbose\"",
     "deploy-func:graphql": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f graphql --verbose\"",
     "deploy-func:reader": "env-cmd --no-override ../config/.env cross-env-shell \"serverless deploy function -f import-reader --verbose\"",
     "remove": "env-cmd --no-override ../config/.env cross-env-shell \"serverless remove --verbose\"",

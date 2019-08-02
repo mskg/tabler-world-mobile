@@ -6,7 +6,7 @@ import { makeCacheKey } from "../cache/makeCacheKey";
 import { TTLs } from "../cache/TTLs";
 import { writeThrough } from "../cache/writeThrough";
 import { filter } from "../privacy/filter";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 const cols = [
@@ -41,7 +41,7 @@ export class MembersDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey("Member", [k]),
                 (r) => makeCacheKey("Member", [r["id"]]),
-                (ids) => useDatabase(
+                (ids) => useDataService(
                     this.context,
                     async (client) => {
                         this.context.logger.log("DB reading members", ids);
@@ -68,7 +68,7 @@ export class MembersDataSource extends DataSource<IApolloContext> {
     public async readFavorites(): Promise<any[] | null> {
         this.context.logger.log("readAll");
 
-        return await useDatabase(
+        return await useDataService(
             this.context,
             async (client) => {
                 this.context.logger.log("executing readFavorites");
@@ -96,7 +96,7 @@ where id = $1`, [this.context.principal.id]);
         const results = await Promise.all(areas.map(a =>
             writeThrough(this.context,
                 makeCacheKey("Members", [this.context.principal.association, "area", a]),
-                async () => await useDatabase(
+                async () => await useDataService(
                     this.context,
                     async (client) => {
                         this.context.logger.log("executing readByTableAndAreas");
@@ -126,7 +126,7 @@ where id = $1`, [this.context.principal.id]);
 
         return await writeThrough(this.context,
             makeCacheKey("Members", [this.context.principal.association, "all"]),
-            async () => await useDatabase(
+            async () => await useDataService(
                 this.context,
                 async (client) => {
                     this.context.logger.log("executing readAll");

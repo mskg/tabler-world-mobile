@@ -4,7 +4,7 @@ import { cachedDataLoader } from "../cache/cachedDataLoader";
 import { makeCacheKey } from "../cache/makeCacheKey";
 import { TTLs } from "../cache/TTLs";
 import { writeThrough } from "../cache/writeThrough";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 import { ILogger } from "../types/ILogger";
 
@@ -84,7 +84,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey("Association", [k]),
                 (r) => makeCacheKey("Association", [r["association"]]),
-                (ids) => useDatabase(
+                (ids) => useDataService(
                     this.context,
                     async (client) => {
                         this.context.logger.log("DB reading associations", ids);
@@ -111,7 +111,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey("Area", [k.association, k.id]),
                 (r) => makeCacheKey("Area", [r["association"], r["area"]]),
-                (ids) => useDatabase(
+                (ids) => useDataService(
                     this.context,
                     async (client) => {
                         this.context.logger.log("DB reading areas", ids);
@@ -140,7 +140,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 // we use the same format for the key that can be extracted during read
                 (k) => makeCacheKey("Club", [k.association + "_" + k.id]),
                 (r) => makeCacheKey("Club", [r["id"]]),
-                (ids) => useDatabase(
+                (ids) => useDataService(
                     this.context,
                     async (client) => {
                         this.context.logger.log("DB reading clubs", ids);
@@ -168,7 +168,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
         return await writeThrough(
             this.context,
             makeCacheKey("Structure", [this.context.principal.association, "clubs", "all"]),
-            async () => await useDatabase(
+            async () => await useDataService(
                 this.context,
                 async (client) => {
                     this.context.logger.log("DB reading allClubs");
@@ -191,7 +191,7 @@ where
         return await writeThrough(
             this.context,
             makeCacheKey("Structure", [assoc || this.context.principal.association, "areas", "all"]),
-            async () => await useDatabase(
+            async () => await useDataService(
                 this.context,
                 async (client) => {
                     this.context.logger.log("DB reading allAreas");
