@@ -1,4 +1,4 @@
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type TokenArgs = {
@@ -8,7 +8,7 @@ type TokenArgs = {
 export const TokenResolver = {
     Mutation: {
         addToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     // merges the token with all existing tokens
@@ -34,7 +34,7 @@ ON CONFLICT (id) DO UPDATE
         removeToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
             if (args == null) return;
 
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     // merges the token with all existing tokens

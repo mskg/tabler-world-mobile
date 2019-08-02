@@ -5,16 +5,17 @@ module.exports = {
   entry: slsw.lib.entries,
 
   // Generate sourcemaps for proper error messages
-  devtool: 'source-map',
+  devtool: slsw.lib.webpack.isLocal ? 'source-map' : "none",
 
-  // Since 'aws-sdk' is not compatible with webpack,
-  // we exclude all node dependencies
+  // https://github.com/serverless-heaven/serverless-webpack/issues/292
+  // this bundles these two dependencies, but removes the indirect depencency to aws-sdk
   externals: [nodeExternals()],
+
   mode: slsw.lib.webpack.isLocal ? "development" : "production",
 
   optimization: {
     // We no not want to minimize our code.
-    minimize: false
+    minimize: true
   },
 
   performance: {

@@ -1,5 +1,5 @@
 import { isAdmin } from "../auth/isAdmin";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 export const JobsResolver = {
@@ -7,7 +7,7 @@ export const JobsResolver = {
         Jobs: async (_root: any, _args: any, context: IApolloContext) => {
             if (!isAdmin(context.principal)) return null;
 
-            return useDatabase(context, async (client) => {
+            return useDataService(context, async (client) => {
                 const res = await client.query(`
 select * from jobhistory
 order by runon desc

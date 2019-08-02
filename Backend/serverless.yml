@@ -1,12 +1,12 @@
 service: tabler-world-api
 
 plugins:
-  - serverless-webpack
-  - serverless-offline
   - serverless-iam-roles-per-function
   - serverless-plugin-aws-alerts
   - serverless-dynamodb-local
   - serverless-domain-manager
+  - serverless-offline
+  - serverless-webpack
 
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -14,8 +14,10 @@ custom:
   stage: ${opt:stage, self:provider.stage}
 
   webpack:
-    includeModules: true
     keepOutputDirectory: true
+    includeModules:
+      forceExclude:
+        - aws-sdk
 
   api_host: ${env:API_HOST}
   api_pagesize: ${env:API_READ_BATCH}
@@ -65,7 +67,7 @@ custom:
   warm_enabled:
     dev: false
     test: false
-    prod: false
+    prod: true
 
   alerts:
     stages:
@@ -107,13 +109,12 @@ custom:
 
   customDomain:
     domainName: ${self:custom.domainname}
-    certificateName: '*.api.tabler-world.mskg.app'
+    certificateName: '*.app.roundtable.world'
     createRoute53Record: true
     endpointType: 'regional'
 
-# individually would result in the same package three times
 package:
-  individually: false
+  individually: true
 
 provider:
   name: aws
@@ -154,7 +155,6 @@ provider:
           burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
           rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
 
-
   # global vpc definition
   vpc:
     securityGroupIds:
@@ -164,23 +164,23 @@ provider:
       - Fn::ImportValue: DatabaseSubnetBId
       - Fn::ImportValue: DatabaseSubnetCId
 
-  # global role definition to access RDS
+  # global role definition
   iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - rds-db:connect
-      Resource:
-        # arn:aws:rds-db:region:account-id:dbuser:DbiResourceId/db-user-name
-        # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
-        Fn::Join:
-          - ""
-          - - "arn:aws:rds-db:"
-            - ${self:provider.region}
-            - ":"
-            - Ref: "AWS::AccountId"
-            - ":dbuser:"
-            - "*/"
-            - ${self:custom.db_user}
+    # - Effect: Allow
+    #   Action:
+    #     - rds-db:connect
+    #   Resource:
+    #     # arn:aws:rds-db:region:account-id:dbuser:DbiResourceId/db-user-name
+    #     # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+    #     Fn::Join:
+    #       - ""
+    #       - - "arn:aws:rds-db:"
+    #         - ${self:provider.region}
+    #         - ":"
+    #         - Ref: "AWS::AccountId"
+    #         - ":dbuser:"
+    #         - "*/"
+    #         - ${self:custom.db_user}
 
     # tracing AWSXrayWriteOnlyAccess
     - Effect: Allow
@@ -208,6 +208,47 @@ functions:
       db_database: ${self:custom.db_database}
       db_password: ${self:custom.db_password}
       db_role: tw_read_${self:custom.stage}
+
+  #
+  # data-service
+  #
+  data-service:
+    handler: src/dataservice/lambda.handler
+    timeout: 30
+    tracing: Active
+
+    environment:
+      db_host: ${self:custom.db_host}
+      db_user: ${self:custom.db_user}
+      db_database: ${self:custom.db_database}
+      db_password: ${self:custom.db_password}
+      db_role: tw_read_${self:custom.stage}
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      # warmer
+      - Effect: "Allow"
+        Action:
+          - "lambda:InvokeFunction"
+        Resource:
+          Fn::Join:
+            - ""
+            - - "arn:aws:lambda:"
+              - ${self:provider.region}
+              - ":"
+              - Ref: "AWS::AccountId"
+              - ":function:"
+              - "tabler-world-api-test-"
+              - ${self:custom.stage}
+              - "-data-service"
+    events:
+      - schedule:
+          name: warm-tabler-world-tabler-data-service-${self:custom.stage}
+          rate: rate(15 minutes)
+          enabled: ${self:custom.warm_enabled.${self:custom.stage}}
+          input:
+            warmer: true
+            concurrency: 1
 
   #
   # Import reader
@@ -401,6 +442,11 @@ functions:
     handler: src/graphql/lambda-mock.handler
     timeout: 15
     memorySize: 128
+    tracing: Active
+
+    vpc:
+      securityGroupIds: []
+      subnetIds: []
 
     events:
         - http:
@@ -423,31 +469,35 @@ functions:
     tracing: Active
 
     environment:
-      # AWS_REGION: provided automatically
+      # this is only for local development
       db_host: ${self:custom.db_host}
       db_user: ${self:custom.db_user}
       db_database: ${self:custom.db_database}
       db_password: ${self:custom.db_password}
+
+      # remote
       cache_table: ${self:custom.cache_table}
       api_key: ${self:custom.api_key}
       api_host: ${self:custom.api_host}
+      dataservice_arn:
+        Fn::GetAtt:
+            - DataDashserviceLambdaFunction
+            - Arn
+
+    vpc:
+      securityGroupIds: []
+      subnetIds: []
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
+      # data-service
       - Effect: "Allow"
         Action:
           - "lambda:InvokeFunction"
         Resource:
-          Fn::Join:
-            - ""
-            - - "arn:aws:lambda:"
-              - ${self:provider.region}
-              - ":"
-              - Ref: "AWS::AccountId"
-              - ":function:"
-              - "tabler-world-api-test-"
-              - ${self:custom.stage}
-              - "-graphql"
+          Fn::GetAtt:
+            - DataDashserviceLambdaFunction
+            - Arn
 
       - Effect: Allow
         Action:
@@ -487,13 +537,6 @@ functions:
               Ref: CustomApiGatewayAuthorizer
           private: true
 
-      - schedule:
-          name: warm-tabler-world-tabler-graphql-${self:custom.stage}
-          rate: rate(15 minutes)
-          enabled: ${self:custom.warm_enabled.${self:custom.stage}}
-          input:
-            warmer: true
-            concurrency: 1
 
 resources:
   Resources:
@@ -582,6 +625,10 @@ resources:
         RetentionInDays: "7"
 
     GraphqlLogGroup:
+      Properties:
+        RetentionInDays: "14"
+
+    DataDashserviceLogGroup:
       Properties:
         RetentionInDays: "14"
 

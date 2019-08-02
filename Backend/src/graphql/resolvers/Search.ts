@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { SECTOR_MAPPING } from "../helper/Sectors";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type SearchInput = {
@@ -116,7 +116,7 @@ where
 
             // context.logger.log("Query is", filters.join(' AND '));
 
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     const res = await client.query(`

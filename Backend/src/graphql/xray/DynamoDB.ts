@@ -1,4 +1,4 @@
-import { DocumentClient as DC } from "aws-sdk/clients/dynamodb";
+import AWS from "aws-sdk";
 import { xAWS } from "./aws";
 
-export const DocumentClient: typeof DC = xAWS.DynamoDB.DocumentClient;
+export const DocumentClient: typeof AWS.DynamoDB.DocumentClient = xAWS.DynamoDB.DocumentClient;
