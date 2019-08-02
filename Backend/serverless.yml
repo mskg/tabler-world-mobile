@@ -14,8 +14,10 @@ custom:
   stage: ${opt:stage, self:provider.stage}
 
   webpack:
-    includeModules: true
     keepOutputDirectory: true
+    includeModules:
+      forceExclude:
+        - aws-sdk
 
   api_host: ${env:API_HOST}
   api_pagesize: ${env:API_READ_BATCH}
@@ -110,9 +112,8 @@ custom:
     createRoute53Record: true
     endpointType: 'regional'
 
-# individually would result in the same package three times
 package:
-  individually: false
+  individually: true
 
 provider:
   name: aws

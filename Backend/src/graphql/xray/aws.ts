@@ -1,5 +1,3 @@
-// import * as AWS from "aws-sdk";
-// import * as PG from "pg";
 import https from "https";
 import { EXECUTING_OFFLINE } from "../helper/isOffline";
 
