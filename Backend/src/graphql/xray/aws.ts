@@ -40,4 +40,3 @@ xAWS.config.update({
 });
 
 export { xAWS, xPG, isXrayEnabled, XRAY };
-

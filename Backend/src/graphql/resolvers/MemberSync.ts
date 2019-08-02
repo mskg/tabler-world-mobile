@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import { filter } from "../privacy/filter";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type MembersArgs = {
@@ -41,7 +41,7 @@ export const MemberSyncResolver = {
 
     Query: {
         Members: async (_root: any, args: MembersArgs, context: IApolloContext) => {
-            return useDatabase(
+            return useDataService(
                 context,
                 async (client) => {
                     let { cursor, limit: strLimit, state: ts } = args;
