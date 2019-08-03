@@ -97,8 +97,13 @@ select md5('abc')
 
 
 select * from geocodes
-where point is null
+where strpos(query, chr(9)) > 0
+
 
 
 delete from geocodes
 where point is null
+
+
+select count(*)
+from tabler

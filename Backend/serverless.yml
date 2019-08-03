@@ -370,7 +370,7 @@ functions:
   #
   geocode:
     handler: src/geo/lambda.handler
-    timeout: 20 # batchSize 1, elements 10
+    timeout: 120 # batchSize 1, elements 10
     memorySize: 128
     reservedConcurrency: 1
 
@@ -607,7 +607,7 @@ resources:
         QueueName: ${self:custom.sqs_geo}
         MessageRetentionPeriod: 1209600
         # 6 times lambda timeout
-        VisibilityTimeout: 120
+        VisibilityTimeout: 720
         RedrivePolicy:
           deadLetterTargetArn:
             Fn::GetAtt:
