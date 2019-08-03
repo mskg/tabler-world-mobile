@@ -26,6 +26,9 @@ custom:
 
   email: ${env:ALERT_EMAIL}
 
+  geo_agent: ${env:GEO_AGENT}
+  geo_email: ${env:GEO_EMAIL}
+
   db_host_import:
     Fn::ImportValue: DatabaseHostId
   db_user_default: lambda_${self:custom.stage}
@@ -67,6 +70,11 @@ custom:
   warm_enabled:
     dev: false
     test: false
+    prod: true
+
+  bundle:
+    dev: false
+    test: true
     prod: true
 
   alerts:
@@ -114,7 +122,7 @@ custom:
     endpointType: 'regional'
 
 package:
-  individually: true
+  individually: ${self:custom.bundle.${self:custom.stage}}
 
 provider:
   name: aws
@@ -373,6 +381,20 @@ functions:
       db_database: ${self:custom.db_database}
       db_password: ${self:custom.db_password}
       XRAY_DISABLED: true
+      geo_agent: ${self:custom.geo_agent}
+      geo_email: ${self:custom.geo_email}
+      sqs_arn:
+        Fn::GetAtt:
+          - EncodeAddressQueue
+          - Arn
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - lambda:ListEventSourceMappings
+          - lambda:UpdateEventSourceMapping
+        Resource: "*"
 
     events:
       - sqs:
@@ -585,13 +607,13 @@ resources:
         QueueName: ${self:custom.sqs_geo}
         MessageRetentionPeriod: 1209600
         # 6 times lambda timeout
-        VisibilityTimeout: 20
+        VisibilityTimeout: 120
         RedrivePolicy:
           deadLetterTargetArn:
             Fn::GetAtt:
               - EncodeAddressQueueDeadLetters
               - Arn
-          maxReceiveCount: 1
+          maxReceiveCount: 5
 
     EncodeAddressQueueDeadLetters:
       Type: AWS::SQS::Queue

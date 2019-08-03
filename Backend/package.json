@@ -5,10 +5,12 @@
   "private": true,
   "dependencies": {
     "@sentry/node": "^5.4.0",
+    "@types/geojson": "^7946.0.7",
     "apollo-datasource-rest": "^0.5.0",
     "apollo-server": "^2.6.1",
     "apollo-server-caching": "^0.4.0",
     "apollo-server-lambda": "^2.6.1",
+    "aws-xray-sdk": "^2.3.3",
     "casual": "^1.6.2",
     "dataloader": "^1.4.0",
     "date-and-time": "^0.7.0",
@@ -21,8 +23,7 @@
     "lru-cache": "^5.1.1",
     "node-geocoder": "^3.23.0",
     "node-gzip": "^1.1.2",
-    "pg": "^7.8.1",
-    "aws-xray-sdk": "^2.3.3"
+    "pg": "^7.8.1"
   },
   "devDependencies": {
     "aws-sdk": "^2.414.0",

@@ -31,6 +31,8 @@ async function configureOptions(url?: string, method?: string) {
     };
 }
 
+const MAX_TRIES = 3;
+
 export async function downloadChunk(url?: string, method?: string, postdata?: string, tryCount: number = 0): Promise<Chunk> {
     try {
         const options = await configureOptions(url, method);
@@ -39,7 +41,7 @@ export async function downloadChunk(url?: string, method?: string, postdata?: st
         return new Promise<Chunk>((resolve, reject) => {
             try {
                 var req = https.request(options, async function (res) {
-                    if (res.statusCode === 429 && tryCount < 2) {
+                    if (res.statusCode === 429 && tryCount < MAX_TRIES - 1) {
                         const newTry = tryCount + 1;
 
                         console.log("Got 429, sleeping ", newTry, "s");
