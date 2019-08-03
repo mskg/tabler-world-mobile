@@ -96,14 +96,4 @@ from profiles
 select md5('abc')
 
 
-select * from geocodes
-where strpos(query, chr(9)) > 0
-
-
-
-delete from geocodes
-where point is null
-
-
-select count(*)
-from tabler
+select count(*) from geocodes

@@ -51,7 +51,7 @@ from geocodes where hash = $1`,
 
         await client.query(
             'insert into geocodes (hash, query, point, result, modifiedon) values ($1, $2, $3, $4, now())',
-            [md5, hash, point, encoded ? null : JSON.stringify(encoded)]
+            [md5, hash, point, encoded ? JSON.stringify(encoded) : null]
         );
 
         return encoded == null
