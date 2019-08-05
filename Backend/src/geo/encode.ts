@@ -1,5 +1,5 @@
-import { Client } from "pg";
-import { AsyncThrottle } from "../helper/AsyncThrottle";
+import { AsyncThrottle } from "../shared/AsyncThrottle";
+import { IDataService } from "../shared/rds/IDataService";
 import { addressHash } from "./addressHash";
 import { addressToString } from "./addressToString";
 import { IAddress } from "./IAddress";
@@ -12,7 +12,7 @@ type Result = {
 
 const geocode = AsyncThrottle(photonImpl, 1500, 1);
 
-export async function encode(client: Client, address: IAddress): Promise<Result | undefined> {
+export async function encode(client: IDataService, address: IAddress): Promise<Result | undefined> {
     const md5 = addressHash(address);
     if (md5 == null) {
         console.log(address, "is not valid");

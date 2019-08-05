@@ -1,6 +1,6 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
-import { useDatabase } from "../rds/useDatabase";
+import { useDataService } from "../../shared/rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 export class GeocoderDataSource extends DataSource<IApolloContext> {
@@ -11,7 +11,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
         this.context = config.context;
 
         this.data = new DataLoader<string, any>(
-            (ids: string[]) => useDatabase(this.context, async (client) => {
+            (ids: string[]) => useDataService(this.context, async (client) => {
                 const res = await client.query(`
                 select
                     hash,

@@ -364,11 +364,6 @@ functions:
     reservedConcurrency: 1
 
     environment:
-      # AWS_REGION: provided automatically
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
       XRAY_DISABLED: true
       geo_agent: ${self:custom.geo_agent}
       geo_email: ${self:custom.geo_email}

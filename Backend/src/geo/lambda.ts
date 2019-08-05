@@ -1,6 +1,6 @@
 import { SQSHandler } from "aws-lambda";
 import { Lambda } from "aws-sdk";
-import { withClient } from "../helper/withClient";
+import { withClient } from "../shared/rds/withClient";
 import { encode } from "./encode";
 import { IAddress } from "./IAddress";
 
