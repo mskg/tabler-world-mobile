@@ -1,22 +1,27 @@
 
 import { QueryArrayResult, QueryResult } from "pg";
-import { IDataQuery } from "../../dataservice/types";
-import { EXECUTING_OFFLINE } from "../helper/isOffline";
-import { ILogger } from "../types/ILogger";
+import { IDataQuery } from "../data/IDataQuery";
+import { EXECUTING_OFFLINE } from "../isOffline";
+import { ILogger } from "../logging/ILogger";
 import { xAWS } from "../xray/aws";
 import { IDataService } from "./IDataService";
-import { useDatabase } from "./useDatabase";
 
 class LambdaClient implements IDataService {
     static lambda: AWS.Lambda = new xAWS.Lambda(
         EXECUTING_OFFLINE
-            ? { endpoint: 'http://localhost:3000' }
+            ? {
+                endpoint: 'http://localhost:3000',
+                region: 'eu-west-1',
+            }
             : undefined
     );
 
     async query(text: string, values?: any[] | undefined): Promise<QueryResult> {
         const lambdaParams: AWS.Lambda.InvocationRequest = {
-            FunctionName: process.env.dataservice_arn as string,
+            FunctionName:
+                EXECUTING_OFFLINE
+                    ? "tabler-world-api-dev-data-service"
+                    : process.env.dataservice_arn as string,
             InvocationType: 'RequestResponse',
             LogType: 'Tail',
             Payload: JSON.stringify({
@@ -33,12 +38,14 @@ class LambdaClient implements IDataService {
 const remoteClient = new LambdaClient();
 
 export function useDataService<T>(
-    context: { logger: ILogger },
+    _context: { logger: ILogger },
     func: (client: IDataService) => Promise<T>
 ): Promise<T> {
-    if (EXECUTING_OFFLINE) {
-        return useDatabase(context, func);
-    }
+    // if (false && EXECUTING_OFFLINE) {
+    //     return useDatabase({
+    //         logger: context.logger,
+    //     }, func);
+    // }
 
     return func(remoteClient);
 }

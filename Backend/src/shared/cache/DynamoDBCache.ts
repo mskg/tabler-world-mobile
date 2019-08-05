@@ -1,8 +1,7 @@
-import { CacheOptions } from 'apollo-datasource-rest/dist/RESTDataSource';
 import { KeyValueCache } from 'apollo-server-core';
 import _ from 'lodash';
 import { DocumentClient } from '../xray/DynamoDB';
-import { CacheData, CacheValues, IManyKeyValueCache } from "./CacheTypes";
+import { CacheData, CacheOptions, CacheValues, IManyKeyValueCache } from "./types";
 
 type PromiseResult<D, E> = D & {$response: AWS.Response<D, E>};
 

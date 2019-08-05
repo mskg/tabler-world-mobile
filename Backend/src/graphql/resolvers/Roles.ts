@@ -1,7 +1,7 @@
-import { makeCacheKey } from "../cache/makeCacheKey";
+import { makeCacheKey } from "../../shared/cache/makeCacheKey";
+import { writeThrough } from "../../shared/cache/writeThrough";
+import { useDataService } from "../../shared/rds/useDataService";
 import { TTLs } from "../cache/TTLs";
-import { writeThrough } from "../cache/writeThrough";
-import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 export const RolesResolver = {

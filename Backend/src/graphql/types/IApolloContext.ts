@@ -1,8 +1,8 @@
 import { KeyValueCache } from "apollo-server-core";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
-import { IManyKeyValueCache } from "../cache/CacheTypes";
+import { IManyKeyValueCache } from "../../shared/cache/types";
+import { ILogger } from "../../shared/logging/ILogger";
 import { IDataSources } from "../dataSources";
-import { ILogger } from "./ILogger";
 import { IPrincipal } from "./IPrincipal";
 
 export interface IApolloContext {

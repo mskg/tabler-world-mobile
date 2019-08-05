@@ -1,9 +1,9 @@
 import { Context } from "aws-lambda";
 import Expo, { ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
-import { Client } from 'pg';
-import { StopWatch } from "../helper/StopWatch";
-import { withClient } from "../helper/withClient";
-import { writeJobLog } from "../helper/writeJobLog";
+import { writeJobLog } from "../shared/jobs/writeJobLog";
+import { IDataService } from "../shared/rds/IDataService";
+import { withClient } from "../shared/rds/withClient";
+import { StopWatch } from "../shared/StopWatch";
 
 let expo = new Expo();
 
@@ -21,7 +21,7 @@ type BirthdayNotification = {
     lastname: string,
 }
 
-async function removeToken(client: Client, id: number, token: string) {
+async function removeToken(client: IDataService, id: number, token: string) {
     return await client.query(`
 UPDATE usersettings
 SET tokens =
@@ -35,7 +35,7 @@ WHERE id = $1`,
         [id, token]);
 }
 
-async function putReceipts(client: Client, tickets: ExpoPushTicket[]) {
+async function putReceipts(client: IDataService, tickets: ExpoPushTicket[]) {
     return await client.query(`
 insert into notification_receipts (createdon, data)
 values ($1, $2)`,

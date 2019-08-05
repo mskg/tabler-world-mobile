@@ -1,10 +1,10 @@
-import { SQS } from "aws-sdk";
-import { Client } from "pg";
-import { makeCacheKey } from "../../graphql/cache/makeCacheKey";
+import { makeCacheKey } from "../../shared/cache/makeCacheKey";
+import { IDataService } from "../../shared/rds/IDataService";
+import { xAWS } from "../../shared/xray/aws";
 import { cache } from "./cacheInstance";
 import { updateClub } from "./updateClub";
 
-export async function updateMember(client: Client, id: number) {
+export async function updateMember(client: IDataService, id: number) {
     const key = makeCacheKey("Member", [id]);
     const staleCacheData = await cache.get(key);
 
@@ -46,7 +46,7 @@ export async function updateMember(client: Client, id: number) {
             }
         }
 
-        var sqs = new SQS();
+        var sqs = new xAWS.SQS();
         await sqs.sendMessage({
             QueueUrl: process.env.geocode_queue as string,
             MessageBody: JSON.stringify(addresses)

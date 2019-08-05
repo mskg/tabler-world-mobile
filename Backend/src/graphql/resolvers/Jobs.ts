@@ -1,5 +1,5 @@
+import { useDataService } from "../../shared/rds/useDataService";
 import { isAdmin } from "../auth/isAdmin";
-import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 export const JobsResolver = {

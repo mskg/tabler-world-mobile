@@ -1,6 +1,6 @@
-import { SQS } from "aws-sdk";
-import { Client } from "pg";
-import { makeCacheKey } from "../../graphql/cache/makeCacheKey";
+import { makeCacheKey } from "../../shared/cache/makeCacheKey";
+import { IDataService } from "../../shared/rds/IDataService";
+import { xAWS } from "../../shared/xray/aws";
 import { cache } from "./cacheInstance";
 
 // we keep an im memory hash of the last updated clubs
@@ -12,7 +12,7 @@ const updated: {
 
 const MINUTES_5 = 5 * 60 /* s */ * 1000 /* ms */;
 
-export async function updateClub(client: Client, assoc: string, club: number) {
+export async function updateClub(client: IDataService, assoc: string, club: number) {
     const key = makeCacheKey("Club", [assoc + "_" + club]);
 
     if (updated[key] != null && Date.now() - updated[key] < MINUTES_5) {
@@ -36,7 +36,7 @@ export async function updateClub(client: Client, assoc: string, club: number) {
             newClub.meetingplace2,
         ];
 
-        var sqs = new SQS();
+        var sqs = new xAWS.SQS();
         await sqs.sendMessage({
             QueueUrl: process.env.geocode_queue as string,
             MessageBody: JSON.stringify(addresses)

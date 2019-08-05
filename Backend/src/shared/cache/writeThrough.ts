@@ -1,5 +1,5 @@
 import { KeyValueCache } from "apollo-server-core";
-import { ILogger } from "../types/ILogger";
+import { ILogger } from "../logging/ILogger";
 
 export async function writeThrough<T>(
     context: {

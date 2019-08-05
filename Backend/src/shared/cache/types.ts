@@ -6,6 +6,10 @@ export type CacheKeyOptions = {
     ttl?: number;
 };
 
+export interface CacheOptions {
+    ttl?: number;
+  }
+
 export type CacheData<T> = {
     id: string;
     data: T;

@@ -1,4 +1,4 @@
-import { DynamoDBCache } from "../../graphql/cache/DynamoDBCache";
+import { DynamoDBCache } from "../../shared/cache/DynamoDBCache";
 
 export const cache = new DynamoDBCache(
     {

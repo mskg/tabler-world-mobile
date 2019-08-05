@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+import { IDataService } from '../shared/rds/IDataService';
 import { removeEmpty } from './removeEmpty';
 import { Types } from './types';
 
@@ -10,7 +10,7 @@ export type ChangePointer = {
     type: Types,
 };
 
-export const writeValues = (client: Client, type: Types) => {
+export const writeValues = (client: IDataService, type: Types) => {
     const pk = type === Types.clubs ? clubPK : memberPK;
 
     return async (data: Array<any>): Promise<ChangePointer[]> => {

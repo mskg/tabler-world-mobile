@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { IApolloContext } from "../types/IApolloContext";
+import { IApolloContext } from "../../graphql/types/IApolloContext";
 
 type CacheKeyType = string;
 

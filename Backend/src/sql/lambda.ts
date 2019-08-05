@@ -1,8 +1,7 @@
 import { Context } from "aws-lambda";
 import { readFileSync } from "fs";
-import { withClient } from "../helper/withClient";
-import { withTransaction } from "../helper/withTransaction";
-import { writeJobLog } from "../helper/writeJobLog";
+import { writeJobLog } from "../shared/jobs/writeJobLog";
+import { withClient } from "../shared/rds/withClient";
 
 const fileNames = [
     require("./00 setup.pgsql"),
@@ -31,9 +30,10 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                 var content = readFileSync(fn, 'utf8');
                 content = content.replace("tw_read_dev", process.env.db_role || "tw_read_dev");
 
-                await withTransaction(client,
-                    async () => await client.query(content));
+                // await withTransaction(client,
+                //     async () => await client.query(content));
 
+                await client.query(content);
                 console.log("done.");
             }
 

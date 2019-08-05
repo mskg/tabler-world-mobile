@@ -1,4 +1,4 @@
-import { ILogger } from "../types/ILogger";
+import { ILogger } from "../../shared/logging/ILogger";
 
 export class Logger implements ILogger {
     constructor(private id: string, private user: any) {}

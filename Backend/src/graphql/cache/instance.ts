@@ -1,5 +1,6 @@
-import { DynamoDBCache } from "./DynamoDBCache";
-import { MemoryBackedCache } from "./MemoryBackedCache";
+import { DynamoDBCache } from "../../shared/cache/DynamoDBCache";
+import { MemoryBackedCache } from "../../shared/cache/MemoryBackedCache";
+import { EXECUTING_OFFLINE } from "../../shared/isOffline";
 import { NoCache } from "./NoCache";
 import { TTLs } from "./TTLs";
 
@@ -8,7 +9,7 @@ export const cacheInstance = disableCache ? new NoCache() : new MemoryBackedCach
     {
         region: process.env.AWS_REGION,
         endpoint:
-            process.env.IS_OFFLINE === 'true'
+            EXECUTING_OFFLINE
                 ? 'http://localhost:8000'
                 : undefined
     },

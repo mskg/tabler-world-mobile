@@ -2,18 +2,18 @@ import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
+import { EXECUTING_OFFLINE } from '../shared/isOffline';
+import { isXrayEnabled } from '../shared/xray/aws';
+import { XRayRequestExtension } from '../shared/xray/XRayExtension';
 import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
-import { EXECUTING_OFFLINE } from './helper/isOffline';
 import { NoIntrospection } from './helper/NoIntrospection';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
 import { resolvers } from './resolvers';
 import { schema } from './schema';
 import { IApolloContext } from './types/IApolloContext';
-import { isXrayEnabled } from './xray/aws';
-import { XRayRequestExtension } from './xray/XRayExtension';
 
 const extensions: any[] = [
   () => new LogErrorsExtension(),
