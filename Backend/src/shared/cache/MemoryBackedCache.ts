@@ -1,7 +1,7 @@
 import { KeyValueCache } from "apollo-server-caching";
 import LRU from 'lru-cache';
-import { CacheData, CacheValues, IManyKeyValueCache } from "./CacheTypes";
-import { TTLs } from "./TTLs";
+import { TTLs } from "../../graphql/cache/TTLs";
+import { CacheData, CacheValues, IManyKeyValueCache } from "./types";
 
 /**
  * Cache invalidation is a global engineering problem. The whole DynamoDB implementation should be changed to

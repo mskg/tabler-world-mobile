@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
+import { useDataService } from "../../shared/rds/useDataService";
 import { filter } from "../privacy/filter";
-import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type MembersArgs = {

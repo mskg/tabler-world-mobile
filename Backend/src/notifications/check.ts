@@ -1,10 +1,10 @@
 import { Context } from "aws-lambda";
 import Expo, { ExpoPushTicket } from 'expo-server-sdk';
 import _ from "lodash";
-import { Client } from "pg";
-import { StopWatch } from "../helper/StopWatch";
-import { withClient } from "../helper/withClient";
-import { writeJobLog } from "../helper/writeJobLog";
+import { writeJobLog } from "../shared/jobs/writeJobLog";
+import { IDataService } from "../shared/rds/IDataService";
+import { withClient } from "../shared/rds/withClient";
+import { StopWatch } from "../shared/StopWatch";
 
 let expo = new Expo();
 
@@ -14,7 +14,7 @@ type Receipts = {
    data: ExpoPushTicket[],
 }
 
-async function removeToken(client: Client, token: string) {
+async function removeToken(client: IDataService, token: string) {
     console.log("Removing token", token);
     return await client.query(`
 UPDATE usersettings

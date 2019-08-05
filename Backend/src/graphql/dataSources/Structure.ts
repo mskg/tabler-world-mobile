@@ -1,12 +1,12 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
-import { cachedDataLoader } from "../cache/cachedDataLoader";
-import { makeCacheKey } from "../cache/makeCacheKey";
+import { cachedDataLoader } from "../../shared/cache/cachedDataLoader";
+import { makeCacheKey } from "../../shared/cache/makeCacheKey";
+import { writeThrough } from "../../shared/cache/writeThrough";
+import { ILogger } from "../../shared/logging/ILogger";
+import { useDataService } from "../../shared/rds/useDataService";
 import { TTLs } from "../cache/TTLs";
-import { writeThrough } from "../cache/writeThrough";
-import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
-import { ILogger } from "../types/ILogger";
 
 // enum RoleNames {
 //     President = 'President',

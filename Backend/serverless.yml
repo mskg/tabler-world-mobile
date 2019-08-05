@@ -19,32 +19,25 @@ custom:
       forceExclude:
         - aws-sdk
 
-  api_host: ${env:API_HOST}
-  api_pagesize: ${env:API_READ_BATCH}
-  batch_size: ${env:API_BATCH}
-  api_key: ${env:API_KEY}
-
-  email: ${env:ALERT_EMAIL}
-
-  db_host_import:
-    Fn::ImportValue: DatabaseHostId
-  db_user_default: lambda_${self:custom.stage}
-
-  db_host: ${env:DB_HOST, self:custom.db_host_import}
-  db_user: ${env:DB_USER, self:custom.db_user_default}
-  db_database: ${env:DB_DATABASE, self:custom.stage}
-  db_password: ${env:DB_PASSWORD}
   cache_table: tablerworld-gqlqc-${self:custom.stage}
   sqs: tablerworld-cacheupdates-${self:custom.stage}
+  email: ${env:ALERT_EMAIL}
 
   domainname: ${self:custom.stage}-api.app.roundtable.world
   demo_api_key: ${env:DEMO_API_KEY}
 
+  # import schedule
   cron_rate:
     dev: rate(24 hours)
     test: rate(12 hours)
     prod: rate(4 hours)
 
+  cron_enabled:
+    dev: false
+    test: true
+    prod: true
+
+  # api throtteling
   throttle:
     dev:
       burstLimit: 10
@@ -58,16 +51,13 @@ custom:
       burstLimit: 200
       rateLimit: 100
 
-  cron_enabled:
-    dev: false
-    test: true
-    prod: true
-
+  # warmer for database access
   warm_enabled:
     dev: false
     test: false
     prod: true
 
+  # SNS topics to check env
   alerts:
     stages:
       - test
@@ -94,6 +84,7 @@ custom:
         comparisonOperator: GreaterThanThreshold
         pattern: 'Process exited before completing'
 
+  # debug mode
   dynamodb:
     noStart: false
     start:
@@ -106,14 +97,16 @@ custom:
     stages:
       - dev
 
+  # domain
   customDomain:
     domainName: ${self:custom.domainname}
     certificateName: '*.app.roundtable.world'
     createRoute53Record: true
     endpointType: 'regional'
 
+# we want seperate files to minimize depenencies in files
 package:
-  individually: true
+  individually: false
 
 provider:
   name: aws
@@ -123,10 +116,14 @@ provider:
   runtime: nodejs10.x
 
   memorySize: 128
-  versionFunctions: false
+  versionFunctions: true
 
   tracing:
     apiGateway: true
+
+  # allow to redefine variables for debug purposes
+  environment:
+    ${file(serverless.env.yml):${self:custom.stage}}
 
   apiKeys:
     - app:
@@ -154,17 +151,40 @@ provider:
           burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
           rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
 
-  # global vpc definition
-  vpc:
-    securityGroupIds:
-      - Fn::ImportValue: DatabaseSecurityGroupId
-    subnetIds:
-      - Fn::ImportValue: DatabaseSubnetAId
-      - Fn::ImportValue: DatabaseSubnetBId
-      - Fn::ImportValue: DatabaseSubnetCId
-
   # global role definition
   iamRoleStatements:
+    # allow database access
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:lambda:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":function:"
+            - "tabler-world-api-"
+            - ${self:custom.stage}
+            - "-data-service"
+
+    # read parameters from SSM
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParameter
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:ssm:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":parameter*/"
+            - ${self:custom.stage}
+            - "/*"
+
     # - Effect: Allow
     #   Action:
     #     - rds-db:connect
@@ -202,11 +222,8 @@ functions:
     timeout: 600
 
     environment:
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
       db_role: tw_read_${self:custom.stage}
+      XRAY_DISABLED: true
 
   #
   # data-service
@@ -216,30 +233,17 @@ functions:
     timeout: 30
     tracing: Active
 
+    vpc:
+      securityGroupIds:
+        - Fn::ImportValue: DatabaseSecurityGroupId
+      subnetIds:
+        - Fn::ImportValue: DatabaseSubnetAId
+        - Fn::ImportValue: DatabaseSubnetBId
+        - Fn::ImportValue: DatabaseSubnetCId
+
     environment:
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
       db_role: tw_read_${self:custom.stage}
 
-    iamRoleStatementsInherit: true
-    iamRoleStatements:
-      # warmer
-      - Effect: "Allow"
-        Action:
-          - "lambda:InvokeFunction"
-        Resource:
-          Fn::Join:
-            - ""
-            - - "arn:aws:lambda:"
-              - ${self:provider.region}
-              - ":"
-              - Ref: "AWS::AccountId"
-              - ":function:"
-              - "tabler-world-api-test-"
-              - ${self:custom.stage}
-              - "-data-service"
     events:
       - schedule:
           name: warm-tabler-world-tabler-data-service-${self:custom.stage}
@@ -257,16 +261,9 @@ functions:
     timeout: 600
 
     environment:
-      api_key: ${self:custom.api_key}
-      api_host: ${self:custom.api_host}
-      batch_size: ${self:custom.batch_size}
-      api_pagesize: ${self:custom.api_pagesize}
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
       sqs_queue:
         Ref: ReadUpdatesQueue
+      XRAY_DISABLED: true
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -312,11 +309,6 @@ functions:
     reservedConcurrency: 3
 
     environment:
-      # AWS_REGION: provided automatically
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
       cache_table: ${self:custom.cache_table}
       XRAY_DISABLED: true
 
@@ -352,11 +344,7 @@ functions:
     timeout: 600
 
     environment:
-      # AWS_REGION: provided automatically
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
+      XRAY_DISABLED: true
 
     events:
       # - http:
@@ -379,11 +367,7 @@ functions:
     timeout: 600
 
     environment:
-      # AWS_REGION: provided automatically
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
+      XRAY_DISABLED: true
 
     events:
       # - http:
@@ -406,10 +390,6 @@ functions:
     memorySize: 128
     tracing: Active
 
-    vpc:
-      securityGroupIds: []
-      subnetIds: []
-
     events:
         - http:
             path: graphql-demo
@@ -431,36 +411,11 @@ functions:
     tracing: Active
 
     environment:
-      # this is only for local development
-      db_host: ${self:custom.db_host}
-      db_user: ${self:custom.db_user}
-      db_database: ${self:custom.db_database}
-      db_password: ${self:custom.db_password}
-
       # remote
       cache_table: ${self:custom.cache_table}
-      api_key: ${self:custom.api_key}
-      api_host: ${self:custom.api_host}
-      dataservice_arn:
-        Fn::GetAtt:
-            - DataDashserviceLambdaFunction
-            - Arn
-
-    vpc:
-      securityGroupIds: []
-      subnetIds: []
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
-      # data-service
-      - Effect: "Allow"
-        Action:
-          - "lambda:InvokeFunction"
-        Resource:
-          Fn::GetAtt:
-            - DataDashserviceLambdaFunction
-            - Arn
-
       - Effect: Allow
         Action:
           - dynamodb:DescribeTable

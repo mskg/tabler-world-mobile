@@ -1,5 +1,5 @@
 
-import { Client } from "pg";
+import { IDataService } from "../rds/IDataService";
 
 // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
 function replaceErrors(_key: string, value: any) {
@@ -17,7 +17,7 @@ function replaceErrors(_key: string, value: any) {
     return value;
 }
 
-export async function writeJobLog(client: Client, job: string, success: boolean = true, data: any = {}) {
+export async function writeJobLog(client: IDataService, job: string, success: boolean = true, data: any = {}) {
     await client.query(`
 INSERT INTO jobhistory (runon, name, success, data)
 VALUES(now(), $1, $3, $2)

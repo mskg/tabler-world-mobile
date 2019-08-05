@@ -4,12 +4,12 @@ import { Modes, Types } from './types';
 export const CONFIGURATIONS = {
     [Types.clubs]: {
         [Modes.full]: {
-            url: `/v1/admin/levels/clubs/?limit=${process.env.api_pagesize}`,
+            url: `/v1/admin/levels/clubs/?`,
             method: "GET",
             payload: () => undefined,
         },
         [Modes.incremental]: {
-            url: `/v1/admin/levels/clubs/?limit=${process.env.api_pagesize}`,
+            url: `/v1/admin/levels/clubs/?`,
             method: "GET",
             payload: () => undefined,
         },
@@ -17,12 +17,12 @@ export const CONFIGURATIONS = {
 
     [Types.tabler]: {
         [Modes.full]: {
-            url: `/v1/admin/contacts/?limit=${process.env.api_pagesize}`,
+            url: `/v1/admin/contacts/?`,
             method: "GET",
             payload: () => undefined,
         },
         [Modes.incremental]: {
-            url: `/v1/admin/contacts/search/?limit=${process.env.api_pagesize}`,
+            url: `/v1/admin/contacts/search/?`,
             method: "POST",
             payload: () => {
                 const date = new Date();

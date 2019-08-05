@@ -1,6 +1,6 @@
-import { Client } from 'pg';
+import { IDataService } from '../shared/rds/IDataService';
 
-export const refreshViews = async (client: Client) => {
+export const refreshViews = async (client: IDataService) => {
     console.log("Updating views");
 
     await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY profiles');

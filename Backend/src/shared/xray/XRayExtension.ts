@@ -1,7 +1,7 @@
 import { GraphQLResponse } from 'apollo-server-core';
 import { GraphQLExtension } from 'apollo-server-lambda';
 import { GraphQLResolveInfo } from 'graphql';
-import { IApolloContext } from '../types/IApolloContext';
+import { IApolloContext } from '../../graphql/types/IApolloContext';
 //@ts-ignore
 import { XRAY } from "./aws";
 

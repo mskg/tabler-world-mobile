@@ -1,5 +1,5 @@
 import { SQSHandler } from "aws-lambda";
-import { withClient } from "../helper/withClient";
+import { withClient } from "../shared/rds/withClient";
 import { updateClub } from "./cache/updateClub";
 import { updateMember } from "./cache/updateMember";
 import { QueueEntry } from "./QueueEntry";

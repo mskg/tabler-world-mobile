@@ -1,4 +1,4 @@
-import { useDataService } from "../rds/useDataService";
+import { useDataService } from "../../shared/rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type TokenArgs = {

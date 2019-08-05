@@ -1,6 +1,6 @@
 import _ from "lodash";
+import { useDataService } from "../../shared/rds/useDataService";
 import { SECTOR_MAPPING } from "../helper/Sectors";
-import { useDataService } from "../rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type SearchInput = {

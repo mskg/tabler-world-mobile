@@ -1,9 +1,9 @@
-import { Client } from "pg";
-import { makeCacheKey } from "../../graphql/cache/makeCacheKey";
+import { makeCacheKey } from "../../shared/cache/makeCacheKey";
+import { IDataService } from "../../shared/rds/IDataService";
 import { cache } from "./cacheInstance";
 import { updateClub } from "./updateClub";
 
-export async function updateMember(client: Client, id: number) {
+export async function updateMember(client: IDataService, id: number) {
     const key = makeCacheKey("Member", [id]);
     const staleCacheData = await cache.get(key);
 

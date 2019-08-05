@@ -1,5 +1,5 @@
 import https from "https";
-import { EXECUTING_OFFLINE } from "../helper/isOffline";
+import { EXECUTING_OFFLINE } from "../isOffline";
 
 // we connect to local HTTP in case of serverless offline
 const agent = EXECUTING_OFFLINE
@@ -14,11 +14,13 @@ let xAWS: any;
 let xPG: any;
 let isXrayEnabled = false;
 let XRAY: any;
+let xHttps: typeof https;
 
 if (EXECUTING_OFFLINE && process.env.XRAY_DISABLED !== "true") {
     console.log("Serverless offline detected; skipping AWS X-Ray setup")
     xAWS = require("aws-sdk");
     xPG = require("pg");
+    xHttps = require("https");
 } else {
     XRAY = require("aws-xray-sdk");
     XRAY.setStreamingThreshold(parseInt(process.env.XRAY_STREAMING_THRESHOLD || "0", 10));
@@ -27,6 +29,7 @@ if (EXECUTING_OFFLINE && process.env.XRAY_DISABLED !== "true") {
 
     xAWS = XRAY.captureAWS(require("aws-sdk"));
     xPG = XRAY.capturePostgres(require("pg"));
+    xHttps = XRAY.captureHTTPs(require("https"));
 
     XRAY.capturePromise();
 }
@@ -37,4 +40,5 @@ xAWS.config.update({
     }
 });
 
-export { xAWS, xPG, isXrayEnabled, XRAY };
+export { xAWS, xPG, isXrayEnabled, XRAY, xHttps };
+
