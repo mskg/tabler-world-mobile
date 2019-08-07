@@ -16,5 +16,7 @@ export enum ActionNames {
     ChangeSetting = "Change Setting",
 
     Timeout = "Timeout",
-    SendErrorReport = "Send Error Report"
+    SendErrorReport = "Send Error Report",
+
+    ReadQRCode = "Read QR Code",
 }

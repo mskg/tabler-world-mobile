@@ -21,6 +21,9 @@ export enum AuditScreenName {
     FilterMember    = "Members/Filter",
     MemberSearch    = "Members/Search",
 
+    MemberScanQR    = "Members/ScanQRCode",
+    MemberShowQR    = "Members/ShowQRCode",
+
     Settings        = "Settings",
     Legal           = "Settings/Legal",
     ShowMD          = "Settings/Show MD",

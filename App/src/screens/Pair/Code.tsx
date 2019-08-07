@@ -1,15 +1,22 @@
-import { Linking } from 'expo';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import Assets from '../../Assets';
 import { InlineLoading } from '../../components/Loading';
+import { makeMemberLink } from "../../helper/linking/member";
 import { Me } from '../../model/graphql/Me';
 import { GetMeQuery } from '../../queries/MeQuery';
 
-class CodeScreenBase extends React.Component<{theme}> {
+class CodeScreenBase extends AuditedScreen<{theme}> {
+
+  constructor(props: any) {
+    super(props, AuditScreenName.MemberShowQR);
+  }
+
   render() {
     return (<View style={{
       flex: 1,
@@ -23,7 +30,7 @@ class CodeScreenBase extends React.Component<{theme}> {
           if (!data || !data.Me) return <InlineLoading />
 
           return (<QRCode
-            value={Linking.makeUrl('/member', { id: data.Me.id })}
+            value={makeMemberLink(data.Me.id)}
             logo={Assets.images.icon}
             logoSize={60}
             logoBackgroundColor='transparent'

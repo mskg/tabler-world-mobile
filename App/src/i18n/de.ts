@@ -1,3 +1,5 @@
+import { differenceInCalendarYears, format } from 'date-fns';
+import dateDE from 'date-fns/locale/de';
 import en, { I18NType } from './en';
 
 const countries = require("./countries/de.json");
@@ -152,11 +154,8 @@ const de: I18NType = {
 
         Formats: {
             date: (date?: string) => {
-                var dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                return date == null
-                    ? undefined
-                    //@ts-ignore
-                    : new Date(date).toLocaleDateString("de-de", dateOptions);
+                if (date == null) return undefined;
+                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInCalendarYears(Date.now(), date)})`
             },
         },
 
@@ -397,7 +396,6 @@ const de: I18NType = {
     },
 
     Members: {
-        me: "Mein Profil auf TABLER.WORLD",
         noresults: "Keine Resultate",
         search: "Suche...",
         title: "Mitglieder",
