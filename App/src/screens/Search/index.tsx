@@ -18,7 +18,7 @@ import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
-import { Filters } from '../../model/graphql/Filters';
+import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
 import { CompanySector } from '../../model/graphql/globalTypes';
 import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
 import { IAppState } from '../../model/IAppState';
@@ -379,7 +379,11 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     title={I18N.Search.tables(data.Clubs.length)}
                                                     type="table"
                                                     filter={this.state.filterTags}
-                                                    data={data.Clubs.map(a => a.name)}
+                                                    data={_(data.Clubs).orderBy((a: Filters_Clubs) => a.name.substring(a.name.indexOf(' ')))
+                                                            .map(a => a.name)
+                                                            .toArray()
+                                                            .value()
+                                                    }
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
                                                 />
