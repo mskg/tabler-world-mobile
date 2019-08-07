@@ -8,8 +8,15 @@ import Assets from '../../Assets';
 import { InlineLoading } from '../../components/Loading';
 import { Me } from '../../model/graphql/Me';
 import { GetMeQuery } from '../../queries/MeQuery';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 
-class CodeScreenBase extends React.Component<{theme}> {
+class CodeScreenBase extends AuditedScreen<{theme}> {
+
+  constructor(props: any) {
+    super(props, AuditScreenName.MemberShowQR);
+  }
+
   render() {
     return (<View style={{
       flex: 1,
