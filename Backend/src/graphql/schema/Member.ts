@@ -49,6 +49,7 @@ export const Member = gql`
         sales
         scienceresearch
         telecommunications
+        voluntaryservices
         warehousingdistribution
     }
 
