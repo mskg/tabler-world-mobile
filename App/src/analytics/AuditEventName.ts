@@ -7,4 +7,6 @@ export enum AuditEventName {
     RestoreSettings = "Restore Settings",
     SaveFavorites = "Save Favorites",
     BackgroundSync = "Background Sync",
+
+    Linking = "Linking",
 }

@@ -1,15 +1,15 @@
-import { Linking } from 'expo';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
-import Assets from '../../Assets';
-import { InlineLoading } from '../../components/Loading';
-import { Me } from '../../model/graphql/Me';
-import { GetMeQuery } from '../../queries/MeQuery';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import Assets from '../../Assets';
+import { InlineLoading } from '../../components/Loading';
+import { makeMemberLink } from "../../helper/linking/member";
+import { Me } from '../../model/graphql/Me';
+import { GetMeQuery } from '../../queries/MeQuery';
 
 class CodeScreenBase extends AuditedScreen<{theme}> {
 
@@ -30,7 +30,7 @@ class CodeScreenBase extends AuditedScreen<{theme}> {
           if (!data || !data.Me) return <InlineLoading />
 
           return (<QRCode
-            value={Linking.makeUrl('/member', { id: data.Me.id })}
+            value={makeMemberLink(data.Me.id)}
             logo={Assets.images.icon}
             logoSize={60}
             logoBackgroundColor='transparent'
