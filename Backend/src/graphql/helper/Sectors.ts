@@ -37,7 +37,7 @@ const SECTORS = [
     "science-research",
     "telecommunications",
     "warehousing-distribution",
-    "voluntaryservices",
+    "voluntary-services",
 ];
 
 type MapType = {[key: string]: string};
