@@ -8,6 +8,7 @@ import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
+import { parseCodeLink } from '../helper/linking/code';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
@@ -52,10 +53,12 @@ class ConfirmBase extends AuditedScreen<Props, State> {
         let { path, queryParams } = Linking.parse(event.url);
         logger.debug(path, queryParams);
 
-        if (path == "confirm") {
+        const result = parseCodeLink(path, queryParams);
+
+        if (result.valid && result.code) {
             this.audit.trackAction(ActionNames.LogonEmailLink);
 
-            this.setState({ code: queryParams["code"] as string });
+            this.setState({ code: result.code });
             this._confirm();
         }
     }

@@ -15,14 +15,20 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
                 [event.request.userAttributes.email]);
 
             if (res.rowCount !== 1) {
+                console.error("[CREATE]", event.request.userAttributes.email, "not found");
                 throw new Error("Sorry, we don't know you.");
             }
+           
+            console.debug("[CREATE]", event.request.userAttributes.email, "found");
+
             // This is a new auth session
             // Generate a new secret login code and mail it to the user
             secretLoginCode = randomDigits(6).join('');
             await sendEmail(event.request.userAttributes.email, secretLoginCode);
         });
     } else {
+        console.debug("[CREATE]", event.request.userAttributes.email, "re-use session");
+
         // There's an existing session. Don't generate new digits but
         // re-use the code from the current session. This allows the user to
         // make a mistake when keying in the code and to then retry, rather
@@ -30,6 +36,8 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
         const previousChallenge = event.request.session.slice(-1)[0];
         secretLoginCode = previousChallenge.challengeMetadata!.match(/CODE-(\d*)/)![1];
     }
+
+    console.log("[CREATE]", event.request.userAttributes.email, "code", secretLoginCode);
 
     // This is sent back to the client app
     event.response.publicChallengeParameters = { email: event.request.userAttributes.email };

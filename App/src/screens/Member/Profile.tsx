@@ -88,20 +88,22 @@ class ProfileBase extends React.Component<Props, State> {
 
         const filteredOptions = [...reduced, I18N.Member.Menu.cancel];
 
-        this.props.showActionSheetWithOptions(
-            {
-                message: title,
-                options: filteredOptions as string[],
-                cancelButtonIndex: filteredOptions.length - 1,
-            },
+        // https://github.com/expo/react-native-action-sheet/issues/112
+        setTimeout(() =>
+            this.props.showActionSheetWithOptions(
+                {
+                    message: title,
+                    options: filteredOptions as string[],
+                    cancelButtonIndex: filteredOptions.length - 1,
+                },
 
-            buttonIndex => {
-                if (buttonIndex != filteredOptions.length - 1) {
-                    const text = filteredOptions[buttonIndex] as string;
-                    openLinkWithApp(protocol, app, text);
+                buttonIndex => {
+                    if (buttonIndex != filteredOptions.length - 1) {
+                        const text = filteredOptions[buttonIndex] as string;
+                        openLinkWithApp(protocol, app, text);
+                    }
                 }
-            }
-        );
+            ), Platform.OS === "android" ? 400 : 0);
     }
 
     async buildMenu(title: string, selection: Array<string | undefined>, protocol: LinkType) {
