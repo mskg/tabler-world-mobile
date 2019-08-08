@@ -5,6 +5,10 @@ import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationEventSubscription, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
+import { ActionNames } from '../../analytics/ActionNames';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { showProfile } from '../../redux/actions/navigation';
@@ -15,13 +19,17 @@ type Props = {
   showProfile: typeof showProfile,
 };
 
-class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
+class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
   state = {
     hasCameraPermission: null,
     visible: true,
   };
 
   listeners: NavigationEventSubscription[] = [];
+
+  constructor(props: Props) {
+    super(props, AuditScreenName.MemberScanQR);
+  }
 
   async componentDidMount() {
     this.getPermissionsAsync();
@@ -30,6 +38,8 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
       this.props.navigation.addListener('didFocus', this._focus),
       this.props.navigation.addListener('didBlur', this._blur),
     ];
+
+    this.audit.submit();
   }
 
   _focus = () => this.setState({ visible: true });
@@ -91,6 +101,10 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
 
     if (path.endsWith("member") && queryParams.id != null) {
       logger.log("Member", queryParams.id);
+
+      this.audit.trackAction(ActionNames.ReadQRCode, {
+        [AuditPropertyNames.Id]: queryParams.id
+      });
 
       this.props.showProfile(parseInt(queryParams.id, 10));
     }
