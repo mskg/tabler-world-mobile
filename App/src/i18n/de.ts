@@ -1,4 +1,4 @@
-import { differenceInCalendarYears, format } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
 import en, { I18NType } from './en';
 
@@ -155,7 +155,7 @@ const de: I18NType = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInCalendarYears(Date.now(), date)})`
+                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInYears(Date.now(), date)})`
             },
         },
 

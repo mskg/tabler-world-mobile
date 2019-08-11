@@ -1,4 +1,4 @@
-import { differenceInCalendarYears, format } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import dateEN from 'date-fns/locale/en';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
@@ -154,7 +154,7 @@ const en = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, "D. MMMM YYYY" , { locale: dateEN })} (${differenceInCalendarYears(Date.now(), date)})`
+                return `${format(date, "D. MMMM YYYY" , { locale: dateEN })} (${differenceInYears(Date.now(), date)})`
             },
         },
 
