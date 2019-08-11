@@ -17,7 +17,7 @@ export enum MainRoutes {
     World = "WorldScreen",
     Albums = "EXPERIMENT_PicturesScreen",
     News = "EXPERIMENT_NewsScreen",
-    Settings = "SettingsScreen",
+    More = "MoreScreen",
 }
 
 export const EXPERIMENT_PREFIX = "EXPERIMENT_";

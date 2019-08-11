@@ -3,8 +3,8 @@ import React from 'react';
 import { I18N } from '../i18n/translation';
 import { AlbumsScreen } from '../screens/Albums';
 import { MembersScreen } from '../screens/Members';
+import MoreScreen from '../screens/More';
 import { NewsScreen } from '../screens/News';
-import SettingsScreen from '../screens/Settings';
 import StructureScreen from '../screens/Structure';
 import { WorldScreen } from '../screens/World';
 import { MainRoutes } from './Routes';
@@ -50,11 +50,11 @@ export const MainNavRoutes = {
         }
     },
 
-    [MainRoutes.Settings]: {
-        screen: SettingsScreen,
+    [MainRoutes.More]: {
+        screen: MoreScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Settings.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-settings" />)
+            tabBarLabel: I18N.Menu.title,
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-menu" />)
         }
     },
 };

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { Text } from "react-native-paper";
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
@@ -6,8 +7,13 @@ import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR
 import { MainNavRoutes } from './MainNavRoutes';
 import { MainRoutes } from './Routes';
 
+const Routes = (() => {
+    const old = { ...MainNavRoutes };
+    return _.omitBy(old, (v, k) => k.startsWith("World"));
+})();
+
 export const ExperimentsNavigation = createMaterialBottomTabNavigator(
-    MainNavRoutes,
+    Routes,
     {
         initialRouteName: MainRoutes.Members,
         shifting: true,

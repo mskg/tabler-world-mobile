@@ -21,7 +21,8 @@
       "profile": "https://rti.roundtable.world/de/members/#id#/",
       "world": "https://rti.roundtable.world/de/",
       "join": "https://www.round-table.de/bist-du-wir/",
-      "support": "support@round-table.de"
+      "support": "support@round-table.de",
+      "feedback": "http://feedback.app.roundtable.world/"
     },
     "orientation": "portrait",
     "icon": "./assets/images/logo_iOS.png",
@@ -53,7 +54,8 @@
       },
       "infoPlist": {
         "UIBackgroundModes": [
-          "fetch"
+          "fetch",
+          "location"
         ],
         "LSApplicationQueriesSchemes": [
           "googlechrome",
@@ -78,7 +80,8 @@
         "READ_CALENDAR",
         "WRITE_CALENDAR",
         "VIBRATE",
-        "CAMERA"
+        "CAMERA",
+        "LOCATION"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo_Android.png",

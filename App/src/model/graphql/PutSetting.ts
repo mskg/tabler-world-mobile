@@ -9,6 +9,9 @@ import { SettingInput } from "./globalTypes";
 // ====================================================
 
 export interface PutSetting {
+  /**
+   * Updates a setting
+   */
   putSetting: boolean | null;
 }
 

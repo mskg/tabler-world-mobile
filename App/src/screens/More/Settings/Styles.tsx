@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
 
 export const styles = StyleSheet.create({
     section: {
@@ -21,6 +22,16 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 16,
         marginBottom: 16,
         fontSize: 12,
+    },
+
+    rowicon: {
+        flex: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        // paddingVertical: 8,
+        paddingHorizontal: 16,
+        height: ITEM_HEIGHT,
     },
 
     row: {

@@ -1,4 +1,4 @@
-import { differenceInCalendarYears, format } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
 import en, { I18NType } from './en';
 
@@ -155,7 +155,7 @@ const de: I18NType = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInCalendarYears(Date.now(), date)})`
+                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInYears(Date.now(), date)})`
             },
         },
 
@@ -341,12 +341,14 @@ const de: I18NType = {
             apps: "Bevorzugte Applikationen wählen",
             contacts: "Mitglieder",
             colors: "Farben",
-            experiments: "Experimente"
+            experiments: "Experimente",
+            nearby: "Mitglieder in der Nähe",
         },
 
         texts: {
             contacts: "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.",
-            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
+            experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden.",
+            nearby: "Wenn du die Funktion einschaltest, können andere Mitglieder sehen, in welcher Stadt du dich befindest. Wir speichern keine Standorthistorier, nur den letzten bekannten Standort.",
         },
 
         contactpermissions: "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
@@ -371,7 +373,8 @@ const de: I18NType = {
             sortOrder: "Sortierung",
             displayOrder: "Anzeige",
 
-            experiments: "Alben und Neuigkeiten"
+            experiments: "Alben und Neuigkeiten",
+            nearby: "Meinen Standort teilen",
         },
 
         ReleaseNotes: "Versionshinweise (Englisch)",
@@ -437,6 +440,36 @@ const de: I18NType = {
         years: "Jahre",
 
         toOne: (s: string) => s.substring(0, -1),
+    },
+
+    Distance: {
+        m: "m",
+        km: "km",
+    },
+
+    Menu: {
+        title: "Menü",
+    },
+
+    NearbyMembers: {
+        title: "Mitglieder in der Nähe",
+        location: "Dein Standort",
+
+        near: (s: string) => "In der Nähe von "+ s,
+        ago: (s: string) => `vor ${s}`,
+
+        notsupported: "Die Hintergrundposition ist in dieser Anwendung nicht verfügbar.",
+        permissions: 'Um diese Funktion nutzen zu können, muss die App auf Deinen Standort zufreifen. Du kannst dies jederzeit in den Einstellungen aktivieren.',
+        always: "Um Mitglieder in der Nähe nutzen zu können benötigen die App dauerhaften Zustand auf Deine Position.",
+
+        setlocation: "Standort auf immer setzen",
+        on: "Einschalten",
+
+        off: "Nächste Mitglieder sind aus. Wenn du die Funktion einschaltest, können andere Mitglieder sehen, in welcher Stadt du dich befindest. Wir speichern keine Standorthistorier, nur den letzten bekannten Standort."
+    },
+
+    Feedback: {
+        title: "Feedback",
     },
 };
 

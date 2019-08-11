@@ -2,10 +2,10 @@ import React from 'react';
 import { WebView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { AuditedScreen } from '../../analytics/AuditedScreen';
-import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
-import { AuditScreenName } from '../../analytics/AuditScreenName';
-import { ScreenWithHeader } from '../../components/Screen';
+import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
+import { AuditScreenName } from '../../../analytics/AuditScreenName';
+import { ScreenWithHeader } from '../../../components/Screen';
 
 class ShowExternalScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps> {
     constructor(props) {

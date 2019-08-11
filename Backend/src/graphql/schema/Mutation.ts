@@ -7,8 +7,5 @@ export const Mutation = gql`
 
         "adds a token to the store of the authenticated user"
         addToken(token: String!): Boolean
-
-        removeSetting(name: String!): Boolean
-        putSetting(setting: SettingInput!): Boolean
     }
 `;

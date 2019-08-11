@@ -2,11 +2,11 @@ import React from 'react';
 import { ScrollView, View } from "react-native";
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { AuditedScreen } from '../../analytics/AuditedScreen';
-import { AuditScreenName } from '../../analytics/AuditScreenName';
-import Assets from '../../Assets';
-import { ScreenWithHeader } from '../../components/Screen';
-import { I18N } from '../../i18n/translation';
+import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../../analytics/AuditScreenName';
+import Assets from '../../../Assets';
+import { ScreenWithHeader } from '../../../components/Screen';
+import { I18N } from '../../../i18n/translation';
 import { NextScreen } from './Action';
 import { Routes } from './Routes';
 

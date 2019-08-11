@@ -10,7 +10,9 @@ import { styles } from './Styles';
 export class InternalMemberListItem extends React.PureComponent<MemberItemProps> {
   _onPress = () => {
     requestAnimationFrame(() => {
-      this.props.onPress(this.props.member);
+      if (this.props.onPress) {
+        this.props.onPress(this.props.member);
+      }
     });
   };
 
@@ -28,7 +30,7 @@ export class InternalMemberListItem extends React.PureComponent<MemberItemProps>
         // width: ITEM_WIDTH
       }}>
         <TouchableRipple
-          onPress={this._onPress}
+          onPress={this.props.onPress ? this._onPress : undefined}
           style={{
             height: this.props.height,
             // width: ITEM_WIDTH,

@@ -21,4 +21,12 @@ export const Settings = gql`
         Settings: [Setting!]
         Setting (name: SettingName!): SettingValue
     }
+
+    extend type Mutation {
+        "Removes a setting from the users profile"
+        removeSetting(name: String!): Boolean
+
+        "Updates a setting"
+        putSetting(setting: SettingInput!): Boolean
+    }
 `;

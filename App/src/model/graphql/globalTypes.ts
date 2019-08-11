@@ -44,13 +44,32 @@ export enum CompanySector {
   sales = "sales",
   scienceresearch = "scienceresearch",
   telecommunications = "telecommunications",
+  voluntaryservices = "voluntaryservices",
   warehousingdistribution = "warehousingdistribution",
+}
+
+export enum NearbyMemberState {
+  Steady = "Steady",
+  Traveling = "Traveling",
 }
 
 export enum RoleType {
   area = "area",
   assoc = "assoc",
   club = "club",
+}
+
+export interface MyCurrentLocationInput {
+  longitude: number;
+  latitude: number;
+}
+
+export interface MyLocationInput {
+  longitude: number;
+  latitude: number;
+  accuracy: number;
+  speed: number;
+  address?: any | null;
 }
 
 export interface SettingInput {

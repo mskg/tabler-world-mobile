@@ -6,7 +6,7 @@ export type MemberItemBaseProps = {
   theme: Theme;
   member: IMemberOverviewFragment;
 
-  onPress: (member: IMemberOverviewFragment) => void;
+  onPress?: (member: IMemberOverviewFragment) => void;
 
   right?: (props: {
     size: number;

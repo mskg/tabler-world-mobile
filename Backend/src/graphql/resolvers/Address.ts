@@ -47,22 +47,24 @@ export const AddressResolver = {
             return doTrim(root.postal_code);
         },
 
-        longitude: async (root: any, _args: any, context: IApolloContext) => {
+        location: async (root: any, _args: any, context: IApolloContext) => {
+            // we preserve what we have
+            if (root.location) {
+                return root.location;
+            }
+
             const hash = addressHash(root);
             context.logger.log(root, hash);
 
             if (hash == null) return null;
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            return coordinates ? coordinates.longitude : null;
-        },
-
-        latitude: async (root: any, _args: any, context: IApolloContext) => {
-            const hash = addressHash(root);
-            if (hash == null) return null;
-
-            const coordinates = await context.dataSources.geocoder.readOne(hash);
-            return coordinates ? coordinates.latitude : null;
+            return coordinates
+                ? {
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude
+                }
+                : null;
         },
     },
 }

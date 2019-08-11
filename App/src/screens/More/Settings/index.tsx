@@ -1,9 +1,9 @@
 import { createStackNavigator } from 'react-navigation';
-import { LegalScreen } from './Settings/Legal';
-import { MainSettingsScreen } from './Settings/Main';
-import { ShowMDScreen } from './Settings/ShowMDScreen';
-import { ShowExternalScreen } from './Settings/ShowExternalScreen';
-import { Routes } from './Settings/Routes';
+import { LegalScreen } from './Legal';
+import { MainSettingsScreen } from './Main';
+import { Routes } from './Routes';
+import { ShowExternalScreen } from './ShowExternalScreen';
+import { ShowMDScreen } from './ShowMDScreen';
 
 const Navigator = createStackNavigator(
     {

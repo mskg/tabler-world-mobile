@@ -105,11 +105,11 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 >
                     {this.props.data && this.props.data.Clubs &&
                         this.props.data.Clubs
-                            .filter(f => f.longitude != null)
+                            .filter(f => f.location != null)
                             .map(c => (
                                 <Marker
                                     key={c.id}
-                                    coordinate={c as LatLng}
+                                    coordinate={c.location as LatLng}
                                     onCalloutPress={() => this.props.showClub(c.id)}
                                 >
                                     <Callout style={{ height: 190, flexDirection: "column", backgroundColor: this.props.theme.colors.surface }}>

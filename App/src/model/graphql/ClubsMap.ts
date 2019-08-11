@@ -6,13 +6,18 @@
 // GraphQL query operation: ClubsMap
 // ====================================================
 
+export interface ClubsMap_Clubs_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
+}
+
 export interface ClubsMap_Clubs {
   __typename: "Club";
   id: string;
   name: string;
   logo: string | null;
-  longitude: number | null;
-  latitude: number | null;
+  location: ClubsMap_Clubs_location | null;
 }
 
 export interface ClubsMap {

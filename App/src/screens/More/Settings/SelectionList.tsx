@@ -1,6 +1,6 @@
 import React from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../../theme/colors';
 import { Element } from './Element';
 import { styles } from './Styles';
 

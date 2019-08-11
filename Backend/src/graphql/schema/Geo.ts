@@ -3,12 +3,50 @@ import { gql } from 'apollo-server-lambda';
 
 export const Geo = gql`
     extend type Address {
-        longitude: Float
-        latitude: Float
+        location: GeoPoint
     }
 
     extend type Club {
-        longitude: Float
-        latitude: Float
+        location: GeoPoint
+    }
+
+    input MyCurrentLocationInput {
+        longitude: Float!
+        latitude: Float!
+    }
+
+    input MyLocationInput {
+        longitude: Float!
+        latitude: Float!
+        accuracy: Int!
+        speed: Float!
+        address: JSON
+    }
+
+    extend type Mutation {
+        putLocation(location: MyLocationInput!): Boolean
+        disableLocationServices: Boolean
+    }
+
+    extend type Query {
+        nearbyMembers(location: MyCurrentLocationInput!): [NearbyMember!]
+    }
+
+    type GeoPoint {
+        longitude: Float!
+        latitude: Float!
+    }
+
+    enum NearbyMemberState {
+        Steady
+        Traveling
+    }
+
+    type NearbyMember {
+        member: Member!
+        distance: Int!
+        lastseen: Date!
+        state: NearbyMemberState!
+        address: Address!
     }
 `;

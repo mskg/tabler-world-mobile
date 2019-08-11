@@ -6,6 +6,7 @@ import { migrateToNull, MIGRATE_VERSION } from '../migrations';
 import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
+import { locationReducer } from './location';
 import { settingsReducer } from './settings';
 import { snackReducer } from './snacks';
 import { stateReducer } from './state';
@@ -41,6 +42,8 @@ export default {
 
     settings: persistReducer({ ...defaultConfig, key: "settings" }, settingsReducer),
     filter: persistReducer({ ...defaultConfig, key: "filter" }, filterReducer),
+
+    location: persistReducer({ ...defaultConfig, key: "location" }, locationReducer),
 
     snacks: snackReducer,
 };

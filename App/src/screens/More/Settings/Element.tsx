@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from "react-native";
 import { Text } from 'react-native-paper';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../../theme/colors';
 import { styles } from './Styles';
 
 export const Element = ({ theme, field, text }) => (

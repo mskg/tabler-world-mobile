@@ -97,3 +97,58 @@ select md5('abc')
 
 
 select count(*) from geocodes
+
+
+select * from userlocations
+
+select * from userlocations
+
+
+explain
+SELECT
+  member,
+  address,
+  cast(ST_Distance(
+    locations.point,
+    'POINT(-122.09695274 37.34562364)'::geography
+  ) as integer) AS distance
+FROM
+  userlocations_match locations
+WHERE
+  ST_DWithin(locations.point, 'POINT(-122.09695274 37.34562364)'::geography, 10000)
+ORDER BY
+  locations.point <-> 'POINT(-122.09695274 37.34562364)'::geography
+
+LIMIT 10;
+
+
+SELECT ROW_NUMBER() over (order by id) as nbr, id
+
+select *
+from userlocations
+
+
+
+
+update userlocations
+set id = orderedprofile.id
+from
+(
+  SELECT ROW_NUMBER() over (order by id) as nbr, id
+  from profiles
+  where removed = FALSE
+  and id <> 10430
+
+) orderedprofile
+where
+    userlocations.id = orderedprofile.nbr
+and userlocations.id <> 10430
+;
+
+
+
+select max_conn,used,res_for_super,max_conn-used-res_for_super res_for_normal
+from
+  (select count(*) used from pg_stat_activity) t1,
+  (select setting::int res_for_super from pg_settings where name=$$superuser_reserved_connections$$) t2,
+  (select setting::int max_conn from pg_settings where name=$$max_connections$$) t3

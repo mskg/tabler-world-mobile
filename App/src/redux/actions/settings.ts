@@ -13,6 +13,7 @@ export type SettingsType =
 
   | { name: "darkMode", value: boolean }
   | { name: "experiments", value: boolean }
+  | { name: "nearbyMembers", value: boolean }
 ;
 
 /**

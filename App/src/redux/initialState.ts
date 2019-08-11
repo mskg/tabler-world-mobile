@@ -12,6 +12,10 @@ export const INITIAL_STATE: IAppState = {
     signinState: undefined,
   },
 
+  location: {
+    track: false,
+  },
+
   searchHistory: {
     members: ["Markus Kling"],
     lru: [],

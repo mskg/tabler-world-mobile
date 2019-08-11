@@ -10,7 +10,7 @@ import { ScreenWithHeader } from './Screen';
 
 const logger = new Logger(Categories.UIComponents.WebScreen);
 
-export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
+export class WebScreenBase extends AuditedScreen<{theme, url, title, showBack?}, {url}> {
     ref: any;
 
     constructor(props) {
@@ -50,7 +50,8 @@ export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
                         onPress={() => this.ref.goForward()}
                     />,
                 ],
-                title: this.props.title
+                title: this.props.title,
+                showBack: this.props.showBack,
             }}>
                 <WebView
                     ref={r => this.ref = r}

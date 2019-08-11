@@ -1,4 +1,4 @@
-import { differenceInCalendarYears, format } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import dateEN from 'date-fns/locale/en';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
@@ -154,7 +154,7 @@ const en = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, "D. MMMM YYYY" , { locale: dateEN })} (${differenceInCalendarYears(Date.now(), date)})`
+                return `${format(date, "D. MMMM YYYY" , { locale: dateEN })} (${differenceInYears(Date.now(), date)})`
             },
         },
 
@@ -396,15 +396,18 @@ const en = {
             apps: "Default Apps",
             contacts: "Members",
             colors: "Colors",
-            experiments: "Experiments"
+            experiments: "Experiments",
+            nearby: "Nearby Members",
         },
 
         texts: {
             contacts: "Members can be synchronized to your phone's default Contacts' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.",
-            experiments: "These are experimental and unsupported features of the TABLER.APP and may dissapear at any time."
+            experiments: "These are experimental and unsupported features of the TABLER.APP and may dissapear at any time.",
+            nearby: "If you turn it on, other members can see where your are. We don't store your location history, only your last known location.",
         },
 
-        contactpermissions: "Cannot access Contacts. Please grant permission through the phone's settings area.",
+        contactpermissions: "Location permissions are required in order to use this feature. Please grant permission through the phone's settings area.",
+        locationpermission: "Cannot access Contacts. Please grant permission through the phone's settings area.",
 
         firstlast: "First, Last",
         lastfirst: "Last, First",
@@ -424,8 +427,8 @@ const en = {
             syncOwnTable: "Synchronize own Table's Members",
             sortOrder: "Sort Order",
             displayOrder: "Display Order",
-
-            experiments: "Albums & News"
+            experiments: "Albums & News",
+            nearby: "Share my location",
         },
 
         ReleaseNotes: "Release Notes",
@@ -493,6 +496,36 @@ const en = {
         years: "years",
 
         toOne: (s: string) => s.substring(0, -1),
+    },
+
+    Distance: {
+        m: "m",
+        km: "km",
+    },
+
+    Menu: {
+        title: "Menu",
+    },
+
+    NearbyMembers: {
+        title: "Nearby Members",
+        location: "Your location",
+
+        near: (s: string) => "Near "+ s,
+        ago: (s: string) => `${s} ago`,
+
+        notsupported: "Background location is not available in this application.",
+        permissions: 'Location permissions are required in order to use this feature. You can manually enable them at any time in the "Location Services" section of the Settings app.',
+        always: "Nearby Members needs 'Always' Location Access.",
+
+        setlocation: "Set Location to Always",
+        on: "Turn on",
+
+        off: "Nearby Members is off. If you turn it on, other members can see in which city you are. We don't store your location history, only your last known location."
+    },
+
+    Feedback: {
+        title: "Feedback",
     },
 }
 

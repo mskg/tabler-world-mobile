@@ -6,10 +6,16 @@ export enum Features {
     EncryptedStorage,
     BackgroundFetch,
     SendToAdressbook,
+    ClubMap,
+    BackgroundLocation,
 }
 
 export function isFeatureEnabled(feature: Features) {
     if (feature === Features.BackgroundFetch) {
+        return true;
+    }
+
+    if (feature === Features.BackgroundLocation) {
         return true;
     }
 

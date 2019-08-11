@@ -22,6 +22,7 @@ import { Navigation } from './navigation/redux';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
 import { registerFetchTask } from './tasks/Fetch';
+import { registerLocationTask } from './tasks/Location';
 import { registerForPushNotificationsAsync } from './tasks/Push';
 import { withPaperProvider } from './theme/withPaperProvider';
 
@@ -47,6 +48,11 @@ bootstrapRedux();
 if (isFeatureEnabled(Features.BackgroundFetch)) {
   logger.log("Bootstrapping background-fetch");
   registerFetchTask();
+}
+
+if (isFeatureEnabled(Features.BackgroundLocation)) {
+  logger.log("Bootstrapping background-location");
+  registerLocationTask();
 }
 
 logger.log("Bootstrapping push notifications");

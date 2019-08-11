@@ -3,13 +3,13 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { AuditedScreen } from '../../analytics/AuditedScreen';
-import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
-import { AuditScreenName } from '../../analytics/AuditScreenName';
-import DocViewer from '../../components/DocsViewer';
-import { InlineLoading } from '../../components/Loading';
-import { ScreenWithHeader } from '../../components/Screen';
-import { Categories, Logger } from '../../helper/Logger';
+import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
+import { AuditScreenName } from '../../../analytics/AuditScreenName';
+import DocViewer from '../../../components/DocsViewer';
+import { InlineLoading } from '../../../components/Loading';
+import { ScreenWithHeader } from '../../../components/Screen';
+import { Categories, Logger } from '../../../helper/Logger';
 
 const logger = new Logger(Categories.Screens.Docs);
 

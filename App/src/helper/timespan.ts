@@ -3,10 +3,10 @@ import { I18N } from '../i18n/translation';
 export function timespan(time1: number, time2?: number) {
     if(typeof time2 == "undefined") {
         var now = new Date();
-        time2 = Math.floor(now.getTime() / 1000);
+        time2 = Math.floor(now.getTime());
     }
 
-    var period = Math.abs(time1 - time2);
+    var period = Math.abs(time1 - time2) / 1000;
 
     var timespan = 1;
     var format = I18N.Timespan.seconds;

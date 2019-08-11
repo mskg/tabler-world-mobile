@@ -7,22 +7,22 @@ import { Alert, ScrollView, Text as NativeText, View } from "react-native";
 import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { ActionNames } from '../../analytics/ActionNames';
-import { AuditedScreen } from '../../analytics/AuditedScreen';
-import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
-import { AuditScreenName } from '../../analytics/AuditScreenName';
-import { cachedAolloClient, getPersistor } from '../../apollo/bootstrapApollo';
-import Assets from '../../Assets';
-import { ScreenWithHeader } from '../../components/Screen';
-import { isDemoModeEnabled } from '../../helper/demoMode';
-import { LinkingHelper } from '../../helper/LinkingHelper';
-import { Categories, Logger } from '../../helper/Logger';
-import { I18N } from '../../i18n/translation';
-import { Features, isFeatureEnabled } from '../../model/Features';
-import { IAppState } from '../../model/IAppState';
-import { SettingsState } from "../../model/state/SettingsState";
-import { SettingsType, updateSetting } from '../../redux/actions/settings';
-import { logoutUser } from '../../redux/actions/user';
+import { ActionNames } from '../../../analytics/ActionNames';
+import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
+import { AuditScreenName } from '../../../analytics/AuditScreenName';
+import { cachedAolloClient, getPersistor } from '../../../apollo/bootstrapApollo';
+import Assets from '../../../Assets';
+import { ScreenWithHeader } from '../../../components/Screen';
+import { isDemoModeEnabled } from '../../../helper/demoMode';
+import { LinkingHelper } from '../../../helper/LinkingHelper';
+import { Categories, Logger } from '../../../helper/Logger';
+import { I18N } from '../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../model/Features';
+import { IAppState } from '../../../model/IAppState';
+import { SettingsState } from "../../../model/state/SettingsState";
+import { SettingsType, updateSetting } from '../../../redux/actions/settings';
+import { logoutUser } from '../../../redux/actions/user';
 import { Action, NextScreen } from './Action';
 import { Element } from './Element';
 import { Routes } from './Routes';
@@ -148,6 +148,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.updateSetting({ name: "darkMode", value: !this.props.settings.darkMode });
     }
 
+    _updateFriends = async () => {
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+        if (status !== 'granted') {
+            Alert.alert(I18N.Settings.locationpermission);
+            this.updateSetting({ name: "nearbyMembers", value: false });
+        } else {
+            this.updateSetting({ name: "nearbyMembers", value: !this.props.settings.nearbyMembers });
+        }
+    }
+
     _updateExperimentAlbums = async () => {
         this.updateSetting({ name: "experiments", value: !this.props.settings.experiments });
 
@@ -257,7 +268,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <ScreenWithHeader header={{ title: I18N.Settings.title }}>
+            <ScreenWithHeader header={{ title: I18N.Settings.title, showBack: true }}>
                 <ScrollView>
                     {this.state.demoMode &&
                         <Banner
@@ -460,6 +471,26 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         onValueChange={this._updateSyncOwntable}
                                     />
                                 } />
+                            <Divider />
+                        </List.Section>
+                    }
+
+                    {isFeatureEnabled(Features.BackgroundLocation) &&
+                        <List.Section title={I18N.Settings.sections.nearby}>
+                            <Text style={styles.text}>{I18N.Settings.texts.nearby}</Text>
+                            <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.Settings.fields.nearby}
+                                text={
+                                    <Switch
+                                        color={this.props.theme.colors.accent}
+                                        style={{ marginTop: -4, marginRight: -4 }}
+                                        value={this.props.settings.nearbyMembers}
+                                        onValueChange={this._updateFriends}
+                                    />
+                                }
+                            />
                             <Divider />
                         </List.Section>
                     }

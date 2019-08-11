@@ -7,8 +7,10 @@ export const GetClubsMapQuery = gql`
       name
       logo
 
-      longitude
-      latitude
+      location {
+        longitude
+        latitude
+      }
     }
   }
 `;

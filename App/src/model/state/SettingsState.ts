@@ -12,4 +12,6 @@ export type SettingsState = {
   darkMode: boolean;
   experiments?: boolean;
   optOutAnalytics: boolean;
+
+  nearbyMembers?: boolean;
 }

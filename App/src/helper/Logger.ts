@@ -27,6 +27,7 @@ export class Categories {
         public static readonly Settings = Categories.SagaRoot + "/Settings";
         public static readonly Member = Categories.SagaRoot + "/Member";
         public static readonly Push = Categories.SagaRoot + "/Push";
+        public static readonly Location = Categories.SagaRoot + "/Location";
         public static readonly Fetch = Categories.SagaRoot + "/Fetch";
         public static readonly User = Categories.SagaRoot + "/User";
         public static readonly Contacts = Categories.SagaRoot + "/Contacts";
@@ -49,6 +50,7 @@ export class Categories {
         public static readonly SignIn = Categories._UI + "/SignIn";
         public static readonly ConfirmSignIn = Categories._UI + "/ConfirmSignIn";
         public static readonly Setting = Categories._UI + "/Settings";
+        public static readonly Menu = Categories._UI + "/Menu";
         public static readonly Search = Categories._UI + "/Search";
         public static readonly Contacts = Categories._UI + "/Contacts";
         public static readonly Member = Categories._UI + "/Member";

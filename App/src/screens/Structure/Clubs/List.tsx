@@ -16,6 +16,7 @@ import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidati
 import { Categories, Logger } from "../../../helper/Logger";
 import { normalizeForSearch } from '../../../helper/normalizeForSearch';
 import { I18N } from '../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../model/Features';
 import { Clubs, Clubs_Clubs } from '../../../model/graphql/Clubs';
 import { GetClubsQuery } from '../../../queries/GetClubsQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
@@ -172,6 +173,8 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
     }
 
     render() {
+        const showMap = isFeatureEnabled(Features.ClubMap);
+
         return (
             <View style={{ width: '100%', height: '100%', backgroundColor: this.props.theme.colors.background }}>
                 <Placeholder
@@ -193,17 +196,19 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                                     onChangeText={this._search}
                                 />
 
-                                <Surface style={styles.switchLayoutButton}>
-                                    <IconButton
-                                        icon={({ size, color }) =>
-                                            <Ionicons
-                                                name="md-map"
-                                                size={size}
-                                                color={color}
-                                            />}
-                                        onPress={this._showMap}
-                                    />
-                                </Surface>
+                                {showMap &&
+                                    <Surface style={styles.switchLayoutButton}>
+                                        <IconButton
+                                            icon={({ size, color }) =>
+                                                <Ionicons
+                                                    name="md-map"
+                                                    size={size}
+                                                    color={color}
+                                                />}
+                                            onPress={this._showMap}
+                                        />
+                                    </Surface>
+                                }
                             </View>
                         }
                         refreshing={this.props.loading}

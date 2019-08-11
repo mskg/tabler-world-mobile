@@ -11,8 +11,10 @@ class LoadingScreenBase extends React.Component<NavigationInjectedProps & { expe
     constructor(props) {
         super(props);
 
+        console.log("*********************************** " + this.props.experiments + "**********************************")
         this.props.navigation.navigate(this.props.experiments === true ? "Experiments" : "Normal");
     }
+
     render() {
         // should not happen heree
         return null;

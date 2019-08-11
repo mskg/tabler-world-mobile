@@ -36,22 +36,19 @@ export const StructureResolver = {
     },
 
     Club: {
-        longitude: async (root: any, _args: any, context: IApolloContext) => {
+        location: async (root: any, _args: any, context: IApolloContext) => {
             const hash = addressHash(root.meetingplace1);
             context.logger.log(root, hash);
 
             if (hash == null) return null;
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            return coordinates ? coordinates.longitude : null;
-        },
-
-        latitude: async (root: any, _args: any, context: IApolloContext) => {
-            const hash = addressHash(root.meetingplace1);
-            if (hash == null) return null;
-
-            const coordinates = await context.dataSources.geocoder.readOne(hash);
-            return coordinates ? coordinates.latitude : null;
+            return coordinates
+                ? {
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude
+                }
+                : null;
         },
 
         area: (root: any, _args: any, context: IApolloContext) => {
@@ -102,7 +99,7 @@ export const StructureResolver = {
 
             if (root.clubs) {
                 return Promise.all(
-                        root.clubs.map(async (r: any) =>
+                    root.clubs.map(async (r: any) =>
                         await context.dataSources.structure.getClub(r))
                 );
             }

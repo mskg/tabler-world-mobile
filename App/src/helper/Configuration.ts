@@ -13,6 +13,7 @@ type Key =
     | "amplitudeAnalytics"
     | "profile"
     | "world"
+    | "feedback"
     | "join"
     | "support"
 ;
