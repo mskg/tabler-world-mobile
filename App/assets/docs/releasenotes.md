@@ -6,6 +6,7 @@
 - New value voluntaryservices for company profiles #55
 - Global profile link does not open member card directly #57
 - Fixed birthdate formatting on Android #58
+- Fixed typos and translations #62
 
 ## Improvements
 
