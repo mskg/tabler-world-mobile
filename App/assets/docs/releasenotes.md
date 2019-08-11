@@ -12,6 +12,7 @@
 - Sort clubs by name instead of number on search page
 - When scanning a tabler-world QR code outside the App, the member's profile is now opened correctly
 - Added extended logging to authentication challenge
+- Updated texts for permission requests
 
 # v1.0
 

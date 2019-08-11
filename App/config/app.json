@@ -70,8 +70,17 @@
           "tel",
           "sms",
           "comgooglemaps"
-        ]
+        ],
+        "NSCameraUsageDescription": "TABLER.APP uses the camera to scan barcodes of other members.",
+        "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
+        "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
+        "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
+        "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription" : "TABLER.APP tracks your position to allow other members to get in touch with you."
       }
+    },
+    "locales": {
+      "de": "./src/i18n/permissions/de.json"
     },
     "android": {
       "permissions": [
