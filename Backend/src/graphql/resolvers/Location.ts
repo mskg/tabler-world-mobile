@@ -15,6 +15,10 @@ type NearMembersInput = {
     location: {
         longitude: number,
         latitude: number,
+    },
+
+    query?: {
+        excludeOwnTable?: boolean,
     }
 }
 
@@ -24,7 +28,7 @@ export const LocationResolver = {
             return context.dataSources.members.readOne(root.member);
         },
 
-        state: (root: any, _args: {}, context: IApolloContext) => {
+        state: (root: any, _args: {}, _context: IApolloContext) => {
             return !root.speed || root.speed < 8 ? "Steady": "Traveling";
         },
     },
@@ -49,7 +53,9 @@ FROM
     userlocations_match locations
 WHERE
         member <> $2
---    and ST_DWithin(locations.point, $1::geography, 10000)
+    and ST_DWithin(locations.point, $1::geography, ${process.env.NEARBY_RADIUS || 100000})
+    and association = $3
+    ${args.query && args.query.excludeOwnTable ? "and club <> $4" : ""}
 ORDER BY
     locations.point <-> $1::geography
 LIMIT 20
@@ -57,7 +63,9 @@ LIMIT 20
                         [
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             context.principal.id,
-                        ]);
+                            context.principal.association,
+                            args.query && args.query.excludeOwnTable ? context.principal.club : undefined
+                        ].filter(Boolean));
 
                     return result.rows.length > 0 ? result.rows : null;
                 }

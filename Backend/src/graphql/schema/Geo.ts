@@ -28,8 +28,12 @@ export const Geo = gql`
         disableLocationServices: Boolean
     }
 
+    input NearbyMembersQueryInput {
+        excludeOwnTable: Boolean
+    }
+
     extend type Query {
-        nearbyMembers(location: MyCurrentLocationInput!): [NearbyMember!]
+        nearbyMembers(location: MyCurrentLocationInput!, query: NearbyMembersQueryInput): [NearbyMember!]
     }
 
     type GeoPoint {

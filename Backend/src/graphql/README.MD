@@ -20,6 +20,7 @@
 ### Offline
 
 - `IS_OFFLINE=false`
+- `NEARBY_RADIUS=100000`
 
 ## Lambd Warmer
 

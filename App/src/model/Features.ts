@@ -15,7 +15,7 @@ export function isFeatureEnabled(feature: Features) {
         return true;
     }
 
-    if (feature === Features.BackgroundLocation) {
+    if (feature === Features.BackgroundLocation || feature === Features.ClubMap) {
         return true;
     }
 

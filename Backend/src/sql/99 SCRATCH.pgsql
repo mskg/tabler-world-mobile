@@ -115,7 +115,9 @@ SELECT
 FROM
   userlocations_match locations
 WHERE
-  ST_DWithin(locations.point, 'POINT(-122.09695274 37.34562364)'::geography, 10000)
+member <> 10430
+and ST_DWithin(locations.point, 'POINT(-122.09695274 37.34562364)'::geography, 10000)
+and association = 'de'
 ORDER BY
   locations.point <-> 'POINT(-122.09695274 37.34562364)'::geography
 

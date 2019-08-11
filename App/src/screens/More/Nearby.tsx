@@ -234,6 +234,9 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
+/**
+ * Apollo reuses instances, so we create new ones every time
+ */
 const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
     let group = {
         title: data[0].address.city as string,
@@ -242,7 +245,13 @@ const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
 
     const result: typeof group[] = [];
     const withRoles = data.map(m => {
-        m.member.roles = [... (m.member.roles || []), {
+        const r = {
+            ...m,
+            member: {
+                ...m.member
+            }
+        };
+        r.member.roles = [... (m.member.roles || []), {
             __typename: "Role",
             name: "Member",
             group: "Member",
@@ -255,7 +264,7 @@ const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
             }
         }];
 
-        return m;
+        return r;
     })
 
     for (const member of withRoles) {

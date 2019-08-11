@@ -43,7 +43,9 @@ export const StructureResolver = {
             if (hash == null) return null;
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            return coordinates
+            context.logger.log(root, hash, coordinates);
+
+            return coordinates && coordinates.latitude
                 ? {
                     latitude: coordinates.latitude,
                     longitude: coordinates.longitude

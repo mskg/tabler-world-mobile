@@ -37,11 +37,14 @@ drop view if exists userlocations_match cascade;
 
 CREATE or replace view userlocations_match as
 select
-    id as member,
-    point,
-    accuracy,
-    speed,
-    lastseen,
+    userlocations.id as member,
+    profiles.association,
+    profiles.club,
+    profiles.area,
+    userlocations.point,
+    userlocations.accuracy,
+    userlocations.speed,
+    userlocations.lastseen,
     jsonb_strip_nulls(jsonb_build_object(
         'location',
         jsonb_build_object(
@@ -53,18 +56,21 @@ select
         ),
 
         'city',
-        nullif(address->0->>'city', ''),
+        nullif(userlocations.address->0->>'city', ''),
 
         'country',
-        nullif(address->0->>'isoCountryCode', ''),
+        nullif(userlocations.address->0->>'isoCountryCode', ''),
 
         'street1',
-        nullif(address->0->>'street1', ''),
+        nullif(userlocations.address->0->>'street1', ''),
 
         'street2',
-        nullif(address->0->>'street2', ''),
+        nullif(userlocations.address->0->>'street2', ''),
 
         'postal_code',
-        nullif(address->0->>'postalCode', '')
+        nullif(userlocations.address->0->>'postalCode', '')
     )) as address
-from userlocations
+from
+    userlocations, profiles
+where
+    profiles.id = userlocations.id

@@ -59,7 +59,7 @@ export const AddressResolver = {
             if (hash == null) return null;
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            return coordinates
+            return coordinates && coordinates.latitude
                 ? {
                     latitude: coordinates.latitude,
                     longitude: coordinates.longitude
