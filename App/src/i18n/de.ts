@@ -200,7 +200,7 @@ const de: I18NType = {
         Fields: {
             home: "Privatadresse",
             birthday: "Geburtstag",
-            partner: "Bessere Hälfte",
+            partner: "Partnerin/Partner",
             roles: "RT Ämter (dieses Jahr)",
             rtorg: "RT Organisation",
 

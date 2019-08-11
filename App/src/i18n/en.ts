@@ -199,7 +199,7 @@ const en = {
         Fields: {
             home: "Home Address",
             birthday: "Birthday",
-            partner: "Better Half",
+            partner: "Partner",
             roles: "RT Functions (this year)",
             rtorg: "RT Organization",
 
