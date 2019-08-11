@@ -5,3 +5,4 @@ export const PutLocationMutation = gql`
         putLocation(location: $location)
     }
 `;
+
