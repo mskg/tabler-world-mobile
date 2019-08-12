@@ -1,5 +1,6 @@
 // @flow
 import React, { ErrorInfo } from 'react';
+import { AppState } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { homeScreen } from '../redux/actions/navigation';
@@ -19,6 +20,23 @@ export class ErrorBoundary extends React.Component<Props, State> {
     static getDerivedStateFromError(error: Error) {
         return { error, hasError: true }
     }
+
+    handleAppStateChange = (nextAppState: string) => {
+        if (nextAppState !== 'active') {
+            return;
+        }
+
+        this.resetError();
+    }
+
+    componentWillMount() {
+        AppState.addEventListener('change', this.handleAppStateChange);
+    }
+
+    componentWillUnmount() {
+        AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+
 
     componentDidCatch(error: Error, _info: ErrorInfo) {
         // if (typeof this.props.onError === 'function') {
