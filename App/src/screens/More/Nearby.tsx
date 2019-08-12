@@ -197,6 +197,14 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     return (<View style={{ marginHorizontal: 16 }}><InlineLoading /></View>);
                                 }
 
+                                if (data.nearbyMembers.length == 0) {
+                                    return (
+                                        <List.Section title={I18N.NearbyMembers.title}>
+                                            <Text style={{ marginHorizontal: 16 }}>{I18N.Members.noresults}</Text>
+                                        </List.Section>
+                                    );
+                                }
+
                                 logger.log("found", data.nearbyMembers.length);
                                 return makeGroups(data.nearbyMembers).map((s, i) =>
                                     <List.Section title={I18N.NearbyMembers.near(s.title)} key={i.toString()}>

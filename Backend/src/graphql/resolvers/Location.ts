@@ -67,7 +67,7 @@ LIMIT 20
                             args.query && args.query.excludeOwnTable ? context.principal.club : undefined
                         ].filter(Boolean));
 
-                    return result.rows.length > 0 ? result.rows : null;
+                    return result.rows.length > 0 ? result.rows : [];
                 }
             );
         }

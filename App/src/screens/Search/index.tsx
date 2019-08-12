@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { FlatList, ListRenderItemInfo, Modal, ScrollView, TouchableWithoutFeedback, View } from "react-native";
-import { Appbar, Chip, Divider, List, Searchbar, Text, Theme, withTheme } from 'react-native-paper';
+import { Modal, ScrollView, TouchableWithoutFeedback, View } from "react-native";
+import { Appbar, Chip, Divider, List, Searchbar, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -13,21 +13,19 @@ import { StandardHeader } from '../../components/Header';
 import ListSubheader from "../../components/ListSubheader";
 import { InlineLoading } from '../../components/Loading';
 import { MemberListItem } from '../../components/Member/MemberListItem';
-import { MemberList } from '../../components/MemberList';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
-import { CompanySector } from '../../model/graphql/globalTypes';
-import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
 import { IAppState } from '../../model/IAppState';
 import { GetFiltersQuery } from "../../queries/GetFiltersQuery";
-import { SearchMemberQuery } from "../../queries/SearchMemberQuery";
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
 import { LRU } from './LRU';
+import { OnlineSearchQuery } from './OnlineSearch';
+import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
 
 const logger = new Logger(Categories.Screens.Search);
@@ -47,7 +45,6 @@ type OwnProps = {
 };
 
 type StateProps = {
-    history: string[],
     sortBy: string,
     fetchPolicy: any,
 };
@@ -99,17 +96,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     _searchBar!: Searchbar | null;
-
-    _renderItem = (c: ListRenderItemInfo<string>) => (
-        <React.Fragment>
-            <List.Item
-                style={{ backgroundColor: this.props.theme.colors.surface }}
-                // workarround
-                title={<Text style={{ fontSize: 14 }}>{c.item}</Text>}
-                onPress={() => this.searchFilterFunction(c.item)} />
-            <Divider />
-        </React.Fragment>
-    );
 
     _adjustSearch = _.debounce((text, filters: FilterTag[]) => {
         if (!this.mounted) {
@@ -170,8 +156,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         // );
     }
 
-    _keyExtractor = (item: string) => item;
-
     _onToggleTag = (type: FilterTagType, value: string) => {
         logger.debug("toggle", type, value);
 
@@ -226,90 +210,18 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                 {!this.state.searching &&
                     <>
                         <LRU />
-                        <List.Section title={I18N.Search.history}>
-                            <Divider />
-                            <FlatList
-                                data={this.props.history}
-                                renderItem={this._renderItem}
-                                keyExtractor={this._keyExtractor}
-                                bounces={false}
-                            />
-                        </List.Section>
+                        <SearchHistory
+                            applyFilter={this.searchFilterFunction}
+                        />
                     </>
                 }
 
                 {this.state.searching &&
-                    <Query<SearchMember, SearchMemberVariables> query={SearchMemberQuery} fetchPolicy="network-only" variables={{
-                        text: this.state.debouncedQuery,
-                        after: null,
-                        areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
-                        clubs: this.state.filterTags.filter((f: FilterTag) => f.type === "table").map((f: FilterTag) => f.value),
-                        roles: this.state.filterTags.filter((f: FilterTag) => f.type === "role").map((f: FilterTag) => f.value),
-                        sectors: this.state.filterTags.filter((f: FilterTag) => f.type === "sector").map((f: FilterTag) =>
-                            _(I18N.Search.sectorNames).findKey(v => v == f.value) as CompanySector
-                        ),
-                    }}
-                    >
-                        {({ loading, data, fetchMore, error, refetch }) => {
-                            if (error) throw error;
-
-                            const result = data && data.SearchMember != null ? data.SearchMember : null;
-                            const newData = result ? result.nodes : [];
-
-                            return (
-                                <MemberList
-                                    data={newData}
-
-                                    onItemSelected={this._itemSelected}
-                                    renderItem={this._renderMatch.bind(this)}
-
-                                    refreshing={loading}
-                                    onRefresh={refetch}
-
-                                    onEndReached={() => {
-                                        logger.log("Cursor is", result ? result.pageInfo : null);
-
-                                        fetchMore({
-                                            variables: {
-                                                text: this.state.debouncedQuery,
-                                                after: result ? result.pageInfo.endCursor : null,
-                                                areas: this.state.filterTags.filter((f: FilterTag) => f.type === "area").map((f: FilterTag) => f.value),
-                                                clubs: this.state.filterTags.filter((f: FilterTag) => f.type === "table").map((f: FilterTag) => f.value),
-                                                roles: this.state.filterTags.filter((f: FilterTag) => f.type === "role").map((f: FilterTag) => f.value),
-                                                sectors: this.state.filterTags.filter((f: FilterTag) => f.type === "sector").map((f: FilterTag) =>
-                                                    _(I18N.Search.sectorNames).findKey(v => v == f.value) as CompanySector
-                                                ),
-                                            },
-
-                                            updateQuery: (previousResult, { fetchMoreResult }) => {
-                                                // Don't do anything if there weren't any new items
-                                                if (!fetchMoreResult || fetchMoreResult.SearchMember.nodes.length == 0) {
-
-                                                    logger.log("no new data");
-                                                    return previousResult;
-                                                }
-
-                                                logger.log("appending", fetchMoreResult.SearchMember.nodes.length);
-
-                                                return {
-                                                    // There are bugs that the calls are excuted twice
-                                                    // a lot of notes on the internet
-                                                    SearchMember: {
-                                                        ...fetchMoreResult.SearchMember,
-                                                        nodes:
-                                                            _([...previousResult.SearchMember.nodes, ...fetchMoreResult.SearchMember.nodes])
-                                                                .uniqBy(f => f.id)
-                                                                .toArray()
-                                                                .value()
-                                                    },
-                                                };
-                                            },
-                                        });
-                                    }}
-                                />
-                            );
-                        }}
-                    </Query>
+                    <OnlineSearchQuery
+                        query={this.state.debouncedQuery}
+                        filterTags={this.state.filterTags}
+                        itemSelected={this._itemSelected}
+                    />
                 }
 
                 <Modal
@@ -380,9 +292,9 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     type="table"
                                                     filter={this.state.filterTags}
                                                     data={_(data.Clubs).orderBy((a: Filters_Clubs) => a.name.substring(a.name.indexOf(' ')))
-                                                            .map(a => a.name)
-                                                            .toArray()
-                                                            .value()
+                                                        .map(a => a.name)
+                                                        .toArray()
+                                                        .value()
                                                     }
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
@@ -445,7 +357,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
 
 export const SearchScreen = connect(
     (state: IAppState) => ({
-        history: state.searchHistory.members,
         sortBy: state.settings.sortByLastName ? "lastname" : "firstname",
     }), {
         addTablerSearch,
