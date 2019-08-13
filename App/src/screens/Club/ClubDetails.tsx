@@ -74,10 +74,12 @@ class ClubDetailsBase extends React.Component<Props> {
         // .filter(
         //     m => board.find(b => m.member.id === b.member.id) == null
         // );
-        const members = _(club.members || []).filter(
-            m => board.find(b => m.id === b.member.id) == null
-                && assist.find(b => m.id === b.member.id) == null
-        );
+        // const members = _(club.members || []).filter(
+        //     m => board.find(b => m.id === b.member.id) == null
+        //         && assist.find(b => m.id === b.member.id) == null
+        // );
+
+        const members = _(club.members || []);
 
         const { first_meeting, second_meeting, charter_date, national_godparent, international_godparent } = club.info || {
             first_meeting: null,

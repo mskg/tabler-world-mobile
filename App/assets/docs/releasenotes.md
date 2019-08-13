@@ -1,3 +1,9 @@
+# v1.1
+
+## Improvements
+
+- Members on club screen now includ baord, and -assists
+
 # v1.0.1
 
 ## Fixes
