@@ -15,7 +15,6 @@ import { InlineLoading } from '../../components/Loading';
 import { MemberListItem } from '../../components/Member/MemberListItem';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
 import { IAppState } from '../../model/IAppState';
@@ -23,12 +22,12 @@ import { GetFiltersQuery } from "../../queries/GetFiltersQuery";
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
+import { logger } from './logger';
 import { LRU } from './LRU';
+import { OfflineSearchQuery } from './OfflineSearch';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
-
-const logger = new Logger(Categories.Screens.Search);
 
 type State = {
     searching: boolean,
@@ -47,6 +46,7 @@ type OwnProps = {
 type StateProps = {
     sortBy: string,
     fetchPolicy: any,
+    offline: boolean,
 };
 
 type DispatchPros = {
@@ -216,7 +216,15 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                     </>
                 }
 
-                {this.state.searching &&
+                {this.state.searching && this.props.offline &&
+                    <OfflineSearchQuery
+                        query={this.state.debouncedQuery}
+                        filterTags={this.state.filterTags}
+                        itemSelected={this._itemSelected}
+                    />
+                }
+
+                {this.state.searching && !this.props.offline &&
                     <OnlineSearchQuery
                         query={this.state.debouncedQuery}
                         filterTags={this.state.filterTags}
@@ -358,6 +366,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
 export const SearchScreen = connect(
     (state: IAppState) => ({
         sortBy: state.settings.sortByLastName ? "lastname" : "firstname",
+        offline: state.connection.offline,
     }), {
         addTablerSearch,
         showProfile,

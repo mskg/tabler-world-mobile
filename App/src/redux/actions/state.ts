@@ -1,3 +1,4 @@
+import { ConnectionInfo } from 'react-native';
 import { createAction } from './action';
 
 /**
@@ -8,5 +9,13 @@ export const updateAvailable = createAction<'@@state/updateAvailable', string>(
 );
 
 export const checkAppState = createAction<'@@state/check', string>(
-    '@@state/check'
-  );
+  '@@state/check'
+);
+
+export const checkNetwork = createAction<'@@network/check', string>(
+  '@@network/check'
+);
+
+export const updateNetwork = createAction<'@@network/update', ConnectionInfo>(
+  '@@network/update'
+);

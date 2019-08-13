@@ -5,13 +5,11 @@ import { Theme, withTheme } from 'react-native-paper';
 import { FilterTag } from "../../components/FilterSection";
 import { MemberListItem } from '../../components/Member/MemberListItem';
 import { MemberList } from '../../components/MemberList';
-import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { CompanySector } from '../../model/graphql/globalTypes';
 import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
 import { SearchMemberQuery } from "../../queries/SearchMemberQuery";
-
-const logger = new Logger(Categories.Screens.Search);
+import { logger } from './logger';
 
 type State = {
 };

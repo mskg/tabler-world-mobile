@@ -2,6 +2,7 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
 import { useKeepAwake } from 'expo-keep-awake';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
 import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
@@ -19,6 +20,7 @@ import { Categories, Logger } from './helper/Logger';
 import { bootStrapSentry } from './helper/Sentry';
 import { Features, isFeatureEnabled } from './model/Features';
 import { Navigation } from './navigation/redux';
+import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
 import { registerFetchTask } from './tasks/Fetch';
@@ -62,6 +64,9 @@ fix2940();
 
 const App = () => {
   if (__DEV__) useKeepAwake();
+
+  const dispatch = useDispatch();
+  dispatch(checkNetwork());
 
   return (
     <React.Fragment>

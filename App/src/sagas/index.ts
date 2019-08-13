@@ -2,6 +2,7 @@ import { END, eventChannel } from 'redux-saga';
 import { call, spawn, take } from 'redux-saga/effects';
 import { Categories, Logger } from '../helper/Logger';
 import { getReduxPersistor } from '../redux/getRedux';
+import { networkSaga } from './network';
 import { pushTokenSaga } from './pushTokenSaga';
 import { settingsSaga } from './settingsSaga';
 import { appStateSaga } from './state';
@@ -43,6 +44,7 @@ export function* rootSaga() {
     pushTokenSaga,
     settingsSaga,
     appStateSaga,
+    networkSaga,
   ];
 
   yield* sagas.map(saga =>

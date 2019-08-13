@@ -2,6 +2,12 @@ import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHel
 import { IAppState } from '../model/IAppState';
 
 export const INITIAL_STATE: IAppState = {
+  connection: {
+    effectiveType: "unknown",
+    type: "unknown",
+    offline: false,
+  },
+
   updateAvailable: false,
 
   snacks: [],

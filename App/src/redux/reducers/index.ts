@@ -7,6 +7,7 @@ import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
 import { locationReducer } from './location';
+import { networkReducer } from './network';
 import { settingsReducer } from './settings';
 import { snackReducer } from './snacks';
 import { stateReducer } from './state';
@@ -34,6 +35,7 @@ const defaultConfig = {
 };
 
 export default {
+    connection: networkReducer,
     updateAvailable: stateReducer,
 
     auth: persistReducer(authUserConfig, userReducer),

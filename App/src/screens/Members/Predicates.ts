@@ -1,6 +1,7 @@
 
 
 import _ from 'lodash';
+import { normalizeForSearch } from '../../helper/normalizeForSearch';
 import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
 import { HashMap } from '../../model/Maps';
 
@@ -10,7 +11,7 @@ export class Predicates {
     public static readonly all = () => true;
     public static readonly none = () => false;
 
-    public static or(...others: (Predicate | null)[]) {
+    public static or(...others: (Predicate | null)[]): Predicate {
         const reduced = (others || []).filter(f => f != null) as Predicate[];
 
         return reduced.length == 0
@@ -20,7 +21,7 @@ export class Predicates {
             }
     }
 
-    public static and(...others: (Predicate | null)[]) {
+    public static and(...others: (Predicate | null)[]): Predicate {
         const reduced = (others || []).filter(f => f != null) as Predicate[];
 
         return reduced.length == 0
@@ -28,6 +29,15 @@ export class Predicates {
             : (member: IMemberOverviewFragment) => {
                 return _.find(reduced, o => o(member) == false) == null;
             }
+    }
+
+    public static text(text: string): Predicate {
+        return (member: IMemberOverviewFragment) => {
+            const search = normalizeForSearch(text);
+            return normalizeForSearch((member.firstname + " " + member.lastname)).indexOf(search) >= 0
+                || normalizeForSearch((member.lastname + " " + member.firstname)).indexOf(search) >= 0
+                || normalizeForSearch((member.club.name + " " + member.area.name + " " + member.association.name)).indexOf(search) >= 0
+        }
     }
 
     public static favorite(favorites: HashMap<boolean>): Predicate {
