@@ -47,6 +47,9 @@ as
     and name not like 'Placeholder%'
 ;
 
+create unique index idx_structure_roles_update on
+structure_tabler_roles (id, groupname, name, level);
+
 create index idx_structure_roles_search on
 structure_tabler_roles (groupname, level);
 

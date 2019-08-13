@@ -14,8 +14,8 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
 
 REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
 
-REFRESH MATERIALIZED VIEW structure_tabler_roles;
-REFRESH MATERIALIZED VIEW structure;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure;
 
 delete from clubs
 
@@ -154,3 +154,6 @@ from
   (select count(*) used from pg_stat_activity) t1,
   (select setting::int res_for_super from pg_settings where name=$$superuser_reserved_connections$$) t2,
   (select setting::int max_conn from pg_settings where name=$$max_connections$$) t3
+
+
+
