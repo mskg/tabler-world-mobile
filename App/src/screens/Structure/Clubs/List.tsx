@@ -25,6 +25,7 @@ import { CardPlaceholder } from '../CardPlaceholder';
 import { CardTitle } from '../CardTitle';
 import { styles } from '../Styles';
 import { Routes } from './Routes';
+import { Tab } from './Tab';
 
 const logger = new Logger(Categories.Screens.Structure);
 
@@ -220,12 +221,6 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         );
     }
 }
-
-const Tab = withTheme(({ theme, children }) => (
-    <View style={{ width: '100%', height: '100%', backgroundColor: theme.colors.background }}>
-        {children}
-    </View>
-))
 
 const ConnectedClubScreen = connect(null, {
     showClub,

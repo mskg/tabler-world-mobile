@@ -48,7 +48,7 @@ const patch = [
     },
 
     { op: "add", path: "/expo/android/config/googleMaps/apiKey", value: process.env.API_KEY_GOOGLE_MAPS_ANDROID },
-    { op: "add", path: "/expo/ios/config/googleMapsApiKey", value: process.env.API_KEY_GOOGLE_MAPS_iOS },
+    { op: "add", path: "/expo/ios/config/googleMapsApiKey", value: process.env.API_KEY_GOOGLE_MAPS_IOS },
 ];
 
 patch.forEach(v => {

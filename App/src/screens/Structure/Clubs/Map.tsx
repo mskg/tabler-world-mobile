@@ -25,6 +25,7 @@ import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
 import { Routes } from './Routes';
+import { Tab } from './Tab';
 
 const logger = new Logger(Categories.Screens.Structure);
 const maxWidth = Dimensions.get("window").width - 32 - 16;
@@ -90,7 +91,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 previewComponent={<FullScreenLoading />}
             >
                 <MapView
-                    style={{ flex: 1, }}
+                    style={{ flex: 1, backgroundColor: this.props.theme.colors.background }}
                     // provider={PROVIDER_GOOGLE}
                     zoomEnabled={true}
                     scrollEnabled={true}
@@ -112,6 +113,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                                     key={c.id}
                                     coordinate={c.location as LatLng}
                                     onCalloutPress={() => this.props.showClub(c.id)}
+                                    style={{ backgroundColor: this.props.theme.colors.surface }}
                                 >
                                     <Callout style={{ height: 190, flexDirection: "column", backgroundColor: this.props.theme.colors.surface }}>
                                         <Title numberOfLines={1} style={{ paddingHorizontal: 8, maxWidth }}>{c.name}</Title>
@@ -172,17 +174,19 @@ const ConnectedClubScreen = connect(null, {
 })(withTheme(withNavigation(ClubsScreenBase)));
 
 const ClubsScreenWithQuery = ({ fetchPolicy }) => (
-    <Query<ClubsMap> query={GetClubsMapQuery} fetchPolicy={fetchPolicy}>
-        {({ loading, data, error, refetch }) => {
-            if (error) throw error;
+    <Tab>
+        <Query<ClubsMap> query={GetClubsMapQuery} fetchPolicy={fetchPolicy}>
+            {({ loading, data, error, refetch }) => {
+                if (error) throw error;
 
-            if (!loading && (data == null || data.Clubs == null)) {
-                return <CannotLoadWhileOffline />;
-            }
+                if (!loading && (data == null || data.Clubs == null)) {
+                    return <CannotLoadWhileOffline />;
+                }
 
-            return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
-        }}
-    </Query>
+                return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
+            }}
+        </Query>
+    </Tab>
 );
 
 export const ClubsMapScreen = withWhoopsErrorBoundary(
