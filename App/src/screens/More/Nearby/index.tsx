@@ -56,6 +56,7 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class NearbyScreenBase extends AuditedScreen<Props, State> {
+    mounted: boolean = true;
     listeners: NavigationEventSubscription[] = [];
     removeWatcher?: () => void;
 
@@ -75,8 +76,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         this.audit.submit();
     }
 
-    _focus = () => this.setState({ visible: true });
-    _blur = () => this.setState({ visible: false });
+    _focus = () => { if (this.mounted) { this.setState({ visible: true }); } }
+    _blur = () => { if (this.mounted) { this.setState({ visible: false }); } }
 
     handleAppStateChange = (nextAppState: string) => {
         if (nextAppState !== 'active') {
@@ -114,6 +115,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentWillMount() {
+        this.mounted = true;
         this.didFocus();
         this.audit.submit();
 
@@ -121,6 +123,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentWillUnmount() {
+        this.mounted = false;
+
         if (this.removeWatcher) {
             this.removeWatcher();
         }

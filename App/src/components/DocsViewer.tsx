@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from "react-native";
-import Markdown, { getUniqueID } from 'react-native-markdown-renderer';
+import Markdown, { getUniqueID, styles } from 'react-native-markdown-renderer';
 import { Subheading, Theme, Title, withTheme } from "react-native-paper";
 
 type Props = {
@@ -18,7 +18,18 @@ class DocViewer extends React.PureComponent<Props> {
 
     styles = StyleSheet.create({
         text: {
-            fontFamily: this.props.theme.fonts.regular
+            fontFamily: this.props.theme.fonts.regular,
+            color: this.props.theme.colors.text,
+        },
+
+        listUnorderedItemIcon: {
+            ...styles.listUnorderedItemIcon,
+            color: this.props.theme.colors.text,
+        },
+
+        listOrderedItemIcon: {
+            ...styles.listOrderedItemIcon,
+            color: this.props.theme.colors.text,
         },
 
         strong: {

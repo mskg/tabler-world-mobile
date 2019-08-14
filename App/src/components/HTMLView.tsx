@@ -26,6 +26,7 @@ class HTMLViewBase extends React.Component<Props, State> {
             allowFontScaling={false}
             baseFontStyle={{
                 fontFamily: this.props.theme.fonts.regular,
+                color: this.props.theme.colors.text,
                 // fontSize: 12,
             }}
 
@@ -34,6 +35,10 @@ class HTMLViewBase extends React.Component<Props, State> {
             tagsStyles={
                 {
                     p: { paddingBottom: 8, margin: 0 },
+                    a: { color: this.props.theme.colors.accent },
+                    // h2: { color: this.props.theme.colors.text },
+                    // h4: { color: this.props.theme.colors.text },
+                    // h5: { color: this.props.theme.colors.text },
                     b: {
                         fontFamily: this.props.theme.fonts.medium
                     },

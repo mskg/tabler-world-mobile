@@ -45,7 +45,8 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
                 {this.props.showAppBar == null || this.props.showAppBar &&
                     <Appbar style={[this.props.style, {
                         elevation: 0,
-                        backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : this.props.theme.colors.primary
+                        backgroundColor: this.props.backgroundColor ?
+                            this.props.backgroundColor : this.props.theme.colors.primary
                     }]}>
                         {/* {this.props.showBack && <BackButtonWithText title="Go Back" theme={this.props.theme} onPress={() => this.props.navigation.goBack(null)} />} */}
                         {this.props.showBack &&
