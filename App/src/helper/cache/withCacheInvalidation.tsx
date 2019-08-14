@@ -2,7 +2,9 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import ApolloClient, { WatchQueryFetchPolicy } from 'apollo-client';
 import gql from 'graphql-tag';
 import React from 'react';
+import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { IAppState } from '../../model/IAppState';
 import { logger } from './logger';
 
 const GetLastSyncQuery = (field) => gql`
@@ -19,6 +21,8 @@ type CacheInvalidationProps = {
     field: FieldType,
     maxAge?: number,
     children: any,
+
+    offline: boolean,
 }
 
 export const MS_PER_MINUTE = 60000;
@@ -60,7 +64,7 @@ export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
     }
 };
 
-export class CacheInvalidation extends React.PureComponent<CacheInvalidationProps> {
+class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> {
     checkLastSync(client: ApolloClient<NormalizedCacheObject>): number {
         let data: any = null;
         const query = GetLastSyncQuery(this.props.field);
@@ -83,7 +87,12 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
         return data.LastSync[this.props.field];
     }
 
-    determine() {
+    determine(): WatchQueryFetchPolicy | undefined {
+        if (this.props.offline) {
+            logger.debug("*** OFFLINE ***");
+            return "cache-only";
+        }
+
         const client = cachedAolloClient();
 
         const syncDate = this.checkLastSync(client);
@@ -118,7 +127,11 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
                 fetchPolicy: this.determine(),
             }));
     }
-};
+}
+
+export const CacheInvalidation = connect((state: IAppState) => ({
+    offline: state.connection.offline
+}))(CacheInvalidationBase);
 
 export function withCacheInvalidation(field: FieldType, WrappedComponent: any, maxAge?: number) {
     return class extends React.PureComponent {

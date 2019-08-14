@@ -5,7 +5,7 @@ export const INITIAL_STATE: IAppState = {
   connection: {
     effectiveType: "unknown",
     type: "unknown",
-    offline: false,
+    offline: true,
   },
 
   updateAvailable: false,

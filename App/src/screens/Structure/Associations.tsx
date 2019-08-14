@@ -9,6 +9,7 @@ import { Accordion } from '../../components/Accordion';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
@@ -100,6 +101,10 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
             <Query<Associations> query={GetAssociationsQuery} fetchPolicy={this.props.fetchPolicy}>
                 {({ loading, error, data, refetch }) => {
                     if (error) throw error;
+
+                    if (!loading && (data == null || data.Associations == null)) {
+                        return <CannotLoadWhileOffline />;
+                    }
 
                     return (
                         <Placeholder

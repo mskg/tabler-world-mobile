@@ -9,6 +9,8 @@ export function networkReducer(
 ): typeof INITIAL_STATE.connection {
   switch (action.type) {
     case actions.updateNetwork.type:
+      if (false && __DEV__) return INITIAL_STATE.connection;
+
       return {
         ...action.payload,
         offline: action.payload.type === "none" || action.payload.type === "NONE"

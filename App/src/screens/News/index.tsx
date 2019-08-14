@@ -8,6 +8,7 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
 import { MemberAvatar } from '../../components/MemberAvatar';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -91,6 +92,10 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                 <Query<TopNews> query={GetNewsQuery} fetchPolicy={this.props.fetchPolicy}>
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;
+
+                        if (!loading && (data == null || data.TopNews == null)) {
+                            return <CannotLoadWhileOffline />;
+                        }
 
                         return (
                             <Placeholder

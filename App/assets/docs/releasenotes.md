@@ -2,7 +2,9 @@
 
 ## Improvements
 
-- Members on club screen now includ baord, and -assists
+- Basic offline support
+- Members on club screen now include board, and -assists
+- Nearby Members shows other members around you, that are willing to share their location. Get connected!
 
 # v1.0.1
 

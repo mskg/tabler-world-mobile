@@ -10,6 +10,7 @@ import { AlphabeticScrollBar } from '../../components/AlphabetJumpbar';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { renderItem } from '../../components/ListRenderer';
 import { MemberSectionList } from '../../components/MemberSectionList';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -239,13 +240,17 @@ const ConnectedMembersScreen = connect(
 
 // processing time is too slow if we add the @client directive
 // to a query with many records.
-const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard }) => (
+const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard, offline }) => (
     <Query<OfflineMembers>
         query={GetOfflineMembersQuery}
         fetchPolicy={fetchPolicy}
     >
         {({ loading: oLoading, data: oData, error: oError, refetch: oRefetch }) => {
             if (!oLoading && (oData == null || oData.OwnTable == null || oData.FavoriteMembers == null)) {
+                if (offline) {
+                    return <CannotLoadWhileOffline />;
+                }
+
                 setTimeout(() => {
                     oRefetch();
                 });
@@ -296,6 +301,7 @@ const MembersQueryWithCacheInvalidation = withCacheInvalidation(
         areas: s.filter.member.area,
         showAssociationBoard: s.filter.member.showAssociationBoard,
         showAreaBoard: s.filter.member.showAreaBoard,
+        offline: s.connection.offline,
     }))(MembersQuery)
 );
 

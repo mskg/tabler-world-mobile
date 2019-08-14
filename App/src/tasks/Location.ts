@@ -1,6 +1,7 @@
 import * as Location from 'expo-location';
 import { LocationData } from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import _ from 'lodash';
 import { AsyncStorage } from 'react-native';
 import { bootstrapApollo } from '../apollo/bootstrapApollo';
 import { Categories, Logger } from '../helper/Logger';
@@ -27,8 +28,12 @@ export async function startLocationTask() {
 
                 await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
                     accuracy: Location.Accuracy.Low,
-                    distanceInterval: 500,
-                    mayShowUserSettingsDialog: true,
+
+                    // time
+                    timeInterval: 15*60*1000,
+                    distanceInterval: 1000,
+
+                    mayShowUserSettingsDialog: false,
                     pausesUpdatesAutomatically: true,
                 });
 
@@ -46,13 +51,14 @@ export async function startLocationTask() {
 async function handleLocation(locations: LocationData[]) {
     logger.log(locations);
 
+    const location = _(locations).maxBy(l => l.timestamp) as LocationData;
     const address = await Location.reverseGeocodeAsync(
-        locations[0].coords
+        location.coords
     );
 
     logger.log("Geocoding", address);
     getReduxStore().dispatch(setLocation({
-        location: locations[0],
+        location: location[0],
         address: address[0],
     }));
 
@@ -61,10 +67,10 @@ async function handleLocation(locations: LocationData[]) {
         mutation: PutLocationMutation,
         variables: {
             location: {
-                longitude: locations[0].coords.longitude,
-                latitude: locations[0].coords.latitude,
-                accuracy: locations[0].coords.accuracy,
-                speed: locations[0].coords.speed,
+                longitude: location.coords.longitude,
+                latitude: location.coords.latitude,
+                accuracy: location.coords.accuracy,
+                speed: location.coords.speed,
                 address,
             },
         }

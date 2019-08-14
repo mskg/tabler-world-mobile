@@ -7,6 +7,7 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ReadMore } from '../../components/ReadMore';
 import { ScreenWithHeader } from '../../components/Screen';
@@ -85,6 +86,10 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                 <Query<AlbumsOverview> query={GetAlbumsOverviewQuery} fetchPolicy={this.props.fetchPolicy}>
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;
+
+                        if (!loading && (data == null || data.Albums == null)) {
+                            return <CannotLoadWhileOffline />;
+                        }
 
                         return (
                             <Placeholder

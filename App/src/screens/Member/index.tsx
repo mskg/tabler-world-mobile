@@ -12,6 +12,7 @@ import { MemberAvatar } from '../../components/MemberAvatar';
 import { AvatarPopup } from "../../components/Profile/AvatarPopup";
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
+import createAnimatedComponentFrowardingRef from '../../helper/createAnimatedComponentFrowardingRef';
 import { I18N } from '../../i18n/translation';
 import { Member as MemberType } from '../../model/graphql/Member';
 import { addTablerLRU } from '../../redux/actions/history';
@@ -36,7 +37,7 @@ export type StateProps = {
 
 type Props = OwnProps & StateProps & NavigationInjectedProps<IProfileParams>;
 
-const AnimatedFab = Animated.createAnimatedComponent(ActionsFab);
+const AnimatedFab = createAnimatedComponentFrowardingRef(ActionsFab);
 const AnimatedAvatar = Animated.createAnimatedComponent(MemberAvatar);
 
 class MemberBase extends AuditedScreen<Props> {

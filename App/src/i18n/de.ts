@@ -9,7 +9,8 @@ const de: I18NType = {
         title: "Oooops?",
         try: "Wiederholen",
         partialData: "Daten konnten nicht geladen werden. Es werden gespeicherte Daten angezeigt.",
-        refresh: "Aktualisieren"
+        refresh: "Aktualisieren",
+        offline: "Du bist offline."
     },
 
     ErrorReport: {
@@ -348,10 +349,11 @@ const de: I18NType = {
         texts: {
             contacts: "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.",
             experiments: "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden.",
-            nearby: "Wenn du die Funktion einschaltest, können andere Mitglieder sehen, in welcher Stadt du dich befindest. Wir speichern keine Standorthistorier, nur den letzten bekannten Standort.",
+            nearby: "Wenn du die Funktion einschaltest, können andere Mitglieder sehen, in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.",
         },
 
         contactpermissions: "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
+        locationpermission: "Die App kann nicht auf Deinen Standort zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
 
         firstlast: "Vorname, Nachname",
         lastfirst: "Nachname, Vorname",

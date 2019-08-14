@@ -1,12 +1,17 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { I18N } from '../i18n/translation';
 
 
 export const EmptyComponent = ({ title }) => (
     <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>{title}</Text>
     </View>
+);
+
+export const CannotLoadWhileOffline = () => (
+    <EmptyComponent title={I18N.Whoops.offline} />
 );
 
 const styles = StyleSheet.create({
@@ -16,6 +21,8 @@ const styles = StyleSheet.create({
         // height: Dimensions.get('window').height,
         alignItems: 'center',
         justifyContent: 'center',
+
+        marginHorizontal: 16,
     },
 
     emptyText: {

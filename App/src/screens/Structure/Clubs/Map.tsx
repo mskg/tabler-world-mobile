@@ -14,6 +14,7 @@ import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenNam
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { CachedImage } from '../../../components/Image/CachedImage';
 import { FullScreenLoading } from '../../../components/Loading';
+import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { Square } from '../../../components/Placeholder/Square';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
@@ -174,6 +175,10 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     <Query<ClubsMap> query={GetClubsMapQuery} fetchPolicy={fetchPolicy}>
         {({ loading, data, error, refetch }) => {
             if (error) throw error;
+
+            if (!loading && (data == null || data.Clubs == null)) {
+                return <CannotLoadWhileOffline />;
+            }
 
             return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
         }}

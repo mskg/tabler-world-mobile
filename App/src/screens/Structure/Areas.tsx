@@ -7,6 +7,7 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../helper/Logger";
@@ -68,6 +69,9 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                 {({ loading, error, data, refetch }) => {
                     if (error) throw error;
 
+                    if (!loading && (data == null || data.Areas == null)) {
+                        return <CannotLoadWhileOffline />;
+                    }
                     return (
                         <Placeholder
                             ready={data != null && data.Areas != null}

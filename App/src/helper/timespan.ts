@@ -9,7 +9,7 @@ export function timespan(time1: number, time2?: number) {
     var period = Math.abs(time1 - time2) / 1000;
 
     var timespan = 1;
-    var format = I18N.Timespan.seconds;
+    var format = "seconds";
 
     if (period > 31556926) {
         // More than one year
@@ -44,7 +44,9 @@ export function timespan(time1: number, time2?: number) {
 
     // Remove the s
     if( timespan == 1) {
-        format = I18N.Timespan.toOne(format);
+        format = I18N.Timespan.toOne(I18N.Timespan[format]);
+    } else {
+        format = I18N.Timespan[format];
     }
 
     return timespan + ' ' + format;

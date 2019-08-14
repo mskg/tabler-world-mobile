@@ -12,6 +12,7 @@ export function locationReducer(
         ...state,
         address: action.payload.address,
         location: action.payload.location,
+        timestamp: Date.now(),
       };
 
     default:

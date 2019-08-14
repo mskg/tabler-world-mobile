@@ -1,6 +1,7 @@
 import { NavigationActions } from 'react-navigation';
 import { I18N } from '../../i18n/translation';
 import { HomeRoutes } from '../../navigation/Routes';
+import { Routes } from '../../screens/More/Settings/Routes';
 
 export interface IProfileParams {
     tabler: number,
@@ -53,6 +54,10 @@ export const showFilter = () => NavigationActions.navigate({
 
 export const showPair = () => NavigationActions.navigate({
     routeName: HomeRoutes.Pair
+});
+
+export const showSettings = () => NavigationActions.navigate({
+    routeName: Routes.Main,
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({

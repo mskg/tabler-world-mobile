@@ -9,7 +9,7 @@ function networkState() {
         logger.log("Waiting for app state changes");
 
         const handler = (connectionInfo: ConnectionInfo | ConnectionType) => {
-            logger.log(connectionInfo);
+            logger.log("connectionChange", connectionInfo);
             emit(connectionInfo);
         }
 

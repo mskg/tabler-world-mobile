@@ -10,7 +10,8 @@ const en = {
         title: "Whoops?",
         try: "Try Again",
         partialData: "Failed to load data from server, showing partial result",
-        refresh: "Refresh"
+        refresh: "Refresh",
+        offline: "You're offline."
     },
 
     ErrorReport: {
@@ -403,11 +404,11 @@ const en = {
         texts: {
             contacts: "Members can be synchronized to your phone's default Contacts' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.",
             experiments: "These are experimental and unsupported features of the TABLER.APP and may dissapear at any time.",
-            nearby: "If you turn it on, other members can see where your are. We don't store your location history, only your last known location.",
+            nearby: "If you turn it on, other members can see in which city your are. We don't store your location history, only your last known location.",
         },
 
         contactpermissions: "Location permissions are required in order to use this feature. Please grant permission through the phone's settings area.",
-        locationpermission: "Cannot access Contacts. Please grant permission through the phone's settings area.",
+        locationpermission: "Cannot access your location. Please grant permission through the phone's settings area.",
 
         firstlast: "First, Last",
         lastfirst: "Last, First",
@@ -495,7 +496,7 @@ const en = {
         months: "months",
         years: "years",
 
-        toOne: (s: string) => s.substring(0, -1),
+        toOne: (s: string) => s.substring(0, s.length - 1),
     },
 
     Distance: {

@@ -11,6 +11,7 @@ import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenNam
 import { RoleAccordionSection } from '../../../components/Club/RoleAccordionSection';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { CachedImage } from '../../../components/Image/CachedImage';
+import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../../helper/Logger";
@@ -176,51 +177,55 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         const showMap = isFeatureEnabled(Features.ClubMap);
 
         return (
-            <View style={{ width: '100%', height: '100%', backgroundColor: this.props.theme.colors.background }}>
-                <Placeholder
-                    ready={this.props.data != null && this.props.data.Clubs != null}
-                    previewComponent={<CardPlaceholder />}
-                >
-                    <FlatList
-                        contentContainerStyle={styles.container}
-                        data={this.state.filtered}
-                        ListHeaderComponent={
-                            <View style={{ flexDirection: "row" }}>
-                                <Searchbar
-                                    style={[styles.searchbar]}
-                                    selectionColor={this.props.theme.colors.accent}
-                                    placeholder={I18N.Search.search}
-                                    autoCorrect={false}
+            <Placeholder
+                ready={this.props.data != null && this.props.data.Clubs != null}
+                previewComponent={<CardPlaceholder />}
+            >
+                <FlatList
+                    contentContainerStyle={styles.container}
+                    data={this.state.filtered}
+                    ListHeaderComponent={
+                        <View style={{ flexDirection: "row" }}>
+                            <Searchbar
+                                style={[styles.searchbar]}
+                                selectionColor={this.props.theme.colors.accent}
+                                placeholder={I18N.Search.search}
+                                autoCorrect={false}
 
-                                    value={this.state.search}
-                                    onChangeText={this._search}
-                                />
+                                value={this.state.search}
+                                onChangeText={this._search}
+                            />
 
-                                {showMap &&
-                                    <Surface style={styles.switchLayoutButton}>
-                                        <IconButton
-                                            icon={({ size, color }) =>
-                                                <Ionicons
-                                                    name="md-map"
-                                                    size={size}
-                                                    color={color}
-                                                />}
-                                            onPress={this._showMap}
-                                        />
-                                    </Surface>
-                                }
-                            </View>
-                        }
-                        refreshing={this.props.loading}
-                        onRefresh={this.props.refresh}
-                        renderItem={this._renderItem}
-                        keyExtractor={this._key}
-                    />
-                </Placeholder>
-            </View>
+                            {showMap &&
+                                <Surface style={styles.switchLayoutButton}>
+                                    <IconButton
+                                        icon={({ size, color }) =>
+                                            <Ionicons
+                                                name="md-map"
+                                                size={size}
+                                                color={color}
+                                            />}
+                                        onPress={this._showMap}
+                                    />
+                                </Surface>
+                            }
+                        </View>
+                    }
+                    refreshing={this.props.loading}
+                    onRefresh={this.props.refresh}
+                    renderItem={this._renderItem}
+                    keyExtractor={this._key}
+                />
+            </Placeholder>
         );
     }
 }
+
+const Tab = withTheme(({ theme, children }) => (
+    <View style={{ width: '100%', height: '100%', backgroundColor: theme.colors.background }}>
+        {children}
+    </View>
+))
 
 const ConnectedClubScreen = connect(null, {
     showClub,
@@ -228,13 +233,19 @@ const ConnectedClubScreen = connect(null, {
 })(withTheme(withNavigation(ClubsScreenBase)));
 
 const ClubsScreenWithQuery = ({ fetchPolicy }) => (
-    <Query<Clubs> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
-        {({ loading, data, error, refetch }) => {
-            if (error) throw error;
+    <Tab>
+        <Query<Clubs> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
+            {({ loading, data, error, refetch }) => {
+                if (error) throw error;
 
-            return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
-        }}
-    </Query>
+                if (!loading && (data == null || data.Clubs == null)) {
+                    return <CannotLoadWhileOffline />;
+                }
+
+                return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
+            }}
+        </Query>
+    </Tab>
 );
 
 export const ClubsScreen = withWhoopsErrorBoundary(
