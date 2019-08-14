@@ -17,6 +17,7 @@ export interface ClubsMap_Clubs {
   id: string;
   name: string;
   logo: string | null;
+  club: number;
   location: ClubsMap_Clubs_location | null;
 }
 

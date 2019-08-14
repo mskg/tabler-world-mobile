@@ -5,8 +5,8 @@ import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Dimensions, Platform, View } from 'react-native';
-import MapView, { Callout, LatLng, Marker, Region } from 'react-native-maps';
-import { FAB, IconButton, Searchbar, Surface, Theme, Title, withTheme } from 'react-native-paper';
+import MapView, { Callout, LatLng, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { Avatar, FAB, IconButton, Searchbar, Surface, Theme, Title, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
@@ -16,7 +16,6 @@ import { CachedImage } from '../../../components/Image/CachedImage';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
-import { Square } from '../../../components/Placeholder/Square';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../../helper/Logger";
 import { I18N } from '../../../i18n/translation';
@@ -24,6 +23,7 @@ import { ClubsMap } from '../../../model/graphql/ClubsMap';
 import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
+import { darkStyles } from './dark';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
 
@@ -91,8 +91,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 previewComponent={<FullScreenLoading />}
             >
                 <MapView
-                    style={{ flex: 1, backgroundColor: this.props.theme.colors.background }}
-                    // provider={PROVIDER_GOOGLE}
+                    provider={this.props.theme.dark ? PROVIDER_GOOGLE : undefined}
                     zoomEnabled={true}
                     scrollEnabled={true}
                     region={this.state.centerOn}
@@ -104,6 +103,12 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
                     loadingEnabled={true}
                     onMapReady={this._onMapReady}
+                    customMapStyle={this.props.theme.dark ? darkStyles : undefined}
+
+                    style={{
+                        flex: 1,
+                        backgroundColor: this.props.theme.colors.surface,
+                    }}
                 >
                     {this.props.data && this.props.data.Clubs &&
                         this.props.data.Clubs
@@ -112,22 +117,31 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                                 <Marker
                                     key={c.id}
                                     coordinate={c.location as LatLng}
-                                    onCalloutPress={() => this.props.showClub(c.id)}
-                                    style={{ backgroundColor: this.props.theme.colors.surface }}
                                 >
-                                    <Callout style={{ height: 190, flexDirection: "column", backgroundColor: this.props.theme.colors.surface }}>
+                                    <Callout
+                                        tooltip
+                                        style={{
+                                            height: 190,
+                                            flexDirection: "column",
+                                            backgroundColor: this.props.theme.colors.surface,
+                                            alignSelf: 'flex-start',
+                                        }}
+                                        onPress={() => this.props.showClub(c.id)}
+                                    >
                                         <Title numberOfLines={1} style={{ paddingHorizontal: 8, maxWidth }}>{c.name}</Title>
-                                        {c.logo &&
-                                            <View>
-                                                <CachedImage
-                                                    preview={<Square width={150} />}
-                                                    style={{ width: 150, height: 150 }}
-                                                    uri={c.logo}
-                                                    cacheGroup="club"
-                                                    resizeMode="contain"
-                                                />
-                                            </View>
-                                        }
+                                        <View>
+                                            <CachedImage
+                                                preview={<Avatar.Text
+                                                    style={{ backgroundColor: this.props.theme.colors.backdrop, }}
+                                                    size={150}
+                                                    label={c.club}
+                                                />}
+                                                style={{ width: 150, height: 150 }}
+                                                uri={c.logo}
+                                                cacheGroup="club"
+                                                resizeMode="contain"
+                                            />
+                                        </View>
                                     </Callout>
                                 </Marker>
                             ))

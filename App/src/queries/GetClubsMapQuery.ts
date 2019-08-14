@@ -6,6 +6,7 @@ export const GetClubsMapQuery = gql`
       id
       name
       logo
+      club
 
       location {
         longitude
