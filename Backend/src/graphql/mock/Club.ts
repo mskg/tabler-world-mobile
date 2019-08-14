@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { Area } from './Area';
 import { clubNames, memberNames } from './data';
 import { Member } from './Member';
+import { randomLocation } from './randomLocation';
 import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
 
 export const Club = (root: any, args: any, _context: any, _info: any) => {
@@ -35,6 +36,8 @@ export const Club = (root: any, args: any, _context: any, _info: any) => {
   return {
     id: () => clubId,
     club: () => clubId,
+
+    location: randomLocation,
 
     name: () => "RT " + clubId + " " + club.name,
     logo: () => club.pic,

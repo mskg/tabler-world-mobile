@@ -58,7 +58,7 @@ async function handleLocation(locations: LocationData[]) {
 
     logger.log("Geocoding", address);
     getReduxStore().dispatch(setLocation({
-        location: location[0],
+        location: location,
         address: address[0],
     }));
 

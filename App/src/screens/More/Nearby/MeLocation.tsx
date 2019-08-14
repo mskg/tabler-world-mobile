@@ -1,4 +1,4 @@
-import * as Location from 'expo-location';
+    import * as Location from 'expo-location';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { List, Theme, Title, withTheme } from 'react-native-paper';

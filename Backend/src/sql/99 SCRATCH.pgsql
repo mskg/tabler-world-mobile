@@ -157,3 +157,6 @@ from
 
 
 
+
+
+select point_x from userlocations_match

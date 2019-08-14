@@ -7,6 +7,7 @@ import { Company } from "./Company";
 import { clubNames, memberNames } from './data';
 import { Education } from './Education';
 import { Member } from './Member';
+import { NearbyMember } from "./NearbyMember";
 import { AssociationRole, Role, RoleRef, Roles } from "./Roles";
 import { Association } from "./Structure";
 
@@ -37,6 +38,10 @@ export const mocks = {
       .map((c: any) => Club({ club: c.id + 1 }, {}, {}, null))
       .value(),
 
+    nearbyMembers: () => new MockList(
+      faker.random.number({min: 5, max: 20})
+    ),
+
     Roles,
   }),
 
@@ -52,4 +57,5 @@ export const mocks = {
   Association,
   Area,
   RoleRef,
+  NearbyMember,
 };

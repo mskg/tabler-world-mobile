@@ -4,7 +4,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { AppState, Linking, Platform, ScrollView, View } from "react-native";
 import { Appbar, Divider, List, Text, Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { NavigationEventSubscription, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
@@ -27,10 +27,12 @@ import { MeLocation } from './MeLocation';
 import { Message } from './Message';
 
 const logger = new Logger(Categories.Screens.Menu);
+const POLL_INTERVAL = 10 * 1000;
 
 type State = {
     message?: string,
     canSet?: boolean,
+    visible: boolean,
 };
 
 type OwnProps = {
@@ -54,12 +56,27 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class NearbyScreenBase extends AuditedScreen<Props, State> {
+    listeners: NavigationEventSubscription[] = [];
     removeWatcher?: () => void;
 
     constructor(props) {
         super(props, AuditScreenName.NearbyMembers);
-        this.state = {};
+        this.state = {
+            visible: true,
+        };
     }
+
+    async componentDidMount() {
+        this.listeners = [
+            this.props.navigation.addListener('didFocus', this._focus),
+            this.props.navigation.addListener('didBlur', this._blur),
+        ];
+
+        this.audit.submit();
+    }
+
+    _focus = () => this.setState({ visible: true });
+    _blur = () => this.setState({ visible: false });
 
     handleAppStateChange = (nextAppState: string) => {
         if (nextAppState !== 'active') {
@@ -131,6 +148,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
+        logger.log(this.props);
+
         return (
             <ScreenWithHeader header={{
                 showBack: true,
@@ -165,7 +184,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     }
                                 }
                             }
-                            pollInterval={5000}
+                            pollInterval={this.state.visible ? POLL_INTERVAL : undefined}
                         >
                             {({ loading, data, error, refetch }) => {
                                 if (error) return null;
