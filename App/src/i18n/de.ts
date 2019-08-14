@@ -1,4 +1,4 @@
-import { differenceInCalendarYears, format } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
 import en, { I18NType } from './en';
 
@@ -107,7 +107,7 @@ const de: I18NType = {
 
         web: "Website",
 
-        charter: "Datum der Chartner",
+        charter: "Datum der Charter",
 
         national: "Nationaler Patentisch",
         international: "Internationaler Patentisch",
@@ -155,7 +155,7 @@ const de: I18NType = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInCalendarYears(Date.now(), date)})`
+                return `${format(date, "D. MMMM YYYY" , { locale: dateDE })} (${differenceInYears(Date.now(), date)})`
             },
         },
 
@@ -200,7 +200,7 @@ const de: I18NType = {
         Fields: {
             home: "Privatadresse",
             birthday: "Geburtstag",
-            partner: "Bessere Hälfte",
+            partner: "Partnerin/Partner",
             roles: "RT Ämter (dieses Jahr)",
             rtorg: "RT Organisation",
 

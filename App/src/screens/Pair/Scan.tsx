@@ -3,6 +3,7 @@ import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Theme, withTheme } from 'react-native-paper';
 import { NavigationEventSubscription, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../analytics/ActionNames';
@@ -17,6 +18,7 @@ const logger = new Logger(Categories.Screens.Scan);
 
 type Props = {
   showProfile: typeof showProfile,
+  theme: Theme,
 };
 
 class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
@@ -66,7 +68,9 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "black",
+          backgroundColor: hasCameraPermission
+            ? "black"
+            : this.props.theme.colors.background,
         }}>
 
         {hasCameraPermission === null &&
@@ -76,8 +80,8 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
         {hasCameraPermission === false
           ? <Text>{I18N.Pair.permission}</Text>
           : <BarCodeScanner
-            onBarCodeScanned={this.handleBarCodeScanned}
-            style={StyleSheet.absoluteFillObject}
+              onBarCodeScanned={this.handleBarCodeScanned}
+              style={StyleSheet.absoluteFillObject}
 
           >
             {/* <View style={styles.layerTop} />
@@ -147,4 +151,4 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
 //   },
 // });
 
-export const ScanScreen = connect(null, { showProfile })(ScanScreenBase);
+export const ScanScreen = connect(null, { showProfile })(withTheme(ScanScreenBase));
