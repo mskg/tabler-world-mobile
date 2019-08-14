@@ -88,6 +88,11 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     async didFocus() {
+        // prevent checking if not enabled
+        if (!this.props.nearbyMembers) {
+            return;
+        }
+
         if (!await Location.isBackgroundLocationAvailableAsync()) {
             this.setState({ message: I18N.NearbyMembers.notsupported, canSet: false });
             return;
@@ -117,7 +122,6 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     componentWillMount() {
         this.mounted = true;
         this.didFocus();
-        this.audit.submit();
 
         AppState.addEventListener('change', this.handleAppStateChange);
     }

@@ -61,6 +61,11 @@ async function handleLocation(locations: LocationData[]) {
     Audit.trackEvent(AuditEventName.LocationUpdate);
 
     const location = _(locations).maxBy(l => l.timestamp) as LocationData;
+    if (location == null) {
+        logger.error(new Error("No location found?"));
+        return;
+    }
+
     const address = await Location.reverseGeocodeAsync(location.coords);
 
     logger.log("Geocoding", address);
