@@ -2,24 +2,26 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Dimensions, Platform, View } from 'react-native';
 import MapView, { Callout, LatLng, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { Avatar, FAB, IconButton, Searchbar, Surface, Theme, Title, withTheme } from 'react-native-paper';
+import { FAB, IconButton, Searchbar, Surface, Theme, Title, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenName';
+import { ClubAvatar } from '../../../components/ClubAvatar';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
-import { CachedImage } from '../../../components/Image/CachedImage';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../../helper/Logger";
+import { normalizeForSearch } from '../../../helper/normalizeForSearch';
 import { I18N } from '../../../i18n/translation';
-import { ClubsMap } from '../../../model/graphql/ClubsMap';
+import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
@@ -34,6 +36,9 @@ type State = {
     location?: Location.LocationData,
     centerOn?: Region,
     marginBottom: number,
+
+    search: string,
+    filtered: ClubsMap_Clubs[],
 };
 
 type Props = {
@@ -46,12 +51,27 @@ type Props = {
 } & NavigationInjectedProps;
 
 class ClubsScreenBase extends AuditedScreen<Props, State> {
+    mapRef: MapView | null = null;
+
     constructor(props) {
         super(props, ScreenName.ClubMap);
 
         this.state = {
-            marginBottom: 1
+            marginBottom: 1,
+            search: "",
+            filtered: this.filterData(props.data),
         };
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.data !== this.props.data) {
+            // logger.debug("Received", JSON.stringify(nextProps.data));
+
+            this.setState({
+                search: this.state.search,
+                filtered: this.filterData(nextProps.data, this.state.search)
+            });
+        }
     }
 
     _getLocationAsync = async () => {
@@ -82,7 +102,78 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         }
     }
 
-    _showList = () => requestAnimationFrame(() => this.props.navigation.navigate(Routes.List))
+    _normalizedSearch = (search: string) => (target: string) => {
+        const segments = normalizeForSearch(search).split(' ');
+        const changedTarget = normalizeForSearch(target);
+
+        let found = false;
+        for (const search of segments) {
+            if (changedTarget.indexOf(search) < 0) {
+                return false;
+            }
+
+            found = true;
+        }
+
+        return found;
+    }
+
+    makeSearchTexts(c: ClubsMap_Clubs): string[] {
+        return [
+            c.name,
+        ].filter(Boolean);
+    }
+
+    filterData(data?: ClubsMap | null, text?: string): ClubsMap_Clubs[] {
+        if (data == null) { return []; }
+
+        //@ts-ignore
+        return _(data.Clubs)
+            .filter(d => d.location != null)
+            .map((item: ClubsMap_Clubs) => {
+                var match = _.find(
+                    this.makeSearchTexts(item),
+                    this._normalizedSearch(text || ""));
+
+                return match ? {
+                    ...item,
+                    match,
+                } : null;
+            })
+            .filter(r => r != null)
+            .toArray()
+            .value();
+    }
+
+    _showList = () => requestAnimationFrame(() => this.props.navigation.navigate(Routes.List));
+
+    _fitMap = _.debounce(() => {
+        if (this.mapRef) {
+            if (this.state.search === "") {
+                this._getLocationAsync();
+            } else {
+                this.mapRef.fitToSuppliedMarkers(
+                    this.state.filtered.map(d => d.id)
+                );
+            }
+        };
+    }, 1000);
+
+    // _fitCluster = (_coordinates,markers) => {
+    //     if (this.mapRef) {
+    //         this.mapRef.fitToSuppliedMarkers(
+    //             markers
+    //         );
+    //     };
+    // };
+
+    _search = (text) => {
+        this.setState({
+            search: text,
+            filtered: this.filterData(this.props.data, text),
+            centerOn: undefined,
+        }, this._fitMap);
+    }
 
     render() {
         return (
@@ -91,6 +182,8 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 previewComponent={<FullScreenLoading />}
             >
                 <MapView
+                    ref={(ref) => { this.mapRef = ref; }}
+
                     provider={this.props.theme.dark ? PROVIDER_GOOGLE : undefined}
                     zoomEnabled={true}
                     scrollEnabled={true}
@@ -105,46 +198,57 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     onMapReady={this._onMapReady}
                     customMapStyle={this.props.theme.dark ? darkStyles : undefined}
 
+                    // clusterColor={this.props.theme.colors.accent}
+                    // clusterTextColor={this.props.theme.colors.text}
+                    // clusterBorderWidth={0}
+                    // onClusterPress={this._fitCluster}
+
                     style={{
                         flex: 1,
                         backgroundColor: this.props.theme.colors.surface,
                     }}
                 >
-                    {this.props.data && this.props.data.Clubs &&
-                        this.props.data.Clubs
-                            .filter(f => f.location != null)
-                            .map(c => (
-                                <Marker
-                                    key={c.id}
-                                    coordinate={c.location as LatLng}
-                                >
-                                    <Callout
-                                        tooltip
-                                        style={{
-                                            height: 190,
-                                            flexDirection: "column",
-                                            backgroundColor: this.props.theme.colors.surface,
-                                            alignSelf: 'flex-start',
-                                        }}
-                                        onPress={() => this.props.showClub(c.id)}
-                                    >
-                                        <Title numberOfLines={1} style={{ paddingHorizontal: 8, maxWidth }}>{c.name}</Title>
-                                        <View>
-                                            <CachedImage
-                                                preview={<Avatar.Text
-                                                    style={{ backgroundColor: this.props.theme.colors.backdrop, }}
-                                                    size={150}
-                                                    label={c.club}
-                                                />}
-                                                style={{ width: 150, height: 150 }}
-                                                uri={c.logo}
-                                                cacheGroup="club"
-                                                resizeMode="contain"
-                                            />
-                                        </View>
-                                    </Callout>
-                                </Marker>
-                            ))
+                    {this.state.filtered.map(c => (
+                        <Marker
+                            key={c.id}
+                            identifier={c.id}
+                            coordinate={c.location as LatLng}
+                        >
+                            {/* <ClubAvatar
+                                theme={this.props.theme}
+                                source={c.logo}
+                                label={c.club.toString()}
+                                size={40}
+                                style={{
+                                    elevation: 0,
+                                    backgroundColor: this.props.theme.colors.backdrop,
+                                }}
+                            /> */}
+
+                            <Callout
+                                tooltip
+                                style={{
+                                    height: 190, width: 190,
+                                    flexDirection: "column",
+                                    backgroundColor: this.props.theme.colors.surface,
+                                    alignItems: "center",
+                                    elevation: 3,
+                                }}
+                                onPress={() => this.props.showClub(c.id)}
+                            >
+                                <Title numberOfLines={1} style={{ paddingHorizontal: 8, maxWidth }}>{c.name}</Title>
+                                <ClubAvatar
+                                    theme={this.props.theme}
+                                    source={c.logo}
+                                    label={c.club.toString()}
+                                    size={150}
+                                    style={{
+                                        elevation: 0,
+                                    }}
+                                />
+                            </Callout>
+                        </Marker>
+                    ))
                     }
                 </MapView>
 
@@ -155,8 +259,8 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                         placeholder={I18N.Search.search}
                         autoCorrect={false}
 
-                    // value={this.state.search}
-                    // onChangeText={this._search}
+                        value={this.state.search}
+                        onChangeText={this._search}
                     />
 
                     <Surface style={styles.switchLayoutButton}>

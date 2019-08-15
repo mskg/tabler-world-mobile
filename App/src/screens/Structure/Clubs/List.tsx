@@ -31,7 +31,6 @@ const logger = new Logger(Categories.Screens.Structure);
 
 type State = {
     search: string,
-    debouncedSearch: string,
     filtered: Clubs_Clubs[],
 };
 
@@ -50,7 +49,6 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
         this.state = {
             search: "",
-            debouncedSearch: "",
             filtered: this.filterData(props.data),
         }
     }

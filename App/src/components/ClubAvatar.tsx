@@ -6,13 +6,13 @@ import { CachedImage } from "./Image/CachedImage";
 type Props = {
   theme: Theme;
 
-  source: string | undefined;
+  source: string | undefined | null;
   label: string;
 
   size: number;
 
   background?: string;
-  style: any;
+  style?: any;
 };
 
 export class ClubAvatarBase extends React.PureComponent<Props> {
