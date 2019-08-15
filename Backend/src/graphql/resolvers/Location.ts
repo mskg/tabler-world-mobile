@@ -95,7 +95,7 @@ DO UPDATE
                             context.principal.id,
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             args.location.accuracy,
-                            args.location.speed,
+                            Math.round(args.location.speed),
                             args.location.address ? JSON.stringify(args.location.address) : null
                         ]);
                     return true;

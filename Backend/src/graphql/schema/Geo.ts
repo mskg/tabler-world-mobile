@@ -18,7 +18,7 @@ export const Geo = gql`
     input MyLocationInput {
         longitude: Float!
         latitude: Float!
-        accuracy: Int!
+        accuracy: Float!
         speed: Float!
         address: JSON
     }

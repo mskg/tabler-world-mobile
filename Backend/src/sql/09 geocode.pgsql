@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS userlocations
 (
     id integer NOT NULL,
     point geography,
-    accuracy integer,
+    accuracy double precision,
     speed double precision,
     address jsonb,
     lastseen timestamptz(0),
