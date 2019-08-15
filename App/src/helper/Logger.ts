@@ -24,6 +24,7 @@ export class Categories {
     }
 
     public static Sagas = class {
+        public static readonly Parameters = Categories.SagaRoot + "/Parameters";
         public static readonly Settings = Categories.SagaRoot + "/Settings";
         public static readonly Member = Categories.SagaRoot + "/Member";
         public static readonly Push = Categories.SagaRoot + "/Push";
@@ -58,6 +59,7 @@ export class Categories {
         public static readonly Structure = Categories._UI + "/Structure";
         public static readonly Club = Categories._UI + "/Club";
         public static readonly Scan = Categories._UI + "/Scan";
+        public static readonly NearBy = Categories._UI + "/NearBy";
     }
 
     public static Helpers = class {

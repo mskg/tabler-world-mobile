@@ -18,19 +18,29 @@ export function* checkLocationTask(a: typeof settingActions.updateSetting.shape)
         return;
     }
 
-    logger.log("Processing", a.payload);
-    yield AsyncStorage.setItem(LOCATION_TASK_NAME, a.payload.value.toString());
-
     if (a.payload.value == false) {
-        logger.log("Disabling location services", LOCATION_TASK_NAME);
-        const client: ApolloClient<NormalizedCache> = yield bootstrapApollo();
-        yield client.mutate<DisableLocationServices>({
-            mutation: DisableLocationServicesMutation,
-        });
-
-        logger.log("Stopping task", LOCATION_TASK_NAME);
-        yield Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+        yield disableLocationTracking();
     } else {
         yield startLocationTask();
     }
+
+    logger.log("Processing", a.payload);
+    yield AsyncStorage.setItem(LOCATION_TASK_NAME, a.payload.value.toString());
+}
+
+export function* disableLocationTracking() {
+    const isOn = (yield AsyncStorage.getItem(LOCATION_TASK_NAME)) === "true";
+    if (!isOn) {
+        logger.debug("not on");
+        return;
+    }
+
+    logger.log("Disabling location services", LOCATION_TASK_NAME);
+    const client: ApolloClient<NormalizedCache> = yield bootstrapApollo();
+    yield client.mutate<DisableLocationServices>({
+        mutation: DisableLocationServicesMutation,
+    });
+
+    logger.log("Stopping task", LOCATION_TASK_NAME);
+    yield Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
 }

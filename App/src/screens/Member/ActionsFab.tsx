@@ -5,11 +5,13 @@ import { Alert } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { FABGroup } from '../../components/FABGroup';
-import { getConfigValue } from '../../helper/Configuration';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
+import { getParameterValue } from '../../helper/parameters/getParameter';
+import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
+import { ParameterName } from '../../model/graphql/globalTypes';
 import { Member_Member } from '../../model/graphql/Member';
 import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
@@ -39,12 +41,12 @@ class ActionsFabBase extends React.Component<Props> {
     this.props.toggleFavorite(this.props.member);
   }
 
-  _handleWeb = () => {
+  _handleWeb = async() => {
     const { member } = this.props;
-    const profile = getConfigValue("profile");
+    const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
 
     OpenLink.url(
-      profile.replace("#id#", member.id.toString())
+      urls.profile.replace("#id#", member.id.toString())
     );
   }
 

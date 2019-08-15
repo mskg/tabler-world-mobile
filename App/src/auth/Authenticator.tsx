@@ -102,7 +102,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
   render() {
     if (this.state.demoMode == null) {
-      return <Loading />
+      return <Loading />;
     }
 
     if (!this.state.demoMode === true && this.props.authState === "confirm") {

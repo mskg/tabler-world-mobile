@@ -3,7 +3,7 @@ import LRU from 'lru-cache';
 import { isArray } from "util";
 import { EXECUTING_OFFLINE } from "../isOffline";
 import { xAWS } from "../xray/aws";
-import { Param_Api, Param_Database } from "./types";
+import { Param_Api, Param_Database, Param_Nearby } from "./types";
 
 const ssm = new xAWS.SSM();
 
@@ -12,7 +12,9 @@ export type Environments = "dev" | "test" | "prod";
 type ParameterNames =
     | "tw-api"
     | "database"
-    ;
+    | "nearby"
+    | "app"
+;
 
 type MapType = {
     [key in ParameterNames]: string
@@ -43,6 +45,21 @@ if (EXECUTING_OFFLINE) {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
     } as Param_Database));
+
+    memoryCache.set(mapName('nearby'), JSON.stringify({
+        radius: parseInt(process.env.NEARBY_RADIUS || '100000', 10),
+        days: parseInt(process.env.NEARBY_DAYSBACK || '365', 10),
+    } as Param_Nearby));
+
+    memoryCache.set(mapName('app'), JSON.stringify({
+        urls: {
+            feedback: "https://www.google.de?q=feedback",
+            profile: "https://www.google.de?q=profile",
+            world: "https://www.google.de?q=world",
+            join: "https://www.google.de?q=join",
+            support: "no-reply@example.com",
+        }
+    }));
 }
 
 /**

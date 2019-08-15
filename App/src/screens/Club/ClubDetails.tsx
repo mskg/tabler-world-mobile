@@ -164,7 +164,9 @@ class ClubDetailsBase extends React.Component<Props> {
                     <>
                         <Section theme={this.props.theme} icon={"md-medal"} disableRipple={true}>
                             <ExpandableElement field={I18N.Club.board} text={
-                                <RoleScrollView roles={board.value()} />} />
+                                <RoleScrollView roles={board.value()} />}
+                                disabled={board.size() < 3}
+                            />
                         </Section>
                     </>
                 }
@@ -176,6 +178,7 @@ class ClubDetailsBase extends React.Component<Props> {
                         <Section theme={this.props.theme} icon={"md-medkit"} disableRipple={true}>
                             <ExpandableElement field={I18N.Club.assist} text={
                                 <RoleScrollView roles={assist.value()} />}
+                                disabled={assist.size() < 3}
                             />
                         </Section>
                     </>
@@ -190,7 +193,9 @@ class ClubDetailsBase extends React.Component<Props> {
                                 <RoleScrollView roles={members.map(m => ({
                                     role: "Member",
                                     member: m
-                                })).value()} />} />
+                                })).value()} />}
+                                disabled={members.size() < 3}
+                                />
                         </Section>
                     </>
                 }

@@ -3,18 +3,18 @@ import { LocationData } from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import _ from "lodash";
 import { AsyncStorage } from "react-native";
+import { Audit } from '../analytics/Audit';
+import { AuditEventName } from '../analytics/AuditEventName';
 import { bootstrapApollo } from "../apollo/bootstrapApollo";
 import { Categories, Logger } from "../helper/Logger";
-import {
-  PutLocation,
-  PutLocationVariables
-} from "../model/graphql/PutLocation";
+import { GeoParameters } from '../helper/parameters/Geo';
+import { getParameterValue } from '../helper/parameters/getParameter';
+import { ParameterName } from '../model/graphql/globalTypes';
+import { PutLocation, PutLocationVariables } from "../model/graphql/PutLocation";
 import { PutLocationMutation } from "../queries/PutLocation";
 import { setLocation } from "../redux/actions/location";
 import { getReduxStore } from "../redux/getRedux";
 import { LOCATION_TASK_NAME } from "./Const";
-import { Audit } from '../analytics/Audit';
-import { AuditEventName } from '../analytics/AuditEventName';
 
 const logger = new Logger(Categories.Sagas.Location);
 
@@ -33,15 +33,11 @@ export async function startLocationTask() {
 
         await Location.requestPermissionsAsync();
 
+        const settings = await getParameterValue<GeoParameters>(ParameterName.geo);
+        delete settings.pollInterval;
+
         await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-          accuracy: Location.Accuracy.Low,
-
-          // time
-          timeInterval: 15 * 60 * 1000,
-          distanceInterval: 1000,
-
-          mayShowUserSettingsDialog: false,
-          pausesUpdatesAutomatically: true
+          ...settings,
         });
 
         const location = await Location.getCurrentPositionAsync();

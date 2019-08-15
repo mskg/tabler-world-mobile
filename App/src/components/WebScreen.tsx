@@ -9,7 +9,6 @@ import { Categories, Logger } from '../helper/Logger';
 import { ScreenWithHeader } from './Screen';
 
 const logger = new Logger(Categories.UIComponents.WebScreen);
-
 export class WebScreenBase extends AuditedScreen<{theme, url, title, showBack?}, {url}> {
     ref: any;
 

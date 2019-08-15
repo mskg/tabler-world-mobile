@@ -8,9 +8,11 @@ import { Portal, Surface, Text, Theme, Title, TouchableRipple, withTheme } from 
 import { ActionNames } from '../analytics/ActionNames';
 import { Audit } from '../analytics/Audit';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { getConfigValue } from '../helper/Configuration';
 import { Categories, Logger } from '../helper/Logger';
+import { getParameterValue } from '../helper/parameters/getParameter';
+import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
+import { ParameterName } from '../model/graphql/globalTypes';
 
 const logger = new Logger(Categories.UIComponents.ErrorReport);
 
@@ -158,6 +160,8 @@ class ErrorReportBase extends React.Component<Props, State> {
 
     _runSupport = async () => {
         try {
+            const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
+
             const result = await MailComposer.composeAsync({
                 subject: I18N.ErrorReport.subject,
                 isHtml: true,
@@ -170,7 +174,7 @@ Build Version: ${Constants.manifest.version}
 Device Id: ${Constants.deviceId}
 Time: ${new Date().toISOString()}
 `.replace(/\n/ig, "<br/>"),
-                recipients: [getConfigValue("support")],
+                recipients: [urls.support],
             });
 
             this.audit.trackAction(ActionNames.SendErrorReport, {

@@ -6,6 +6,7 @@
 - Members on club screen now include board, and -assists
 - Nearby Members shows other members around you, that are willing to share their location. Get connected!
 - Readability of text and html has been optimized for dark theme, #54
+- Expandable sections on club page now only prompt for expansion with enough elements
 
 # v1.0.1
 

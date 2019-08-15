@@ -1,4 +1,4 @@
-import { SplashScreen } from "expo";
+import { SplashScreen } from 'expo';
 import React from "react";
 import { Image, StatusBar, StyleSheet, View } from "react-native";
 import { ActivityIndicator } from 'react-native-paper';
@@ -18,7 +18,9 @@ export default class Loading extends React.PureComponent {
                     onLoadEnd={() => {
                         // wait for image's content to fully load [`Image#onLoadEnd`]
                         // (https://facebook.github.io/react-native/docs/image#onloadend)
-                        SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
+                        // Image is fully presented, instruct SplashScreen to hide
+
+                        SplashScreen.hide();
                     }}
 
                     // we need to adjust Android devices

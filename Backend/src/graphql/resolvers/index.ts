@@ -5,6 +5,7 @@ import { JobsResolver } from "./Jobs";
 import { LocationResolver } from "./Location";
 import { MemberResolver } from "./Member";
 import { NewsResolver } from "./News";
+import { ParametersResolver } from "./Parameters";
 import { RolesResolver } from "./Roles";
 import { SearchMemberResolver } from "./Search";
 import { SettingsResolver } from "./Settings";
@@ -25,5 +26,6 @@ export const resolvers = merge(
     AlbumsResolver,
     NewsResolver,
     LocationResolver,
+    ParametersResolver,
     // DocumentsResolver,
 );

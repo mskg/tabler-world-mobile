@@ -28,6 +28,12 @@ export const cache = new InMemoryCache({
             case "RoleRef":
                 return null;
 
+            case 'Parameter':
+                //@ts-ignore
+                if (object.name == null) return defaultDataIdFromObject(object);
+                //@ts-ignore
+                return `${object.__typename}:${object.name}`;
+
             case 'Association':
                 //@ts-ignore
                 if (object.association == null) return defaultDataIdFromObject(object);

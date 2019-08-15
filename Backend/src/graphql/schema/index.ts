@@ -5,6 +5,7 @@ import { Jobs } from "./Jobs";
 import { Member } from "./Member";
 import { Mutation } from "./Mutation";
 import { News } from "./News";
+import { Parameters } from "./Parameters";
 import { Query } from "./Query";
 import { SearchMember } from "./Search";
 import { Settings } from "./Settings";
@@ -26,4 +27,5 @@ export const schema = [
     // Documents,
     News,
     Geo,
+    Parameters,
 ];

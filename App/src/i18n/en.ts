@@ -421,6 +421,7 @@ const en = {
             dark: "Dark mode",
             logout: "Reset all Settings and Logout",
             clear: "Erase all Content",
+            cache: "Clear Image Cache",
             version: "Version",
             lastSync: "Last Synchronization",
             channel: "Distribution Channel",
@@ -450,6 +451,10 @@ const en = {
                     url: "https://help.roundtable.world/knowledge-base/imprint/"
                 }
             ]
+        },
+
+        cache: {
+            title: "Cache has been cleared",
         }
     },
 

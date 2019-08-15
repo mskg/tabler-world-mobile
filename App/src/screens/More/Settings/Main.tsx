@@ -13,6 +13,7 @@ import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../../../apollo/bootstrapApollo';
 import Assets from '../../../Assets';
+import CacheManager from '../../../components/Image/CacheManager';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { isDemoModeEnabled } from '../../../helper/demoMode';
 import { LinkingHelper } from '../../../helper/LinkingHelper';
@@ -112,6 +113,24 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         );
     }
 
+    _clearCache = async () => {
+        try {
+            await CacheManager.clearCache("album");
+            await CacheManager.clearCache("news");
+            await CacheManager.clearCache("other");
+
+            await CacheManager.outDateCache("avatar");
+            await CacheManager.outDateCache("club");
+        }
+        catch (e) {
+            logger.error(e, "Failed to clear image caches");
+        }
+
+        Alert.alert(
+            I18N.Settings.cache.title,
+        );
+    }
+
     _confirmUnload = () => {
         Alert.alert(
             I18N.Settings.logout.title,
@@ -148,7 +167,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.updateSetting({ name: "darkMode", value: !this.props.settings.darkMode });
     }
 
-    _updateFriends = async () => {
+    _toggleLocationServices = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
 
         if (status !== 'granted') {
@@ -487,7 +506,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         color={this.props.theme.colors.accent}
                                         style={{ marginTop: -4, marginRight: -4 }}
                                         value={this.props.settings.nearbyMembers}
-                                        onValueChange={this._updateFriends}
+                                        onValueChange={this._toggleLocationServices}
                                     />
                                 }
                             />
@@ -518,6 +537,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     <List.Section title={I18N.Settings.sections.reset}>
                         <Divider />
                         <Action theme={this.props.theme} text={I18N.Settings.fields.clear} onPress={this._clearSyncFlags} />
+                        <Divider />
+                        <Action theme={this.props.theme} text={I18N.Settings.fields.cache} onPress={this._clearCache} />
                         <Divider />
                         <Action theme={this.props.theme} text={I18N.Settings.fields.logout} onPress={this._confirmUnload} />
                         <Divider />

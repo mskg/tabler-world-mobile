@@ -1,3 +1,6 @@
+import { EXECUTING_OFFLINE } from "../../shared/isOffline";
+import { getParameters } from "../../shared/parameters/getParameters";
+import { Param_Nearby } from "../../shared/parameters/types";
 import { useDataService } from "../../shared/rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
@@ -36,6 +39,10 @@ export const LocationResolver = {
     Query: {
         nearbyMembers: async (_root: any, args: NearMembersInput, context: IApolloContext) => {
             context.logger.log("nearby", args);
+
+            const params = await getParameters("nearby");
+            const nearBy = JSON.parse(params.nearby) as Param_Nearby;
+
             return useDataService(
                 context,
                 async (client) => {
@@ -53,8 +60,9 @@ FROM
     userlocations_match locations
 WHERE
         member <> $2
-    and ST_DWithin(locations.point, $1::geography, ${process.env.NEARBY_RADIUS || 100000})
+    and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     and association = $3
+    ${EXECUTING_OFFLINE ? "" :  `and lastseen > (now() - '${nearBy.days} day'::interval)`}
     ${args.query && args.query.excludeOwnTable ? "and club <> $4" : ""}
 ORDER BY
     locations.point <-> $1::geography

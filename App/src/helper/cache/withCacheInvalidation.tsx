@@ -4,7 +4,10 @@ import gql from 'graphql-tag';
 import React from 'react';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { ParameterName } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
+import { getParameterValue } from '../parameters/getParameter';
+import { MS_PER_MINUTE, TimeoutDefaults, TimeoutParameters } from '../parameters/Timeouts';
 import { logger } from './logger';
 
 const GetLastSyncQuery = (field) => gql`
@@ -25,27 +28,7 @@ type CacheInvalidationProps = {
     offline: boolean,
 }
 
-export const MS_PER_MINUTE = 60000;
-const hours = (hours: number) => 60 * hours * MS_PER_MINUTE;
-
-export const MaxTTL = {
-    albums: hours(4),
-    album: hours(4),
-
-    members: hours(12),
-    member: hours(12),
-
-    associations: hours(24),
-    areas: hours(24),
-
-    clubs: hours(24),
-    club: hours(24),
-
-
-    utility: hours(4),
-    news: hours(4),
-    newsarticle: hours(4),
-}
+let MaxTTL = TimeoutDefaults;
 
 export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
     const age = MaxTTL[type];
@@ -64,7 +47,16 @@ export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
     }
 };
 
+export async function updateTimeouts() {
+    const settings = await getParameterValue<TimeoutParameters>(ParameterName.timeouts);
+    MaxTTL = settings;
+}
+
 class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> {
+    componentWillMount() {
+        updateTimeouts();
+    }
+
     checkLastSync(client: ApolloClient<NormalizedCacheObject>): number {
         let data: any = null;
         const query = GetLastSyncQuery(this.props.field);

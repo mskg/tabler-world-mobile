@@ -7,6 +7,8 @@ type ActionProps = {
     field: string,
     text: ReactNode,
     theme: Theme,
+
+    disabled?: boolean,
 }
 
 type State = {
@@ -19,7 +21,7 @@ class ExpandableElementBase extends React.Component<ActionProps, State> {
     };
 
     _toggle = () => {
-        this.setState({expanded: true});
+        this.setState({ expanded: true });
     }
 
     render() {
@@ -30,14 +32,14 @@ class ExpandableElementBase extends React.Component<ActionProps, State> {
                 <View style={styles.row}>
                     <View style={styles.header}>
                         <Caption>{field}</Caption>
-                        {!this.state.expanded &&
+                        {!this.props.disabled && !this.state.expanded &&
                             <TouchableRipple onPress={this._toggle}>
-                                <Caption style={{color: this.props.theme.colors.accent}}>{I18N.Club.expand}</Caption>
+                                <Caption style={{ color: this.props.theme.colors.accent }}>{I18N.Club.expand}</Caption>
                             </TouchableRipple>
                         }
                     </View>
                     {
-                        React.cloneElement(text, {expand: this.state.expanded})
+                        React.cloneElement(text, { expand: this.state.expanded })
                     }
                 </View>
             );

@@ -15,8 +15,11 @@ import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { distance } from '../../../helper/distance';
 import { Categories, Logger } from '../../../helper/Logger';
+import { GeoParameters } from '../../../helper/parameters/Geo';
+import { getParameterValue } from '../../../helper/parameters/getParameter';
 import { timespan } from '../../../helper/timespan';
 import { I18N } from '../../../i18n/translation';
+import { ParameterName } from '../../../model/graphql/globalTypes';
 import { NearbyMembers, NearbyMembersVariables } from '../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../../queries/GetNearbyMembers';
@@ -26,13 +29,13 @@ import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
 import { Message } from './Message';
 
-const logger = new Logger(Categories.Screens.Menu);
-const POLL_INTERVAL = 10 * 1000;
+const logger = new Logger(Categories.Screens.NearBy);
 
 type State = {
     message?: string,
     canSet?: boolean,
     visible: boolean,
+    interval: number,
 };
 
 type OwnProps = {
@@ -64,6 +67,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         super(props, AuditScreenName.NearbyMembers);
         this.state = {
             visible: true,
+            interval:  10 * 1000,
         };
     }
 
@@ -74,6 +78,9 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         ];
 
         this.audit.submit();
+
+        const setting = await getParameterValue<GeoParameters>(ParameterName.geo);
+        this.setState({interval: setting.pollInterval})
     }
 
     _focus = () => { if (this.mounted) { this.setState({ visible: true }); } }
@@ -156,7 +163,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
-        logger.log(this.props);
+        // logger.log(this.props);
 
         return (
             <ScreenWithHeader header={{
@@ -192,7 +199,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     }
                                 }
                             }
-                            pollInterval={this.state.visible ? POLL_INTERVAL : undefined}
+                            pollInterval={this.state.visible ? this.state.interval : undefined}
                         >
                             {({ loading, data, error, refetch }) => {
                                 if (error) return null;

@@ -14,3 +14,8 @@ export type Param_Api = {
     batch: number,
     read_batch: number,
 }
+
+export type Param_Nearby = {
+    radius: number,
+    days: number,
+}

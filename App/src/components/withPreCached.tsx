@@ -1,5 +1,5 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { AppLoading, SplashScreen } from 'expo';
+import { SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React from 'react';
@@ -38,41 +38,45 @@ export function withPreCached(WrappedComponent) {
             SplashScreen.preventAutoHide();
         }
 
-        async _loadAssetsAsync() {
-            const imageAssets = cacheImages(
-                Object.keys(Assets.images).map(
-                    k => Assets.images[k]
-                )
-            );
+        componentDidMount() {
+            this.loadAssetsAsync();
+        }
 
-            const fileAssets = cacheFiles(
-                Object.keys(Assets.files).map(
-                    k => Assets.files[k]
-                ));
+        async loadAssetsAsync() {
+            try {
+                const imageAssets = cacheImages(
+                    Object.keys(Assets.images).map(
+                        k => Assets.images[k]
+                    )
+                );
 
-            await MaterialIcons.loadFont();
-            await Ionicons.loadFont();
+                const fileAssets = cacheFiles(
+                    Object.keys(Assets.files).map(
+                        k => Assets.files[k]
+                    ));
 
-            await Font.loadAsync({
-                'normal': Assets.fonts.normal,
-                'bold': Assets.fonts.bold,
-                'light': Assets.fonts.light,
-            });
+                await MaterialIcons.loadFont();
+                await Ionicons.loadFont();
 
-            await Promise.all([...imageAssets, ...fileAssets]);
-            logger.log("Done.");
+                await Font.loadAsync({
+                    'normal': Assets.fonts.normal,
+                    'bold': Assets.fonts.bold,
+                    'light': Assets.fonts.light,
+                });
+
+                await Promise.all([...imageAssets, ...fileAssets]);
+                logger.log("Done.");
+            }
+            catch (e) {
+                logger.error(e, "Initial loading");
+            }
+
+            this.setState({ isReady: true });
         }
 
         render() {
             if (!this.state.isReady) {
-                return (
-                    <AppLoading
-                        startAsync={this._loadAssetsAsync}
-                        onFinish={() => this.setState({ isReady: true })}
-                        onError={logger.error}
-                        autoHideSplash={false}
-                    />
-                );
+                return null;
             }
 
             return (<WrappedComponent />);

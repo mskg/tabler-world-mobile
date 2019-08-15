@@ -8,11 +8,13 @@ import uuid4 from "uuid4";
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { getConfigValue } from '../helper/Configuration';
 import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
+import { getParameterValue } from '../helper/parameters/getParameter';
+import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
+import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
 import { confirmSignIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
@@ -128,8 +130,9 @@ class SignInBase extends AuditedScreen<Props, State> {
         }
     }
 
-    _lauchJoin = () => {
-        OpenLink.url(getConfigValue("join"));
+    _lauchJoin = async () => {
+        const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
+        OpenLink.url(urls.join);
     }
 
     render() {

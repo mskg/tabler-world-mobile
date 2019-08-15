@@ -4,7 +4,7 @@ import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderStyles, TOTAL_HEADER_HEIGHT } from '../theme/dimensions';
 
-type Props = {
+export type Props = {
     title?: string,
     backgroundColor?: string,
     showBack?: React.ReactElement | boolean,

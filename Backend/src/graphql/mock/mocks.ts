@@ -43,6 +43,7 @@ export const mocks = {
     ),
 
     Roles,
+    getParameters: () => [],
   }),
 
   Member,

@@ -367,6 +367,7 @@ const de: I18NType = {
             dark: "Nachtmodus",
             logout: "Abmelden und alle Einstellungen zurücksetzen",
             clear: "Alle Inhalte löschen",
+            cache: "Temporären Speicher freigeben",
             version: "Version",
             lastSync: "Letzte Synchronisierung",
             channel: "Kanal",
@@ -397,6 +398,10 @@ const de: I18NType = {
                     url: "https://hilfe.roundtable.world/knowledge-base/imprint/"
                 }
             ]
+        },
+
+        cache: {
+            title: "Der Speicherplatz wurde freigegeben",
         }
     },
 

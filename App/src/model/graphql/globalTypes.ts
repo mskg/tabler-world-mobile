@@ -53,6 +53,18 @@ export enum NearbyMemberState {
   Traveling = "Traveling",
 }
 
+export enum ParameterName {
+  fetch = "fetch",
+  geo = "geo",
+  timeouts = "timeouts",
+  urls = "urls",
+}
+
+export enum ParameterPlatform {
+  android = "android",
+  ios = "ios",
+}
+
 export enum RoleType {
   area = "area",
   assoc = "assoc",
@@ -70,6 +82,11 @@ export interface MyLocationInput {
   accuracy: number;
   speed: number;
   address?: any | null;
+}
+
+export interface ParameterInput {
+  version: string;
+  os: ParameterPlatform;
 }
 
 export interface SettingInput {

@@ -8,9 +8,12 @@ import { Audit } from "../analytics/Audit";
 import { AuditEventName } from '../analytics/AuditEventName';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { bootstrapApollo, getPersistor } from '../apollo/bootstrapApollo';
-import { MaxTTL } from '../helper/cache/withCacheInvalidation';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
+import { FetchParameters } from '../helper/parameters/Fetch';
+import { getParameterValue } from '../helper/parameters/getParameter';
+import { TimeoutDefaults } from "../helper/parameters/Timeouts";
+import { ParameterName } from '../model/graphql/globalTypes';
 import { MembersByAreasVariables } from '../model/graphql/MembersByAreas';
 import { GetAreasQuery } from "../queries/GetAreasQuery";
 import { GetAssociationsQuery } from "../queries/GetAssociationsQuery";
@@ -21,9 +24,13 @@ import { getReduxStore } from '../redux/getRedux';
 
 const FETCH_TASKNAME = "update-contacts";
 const logger = new Logger(Categories.Sagas.Fetch);
-const INTERVAL = 60 * 60 * (24 / 4);
 
-async function updateCache(client: ApolloClient<NormalizedCacheObject>, query: DocumentNode, field: keyof typeof MaxTTL, variables?: OperationVariables) {
+async function updateCache(
+        client: ApolloClient<NormalizedCacheObject>,
+        query: DocumentNode,
+        field: keyof typeof TimeoutDefaults,
+        variables?: OperationVariables
+) {
     logger.log("Fetching", field);
 
     await client.query({
@@ -108,11 +115,8 @@ export async function registerFetchTask() {
             default: {
                 logger.debug("Background execution allowed");
 
-                await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME, {
-                    minimumInterval: INTERVAL,
-                    startOnBoot: true,
-                    stopOnTerminate: true,
-                });
+                const settings = await getParameterValue<FetchParameters>(ParameterName.fetch);
+                await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME, settings);
 
                 logger.debug("Registered task", FETCH_TASKNAME);
             }
