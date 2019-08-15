@@ -101,15 +101,14 @@ class AuthenticatorBase extends PureComponent<Props, State> {
   }
 
   render() {
-    if (this.state.demoMode == null) {
-      return <Loading />;
-    }
+    if (this.state.demoMode == null) return null;
 
     if (!this.state.demoMode === true && this.props.authState === "confirm") {
       return (
         <>
           <Reloader />
           <ConfirmSignIn />
+          <Loading />
         </>
       );
     }
@@ -118,6 +117,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
         <>
           <Reloader />
           <SignIn />
+          <Loading />
         </>);
     }
     else {

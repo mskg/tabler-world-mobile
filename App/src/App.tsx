@@ -10,6 +10,7 @@ import { withAuthenticator } from './auth/withAuthenticator';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
+import Loading from './components/Loading';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
@@ -78,6 +79,7 @@ const App = () => {
       <Snacks />
       <PushNotifications />
       <Linking />
+      <Loading />
     </React.Fragment>
   )
 };

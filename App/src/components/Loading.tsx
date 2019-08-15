@@ -6,8 +6,21 @@ import Assets from "../Assets";
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT } from '../theme/colors';
 
 export default class Loading extends React.PureComponent {
+    // state = {
+    //     hide: false
+    // }
+
+    async componentDidMount() {
+        setTimeout(() => {
+            SplashScreen.hide();
+        }, 1000);
+    }
+
     // resources are preloaded by withPreCached
     render() {
+        return null;
+
+        // we don't neeed that, we introduced the timeout to remove the flickering
         return (
             <View style={{ flex: 1 }}>
                 <StatusBar hidden={true} />
@@ -43,7 +56,7 @@ export const FullScreenLoading = (...props: any[]) =>
             <InlineLoading {...props} />
         </View>
     </View>
-;
+    ;
 
 export const InlineLoading = (...props: any[]) => <ActivityIndicator size="large" color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
 
