@@ -18,9 +18,7 @@ import { logger } from './logger';
 export function* getParameters(a: typeof settingsActions.restoreSettings.shape) {
     logger.debug("Getting parameters");
 
-    const authState: HashMap<boolean> = yield select(
-        (state: IAppState) => state.auth.state);
-
+    const authState = yield select((state: IAppState) => state.auth.state);
     if (authState !== "singedIn") {
         logger.debug("Not signed in");
         return;
