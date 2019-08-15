@@ -57,6 +57,12 @@ async function runBackgroundFetch() {
         return BackgroundFetch.Result.NoData;
     }
 
+    const authState = getReduxStore().getState().auth.state;
+    if (authState !== "singedIn") {
+        logger.debug("Not signed in");
+        return BackgroundFetch.Result.NoData;
+    }
+
     const timer = Audit.timer(AuditEventName.BackgroundSync);
     try {
         logger.debug("Running");
