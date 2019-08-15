@@ -21,7 +21,7 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
     const authState: HashMap<boolean> = yield select(
         (state: IAppState) => state.auth.state);
 
-    if (authState !== "signedIn") {
+    if (authState !== "singedIn") {
         logger.debug("Not signed in");
         return;
     }
