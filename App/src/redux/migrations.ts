@@ -1,6 +1,6 @@
 import { createMigrate } from 'redux-persist';
 
-export const MIGRATE_VERSION = 30;
+export const MIGRATE_VERSION = 31;
 
 const NULL = (state) => {
   console.warn('Migration running to version', MIGRATE_VERSION);
@@ -19,6 +19,7 @@ const migrations = {
   27: NULL,
   28: NULL,
   29: NULL,
+  30: NULL,
   MIGRATE_VERSION: NULL,
 };
 

@@ -1,9 +1,10 @@
 import _ from "lodash";
 import LRU from 'lru-cache';
 import { isArray } from "util";
+import { PARAMETER_TTL } from "../../graphql/cache/TTLs";
 import { EXECUTING_OFFLINE } from "../isOffline";
 import { xAWS } from "../xray/aws";
-import { Param_Api, Param_Database, Param_Nearby } from "./types";
+import { setupDebug } from "./debug";
 
 const ssm = new xAWS.SSM();
 
@@ -14,17 +15,18 @@ type ParameterNames =
     | "database"
     | "nearby"
     | "app"
-;
+    | "cachettl"
+    ;
 
 type MapType = {
     [key in ParameterNames]: string
 };
 
 const memoryCache = new LRU<string, string>({
-    maxAge: 60 * 60 * 1000,
+    maxAge: PARAMETER_TTL,
 });
 
-function mapName(name: string, env: string = 'dev'): string {
+export function mapName(name: string, env: string = 'dev'): string {
     return `/tabler-world/${env}/${name}`;
 }
 
@@ -32,34 +34,7 @@ function mapName(name: string, env: string = 'dev'): string {
  * Setup DEBUG mode
  */
 if (EXECUTING_OFFLINE) {
-    memoryCache.set(mapName('tw-api'), JSON.stringify({
-        host: process.env.API_HOST,
-        key: process.env.API_KEY_PLAIN,
-        batch: parseInt(process.env.API_BATCH || '', 10),
-        read_batch: parseInt(process.env.API_READ_BATCH || '', 10),
-    } as Param_Api));
-
-    memoryCache.set(mapName('database'), JSON.stringify({
-        database: process.env.DB_DATABASE,
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-    } as Param_Database));
-
-    memoryCache.set(mapName('nearby'), JSON.stringify({
-        radius: parseInt(process.env.NEARBY_RADIUS || '100000', 10),
-        days: parseInt(process.env.NEARBY_DAYSBACK || '365', 10),
-    } as Param_Nearby));
-
-    memoryCache.set(mapName('app'), JSON.stringify({
-        urls: {
-            feedback: "https://www.google.de?q=feedback",
-            profile: "https://www.google.de?q=profile",
-            world: "https://www.google.de?q=world",
-            join: "https://www.google.de?q=join",
-            support: "no-reply@example.com",
-        }
-    }));
+    setupDebug(memoryCache);
 }
 
 /**
@@ -114,7 +89,7 @@ export async function getParameters(
         }
     }
 
-    if (EXECUTING_OFFLINE){
+    if (EXECUTING_OFFLINE) {
         console.log("[SSM] resolved parameters to", params);
     }
 

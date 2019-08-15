@@ -27,28 +27,34 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     }
 
     async getAllAlbums(): Promise<Array<any>> {
+        const ttls = await TTLs();
+
         return this.get('albums/', undefined,
             {
                 cacheOptions: {
-                    ttl: TTLs.Albums,
+                    ttl: ttls.Albums,
                 },
             });
     }
 
     async getAllDocuments(): Promise<Array<any>> {
+        const ttls = await TTLs();
+
         return this.get('folders/', undefined,
             {
                 cacheOptions: {
-                    ttl: TTLs.Documents,
+                    ttl: ttls.Documents,
                 },
             });
     }
 
     async getAllNews(): Promise<Array<any>> {
+        const ttls = await TTLs();
+
         return this.get('news/', undefined,
             {
                 cacheOptions: {
-                    ttl: TTLs.News,
+                    ttl: ttls.News,
                 },
             });
     }

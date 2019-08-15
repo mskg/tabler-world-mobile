@@ -30,7 +30,7 @@ export function bootstrapRedux() {
   };
 
   // this breaks the experimental navigation option in DEV!
-  if (!__DEV__) {
+  if (true || !__DEV__) {
     persistConfig.blacklist = [...(persistConfig.blacklist || []), "navigation"];
   }
 
@@ -52,6 +52,8 @@ export function bootstrapRedux() {
         storage.removeItem(`persist:${key}`);
       });
 
+      state = Object.assign({}, INITIAL_STATE);
+    } else if (action.type === 'RESET_STORE') {
       state = Object.assign({}, INITIAL_STATE);
     }
 

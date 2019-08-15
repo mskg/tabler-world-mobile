@@ -5,7 +5,6 @@ import { makeCacheKey } from "../../shared/cache/makeCacheKey";
 import { writeThrough } from "../../shared/cache/writeThrough";
 import { ILogger } from "../../shared/logging/ILogger";
 import { useDataService } from "../../shared/rds/useDataService";
-import { TTLs } from "../cache/TTLs";
 import { IApolloContext } from "../types/IApolloContext";
 
 // enum RoleNames {
@@ -99,7 +98,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                         return res.rows;
                     }
                 ),
-                TTLs.Structure,
+                "Structure",
             ),
             {
                 cacheKeyFn: (k: string) => k
@@ -127,7 +126,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                         return res.rows;
                     }
                 ),
-                TTLs.Structure,
+                "Structure",
             ),
             {
                 cacheKeyFn: (k: AssocKey) => k.association + "_" + k.id,
@@ -156,7 +155,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                         return res.rows;
                     }
                 ),
-                TTLs.Structure,
+                "Structure",
             ),
             {
                 cacheKeyFn: (k: AssocKey) => k.association + "_" + k.id
@@ -183,7 +182,7 @@ where
                     return res.rows;
                 }
             ),
-            TTLs.StructureOverview
+            "StructureOverview"
         );
     }
 
@@ -206,7 +205,7 @@ where
                     return res.rows;
                 }
             ),
-            TTLs.StructureOverview
+            "StructureOverview"
         );
     }
 

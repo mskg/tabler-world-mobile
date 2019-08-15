@@ -1,6 +1,6 @@
 import { KeyValueCache } from "apollo-server-caching";
 import LRU from 'lru-cache';
-import { TTLs } from "../../graphql/cache/TTLs";
+import { MEMORY_TTL } from "../../graphql/cache/TTLs";
 import { CacheData, CacheValues, IManyKeyValueCache } from "./types";
 
 /**
@@ -10,7 +10,7 @@ import { CacheData, CacheValues, IManyKeyValueCache } from "./types";
 export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
     memoryCache = new LRU<string, string>({
         max: parseInt(process.env.MEMORY_CACHE_SIZE || (128 * 1000 * 1000).toString(), 10),
-        maxAge: TTLs.Memory * 1000,
+        maxAge: MEMORY_TTL * 1000,
     });
 
     constructor(private innerCache: KeyValueCache<string> & IManyKeyValueCache<string>) {

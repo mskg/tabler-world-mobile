@@ -1,5 +1,7 @@
 import { KeyValueCache } from "apollo-server-core";
+import { TTLs } from "../../graphql/cache/TTLs";
 import { ILogger } from "../logging/ILogger";
+import { Param_TTLS } from "../parameters/types";
 
 export async function writeThrough<T>(
     context: {
@@ -9,7 +11,7 @@ export async function writeThrough<T>(
 
     key: string,
     resolver: () => Promise<T>,
-    ttl?: number
+    ttl: keyof Param_TTLS,
 ): Promise<T> {
     const cached = await context.cache.get(key);
 
@@ -26,10 +28,12 @@ export async function writeThrough<T>(
     const resultSerialized = typeof(result) === "string" ? ("raw:" + result) : JSON.stringify(result);
     context.logger.log(key, "cache size", resultSerialized.length);
 
+    const ttls = await TTLs();
+
     context.cache.set(
         key,
         resultSerialized,
-        ttl ? { ttl } : undefined
+        ttl ? { ttl: ttls[ttl] } : undefined
     );
 
     return result;

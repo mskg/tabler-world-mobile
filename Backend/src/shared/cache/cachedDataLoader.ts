@@ -1,5 +1,7 @@
 import _ from "lodash";
+import { TTLs } from "../../graphql/cache/TTLs";
 import { IApolloContext } from "../../graphql/types/IApolloContext";
+import { Param_TTLS } from "../parameters/types";
 
 type CacheKeyType = string;
 
@@ -20,7 +22,7 @@ export function cachedDataLoader<K>(
     keyFunc: MakeKeyFunc<K>,
     keyRecordFunc: KeyFromRecordFunc,
     loadFunc: LoadFunc<K>,
-    ttl: number,
+    ttl: keyof Param_TTLS,
 ): LoadFunc<K> {
 
     return async (ids: K[]) => {
@@ -39,12 +41,14 @@ export function cachedDataLoader<K>(
 
             const loadFromDb: any[] = await loadFunc(missing);
 
+            const ttls = await TTLs();
+
             // update cache with fresh data
             await cache.setMany(
                 loadFromDb.map(r => ({
                     id: keyRecordFunc(r),
                     data: JSON.stringify(r),
-                    options: { ttl }
+                    options: { ttl: ttls[ttl] }
                 }))
             );
 

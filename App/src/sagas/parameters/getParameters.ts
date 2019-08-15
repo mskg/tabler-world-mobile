@@ -2,9 +2,12 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient, ApolloQueryResult } from 'apollo-client';
 import Constants from 'expo-constants';
 import { AsyncStorage, Platform } from 'react-native';
+import { select } from 'redux-saga/effects';
 import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
 import { GetParameters, GetParametersVariables } from '../../model/graphql/GetParameters';
 import { ParameterName, ParameterPlatform } from '../../model/graphql/globalTypes';
+import { IAppState } from '../../model/IAppState';
+import { HashMap } from '../../model/Maps';
 import { GetParametersQuery } from '../../queries/GetParameters';
 import * as settingsActions from '../../redux/actions/settings';
 import { logger } from './logger';
@@ -14,6 +17,14 @@ import { logger } from './logger';
  */
 export function* getParameters(a: typeof settingsActions.restoreSettings.shape) {
     logger.debug("Getting parameters");
+
+    const authState: HashMap<boolean> = yield select(
+        (state: IAppState) => state.auth.state);
+
+    if (authState !== "signedIn") {
+        logger.debug("Not signed in");
+        return;
+    }
 
     const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
 

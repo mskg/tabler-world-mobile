@@ -1,7 +1,6 @@
 import { makeCacheKey } from "../../shared/cache/makeCacheKey";
 import { writeThrough } from "../../shared/cache/writeThrough";
 import { useDataService } from "../../shared/rds/useDataService";
-import { TTLs } from "../cache/TTLs";
 import { IApolloContext } from "../types/IApolloContext";
 
 export const RolesResolver = {
@@ -28,7 +27,7 @@ order by 1`,
                             return res.rows.map(r => r["name"]);
                         }
                     ),
-                TTLs.Structure,
+                "Structure",
             );
         }
     }

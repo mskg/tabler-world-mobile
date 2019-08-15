@@ -5,7 +5,6 @@ import { cachedDataLoader } from "../../shared/cache/cachedDataLoader";
 import { makeCacheKey } from "../../shared/cache/makeCacheKey";
 import { writeThrough } from "../../shared/cache/writeThrough";
 import { useDataService } from "../../shared/rds/useDataService";
-import { TTLs } from "../cache/TTLs";
 import { filter } from "../privacy/filter";
 import { IApolloContext } from "../types/IApolloContext";
 
@@ -57,7 +56,7 @@ export class MembersDataSource extends DataSource<IApolloContext> {
                         return res.rows;
                     }
                 ),
-                TTLs.Member,
+                "Member",
             ),
             {
                 cacheKeyFn: (k: number) => k,
@@ -115,7 +114,7 @@ where id = $1`, [this.context.principal.id]);
                         return res.rows;
                     }
                 ),
-                TTLs.MemberOverview)
+                "MemberOverview")
         ));
 
         return _(results).flatMap().value();
@@ -141,7 +140,7 @@ and removed = FALSE`, [this.context.principal.association]);
                     return res.rows;
                 }
             ),
-            TTLs.MemberOverview);
+            "MemberOverview");
     }
 
     public async readClub(association: string, club: number): Promise<any[] | null> {

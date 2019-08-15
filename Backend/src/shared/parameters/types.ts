@@ -19,3 +19,16 @@ export type Param_Nearby = {
     radius: number,
     days: number,
 }
+
+export type Param_TTLS = {
+    MemberOverview: number,
+    ClubMembers: number,
+
+    Member: number,
+    Structure: number,
+
+    StructureOverview: number,
+    Albums: number,
+    Documents: number,
+    News: number,
+}
