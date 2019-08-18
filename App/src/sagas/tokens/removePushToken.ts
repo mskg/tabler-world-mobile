@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { AsyncStorage } from 'react-native';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { RemoveToken, RemoveTokenVariables } from '../../model/graphql/RemoveToken';
-import { TOKEN_KEY } from '../../tasks/Const';
+import { TOKEN_KEY } from '../../tasks/Constants';
 import { logger } from './logger';
 
 export function* removePushToken() {

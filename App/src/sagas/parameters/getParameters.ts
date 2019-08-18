@@ -2,14 +2,14 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient, ApolloQueryResult } from 'apollo-client';
 import Constants from 'expo-constants';
 import { AsyncStorage, Platform } from 'react-native';
-import { select } from 'redux-saga/effects';
+import { select, take } from 'redux-saga/effects';
 import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
 import { GetParameters, GetParametersVariables } from '../../model/graphql/GetParameters';
 import { ParameterName, ParameterPlatform } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
-import { HashMap } from '../../model/Maps';
 import { GetParametersQuery } from '../../queries/GetParameters';
 import * as settingsActions from '../../redux/actions/settings';
+import { singedIn } from '../../redux/actions/user';
 import { logger } from './logger';
 
 /**
@@ -21,7 +21,7 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
     const authState = yield select((state: IAppState) => state.auth.state);
     if (authState !== "singedIn") {
         logger.debug("Not signed in");
-        return;
+        yield take(singedIn.type);
     }
 
     const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
@@ -41,13 +41,15 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
         yield getPersistor().persist();
 
         if (result.data.getParameters != null) {
-            yield AsyncStorage.multiRemove(
-                Object.keys(ParameterName)
-            );
+            const keys = Object.keys(ParameterName).map(k => `Parameter_${ParameterName[k]}`);
+            logger.debug("Removing", keys);
+            yield AsyncStorage.multiRemove(keys);
 
             yield AsyncStorage.multiSet(
                 result.data.getParameters.map(p => ([`Parameter_${p.name}`, JSON.stringify(p.value)]))
             );
+
+            logger.debug("Settings are", yield AsyncStorage.multiGet(keys));
         }
     } catch (e) {
         logger.error(e, "Failed to load parameters");

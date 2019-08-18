@@ -70,7 +70,7 @@ export class Categories {
     }
 }
 
-const FILTER = null; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
+const FILTER = null; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
 const MAX = 24;
 
 export class Logger {

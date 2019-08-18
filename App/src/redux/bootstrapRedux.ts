@@ -7,7 +7,6 @@ import createSagaMiddleware from 'redux-saga';
 import { Categories, Logger } from '../helper/Logger';
 import { IAppState } from '../model/IAppState';
 import { navMiddleware, navReducer } from "../navigation/redux";
-import { rootSaga } from '../sagas';
 import { setReduxPersistor, setReduxStore, setSagaMiddleware } from './getRedux';
 import { INITIAL_STATE } from './initialState';
 import { migrateToNull, MIGRATE_VERSION } from './migrations';
@@ -86,6 +85,4 @@ export function bootstrapRedux() {
 
   const persistor = persistStore(store);
   setReduxPersistor(persistor);
-
-  sagaMiddleware.run(rootSaga);
 }

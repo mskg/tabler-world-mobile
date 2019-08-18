@@ -14,7 +14,7 @@ import { PutLocation, PutLocationVariables } from "../model/graphql/PutLocation"
 import { PutLocationMutation } from "../queries/PutLocation";
 import { setLocation } from "../redux/actions/location";
 import { getReduxStore } from "../redux/getRedux";
-import { LOCATION_TASK_NAME } from "./Const";
+import { LOCATION_TASK_NAME } from "./Constants";
 
 const logger = new Logger(Categories.Sagas.Location);
 
@@ -35,6 +35,8 @@ export async function startLocationTask() {
 
         const settings = await getParameterValue<GeoParameters>(ParameterName.geo);
         delete settings.pollInterval;
+
+        logger.debug("settings", settings);
 
         await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
           ...settings,
@@ -60,6 +62,15 @@ async function handleLocation(locations: LocationData[]) {
     if (location == null) {
         logger.error(new Error("No location found?"));
         return;
+    }
+
+    const existing = getReduxStore().getState().location.location;
+    if (existing && existing.coords
+      && existing.coords.longitude == location.coords.longitude
+      && existing.coords.latitude == location.coords.latitude
+    ) {
+      logger.debug("Ignoring coordinates");
+      return;
     }
 
     const address = await Location.reverseGeocodeAsync(location.coords);

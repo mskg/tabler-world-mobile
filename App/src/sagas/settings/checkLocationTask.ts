@@ -6,7 +6,7 @@ import { bootstrapApollo } from '../../apollo/bootstrapApollo';
 import { DisableLocationServices } from '../../model/graphql/DisableLocationServices';
 import { DisableLocationServicesMutation } from '../../queries/DisableLocationServices';
 import * as settingActions from '../../redux/actions/settings';
-import { LOCATION_TASK_NAME } from '../../tasks/Const';
+import { LOCATION_TASK_NAME } from '../../tasks/Constants';
 import { startLocationTask } from '../../tasks/Location';
 import { logger } from './logger';
 

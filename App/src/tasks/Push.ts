@@ -4,7 +4,7 @@ import { AsyncStorage } from 'react-native';
 import { Categories, Logger } from '../helper/Logger';
 import { storePushToken } from '../redux/actions/settings';
 import { getReduxStore } from '../redux/getRedux';
-import { TOKEN_KEY } from "./Const";
+import { TOKEN_KEY } from "./Constants";
 
 const logger = new Logger(Categories.Sagas.Push)
 

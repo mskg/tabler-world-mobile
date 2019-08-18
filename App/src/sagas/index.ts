@@ -1,7 +1,6 @@
 import { END, eventChannel } from 'redux-saga';
-import { call, spawn, take } from 'redux-saga/effects';
+import { call, spawn } from 'redux-saga/effects';
 import { Categories, Logger } from '../helper/Logger';
-import { getReduxPersistor } from '../redux/getRedux';
 import { networkSaga } from './network';
 import { getParameters } from './parameters/getParameters';
 import { pushTokenSaga } from './pushTokenSaga';
@@ -34,11 +33,11 @@ function persistGate(persistor) {
 export function* rootSaga() {
   logger.debug("Startup");
 
-  logger.log("Waiting for rehydration");
-  const persistor = getReduxPersistor();
-  const persistChannel = yield call(persistGate, persistor);
-  yield take(persistChannel);
-  logger.log("Rehydrated");
+  // logger.log("Waiting for rehydration");
+  // const persistor = getReduxPersistor();
+  // const persistChannel = yield call(persistGate, persistor);
+  // yield take(persistChannel);
+  // logger.log("Rehydrated");
 
   const sagas = [
     userSaga,
