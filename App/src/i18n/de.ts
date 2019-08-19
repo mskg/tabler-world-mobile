@@ -465,14 +465,14 @@ const de: I18NType = {
         near: (s: string) => "In der Nähe von "+ s,
         ago: (s: string) => `vor ${s}`,
 
-        notsupported: "Die Hintergrundposition ist in dieser Anwendung nicht verfügbar.",
-        permissions: 'Um diese Funktion nutzen zu können, muss die App auf Deinen Standort zufreifen. Du kannst dies jederzeit in den Einstellungen aktivieren.',
-        always: "Um Mitglieder in der Nähe nutzen zu können benötigen die App dauerhaften Zustand auf Deine Position.",
+        notsupported: "Die Übermittlung der Position im Hintergrund wird von diesem Gerät nicht unterstützt.",
+        permissions: "Um 'Mitglieder in der Nähe' nutzen zu können, muss die App auf Deinen Standort zugreifen. Du kannst dies jederzeit in den Einstellungen aktivieren.",
+        always: "Um 'Mitglieder in der Nähe' nutzen zu können benötigt die App dauerhaften Zugriff auf Deine Position.",
 
         setlocation: "Standort auf immer setzen",
         on: "Einschalten",
 
-        off: "Nächste Mitglieder sind aus. Wenn du die Funktion einschaltest, können andere Mitglieder sehen, in welcher Stadt du dich befindest. Wir speichern keine Standorthistorier, nur den letzten bekannten Standort."
+        off: "'Mitglieder in der Nähe' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt, in der du dich befindest und es wird keine Standorthistorie gespeichert."
     },
 
     Feedback: {
