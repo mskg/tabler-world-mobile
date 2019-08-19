@@ -15,8 +15,10 @@ type ParameterNames =
     | "database"
     | "nearby"
     | "app"
+    | "app/ios"
+    | "app/android"
     | "cachettl"
-    ;
+;
 
 type MapType = {
     [key in ParameterNames]: string
@@ -47,7 +49,8 @@ if (EXECUTING_OFFLINE) {
  */
 export async function getParameters(
     name: ParameterNames[] | ParameterNames,
-    env: Environments = process.env.STAGE as Environments
+    failOnMissingValues = true,
+    env: Environments = process.env.STAGE as Environments,
 ): Promise<MapType> {
     // we need to reverse the encoding for the result
     const parameterNames = (isArray(name) ? name : [name]).reduce((p, c) => {
@@ -93,14 +96,16 @@ export async function getParameters(
         console.log("[SSM] resolved parameters to", params);
     }
 
-    // enforce that we have values
-    _.values(parameterNames).forEach(
-        (n) => {
-            if (!params[n as ParameterNames]) {
-                throw new Error("Configuration error, parameter " + n + " is not defined");
+    if (failOnMissingValues) {
+        // enforce that we have values
+        _.values(parameterNames).forEach(
+            (n) => {
+                if (!params[n as ParameterNames]) {
+                    throw new Error("Configuration error, parameter " + n + " is not defined");
+                }
             }
-        }
-    )
+        )
+    }
 
     return params;
 }

@@ -44,4 +44,11 @@ export function setupDebug(memoryCache: LRU<string, string>) {
             support: "no-reply@example.com",
         }
     }));
+
+    memoryCache.set(mapName('app/ios'), JSON.stringify({
+        urls: {
+            feedback: "https://www.google.de?q=feedback-ios",
+            profile: "https://www.google.de?q=profile-ios",
+        }
+    }));
 }
