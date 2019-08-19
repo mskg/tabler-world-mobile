@@ -4,7 +4,6 @@ import { Query } from 'react-apollo';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { FilterTag } from "../../components/FilterSection";
-import { MemberListItem } from '../../components/Member/MemberListItem';
 import { MemberList } from '../../components/MemberList';
 import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
@@ -34,14 +33,6 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros;
 
 class OfflineSearchQueryBase extends React.Component<Props, State> {
-    _renderMatch = (member, onPress) => {
-        return <MemberListItem
-            theme={this.props.theme}
-            onPress={onPress}
-            member={member}
-        />
-    }
-
     _keyExtractor = (item: string) => item;
 
     memoize(func: (data: OfflineMembers | undefined) => any) {
@@ -103,7 +94,6 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                         <MemberList
                             data={result(data)}
                             onItemSelected={this.props.itemSelected}
-                            renderItem={this._renderMatch}
                         />
                     );
                 }}

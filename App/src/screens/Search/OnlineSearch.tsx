@@ -3,7 +3,6 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Theme, withTheme } from 'react-native-paper';
 import { FilterTag } from "../../components/FilterSection";
-import { MemberListItem } from '../../components/Member/MemberListItem';
 import { MemberList } from '../../components/MemberList';
 import { I18N } from '../../i18n/translation';
 import { CompanySector } from '../../model/graphql/globalTypes';
@@ -32,14 +31,6 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros;
 
 class OnlineSearchQueryBase extends React.Component<Props, State> {
-    _renderMatch = (member, onPress) => {
-        return <MemberListItem
-            theme={this.props.theme}
-            onPress={onPress}
-            member={member}
-        />
-    }
-
     _keyExtractor = (item: string) => item;
 
     render() {
@@ -66,8 +57,6 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                             data={newData}
 
                             onItemSelected={this.props.itemSelected}
-                            renderItem={this._renderMatch}
-
                             refreshing={loading}
                             onRefresh={refetch}
 

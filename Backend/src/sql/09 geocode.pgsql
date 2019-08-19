@@ -1,5 +1,5 @@
 
-SET ROLE 'tw_read_dev';
+SET ROLE 'tw_read_test';
 
 ------------------------------
 -- Address history
@@ -68,19 +68,19 @@ select
         ),
 
         'city',
-        nullif(userlocations.address->>'city', ''),
+        nullif(coalesce(userlocations.address->>'city', userlocations.address->0->>'city'), ''),
 
         'country',
-        nullif(userlocations.address->>'isoCountryCode', ''),
+        nullif(coalesce(userlocations.address->>'isoCountryCode', userlocations.address->0->>'isoCountryCode'), ''),
 
         'street1',
-        nullif(userlocations.address->>'street1', ''),
+        nullif(coalesce(userlocations.address->>'street1', userlocations.address->0->>'street1'), ''),
 
         'street2',
-        nullif(userlocations.address->>'street2', ''),
+        nullif(coalesce(userlocations.address->>'street2', userlocations.address->0->>'street2'), ''),
 
         'postal_code',
-        nullif(userlocations.address->>'postalCode', '')
+        nullif(coalesce(userlocations.address->>'postalCode', userlocations.address->0->>'postalCode'), '')
     )) as address
 from
     userlocations, profiles

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { IconButton, Theme } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -55,3 +56,42 @@ export const FavoriteButton = connect(
         toggleFavorite,
     }
 )(FavoriteButtonBase);
+
+
+class FavoriteIconBase extends React.Component<Props> {
+    shouldComponentUpdate(nextProps, nextState) {
+        const isnewFavorite = testIsFavorite(nextProps.member, nextProps.favorites);
+        const isoldFavorite = testIsFavorite(this.props.member, this.props.favorites);
+
+        return isnewFavorite != isoldFavorite;
+    }
+
+    _toggleFavorite = () => {
+        requestAnimationFrame(() => {
+            this.props.toggleFavorite(this.props.member);
+        });
+    }
+
+    render() {
+        const { member, favorites } = this.props;
+        const isFavorite = testIsFavorite(member, favorites);
+
+        if (!isFavorite) return null;
+
+        return (
+            <Ionicons
+                size={this.props.size}
+                style={this.props.style}
+                color={this.props.theme.colors.placeholder}
+                name={"md-star"}
+            />
+        );
+    }
+}
+
+export const FavoriteIcon = connect(
+    (state: IAppState) => ({ favorites: state.filter.member.favorites }),
+    {
+        toggleFavorite,
+    }
+)(FavoriteIconBase);

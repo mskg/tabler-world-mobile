@@ -197,11 +197,11 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
             height = dimension.height - StyleSheet.hairlineWidth;
         }
 
+
         // workarround for Android
         // hight must be explicitly given
         return renderItem(data, this.props.theme, this._onPress, 30, height);
     }
-
 
     render() {
         if (this.props.data.length == 0 && !this.props.me) {
