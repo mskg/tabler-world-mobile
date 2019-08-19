@@ -446,7 +446,7 @@ const de: I18NType = {
         months: "Monate",
         years: "Jahre",
 
-        toOne: (s: string) => s.substring(0, -1),
+        toOne: (s: string) => s.substring(0, s.length - 1),
     },
 
     Distance: {
