@@ -209,11 +209,20 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                 }
 
                 {!this.props.nearbyMembers && !this.props.offline &&
-                    <Message theme={this.props.theme} text={I18N.NearbyMembers.off} button={I18N.NearbyMembers.on} onPress={this._enable} />
+                    <Message
+                        theme={this.props.theme}
+                        text={I18N.NearbyMembers.off}
+                        button={this.state.canSet ? I18N.NearbyMembers.on : undefined}
+                        onPress={this._enable} />
                 }
 
                 {this.props.nearbyMembers && !this.props.offline && this.state.message &&
-                    <Message theme={this.props.theme} text={this.state.message} button={I18N.NearbyMembers.setlocation} onPress={this._tryopen} />
+                    <Message
+                        theme={this.props.theme}
+                        text={this.state.message}
+                        button={this.state.canSet ? I18N.NearbyMembers.setlocation : undefined}
+                        onPress={this._tryopen}
+                    />
                 }
 
                 {this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location && this.props.address &&

@@ -155,7 +155,7 @@ const en = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, "D. MMMM YYYY" , { locale: dateEN })} (${differenceInYears(Date.now(), date)})`
+                return `${format(date, "D. MMMM YYYY", { locale: dateEN })} (${differenceInYears(Date.now(), date)})`
             },
         },
 
@@ -517,11 +517,11 @@ const en = {
         title: "Nearby Members",
         location: "Your location",
 
-        near: (s: string) => s ? "Near "+ s : "Location Unknown",
+        near: (s: string) => s ? "Near " + s : "Location Unknown",
         ago: (s: string) => `${s} ago`,
 
         notsupported: "Background location is not available in this application.",
-        permissions: 'Location permissions are required in order to use this feature. You can manually enable them at any time in the "Location Services" section of the Settings app.',
+        permissions: 'Location permissions are required in order to use this feature. You can manually enable them at any time in the Settings App of your phone.',
         always: "Nearby Members needs 'Always' Location Access.",
 
         setlocation: "Set Location to Always",

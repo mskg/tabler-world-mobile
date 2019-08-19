@@ -466,7 +466,7 @@ const de: I18NType = {
         ago: (s: string) => `vor ${s}`,
 
         notsupported: "Die Übermittlung der Position im Hintergrund wird von diesem Gerät nicht unterstützt.",
-        permissions: "Um 'Mitglieder in der Nähe' nutzen zu können, muss die App auf Deinen Standort zugreifen. Du kannst dies jederzeit in den Einstellungen aktivieren.",
+        permissions: "Um 'Mitglieder in der Nähe' nutzen zu können, muss die App auf Deinen Standort zugreifen. Du kannst dies jederzeit in den Einstellungen Deines Telefons aktivieren.",
         always: "Um 'Mitglieder in der Nähe' nutzen zu können benötigt die App dauerhaften Zugriff auf Deine Position.",
 
         setlocation: "Standort auf immer setzen",
