@@ -7,7 +7,7 @@ import { DisableLocationServices } from '../../model/graphql/DisableLocationServ
 import { DisableLocationServicesMutation } from '../../queries/DisableLocationServices';
 import * as settingActions from '../../redux/actions/settings';
 import { LOCATION_TASK_NAME } from '../../tasks/Constants';
-import startLocationTask from '../../tasks/Location';
+import { startLocationTask } from '../../tasks/location/startLocationTask';
 import { logger } from './logger';
 
 /**
