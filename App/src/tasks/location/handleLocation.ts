@@ -15,7 +15,6 @@ import { logger } from './logger';
 export async function handleLocationUpdate(locations: LocationData[]) {
   try {
     logger.debug("handleLocationUpdate", locations);
-    Audit.trackEvent(AuditEventName.LocationUpdate);
 
     const location = _(locations).maxBy(l => l.timestamp) as LocationData;
     if (location == null) {
@@ -44,6 +43,8 @@ export async function handleLocationUpdate(locations: LocationData[]) {
 
       return;
     }
+
+    Audit.trackEvent(AuditEventName.LocationUpdate);
 
     // can be undefined
     let address = await reverseGeocode(location.coords);
