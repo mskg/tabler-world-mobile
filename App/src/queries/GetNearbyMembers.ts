@@ -3,7 +3,7 @@ import { MemberOverviewFragment } from "./MemberOverviewFragment";
 
 export const GetNearbyMembersQuery = gql`
     query NearbyMembers($location: MyCurrentLocationInput!) {
-        nearbyMembers(location: $location) {
+        nearbyMembers(location: $location) @connection(key: "nearbyMembers") {
             member {
                 ...MemberOverviewFragment
             }

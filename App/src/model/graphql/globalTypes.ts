@@ -71,6 +71,11 @@ export enum RoleType {
   club = "club",
 }
 
+export interface AddressUpdateInput {
+  member: number;
+  address?: any | null;
+}
+
 export interface MyCurrentLocationInput {
   longitude: number;
   latitude: number;

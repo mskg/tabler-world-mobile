@@ -149,6 +149,14 @@ and userlocations.id <> 10430
 
 
 
+update userlocations
+set address = NULL
+where id = 7831
+
+
+select * from userlocations_match
+where member = 7831
+
 select max_conn,used,res_for_super,max_conn-used-res_for_super res_for_normal
 from
   (select count(*) used from pg_stat_activity) t1,
@@ -162,4 +170,14 @@ from
 select point_x from userlocations_match
 
 
-select * from userlocations_history
+delete from userlocations_history
+
+alter trigger userlocations_audit_trigger disable
+
+
+create table userlocations_backup as
+select * from userlocations
+
+
+update userlocations
+set address = null

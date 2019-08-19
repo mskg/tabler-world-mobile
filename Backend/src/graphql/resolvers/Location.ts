@@ -25,6 +25,13 @@ type NearMembersInput = {
     }
 }
 
+type UpdateLocationAddress = {
+    corrections: {
+        member: number,
+        address: any,
+    }[],
+}
+
 export const LocationResolver = {
     NearbyMember: {
         member: (root: any, _args: {}, context: IApolloContext) => {
@@ -32,7 +39,7 @@ export const LocationResolver = {
         },
 
         state: (root: any, _args: {}, _context: IApolloContext) => {
-            return !root.speed || root.speed < 8 ? "Steady": "Traveling";
+            return !root.speed || root.speed < 8 ? "Steady" : "Traveling";
         },
     },
 
@@ -62,7 +69,7 @@ WHERE
         member <> $2
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     and association = $3
-    ${EXECUTING_OFFLINE ? "" :  `and lastseen > (now() - '${nearBy.days} day'::interval)`}
+    ${EXECUTING_OFFLINE ? "" : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
     ${args.query && args.query.excludeOwnTable ? "and club <> $4" : ""}
 ORDER BY
     locations.point <-> $1::geography
@@ -108,7 +115,30 @@ DO UPDATE
                         ]);
                     return true;
                 }
-            )
+            );
+        },
+
+        updateLocationAddress: async (_root: any, args: UpdateLocationAddress, context: IApolloContext) => {
+            context.logger.log("updateLocationAddress", args);
+
+            return useDataService(
+                context,
+                async (client) => {
+                    for (let update of args.corrections) {
+                        await client.query(`
+UPDATE userlocations
+SET address = $2
+WHERE id = $1 and address is null
+`,
+                            [
+                                update.member,
+                                JSON.stringify(update.address)
+                            ]);
+                    }
+
+                    return true;
+                }
+            );
         },
 
         disableLocationServices: async (_root: any, _args: {}, context: IApolloContext) => {

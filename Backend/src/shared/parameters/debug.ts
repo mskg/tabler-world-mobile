@@ -37,18 +37,18 @@ export function setupDebug(memoryCache: LRU<string, string>) {
 
     memoryCache.set(mapName('app'), JSON.stringify({
         urls: {
-            feedback: "https://www.google.de?q=feedback",
-            profile: "https://www.google.de?q=profile",
-            world: "https://www.google.de?q=world",
-            join: "https://www.google.de?q=join",
+            feedback: "https://www.google.de/search?q=feedback",
+            profile: "https://www.google.de/search?q=profile",
+            world: "https://www.google.de/search?q=world",
+            join: "https://www.google.de/search?q=join",
             support: "no-reply@example.com",
         }
     }));
 
     memoryCache.set(mapName('app/ios'), JSON.stringify({
         urls: {
-            feedback: "https://www.google.de?q=feedback-ios",
-            profile: "https://www.google.de?q=profile-ios",
+            feedback: "https://www.google.de/search?q=feedback-ios",
+            profile: "https://www.google.de/search?q=profile-ios",
         }
     }));
 }

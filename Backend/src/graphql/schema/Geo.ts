@@ -23,8 +23,14 @@ export const Geo = gql`
         address: JSON
     }
 
+    input AddressUpdateInput {
+        member: Int!
+        address: JSON
+    }
+
     extend type Mutation {
         putLocation(location: MyLocationInput!): Boolean
+        updateLocationAddress(corrections: [AddressUpdateInput!]!): Boolean
         disableLocationServices: Boolean
     }
 

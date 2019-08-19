@@ -517,7 +517,7 @@ const en = {
         title: "Nearby Members",
         location: "Your location",
 
-        near: (s: string) => "Near "+ s,
+        near: (s: string) => s ? "Near "+ s : "Location Unknown",
         ago: (s: string) => `${s} ago`,
 
         notsupported: "Background location is not available in this application.",

@@ -462,7 +462,7 @@ const de: I18NType = {
         title: "Mitglieder in der Nähe",
         location: "Dein Standort",
 
-        near: (s: string) => "In der Nähe von "+ s,
+        near: (s: string) => s ? "In der Nähe von "+ s : "Unbekannter Standort",
         ago: (s: string) => `vor ${s}`,
 
         notsupported: "Die Übermittlung der Position im Hintergrund wird von diesem Gerät nicht unterstützt.",

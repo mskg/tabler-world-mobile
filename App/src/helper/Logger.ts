@@ -67,6 +67,7 @@ export class Categories {
         public static readonly Linking = Categories._Helper + "/Linking";
         public static readonly SecureStore = Categories._Helper + "/SecureStore";
         public static readonly ImageCache = Categories._Helper + "/ImageCache";
+        public static readonly Geo = Categories._Helper + "/Geo";
     }
 }
 

@@ -1,3 +1,4 @@
+import ApolloClient from 'apollo-client';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
@@ -14,22 +15,23 @@ import { MemberTitle } from '../../../components/Member/MemberTitle';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { distance } from '../../../helper/distance';
-import { Categories, Logger } from '../../../helper/Logger';
 import { GeoParameters } from '../../../helper/parameters/Geo';
 import { getParameterValue } from '../../../helper/parameters/getParameter';
 import { timespan } from '../../../helper/timespan';
 import { I18N } from '../../../i18n/translation';
 import { ParameterName } from '../../../model/graphql/globalTypes';
 import { NearbyMembers, NearbyMembersVariables } from '../../../model/graphql/NearbyMembers';
+import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../../model/graphql/updateLocationAddress';
 import { IAppState } from '../../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../../queries/GetNearbyMembers';
+import { UpdateLocationAddressMutation } from '../../../queries/UpdateLocationAddress';
 import { showProfile, showSettings } from '../../../redux/actions/navigation';
 import { updateSetting } from '../../../redux/actions/settings';
+import { geocodeMissing } from './geocodeMissing';
+import { logger } from './logger';
 import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
 import { Message } from './Message';
-
-const logger = new Logger(Categories.Screens.NearBy);
 
 type State = {
     message?: string,
@@ -67,7 +69,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         super(props, AuditScreenName.NearbyMembers);
         this.state = {
             visible: true,
-            interval:  10 * 1000,
+            interval: 10 * 1000,
         };
     }
 
@@ -80,7 +82,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         this.audit.submit();
 
         const setting = await getParameterValue<GeoParameters>(ParameterName.geo);
-        this.setState({interval: setting.pollInterval})
+        this.setState({ interval: setting.pollInterval })
     }
 
     _focus = () => { if (this.mounted) { this.setState({ visible: true }); } }
@@ -162,6 +164,33 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         this.didFocus();
     }
 
+    _checkCode = async (data: NearbyMembers, client: ApolloClient<any>, refetch: () => Promise<any>) => {
+        if (!this.mounted) { return; }
+
+        if (data.nearbyMembers) {
+            logger.debug("Found", data.nearbyMembers.length, "nearby members.");
+
+            const result = await geocodeMissing(data.nearbyMembers);
+            if (result) {
+                await client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
+                    mutation: UpdateLocationAddressMutation,
+                    variables: {
+                        corrections: result,
+                    },
+                })
+            }
+
+            if (this.state.interval && this.mounted) {
+                setTimeout(() => {
+                    if (this.mounted) {
+                        logger.log("Refetching");
+                        refetch();
+                    }
+                }, this.state.interval);
+            }
+        }
+    }
+
     render() {
         // logger.log(this.props);
 
@@ -199,9 +228,10 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     }
                                 }
                             }
-                            pollInterval={this.state.visible ? this.state.interval : undefined}
+                            // pollInterval={this.state.visible ? this.state.interval : undefined}
+                            fetchPolicy="network-only"
                         >
-                            {({ loading, data, error, refetch }) => {
+                            {({ loading, data, error, refetch, client }) => {
                                 if (error) return null;
 
                                 if (data == null || data.nearbyMembers == null) {
@@ -224,7 +254,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     );
                                 }
 
-                                logger.log("found", data.nearbyMembers.length);
+                                // logger.debug("************************** found", data.nearbyMembers.length);
+                                this._checkCode(data, client, refetch);
 
                                 return <>
                                     <MeLocation now={Date.now()} />

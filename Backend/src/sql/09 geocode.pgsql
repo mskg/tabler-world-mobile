@@ -68,19 +68,19 @@ select
         ),
 
         'city',
-        nullif(userlocations.address->0->>'city', ''),
+        nullif(userlocations.address->>'city', ''),
 
         'country',
-        nullif(userlocations.address->0->>'isoCountryCode', ''),
+        nullif(userlocations.address->>'isoCountryCode', ''),
 
         'street1',
-        nullif(userlocations.address->0->>'street1', ''),
+        nullif(userlocations.address->>'street1', ''),
 
         'street2',
-        nullif(userlocations.address->0->>'street2', ''),
+        nullif(userlocations.address->>'street2', ''),
 
         'postal_code',
-        nullif(userlocations.address->0->>'postalCode', '')
+        nullif(userlocations.address->>'postalCode', '')
     )) as address
 from
     userlocations, profiles

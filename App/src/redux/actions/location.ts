@@ -4,7 +4,7 @@ import { createAction } from './action';
 
 export const setLocation = createAction<'@@location/track/setLocation', {
   location: LocationData,
-  address: Location.Address,
+  address?: Location.Address,
 }>(
   '@@location/track/setLocation'
 );

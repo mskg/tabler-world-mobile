@@ -1,5 +1,6 @@
 import { RoleType } from '../../../model/graphql/globalTypes';
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
+
 /**
  * Apollo reuses instances, so we create new ones every time
  */
@@ -8,6 +9,7 @@ export const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
         title: data[0].address.city as string,
         members: [] as NearbyMembers_nearbyMembers[]
     };
+
     const result: typeof group[] = [];
     const withRoles = data.map(m => {
         const r = {
@@ -30,6 +32,7 @@ export const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
         }];
         return r;
     });
+
     for (const member of withRoles) {
         if (member.address.city != group.title) {
             result.push(group);
@@ -42,6 +45,7 @@ export const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
             group.members.push(member);
         }
     }
+
     result.push(group);
     return result;
 };
