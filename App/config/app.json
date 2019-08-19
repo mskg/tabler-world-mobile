@@ -90,7 +90,8 @@
         "WRITE_CALENDAR",
         "VIBRATE",
         "CAMERA",
-        "LOCATION"
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo_Android.png",
