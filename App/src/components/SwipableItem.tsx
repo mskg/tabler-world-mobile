@@ -1,14 +1,14 @@
 // @flow
 import React from 'react';
-import { Animated, GestureResponderEvent, PanResponder, PanResponderGestureState, PanResponderInstance, Platform, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Animated, GestureResponderEvent, PanResponder, PanResponderGestureState, PanResponderInstance, Platform, StyleSheet, View } from 'react-native';
 
 type Props = {
     children?: any,
     style?: any,
     swipeContainerStyle?: any,
 
-    leftButtons?: React.Component<typeof SwipeButtonsContainer>,
-    rightButtons?: React.Component<typeof SwipeButtonsContainer>,
+    leftButtons?: React.ReactElement<SwipeButtonsContainer>,
+    rightButtons?: React.ReactElement<SwipeButtonsContainer>,
     containerView?: React.Component<any>,
 
     onSwipeInitial?: (swipeItem: SwipableItem) => any,
@@ -56,6 +56,7 @@ export class SwipableItem extends React.Component<Props, States> {
 
     constructor(props: Props) {
         super(props);
+
         this._panResponder = this._createPanResponderInstance();
         this.state.panDistance.addListener((value) => {
             this._panDistanceOffset = value;
@@ -84,12 +85,14 @@ export class SwipableItem extends React.Component<Props, States> {
                 }
                 return true;
             },
+
             onPanResponderGrant: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
                 //setting pan distance offset, make sure next touch will not jump to touch position immediately
                 this.state.panDistance.setOffset(this._panDistanceOffset);
                 //initial panDistance
                 this.state.panDistance.setValue({ x: 0, y: 0 });
             },
+
             onPanResponderMove: Animated.event(
                 [
                     null,
@@ -98,13 +101,16 @@ export class SwipableItem extends React.Component<Props, States> {
                     },
                 ],
             ),
+
             onPanResponderRelease: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
                 this._moveToDestination(this._getSwipePositionDestinationValueX(gestureState.dx));
             },
+
             onPanResponderTerminate: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
                 this._moveToDestination(this._getSwipePositionDestinationValueX(gestureState.dx));
                 return true;
             },
+
             onPanResponderTerminationRequest: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
                 // On Android, the component will stick at the last swipe position when pan responder terminate
                 // return true, at onPanResponderTerminate function will move the swipe component to origin position
@@ -127,6 +133,7 @@ export class SwipableItem extends React.Component<Props, States> {
         if (Math.round(toX) === 0) {
             this.props.onMovedToOrigin && this.props.onMovedToOrigin(this._swipeItem);
         }
+
         //Merges the offset value into the base value and resets the offset to zero.
         this.state.panDistance.flattenOffset();
         Animated.spring(this.state.panDistance, {
@@ -169,7 +176,7 @@ export class SwipableItem extends React.Component<Props, States> {
         return toValueX;
     }
 
-    _renderleftButtonsIfNotNull(): JSX.Element {
+    _renderleftButtonsIfNotNull(): JSX.Element | null {
         const {
             leftButtons = null
         } = this.props;
@@ -181,6 +188,7 @@ export class SwipableItem extends React.Component<Props, States> {
         if (leftButtons == null) {
             return null;
         }
+
         const {
             style,
             children
@@ -192,7 +200,7 @@ export class SwipableItem extends React.Component<Props, States> {
         });
 
         let widthStyle = {
-            transform: [{ scale }]
+            transform: [{ scaleX: scale }]
         };
 
         return (
@@ -209,7 +217,7 @@ export class SwipableItem extends React.Component<Props, States> {
         );
     }
 
-    _renderrightButtonsIfNotNull(): JSX.Element {
+    _renderrightButtonsIfNotNull(): JSX.Element | null {
         const {
             rightButtons = null
         } = this.props;
@@ -233,7 +241,7 @@ export class SwipableItem extends React.Component<Props, States> {
         });
 
         let widthStyle = {
-            transform: [{ scale }]
+            transform: [{ scaleX: scale }]
         };
 
         return (
@@ -280,15 +288,8 @@ export class SwipableItem extends React.Component<Props, States> {
                         {...this._panResponder.panHandlers}
 
                     >
-                        <TouchableWithoutFeedback
-
-                            onPress={this.props.onPress || null}
-                            style={[swipeContainerStyle, containerStyles.swipeContainer]}
-                        >
-                            {this.props.children}
-                        </TouchableWithoutFeedback>
+                         {this.props.children}
                     </Animated.View>
-
                 </ContainerView>
             </View>
         );
@@ -321,10 +322,16 @@ const buttonViewStyles = StyleSheet.create({
     container: {
         position: 'absolute',
     },
+
     left: {
         left: 0,
+        top: 0,
+        height: '100%',
     },
+
     right: {
-        right: 0
+        right: 0,
+        top: 0,
+        height: '100%',
     },
 });
