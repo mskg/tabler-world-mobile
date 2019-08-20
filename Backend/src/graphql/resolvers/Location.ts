@@ -64,7 +64,7 @@ SELECT
         $1::geography
     ) as integer) AS distance
 FROM
-    userlocations_match locations, usersettings u
+    userlocations_match locations
 WHERE
         member <> $2
 
