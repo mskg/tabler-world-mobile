@@ -11,7 +11,7 @@ export const JobsResolver = {
                 const res = await client.query(`
 select * from jobhistory
 order by runon desc
-limit 10`);
+limit 100`);
 
                 return res.rows.map(r => ({
                     ...r,
@@ -31,6 +31,9 @@ limit 10`);
             if (root.jobstatus === false) return "JobError";
 
             switch (root.jobname) {
+                case "update::database":
+                    return "JobEmpty";
+
                 case "update::tabler::full":
                 case "update::tabler::incremental":
                 case "update::clubs::full":

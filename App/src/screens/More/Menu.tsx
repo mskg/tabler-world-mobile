@@ -1,4 +1,5 @@
 import React from 'react';
+import { Query } from 'react-apollo';
 import { ScrollView, View } from "react-native";
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -6,10 +7,14 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { ScreenWithHeader } from '../../components/Screen';
+import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
+import { GetMyRoles } from '../../model/graphql/GetMyRoles';
+import { UserRole } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
+import { GetMyRolesQuery } from '../../queries/GetMyRoles';
 import { Routes } from './Routes';
 import { NavigationItem } from './Settings/Action';
 
@@ -24,6 +29,7 @@ type OwnProps = {
 
 type StateProps = {
     showExperiments?: boolean,
+    fetchPolicy: any,
 };
 
 type DispatchPros = {
@@ -68,6 +74,26 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                     </List.Section>
 
                     <List.Section>
+                        <Query<GetMyRoles>
+                            query={GetMyRolesQuery}
+                            fetchPolicy={this.props.fetchPolicy}
+                        >
+                            {({ data }) => {
+                                if (data && data.MyRoles && data.MyRoles.find(i => i == UserRole.jobs)) {
+                                    return (
+                                        <>
+                                            <NavigationItem icon="md-alarm" theme={this.props.theme} text={"Job History"} onPress={
+                                                () => this.props.navigation.navigate(Routes.JobHistory)} />
+
+                                            <Divider inset={true} />
+                                        </>
+                                    );
+                                }
+
+                                return null
+                            }}
+                        </Query>
+
                         <NavigationItem icon="md-settings" theme={this.props.theme} text={I18N.Settings.title} onPress={
                             () => this.props.navigation.navigate(Routes.Settings)} />
 
@@ -86,4 +112,4 @@ export const MenuScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>
         showExperiments: state.settings.experiments
     }),
     {
-    })(withNavigation(withTheme(MenuScreenBase)));
+    })(withCacheInvalidation("userroles", withNavigation(withTheme(MenuScreenBase))));

@@ -5,10 +5,12 @@ export const Settings = gql`
 
     enum SettingName {
         favorites
+        nearbymembers
+        language
     }
 
     input SettingInput {
-        name: String!
+        name: SettingName!
         value: SettingValue!
     }
 

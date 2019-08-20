@@ -25,7 +25,7 @@ import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../../
 import { IAppState } from '../../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../../queries/GetNearbyMembers';
 import { UpdateLocationAddressMutation } from '../../../queries/UpdateLocationAddress';
-import { showProfile, showSettings } from '../../../redux/actions/navigation';
+import { showLocationHistory, showProfile, showSettings } from '../../../redux/actions/navigation';
 import { updateSetting } from '../../../redux/actions/settings';
 import { geocodeMissing } from './geocodeMissing';
 import { logger } from './logger';
@@ -56,6 +56,7 @@ type DispatchPros = {
     showProfile: typeof showProfile,
     updateSetting: typeof updateSetting;
     showSettings: typeof showSettings;
+    showLocationHistory: typeof showLocationHistory;
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
@@ -252,6 +253,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     );
                                 }
 
+                                this._checkCode(data, client, refetch);
+
                                 if (data.nearbyMembers.length == 0) {
                                     return (
                                         <>
@@ -262,9 +265,6 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                         </>
                                     );
                                 }
-
-                                // logger.debug("************************** found", data.nearbyMembers.length);
-                                this._checkCode(data, client, refetch);
 
                                 return <>
                                     <MeLocation now={Date.now()} />
@@ -319,6 +319,7 @@ export const NearbyScreen = connect<StateProps, DispatchPros, OwnProps, IAppStat
         showProfile,
         updateSetting,
         showSettings,
+        showLocationHistory,
     })(withNavigation(withTheme(NearbyScreenBase)));
 
 

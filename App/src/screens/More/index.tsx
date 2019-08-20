@@ -1,5 +1,7 @@
 import { createStackNavigator } from 'react-navigation';
 import { FeedbackScreen } from './Feedback';
+import { JobsHistoryScreen } from './JobHistory';
+import { LocationHistoryScreen } from './LocationHistory';
 import { MenuScreen } from './Menu';
 import { NearbyScreen } from './Nearby';
 import { Routes } from './Routes';
@@ -13,6 +15,8 @@ const Navigator = createStackNavigator(
         [Routes.Settings]: { screen: MainSettingsScreen },
         [Routes.World]: { screen: WorldScreen },
         [Routes.Feedback]: { screen: FeedbackScreen },
+        [Routes.LocationHistory]: { screen: LocationHistoryScreen },
+        [Routes.JobHistory]: { screen: JobsHistoryScreen },
     },
     {
         initialRouteName: Routes.Menu,

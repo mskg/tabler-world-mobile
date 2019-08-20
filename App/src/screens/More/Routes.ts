@@ -4,4 +4,6 @@ export enum Routes {
     Nearby = "nearby",
     World = "world",
     Feedback = "feedback",
+    LocationHistory = "locationhistory",
+    JobHistory = "JobHistory"
 }

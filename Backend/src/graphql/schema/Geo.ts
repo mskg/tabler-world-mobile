@@ -40,6 +40,7 @@ export const Geo = gql`
 
     extend type Query {
         nearbyMembers(location: MyCurrentLocationInput!, query: NearbyMembersQueryInput): [NearbyMember!]
+        LocationHistory: [LocationHistory!]
     }
 
     type GeoPoint {
@@ -50,6 +51,18 @@ export const Geo = gql`
     enum NearbyMemberState {
         Steady
         Traveling
+    }
+
+    type LocationHistory {
+        lastseen: Date!
+
+        city: String
+        street: String
+        country: String
+
+        longitude: Float!
+        latitude: Float!
+        accuracy: Float!
     }
 
     type NearbyMember {

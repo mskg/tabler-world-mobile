@@ -28,7 +28,7 @@ export async function startLocationTask() {
         await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
 
         const location = await Location.getCurrentPositionAsync();
-        handleLocationUpdate([location]);
+        handleLocationUpdate([location], true);
       }
       catch (e) {
         logger.error(e, `Start of ${LOCATION_TASK_NAME} failed`);

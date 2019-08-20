@@ -12,6 +12,7 @@ import { SettingsResolver } from "./Settings";
 import { StructureResolver } from "./Structure";
 import { TokenResolver } from "./Token";
 import { UserResolver } from "./User";
+import { UserRolesResolver } from "./UserRoles";
 
 export const resolvers = merge(
     UserResolver,
@@ -27,5 +28,6 @@ export const resolvers = merge(
     NewsResolver,
     LocationResolver,
     ParametersResolver,
+    UserRolesResolver,
     // DocumentsResolver,
 );

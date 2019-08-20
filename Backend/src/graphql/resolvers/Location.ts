@@ -64,9 +64,18 @@ SELECT
         $1::geography
     ) as integer) AS distance
 FROM
-    userlocations_match locations
+    userlocations_match locations, usersettings u
 WHERE
         member <> $2
+
+    and exists (
+        select 1
+        from usersettings u
+        where
+                u.id = $2
+            and (u.settings->>'nearbymembers')::boolean = TRUE
+    )
+
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     and association = $3
     ${EXECUTING_OFFLINE ? "" : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
@@ -85,14 +94,45 @@ LIMIT 20
                     return result.rows.length > 0 ? result.rows : [];
                 }
             );
-        }
+        },
+
+        LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
+            context.logger.log("locationHistory", args);
+
+            return useDataService(
+                context,
+                async (client) => {
+                    const result = await client.query(`
+select
+    lastseen,
+    address->>'city' as city,
+    address->>'street' as street,
+    coalesce(address->>'country', address->>'countryISOCode') as country,
+    accuracy,
+    ST_X(point::geometry) as longitude,
+    ST_Y(point::geometry) as latitude
+from
+    userlocations_history
+where
+    id = $1
+order by lastseen desc
+LIMIT 10
+`,
+                        [
+                            context.principal.id,
+                        ]);
+
+                    return result.rows.length > 0 ? result.rows : [];
+                }
+            );
+        },
     },
 
     Mutation: {
-        putLocation: async (_root: any, args: MyLocationInput, context: IApolloContext) => {
+        putLocation: (_root: any, args: MyLocationInput, context: IApolloContext) => {
             context.logger.log("putLocation", args);
 
-            return useDataService(
+            useDataService(
                 context,
                 async (client) => {
                     await client.query(`
@@ -118,7 +158,7 @@ DO UPDATE
             );
         },
 
-        updateLocationAddress: async (_root: any, args: UpdateLocationAddress, context: IApolloContext) => {
+        updateLocationAddress: (_root: any, args: UpdateLocationAddress, context: IApolloContext) => {
             context.logger.log("updateLocationAddress", args);
 
             return useDataService(
@@ -141,7 +181,7 @@ WHERE id = $1 and address is null
             );
         },
 
-        disableLocationServices: async (_root: any, _args: {}, context: IApolloContext) => {
+        disableLocationServices: (_root: any, _args: {}, context: IApolloContext) => {
             return useDataService(
                 context,
                 async (client) => {
@@ -150,9 +190,10 @@ delete from userlocations
 WHERE id = $1
                         `,
                         [context.principal.id]);
+
                     return true;
                 }
-            )
+            );
         },
 
     }

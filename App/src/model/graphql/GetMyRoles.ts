@@ -2,14 +2,12 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
+import { UserRole } from "./globalTypes";
+
 // ====================================================
-// GraphQL mutation operation: DisableLocationServices
+// GraphQL query operation: GetMyRoles
 // ====================================================
 
-export interface DisableLocationServices {
-  /**
-   * Updates a setting
-   */
-  putSetting: boolean | null;
-  disableLocationServices: boolean | null;
+export interface GetMyRoles {
+  MyRoles: UserRole[] | null;
 }

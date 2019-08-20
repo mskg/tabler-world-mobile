@@ -7,9 +7,11 @@ import { connect } from 'react-redux';
 import { InternalMeListItemBase } from '../../../components/MeListItem';
 import { timespan } from '../../../helper/timespan';
 import { I18N } from '../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../model/Features';
 import { Me } from '../../../model/graphql/Me';
 import { IAppState } from '../../../model/IAppState';
 import { GetMeQuery } from '../../../queries/MeQuery';
+import { showLocationHistory } from '../../../redux/actions/navigation';
 
 type State = {
     message?: string,
@@ -27,6 +29,7 @@ type StateProps = {
   };
 
 type DispatchPros = {
+    showLocationHistory: typeof showLocationHistory
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
@@ -50,6 +53,7 @@ class MeLocationBase extends React.Component<Props, State> {
                                         this.props.timestamp
                                     ))}
                                 me={medata.Me}
+                                onPress={isFeatureEnabled(Features.LocationHistory) ? () => this.props.showLocationHistory() : undefined}
                             />
                         </List.Section>
                     );
@@ -65,6 +69,7 @@ export const MeLocation = connect<StateProps, DispatchPros, OwnProps, IAppState>
         timestamp: state.location.timestamp,
     }),
     {
+        showLocationHistory
     })(withNavigation(withTheme(MeLocationBase)));
 
 

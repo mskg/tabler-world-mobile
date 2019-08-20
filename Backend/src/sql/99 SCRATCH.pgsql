@@ -116,6 +116,13 @@ FROM
   userlocations_match locations
 WHERE
 member <> 10430
+  and exists (
+    select 1
+    from usersettings u
+    where u.id = 10430
+    and (u.settings->>'nearbymembers')::boolean = TRUE
+  )
+
 and ST_DWithin(locations.point, 'POINT(-122.09695274 37.34562364)'::geography, 10000)
 and association = 'de'
 ORDER BY
@@ -129,6 +136,8 @@ SELECT ROW_NUMBER() over (order by id) as nbr, id
 select *
 from userlocations
 
+
+select * from jobhistory
 
 
 
@@ -170,7 +179,17 @@ from
 select point_x from userlocations_match
 
 
-delete from userlocations_history
+select
+  lastseen,
+  address->>'city' as city,
+  address->>'street' as street,
+  address->>'country',
+  accuracy,
+  ST_X(point::geometry) as longitude,
+  ST_Y(point::geometry) as latitude
+from userlocations_history
+where id = 10430
+order by lastseen desc
 
 alter trigger userlocations_audit_trigger disable
 
@@ -179,5 +198,35 @@ create table userlocations_backup as
 select * from userlocations
 
 
-update userlocations
-set address = null
+
+
+select * from userlocations_history
+
+
+update usersettings
+set settings = jsonb_set(settings, '{nearbymembers}', 'true')
+
+
+
+explain
+SELECT
+  member,
+  address,
+  cast(ST_Distance(
+    locations.point,
+    'POINT(-122.09695274 37.34562364)'::geography
+  ) as integer) AS distance
+FROM
+  userlocations_match locations, usersettings u
+WHERE
+member <> 10430
+  and u.id = 10430
+    and (u.settings->>'nearbymembers')::boolean = TRUE
+
+
+and ST_DWithin(locations.point, 'POINT(-122.09695274 37.34562364)'::geography, 10000)
+and association = 'de'
+ORDER BY
+  locations.point <-> 'POINT(-122.09695274 37.34562364)'::geography
+
+LIMIT 10;

@@ -71,6 +71,16 @@ export enum RoleType {
   club = "club",
 }
 
+export enum SettingName {
+  favorites = "favorites",
+  language = "language",
+  nearbymembers = "nearbymembers",
+}
+
+export enum UserRole {
+  jobs = "jobs",
+}
+
 export interface AddressUpdateInput {
   member: number;
   address?: any | null;
@@ -95,7 +105,7 @@ export interface ParameterInput {
 }
 
 export interface SettingInput {
-  name: string;
+  name: SettingName;
   value: any;
 }
 

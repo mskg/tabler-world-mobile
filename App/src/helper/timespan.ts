@@ -2,8 +2,7 @@ import { I18N } from '../i18n/translation';
 
 export function timespan(time1: number, time2?: number) {
     if(typeof time2 == "undefined") {
-        var now = new Date();
-        time2 = Math.floor(now.getTime());
+        time2 = 0;
     }
 
     var period = Math.abs(time1 - time2) / 1000;

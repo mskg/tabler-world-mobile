@@ -44,6 +44,8 @@ export const mocks = {
 
     Roles,
     getParameters: () => [],
+
+    MyRoles: () => [],
   }),
 
   Member,

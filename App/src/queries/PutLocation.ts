@@ -6,3 +6,15 @@ export const PutLocationMutation = gql`
     }
 `;
 
+
+export const EnableLocationServicesMutation = gql`
+    mutation EnableLocationServices($location: MyLocationInput!) {
+        putSetting(setting: {
+            name: nearbymembers
+            value: true
+        })
+
+        putLocation(location: $location)
+    }
+`;
+

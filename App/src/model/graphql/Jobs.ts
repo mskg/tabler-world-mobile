@@ -6,6 +6,10 @@
 // GraphQL query operation: Jobs
 // ====================================================
 
+export interface Jobs_Jobs_data_JobEmpty {
+  __typename: "JobEmpty";
+}
+
 export interface Jobs_Jobs_data_JobError {
   __typename: "JobError";
   error: any | null;
@@ -26,7 +30,7 @@ export interface Jobs_Jobs_data_JobSend {
   executionTime: number | null;
 }
 
-export type Jobs_Jobs_data = Jobs_Jobs_data_JobError | Jobs_Jobs_data_JobSync | Jobs_Jobs_data_JobSend;
+export type Jobs_Jobs_data = Jobs_Jobs_data_JobEmpty | Jobs_Jobs_data_JobError | Jobs_Jobs_data_JobSync | Jobs_Jobs_data_JobSend;
 
 export interface Jobs_Jobs {
   __typename: "Job";

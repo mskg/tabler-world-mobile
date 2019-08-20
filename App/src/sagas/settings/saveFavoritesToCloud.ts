@@ -6,6 +6,7 @@ import { Audit } from "../../analytics/Audit";
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { SettingName } from '../../model/graphql/globalTypes';
 import { PutSetting, PutSettingVariables } from '../../model/graphql/PutSetting';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
@@ -39,7 +40,7 @@ mutation PutSetting($input: SettingInput!) {
 }`,
         variables: {
             input: {
-                name: "favorites",
+                name: SettingName.favorites,
                 value: result,
             }
         },

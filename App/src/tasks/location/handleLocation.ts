@@ -6,13 +6,13 @@ import { AuditEventName } from '../../analytics/AuditEventName';
 import { bootstrapApollo } from "../../apollo/bootstrapApollo";
 import { reverseGeocode } from '../../helper/reverseGeocode';
 import { PutLocation, PutLocationVariables } from "../../model/graphql/PutLocation";
-import { PutLocationMutation } from "../../queries/PutLocation";
+import { EnableLocationServicesMutation, PutLocationMutation } from "../../queries/PutLocation";
 import { setLocation } from "../../redux/actions/location";
 import { getReduxStore } from "../../redux/getRedux";
 import { LOCATION_TASK_NAME } from "../Constants";
 import { logger } from './logger';
 
-export async function handleLocationUpdate(locations: LocationData[]) {
+export async function handleLocationUpdate(locations: LocationData[], enable = false) {
   try {
     logger.debug("handleLocationUpdate", locations);
 
@@ -57,7 +57,7 @@ export async function handleLocationUpdate(locations: LocationData[]) {
 
     const client = await bootstrapApollo();
     await client.mutate<PutLocation, PutLocationVariables>({
-      mutation: PutLocationMutation,
+      mutation: enable ? EnableLocationServicesMutation : PutLocationMutation,
       variables: {
         location: {
           longitude: location.coords.longitude,

@@ -80,7 +80,7 @@ WHERE id = $1
 INSERT INTO usersettings(id, settings)
 VALUES ($1, jsonb_set('{}', $3, $2))
 ON CONFLICT (id) DO UPDATE
-    SET settings = jsonb_set(excluded.settings, $3, $2)`,
+    SET settings = jsonb_set(usersettings.settings, $3, $2)`,
                         [context.principal.id, JSON.stringify(args.setting.value), `{${args.setting.name}}`]);
 
                     return true;

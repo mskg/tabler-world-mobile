@@ -14,8 +14,13 @@ export const Jobs = gql`
         error: JSON
     }
 
+    type JobEmpty {
+        empty: Boolean
+    }
+
     type JobSync {
         records: Int
+        modified: Int
         readTime: Float
         refreshTime: Float
     }
@@ -27,7 +32,7 @@ export const Jobs = gql`
         executionTime: Float
     }
 
-    union JobResult = JobError | JobSync | JobSend
+    union JobResult = JobError | JobSync | JobSend | JobEmpty
 
     extend type Query {
         Jobs: [Job!]

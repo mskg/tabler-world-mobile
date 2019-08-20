@@ -1,6 +1,7 @@
 import { NavigationActions } from 'react-navigation';
 import { I18N } from '../../i18n/translation';
 import { HomeRoutes } from '../../navigation/Routes';
+import { Routes as MoreRoutes } from '../../screens/More/Routes';
 import { Routes } from '../../screens/More/Settings/Routes';
 
 export interface IProfileParams {
@@ -58,6 +59,10 @@ export const showPair = () => NavigationActions.navigate({
 
 export const showSettings = () => NavigationActions.navigate({
     routeName: Routes.Main,
+});
+
+export const showLocationHistory = () => NavigationActions.navigate({
+    routeName: MoreRoutes.LocationHistory,
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({
