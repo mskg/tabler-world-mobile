@@ -230,3 +230,10 @@ ORDER BY
   locations.point <-> 'POINT(-122.09695274 37.34562364)'::geography
 
 LIMIT 10;
+
+
+delete from clubs;
+delete from tabler;
+
+
+select count(*) from clubs
