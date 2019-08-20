@@ -47,7 +47,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
         return (
             <ScreenWithHeader header={{
                 showBack: true,
-                title: "Jobs History"
+                title: "Job History"
             }}>
                 <Query<GetJobs>
                     query={GetJobsQuery}
