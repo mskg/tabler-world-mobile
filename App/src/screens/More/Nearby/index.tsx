@@ -212,7 +212,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                     <Message
                         theme={this.props.theme}
                         text={I18N.NearbyMembers.off}
-                        button={this.state.canSet ? I18N.NearbyMembers.on : undefined}
+                        button={I18N.NearbyMembers.on}
                         onPress={this._enable} />
                 }
 
