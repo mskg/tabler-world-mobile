@@ -119,7 +119,13 @@ export const MemberResolver = {
         },
 
         FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            return context.dataSources.members.readFavorites();
+            const favorites = await context.dataSources.members.readFavorites();
+            if (favorites) {
+                // there could be favorites that no longer exist
+                return favorites.filter(f => f != null);
+            } else {
+                return favorites;
+            }
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
