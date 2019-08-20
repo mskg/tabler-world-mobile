@@ -1,7 +1,7 @@
 import { Context } from "aws-lambda";
 import { readFileSync } from "fs";
 import { writeJobLog } from "../shared/jobs/writeJobLog";
-import { withClient } from "../shared/rds/withClient";
+import { withDatabase } from "../shared/rds/withDatabase";
 
 const fileNames = [
     require("./00 setup.pgsql"),
@@ -20,7 +20,7 @@ const fileNames = [
 
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
     try {
-        await withClient(context, async (client) => {
+        await withDatabase(context, async (client) => {
             for (let i = 0; i < fileNames.length; ++i) {
                 const fn = fileNames[i];
 
@@ -44,7 +44,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
         return true;
     } catch (e) {
         try {
-            await withClient(context, async (client) => {
+            await withDatabase(context, async (client) => {
                 await writeJobLog(client, "update::database", false, {
                     error: e
                 });

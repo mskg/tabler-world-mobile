@@ -4,6 +4,7 @@ import { SendMessageBatchRequestEntry } from 'aws-sdk/clients/sqs';
 import _ from 'lodash';
 import { writeJobLog } from '../shared/jobs/writeJobLog';
 import { withClient } from '../shared/rds/withClient';
+import { withDatabase } from '../shared/rds/withDatabase';
 import { StopWatch } from '../shared/StopWatch';
 import { CONFIGURATIONS } from './Configurations';
 import { Chunk, downloadChunk } from "./downloadChunk";
@@ -31,7 +32,7 @@ export async function handler(event: Event, context: Context, _callback: (error:
         let method = config.method;
         let postData = config.payload();
 
-        await withClient(context, async (client) => {
+        await withDatabase(context, async (client) => {
             const innerWriter = writeValues(client, event.type as Types);
 
             let total = 0;

@@ -2,7 +2,7 @@ import { Context } from "aws-lambda";
 import Expo, { ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
 import { writeJobLog } from "../shared/jobs/writeJobLog";
 import { IDataService } from "../shared/rds/IDataService";
-import { withClient } from "../shared/rds/withClient";
+import { withDatabase } from "../shared/rds/withDatabase";
 import { StopWatch } from "../shared/StopWatch";
 
 let expo = new Expo();
@@ -56,7 +56,7 @@ type BirthdayPayload = {
 
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
     try {
-        return await withClient(context, async (client) => {
+        return await withDatabase(context, async (client) => {
             let errors = 0;
             let hardFails = 0;
             const watch = new StopWatch();
@@ -151,7 +151,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
         });
     } catch (e) {
         try {
-            await withClient(context, async (client) => {
+            await withDatabase(context, async (client) => {
                 await writeJobLog(client, "notifications::sendBirthday", false, {
                     error: e
                 });

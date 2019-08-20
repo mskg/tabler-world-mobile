@@ -157,6 +157,14 @@ provider:
           burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
           rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
 
+  vpc:
+    securityGroupIds:
+      - Fn::ImportValue: DatabaseSecurityGroupId
+    subnetIds:
+      - Fn::ImportValue: DatabaseSubnetAId
+      - Fn::ImportValue: DatabaseSubnetBId
+      - Fn::ImportValue: DatabaseSubnetCId
+
   # global role definition
   iamRoleStatements:
     # allow database access
@@ -238,14 +246,6 @@ functions:
     handler: src/dataservice/lambda.handler
     timeout: 30
     tracing: Active
-
-    vpc:
-      securityGroupIds:
-        - Fn::ImportValue: DatabaseSecurityGroupId
-      subnetIds:
-        - Fn::ImportValue: DatabaseSubnetAId
-        - Fn::ImportValue: DatabaseSubnetBId
-        - Fn::ImportValue: DatabaseSubnetCId
 
     environment:
       db_role: tw_read_${self:custom.stage}
@@ -442,6 +442,10 @@ functions:
     memorySize: 128
     tracing: Active
 
+    vpc:
+      securityGroupIds: []
+      subnetIds: []
+
     events:
         - http:
             path: graphql-demo
@@ -461,6 +465,10 @@ functions:
     timeout: 30
     memorySize: 256
     tracing: Active
+
+    vpc:
+      securityGroupIds: []
+      subnetIds: []
 
     environment:
       # remote

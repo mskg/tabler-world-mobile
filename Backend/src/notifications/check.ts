@@ -3,7 +3,7 @@ import Expo, { ExpoPushTicket } from 'expo-server-sdk';
 import _ from "lodash";
 import { writeJobLog } from "../shared/jobs/writeJobLog";
 import { IDataService } from "../shared/rds/IDataService";
-import { withClient } from "../shared/rds/withClient";
+import { withDatabase } from "../shared/rds/withDatabase";
 import { StopWatch } from "../shared/StopWatch";
 
 let expo = new Expo();
@@ -30,7 +30,7 @@ WHERE tokens @> ARRAY[$1]`,
 
 export async function handler(_event: any, context: Context, _callback: (error: any, success?: any) => void) {
     try {
-        return await withClient(context, async (client) => {
+        return await withDatabase(context, async (client) => {
             let errors = 0;
             let hardFails = 0;
             let recipients = 0;
@@ -122,7 +122,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
         });
     } catch (e) {
         try {
-            await withClient(context, async (client) => {
+            await withDatabase(context, async (client) => {
                 await writeJobLog(client, "notifications::check", false, {
                     error: e
                 });

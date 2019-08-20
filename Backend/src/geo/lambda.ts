@@ -1,6 +1,6 @@
 import { SQSHandler } from "aws-lambda";
 import { Lambda } from "aws-sdk";
-import { withClient } from "../shared/rds/withClient";
+import { withDatabase } from "../shared/rds/withDatabase";
 import { encode } from "./encode";
 import { IAddress } from "./IAddress";
 
@@ -44,7 +44,7 @@ export const handler: SQSHandler = async (event, context, callback) => {
   if (disabled) throw new Error("disabled due to throtteling");
 
   // max degree 1
-  await withClient(context, async (client) => {
+  await withDatabase(context, async (client) => {
     const errors = [];
 
     for (let message of event.Records) {

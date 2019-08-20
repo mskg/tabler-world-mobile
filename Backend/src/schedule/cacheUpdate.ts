@@ -1,5 +1,5 @@
 import { SQSHandler } from "aws-lambda";
-import { withClient } from "../shared/rds/withClient";
+import { withDatabase } from "../shared/rds/withDatabase";
 import { updateClub } from "./cache/updateClub";
 import { updateMember } from "./cache/updateMember";
 import { QueueEntry } from "./QueueEntry";
@@ -7,7 +7,7 @@ import { QueueEntry } from "./QueueEntry";
 
 export const handler: SQSHandler = async (event, context, callback) => {
     // max degree 3
-    await withClient(context, async (client) => {
+    await withDatabase(context, async (client) => {
         for (let message of event.Records) {
             const payload = JSON.parse(message.body) as QueueEntry;
 
