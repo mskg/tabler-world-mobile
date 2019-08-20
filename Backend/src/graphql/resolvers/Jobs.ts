@@ -11,7 +11,7 @@ export const JobsResolver = {
                 const res = await client.query(`
 select * from jobhistory
 order by runon desc
-limit 100`);
+limit 20`);
 
                 return res.rows.map(r => ({
                     ...r,
