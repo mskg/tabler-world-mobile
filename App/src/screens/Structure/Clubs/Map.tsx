@@ -24,8 +24,10 @@ import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_PIN } from '../../../theme/colors';
 import { styles } from '../Styles';
 import { darkStyles } from './dark';
+import { Pin } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
 
@@ -214,6 +216,10 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                             identifier={c.id}
                             coordinate={c.location as LatLng}
                         >
+                            <Pin
+                                color={this.props.theme.dark ? this.props.theme.colors.accent : ___DONT_USE_ME_DIRECTLY___COLOR_PIN}
+                                text={c.club.toString()}
+                            />
                             {/* <ClubAvatar
                                 theme={this.props.theme}
                                 source={c.logo}
