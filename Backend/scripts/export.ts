@@ -8,7 +8,7 @@ async function handleChunk(data: any[]) {
 }
 
 async function test() {
-    const url = "https://api.rti.roundtable.world/v1/admin/news/6/";
+    const url = "https://api.rti.roundtable.world/v1/admin/levels/clubs/?";
         const payload = undefined;
     // const payload = null; JSON.stringify({
     //     "operator": "AND",
@@ -22,6 +22,8 @@ async function test() {
         await fetchParallel(firstChunk, handleChunk, method, payload);
     }
 }
+
+console.log("***************",process.env.STAGE);
 
 test().then(
     () => console.log("done")

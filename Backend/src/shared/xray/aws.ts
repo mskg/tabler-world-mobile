@@ -16,7 +16,7 @@ let isXrayEnabled = false;
 let XRAY: any;
 let xHttps: typeof https;
 
-if (EXECUTING_OFFLINE && process.env.XRAY_DISABLED !== "true") {
+if (EXECUTING_OFFLINE || process.env.XRAY_DISABLED === "true") {
     console.log("Serverless offline detected; skipping AWS X-Ray setup")
     xAWS = require("aws-sdk");
     xPG = require("pg");

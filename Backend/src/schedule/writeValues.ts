@@ -16,7 +16,8 @@ export const writeValues = (client: IDataService, type: Types) => {
     return async (data: Array<any>): Promise<ChangePointer[]> => {
         console.log("Writing chunk of", data.length, type, "records");
 
-        const results: any[] = []
+        const results: any[] = [];
+
         for (let r of data) {
             const id = pk(r);
             console.log(id);
@@ -26,9 +27,9 @@ INSERT INTO ${type}(id, data, modifiedon)
 VALUES($1, $2, now())
 ON CONFLICT (id)
 DO UPDATE
-    SET data = excluded.data, modifiedon = excluded.modifiedon
-    WHERE ${type}.data::text <> excluded.data::text
-        `, [id, JSON.stringify(removeEmpty(r))]);
+  SET data = excluded.data, modifiedon = excluded.modifiedon
+  WHERE ${type}.data::text <> excluded.data::text
+`, [id, JSON.stringify(removeEmpty(r))]);
 
             if (result.rowCount == 1) {
                 console.log(id, "modified");

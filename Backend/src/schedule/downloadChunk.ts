@@ -20,7 +20,8 @@ export async function downloadChunk(url: string, method?: string, postdata?: str
         Authorization: `Token ${api.key}`,
     };
 
-    const json = await client.callApi<any>(url + `limit=${api.read_batch}`, method, postdata);
+    const json = await client.callApi<any>(
+        url + `&limit=${api.read_batch}`, method, postdata);
 
     const results = [];
     results.push(... (json.results || json));

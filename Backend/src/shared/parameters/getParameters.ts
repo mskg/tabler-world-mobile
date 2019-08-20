@@ -36,6 +36,7 @@ export function mapName(name: string, env: string = 'dev'): string {
  * Setup DEBUG mode
  */
 if (EXECUTING_OFFLINE) {
+    console.log("Setting up debug keys");
     setupDebug(memoryCache);
 }
 

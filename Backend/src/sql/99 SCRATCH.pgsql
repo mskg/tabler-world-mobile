@@ -236,4 +236,10 @@ delete from clubs;
 delete from tabler;
 
 
-select count(*) from clubs
+select * from clubs
+
+
+select * from profiles
+
+
+select * from jobhistory

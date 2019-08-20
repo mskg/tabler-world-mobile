@@ -41,8 +41,8 @@ export async function fetchParallel(
         end = start > chunk.total;
 
         if (!end) {
-            let nextUrl = chunk.next.substring(0, chunk.next.indexOf("&offset="));
-            nextUrl += "&offset=" + start;
+            let nextUrl = chunk.next.substring(0, chunk.next.indexOf("?"));
+            nextUrl += "?offset=" + start;
 
             console.log("kicking", nextUrl);
             batch.push(throttledDownload(nextUrl, method, payload));
