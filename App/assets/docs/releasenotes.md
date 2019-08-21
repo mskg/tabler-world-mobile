@@ -9,6 +9,10 @@
 - Expandable sections on club page now only prompt for expansion with enough elements
 - Favorites now need swipe-right to toggle value
 
+## Fixes
+
+- Some members could not be exported to the phonebook on ios
+
 # v1.0.1
 
 ## Fixes
