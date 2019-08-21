@@ -73,16 +73,16 @@ select
         nullif(userlocations.address->>'region', ''),
 
         'country',
-        nullif(coalesce(userlocations.address->>'isoCountryCode', userlocations.address->0->>'isoCountryCode'), ''),
+        nullif(coalesce(userlocations.address->>'isoCountryCode', userlocations.address->>'country'), ''),
 
         'street1',
-        nullif(coalesce(userlocations.address->>'street1', userlocations.address->0->>'street1'), ''),
+        nullif(userlocations.address->>'street1', ''),
 
         'street2',
-        nullif(coalesce(userlocations.address->>'street2', userlocations.address->0->>'street2'), ''),
+        nullif(userlocations.address->>'street2', ''),
 
         'postal_code',
-        nullif(coalesce(userlocations.address->>'postalCode', userlocations.address->0->>'postalCode'), '')
+        nullif(userlocations.address->>'postalCode', '')
     )) as address
 from
     userlocations, profiles

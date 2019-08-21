@@ -19,7 +19,6 @@ export const INITIAL_STATE: IAppState = {
   },
 
   location: {
-    track: false,
   },
 
   searchHistory: {

@@ -245,8 +245,11 @@ select * from profiles
 select * from jobhistory
 
 
+select settings from usersettings
+where id =10430
 
-select * from userlocations
+
+select * from userlocations_match
 
 
 update userlocations
