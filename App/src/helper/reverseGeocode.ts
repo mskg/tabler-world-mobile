@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import { Feature, FeatureCollection } from "geojson";
+import _ from 'lodash';
 import { AppState } from 'react-native';
 import { Categories, Logger } from './Logger';
 
@@ -40,7 +41,7 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
 
     const result = address || backup;
     if (result) {
-      logger.log("Geocoded", location, "to", address || backup);
+      logger.log("Geocoded", location, "to", result);
 
       //@ts-ignore
       if (result.isoCountryCode) {
@@ -58,9 +59,16 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
   return undefined;
 }
 
+const deCountries = require("../i18n/countries/de.json");
+const reversed = _(deCountries.countries).entries().reduce(
+  (p, c) => {
+    p[c[1].toUpperCase()] = c[0];
+    return p;
+  }, {}
+);
 
 async function photon(location: EarthLocation): Promise<Location.Address | undefined> {
-  const result = await fetch(`https://photon.komoot.de/reverse?lon=${location.longitude}&lat=${location.latitude}`, {
+  const result = await fetch(`https://photon.komoot.de/reverse?lon=${location.longitude}&lat=${location.latitude}&lang=de&limit=1`, {
     method: "GET",
     headers: {
       Accept: 'application/json',
@@ -77,6 +85,8 @@ async function photon(location: EarthLocation): Promise<Location.Address | undef
   const props = feature.properties || {};
   logger.debug("Geocoded", "to", props);
 
+  const isoCountryCode = reversed[(props["country"] ||"").toUpperCase()];
+
   return {
     // @ts-ignore
     name: props["name"],
@@ -85,6 +95,8 @@ async function photon(location: EarthLocation): Promise<Location.Address | undef
     postalCode: props["postcode"],
     city: props["city"],
     region: props["state"],
+    //@ts-ignore
+    isoCountryCode: isoCountryCode !== "" ? isoCountryCode : undefined,
     country: props["country"],
   };
 }

@@ -58,6 +58,7 @@ export async function photonImpl(address: IAddress): Promise<NodeGeocoder.Entry 
 
     const thisops: { [key: string]: string; } = {
         limit: "1",
+        lang: "de",
         q: addressToString(address) as string,
     };
 
