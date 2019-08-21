@@ -245,8 +245,12 @@ select * from profiles
 select * from jobhistory
 
 
-select settings from usersettings
-where id =10430
+select profiles.id, lastname, settings from usersettings, profiles
+where usersettings.id = profiles.id
+
+update usersettings
+set settings = '{"favorites":[9601,11024,126977],"nearbymembers":true}'
+where id = 9699
 
 
 select * from userlocations_match
@@ -259,3 +263,8 @@ where id in (8097, 8096,7938, 7947)
 
 select id from userlocations
 where address is not null
+
+
+update usersettings
+set settings = jsonb_set(settings, '{nearbymembers}', 'true')
+
