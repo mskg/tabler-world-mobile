@@ -165,30 +165,83 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         this.didFocus();
     }
 
+    job?: number;
+    _planUpdate = (refetch: () => any) => {
+        if (this.state.interval && this.mounted) {
+            this.job = setTimeout(() => {
+                if (this.mounted) {
+                    logger.log("Refetching");
+                    refetch();
+
+                    this._planUpdate(refetch);
+                }
+            }, this.state.interval);
+        }
+    }
+
     _checkCode = async (data: NearbyMembers, client: ApolloClient<any>, refetch: () => Promise<any>) => {
-        if (!this.mounted) { return; }
+        if (this.job) { clearTimeout(this.job); }
+
+        if (!this.mounted) {
+            logger.debug("Not mounted");
+            return;
+        }
 
         if (data.nearbyMembers) {
             logger.debug("Found", data.nearbyMembers.length, "nearby members.");
 
             const result = await geocodeMissing(data.nearbyMembers);
             if (result) {
-                await client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
+                logger.debug("Updating server store with", result.length, "new datasets");
+
+                const mutation = client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
                     mutation: UpdateLocationAddressMutation,
                     variables: {
                         corrections: result,
-                    },
-                })
+                    }
+                });
+
+                logger.debug("update with locations");
+                if (this.props.location) {
+                    // Read the data from our cache for this query.
+                    const data = client.readQuery<NearbyMembers>({
+                        query: GetNearbyMembersQuery,
+                        variables: {
+                            location: {
+                                longitude: this.props.location.coords.longitude,
+                                latitude: this.props.location.coords.latitude
+                            }
+
+                        }
+                    });
+
+                    if (data && data.nearbyMembers) {
+                        // Write our data back to the cache with the new comment in it
+                        client.writeQuery({
+                            query: GetNearbyMembersQuery, data: {
+                                nearbyMembers: data.nearbyMembers.map(n => {
+                                    if (n.address.city == null && n.address.country == null && n.address.location != null) {
+                                        const updated = result.find(r => r.member == n.member.id);
+                                        if (updated) {
+                                            logger.debug("Updating UI for", n.member.id, "with", updated.address);
+                                            n.address = {
+                                                ...n.address,
+                                                ...updated.address
+                                            };
+                                        }
+                                    }
+
+                                    return n;
+                                })
+                            } as NearbyMembers
+                        });
+                    }
+                }
+
+                await mutation;
             }
 
-            if (this.state.interval && this.mounted) {
-                setTimeout(() => {
-                    if (this.mounted) {
-                        logger.log("Refetching");
-                        refetch();
-                    }
-                }, this.state.interval);
-            }
+            this._planUpdate(refetch);
         }
     }
 
