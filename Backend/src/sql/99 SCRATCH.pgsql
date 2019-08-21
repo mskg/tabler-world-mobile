@@ -243,3 +243,16 @@ select * from profiles
 
 
 select * from jobhistory
+
+
+
+select * from userlocations
+
+
+update userlocations
+set address = null
+where id in (8097, 8096,7938, 7947)
+
+
+select id from userlocations
+where address is not null

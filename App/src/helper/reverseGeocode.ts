@@ -5,13 +5,14 @@ import { Categories, Logger } from './Logger';
 
 export const logger = new Logger(Categories.Helpers.Geo);
 
-type EarthLocation =  {
+type EarthLocation = {
   latitude: number,
   longitude: number,
 };
 
 export async function reverseGeocode(location: EarthLocation): Promise<Location.Address | undefined> {
-  let address;
+  let address: Location.Address | undefined = undefined;
+  let backup: Location.Address | undefined = undefined
 
   try {
     // geocoding not allowed in background state
@@ -21,6 +22,11 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
         // might fail if no key on android
         const coded = await Location.reverseGeocodeAsync(location);
         address = coded && coded.length > 0 ? coded[0] : undefined;
+
+        if (address && address.city == null) {
+          backup = address;
+          address = undefined;
+        }
       }
       catch (e) {
         logger.error(e, "could not geocode using Location", location);
@@ -32,8 +38,18 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
       address = await photon(location);
     }
 
-    logger.log("Geocoded", location, "to", address);
-    return address;
+    const result = address || backup;
+    if (result) {
+      logger.log("Geocoded", location, "to", address || backup);
+
+      //@ts-ignore
+      if (result.isoCountryCode) {
+        //@ts-ignore
+        result.country = result.isoCountryCode;
+      }
+    }
+
+    return result;
   }
   catch (e) {
     logger.error(e, "could not geocode", location);

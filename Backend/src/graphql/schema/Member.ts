@@ -6,6 +6,7 @@ export const Member = gql`
         address_type: Int
         city: String
         country: String
+        region: String
         postal_code: String
         street1: String
         street2: String

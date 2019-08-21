@@ -1,5 +1,4 @@
-
-SET ROLE 'tw_read_test';
+SET ROLE 'tw_read_dev';
 
 ------------------------------
 -- Address history
@@ -69,6 +68,9 @@ select
 
         'city',
         nullif(coalesce(userlocations.address->>'city', userlocations.address->0->>'city'), ''),
+
+        'region',
+        nullif(userlocations.address->>'region', ''),
 
         'country',
         nullif(coalesce(userlocations.address->>'isoCountryCode', userlocations.address->0->>'isoCountryCode'), ''),

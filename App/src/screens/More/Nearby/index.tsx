@@ -245,6 +245,14 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         }
     }
 
+    makeTitle(location, country) {
+        if (this.props.address && I18N.Countries.translate(country) != I18N.Countries.translate(this.props.address.country)) {
+            return I18N.NearbyMembers.near(location + ", " + I18N.Countries.translate(country));
+        }
+
+        return I18N.NearbyMembers.near(location);
+    }
+
     render() {
         // logger.log(this.props);
 
@@ -323,7 +331,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     <MeLocation now={Date.now()} />
                                     {
                                         makeGroups(data.nearbyMembers).map((s, i) =>
-                                            <List.Section title={I18N.NearbyMembers.near(s.title)} key={i.toString()}>
+                                            <List.Section title={this.makeTitle(s.title, s.country)} key={i.toString()}>
                                                 {
                                                     s.members.map(m =>
                                                         (

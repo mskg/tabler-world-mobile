@@ -21,6 +21,7 @@ export const GetNearbyMembersQuery = gql`
                 postal_code
                 city
                 country
+                region
             }
         }
   }

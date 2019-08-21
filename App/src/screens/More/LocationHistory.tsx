@@ -72,7 +72,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                                             {data.LocationHistory.map((l, i) => (
                                                 <DataTable.Row key={i.toString()}>
                                                     <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.lastseen).toLocaleString()}</DataTable.Cell>
-                                                    <DataTable.Cell onPress={() => OpenLink.url(`https://maps.google.com/?q=@${l.latitude},${l.longitude}`)}>{l.street}, {l.city} ({l.country})</DataTable.Cell>
+                                                    <DataTable.Cell onPress={() => OpenLink.url(`https://maps.google.com/?q=${l.latitude},${l.longitude}`)}>{l.street}, {l.city} ({l.country})</DataTable.Cell>
 
                                                     <DataTable.Cell style={{ width: 120, flex: 0 }} numeric>{l.latitude}</DataTable.Cell>
                                                     <DataTable.Cell style={{ width: 120, flex: 0 }} numeric>{l.longitude}</DataTable.Cell>

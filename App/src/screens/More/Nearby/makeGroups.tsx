@@ -1,12 +1,17 @@
 import { RoleType } from '../../../model/graphql/globalTypes';
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
 
+function makeDisplayString(member: NearbyMembers_nearbyMembers) {
+    return (member.address.city || member.address.region);
+}
+
 /**
  * Apollo reuses instances, so we create new ones every time
  */
-export const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
+export function makeGroups (data: NearbyMembers_nearbyMembers[]) {
     let group = {
-        title: data[0].address.city as string,
+        title: makeDisplayString(data[0]),
+        country: data[0].address.country,
         members: [] as NearbyMembers_nearbyMembers[]
     };
 
@@ -18,6 +23,7 @@ export const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
                 ...m.member
             }
         };
+
         r.member.roles = [...(m.member.roles || []), {
             __typename: "Role",
             name: "Member",
@@ -30,14 +36,17 @@ export const makeGroups = (data: NearbyMembers_nearbyMembers[]) => {
                 id: m.member.club.id,
             }
         }];
+
         return r;
     });
 
     for (const member of withRoles) {
-        if (member.address.city != group.title) {
+        const title = makeDisplayString(member);
+        if (title != group.title) {
             result.push(group);
             group = {
-                title: member.address.city as string,
+                title: title as string,
+                country: member.address.country,
                 members: [member],
             };
         }

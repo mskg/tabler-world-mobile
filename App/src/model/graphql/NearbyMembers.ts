@@ -66,6 +66,7 @@ export interface NearbyMembers_nearbyMembers_address {
   postal_code: string | null;
   city: string | null;
   country: string | null;
+  region: string | null;
 }
 
 export interface NearbyMembers_nearbyMembers {

@@ -35,6 +35,10 @@ export const AddressResolver = {
             return doTrim(root.street2);
         },
 
+        region: (root: any, _args: any, _context: IApolloContext) => {
+            return doTrim(root.region);
+        },
+
         city: (root: any, _args: any, _context: IApolloContext) => {
             return doTrim(root.city);
         },
