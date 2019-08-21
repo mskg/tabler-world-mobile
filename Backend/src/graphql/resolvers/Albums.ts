@@ -15,6 +15,7 @@ export const AlbumsResolver = {
         Albums: async (_root: any, _args: {}, context: IApolloContext) => {
             return _(await context.dataSources.tablerWorld.getAllAlbums())
                 .filter(f => f.pictures && f.pictures.length > 0)
+                .orderBy(f => f.id)
                 .reverse()
                 .value();
         },
