@@ -7,7 +7,6 @@ import { getReduxPersistor, getReduxStore, getSagaMiddleware } from './getRedux'
 export function withStore(WrappedComponent) {
   return class extends React.PureComponent {
     _runSagas = () => {
-      console.log("************************** LIFT!!!!!!!!!!!!!!");
       getSagaMiddleware().run(rootSaga);
     }
 

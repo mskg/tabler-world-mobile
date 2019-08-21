@@ -166,21 +166,24 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     job?: number;
-    _planUpdate = (refetch: () => any) => {
+    _planUpdate = (refetch: () => Promise<any>) => {
+        if (this.job) return;
+
         if (this.state.interval && this.mounted) {
             this.job = setTimeout(() => {
                 if (this.mounted) {
                     logger.log("Refetching");
-                    refetch();
 
-                    this._planUpdate(refetch);
+                    refetch().finally(() => {
+                        this._planUpdate(refetch);
+                    });
                 }
             }, this.state.interval);
         }
     }
 
     _checkCode = async (data: NearbyMembers, client: ApolloClient<any>, refetch: () => Promise<any>) => {
-        if (this.job) { clearTimeout(this.job); }
+        if (this.job) { clearTimeout(this.job); this.job = undefined; }
 
         if (!this.mounted) {
             logger.debug("Not mounted");
