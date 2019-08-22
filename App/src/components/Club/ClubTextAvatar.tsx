@@ -17,7 +17,7 @@ class ClubTextAvatar extends React.Component<Props> {
     const { label, size, style, theme } = this.props;
 
     const { backgroundColor = theme.colors.primary, ...restStyle } = StyleSheet.flatten(style) || {};
-    const textColor = this.props.color || (color(backgroundColor).light() ? 'rgba(0, 0, 0, .54)' : "white");
+    const textColor = this.props.color || (color(backgroundColor).lighten() ? 'rgba(0, 0, 0, .54)' : "white");
 
     return (
       <View

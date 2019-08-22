@@ -211,6 +211,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         return (
             <StickyContainer stickyHeaderIndices={this.state.sectionIndexes}>
                 <RecyclerListView
+                    style={{ minHeight: 1, minWidth: 1 }}
                     ref={this.props.setRef}
 
                     initialOffset={0}

@@ -1,21 +1,27 @@
 {
 	"folders": [
 		{
-			"path": "Backend"
-		},
-		{
+			"name": "Authentication",
 			"path": "Authentication"
 		},
 		{
+			"name": "Backend",
+			"path": "Backend"
+		},
+		{
+			"name": "App",
 			"path": "App"
 		},
 		{
+			"name": "config",
 			"path": "config"
 		},
 		{
+			"name": "Tools",
 			"path": "Tools"
 		},
 		{
+			"name": "packages",
 			"path": "packages"
 		}
 	],

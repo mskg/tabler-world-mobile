@@ -45,7 +45,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
       }
 
       if (this.mounted) {
-        this.setState({ uri: path, hidePreview: false });
+        this.setState({ uri: path });
       }
     }
   }
@@ -65,12 +65,14 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
     const { transitionDuration } = this.props;
     const { intensity } = this.state;
 
+    const request = this.requestId;
+
     Animated.timing(intensity, {
       duration: transitionDuration || 300,
       toValue: 100,
       useNativeDriver: true
     }).start(() => {
-      if (this.mounted) {
+      if (this.mounted && request == this.requestId) {
         this.setState({ hidePreview: true });
       }
     });

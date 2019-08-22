@@ -21,7 +21,6 @@
         "packages/*",
         "Tools",
         "Backend",
-        "Authentication",
-        "App"
+        "Authentication"
     ]
 }
