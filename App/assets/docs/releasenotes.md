@@ -12,6 +12,7 @@
 ## Fixes
 
 - Some members could not be exported to the phonebook on ios
+- Sometimes, two-letter text avatars were hidden in member overview
 
 # v1.0.1
 
