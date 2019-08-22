@@ -13,6 +13,9 @@
         "hoist-non-react-statics": "^3.3.0",
         "**/hoist-non-react-statics": "^3.3.0"
     },
+    "scripts": {
+        "build-packages": "yarn workspace @mskg/tabler-world-common run build && yarn workspace @mskg/tabler-world-aws run build && yarn workspace @mskg/tabler-world-config run build && yarn workspace @mskg/tabler-world-rds run build && yarn workspace @mskg/tabler-world-cache run build"
+    },
     "workspaces": [
         "packages/*",
         "Tools",
