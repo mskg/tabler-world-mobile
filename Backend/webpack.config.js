@@ -11,10 +11,13 @@ module.exports = {
   // https://github.com/serverless-heaven/serverless-webpack/issues/292
   // this bundles these two dependencies, but removes the indirect depencency to aws-sdk
   externals: [
-    nodeExternals(),
     nodeExternals({
-      modulesDir: path.resolve(__dirname, '../node_modules')
-    })
+      whitelist: [/^@mskg/i],
+    }),
+    nodeExternals({
+      modulesDir: path.resolve(__dirname, '../node_modules'),
+      whitelist: [/^@mskg/i],
+    }),
   ],
 
   mode: slsw.lib.webpack.isLocal ? "development" : "production",
