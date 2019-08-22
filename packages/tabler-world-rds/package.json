@@ -12,7 +12,6 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "hoist-non-react-statics": "3.3.0",
     "@mskg/tabler-world-aws": "0.0.1",
     "@mskg/tabler-world-config": "0.0.1",
     "pg": "*"
