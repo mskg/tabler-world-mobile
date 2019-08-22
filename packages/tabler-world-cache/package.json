@@ -15,6 +15,7 @@
     "@mskg/tabler-world-aws": "0.0.1",
     "@mskg/tabler-world-config": "0.0.1",
     "apollo-server-core": "*",
+    "apollo-server-caching": "*",
     "lodash": "*"
   },
   "devDependencies": {
