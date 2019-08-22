@@ -1,7 +1,7 @@
+import { IManyKeyValueCache } from "@mskg/tabler-world-cache";
+import { ILogger } from "@mskg/tabler-world-common";
 import { KeyValueCache } from "apollo-server-core";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
-import { IManyKeyValueCache } from "../../shared/cache/types";
-import { ILogger } from "../../shared/logging/ILogger";
 import { IDataSources } from "../dataSources";
 import { IPrincipal } from "./IPrincipal";
 

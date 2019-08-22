@@ -1,6 +1,6 @@
+import { withDatabase } from "@mskg/tabler-world-rds";
 import { SQSHandler } from "aws-lambda";
 import { Lambda } from "aws-sdk";
-import { withDatabase } from "../shared/rds/withDatabase";
 import { encode } from "./encode";
 import { IAddress } from "./IAddress";
 

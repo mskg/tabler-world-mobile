@@ -1,4 +1,4 @@
-import https from "https";
+import { xHttps as https } from "@mskg/tabler-world-aws";
 
 function configureOptions(host: string, path: string, method?: string) {
     const options = {

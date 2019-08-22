@@ -1,5 +1,5 @@
-import { IDataService } from '../shared/rds/IDataService';
-import { removeEmpty } from './removeEmpty';
+import { removeEmptySlots } from '@mskg/tabler-world-common';
+import { IDataService } from '@mskg/tabler-world-rds';
 import { Types } from './types';
 
 const clubPK = (c: any) => c["subdomain"].replace(/[^a-z]/ig, "") + "_" + c["subdomain"].replace(/[^0-9]/ig, "");
@@ -29,7 +29,7 @@ ON CONFLICT (id)
 DO UPDATE
   SET data = excluded.data, modifiedon = excluded.modifiedon
   WHERE ${type}.data::text <> excluded.data::text
-`, [id, JSON.stringify(removeEmpty(r))]);
+`, [id, JSON.stringify(removeEmptySlots(r))]);
 
             if (result.rowCount == 1) {
                 console.log(id, "modified");

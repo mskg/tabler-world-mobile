@@ -1,6 +1,5 @@
-import { DynamoDBCache } from "../../shared/cache/DynamoDBCache";
-import { MemoryBackedCache } from "../../shared/cache/MemoryBackedCache";
-import { EXECUTING_OFFLINE } from "../../shared/isOffline";
+import { EXECUTING_OFFLINE } from "@mskg/tabler-world-aws";
+import { DynamoDBCache, MemoryBackedCache } from "@mskg/tabler-world-cache";
 import { NoCache } from "./NoCache";
 import { DEFAULT_TTL } from "./TTLs";
 

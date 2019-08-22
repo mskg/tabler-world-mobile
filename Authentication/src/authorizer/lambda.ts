@@ -1,6 +1,6 @@
 import { CustomAuthorizerHandler } from 'aws-lambda';
 import jwt from 'jsonwebtoken';
-import { withDatabase } from '../withDatabase';
+import { withDatabase } from '@mskg/tabler-world-rds';
 import { AuthPolicy, HttpVerb } from './AuthPolicy';
 import { downloadPems } from './downloadPems';
 import { Token } from './types';

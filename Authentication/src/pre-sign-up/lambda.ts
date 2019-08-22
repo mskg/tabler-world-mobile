@@ -1,5 +1,5 @@
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
-import { withDatabase } from '../withDatabase';
+import { withDatabase } from '@mskg/tabler-world-rds';
 
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
     await withDatabase(context, async (client) => {

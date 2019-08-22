@@ -1,4 +1,4 @@
-import { getParameters } from "../../shared/parameters/getParameters";
+import { getParameters } from "@mskg/tabler-world-config";
 import { IApolloContext } from "../types/IApolloContext";
 
 type ParameterArgs = {

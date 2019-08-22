@@ -15,7 +15,9 @@ custom:
 
   webpack:
     keepOutputDirectory: true
+    packager: 'yarn'
     includeModules:
+      packagePath: "../package.json"
       forceExclude:
         - aws-sdk
 

@@ -1,5 +1,6 @@
 const slsw = require("serverless-webpack");
 const nodeExternals = require("webpack-node-externals");
+const path = require("path");
 
 module.exports = {
   entry: slsw.lib.entries,
@@ -9,7 +10,15 @@ module.exports = {
 
   // Since 'aws-sdk' is not compatible with webpack,
   // we exclude all node dependencies
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals({
+      whitelist: [/^@mskg/i],
+    }),
+    nodeExternals({
+      modulesDir: path.resolve(__dirname, '../node_modules'),
+      whitelist: [/^@mskg/i],
+    }),
+  ],
   mode: slsw.lib.webpack.isLocal ? "development" : "production",
 
   optimization: {
@@ -28,12 +37,17 @@ module.exports = {
       '.json',
       '.ts',
       '.tsx'
-    ]
+    ],
   },
 
   // Run babel on all .js files and skip those in node_modules
   module: {
     rules: [
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto'
+      },
       {
         test: /\.ts(x?)$/,
         use: [

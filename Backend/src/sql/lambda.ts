@@ -1,7 +1,7 @@
+import { withDatabase } from "@mskg/tabler-world-rds";
 import { Context } from "aws-lambda";
 import { readFileSync } from "fs";
 import { writeJobLog } from "../shared/jobs/writeJobLog";
-import { withDatabase } from "../shared/rds/withDatabase";
 
 const fileNames = [
     require("./00 setup.pgsql"),

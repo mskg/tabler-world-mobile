@@ -1,7 +1,6 @@
+import { getParameters, Param_Api } from "@mskg/tabler-world-config";
 import { parse } from "url";
 import { HttpClient } from "../shared/https/HttpClient";
-import { getParameters } from "../shared/parameters/getParameters";
-import { Param_Api } from "../shared/parameters/types";
 
 export type Chunk<T = any> = {
     data: T[],

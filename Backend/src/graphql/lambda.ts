@@ -1,14 +1,13 @@
+import { EXECUTING_OFFLINE, isXrayEnabled } from '@mskg/tabler-world-aws';
 import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
-import { EXECUTING_OFFLINE } from '../shared/isOffline';
-import { isXrayEnabled } from '../shared/xray/aws';
-import { XRayRequestExtension } from '../shared/xray/XRayExtension';
 import { cacheInstance } from './cache/instance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
 import { NoIntrospection } from './helper/NoIntrospection';
+import { XRayRequestExtension } from './helper/XRayExtension';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
 import { resolvers } from './resolvers';

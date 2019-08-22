@@ -1,6 +1,5 @@
-import { AsyncThrottle } from "../shared/AsyncThrottle";
-import { getParameters } from "../shared/parameters/getParameters";
-import { Param_Api } from "../shared/parameters/types";
+import { AsyncThrottle } from "@mskg/tabler-world-common";
+import { getParameters, Param_Api } from "@mskg/tabler-world-config";
 import { Chunk, downloadChunk } from "./downloadChunk";
 
 // const CHUNK_SIZE = 10;

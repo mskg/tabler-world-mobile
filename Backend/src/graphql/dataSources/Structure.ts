@@ -1,10 +1,8 @@
+import { cachedDataLoader, makeCacheKey, writeThrough } from "@mskg/tabler-world-cache";
+import { ILogger } from "@mskg/tabler-world-common";
+import { useDataService } from "@mskg/tabler-world-rds";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
-import { cachedDataLoader } from "../../shared/cache/cachedDataLoader";
-import { makeCacheKey } from "../../shared/cache/makeCacheKey";
-import { writeThrough } from "../../shared/cache/writeThrough";
-import { ILogger } from "../../shared/logging/ILogger";
-import { useDataService } from "../../shared/rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 // enum RoleNames {

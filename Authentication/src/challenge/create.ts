@@ -1,10 +1,10 @@
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 import { randomDigits } from 'crypto-secure-random-digit';
-import { SES } from 'aws-sdk';
 import { sendEmail } from './sendEmail';
-import { withDatabase } from '../withDatabase';
+import { withDatabase } from '@mskg/tabler-world-rds';
+import { xAWS } from '@mskg/tabler-world-aws';
 
-export const ses = new SES();
+export const ses = new xAWS.SES();
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
     let secretLoginCode: string = "";
 

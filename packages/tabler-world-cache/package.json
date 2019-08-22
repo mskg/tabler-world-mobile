@@ -1,0 +1,26 @@
+{
+  "name": "@mskg/tabler-world-cache",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "author": "Markus Kling",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "@mskg/tabler-world-aws": "0.0.1",
+    "@mskg/tabler-world-config": "0.0.1",
+    "apollo-server-core": "*",
+    "lodash": "*"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/lodash": "^4.14.137",
+    "@types/node": "^12.7.2",
+    "typescript": "^3.5.3"
+  }
+}

@@ -1,4 +1,4 @@
-import { useDataService } from "../../shared/rds/useDataService";
+import { useDataService } from "@mskg/tabler-world-rds";
 import { IApolloContext } from "../types/IApolloContext";
 
 type TokenArgs = {

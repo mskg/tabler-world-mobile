@@ -1,4 +1,4 @@
-import { DynamoDBCache } from "../../shared/cache/DynamoDBCache";
+import { DynamoDBCache } from "@mskg/tabler-world-cache";
 
 export const cache = new DynamoDBCache(
     {

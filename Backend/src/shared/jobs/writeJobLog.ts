@@ -1,5 +1,5 @@
 
-import { IDataService } from "../rds/IDataService";
+import { IDataService } from "@mskg/tabler-world-rds";
 
 // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
 function replaceErrors(_key: string, value: any) {

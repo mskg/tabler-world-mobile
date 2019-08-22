@@ -1,6 +1,5 @@
+import { getParameters, Param_Api } from '@mskg/tabler-world-config';
 import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
-import { getParameters } from '../../shared/parameters/getParameters';
-import { Param_Api } from '../../shared/parameters/types';
 import { TTLs } from '../cache/TTLs';
 import { IApolloContext } from '../types/IApolloContext';
 

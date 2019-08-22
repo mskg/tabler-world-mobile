@@ -1,6 +1,5 @@
-import { makeCacheKey } from "../../shared/cache/makeCacheKey";
-import { writeThrough } from "../../shared/cache/writeThrough";
-import { useDataService } from "../../shared/rds/useDataService";
+import { makeCacheKey, writeThrough } from "@mskg/tabler-world-cache";
+import { useDataService } from "@mskg/tabler-world-rds";
 import { IApolloContext } from "../types/IApolloContext";
 
 export const RolesResolver = {

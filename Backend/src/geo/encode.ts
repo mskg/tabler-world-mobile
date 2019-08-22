@@ -1,5 +1,5 @@
-import { AsyncThrottle } from "../shared/AsyncThrottle";
-import { IDataService } from "../shared/rds/IDataService";
+import { AsyncThrottle } from "@mskg/tabler-world-common";
+import { IDataService } from "@mskg/tabler-world-rds";
 import { addressHash } from "./addressHash";
 import { addressToString } from "./addressToString";
 import { IAddress } from "./IAddress";

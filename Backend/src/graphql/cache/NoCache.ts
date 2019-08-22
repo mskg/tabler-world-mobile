@@ -1,5 +1,5 @@
+import { CacheData, CacheValues, IManyKeyValueCache } from "@mskg/tabler-world-cache";
 import { KeyValueCache } from 'apollo-server-core';
-import { CacheData, CacheValues, IManyKeyValueCache } from "../../shared/cache/types";
 
 // we still support the query cache
 export class NoCache implements KeyValueCache<string>, IManyKeyValueCache<string> {

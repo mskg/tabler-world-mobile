@@ -1,4 +1,5 @@
 const slsw = require("serverless-webpack");
+const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
@@ -9,13 +10,18 @@ module.exports = {
 
   // https://github.com/serverless-heaven/serverless-webpack/issues/292
   // this bundles these two dependencies, but removes the indirect depencency to aws-sdk
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    nodeExternals({
+      modulesDir: path.resolve(__dirname, '../node_modules')
+    })
+  ],
 
   mode: slsw.lib.webpack.isLocal ? "development" : "production",
 
   optimization: {
     // We no not want to minimize our code.
-    minimize: true
+    minimize: true,
   },
 
   performance: {
@@ -36,10 +42,15 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto'
+      },
+      {
         test: /\.ts(x?)$/,
         use: [
           {
-            loader: 'ts-loader'
+            loader: 'ts-loader',
           }
         ],
       },

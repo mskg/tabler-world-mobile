@@ -1,7 +1,6 @@
-import { EXECUTING_OFFLINE } from "../../shared/isOffline";
-import { getParameters } from "../../shared/parameters/getParameters";
-import { Param_Nearby } from "../../shared/parameters/types";
-import { useDataService } from "../../shared/rds/useDataService";
+import { EXECUTING_OFFLINE } from "@mskg/tabler-world-aws";
+import { getParameters, Param_Nearby } from "@mskg/tabler-world-config";
+import { useDataService } from "@mskg/tabler-world-rds";
 import { IApolloContext } from "../types/IApolloContext";
 
 type MyLocationInput = {

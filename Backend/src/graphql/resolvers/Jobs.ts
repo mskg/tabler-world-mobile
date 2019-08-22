@@ -1,4 +1,4 @@
-import { useDataService } from "../../shared/rds/useDataService";
+import { useDataService } from "@mskg/tabler-world-rds";
 import { isAdmin } from "../auth/isAdmin";
 import { IApolloContext } from "../types/IApolloContext";
 

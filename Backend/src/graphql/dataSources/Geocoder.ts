@@ -1,6 +1,6 @@
+import { useDataService } from "@mskg/tabler-world-rds";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
-import { useDataService } from "../../shared/rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 export class GeocoderDataSource extends DataSource<IApolloContext> {

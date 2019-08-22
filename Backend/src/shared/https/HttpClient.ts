@@ -1,4 +1,4 @@
-import { xHttps } from "../xray/aws";
+import { xHttps } from "@mskg/tabler-world-aws";
 
 export class HttpClient {
     private _maxTries = 3;

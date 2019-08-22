@@ -1,5 +1,5 @@
+import { useDataService } from "@mskg/tabler-world-rds";
 import _ from "lodash";
-import { useDataService } from "../../shared/rds/useDataService";
 import { SECTOR_MAPPING } from "../helper/Sectors";
 import { IApolloContext } from "../types/IApolloContext";
 

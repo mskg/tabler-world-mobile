@@ -1,10 +1,8 @@
+import { cachedDataLoader, makeCacheKey, writeThrough } from "@mskg/tabler-world-cache";
+import { useDataService } from "@mskg/tabler-world-rds";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import DataLoader from "dataloader";
 import _ from "lodash";
-import { cachedDataLoader } from "../../shared/cache/cachedDataLoader";
-import { makeCacheKey } from "../../shared/cache/makeCacheKey";
-import { writeThrough } from "../../shared/cache/writeThrough";
-import { useDataService } from "../../shared/rds/useDataService";
 import { filter } from "../privacy/filter";
 import { IApolloContext } from "../types/IApolloContext";
 

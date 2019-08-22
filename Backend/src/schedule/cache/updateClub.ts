@@ -1,6 +1,6 @@
-import { makeCacheKey } from "../../shared/cache/makeCacheKey";
-import { IDataService } from "../../shared/rds/IDataService";
-import { xAWS } from "../../shared/xray/aws";
+import { xAWS } from "@mskg/tabler-world-aws";
+import { makeCacheKey } from "@mskg/tabler-world-cache";
+import { IDataService } from "@mskg/tabler-world-rds";
 import { cache } from "./cacheInstance";
 
 // we keep an im memory hash of the last updated clubs

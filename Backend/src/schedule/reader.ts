@@ -1,11 +1,10 @@
+import { StopWatch } from "@mskg/tabler-world-common";
+import { withClient, withDatabase } from "@mskg/tabler-world-rds";
 import { Context } from 'aws-lambda';
 import { SQS } from "aws-sdk";
 import { SendMessageBatchRequestEntry } from 'aws-sdk/clients/sqs';
 import _ from 'lodash';
 import { writeJobLog } from '../shared/jobs/writeJobLog';
-import { withClient } from '../shared/rds/withClient';
-import { withDatabase } from '../shared/rds/withDatabase';
-import { StopWatch } from '../shared/StopWatch';
 import { CONFIGURATIONS } from './Configurations';
 import { Chunk, downloadChunk } from "./downloadChunk";
 import { fetchParallel } from "./fetchParallel";

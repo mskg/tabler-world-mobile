@@ -1,6 +1,6 @@
-import { SES } from 'aws-sdk';
 import { readFileSync } from "fs";
 import { ses } from './create';
+
 export async function sendEmail(emailAddress: string, secretLoginCode: string) {
     console.log("sending email");
     var filename = require("./mail.html");
@@ -11,7 +11,7 @@ export async function sendEmail(emailAddress: string, secretLoginCode: string) {
         .replace(/##MAIL##/g, maskEMail)
         .replace(/##CODE##/g, secretLoginCode);
 
-    const params: SES.SendEmailRequest = {
+    const params: AWS.SES.SendEmailRequest = {
         Destination: { ToAddresses: [emailAddress] },
         Message: {
             Body: {

@@ -1,4 +1,4 @@
-import { IDataService } from '../shared/rds/IDataService';
+import { IDataService } from '@mskg/tabler-world-rds';
 
 export const refreshViews = async (client: IDataService) => {
     console.log("Updating views");

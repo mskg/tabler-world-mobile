@@ -1,5 +1,5 @@
+import { useDataService } from "@mskg/tabler-world-rds";
 import _ from "lodash";
-import { useDataService } from "../../shared/rds/useDataService";
 import { IApolloContext } from "../types/IApolloContext";
 
 type QuerySettings = {

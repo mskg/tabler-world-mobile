@@ -1,5 +1,5 @@
+import { withDatabase } from "@mskg/tabler-world-rds";
 import { SQSHandler } from "aws-lambda";
-import { withDatabase } from "../shared/rds/withDatabase";
 import { updateClub } from "./cache/updateClub";
 import { updateMember } from "./cache/updateMember";
 import { QueueEntry } from "./QueueEntry";

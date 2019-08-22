@@ -1,5 +1,5 @@
+import { removeEmptyTags } from "@mskg/tabler-world-common";
 import _ from "lodash";
-import { removeEmptyTags } from "../helper/removeEmptyTags";
 import { IApolloContext } from "../types/IApolloContext";
 
 type IdQuery = {

@@ -1,7 +1,6 @@
+import { IDataQuery, useDatabase } from "@mskg/tabler-world-rds";
 import { Handler } from 'aws-lambda';
 import warmer from 'lambda-warmer';
-import { IDataQuery } from "../shared/data/IDataQuery";
-import { useDatabase } from '../shared/rds/useDatabase';
 
 export const handler: Handler<IDataQuery, any> = (event, _context, callback) => {
   warmer(event).then((isWarmer: boolean) => {
