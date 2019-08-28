@@ -26,10 +26,11 @@ export async function startLocationTask(): Promise<boolean> {
         delete settings.pollInterval;
         logger.debug("settings", settings);
 
-        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
-
         const location = await Location.getCurrentPositionAsync();
-        return await handleLocationUpdate([location], true);
+        const result = await handleLocationUpdate([location], true);
+
+        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
+        return result;
       }
       catch (e) {
         logger.error(e, `Start of ${LOCATION_TASK_NAME} failed`);
