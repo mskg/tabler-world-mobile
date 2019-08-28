@@ -35,6 +35,11 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class MeLocationBase extends React.Component<Props, State> {
+    getLocation(): string {
+        if (!this.props.address) { return I18N.NearbyMembers.near(); }
+        return this.props.address.city || this.props.address.region || I18N.NearbyMembers.near();
+    }
+
     render() {
         return (
             <Query<Me>
@@ -47,7 +52,7 @@ class MeLocationBase extends React.Component<Props, State> {
                             <InternalMeListItemBase
                                 theme={this.props.theme}
                                 title={<Title>{medata.Me.firstname} {medata.Me.lastname}</Title>}
-                                subtitle={(this.props.address!.city || this.props.address!.region || I18N.NearbyMembers.near()) + ", " + I18N.NearbyMembers.ago(
+                                subtitle={this.getLocation() + ", " + I18N.NearbyMembers.ago(
                                     timespan(
                                         this.props.now,
                                         this.props.timestamp
