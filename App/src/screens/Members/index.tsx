@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Vibration } from 'react-native';
+import { Dimensions, StatusBar, StyleSheet, Vibration } from 'react-native';
 import { Appbar, Colors, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
@@ -158,7 +158,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.setState({ letter: letter });
 
         if (this._sectionList != null && letter != null) {
-            logger.debug("_jumptoLetterDirect", letter);
+            if (__DEV__) { logger.debug("_jumptoLetterDirect", letter); }
 
             requestAnimationFrame(() => {
                 if (this._sectionList != null) {
@@ -200,6 +200,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                             refreshing={this.props.loading}
                             data={this.state.dataSource.data}
                             onRefresh={this.props.refresh}
+                            style={styles.sectionList}
                         />
 
                         <AlphabeticScrollBar
@@ -218,6 +219,13 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    sectionList: {
+        width: Dimensions.get("window").width,
+        height: Dimensions.get("window").height - TOTAL_HEADER_HEIGHT - (StatusBar.currentHeight || 0)
+    }
+})
 
 const ConnectedMembersScreen = connect(
     (state: IAppState): StateProps => ({

@@ -35,6 +35,8 @@ type OwnProps = {
     onItemSelected?: (member: IMemberOverviewFragment) => void,
 
     setRef?: (ref) => void;
+
+    style?: any,
 };
 
 type DispatchPros = {
@@ -211,8 +213,8 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         return (
             <StickyContainer stickyHeaderIndices={this.state.sectionIndexes}>
                 <RecyclerListView
-                    style={{ minHeight: 1, minWidth: 1 }}
                     ref={this.props.setRef}
+                    style={this.props.style}
 
                     initialOffset={0}
                     initialRenderIndex={0}

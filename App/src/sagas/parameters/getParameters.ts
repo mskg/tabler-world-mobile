@@ -43,11 +43,14 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
         if (result.data.getParameters != null) {
             const keys = Object.keys(ParameterName).map(k => `Parameter_${ParameterName[k]}`);
             logger.debug("Removing", keys);
+
             yield AsyncStorage.multiRemove(keys);
 
-            yield AsyncStorage.multiSet(
-                result.data.getParameters.map(p => ([`Parameter_${p.name}`, JSON.stringify(p.value)]))
-            );
+            if (result.data.getParameters.length > 0) {
+                yield AsyncStorage.multiSet(
+                    result.data.getParameters.map(p => ([`Parameter_${p.name}`, JSON.stringify(p.value)]))
+                );
+            }
 
             logger.debug("Settings are", yield AsyncStorage.multiGet(keys));
         }

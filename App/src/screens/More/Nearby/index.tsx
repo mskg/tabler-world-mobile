@@ -170,7 +170,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
     job?: number;
     _planUpdate = (refetch: () => Promise<any>) => {
-        if (this.job) return;
+        logger.debug("_planUpdate", this.job, this.state.interval, this.mounted);
 
         if (this.state.interval && this.mounted) {
             this.job = setTimeout(() => {
