@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, StatusBar, StyleSheet, Vibration } from 'react-native';
+import { Dimensions, StatusBar, StyleSheet, Vibration, View } from 'react-native';
 import { Appbar, Colors, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
@@ -193,15 +193,16 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                             || this.state.dataSource.data != null
                         )
                     } previewComponent={<MemberListPlaceholder />}>
-                        <MemberSectionList
-                            setRef={ref => this._sectionList = ref}
-                            extraData={this.state.forceUpdate}
-                            me={this.state.me}
-                            refreshing={this.props.loading}
-                            data={this.state.dataSource.data}
-                            onRefresh={this.props.refresh}
-                            style={styles.sectionList}
-                        />
+                        <View style={styles.sectionList}>
+                            <MemberSectionList
+                                setRef={ref => this._sectionList = ref}
+                                extraData={this.state.forceUpdate}
+                                me={this.state.me}
+                                refreshing={this.props.loading}
+                                data={this.state.dataSource.data}
+                                onRefresh={this.props.refresh}
+                            />
+                        </View>
 
                         <AlphabeticScrollBar
                             isPortrait={false}
