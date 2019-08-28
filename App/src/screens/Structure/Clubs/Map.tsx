@@ -16,7 +16,6 @@ import { ClubAvatar } from '../../../components/ClubAvatar';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
-import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
 import { Categories, Logger } from "../../../helper/Logger";
 import { normalizeForSearch } from '../../../helper/normalizeForSearch';
@@ -178,11 +177,12 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
+        if (this.props.data == null || this.props.data.Clubs == null) {
+            return <FullScreenLoading />;
+        }
+
         return (
-            <Placeholder
-                ready={this.props.data != null && this.props.data.Clubs != null}
-                previewComponent={<FullScreenLoading />}
-            >
+            <>
                 <MapView
                     ref={(ref) => { this.mapRef = ref; }}
 
@@ -287,7 +287,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     icon={({ size, color }) => <Ionicons size={size + 2} color={color} name="md-compass" />}
                     onPress={this._getLocationAsync}
                 />
-            </Placeholder>
+            </>
         );
     }
 }
