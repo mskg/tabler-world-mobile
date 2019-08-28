@@ -6,10 +6,10 @@ import * as SecureStore from 'expo-secure-store';
 import { AsyncStorage } from 'react-native';
 import { put } from 'redux-saga/effects';
 import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
+import { disableNearbyTablers } from '../../helper/geo/disable';
 import * as actions from '../../redux/actions/user';
 import { getReduxPersistor } from '../../redux/getRedux';
 import { FILESTORAGE_KEY } from '../../redux/persistor/Constants';
-import { disableLocationTracking } from '../settings/checkLocationTask';
 import { removePushToken } from '../tokens/removePushToken';
 import { logger } from './logger';
 
@@ -17,7 +17,7 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
   logger.debug("logoutUser");
 
   try { yield removePushToken(); } catch (e) { logger.error(e, "Failed to remove token"); }
-  try { yield disableLocationTracking(); } catch (e) { logger.error(e, "Failed to disable tracking"); }
+  try { yield disableNearbyTablers(); } catch (e) { logger.error(e, "Failed to disable tracking"); }
 
   yield AsyncStorage.clear();
   yield SecureStore.deleteItemAsync(FILESTORAGE_KEY);

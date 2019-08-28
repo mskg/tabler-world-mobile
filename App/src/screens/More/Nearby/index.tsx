@@ -3,18 +3,20 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { AppState, Linking, Platform, ScrollView, View } from "react-native";
+import { Alert, AppState, Linking, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationEventSubscription, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
-import { InlineLoading } from '../../../components/Loading';
+import { FullScreenLoading, InlineLoading } from '../../../components/Loading';
 import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
 import { MemberTitle } from '../../../components/Member/MemberTitle';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { distance } from '../../../helper/distance';
+import { disableNearbyTablers } from '../../../helper/geo/disable';
+import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { GeoParameters } from '../../../helper/parameters/Geo';
 import { getParameterValue } from '../../../helper/parameters/getParameter';
 import { timespan } from '../../../helper/timespan';
@@ -38,6 +40,7 @@ type State = {
     canSet?: boolean,
     visible: boolean,
     interval: number,
+    enabling?: boolean,
 };
 
 type OwnProps = {
@@ -159,12 +162,18 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         }).catch(logger.error);
     }
 
-    _enable = () => {
-        this.props.updateSetting({
-            name: "nearbyMembers",
-            value: true,
-        });
+    _enable = async () => {
+        this.setState({ enabling: true });
 
+        try {
+            await enableNearbyTablers();
+        }
+        catch {
+            try { disableNearbyTablers(); } catch { }
+            Alert.alert(I18N.Settings.locationfailed);
+        }
+
+        this.setState({ enabling: false });
         this.didFocus();
     }
 
@@ -260,8 +269,9 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
-        if (!this.state.visible) return null;
-        // logger.log(this.props);
+        if (!this.state.visible) {
+            return (<View style={[StyleSheet.absoluteFillObject, {backgroundColor: this.props.theme.colors.background}]}></View>);
+        }
 
         return (
             <ScreenWithHeader header={{
@@ -277,7 +287,11 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                     <CannotLoadWhileOffline />
                 }
 
-                {!this.props.nearbyMembers && !this.props.offline &&
+                {this.state.enabling &&
+                    <FullScreenLoading />
+                }
+
+                {!this.state.enabling && !this.props.nearbyMembers && !this.props.offline &&
                     <Message
                         theme={this.props.theme}
                         text={I18N.NearbyMembers.off}
@@ -285,7 +299,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                         onPress={this._enable} />
                 }
 
-                {this.props.nearbyMembers && !this.props.offline && this.state.message &&
+                {!this.state.enabling && this.props.nearbyMembers && !this.props.offline && this.state.message &&
                     <Message
                         theme={this.props.theme}
                         text={this.state.message}
@@ -316,7 +330,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     return (
                                         <>
                                             <MeLocation now={Date.now()} />
-                                            <View style={{ marginHorizontal: 16 }}><InlineLoading /></View>
+                                            <View style={{ margin: 16 }}><InlineLoading /></View>
                                         </>
                                     );
                                 }

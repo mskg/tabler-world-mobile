@@ -354,6 +354,7 @@ const de: I18NType = {
 
         contactpermissions: "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
         locationpermission: "Die App kann nicht auf Deinen Standort zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
+        locationfailed: "Die Einstellungen konnten nicht aktualisiert werden.",
 
         firstlast: "Vorname, Nachname",
         lastfirst: "Nachname, Vorname",

@@ -3,7 +3,6 @@ import { all, debounce, fork, takeLatest } from 'redux-saga/effects';
 import * as filterActions from '../redux/actions/filter';
 import * as settingsActions from '../redux/actions/settings';
 import { checkLinking } from './settings/checkLinking';
-import { checkLocationTask } from './settings/checkLocationTask';
 import { restoreSettingsFromCloud } from './settings/restoreFromCloud';
 import { saveFavoritesToCloud } from './settings/saveFavoritesToCloud';
 
@@ -17,6 +16,6 @@ export function* settingsSaga(): SagaIterator {
         // mark record as modified on favorite toggle
         debounce(2*1000, filterActions.toggleFavorite.type, saveFavoritesToCloud),
 
-        takeLatest(settingsActions.updateSetting.type, checkLocationTask),
+        // takeLatest(settingsActions.updateSetting.type, checkLocationTask),
     ]);
 }

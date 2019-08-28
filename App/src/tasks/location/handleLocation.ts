@@ -14,7 +14,7 @@ import { LOCATION_TASK_NAME } from "../Constants";
 import { isSignedIn } from '../isSignedIn';
 import { logger } from './logger';
 
-export async function handleLocationUpdate(locations: LocationData[], enable = false) {
+export async function handleLocationUpdate(locations: LocationData[], enable = false): Promise<boolean> {
   try {
     logger.debug("handleLocationUpdate", locations);
 
@@ -28,13 +28,13 @@ export async function handleLocationUpdate(locations: LocationData[], enable = f
         logger.error(e, "failed to stop " + LOCATION_TASK_NAME + " task.");
       }
 
-      return;
+      return false;
     }
 
     const location = _(locations).maxBy(l => l.timestamp) as LocationData;
     if (location == null) {
       logger.error(new Error("No location found?"));
-      return;
+      return false;
     }
 
     const existing = getReduxStore().getState().location.location;
@@ -43,7 +43,7 @@ export async function handleLocationUpdate(locations: LocationData[], enable = f
       && existing.coords.longitude == location.coords.longitude
       && existing.coords.latitude == location.coords.latitude) {
       logger.debug("Ignoring coordinates");
-      return;
+      return true;
     }
 
     const ci = await NetInfo.getConnectionInfo();
@@ -56,7 +56,7 @@ export async function handleLocationUpdate(locations: LocationData[], enable = f
         location: location,
       }));
 
-      return;
+      return false;
     }
 
     Audit.trackEvent(AuditEventName.LocationUpdate);
@@ -83,8 +83,11 @@ export async function handleLocationUpdate(locations: LocationData[], enable = f
         }
       }
     });
+
+    return true;
   }
   catch (error) {
     logger.error(error, LOCATION_TASK_NAME);
+    return false;
   }
 }

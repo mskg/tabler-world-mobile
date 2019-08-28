@@ -3,8 +3,8 @@ import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, ScrollView, Text as NativeText, View } from "react-native";
-import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
+import { Alert, ScrollView, StyleSheet, Text as NativeText, View } from "react-native";
+import { Banner, Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../../analytics/ActionNames';
@@ -14,8 +14,11 @@ import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../../../apollo/bootstrapApollo';
 import Assets from '../../../Assets';
 import CacheManager from '../../../components/Image/CacheManager';
+import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { isDemoModeEnabled } from '../../../helper/demoMode';
+import { disableNearbyTablers } from '../../../helper/geo/disable';
+import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { LinkingHelper } from '../../../helper/LinkingHelper';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
@@ -39,6 +42,8 @@ type State = {
     emailOptions: any[],
     showExperiments: boolean,
     demoMode: boolean,
+
+    wait?: boolean,
 };
 
 type OwnProps = {
@@ -64,6 +69,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         emailOptions: [{ label: "", value: "", }],
         showExperiments: false,
         demoMode: false,
+        wait: false,
     };
 
     constructor(props) {
@@ -174,7 +180,25 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
             Alert.alert(I18N.Settings.locationpermission);
             this.updateSetting({ name: "nearbyMembers", value: false });
         } else {
-            this.updateSetting({ name: "nearbyMembers", value: !this.props.settings.nearbyMembers });
+            this.setState({ wait: true }, async () => {
+                try {
+                    // switch is flipped
+                    if (!this.props.settings.nearbyMembers /* enable */) {
+                        await enableNearbyTablers();
+                    } else {
+                        await disableNearbyTablers();
+                    }
+                }
+                catch {
+                    if (!this.props.settings.nearbyMembers /* enable */) {
+                        try { disableNearbyTablers(); } catch {}
+                    }
+
+                    Alert.alert(I18N.Settings.locationfailed);
+                }
+
+                this.setState({ wait: false });
+            });
         }
     }
 
@@ -287,266 +311,276 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <ScreenWithHeader header={{ title: I18N.Settings.title, showBack: true }}>
-                <ScrollView>
-                    {this.state.demoMode &&
-                        <Banner
-                            visible={true}
-                            actions={[
-                                {
-                                    label: <NativeText style={{color: this.props.theme.colors.accent}}>{I18N.Settings.logout.button}</NativeText>,
-                                    onPress: this._confirmUnload,
-                                  },
-                            ]}
-                            image={({ size }) =>
-                                <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+            <>
+                <ScreenWithHeader header={{ title: I18N.Settings.title, showBack: true }}>
+                    <ScrollView>
+                        {this.state.demoMode &&
+                            <Banner
+                                visible={true}
+                                actions={[
+                                    {
+                                        label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Settings.logout.button}</NativeText>,
+                                        onPress: this._confirmUnload,
+                                    },
+                                ]}
+                                image={({ size }) =>
+                                    <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                                }
+                            >
+                                {I18N.Settings.logout.demo}
+                            </Banner>
+                        }
+
+                        <List.Section title={I18N.Settings.sections.about}>
+                            <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.Settings.fields.version}
+                                text={Constants.manifest.revisionId || '0.0.0'} />
+                            <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.Settings.fields.channel}
+                                text={Constants.manifest.releaseChannel || 'dev'} />
+                            <Divider />
+
+                            <NextScreen theme={this.props.theme} text={I18N.Settings.ReleaseNotes} onPress={
+                                () => this.props.navigation.navigate(Routes.MD, {
+                                    title: I18N.Settings.ReleaseNotes,
+                                    source: Assets.files.releasenotes
+                                })} />
+                            <Divider />
+                            <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.title} onPress={
+                                () => this.props.navigation.navigate(Routes.Legal)} />
+                            <Divider />
+                        </List.Section>
+
+                        <List.Section title={I18N.Settings.sections.colors}>
+                            <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.Settings.fields.dark}
+                                text={
+                                    <Switch
+                                        color={this.props.theme.colors.accent}
+                                        style={{ marginTop: -4, marginRight: -4 }}
+                                        value={this.props.settings.darkMode}
+                                        onValueChange={this._updateMode}
+                                    />
+                                }
+                            />
+                            <Divider />
+                        </List.Section>
+
+                        <List.Section title={I18N.Settings.sections.apps}>
+                            {this.state.callOptions.length > 0 &&
+                                <>
+                                    <Divider />
+                                    <SelectionList
+                                        theme={this.props.theme}
+                                        field={I18N.Settings.fields.phone}
+                                        items={this.state.callOptions}
+                                        value={this.props.settings.phoneApp}
+                                        onChange={(value: string) => {
+                                            this.updateSetting({
+                                                name: "phoneApp",
+                                                value,
+                                            })
+                                        }}
+                                    />
+                                </>
                             }
-                        >
-                            {I18N.Settings.logout.demo}
-                        </Banner>
-                    }
 
-                    <List.Section title={I18N.Settings.sections.about}>
-                        <Divider />
-                        <Element
-                            theme={this.props.theme}
-                            field={I18N.Settings.fields.version}
-                            text={Constants.manifest.revisionId || '0.0.0'} />
-                        <Divider />
-                        <Element
-                            theme={this.props.theme}
-                            field={I18N.Settings.fields.channel}
-                            text={Constants.manifest.releaseChannel || 'dev'} />
-                        <Divider />
-
-                        <NextScreen theme={this.props.theme} text={I18N.Settings.ReleaseNotes} onPress={
-                            () => this.props.navigation.navigate(Routes.MD, {
-                                title: I18N.Settings.ReleaseNotes,
-                                source: Assets.files.releasenotes
-                            })} />
-                        <Divider />
-                        <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.title} onPress={
-                            () => this.props.navigation.navigate(Routes.Legal)} />
-                        <Divider />
-                    </List.Section>
-
-                    <List.Section title={I18N.Settings.sections.colors}>
-                        <Divider />
-                        <Element
-                            theme={this.props.theme}
-                            field={I18N.Settings.fields.dark}
-                            text={
-                                <Switch
-                                    color={this.props.theme.colors.accent}
-                                    style={{ marginTop: -4, marginRight: -4 }}
-                                    value={this.props.settings.darkMode}
-                                    onValueChange={this._updateMode}
-                                />
+                            {this.state.smsOptions.length > 0 &&
+                                <>
+                                    <Divider />
+                                    <SelectionList
+                                        theme={this.props.theme}
+                                        field={I18N.Settings.fields.sms}
+                                        items={this.state.smsOptions}
+                                        value={this.props.settings.messagingApp}
+                                        onChange={(value: string) => {
+                                            this.updateSetting({
+                                                name: "messagingApp",
+                                                value,
+                                            })
+                                        }}
+                                    />
+                                </>
                             }
-                        />
-                        <Divider />
-                    </List.Section>
 
-                    <List.Section title={I18N.Settings.sections.apps}>
-                        {this.state.callOptions.length > 0 &&
-                            <>
-                                <Divider />
-                                <SelectionList
-                                    theme={this.props.theme}
-                                    field={I18N.Settings.fields.phone}
-                                    items={this.state.callOptions}
-                                    value={this.props.settings.phoneApp}
-                                    onChange={(value: string) => {
-                                        this.updateSetting({
-                                            name: "phoneApp",
-                                            value,
-                                        })
-                                    }}
-                                />
-                            </>
-                        }
+                            {this.state.browserOptions.length > 0 &&
+                                <>
+                                    <Divider />
+                                    <SelectionList
+                                        theme={this.props.theme}
+                                        field={I18N.Settings.fields.web}
+                                        items={this.state.browserOptions}
+                                        value={this.props.settings.browserApp}
+                                        onChange={(value: string) => {
+                                            this.updateSetting({
+                                                name: "browserApp",
+                                                value,
+                                            })
+                                        }}
+                                    />
+                                </>
+                            }
 
-                        {this.state.smsOptions.length > 0 &&
-                            <>
-                                <Divider />
-                                <SelectionList
-                                    theme={this.props.theme}
-                                    field={I18N.Settings.fields.sms}
-                                    items={this.state.smsOptions}
-                                    value={this.props.settings.messagingApp}
-                                    onChange={(value: string) => {
-                                        this.updateSetting({
-                                            name: "messagingApp",
-                                            value,
-                                        })
-                                    }}
-                                />
-                            </>
-                        }
+                            {this.state.emailOptions.length > 0 &&
+                                <>
+                                    <Divider />
+                                    <SelectionList
+                                        theme={this.props.theme}
+                                        field={I18N.Settings.fields.mail}
+                                        items={this.state.emailOptions}
+                                        value={this.props.settings.emailApp}
+                                        onChange={(value: string) => {
+                                            this.updateSetting({
+                                                name: "emailApp",
+                                                value,
+                                            })
+                                        }}
+                                    />
+                                    <Divider />
+                                </>
+                            }
+                        </List.Section>
 
-                        {this.state.browserOptions.length > 0 &&
-                            <>
-                                <Divider />
-                                <SelectionList
-                                    theme={this.props.theme}
-                                    field={I18N.Settings.fields.web}
-                                    items={this.state.browserOptions}
-                                    value={this.props.settings.browserApp}
-                                    onChange={(value: string) => {
-                                        this.updateSetting({
-                                            name: "browserApp",
-                                            value,
-                                        })
-                                    }}
-                                />
-                            </>
-                        }
-
-                        {this.state.emailOptions.length > 0 &&
-                            <>
-                                <Divider />
-                                <SelectionList
-                                    theme={this.props.theme}
-                                    field={I18N.Settings.fields.mail}
-                                    items={this.state.emailOptions}
-                                    value={this.props.settings.emailApp}
-                                    onChange={(value: string) => {
-                                        this.updateSetting({
-                                            name: "emailApp",
-                                            value,
-                                        })
-                                    }}
-                                />
-                                <Divider />
-                            </>
-                        }
-                    </List.Section>
-
-                    <List.Section title={I18N.Settings.sections.contacts}>
-                        {/* <Divider />
+                        <List.Section title={I18N.Settings.sections.contacts}>
+                            {/* <Divider />
                         <Element
                             theme={this.props.theme}
                             field={I18N.Settings.fields.lastSync}
                             text={I18N.Settings.sync.date(this.props.lastSync)} /> */}
-                        <Divider />
-                        <SelectionList
-                            theme={this.props.theme}
-                            field={I18N.Settings.fields.displayOrder}
-                            items={[
-                                { label: I18N.Settings.firstlast, value: "1" },
-                                { label: I18N.Settings.lastfirst, value: "0" },
-                            ]}
-                            value={this.props.settings.diplayFirstNameFirst ? "1" : "0"}
-                            onChange={value => {
-                                this.updateSetting({
-                                    name: "diplayFirstNameFirst", value: value == "1"
-                                })
-                            }}
-                        />
-                        <Divider />
-                        <SelectionList
-                            theme={this.props.theme}
-                            field={I18N.Settings.fields.sortOrder}
-                            items={[
-                                { label: I18N.Settings.firstlast, value: "0" },
-                                { label: I18N.Settings.lastfirst, value: "1" },
-                            ]}
-                            value={this.props.settings.sortByLastName ? "1" : "0"}
-                            onChange={value => {
-                                this.updateSetting({
-                                    name: "sortByLastName", value: value == "1"
-                                })
-                            }}
-                        />
-                        <Divider />
-                    </List.Section>
-
-                    {isFeatureEnabled(Features.ContactSync) &&
-                        <List.Section title={I18N.Settings.sections.sync}>
-                            <Text style={styles.text}>{I18N.Settings.texts.contacts}</Text>
-
                             <Divider />
-                            <Element
+                            <SelectionList
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.syncFavorites}
-                                text={
-                                    <Switch
-                                        color={this.props.theme.colors.accent}
-                                        style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.syncFavorites}
-                                        onValueChange={this._updateSyncFavorites}
-                                    />
-                                }
+                                field={I18N.Settings.fields.displayOrder}
+                                items={[
+                                    { label: I18N.Settings.firstlast, value: "1" },
+                                    { label: I18N.Settings.lastfirst, value: "0" },
+                                ]}
+                                value={this.props.settings.diplayFirstNameFirst ? "1" : "0"}
+                                onChange={value => {
+                                    this.updateSetting({
+                                        name: "diplayFirstNameFirst", value: value == "1"
+                                    })
+                                }}
                             />
                             <Divider />
-                            <Element
+                            <SelectionList
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.syncOwnTable}
-                                text={
-                                    <Switch
-                                        color={this.props.theme.colors.accent}
-                                        style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.syncOwnTable}
-                                        onValueChange={this._updateSyncOwntable}
-                                    />
-                                } />
-                            <Divider />
-                        </List.Section>
-                    }
-
-                    {isFeatureEnabled(Features.BackgroundLocation) &&
-                        <List.Section title={I18N.Settings.sections.nearby}>
-                            <Text style={styles.text}>{I18N.Settings.texts.nearby}</Text>
-                            <Divider />
-                            <Element
-                                theme={this.props.theme}
-                                field={I18N.Settings.fields.nearby}
-                                text={
-                                    <Switch
-                                        color={this.props.theme.colors.accent}
-                                        style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.nearbyMembers}
-                                        onValueChange={this._toggleLocationServices}
-                                    />
-                                }
+                                field={I18N.Settings.fields.sortOrder}
+                                items={[
+                                    { label: I18N.Settings.firstlast, value: "0" },
+                                    { label: I18N.Settings.lastfirst, value: "1" },
+                                ]}
+                                value={this.props.settings.sortByLastName ? "1" : "0"}
+                                onChange={value => {
+                                    this.updateSetting({
+                                        name: "sortByLastName", value: value == "1"
+                                    })
+                                }}
                             />
                             <Divider />
                         </List.Section>
-                    }
 
-                    {this.state.showExperiments &&
-                        <List.Section title={I18N.Settings.sections.experiments}>
-                            <Text style={styles.text}>{I18N.Settings.texts.experiments}</Text>
+                        {isFeatureEnabled(Features.ContactSync) &&
+                            <List.Section title={I18N.Settings.sections.sync}>
+                                <Text style={styles.text}>{I18N.Settings.texts.contacts}</Text>
+
+                                <Divider />
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Settings.fields.syncFavorites}
+                                    text={
+                                        <Switch
+                                            color={this.props.theme.colors.accent}
+                                            style={{ marginTop: -4, marginRight: -4 }}
+                                            value={this.props.settings.syncFavorites}
+                                            onValueChange={this._updateSyncFavorites}
+                                        />
+                                    }
+                                />
+                                <Divider />
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Settings.fields.syncOwnTable}
+                                    text={
+                                        <Switch
+                                            color={this.props.theme.colors.accent}
+                                            style={{ marginTop: -4, marginRight: -4 }}
+                                            value={this.props.settings.syncOwnTable}
+                                            onValueChange={this._updateSyncOwntable}
+                                        />
+                                    } />
+                                <Divider />
+                            </List.Section>
+                        }
+
+                        {isFeatureEnabled(Features.BackgroundLocation) &&
+                            <List.Section title={I18N.Settings.sections.nearby}>
+                                <Text style={styles.text}>{I18N.Settings.texts.nearby}</Text>
+                                <Divider />
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Settings.fields.nearby}
+                                    text={
+                                        <Switch
+                                            color={this.props.theme.colors.accent}
+                                            style={{ marginTop: -4, marginRight: -4 }}
+                                            value={this.props.settings.nearbyMembers}
+                                            onValueChange={this._toggleLocationServices}
+                                        />
+                                    }
+                                />
+                                <Divider />
+                            </List.Section>
+                        }
+
+                        {this.state.showExperiments &&
+                            <List.Section title={I18N.Settings.sections.experiments}>
+                                <Text style={styles.text}>{I18N.Settings.texts.experiments}</Text>
+                                <Divider />
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Settings.fields.experiments}
+                                    text={
+                                        <Switch
+                                            color={this.props.theme.colors.accent}
+                                            style={{ marginTop: -4, marginRight: -4 }}
+                                            value={this.props.settings.experiments}
+                                            onValueChange={this._updateExperimentAlbums}
+                                        />
+                                    }
+                                />
+                                <Divider />
+                            </List.Section>
+                        }
+
+                        <List.Section title={I18N.Settings.sections.reset}>
                             <Divider />
-                            <Element
-                                theme={this.props.theme}
-                                field={I18N.Settings.fields.experiments}
-                                text={
-                                    <Switch
-                                        color={this.props.theme.colors.accent}
-                                        style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.experiments}
-                                        onValueChange={this._updateExperimentAlbums}
-                                    />
-                                }
-                            />
+                            <Action theme={this.props.theme} text={I18N.Settings.fields.clear} onPress={this._clearSyncFlags} />
+                            <Divider />
+                            <Action theme={this.props.theme} text={I18N.Settings.fields.cache} onPress={this._clearCache} />
+                            <Divider />
+                            <Action theme={this.props.theme} text={I18N.Settings.fields.logout} onPress={this._confirmUnload} />
                             <Divider />
                         </List.Section>
-                    }
 
-                    <List.Section title={I18N.Settings.sections.reset}>
-                        <Divider />
-                        <Action theme={this.props.theme} text={I18N.Settings.fields.clear} onPress={this._clearSyncFlags} />
-                        <Divider />
-                        <Action theme={this.props.theme} text={I18N.Settings.fields.cache} onPress={this._clearCache} />
-                        <Divider />
-                        <Action theme={this.props.theme} text={I18N.Settings.fields.logout} onPress={this._confirmUnload} />
-                        <Divider />
-                    </List.Section>
-
-                    <View style={{ height: 50 }} />
-                </ScrollView>
-            </ScreenWithHeader>
+                        <View style={{ height: 50 }} />
+                    </ScrollView>
+                </ScreenWithHeader>
+                {this.state.wait && <Portal>
+                    <>
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: this.props.theme.colors.backdrop, opacity: 0.8 }]}>
+                        </View>
+                        <FullScreenLoading />
+                    </>
+                </Portal>
+                }
+            </>
         );
     }
 }

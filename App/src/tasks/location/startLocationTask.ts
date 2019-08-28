@@ -6,16 +6,17 @@ import { LOCATION_TASK_NAME } from "../Constants";
 import { handleLocationUpdate } from './handleLocation';
 import { logger } from './logger';
 
-export async function startLocationTask() {
+export async function startLocationTask(): Promise<boolean> {
   const enabled = await Location.hasServicesEnabledAsync();
   const started = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
 
   if (enabled) {
-    logger.debug("Requesting permissions");
+    logger.debug("Always requesting permissions, as this might fail on android otherwise");
     await Location.requestPermissionsAsync();
 
     if (started) {
       logger.log(LOCATION_TASK_NAME, "already started");
+      return true;
     }
     else {
       try {
@@ -28,14 +29,16 @@ export async function startLocationTask() {
         await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
 
         const location = await Location.getCurrentPositionAsync();
-        handleLocationUpdate([location], true);
+        return await handleLocationUpdate([location], true);
       }
       catch (e) {
         logger.error(e, `Start of ${LOCATION_TASK_NAME} failed`);
+        return false;
       }
     }
   }
   else {
-    logger.log("*********** LOCATION SERVICES DISABLED ***********");
+    logger.log("*********** LOCATION SERVICES DISABLED");
+    return false;
   }
 }

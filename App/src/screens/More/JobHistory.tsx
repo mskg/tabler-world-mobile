@@ -3,7 +3,7 @@ import { Query } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 import { Card, DataTable, Theme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
-import { InlineLoading } from '../../components/Loading';
+import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { timespan } from '../../helper/timespan';
 import { GetJobs, GetJobs_Jobs_data } from '../../model/graphql/GetJobs';
@@ -58,7 +58,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
 
                         if (data == null || data.Jobs == null) {
                             return (
-                                <InlineLoading />
+                                <FullScreenLoading />
                             );
                         }
 

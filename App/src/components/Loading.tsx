@@ -51,8 +51,8 @@ export default class Loading extends React.PureComponent {
 }
 
 export const FullScreenLoading = (...props: any[]) =>
-    <View style={{ flex: 1, position: "absolute", top: 0, bottom: 0, left: 0, right: 0, }}>
-        <View style={styles.center}>
+    <View style={StyleSheet.absoluteFill}>
+        <View style={[StyleSheet.absoluteFill, styles.center]}>
             <InlineLoading {...props} />
         </View>
     </View>
@@ -69,9 +69,7 @@ const styles = StyleSheet.create({
     },
 
     center: {
-        position: 'absolute',
-        top: 100, left: 0,
-        right: 0, bottom: 0,
+        // top: 100,
         justifyContent: 'center',
         alignItems: 'center'
     },

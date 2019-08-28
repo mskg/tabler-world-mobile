@@ -4,7 +4,7 @@ import { Query } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 import { Banner, Card, DataTable, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
-import { InlineLoading } from '../../components/Loading';
+import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { OpenLink } from '../../helper/OpenLink';
 import { GetLocationHistory } from '../../model/graphql/GetLocationHistory';
@@ -51,7 +51,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
 
                         if (data == null || data.LocationHistory == null) {
                             return (
-                                <InlineLoading />
+                                <FullScreenLoading />
                             );
                         }
 

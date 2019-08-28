@@ -409,6 +409,7 @@ const en = {
 
         contactpermissions: "Location permissions are required in order to use this feature. Please grant permission through the phone's settings area.",
         locationpermission: "Cannot access your location. Please grant permission through the phone's settings area.",
+        locationfailed: "Failed to update location settings",
 
         firstlast: "First, Last",
         lastfirst: "Last, First",

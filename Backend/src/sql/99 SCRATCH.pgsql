@@ -270,7 +270,6 @@ where address is not null
 
 update usersettings
 set settings = jsonb_set('{}', '{nearbymembers}', 'true')
-where settings is null
 
 
 select * from usersettings
