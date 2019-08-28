@@ -19,12 +19,14 @@ interface LocationTaskOptions {
 
 export type GeoParameters = {
     pollInterval: number,
+    reverseGeocodeTimeout: number,
 } & LocationTaskOptions;
 
 // https://docs.expo.io/versions/latest/sdk/location/
 export const GeoParametersDefaults: GeoParameters = {
     accuracy: Location.Accuracy.Low,
     pollInterval: 10*1000, // ms
+    reverseGeocodeTimeout: 10*1000, //ms
 
     distanceInterval: 500,
     deferredUpdatesInterval:

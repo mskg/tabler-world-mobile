@@ -2,7 +2,11 @@ import * as Location from "expo-location";
 import { Feature, FeatureCollection } from "geojson";
 import _ from 'lodash';
 import { AppState } from 'react-native';
-import { Categories, Logger } from './Logger';
+import { ParameterName } from '../../model/graphql/globalTypes';
+import { Categories, Logger } from '../Logger';
+import { GeoParameters } from '../parameters/Geo';
+import { getParameterValue } from '../parameters/getParameter';
+import { timeout } from "./timeout";
 
 export const logger = new Logger(Categories.Helpers.Geo);
 
@@ -10,6 +14,7 @@ type EarthLocation = {
   latitude: number,
   longitude: number,
 };
+
 
 export async function reverseGeocode(location: EarthLocation): Promise<Location.Address | undefined> {
   let address: Location.Address | undefined = undefined;
@@ -20,8 +25,10 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
     // https://developer.apple.com/documentation/corelocation/clgeocoder
     if (AppState.currentState === "active") {
       try {
+        const params = await getParameterValue<GeoParameters>(ParameterName.geo);
+
         // might fail if no key on android
-        const coded = await Location.reverseGeocodeAsync(location);
+        const coded = await timeout(params.reverseGeocodeTimeout, Location.reverseGeocodeAsync(location));
         address = coded && coded.length > 0 ? coded[0] : undefined;
 
         if (address && address.city == null) {
@@ -59,7 +66,7 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
   return undefined;
 }
 
-const deCountries = require("../i18n/countries/de.json");
+const deCountries = require("../../i18n/countries/de.json");
 const reversed = _(deCountries.countries).entries().reduce(
   (p, c) => {
     p[c[1].toUpperCase()] = c[0];
@@ -85,7 +92,7 @@ async function photon(location: EarthLocation): Promise<Location.Address | undef
   const props = feature.properties || {};
   logger.debug("Geocoded", "to", props);
 
-  const isoCountryCode = reversed[(props["country"] ||"").toUpperCase()];
+  const isoCountryCode = reversed[(props["country"] || "").toUpperCase()];
 
   return {
     // @ts-ignore

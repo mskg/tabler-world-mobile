@@ -24,6 +24,7 @@ export async function startLocationTask(): Promise<boolean> {
 
         const settings = await getParameterValue<GeoParameters>(ParameterName.geo);
         delete settings.pollInterval;
+        delete settings.reverseGeocodeTimeout;
         logger.debug("settings", settings);
 
         const location = await Location.getCurrentPositionAsync();

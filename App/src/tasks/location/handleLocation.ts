@@ -5,7 +5,7 @@ import { NetInfo } from 'react-native';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { bootstrapApollo } from "../../apollo/bootstrapApollo";
-import { reverseGeocode } from '../../helper/reverseGeocode';
+import { reverseGeocode } from '../../helper/geo/reverseGeocode';
 import { PutLocation, PutLocationVariables } from "../../model/graphql/PutLocation";
 import { EnableLocationServicesMutation, PutLocationMutation } from "../../queries/PutLocation";
 import { setLocation } from "../../redux/actions/location";
