@@ -71,8 +71,13 @@ export class Categories {
     }
 }
 
-const FILTER = /Location|Redux|Nearby/ig; // /NearBy/ig; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
+let FILTER = undefined; // /Location|Redux|Nearby/ig; // /NearBy/ig; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
 const MAX = 24;
+
+// safety
+if (!__DEV__) {
+    FILTER = undefined;
+}
 
 export class Logger {
     private category;
