@@ -22,7 +22,9 @@ export class SecureStorage {
 
     const fixedKey = SecureStorage.fixKey(MEMORY_KEY + key);
     SecureStorage.dataMemory[key] = value;
-    SecureStore.setItemAsync(fixedKey, value);
+    SecureStore.setItemAsync(fixedKey, value, {
+      keychainAccessible: SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
+    });
 
     AsyncStorage.setItem(MEMORY_KEY, JSON.stringify(Object.keys(SecureStorage.dataMemory)));
     return SecureStorage.dataMemory[key];

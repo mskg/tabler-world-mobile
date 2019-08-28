@@ -24,6 +24,9 @@ const authUserConfig: PersistConfig = {
         : storage,
 
     timeout: 0,
+
+    version: MIGRATE_VERSION,
+    migrate: migrateToNull("auth"),
 };
 
 const defaultConfig = {
@@ -31,7 +34,6 @@ const defaultConfig = {
     stateReconciler: autoMergeLevel2,
 
     version: MIGRATE_VERSION,
-    migrate: migrateToNull
 };
 
 export default {
@@ -40,12 +42,29 @@ export default {
 
     auth: persistReducer(authUserConfig, userReducer),
 
-    searchHistory: persistReducer({ ...defaultConfig, key: "searchHistory" }, searchHistoryReducer),
+    searchHistory: persistReducer({
+        ...defaultConfig,
+        key: "searchHistory",
+        migrate: migrateToNull("searchHistory")
+    }, searchHistoryReducer),
 
-    settings: persistReducer({ ...defaultConfig, key: "settings" }, settingsReducer),
-    filter: persistReducer({ ...defaultConfig, key: "filter" }, filterReducer),
+    settings: persistReducer({
+        ...defaultConfig,
+        key: "settings",
+        migrate: migrateToNull("settings")
+    }, settingsReducer),
 
-    location: persistReducer({ ...defaultConfig, key: "location" }, locationReducer),
+    filter: persistReducer({
+        ...defaultConfig,
+        key: "filter",
+        migrate: migrateToNull("filter")
+    }, filterReducer),
+
+    location: persistReducer({
+        ...defaultConfig,
+        key: "location",
+        migrate: migrateToNull("location")
+    }, locationReducer),
 
     snacks: snackReducer,
 };

@@ -1,26 +1,13 @@
 import { createMigrate } from 'redux-persist';
+import { INITIAL_STATE } from './initialState';
 
-export const MIGRATE_VERSION = 31;
+export const MIGRATE_VERSION = 34;
 
-const NULL = (state) => {
-  console.warn('Migration running to version', MIGRATE_VERSION);
-  return undefined;
-};
+// const NULL = (state) => {
+//   console.warn('Migration running to version', MIGRATE_VERSION);
+//   return undefined;
+// };
 
-const migrations = {
-  19: NULL,
-  20: NULL,
-  21: NULL,
-  22: NULL,
-  23: NULL,
-  24: NULL,
-  25: NULL,
-  26: NULL,
-  27: NULL,
-  28: NULL,
-  29: NULL,
-  30: NULL,
-  MIGRATE_VERSION: NULL,
-};
-
-export const migrateToNull = createMigrate(migrations, { debug: false });
+export const migrateToNull = (state: keyof typeof INITIAL_STATE) => createMigrate({
+  [MIGRATE_VERSION - 1]: () => INITIAL_STATE[state],
+}, { debug: __DEV__ });

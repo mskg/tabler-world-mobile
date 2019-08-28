@@ -14,6 +14,7 @@
 - Some members could not be exported to the phonebook on ios #70
 - Sometimes, two-letter text avatars were hidden in member overview
 - Settings were not saved, when not settings existed at all #71
+- Background jobs could not access JWT tokens #68
 
 # v1.0.1
 
