@@ -17,15 +17,19 @@ type AllParameterTypes =
     | FetchParameters
     | TimeoutParameters
     | UrlParameters
-;
+    ;
 
 export async function getParameterValue<T extends AllParameterTypes>(name: ParameterName): Promise<T> {
-    const param = await AsyncStorage.getItem(`Parameter_`+ name);
+    const param = await AsyncStorage.getItem(`Parameter_` + name);
 
     // if we add new values, we need them
-    return param != null ? {
-        ...defaults[name],
-        ...JSON.parse(param)
-     } : defaults[name] as T;
+    return param != null
+        ? {
+            ...defaults[name],
+            ...JSON.parse(param)
+        }
+        : {
+            ...defaults[name]
+        } as T;
 }
 
