@@ -2,6 +2,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { AsyncStorage } from 'react-native';
 import { Categories, Logger } from '../helper/Logger';
+import { Mutex } from '../helper/Mutex';
 
 const MEMORY_KEY = 'TokenStore';
 const logger = new Logger(Categories.Helpers.SecureStore);
@@ -12,6 +13,7 @@ const logger = new Logger(Categories.Helpers.SecureStore);
  */
 export class SecureStorage {
   static dataMemory = {};
+  static mutex = new Mutex();
 
   static fixKey(key): string {
     return key.replace(/[^a-z0-9\.\-_]/ig, "_");
@@ -31,8 +33,9 @@ export class SecureStorage {
   }
 
   public static getItem(key) {
-    return Object.prototype.hasOwnProperty.call(SecureStorage.dataMemory, key) ?
-    SecureStorage.dataMemory[key] : undefined;
+    return Object.prototype.hasOwnProperty.call(SecureStorage.dataMemory, key)
+      ? SecureStorage.dataMemory[key]
+      : undefined;
   }
 
   public static removeItem(key) {
@@ -55,23 +58,36 @@ export class SecureStorage {
    * Rehydrate all keys from storage
    */
   public static async sync() {
-    const hydrateKeys = await AsyncStorage.getItem(MEMORY_KEY);
+    const unlock = await SecureStorage.mutex.lock();
 
-    if (hydrateKeys != null) {
-      SecureStorage.dataMemory = {};
-
-      const keys = JSON.parse(hydrateKeys) as string[];
-
-      for (const key of keys) {
-        logger.debug("restore", key);
-
-        const fixedKey = SecureStorage.fixKey(MEMORY_KEY + key);
-        SecureStorage.dataMemory[key] = await SecureStore.getItemAsync(fixedKey);
+    try {
+      if (Object.keys(SecureStorage.dataMemory).length > 0) {
+        logger.debug("already hydrated");
+        return;
       }
-    } else {
-      SecureStorage.dataMemory = {};
-    }
 
-    return 'SUCCESS';
+      logger.debug("hydrating");
+      const hydrateKeys = await AsyncStorage.getItem(MEMORY_KEY);
+
+      if (hydrateKeys != null) {
+        SecureStorage.dataMemory = {};
+
+        const keys = JSON.parse(hydrateKeys) as string[];
+
+        for (const key of keys) {
+          logger.debug("restore", key);
+
+          const fixedKey = SecureStorage.fixKey(MEMORY_KEY + key);
+          SecureStorage.dataMemory[key] = await SecureStore.getItemAsync(fixedKey);
+        }
+      } else {
+        SecureStorage.dataMemory = {};
+      }
+
+      return 'SUCCESS';
+    }
+    finally {
+      unlock();
+    }
   }
 }

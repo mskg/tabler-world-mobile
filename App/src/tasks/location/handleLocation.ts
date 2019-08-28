@@ -1,3 +1,4 @@
+import * as Location from "expo-location";
 import { LocationData } from "expo-location";
 import _ from "lodash";
 import { NetInfo } from 'react-native';
@@ -10,11 +11,25 @@ import { EnableLocationServicesMutation, PutLocationMutation } from "../../queri
 import { setLocation } from "../../redux/actions/location";
 import { getReduxStore } from "../../redux/getRedux";
 import { LOCATION_TASK_NAME } from "../Constants";
+import { isSignedIn } from '../isSignedIn';
 import { logger } from './logger';
 
 export async function handleLocationUpdate(locations: LocationData[], enable = false) {
   try {
     logger.debug("handleLocationUpdate", locations);
+
+    if (!isSignedIn()) {
+      logger.debug("Not signed in, stopping location services");
+
+      try {
+        await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+      }
+      catch (e) {
+        logger.error(e, "failed to stop " + LOCATION_TASK_NAME + " task.");
+      }
+
+      return;
+    }
 
     const location = _(locations).maxBy(l => l.timestamp) as LocationData;
     if (location == null) {

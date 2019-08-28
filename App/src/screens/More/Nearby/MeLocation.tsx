@@ -47,7 +47,7 @@ class MeLocationBase extends React.Component<Props, State> {
                             <InternalMeListItemBase
                                 theme={this.props.theme}
                                 title={<Title>{medata.Me.firstname} {medata.Me.lastname}</Title>}
-                                subtitle={(this.props.address!.city || this.props.address!.region) + ", " + I18N.NearbyMembers.ago(
+                                subtitle={(this.props.address!.city || this.props.address!.region || I18N.NearbyMembers.near()) + ", " + I18N.NearbyMembers.ago(
                                     timespan(
                                         this.props.now,
                                         this.props.timestamp

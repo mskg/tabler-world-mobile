@@ -71,7 +71,7 @@ export class Categories {
     }
 }
 
-const FILTER = null; // /NearBy/ig; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
+const FILTER = /Location|Redux|Nearby/ig; // /NearBy/ig; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
 const MAX = 24;
 
 export class Logger {

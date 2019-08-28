@@ -253,7 +253,10 @@ set settings = '{"favorites":[9601,11024,126977],"nearbymembers":true}'
 where id = 9699
 
 
-select * from userlocations_match
+select usersettings.id, lastname, settings
+from usersettings, profiles
+where usersettings.id = profiles.id
+
 
 
 update userlocations
@@ -266,5 +269,11 @@ where address is not null
 
 
 update usersettings
-set settings = jsonb_set(settings, '{nearbymembers}', 'true')
+set settings = jsonb_set('{}', '{nearbymembers}', 'true')
+where settings is null
 
+
+select * from usersettings
+
+update usersettings
+set settings = null

@@ -9,6 +9,7 @@ import { IAppState } from '../model/IAppState';
 import { navMiddleware, navReducer } from "../navigation/redux";
 import { setReduxPersistor, setReduxStore, setSagaMiddleware } from './getRedux';
 import { INITIAL_STATE } from './initialState';
+import { migrateToNull, MIGRATE_VERSION } from './migrations';
 import reducers from './reducers';
 
 const logger = new Logger(Categories.Redux);
@@ -21,7 +22,11 @@ export function bootstrapRedux() {
     key: 'root',
     storage,
     stateReconciler: autoMergeLevel2,
+
     blacklist: ["snacks", "updateAvailable", "connection"],
+
+    version: MIGRATE_VERSION,
+    migrate: migrateToNull,
   };
 
   // this breaks the experimental navigation option in DEV!

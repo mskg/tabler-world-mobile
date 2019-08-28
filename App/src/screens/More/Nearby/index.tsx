@@ -21,7 +21,7 @@ import { timespan } from '../../../helper/timespan';
 import { I18N } from '../../../i18n/translation';
 import { ParameterName } from '../../../model/graphql/globalTypes';
 import { NearbyMembers, NearbyMembersVariables } from '../../../model/graphql/NearbyMembers';
-import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../../model/graphql/updateLocationAddress';
+import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../../model/graphql/UpdateLocationAddress';
 import { IAppState } from '../../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../../queries/GetNearbyMembers';
 import { UpdateLocationAddressMutation } from '../../../queries/UpdateLocationAddress';
@@ -91,7 +91,10 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
     handleAppStateChange = (nextAppState: string) => {
         if (nextAppState !== 'active') {
+            this._blur();
             return;
+        } else {
+            this._focus();
         }
 
         this.didFocus();
@@ -171,7 +174,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
         if (this.state.interval && this.mounted) {
             this.job = setTimeout(() => {
-                if (this.mounted) {
+                if (this.mounted && this.state.visible) {
                     logger.log("Refetching");
 
                     refetch().finally(() => {
@@ -257,6 +260,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
+        if (!this.state.visible) return null;
         // logger.log(this.props);
 
         return (
@@ -290,7 +294,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                     />
                 }
 
-                {this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location && this.props.address &&
+                {this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location &&
                     <ScrollView>
                         <Query<NearbyMembers, NearbyMembersVariables>
                             query={GetNearbyMembersQuery}

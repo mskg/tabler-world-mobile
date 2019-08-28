@@ -13,6 +13,7 @@ import { GetMembersByAreasQuery } from "../../queries/GetMembersByAreasQuery";
 import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
 import { getReduxStore } from '../../redux/getRedux';
 import { FETCH_TASKNAME } from '../Constants';
+import { isSignedIn } from '../isSignedIn';
 import { logger } from './logger';
 import { updateCache } from './updateCache';
 
@@ -22,8 +23,7 @@ export async function runBackgroundFetch() {
         return BackgroundFetch.Result.NoData;
     }
 
-    const authState = getReduxStore().getState().auth.state;
-    if (authState !== "singedIn") {
+    if (!isSignedIn()) {
         logger.debug("Not signed in");
         return BackgroundFetch.Result.NoData;
     }

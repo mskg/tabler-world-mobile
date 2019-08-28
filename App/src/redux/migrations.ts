@@ -1,13 +1,13 @@
 import { createMigrate } from 'redux-persist';
-import { INITIAL_STATE } from './initialState';
+import { Categories, Logger } from '../helper/Logger';
 
-export const MIGRATE_VERSION = 34;
+const logger = new Logger(Categories.Redux);
+export const MIGRATE_VERSION = 42;
 
-// const NULL = (state) => {
-//   console.warn('Migration running to version', MIGRATE_VERSION);
-//   return undefined;
-// };
-
-export const migrateToNull = (state: keyof typeof INITIAL_STATE) => createMigrate({
-  [MIGRATE_VERSION - 1]: () => INITIAL_STATE[state],
+//@ts-ignore
+export const migrateToNull = createMigrate({
+  [MIGRATE_VERSION - 1]: ({_persist}) => {
+    logger.log("Running migration, previous", _persist);
+    return {_persist};
+  },
 }, { debug: __DEV__ });
