@@ -21,7 +21,7 @@ custom:
         - aws-sdk
 
   cache_table:
-    Fn::ImportValue: CacheTableArn-${self:custom.stage}
+    Fn::ImportValue: CacheTableName-${self:custom.stage}
 
   email: ${env:ALERT_EMAIL}
 
@@ -165,7 +165,7 @@ provider:
             - ":parameter*/"
             - ${self:custom.stage}
             - "/*"
-          
+
     # tracing AWSXrayWriteOnlyAccess
     - Effect: Allow
       Action:

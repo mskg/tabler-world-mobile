@@ -324,13 +324,20 @@ resources:
     ReaderLogGroup:
       Properties:
         RetentionInDays: "7"
-  
+
   Outputs:
+    CacheTableName:
+      Value:
+      Fn::GetAtt:
+        # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
+        - graphqlsqTable
+        - Arn
+    Export:
+      Name: CacheTableArn-${self:custom.stage}
+
     CacheTableArn:
       Value:
-        Fn::GetAtt:
-          # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
-          - graphqlsqTable
-          - Arn
+        ${self:custom:cache_table}
+
       Export:
-        Name: CacheTableArn-${self:custom.stage}
+        Name: CacheTableName-${self:custom.stage}
