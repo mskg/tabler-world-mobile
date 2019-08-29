@@ -6,7 +6,7 @@ pool:
   demands: npm
 
 variables:
-  VERSION: 1.1
+  VERSION: 1.2
   PACKAGE_DIR: 'services/tabler-world-api'
 
 trigger:
@@ -30,15 +30,6 @@ steps:
 - template: ../devops/publish-defaults.yml
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: tabler-world-api/'
   inputs:
     PathtoPublish: '$(PACKAGE_DIR)'
     ArtifactName: source/Backend
-
-- powershell: |
-    Write-Host "Tagging Build: $env:BuildNumber"
-
-    git tag $env:BuildNumber
-    git push origin $env:BuildNumber
-  env:
-    BuildNumber: tag-$(Build.BuildNumber)

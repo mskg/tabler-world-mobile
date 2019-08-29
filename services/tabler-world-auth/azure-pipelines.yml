@@ -6,7 +6,7 @@ pool:
   demands: npm
 
 variables:
-  VERSION: 1.1
+  VERSION: 1.2
   PACKAGE_DIR: 'services/tabler-world-auth'
 
 trigger:
@@ -32,11 +32,3 @@ steps:
   inputs:
     PathtoPublish: '$(PACKAGE_DIR)'
     ArtifactName: source/Authentication
-
-- powershell: |
-    Write-Host "Tagging Build: $env:BuildNumber"
-
-    git tag $env:BuildNumber
-    git push origin $env:BuildNumber
-  env:
-    BuildNumber: tag-$(Build.BuildNumber)
