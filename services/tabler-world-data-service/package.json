@@ -1,0 +1,43 @@
+{
+  "name": "@mskg/tabler-world-data-service",
+  "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@mskg/tabler-world-aws": "0.0.1",
+    "@mskg/tabler-world-rds-client": "0.0.1",
+    "aws-xray-sdk": "^2.3.3",
+    "lambda-warmer": "^1.1.2",
+    "pg": "^7.8.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.26",
+    "@types/node": "^11.10.4",
+    "@types/pg": "^7.4.13",
+    "aws-sdk": "^2.414.0",
+    "cross-env": "^5.2.0",
+    "env-cmd": "^8.0.2",
+    "file-loader": "^3.0.1",
+    "ntl": "^3.2.4",
+    "serverless": "^1.49.0",
+    "serverless-offline": "^5.8.0",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-webpack": "^5.3.0",
+    "ts-loader": "^6.0.1",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.32.1",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "deploy": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
+    "package": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless package --force --verbose\"",
+    "dev": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless offline start --port 3001 --verbose --noTimeout --noAuth\"",
+    "start": "ntl"
+  }
+}
+
+

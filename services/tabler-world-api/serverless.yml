@@ -173,16 +173,7 @@ provider:
       Action:
         - "lambda:InvokeFunction"
       Resource:
-        Fn::Join:
-          - ""
-          - - "arn:aws:lambda:"
-            - ${self:provider.region}
-            - ":"
-            - Ref: "AWS::AccountId"
-            - ":function:"
-            - "tabler-world-api-"
-            - ${self:custom.stage}
-            - "-data-service"
+        Fn::ImportValue: DataArn-${self:custom.stage}
 
     # read parameters from SSM
     - Effect: Allow
@@ -239,26 +230,6 @@ functions:
     environment:
       db_role: tw_read_${self:custom.stage}
       XRAY_DISABLED: true
-
-  #
-  # data-service
-  #
-  data-service:
-    handler: src/dataservice/lambda.handler
-    timeout: 30
-    tracing: Active
-
-    environment:
-      db_role: tw_read_${self:custom.stage}
-
-    events:
-      - schedule:
-          name: warm-tabler-world-tabler-data-service-${self:custom.stage}
-          rate: rate(15 minutes)
-          enabled: ${self:custom.warm_enabled.${self:custom.stage}}
-          input:
-            warmer: true
-            concurrency: 1
 
   #
   # Import reader
