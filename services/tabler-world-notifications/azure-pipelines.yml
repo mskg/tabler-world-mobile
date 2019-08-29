@@ -10,6 +10,12 @@ variables:
   PACKAGE_DIR: 'services/tabler-world-notifications'
 
 trigger:
+  branches:
+    include:
+    - development
+    - workspace-layout
+    - releases/*
+
   paths:
     include:
       - packages/**/src/*
