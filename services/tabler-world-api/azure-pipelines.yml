@@ -14,9 +14,10 @@ trigger:
     include:
       - packages/**/src/*
       - services/tabler-world-api/src/*
+      - services/tabler-world-api/azure-pipelines.yml
 
 steps:
-- template: ../devops/yarn.yml
+# - template: ../devops/yarn.yml
 
 - task: Npm@1
   displayName: 'npm version'
@@ -34,7 +35,10 @@ steps:
     PathtoPublish: '$(PACKAGE_DIR)'
     ArtifactName: source/Backend
 
-- task: GitTag@5
-  inputs:
-    workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
-    tag: 'api-$(build.buildNumber)'
+- powershell: |
+    Write-Host "Tagging Build: $env:BuildNumber"
+
+    git tag $env:BuildNumber
+    git push origin $env:BuildNumber
+  env:
+    BuildNumber: tag-$(Build.BuildNumber)

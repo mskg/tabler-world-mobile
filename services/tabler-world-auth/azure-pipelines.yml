@@ -14,9 +14,10 @@ trigger:
     include:
       - packages/**/src/*
       - services/tabler-world-auth/src/*
+      - services/tabler-world-auth/azure-pipelines.yml
 
 steps:
-- template: ../devops/yarn.yml
+# - template: ../devops/yarn.yml
 
 - task: Npm@1
   inputs:
@@ -32,7 +33,10 @@ steps:
     PathtoPublish: '$(PACKAGE_DIR)'
     ArtifactName: source/Authentication
 
-- task: GitTag@5
-  inputs:
-    workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
-    tag: 'auth-$(build.buildNumber)'
+- powershell: |
+    Write-Host "Tagging Build: $env:BuildNumber"
+
+    git tag $env:BuildNumber
+    git push origin $env:BuildNumber
+  env:
+    BuildNumber: tag-$(Build.BuildNumber)
