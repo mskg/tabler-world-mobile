@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@mskg/tabler-world-aws": "0.0.1",
+    "@mskg/tabler-world-jobs": "0.0.1",
     "@mskg/tabler-world-rds-client": "0.0.1",
     "aws-xray-sdk": "^2.3.3",
     "date-and-time": "^0.7.0",

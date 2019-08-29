@@ -8,6 +8,7 @@
     "@mskg/tabler-world-aws": "0.0.1",
     "@mskg/tabler-world-cache": "0.0.1",
     "@mskg/tabler-world-geo": "0.0.1",
+    "@mskg/tabler-world-jobs": "0.0.1",
     "@mskg/tabler-world-rds-client": "0.0.1",
     "@sentry/node": "^5.4.0",
     "apollo-datasource-rest": "^0.5.0",

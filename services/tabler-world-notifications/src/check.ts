@@ -3,7 +3,7 @@ import { IDataService, withDatabase } from "@mskg/tabler-world-rds-client";
 import { Context } from "aws-lambda";
 import Expo, { ExpoPushTicket } from 'expo-server-sdk';
 import _ from "lodash";
-import { writeJobLog } from "./writeJobLog";
+import { writeJobLog } from "@mskg/tabler-world-jobs";
 
 let expo = new Expo();
 

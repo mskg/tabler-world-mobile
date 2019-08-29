@@ -4,7 +4,7 @@ import { Context } from 'aws-lambda';
 import { SQS } from "aws-sdk";
 import { SendMessageBatchRequestEntry } from 'aws-sdk/clients/sqs';
 import _ from 'lodash';
-import { writeJobLog } from '../shared/jobs/writeJobLog';
+import { writeJobLog } from "@mskg/tabler-world-jobs";
 import { CONFIGURATIONS } from './Configurations';
 import { Chunk, downloadChunk } from "./downloadChunk";
 import { fetchParallel } from "./fetchParallel";

@@ -1,0 +1,21 @@
+{
+  "name": "@mskg/tabler-world-jobs",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "@mskg/tabler-world-rds-client": "0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}

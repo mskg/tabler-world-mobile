@@ -2,7 +2,7 @@ import { StopWatch } from "@mskg/tabler-world-common";
 import { IDataService, withDatabase } from "@mskg/tabler-world-rds-client";
 import { Context } from "aws-lambda";
 import Expo, { ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
-import { writeJobLog } from "./writeJobLog";
+import { writeJobLog } from "@mskg/tabler-world-jobs";
 
 let expo = new Expo();
 
