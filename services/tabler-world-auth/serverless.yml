@@ -18,6 +18,8 @@ custom:
         - aws-sdk
 
   SES_FROM_ADDRESS: ${env:SES_FROM_ADDRESS}
+  SES_REPLY_ADDRESS: ${env:SES_REPLY_ADDRESS}
+
   email: ${env:ALERT_EMAIL}
 
   alerts:
@@ -25,7 +27,7 @@ custom:
       - dev
       - test
       - prod
-    
+
     topics:
       alarm:
         topic: ${self:service}-${self:custom.stage}-alerts-alarm
@@ -60,7 +62,7 @@ provider:
       Action:
         - ses:SendEMail
         - ses:SendRawEmail
-      Resource: 
+      Resource:
         - "*"
       Condition:
         'ForAllValues:StringLike':
@@ -94,13 +96,13 @@ functions:
   #
   # Authorizer
   #
-  authorizer: 
+  authorizer:
     handler: src/authorizer/lambda.handler
     tracing: Active
 
     environment:
       UserPoolId:
-        Ref: CognitoUserPoolMyUserPool   
+        Ref: CognitoUserPoolMyUserPool
 
   #
   # Auth Challenge
@@ -137,7 +139,7 @@ functions:
       - cognitoUserPool:
           pool: MyUserPool
           trigger: PreSignUp
-    
+
 resources:
   Resources:
     ChallengeLogGroup:
@@ -147,7 +149,7 @@ resources:
     PreDashsignDashupLogGroup:
       Properties:
         RetentionInDays: "30"
-  
+
     CognitoUserPoolMyUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
@@ -174,10 +176,10 @@ resources:
         UserPoolId:
           Ref: CognitoUserPoolMyUserPool
         GenerateSecret: false
-        ExplicitAuthFlows: 
+        ExplicitAuthFlows:
           - CUSTOM_AUTH_FLOW_ONLY
         RefreshTokenValidity: 3650
-        
+
 
     # The federated identity for our user pool to auth with
     CognitoIdentityPool:
@@ -192,10 +194,10 @@ resources:
           - ClientId:
               Ref: CognitoUserPoolClient
             ProviderName:
-              Fn::GetAtt: 
+              Fn::GetAtt:
                 - CognitoUserPoolMyUserPool
                 - ProviderName
-              
+
     # IAM roles
     CognitoIdentityPoolRoles:
       Type: AWS::Cognito::IdentityPoolRoleAttachment
@@ -288,11 +290,11 @@ resources:
           - AuthorizerLambdaFunction
           - Arn
       Export:
-        Name: AuthorizerArn-${self:custom.stage}        
+        Name: AuthorizerArn-${self:custom.stage}
 
     UserPoolArn:
       Value:
-        Fn::GetAtt: 
+        Fn::GetAtt:
           - CognitoUserPoolMyUserPool
           - Arn
       Export:
