@@ -1,8 +1,6 @@
 import { AsyncThrottle } from "@mskg/tabler-world-common";
+import { addressHash, addressToString, IAddress } from "@mskg/tabler-world-geo";
 import { IDataService } from "@mskg/tabler-world-rds-client";
-import { addressHash } from "./addressHash";
-import { addressToString } from "./addressToString";
-import { IAddress } from "./IAddress";
 import { photonImpl } from "./implementations/Komoot";
 
 type Result = {

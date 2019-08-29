@@ -2,7 +2,7 @@ import { withDatabase } from "@mskg/tabler-world-rds-client";
 import { SQSHandler } from "aws-lambda";
 import { Lambda } from "aws-sdk";
 import { encode } from "./encode";
-import { IAddress } from "./IAddress";
+import { IAddress } from "@mskg/tabler-world-geo";
 
 const lambda = new Lambda();
 

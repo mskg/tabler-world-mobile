@@ -1,4 +1,4 @@
-import { addressHash } from "../../geo/addressHash";
+import { addressHash } from "@mskg/tabler-world-geo";
 import { IApolloContext } from "../types/IApolloContext";
 
 function doTrim(s: string | undefined): string | null {

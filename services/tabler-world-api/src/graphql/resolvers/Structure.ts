@@ -1,5 +1,5 @@
 import * as DateParser from 'date-and-time';
-import { addressHash } from '../../geo/addressHash';
+import { addressHash } from '@mskg/tabler-world-geo';
 import { IApolloContext } from "../types/IApolloContext";
 
 type ById = {

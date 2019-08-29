@@ -1,5 +1,5 @@
+import { IAddress } from "@mskg/tabler-world-geo";
 import NodeGeocoder from "node-geocoder";
-import { IAddress } from "../IAddress";
 
 const version = require("../../package.json");
 const HttpsAdapter = require('node-geocoder/lib/httpadapter/httpsadapter');

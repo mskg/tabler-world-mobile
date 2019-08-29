@@ -1,9 +1,8 @@
+import { addressToString, IAddress } from "@mskg/tabler-world-geo";
 import { Feature, FeatureCollection, Point } from "geojson";
 import NodeGeocoder from "node-geocoder";
 import querystring from "querystring";
-import { addressToString } from "../addressToString";
 import { callAPI } from "../httpHelper";
-import { IAddress } from "../IAddress";
 
 /*
 {
