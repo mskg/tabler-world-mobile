@@ -4,14 +4,14 @@
 
 ## Authentication Infrastructure
 
-[README](Authentication/README.md)
+[README](services/tabler-world-auth/README.md)
 
 - **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/6/29)
 - **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/6/56)
 
 ## GraphQL-Backend
 
-[README](Backend/README.md)
+[README](services/tabler-world-api/README.md)
 - **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/5/27)
 - **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/5/66)
 
