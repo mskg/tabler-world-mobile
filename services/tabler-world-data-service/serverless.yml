@@ -161,7 +161,7 @@ functions:
 
 resources:
   Resources:
-    DataDashserviceLogGroup:
+    ApiLogGroup:
       Properties:
         RetentionInDays: "14"
 
@@ -170,7 +170,7 @@ resources:
       Value:
         Fn::GetAtt:
           # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
-          - DataDashserviceLambdaFunction
+          - ApiLambdaFunction
           - Arn
       Export:
         Name: DataArn-${self:custom.stage}

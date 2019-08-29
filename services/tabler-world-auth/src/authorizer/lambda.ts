@@ -1,6 +1,6 @@
 import { CustomAuthorizerHandler } from 'aws-lambda';
 import jwt from 'jsonwebtoken';
-import { withDatabase } from '@mskg/tabler-world-rds-client';
+import { withClient } from '@mskg/tabler-world-rds-client';
 import { AuthPolicy, HttpVerb } from './AuthPolicy';
 import { downloadPems } from './downloadPems';
 import { Token } from './types';
@@ -91,7 +91,7 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
 
     const result = policy.build();
 
-    return await withDatabase(context, async (client) => {
+    return await withClient(context, async (client) => {
         const res = await client.query(
             "select * from profiles where rtemail = $1 and removed = false", 
             [payload.email]);

@@ -20,10 +20,6 @@ custom:
   SES_FROM_ADDRESS: ${env:SES_FROM_ADDRESS}
   email: ${env:ALERT_EMAIL}
 
-  db_host_import:
-    Fn::ImportValue:
-        DatabaseHostId
-
   alerts:
     stages:
       - dev
@@ -59,14 +55,6 @@ provider:
   environment:
     ${file(serverless.env.yml):${self:custom.stage}}
 
-  vpc:
-    securityGroupIds:
-      - Fn::ImportValue: DatabaseSecurityGroupId
-    subnetIds:
-      - Fn::ImportValue: DatabaseSubnetAId
-      - Fn::ImportValue: DatabaseSubnetBId
-      - Fn::ImportValue: DatabaseSubnetCId
-
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -84,16 +72,7 @@ provider:
       Action:
         - "lambda:InvokeFunction"
       Resource:
-        Fn::Join:
-          - ""
-          - - "arn:aws:lambda:"
-            - ${self:provider.region}
-            - ":"
-            - Ref: "AWS::AccountId"
-            - ":function:"
-            - "tabler-world-api-"
-            - ${self:custom.stage}
-            - "-data-service"
+        Fn::ImportValue: DataArn-${self:custom.stage}
 
     # read parameters from SSM
     - Effect: Allow

@@ -1,7 +1,7 @@
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 import { randomDigits } from 'crypto-secure-random-digit';
 import { sendEmail } from './sendEmail';
-import { withDatabase } from '@mskg/tabler-world-rds-client';
+import { withClient } from '@mskg/tabler-world-rds-client';
 import { xAWS } from '@mskg/tabler-world-aws';
 
 export const ses = new xAWS.SES();
@@ -9,7 +9,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
     let secretLoginCode: string = "";
 
     if (!event.request.session || !event.request.session.length) {
-        await withDatabase(context, async (client) => {
+        await withClient(context, async (client) => {
             const res = await client.query(
                 "select * from profiles where rtemail = $1 and removed = FALSE",
                 [event.request.userAttributes.email]);
