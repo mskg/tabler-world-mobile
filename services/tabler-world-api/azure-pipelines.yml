@@ -1,0 +1,35 @@
+# build number
+name: $(VERSION).$(rev:r)
+
+pool:
+  name: Hosted Ubuntu 1604
+  demands: npm
+
+variables:
+  VERSION: 1.1
+  PACKAGE_DIR: 'services/tabler-world-api'
+
+trigger:
+  paths:
+    include:
+      - packages/**/src/*
+      - services/tabler-world-api/src/*
+
+steps:
+- template: ../devops/yarn.yml
+
+- task: Npm@1
+  displayName: 'npm version'
+  inputs:
+    command: custom
+    workingDir: '$(PACKAGE_DIR)'
+    verbose: false
+    customCommand: 'version $(Build.BuildNumber)'
+
+- template: ../devops/publish-defaults.yml
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: tabler-world-api/'
+  inputs:
+    PathtoPublish: '$(PACKAGE_DIR)'
+    ArtifactName: source/Backend
