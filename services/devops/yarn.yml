@@ -11,7 +11,6 @@ steps:
 - powershell: |
    Add-Content ~/.npmrc "always-auth=true`r`n//tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/:_authToken=$(System.AccessToken)"
    Get-Content  ~/.npmrc
-  workingDirectory: '$(SOURCEDIR)'
   displayName: 'PowerShell Script'
 
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
