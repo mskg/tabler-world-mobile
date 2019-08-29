@@ -1,8 +1,8 @@
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
-import { withDatabase } from '@mskg/tabler-world-rds-client';
+import { withClient } from '@mskg/tabler-world-rds-client';
 
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
-    await withDatabase(context, async (client) => {
+    await withClient(context, async (client) => {
         const res = await client.query(
             "select * from profiles where rtemail = $1 and removed = FALSE",
             [event.request.userAttributes.email]);
