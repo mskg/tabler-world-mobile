@@ -199,10 +199,6 @@ functions:
     memorySize: 128
     tracing: Active
 
-    vpc:
-      securityGroupIds: []
-      subnetIds: []
-
     events:
         - http:
             path: graphql-demo
@@ -223,12 +219,7 @@ functions:
     memorySize: 256
     tracing: Active
 
-    vpc:
-      securityGroupIds: []
-      subnetIds: []
-
     environment:
-      # remote
       cache_table: ${self:custom.cache_table}
 
     iamRoleStatementsInherit: true

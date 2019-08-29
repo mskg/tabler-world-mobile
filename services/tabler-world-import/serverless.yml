@@ -94,13 +94,6 @@ provider:
 
   # global role definition
   iamRoleStatements:
-    # allow database access
-    - Effect: "Allow"
-      Action:
-        - "lambda:InvokeFunction"
-      Resource:
-        Fn::ImportValue: DataArn-${self:custom.stage}
-
     # read parameters from SSM
     - Effect: Allow
       Action:
