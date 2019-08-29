@@ -1,4 +1,5 @@
-name: $(Build.DefinitionName)-$(VERSION).$(rev:r)
+# build number
+name: $(VERSION).$(rev:r)
 
 pool:
   name: Hosted Ubuntu 1604
@@ -7,7 +8,12 @@ pool:
 variables:
   VERSION: 1.1
   PACKAGE_DIR: 'services/tabler-world-auth'
-  SOURCEDIR: $(System.DefaultWorkingDirectory)/source
+
+trigger:
+  paths:
+    include:
+      - packages/**/src/*
+      - services/tabler-world-auth/src/*
 
 steps:
 - template: ../devops/yarn.yml
