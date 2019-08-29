@@ -19,7 +19,6 @@ steps:
 - template: ../devops/yarn.yml
 
 - task: Npm@1
-  displayName: 'npm version'
   inputs:
     command: custom
     workingDir: '$(PACKAGE_DIR)'
@@ -29,7 +28,11 @@ steps:
 - template: ../devops/publish-defaults.yml
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: tabler-world-auth/'
   inputs:
     PathtoPublish: '$(PACKAGE_DIR)'
     ArtifactName: source/Authentication
+
+- task: GitTag@5
+  inputs:
+    workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
+    tag: 'auth-$(build.buildNumber)'
