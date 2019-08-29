@@ -6,7 +6,7 @@ plugins:
 custom:
   syncS3Buckets:
     - bucketRef: StaticSite
-      localDir: ../../src/redirect
+      localDir: src/redirect
   bucketName: login.app.roundtable.world
   # hostedZoneName: app.roundtable.world
   # hostedZoneId: ${env:AUTH_ZONE}
