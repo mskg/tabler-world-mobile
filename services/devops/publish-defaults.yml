@@ -6,34 +6,34 @@ steps:
   displayName: 'Publish Artifact: package.json'
   inputs:
     PathtoPublish: package.json
-    ArtifactName: '$(ARTIFACT)'
+    ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: .yarnrc'
   inputs:
     PathtoPublish: .yarnrc
-    ArtifactName: '$(ARTIFACT)'
+    ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: yarn.lock'
   inputs:
     PathtoPublish: yarn.lock
-    ArtifactName: '$(ARTIFACT)'
+    ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: packages/'
   inputs:
     PathtoPublish: packages
-    ArtifactName: '$(ARTIFACT)/packages'
+    ArtifactName: ${{ parameters.ARTIFACT }}/packages
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: config/'
   inputs:
     PathtoPublish: config
-    ArtifactName: '$(ARTIFACT)/config'
+    ArtifactName: ${{ parameters.ARTIFACT }}/config
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: .git-crypt/'
   inputs:
     PathtoPublish: '.git-crypt'
-    ArtifactName: '$(ARTIFACT)/.git-crypt'
+    ArtifactName: ${{ parameters.ARTIFACT }}/.git-crypt

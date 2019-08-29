@@ -16,5 +16,5 @@ steps:
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
   displayName: install
   inputs:
-    projectDirectory: '$(SOURCEDIR)'
+    projectDirectory: ${{ parameters.SOURCEDIR }}
     arguments: install
