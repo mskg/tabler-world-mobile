@@ -1,0 +1,28 @@
+{
+    "files.exclude": {
+        "**/*.js*": {
+            "when": "$(basename).ts"
+        },
+        "**/*.js.map": true
+    },
+
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.tabSize": 4,
+    "editor.useTabStops": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "source.fixAll": true
+    },
+    "search.exclude": {
+        "**/.expo": true,
+        "**/.serverless": true,
+        "**/.webpack": true,
+        "**/dist": true
+    },
+    "files.watcherExclude": {
+        "**/.expo/**": true,
+        "**/.serverless/**": true,
+        "**/.webpack/**": true
+    },
+}

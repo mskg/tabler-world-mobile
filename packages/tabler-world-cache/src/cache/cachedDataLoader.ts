@@ -1,8 +1,8 @@
-import { remove } from "lodash";
 import { Param_TTLS } from "@mskg/tabler-world-config";
+import { remove } from "lodash";
+import { ILogger } from "./ILogger";
 import { TTLs } from "./TTLs";
 import { DefaultCacheType } from "./types";
-import { ILogger } from "./ILogger";
 
 type CacheKeyType = string;
 

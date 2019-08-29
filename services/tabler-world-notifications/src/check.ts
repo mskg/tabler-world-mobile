@@ -1,31 +1,13 @@
 import { StopWatch } from "@mskg/tabler-world-common";
-import { IDataService, withDatabase } from "@mskg/tabler-world-rds-client";
-import { Context } from "aws-lambda";
-import Expo, { ExpoPushTicket } from 'expo-server-sdk';
-import _ from "lodash";
 import { writeJobLog } from "@mskg/tabler-world-jobs";
+import { withDatabase } from "@mskg/tabler-world-rds-client";
+import { Context } from "aws-lambda";
+import Expo from 'expo-server-sdk';
+import _ from "lodash";
+import { removeToken } from "./helper/removeToken";
+import { Receipts } from "./types/Receipts";
 
 let expo = new Expo();
-
-type Receipts = {
-   id: number,
-   createdon: Date,
-   data: ExpoPushTicket[],
-}
-
-async function removeToken(client: IDataService, token: string) {
-    console.log("Removing token", token);
-    return await client.query(`
-UPDATE usersettings
-SET tokens =
-(
-    select array_agg(elem)
-    from unnest(tokens) elem
-    where elem <> $1 and elem is not null
-)
-WHERE tokens @> ARRAY[$1]`,
-        [token]);
-}
 
 export async function handler(_event: any, context: Context, _callback: (error: any, success?: any) => void) {
     try {

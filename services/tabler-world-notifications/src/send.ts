@@ -1,56 +1,18 @@
 import { StopWatch } from "@mskg/tabler-world-common";
-import { IDataService, withDatabase } from "@mskg/tabler-world-rds-client";
-import { Context } from "aws-lambda";
-import Expo, { ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
 import { writeJobLog } from "@mskg/tabler-world-jobs";
+import { withDatabase } from "@mskg/tabler-world-rds-client";
+import { Context } from "aws-lambda";
+import Expo, { ExpoPushMessage } from 'expo-server-sdk';
+import { putReceipts } from "./helper/putReceipts";
+import { removeTokenWithId } from "./helper/removeTokenWithId";
+import { BirthdayNotification } from "./types/BirthdayNotification";
+import { BirthdayPayload } from "./types/BirthdayPayload";
 
 let expo = new Expo();
 
 const Message = {
     title: "Birthday time",
     text: (n: any) => `Help ${n} to have a great day!`,
-};
-
-type BirthdayNotification = {
-    userid: number,
-    rtemail: string,
-    tokens: string[],
-    bid: number,
-    firstname: string,
-    lastname: string,
-}
-
-async function removeToken(client: IDataService, id: number, token: string) {
-    return await client.query(`
-UPDATE usersettings
-SET tokens =
-(
-    select array_agg(elem)
-    from unnest(tokens) elem
-    where elem <> $2 and elem is not null
-)
-WHERE id = $1`,
-        //@ts-ignore
-        [id, token]);
-}
-
-async function putReceipts(client: IDataService, tickets: ExpoPushTicket[]) {
-    return await client.query(`
-insert into notification_receipts (createdon, data)
-values ($1, $2)`,
-        //@ts-ignore
-        [new Date(), JSON.stringify(tickets)]);
-}
-
-type BirthdayPayload = {
-    title: string,
-    body: string,
-    reason: 'birthday',
-    payload: {
-        userid: number,
-        date: Date,
-        id: number,
-    },
 };
 
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
@@ -75,7 +37,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                         console.error(`Removing token ${pushToken} for ${br.rtemail}`);
 
                         invalides[pushToken] = true;
-                        await removeToken(client, br.userid, pushToken);
+                        await removeTokenWithId(client, br.userid, pushToken);
                         continue;
                     }
 
@@ -129,7 +91,7 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                                 invalides[pushToken] = true;
                                 console.error(`Removing token ${pushToken} for ${userid}`);
 
-                                await removeToken(client, userid, pushToken);
+                                await removeTokenWithId(client, userid, pushToken);
                             }
                         }
                     }
