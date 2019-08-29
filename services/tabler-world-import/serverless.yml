@@ -326,18 +326,18 @@ resources:
         RetentionInDays: "7"
 
   Outputs:
-    CacheTableName:
-      Value:
-      Fn::GetAtt:
-        # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
-        - graphqlsqTable
-        - Arn
-    Export:
-      Name: CacheTableArn-${self:custom.stage}
-
     CacheTableArn:
       Value:
-        ${self:custom:cache_table}
+        Fn::GetAtt:
+          # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
+          - graphqlsqTable
+          - Arn
+      Export:
+        Name: CacheTableArn-${self:custom.stage}
+
+    CacheTableName:
+      Value:
+        ${self:custom.cache_table}
 
       Export:
         Name: CacheTableName-${self:custom.stage}
