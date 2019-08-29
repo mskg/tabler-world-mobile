@@ -32,4 +32,5 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(PACKAGE_DIR)'
-    ArtifactName: source/Backend
+    ArtifactName: source/services/tabler-world-api
+
