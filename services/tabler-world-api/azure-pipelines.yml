@@ -33,3 +33,8 @@ steps:
   inputs:
     PathtoPublish: '$(PACKAGE_DIR)'
     ArtifactName: source/Backend
+
+- task: GitTag@5
+  inputs:
+    workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
+    tag: 'api-$(build.buildNumber)'
