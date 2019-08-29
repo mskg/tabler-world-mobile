@@ -1,5 +1,5 @@
 {
-  "name": "@mskg/tabler-world-aws",
+  "name": "@mskg/tabler-world-rds-client",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
@@ -13,14 +13,13 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "aws-sdk": "*",
-    "aws-xray-sdk": "*",
-    "https": "*",
+    "@mskg/tabler-world-aws": "0.0.1",
+    "@mskg/tabler-world-config": "0.0.1",
     "pg": "*"
   },
   "devDependencies": {
-    "@types/node": "^12.7.2",
-    "@types/pg": "^7.11.0",
-    "typescript": "^3.5.3"
+    "@types/pg": "*",
+    "typescript": "^3.5.3",
+    "@types/aws-lambda": "^8.10.31"
   }
 }

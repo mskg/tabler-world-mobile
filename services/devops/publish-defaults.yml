@@ -1,0 +1,39 @@
+parameters:
+  ARTIFACT: 'source'
+
+steps:
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: package.json'
+  inputs:
+    PathtoPublish: package.json
+    ArtifactName: '$(ARTIFACT)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: .yarnrc'
+  inputs:
+    PathtoPublish: .yarnrc
+    ArtifactName: '$(ARTIFACT)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: yarn.lock'
+  inputs:
+    PathtoPublish: yarn.lock
+    ArtifactName: '$(ARTIFACT)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: packages/'
+  inputs:
+    PathtoPublish: packages
+    ArtifactName: '$(ARTIFACT)/packages'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: config/'
+  inputs:
+    PathtoPublish: config
+    ArtifactName: '$(ARTIFACT)/config'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: .git-crypt/'
+  inputs:
+    PathtoPublish: '.git-crypt'
+    ArtifactName: '$(ARTIFACT)/.git-crypt'

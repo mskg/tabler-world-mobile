@@ -1,0 +1,18 @@
+{
+  "name": "@mskg/tabler-world-rds",
+  "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+    "serverless": "^1.49.0"
+  },
+  "scripts": {
+    "deploy": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
+    "pack": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless package --verbose\"",
+    "remove": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless remove --verbose\"",
+    "start": "ntl"
+  }
+}

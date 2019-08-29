@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "ntl",

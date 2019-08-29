@@ -1,4 +1,7 @@
+# typescript
 dist
+
+# javascript
 */src/*.js
 */src/*/*.js
 */src/*.map
