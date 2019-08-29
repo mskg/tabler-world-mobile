@@ -25,8 +25,8 @@
 
 ### tabler-world-import
 
-- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/19/86)
-- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/19/87)
+- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/17/82)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/17/83)
 
 ### tabler-world-notifications
 
