@@ -4,8 +4,7 @@
   "license": "Copyright 2019-present Markus Kling",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "serverless": "^1.49.0",
     "serverless-sync-s3buckets": "^1.0.1"

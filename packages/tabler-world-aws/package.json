@@ -10,8 +10,7 @@
   },
   "author": "Markus Kling",
   "license": "Copyright 2019-present Markus Kling",
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "aws-sdk": "*",
     "aws-xray-sdk": "*",

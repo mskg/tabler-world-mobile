@@ -10,8 +10,7 @@
   },
   "author": "Markus Kling",
   "license": "Copyright 2019-present Markus Kling",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^12.7.2",
     "typescript": "^3.5.3"

@@ -24,7 +24,6 @@
     "@types/aws-lambda": "^8.10.26",
     "@types/date-and-time": "^0.6.0",
     "@types/geojson": "^7946.0.7",
-    "@types/graphql": "^14.2.0",
     "@types/lru-cache": "^5.1.0",
     "@types/node": "^11.10.4",
     "@types/node-geocoder": "^3.19.1",

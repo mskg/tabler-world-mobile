@@ -10,13 +10,12 @@
   },
   "author": "Markus Kling",
   "license": "Copyright 2019-present Markus Kling",
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "@mskg/tabler-world-aws": "0.0.1",
     "@mskg/tabler-world-config": "0.0.1",
-    "apollo-server-core": "*",
     "apollo-server-caching": "*",
+    "apollo-server-core": "*",
     "lodash": "*"
   },
   "devDependencies": {
