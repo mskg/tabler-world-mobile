@@ -1,5 +1,5 @@
 parameters:
-  SOURCEDIR: $(System.DefaultWorkingDirectory)/source
+  SOURCEDIR: $(System.DefaultWorkingDirectory)
 
 steps:
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
