@@ -1,16 +1,12 @@
 import { AsyncThrottle } from "@mskg/tabler-world-common";
 import { addressHash, addressToString, IAddress } from "@mskg/tabler-world-geo";
 import { IDataService } from "@mskg/tabler-world-rds-client";
-import { photonImpl } from "./implementations/Komoot";
+import { komoot } from "../implementations/komoot";
+import { Result } from "../types/Result";
 
-type Result = {
-    longitude: number,
-    latitude: number,
-}
+const throtteledGeoImplementation = AsyncThrottle(komoot, 1500, 1);
 
-const geocode = AsyncThrottle(photonImpl, 1500, 1);
-
-export async function encode(client: IDataService, address: IAddress): Promise<Result | undefined> {
+export async function geocode(client: IDataService, address: IAddress): Promise<Result | undefined> {
     const md5 = addressHash(address);
     if (md5 == null) {
         console.log(address, "is not valid");
@@ -28,7 +24,7 @@ from geocodes where hash = $1`,
 
     if (res.rows.length !== 1) {
         const hash = addressToString(address);
-        let encoded = await geocode(address);
+        let encoded = await throtteledGeoImplementation(address);
         console.debug(md5, "Result is", encoded);
 
         if (encoded == null && address.street2 != null) {
@@ -36,7 +32,7 @@ from geocodes where hash = $1`,
 
             // we try again with only line2
             delete address.street1;
-            encoded = await geocode(address);
+            encoded = await throtteledGeoImplementation(address);
 
             console.debug(md5, "Result is", encoded);
         }

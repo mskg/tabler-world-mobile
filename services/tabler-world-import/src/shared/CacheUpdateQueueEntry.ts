@@ -1,5 +1,5 @@
 
-export type QueueEntry =
+export type CacheUpdateQueueEntry =
     | {
         type: "member",
         id: number,

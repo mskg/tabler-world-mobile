@@ -1,15 +1,16 @@
 import { getParameters, Param_Api } from "@mskg/tabler-world-config";
 import { parse } from "url";
-import { HttpClient } from "../shared/https/HttpClient";
+import { HttpClient } from "../../shared/HttpClient";
+import { TablerWorldApiChunk } from "../types/TablerWorldApiChunk";
 
-export type Chunk<T = any> = {
-    data: T[],
-    next?: string,
-    total: number,
-    offset: number,
-} | undefined;
-
-export async function downloadChunk(url: string, method?: string, postdata?: string): Promise<Chunk> {
+/**
+ * Download a TablerWorldApiChunk from the given url.
+ *
+ * @param url
+ * @param method
+ * @param postdata
+ */
+export async function downloadChunk(url: string, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
     const params = await getParameters('tw-api');
     const api = JSON.parse(params["tw-api"]) as Param_Api;
 

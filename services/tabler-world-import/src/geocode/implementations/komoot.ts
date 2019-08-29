@@ -2,7 +2,7 @@ import { addressToString, IAddress } from "@mskg/tabler-world-geo";
 import { Feature, FeatureCollection, Point } from "geojson";
 import NodeGeocoder from "node-geocoder";
 import querystring from "querystring";
-import { callAPI } from "../httpHelper";
+import { HttpClient } from "../../shared/HttpClient";
 
 /*
 {
@@ -52,7 +52,7 @@ import { callAPI } from "../httpHelper";
         "type": "FeatureCollection"
     }
 */
-export async function photonImpl(address: IAddress): Promise<NodeGeocoder.Entry | null> {
+export async function komoot(address: IAddress): Promise<NodeGeocoder.Entry | null> {
     console.log("runGeocode", address);
 
     const thisops: { [key: string]: string; } = {
@@ -61,7 +61,11 @@ export async function photonImpl(address: IAddress): Promise<NodeGeocoder.Entry 
         q: addressToString(address) as string,
     };
 
-    const result: FeatureCollection = await callAPI("photon.komoot.de", "/api/?" + querystring.encode(thisops));
+    const api = new HttpClient("photon.komoot.de");
+    api.maxTries = 1;
+    api.waitTime = 5000;
+
+    const result: FeatureCollection = await api.callApi("/api/?" + querystring.encode(thisops))
     console.log(JSON.stringify(result));
 
     if (result == null || result.features == null || result.features.length == 0) {

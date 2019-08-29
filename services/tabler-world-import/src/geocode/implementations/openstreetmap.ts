@@ -17,7 +17,7 @@ const geocoder = NodeGeocoder({
     email: process.env.geo_email,
 });
 
-export async function geocoderImpl(address: IAddress): Promise<NodeGeocoder.Entry | null> {
+export async function openstreetmap(address: IAddress): Promise<NodeGeocoder.Entry | null> {
     console.log("runGeocode", address);
     const thisops: { [key: string]: string; } = {
         limit: "1",

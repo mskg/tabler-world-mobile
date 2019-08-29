@@ -127,7 +127,7 @@ functions:
   # Import reader
   #
   reader:
-    handler: src/schedule/reader.handler
+    handler: src/reader/lambda.handler
     timeout: 600
 
     environment:
@@ -173,7 +173,7 @@ functions:
   # Cache update
   #
   cache:
-    handler: src/schedule/cacheUpdate.handler
+    handler: src/cache/lambda.handler
     timeout: 10
     memorySize: 128
     reservedConcurrency: 3
@@ -221,7 +221,7 @@ functions:
   # Cache update
   #
   geocode:
-    handler: src/geo/lambda.handler
+    handler: src/geocode/lambda.handler
     timeout: 120 # batchSize 1, elements 10
     memorySize: 128
     reservedConcurrency: 1

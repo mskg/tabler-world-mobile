@@ -1,15 +1,15 @@
 import { withDatabase } from "@mskg/tabler-world-rds-client";
 import { SQSHandler } from "aws-lambda";
-import { updateClub } from "./cache/updateClub";
-import { updateMember } from "./cache/updateMember";
-import { QueueEntry } from "./QueueEntry";
-
+import { CacheUpdateQueueEntry } from "../shared/CacheUpdateQueueEntry";
+import { updateClub } from "./updateClub";
+import { updateMember } from "./updateMember";
 
 export const handler: SQSHandler = async (event, context, callback) => {
+
     // max degree 3
     await withDatabase(context, async (client) => {
         for (let message of event.Records) {
-            const payload = JSON.parse(message.body) as QueueEntry;
+            const payload = JSON.parse(message.body) as CacheUpdateQueueEntry;
 
             if (payload.type === "club") {
                 const ids = payload.id.split("_");
