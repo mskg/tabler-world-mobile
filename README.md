@@ -7,17 +7,36 @@
 [README](services/tabler-world-auth/README.md)
 
 - **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/6/29)
-- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/6/56)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/6/79)
 
-## GraphQL-Backend
+## API
 
 [README](services/tabler-world-api/README.md)
-- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/5/27)
-- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/5/66)
+
+### tabler-world-api
+
+- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/19/86)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/19/87)
+
+### tabler-world-data-service
+
+- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/16/80)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/16/81)
+
+### tabler-world-import
+
+- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/19/86)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/19/87)
+
+### tabler-world-notifications
+
+- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/18/84)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/18/85)
+
 
 ## iOS App & Android App
 
 [README](App/README.md)
 
 - **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/10/59)
-- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/11/63)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/13/68)
