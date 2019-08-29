@@ -5,14 +5,13 @@ import * as Permissions from 'expo-permissions';
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Dimensions, Platform, View } from 'react-native';
-import MapView, { Callout, LatLng, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { FAB, IconButton, Searchbar, Surface, Theme, Title, withTheme } from 'react-native-paper';
+import { Platform, View } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { FAB, IconButton, Searchbar, Surface, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenName';
-import { ClubAvatar } from '../../../components/ClubAvatar';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
@@ -23,15 +22,13 @@ import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_PIN } from '../../../theme/colors';
 import { styles } from '../Styles';
 import { darkStyles } from './dark';
-import { Pin } from './Marker';
+import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
 
 const logger = new Logger(Categories.Screens.Structure);
-const maxWidth = Dimensions.get("window").width - 32 - 16;
 
 type State = {
     location?: Location.LocationData,
@@ -210,52 +207,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                         backgroundColor: this.props.theme.colors.surface,
                     }}
                 >
-                    {this.state.filtered.map(c => (
-                        <Marker
-                            key={c.id}
-                            identifier={c.id}
-                            coordinate={c.location as LatLng}
-                        >
-                            <Pin
-                                color={this.props.theme.dark ? this.props.theme.colors.accent : ___DONT_USE_ME_DIRECTLY___COLOR_PIN}
-                                text={c.club.toString()}
-                            />
-                            {/* <ClubAvatar
-                                theme={this.props.theme}
-                                source={c.logo}
-                                label={c.club.toString()}
-                                size={40}
-                                style={{
-                                    elevation: 0,
-                                    backgroundColor: this.props.theme.colors.backdrop,
-                                }}
-                            /> */}
-
-                            <Callout
-                                tooltip
-                                style={{
-                                    height: 190, width: 190,
-                                    flexDirection: "column",
-                                    backgroundColor: this.props.theme.colors.surface,
-                                    alignItems: "center",
-                                    elevation: 3,
-                                }}
-                                onPress={() => this.props.showClub(c.id)}
-                            >
-                                <Title numberOfLines={1} style={{ paddingHorizontal: 8, maxWidth }}>{c.name}</Title>
-                                <ClubAvatar
-                                    theme={this.props.theme}
-                                    source={c.logo}
-                                    label={c.club.toString()}
-                                    size={150}
-                                    style={{
-                                        elevation: 0,
-                                    }}
-                                />
-                            </Callout>
-                        </Marker>
-                    ))
-                    }
+                    {this.state.filtered.map(c => (<ClubMarker key={c.id.toString()} club={c} />))}
                 </MapView>
 
                 <View style={styles.search}>
