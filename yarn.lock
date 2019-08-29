@@ -6736,13 +6736,6 @@ serverless-offline-direct-lambda@0.0.1:
   dependencies:
     serialize-error "^2.1.0"
 
-serverless-offline-ssm-provider@^1.0.5:
-  version "1.0.5"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/serverless-offline-ssm-provider/-/serverless-offline-ssm-provider-1.0.5.tgz#bb67692d62ca067d81968dd9776906b33b47ae04"
-  integrity sha1-u2dpLWLKBn2Blo3Zd2kGsztHrgQ=
-  dependencies:
-    lodash "^4.17.11"
-
 serverless-offline@^4.10.5:
   version "4.10.6"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/serverless-offline/-/serverless-offline-4.10.6.tgz#bdbb3f4b4429e649665c9267f3d3cb2c662010cb"

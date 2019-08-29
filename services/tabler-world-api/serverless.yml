@@ -20,24 +20,13 @@ custom:
       forceExclude:
         - aws-sdk
 
-  cache_table: tablerworld-gqlqc-${self:custom.stage}
-  sqs: tablerworld-cacheupdates-${self:custom.stage}
+  cache_table:
+    Fn::ImportValue: CacheTableArn-${self:custom.stage}
+
   email: ${env:ALERT_EMAIL}
-  sqs_geo: tablerworld-geocode-${self:custom.stage}
 
   domainname: ${self:custom.stage}-api.app.roundtable.world
   demo_api_key: ${env:DEMO_API_KEY}
-
-  # import schedule
-  cron_rate:
-    dev: rate(24 hours)
-    test: rate(12 hours)
-    prod: rate(4 hours)
-
-  cron_enabled:
-    dev: false
-    test: true
-    prod: true
 
   # api throtteling
   throttle:
@@ -52,12 +41,6 @@ custom:
     prod:
       burstLimit: 200
       rateLimit: 100
-
-  # warmer for database access
-  warm_enabled:
-    dev: false
-    test: false
-    prod: true
 
   bundle:
     dev: false
@@ -158,14 +141,6 @@ provider:
           burstLimit: ${self:custom.throttle.${self:custom.stage}.burstLimit}
           rateLimit: ${self:custom.throttle.${self:custom.stage}.rateLimit}
 
-  vpc:
-    securityGroupIds:
-      - Fn::ImportValue: DatabaseSecurityGroupId
-    subnetIds:
-      - Fn::ImportValue: DatabaseSubnetAId
-      - Fn::ImportValue: DatabaseSubnetBId
-      - Fn::ImportValue: DatabaseSubnetCId
-
   # global role definition
   iamRoleStatements:
     # allow database access
@@ -190,23 +165,7 @@ provider:
             - ":parameter*/"
             - ${self:custom.stage}
             - "/*"
-
-    # - Effect: Allow
-    #   Action:
-    #     - rds-db:connect
-    #   Resource:
-    #     # arn:aws:rds-db:region:account-id:dbuser:DbiResourceId/db-user-name
-    #     # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
-    #     Fn::Join:
-    #       - ""
-    #       - - "arn:aws:rds-db:"
-    #         - ${self:provider.region}
-    #         - ":"
-    #         - Ref: "AWS::AccountId"
-    #         - ":dbuser:"
-    #         - "*/"
-    #         - ${self:custom.db_user}
-
+          
     # tracing AWSXrayWriteOnlyAccess
     - Effect: Allow
       Action:
@@ -230,180 +189,6 @@ functions:
     environment:
       db_role: tw_read_${self:custom.stage}
       XRAY_DISABLED: true
-
-  #
-  # Import reader
-  #
-  import-reader:
-    handler: src/schedule/reader.handler
-    timeout: 600
-
-    environment:
-      sqs_queue:
-        Ref: ReadUpdatesQueue
-      XRAY_DISABLED: true
-
-    iamRoleStatementsInherit: true
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - sqs:SendMessage
-          - sqs:SendMessageBatch
-        Resource:
-          Fn::GetAtt:
-            - ReadUpdatesQueue
-            - Arn
-
-    events:
-      - schedule:
-          name: update-tabler-world-tabler-${self:custom.stage}
-          description: Updates contact data from TABLER.WORLD
-
-          rate: ${self:custom.cron_rate.${self:custom.stage}}
-          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
-
-          input:
-            mode: incremental
-            type: tabler
-
-      - schedule:
-          name: update-tabler-world-clubs-${self:custom.stage}
-          description: Updates contact data from TABLER.WORLD
-
-          rate: rate(24 hours)
-          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
-
-          input:
-            mode: full
-            type: clubs
-
-  #
-  # Cache update
-  #
-  cache-update:
-    handler: src/schedule/cacheUpdate.handler
-    timeout: 10
-    memorySize: 128
-    reservedConcurrency: 3
-
-    environment:
-      cache_table: ${self:custom.cache_table}
-      XRAY_DISABLED: true
-      geocode_queue:
-        Ref: EncodeAddressQueue
-
-    iamRoleStatementsInherit: true
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:DescribeTable
-          - dynamodb:Query
-          - dynamodb:Scan
-          - dynamodb:GetItem
-          - dynamodb:PutItem
-          - dynamodb:UpdateItem
-          - dynamodb:DeleteItem
-          - dynamodb:BatchGetItem
-          - dynamodb:BatchWriteItem
-
-        Resource:
-          - "Fn::GetAtt": [ graphqlsqTable, Arn ]
-
-      - Effect: Allow
-        Action:
-          - sqs:SendMessage
-          - sqs:SendMessageBatch
-        Resource:
-          Fn::GetAtt:
-            - EncodeAddressQueue
-            - Arn
-
-    events:
-      - sqs:
-          arn:
-            Fn::GetAtt:
-              - ReadUpdatesQueue
-              - Arn
-
-
-  #
-  # Cache update
-  #
-  geocode:
-    handler: src/geo/lambda.handler
-    timeout: 120 # batchSize 1, elements 10
-    memorySize: 128
-    reservedConcurrency: 1
-
-    environment:
-      XRAY_DISABLED: true
-      geo_agent: ${self:custom.geo_agent}
-      geo_email: ${self:custom.geo_email}
-      sqs_arn:
-        Fn::GetAtt:
-          - EncodeAddressQueue
-          - Arn
-
-    iamRoleStatementsInherit: true
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - lambda:ListEventSourceMappings
-          - lambda:UpdateEventSourceMapping
-        Resource: "*"
-
-    events:
-      - sqs:
-          arn:
-            Fn::GetAtt:
-              - EncodeAddressQueue
-              - Arn
-          batchSize: 1
-
-  #
-  # Send push notifications
-  #
-  send-notifications:
-    handler: src/notifications/send.handler
-    timeout: 600
-
-    environment:
-      XRAY_DISABLED: true
-
-    events:
-      # - http:
-      #     path: send-notifications
-      #     method: get
-      #     cors: true
-      - schedule:
-          name: send-tabler-world-notifications-${self:custom.stage}
-          description: Sends push notifications from TABLER.WORLD
-
-          ## 07 UTC => 9 GMT+2
-          rate: cron(0 07 * * ? *)
-          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
-
-  #
-  # Check push notifications
-  #
-  check-notifications:
-    handler: src/notifications/check.handler
-    timeout: 600
-
-    environment:
-      XRAY_DISABLED: true
-
-    events:
-      # - http:
-      #     path: check-notifications
-      #     method: get
-      #     cors: true
-      - schedule:
-          name: check-tabler-world-notifications-${self:custom.stage}
-          description: Checks delivery status of push notifications
-
-          rate: rate(6 hours)
-          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
   #
   # graphql Demo
@@ -463,7 +248,7 @@ functions:
         # Restrict our IAM role permissions to
         # the specific table for the stage
         Resource:
-          - "Fn::GetAtt": [ graphqlsqTable, Arn ]
+          - Fn::ImportValue: CacheTableArn-${self:custom.stage}
 
     events:
       - http:
@@ -489,95 +274,11 @@ functions:
 
 resources:
   Resources:
-    graphqlsqTable:
-      Type: AWS::DynamoDB::Table
-      DeletionPolicy: Delete
-      Properties:
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.cache_table}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-
-        TimeToLiveSpecification:
-          AttributeName: ttl
-          Enabled: true
-
-    ReadUpdatesQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:custom.sqs}
-        MessageRetentionPeriod: 1209600
-        # 6 times lambda timeout
-        VisibilityTimeout: 60
-        RedrivePolicy:
-          deadLetterTargetArn:
-            Fn::GetAtt:
-              - ReadUpdatesQueueDeadLetters
-              - Arn
-          maxReceiveCount: 5
-
-    ReadUpdatesQueueDeadLetters:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:custom.sqs}-dead
-        MessageRetentionPeriod: 1209600
-        VisibilityTimeout: 0
-
-    EncodeAddressQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:custom.sqs_geo}
-        MessageRetentionPeriod: 1209600
-        # 6 times lambda timeout
-        VisibilityTimeout: 720
-        RedrivePolicy:
-          deadLetterTargetArn:
-            Fn::GetAtt:
-              - EncodeAddressQueueDeadLetters
-              - Arn
-          maxReceiveCount: 5
-
-    EncodeAddressQueueDeadLetters:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:custom.sqs_geo}-dead
-        MessageRetentionPeriod: 1209600
-        VisibilityTimeout: 0
-
-    GeocodeLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
-    CacheDashupdateLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
-    SendDashnotificationsLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
-    CheckDashnotificationsLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
-    ImportDashreaderLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
     GraphqlDashdemoLogGroup:
       Properties:
         RetentionInDays: "7"
 
     GraphqlLogGroup:
-      Properties:
-        RetentionInDays: "14"
-
-    DataDashserviceLogGroup:
       Properties:
         RetentionInDays: "14"
 

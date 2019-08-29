@@ -1,0 +1,343 @@
+service: tabler-world-import
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-plugin-aws-alerts
+  - serverless-offline
+  - serverless-webpack
+
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+
+  webpack:
+    keepOutputDirectory: true
+    packager: 'yarn'
+    includeModules:
+      forceExclude:
+        - aws-sdk
+
+  email: ${env:ALERT_EMAIL}
+  cache_table: tabler-world-cache-${self:custom.stage}
+  sqs: ${self:service}-cacheupdates-${self:custom.stage}
+  sqs_geo: ${self:service}-geocode-${self:custom.stage}
+
+  # import schedule
+  cron_rate:
+    dev: rate(24 hours)
+    test: rate(12 hours)
+    prod: rate(4 hours)
+
+  cron_enabled:
+    dev: false
+    test: true
+    prod: true
+
+  bundle:
+    dev: false
+    test: true
+    prod: true
+
+  # SNS topics to check env
+  alerts:
+    stages:
+      - test
+      - prod
+
+    topics:
+      alarm:
+        topic: ${self:service}-${self:custom.stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${self:custom.email}
+
+    alarms:
+      - functionErrors
+      - processTimeouts
+
+    definitions:
+      processTimeouts:
+        metric: processTimeouts
+        threshold: 0
+        statistic: Minimum
+        period: 60
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanThreshold
+        pattern: 'Process exited before completing'
+
+# we want seperate files to minimize depenencies in files
+package:
+  individually: ${self:custom.bundle.${self:custom.stage}}
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+
+  runtime: nodejs10.x
+
+  memorySize: 128
+  versionFunctions: false
+
+  # allow to redefine variables for debug purposes
+  environment:
+    ${file(serverless.env.yml):${self:custom.stage}}
+
+  vpc:
+    securityGroupIds:
+      - Fn::ImportValue: DatabaseSecurityGroupId
+    subnetIds:
+      - Fn::ImportValue: DatabaseSubnetAId
+      - Fn::ImportValue: DatabaseSubnetBId
+      - Fn::ImportValue: DatabaseSubnetCId
+
+  # global role definition
+  iamRoleStatements:
+    # allow database access
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        Fn::ImportValue: DataArn-${self:custom.stage}
+
+    # read parameters from SSM
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParameter
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:ssm:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":parameter*/"
+            - ${self:custom.stage}
+            - "/*"
+
+    # tracing AWSXrayWriteOnlyAccess
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+        - xray:GetSamplingRules
+        - xray:GetSamplingTargets
+        - xray:GetSamplingStatisticSummaries
+
+      Resource:
+        - "*"
+
+functions:
+  #
+  # Import reader
+  #
+  reader:
+    handler: src/schedule/reader.handler
+    timeout: 600
+
+    environment:
+      sqs_queue:
+        Ref: ReadUpdatesQueue
+      XRAY_DISABLED: true
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::GetAtt:
+            - ReadUpdatesQueue
+            - Arn
+
+    events:
+      - schedule:
+          name: ${self:service}-tabler-${self:custom.stage}
+          description: Updates contact data from TABLER.WORLD
+
+          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            mode: incremental
+            type: tabler
+
+      - schedule:
+          name: ${self:service}-clubs-${self:custom.stage}
+          description: Updates contact data from TABLER.WORLD
+
+          rate: rate(24 hours)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            mode: full
+            type: clubs
+
+  #
+  # Cache update
+  #
+  cache:
+    handler: src/schedule/cacheUpdate.handler
+    timeout: 10
+    memorySize: 128
+    reservedConcurrency: 3
+
+    environment:
+      cache_table: ${self:custom.cache_table}
+      XRAY_DISABLED: true
+      geocode_queue:
+        Ref: EncodeAddressQueue
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+
+        Resource:
+          - "Fn::GetAtt": [ graphqlsqTable, Arn ]
+
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::GetAtt:
+            - EncodeAddressQueue
+            - Arn
+
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - ReadUpdatesQueue
+              - Arn
+
+  #
+  # Cache update
+  #
+  geocode:
+    handler: src/geo/lambda.handler
+    timeout: 120 # batchSize 1, elements 10
+    memorySize: 128
+    reservedConcurrency: 1
+
+    environment:
+      geo_agent: ${self:custom.geo_agent}
+      geo_email: ${self:custom.geo_email}
+      sqs_arn:
+        Fn::GetAtt:
+          - EncodeAddressQueue
+          - Arn
+      XRAY_DISABLED: true
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - lambda:ListEventSourceMappings
+          - lambda:UpdateEventSourceMapping
+        Resource: "*"
+
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - EncodeAddressQueue
+              - Arn
+          batchSize: 1
+
+resources:
+  Resources:
+    graphqlsqTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.cache_table}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+    ReadUpdatesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs}
+        MessageRetentionPeriod: 1209600
+        # 6 times lambda timeout
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - ReadUpdatesQueueDeadLetters
+              - Arn
+          maxReceiveCount: 5
+
+    ReadUpdatesQueueDeadLetters:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs}-dead
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 0
+
+    EncodeAddressQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs_geo}
+        MessageRetentionPeriod: 1209600
+        # 6 times lambda timeout
+        VisibilityTimeout: 720
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - EncodeAddressQueueDeadLetters
+              - Arn
+          maxReceiveCount: 5
+
+    EncodeAddressQueueDeadLetters:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs_geo}-dead
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 0
+
+    GeocodeLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    CacheLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    ReaderLogGroup:
+      Properties:
+        RetentionInDays: "7"
+  
+  Outputs:
+    CacheTableArn:
+      Value:
+        Fn::GetAtt:
+          # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
+          - graphqlsqTable
+          - Arn
+      Export:
+        Name: CacheTableArn-${self:custom.stage}
