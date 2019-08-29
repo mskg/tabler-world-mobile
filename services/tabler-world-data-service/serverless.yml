@@ -19,12 +19,6 @@ custom:
 
   email: ${env:ALERT_EMAIL}
 
-  # import schedule
-  cron_rate:
-    dev: rate(24 hours)
-    test: rate(12 hours)
-    prod: rate(4 hours)
-
   # warmer for database access
   warm_enabled:
     dev: false
