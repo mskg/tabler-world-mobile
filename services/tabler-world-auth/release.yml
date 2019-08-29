@@ -1,5 +1,5 @@
 # build number
-name: $(VERSION).$(rev:r)
+name: $(Build.BuildNumber)-$(rev:rrr)
 
 parameters:
   AWS_DEFAULT_REGION: ''
