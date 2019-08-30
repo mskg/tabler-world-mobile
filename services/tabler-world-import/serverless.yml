@@ -3,6 +3,7 @@ service: tabler-world-import
 plugins:
   - serverless-iam-roles-per-function
   - serverless-plugin-aws-alerts
+  - serverless-dynamodb-local
   - serverless-offline
   - serverless-webpack
 
@@ -65,6 +66,21 @@ custom:
         evaluationPeriods: 1
         comparisonOperator: GreaterThanThreshold
         pattern: 'Process exited before completing'
+
+  # debug mode
+  dynamodb:
+    noStart: false
+
+    start:
+      # host: localhost
+      port: 8000
+      sharedDb: true
+      migrate: true
+      seed: false
+      inMemory: true
+
+    stages:
+      - dev
 
 # we want seperate files to minimize depenencies in files
 package:

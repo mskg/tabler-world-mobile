@@ -13,7 +13,7 @@ export const cacheInstance = disableCache ? new NoCache() : new MemoryBackedCach
                 : undefined
     },
     {
-        tableName: process.env.cache_table as string,
+        tableName: EXECUTING_OFFLINE ? "tabler-world-cache-dev" : process.env.cache_table as string,
         ttl: DEFAULT_TTL
     }
 ));

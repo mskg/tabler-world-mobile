@@ -54,7 +54,7 @@
     "deploy": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
     "package": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless package --force --verbose\"",
     "remove": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless remove --verbose\"",
-    "dev": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless offline start --verbose --noTimeout --noAuth\"",
+    "dev": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless offline start --port 3002 --verbose --noTimeout --noAuth\"",
     "dynamodb": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless dynamodb start\"",
     "start": "ntl"
   }
