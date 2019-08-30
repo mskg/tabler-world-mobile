@@ -13,6 +13,8 @@ export function filterReducer(
     | typeof actions.toggleDistrict.shape
     | typeof actions.toggleFavorites.shape
     | typeof actions.toggleFavorite.shape
+    | typeof actions.removeFavorite.shape
+    | typeof actions.addFavorite.shape
     | typeof actions.toggleOwnTable.shape
     | typeof actions.replaceFavorites.shape
     | typeof actions.toggleAreaBoard.shape
@@ -80,6 +82,32 @@ export function filterReducer(
         member: {
           ...state.member,
           showFavorites: !state.member.showFavorites,
+        }
+      };
+    }
+
+    case actions.removeFavorite.type: {
+      const favorites = { ...(state.member.favorites || {}) };
+      delete favorites[action.payload.id];
+
+      return {
+        ...state,
+        member: {
+          ...state.member,
+          favorites,
+        }
+      };
+    }
+
+    case actions.addFavorite.type: {
+      const favorites = { ...(state.member.favorites || {}) };
+      favorites[action.payload.id] = true;
+
+      return {
+        ...state,
+        member: {
+          ...state.member,
+          favorites,
         }
       };
     }

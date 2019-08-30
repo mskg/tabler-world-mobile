@@ -12,12 +12,17 @@ import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { addFavorite, removeFavorite } from '../../redux/actions/filter';
 import { showProfile } from '../../redux/actions/navigation';
+import { addSnack } from '../../redux/actions/snacks';
 
 const logger = new Logger(Categories.Screens.Scan);
 
 type Props = {
   showProfile: typeof showProfile,
+  addSnack: typeof addSnack,
+  removeFavorite: typeof removeFavorite
+  addFavorite: typeof addFavorite
   theme: Theme,
 };
 
@@ -110,7 +115,15 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
         [AuditPropertyNames.Id]: queryParams.id
       });
 
+      this.props.addFavorite({id: parseInt(queryParams.id, 10)});
       this.props.showProfile(parseInt(queryParams.id, 10));
+      this.props.addSnack({
+        message: I18N.Pair.remove,
+        action: {
+          label: I18N.Pair.undo,
+          onPress: () => this.props.removeFavorite({id: parseInt(queryParams.id, 10)}),
+        }
+      });
     }
   };
 }
@@ -151,4 +164,4 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
 //   },
 // });
 
-export const ScanScreen = connect(null, { showProfile })(withTheme(ScanScreenBase));
+export const ScanScreen = connect(null, { showProfile, addSnack, removeFavorite, addFavorite })(withTheme(ScanScreenBase));

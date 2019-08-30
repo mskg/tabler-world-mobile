@@ -76,6 +76,9 @@ const de: I18NType = {
 
         request: "Berechtigungen für die Kamera",
         permission: "Keine Berechtigungen für die Kamera",
+
+        remove: "Das Mitglied wurde zu Deinen Favoriten hinzugefügt",
+        undo: "Rückgängig",
     },
 
     Structure: {

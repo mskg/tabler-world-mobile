@@ -92,7 +92,7 @@ provider:
   runtime: nodejs10.x
 
   memorySize: 128
-  versionFunctions: true
+  versionFunctions: false
 
   tracing:
     apiGateway: true

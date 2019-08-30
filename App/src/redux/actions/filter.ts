@@ -36,6 +36,14 @@ export const toggleFavorite = createAction<'@@filter/tabler/favorite/toggle', {i
   '@@filter/tabler/favorite/toggle'
 );
 
+export const addFavorite = createAction<'@@filter/tabler/favorite/add', {id: number}>(
+  '@@filter/tabler/favorite/add'
+);
+
+export const removeFavorite = createAction<'@@filter/tabler/favorite/remove', {id: number}>(
+  '@@filter/tabler/favorite/remove'
+);
+
 /**
  * Enable/disable own table
  */

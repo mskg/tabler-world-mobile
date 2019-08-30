@@ -8,6 +8,7 @@
 - Readability of text and html has been optimized for dark theme, #54
 - Expandable sections on club page now only prompt for expansion with enough elements
 - Favorites now need swipe-right to toggle value
+- A scanned member is automatically added to the favorites now
 
 ## Fixes
 

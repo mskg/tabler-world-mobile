@@ -76,6 +76,9 @@ const en = {
 
         request: "Requesting for camera permission",
         permission: "No access to camera",
+
+        remove: "Member has been added to your favorites",
+        undo: "Undo",
     },
 
     Structure: {
