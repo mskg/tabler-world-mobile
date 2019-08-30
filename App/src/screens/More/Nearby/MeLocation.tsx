@@ -1,7 +1,8 @@
-    import * as Location from 'expo-location';
+    import { Ionicons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { List, Theme, Title, withTheme } from 'react-native-paper';
+import { IconButton, List, Theme, Title, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { InternalMeListItemBase } from '../../../components/MeListItem';
@@ -12,6 +13,7 @@ import { Me } from '../../../model/graphql/Me';
 import { IAppState } from '../../../model/IAppState';
 import { GetMeQuery } from '../../../queries/MeQuery';
 import { showLocationHistory } from '../../../redux/actions/navigation';
+import { handleLocationUpdate } from '../../../tasks/location/handleLocation';
 
 type State = {
     message?: string,
@@ -40,6 +42,12 @@ class MeLocationBase extends React.Component<Props, State> {
         return this.props.address.city || this.props.address.region || I18N.NearbyMembers.near();
     }
 
+    _update = () => {
+        requestAnimationFrame(async () =>
+            await handleLocationUpdate([await Location.getCurrentPositionAsync()])
+        );
+    }
+
     render() {
         return (
             <Query<Me>
@@ -59,6 +67,13 @@ class MeLocationBase extends React.Component<Props, State> {
                                     ))}
                                 me={medata.Me}
                                 onPress={isFeatureEnabled(Features.LocationHistory) ? () => this.props.showLocationHistory() : undefined}
+
+                                right={({size}) =>
+                                    <IconButton
+                                        onPress={this._update}
+                                        icon={() => (<Ionicons name="md-refresh" size={size} />)}
+                                    />
+                                }
                             />
                         </List.Section>
                     );

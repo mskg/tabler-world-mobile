@@ -319,7 +319,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                 }
                             }
                             // pollInterval={this.state.visible ? this.state.interval : undefined}
-                            fetchPolicy="network-only"
+                            fetchPolicy="cache-and-network"
                         >
                             {({ loading, data, error, refetch, client }) => {
                                 if (error) throw error;
