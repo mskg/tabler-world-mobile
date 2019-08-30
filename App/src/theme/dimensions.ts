@@ -7,7 +7,7 @@ export const HEADER_MARGIN_TOP = Platform.OS === "ios"
 export const HEADER_HEIGHT = 56;
 
 export const TOTAL_HEADER_HEIGHT = HEADER_MARGIN_TOP + HEADER_HEIGHT;
-export const BOTTOM_HEIGHT = 56;
+export const BOTTOM_HEIGHT = 88;
 
 export const HeaderStyles = StyleSheet.create({
     header: {

@@ -25,7 +25,7 @@ import { HashMap } from '../../model/Maps';
 import { GetMembersByAreasQuery } from "../../queries/GetMembersByAreasQuery";
 import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
 import { showFilter, showSearch } from '../../redux/actions/navigation';
-import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
+import { BOTTOM_HEIGHT, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { MemberDataSource } from './MemberDataSource';
 import { MemberListPlaceholder } from "./MemberListPlaceholder";
 import { Predicates } from './Predicates';
@@ -224,9 +224,9 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
 const styles = StyleSheet.create({
     sectionList: {
         width: Dimensions.get("window").width,
-        height: Dimensions.get("window").height - TOTAL_HEADER_HEIGHT - (StatusBar.currentHeight || 0)
+        height: Dimensions.get("window").height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT - (StatusBar.currentHeight || 0)
     }
-})
+});
 
 const ConnectedMembersScreen = connect(
     (state: IAppState): StateProps => ({
