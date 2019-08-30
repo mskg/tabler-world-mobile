@@ -2,11 +2,13 @@ import { createMigrate } from 'redux-persist';
 import { Categories, Logger } from '../helper/Logger';
 
 const logger = new Logger(Categories.Redux);
-export const MIGRATE_VERSION = 42;
+
+// if you want to wipe the store just increment the number here
+export const MIGRATE_VERSION = 45;
 
 //@ts-ignore
 export const migrateToNull = createMigrate({
-  [MIGRATE_VERSION - 1]: ({_persist}) => {
+  [MIGRATE_VERSION]: ({_persist}) => {
     logger.log("Running migration, previous", _persist);
     return {_persist};
   },
