@@ -7,6 +7,7 @@ import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
 import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
 import { withAuthenticator } from './auth/withAuthenticator';
+import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
@@ -90,7 +91,9 @@ export default withPreCached(
     withStore(
       withPaperProvider(
         withSkakeErrorReport(
-          withAuthenticator(App)
+          withAuthenticator(
+            withWhoopsErrorBoundary(
+              App))
         )
       )
     )
