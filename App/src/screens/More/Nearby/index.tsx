@@ -3,16 +3,17 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Alert, AppState, Linking, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, AppState, Linking, Platform, ScrollView } from "react-native";
 import { Appbar, Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationEventSubscription, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
-import { FullScreenLoading, InlineLoading } from '../../../components/Loading';
+import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
 import { MemberTitle } from '../../../components/Member/MemberTitle';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
+import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { distance } from '../../../helper/distance';
 import { disableNearbyTablers } from '../../../helper/geo/disable';
@@ -33,6 +34,7 @@ import { geocodeMissing } from './geocodeMissing';
 import { logger } from './logger';
 import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
+import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { Message } from './Message';
 
 type State = {
@@ -269,10 +271,6 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
-        if (!this.state.visible) {
-            return (<View style={[StyleSheet.absoluteFillObject, {backgroundColor: this.props.theme.colors.background}]}></View>);
-        }
-
         return (
             <ScreenWithHeader header={{
                 showBack: true,
@@ -283,15 +281,15 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                         <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showSettings()} />,
                     ]
             }}>
-                {this.props.offline &&
+                {this.state.visible && this.props.offline &&
                     <CannotLoadWhileOffline />
                 }
 
-                {this.state.enabling &&
-                    <FullScreenLoading />
+                {this.state.visible && this.state.enabling &&
+                   <MemberListPlaceholder />
                 }
 
-                {!this.state.enabling && !this.props.nearbyMembers && !this.props.offline &&
+                {this.state.visible && !this.state.enabling && !this.props.nearbyMembers && !this.props.offline &&
                     <Message
                         theme={this.props.theme}
                         text={I18N.NearbyMembers.off}
@@ -299,7 +297,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                         onPress={this._enable} />
                 }
 
-                {!this.state.enabling && this.props.nearbyMembers && !this.props.offline && this.state.message &&
+                {this.state.visible && !this.state.enabling && this.props.nearbyMembers && !this.props.offline && this.state.message &&
                     <Message
                         theme={this.props.theme}
                         text={this.state.message}
@@ -308,7 +306,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                     />
                 }
 
-                {this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location &&
+                {this.state.visible && this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location &&
                     <ScrollView>
                         <Query<NearbyMembers, NearbyMembersVariables>
                             query={GetNearbyMembersQuery}
@@ -324,33 +322,22 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                             fetchPolicy="network-only"
                         >
                             {({ loading, data, error, refetch, client }) => {
-                                if (error) return null;
+                                if (error) throw error;
 
-                                if (data == null || data.nearbyMembers == null) {
-                                    return (
-                                        <>
-                                            <MeLocation now={Date.now()} />
-                                            <View style={{ margin: 16 }}><InlineLoading /></View>
-                                        </>
-                                    );
+                                if (data != null && data.nearbyMembers != null) {
+                                    this._checkCode(data, client, refetch);
                                 }
 
-                                this._checkCode(data, client, refetch);
-
-                                if (data.nearbyMembers.length == 0) {
-                                    return (
-                                        <>
-                                            <MeLocation now={Date.now()} />
-                                            <List.Section title={I18N.NearbyMembers.title}>
-                                                <Text style={{ marginHorizontal: 16 }}>{I18N.Members.noresults}</Text>
-                                            </List.Section>
-                                        </>
-                                    );
-                                }
-
-                                return <>
+                                return <Placeholder previewComponent={<MemberListPlaceholder />} ready={data != null && data.nearbyMembers != null}>
                                     <MeLocation now={Date.now()} />
-                                    {
+
+                                    {data && data.nearbyMembers && data.nearbyMembers.length == 0 &&
+                                        <List.Section title={I18N.NearbyMembers.title}>
+                                            <Text style={{ marginHorizontal: 16 }}>{I18N.Members.noresults}</Text>
+                                        </List.Section>
+                                    }
+
+                                    {data && data.nearbyMembers && data.nearbyMembers.length != 0 &&
                                         makeGroups(data.nearbyMembers).map((s, i) =>
                                             <List.Section title={this.makeTitle(s.title, s.country)} key={i.toString()}>
                                                 {
@@ -379,7 +366,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                             </List.Section>
                                         )
                                     }
-                                </>;
+                                </Placeholder>
                             }}
                         </Query>
                     </ScrollView>
@@ -402,6 +389,6 @@ export const NearbyScreen = connect<StateProps, DispatchPros, OwnProps, IAppStat
         updateSetting,
         showSettings,
         showLocationHistory,
-    })(withNavigation(withTheme(NearbyScreenBase)));
+    })(withWhoopsErrorBoundary(withNavigation(withTheme(NearbyScreenBase))));
 
 
