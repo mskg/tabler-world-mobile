@@ -41,10 +41,7 @@ export class Fade extends React.PureComponent<Props> {
   }
 
   componentDidMount() {
-    running++;
-
-    if (running == 1) {
-      // console.log("Starting new animation");
+    if (++running === 1) {
       start();
     }
   }

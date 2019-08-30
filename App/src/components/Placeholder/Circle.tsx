@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Animated, View } from 'react-native';
 import { COLOR } from './COLOR';
+import { Fade } from './Fade';
 
 type Props = {
     size: number,
@@ -11,12 +12,15 @@ class CircleBase extends PureComponent<Props> {
     render() {
         const { size, style } = this.props;
 
-        return (<View style={[{
-            height: size,
-            width: size,
-            borderRadius: size / 2,
-            backgroundColor: COLOR,
-        }, style]} />);
+        return (
+            <Fade>
+                <View style={[{
+                    height: size,
+                    width: size,
+                    borderRadius: size / 2,
+                    backgroundColor: COLOR,
+                }, style]} />
+            </Fade>);
     }
 }
 

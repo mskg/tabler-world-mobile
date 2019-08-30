@@ -1,5 +1,4 @@
 import React from 'react';
-import { Fade } from './Fade';
 
 type Props = {
     ready: boolean,
@@ -10,8 +9,6 @@ type Props = {
 export class Placeholder extends React.PureComponent<Props> {
     render() {
         if (this.props.ready) return this.props.children || null;
-        return (<Fade>
-            {this.props.previewComponent}
-        </Fade>);
+        return this.props.previewComponent;
     }
 }
