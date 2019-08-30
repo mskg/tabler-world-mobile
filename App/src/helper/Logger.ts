@@ -140,13 +140,16 @@ export class Logger {
     }
 
     public error(error, ...args: any[]): void {
-        Sentry.captureException(error, {
-            tags: {
-                category: this.category,
-            },
-            extra: args,
-        });
-
-        console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+        if (!__DEV__) {
+            Sentry.captureException(error, {
+                tags: {
+                    category: this.category,
+                },
+                extra: args,
+            });
+        }
+        else {
+            console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+        }
     }
 }

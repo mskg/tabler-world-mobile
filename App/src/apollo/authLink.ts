@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import { getConfigValue } from '../helper/Configuration';
 import { logoutUser } from "../redux/actions/user";
 import { getReduxStore } from "../redux/getRedux";
+import { isAuthenticationError } from './isAuthenticationError';
 import { logger } from "./logger";
 
 export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promise<Response> => {
@@ -27,20 +28,16 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
             }
         }
 
-        logger.debug("fetch", uri, newOptions);
+        if (__DEV__) {
+            logger.debug("fetch", uri, newOptions);
+        }
+
         return await fetch(uri, newOptions);
     }
     catch (e) {
-        logger.error(e, "Failed to acquire token");
-
-        if (e.code === "ResourceNotFoundException") {
+        if (isAuthenticationError(e)) {
+            logger.log("Failed to acquire token", e);
             getReduxStore().dispatch(logoutUser());
-            return new Response(null);
-        }
-
-        if (e === "No current user") {
-            getReduxStore().dispatch(logoutUser());
-            return new Response(null);
         }
 
         return Promise.reject(e);

@@ -109,7 +109,6 @@ export function filterReducer(
         {length: 0});
 
       newFavorites.length = Object.keys(newFavorites).length;
-      // console.log("newFavorites", newFavorites);
 
       return {
         ...state,

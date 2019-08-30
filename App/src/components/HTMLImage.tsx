@@ -101,7 +101,6 @@ export default class HTMLImage extends PureComponent<Props, State> {
         }
 
         const path = await CacheManager.get(source.uri, {}).getPath() as string;
-        // console.log("********************", source.uri, path);
 
         // Fetch image dimensions only if they aren't supplied or if with or height is missing
         Image.getSize(

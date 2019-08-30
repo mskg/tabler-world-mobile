@@ -66,9 +66,6 @@ export function bootstrapRedux() {
     return result
   }
 
-  // console.log(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__);
-  // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
   const store = createStore(
     clearReducer,
     //@ts-ignore

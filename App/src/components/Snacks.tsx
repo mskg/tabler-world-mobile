@@ -64,8 +64,6 @@ export class SnacksBase extends React.Component<Props, State> {
     }
 
     render() {
-        if (this.props.navigation != null)
-        console.log(this.props.navigation != null);
 
         const snack = this.props.snacks && this.props.snacks.length > 0 ? this.props.snacks[0] : undefined;
         if (!snack) return null;

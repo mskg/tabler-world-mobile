@@ -17,17 +17,11 @@ export function AsyncThrottle<T>(funcToThrottle: AnyArgsFunc<T>, duration: numbe
             const now = Date.now();
 
             if ((now - ticks) > duration) {
-                console.log("1");
-
                 processCount = 1;
                 ticks = now;
             } else if (processCount < maxCalls) {
-                console.log("2");
-
                 processCount++;
             } else {
-                console.log("3");
-
                 ticks += duration;
                 processCount = 1;
             }

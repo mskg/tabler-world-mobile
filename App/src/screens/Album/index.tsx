@@ -107,8 +107,6 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
       FileSystem.cacheDirectory + 'share.jpeg'
     )
       .then(({ uri }) => {
-        console.log('Finished downloading to ', uri);
-
         if (Platform.OS === "android") {
           Sharing.shareAsync(
             uri,
@@ -131,8 +129,6 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
   _pageSelected = (page) => this.setState({ selectedIndex: page });
 
   _preview = ({ image, ...props }) => {
-    // console.log(image);
-
     return <ProgressiveImage
       thumbnailSource={{
         uri: image.source.preview
