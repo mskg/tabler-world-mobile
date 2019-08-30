@@ -26,7 +26,8 @@ export const MainBottomNavigation = createMaterialBottomTabNavigator(
             return (<Text style={{ ...I18N.NavigationStyle, color }}>{MainNavRoutes[route.routeName].navigationOptions.tabBarLabel}</Text>);
         },
 
-        activeColor: ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT,
+        activeTintColor: ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT,
+
         barStyle: {
             backgroundColor: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
             paddingBottom: 0,
