@@ -194,6 +194,7 @@ export default connect(
     {
         restoreSettings,
         singedIn,
-        signin
+        signin,
+        storeLanguage,
     }
 )(withTheme(ConfirmBase));

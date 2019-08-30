@@ -5,6 +5,7 @@ import { LOCATION_TASK_NAME } from "./Constants";
 import { handleLocationUpdate } from './location/handleLocation';
 import { logger } from './location/logger';
 import { startLocationTask } from './location/startLocationTask';
+import { stopLocationTaks } from './location/stopLocationTaks';
 
 export async function registerLocationTask() {
   try {
@@ -24,6 +25,7 @@ export async function registerLocationTask() {
     if ((await AsyncStorage.getItem(LOCATION_TASK_NAME)) === "true") {
       await startLocationTask();
     } else {
+      await stopLocationTaks();
       logger.log(`*********** ${LOCATION_TASK_NAME} DISABLED ***********`);
     }
   } catch (e) {
