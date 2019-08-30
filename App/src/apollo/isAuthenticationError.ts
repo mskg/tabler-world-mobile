@@ -7,6 +7,10 @@ export function isAuthenticationError(e: any): boolean {
         return true;
     }
 
+    if (e.code === "NotAuthorizedException") {
+        return true;
+    }
+
     if (e === "No current user") {
         return true;
     }
