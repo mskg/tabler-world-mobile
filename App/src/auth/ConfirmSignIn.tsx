@@ -12,7 +12,7 @@ import { parseCodeLink } from '../helper/linking/code';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
-import { restoreSettings } from '../redux/actions/settings';
+import { restoreSettings, storeLanguage } from '../redux/actions/settings';
 import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
@@ -24,6 +24,7 @@ type Props = {
     singedIn: typeof singedIn;
     signin: typeof signin,
     restoreSettings: typeof restoreSettings,
+    storeLanguage: typeof storeLanguage,
 };
 
 type State = {
@@ -104,6 +105,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 await getPersistor().purge();
 
                 this.props.restoreSettings();
+                this.props.storeLanguage();
                 this.props.singedIn();
             }
             catch (e) {

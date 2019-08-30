@@ -35,7 +35,7 @@ where
 drop view if exists notification_birthdays cascade;
 
 create or replace view notification_birthdays as
-select u.id as userid, u.rtemail rtemail, a.tokens, p.id as bid, p.firstname, p.lastname
+select u.id as userid, u.rtemail rtemail, a.tokens, coalesce(a.settings->>'language', 'de') as lang, p.id as bid, p.firstname, p.lastname
 from
     notification_all_birthdays p,
     profiles u,

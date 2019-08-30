@@ -1,3 +1,5 @@
+import { SupportedLanguages } from "./SupportedLangs";
+
 export type BirthdayNotification = {
     userid: number;
     rtemail: string;
@@ -5,4 +7,5 @@ export type BirthdayNotification = {
     bid: number;
     firstname: string;
     lastname: string;
+    lang: SupportedLanguages;
 };

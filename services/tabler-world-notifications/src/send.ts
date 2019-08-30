@@ -5,15 +5,11 @@ import { Context } from "aws-lambda";
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
 import { putReceipts } from "./helper/putReceipts";
 import { removeTokenWithId } from "./helper/removeTokenWithId";
+import { Message } from "./Message";
 import { BirthdayNotification } from "./types/BirthdayNotification";
 import { BirthdayPayload } from "./types/BirthdayPayload";
 
 let expo = new Expo();
-
-const Message = {
-    title: "Birthday time",
-    text: (n: any) => `Help ${n} to have a great day!`,
-};
 
 export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
     try {
@@ -46,18 +42,19 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
                     messages.push({
                         to: pushToken,
                         sound: 'default',
-                        title: Message.title,
-                        body: Message.text(br.firstname + " " + br.lastname),
+                        title: Message.lang(br.lang).title,
+                        body: Message.lang(br.lang).text(br.firstname + " " + br.lastname),
+
                         data: {
-                            title: Message.title,
-                            body: Message.text(br.firstname + " " + br.lastname),
+                            title: Message.lang(br.lang).title,
+                            body: Message.lang(br.lang).text(br.firstname + " " + br.lastname),
                             reason: 'birthday',
                             payload: {
                                 userid: br.userid,
                                 date: new Date(),
                                 id: br.bid,
                             },
-                        },
+                        } as BirthdayPayload,
                     })
                 }
             }

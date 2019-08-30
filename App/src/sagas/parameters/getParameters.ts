@@ -12,9 +12,6 @@ import * as settingsActions from '../../redux/actions/settings';
 import { singedIn } from '../../redux/actions/user';
 import { logger } from './logger';
 
-/**
- * When a favorite is toggled, mark the record as modified
- */
 export function* getParameters(a: typeof settingsActions.restoreSettings.shape) {
     logger.debug("Getting parameters");
 

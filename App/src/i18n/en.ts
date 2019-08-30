@@ -6,6 +6,8 @@ import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHel
 const countries = require("./countries/en.json");
 
 const en = {
+    id: "en",
+
     Whoops: {
         title: "Whoops?",
         try: "Try Again",

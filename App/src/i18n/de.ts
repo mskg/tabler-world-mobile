@@ -5,6 +5,8 @@ import en, { I18NType } from './en';
 const countries = require("./countries/de.json");
 
 const de: I18NType = {
+    id: "de",
+
     Whoops: {
         title: "Oooops?",
         try: "Wiederholen",
