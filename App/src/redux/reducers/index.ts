@@ -2,6 +2,7 @@ import { PersistConfig, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage';
 import { Features, isFeatureEnabled } from '../../model/Features';
+import { migrateToNull, MIGRATE_VERSION } from '../migrations';
 import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
@@ -16,7 +17,6 @@ const authUserConfig: PersistConfig = {
     key: 'auth',
     keyPrefix: '',
     blacklist: ["signinState"],
-    whitelist: ["_persist"],
 
     // storage: encryptedStorage,
     storage: isFeatureEnabled(Features.EncryptedStorage)
@@ -25,8 +25,8 @@ const authUserConfig: PersistConfig = {
 
     timeout: 0,
 
-    // version: MIGRATE_VERSION,
-    // migrate: migrateToNull("auth"),
+    version: MIGRATE_VERSION,
+    migrate: migrateToNull,
     debug: __DEV__,
 };
 
@@ -38,6 +38,9 @@ const defaultConfig = {
     timeout: 0,
     // version: MIGRATE_VERSION,
     debug: __DEV__,
+
+    version: MIGRATE_VERSION,
+    migrate: migrateToNull,
 };
 
 export default {
