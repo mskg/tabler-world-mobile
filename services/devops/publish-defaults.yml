@@ -3,37 +3,36 @@ parameters:
 
 steps:
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: package.json'
   inputs:
     PathtoPublish: package.json
     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: .yarnrc'
+  inputs:
+    PathtoPublish: tsconfig.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: .yarnrc
     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: yarn.lock'
   inputs:
     PathtoPublish: yarn.lock
     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: packages/'
   inputs:
     PathtoPublish: packages
     ArtifactName: ${{ parameters.ARTIFACT }}/packages
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: config/'
   inputs:
     PathtoPublish: config
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: .git-crypt/'
   inputs:
     PathtoPublish: '.git-crypt'
     ArtifactName: ${{ parameters.ARTIFACT }}/.git-crypt
