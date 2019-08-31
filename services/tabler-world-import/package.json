@@ -10,6 +10,7 @@
     "@mskg/tabler-world-geo": "0.0.1",
     "@mskg/tabler-world-jobs": "0.0.1",
     "@mskg/tabler-world-rds-client": "0.0.1",
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
     "@sentry/node": "^5.4.0",
     "apollo-server-caching": "^0.5.0",
     "apollo-server-core": "^2.9.1",
@@ -18,9 +19,10 @@
     "lodash": "^4.17.11",
     "node-geocoder": "^3.23.0",
     "node-gzip": "^1.1.2",
-    "pg": "^7.8.1"
+    "pg": "^7.9.0"
   },
   "devDependencies": {
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
     "@types/aws-lambda": "^8.10.26",
     "@types/date-and-time": "^0.6.0",
     "@types/geojson": "^7946.0.7",
@@ -29,8 +31,6 @@
     "@types/node-geocoder": "^3.19.1",
     "@types/pg": "^7.4.13",
     "aws-sdk": "^2.414.0",
-    "cross-env": "^5.2.0",
-    "env-cmd": "^8.0.2",
     "file-loader": "^3.0.1",
     "ntl": "^3.2.4",
     "serverless": "^1.49.0",
@@ -42,20 +42,19 @@
     "ts-loader": "^6.0.1",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3333",
-    "webpack": "^4.32.1",
-    "webpack-node-externals": "^1.7.2"
+    "webpack": "^4.32.1"
   },
   "files": [
     "dist/"
   ],
   "scripts": {
-    "test-export": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && ts-node --project ./tsconfig.json scripts/export\"",
-    "test-geo": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && ts-node --project ./tsconfig.json scripts/geocode\"",
-    "deploy": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
-    "package": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless package --force --verbose\"",
-    "remove": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless remove --verbose\"",
-    "dev": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless offline start --port 3002 --verbose --noTimeout --noAuth\"",
-    "dynamodb": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless dynamodb start\"",
+    "test-export": "run-env ts-node --project ./tsconfig.json scripts/export",
+    "test-geo": "run-env ts-node --project ./tsconfig.json scripts/geocode",
+    "deploy": "service deploy",
+    "package": "service package",
+    "remove": "service remove",
+    "dev": "service dev",
+    "dynamodb": "run-env serverless dynamodb install && run-env serverless dynamodb start",
     "start": "ntl"
   }
 }

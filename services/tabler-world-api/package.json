@@ -19,23 +19,21 @@
     "aws-xray-sdk": "^2.3.3",
     "dataloader": "^1.4.0",
     "date-and-time": "^0.7.0",
-    "expo-server-sdk": "^3.3.0",
     "faker": "^4.1.0",
     "graphql": "^14.4.2",
     "graphql-tools": "^4.0.4",
     "https": "^1.0.0",
     "lodash": "^4.17.11",
-    "pg": "^7.8.1"
+    "pg": "^7.9.0"
   },
   "devDependencies": {
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
     "@types/aws-lambda": "^8.10.26",
     "@types/date-and-time": "^0.6.0",
     "@types/faker": "^4.1.5",
     "@types/node": "^11.10.4",
     "@types/pg": "^7.4.13",
     "aws-sdk": "^2.414.0",
-    "cross-env": "^5.2.0",
-    "env-cmd": "^8.0.2",
     "file-loader": "^3.0.1",
     "ntl": "^3.2.4",
     "serverless": "^1.49.0",
@@ -48,21 +46,18 @@
     "ts-loader": "^6.0.1",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3333",
-    "webpack": "^4.32.1",
-    "webpack-node-externals": "^1.7.2"
+    "webpack": "^4.32.1"
   },
   "files": [
     "dist/"
   ],
   "scripts": {
-    "deploy": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
-    "package": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless package --force --verbose\"",
     "deploy-func:graphql": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy function -f graphql --verbose\"",
     "deploy-func:reader": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy function -f import-reader --verbose\"",
-    "remove": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless remove --verbose\"",
-    "dev": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless offline start --verbose --noTimeout --noAuth --skipCacheInvalidation\"",
-    "dev-nocache": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless offline start --verbose --noTimeout --noAuth\"",
-    "dynamodb": "env-cmd --no-override ../../config/.env cross-env-shell \"source ../../config/.env.local && serverless dynamodb start\"",
+    "deploy": "service deploy",
+    "package": "service package",
+    "remove": "service remove",
+    "dev": "service dev",
     "start": "ntl"
   }
 }

@@ -19,12 +19,14 @@
         "**/.serverless": true,
         "**/.webpack": true,
         "**/dist": true,
-        "**/.dynamodb": true
+        "**/.dynamodb": true,
+        "**/.tmp": true
     },
     "files.watcherExclude": {
         "**/.dynamodb/**": true,
         "**/.expo/**": true,
         "**/.serverless/**": true,
-        "**/.webpack/**": true
+        "**/.webpack/**": true,
+        "**/.tmp/**": true
     },
 }

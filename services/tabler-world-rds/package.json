@@ -6,12 +6,16 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "serverless": "^1.49.0"
+    "serverless": "^1.49.0",
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
+    "typescript": "^3.3.3333"
   },
   "scripts": {
-    "deploy": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless deploy --force --verbose\"",
-    "pack": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless package --verbose\"",
-    "remove": "env-cmd --no-override ../../config/.env cross-env-shell \"serverless remove --verbose\"",
+    "deploy": "service deploy",
+    "package": "service package",
+    "remove": "service remove",
+    "dev": "service dev",
+
     "start": "ntl"
   }
 }
