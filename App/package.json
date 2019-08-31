@@ -107,6 +107,6 @@
     "jest-expo": "^32.0.0",
     "license-checker": "^25.0.1",
     "ntl": "^3.2.4",
-    "typescript": "^3.5.1"
+    "typescript": "3.6.2"
   }
 }

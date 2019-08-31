@@ -13,9 +13,9 @@
   "devDependencies": {
     "@mskg/tabler-world-yarn-tools": "0.0.1",
     "@types/aws-lambda": "^8.10.26",
-    "@types/node": "^11.10.4",
-    "file-loader": "^3.0.1",
-    "ntl": "^3.2.4",
+    "@types/node": "^12.7.3",
+    "file-loader": "^4.2.0",
+    "ntl": "^4.0.0",
     "serverless": "^1.49.0",
     "serverless-domain-manager": "^3.2.6",
     "serverless-dynamodb-local": "^0.2.38",
@@ -25,7 +25,7 @@
     "serverless-plugin-aws-alerts": "^1.2.4",
     "serverless-webpack": "^5.3.0",
     "ts-loader": "^6.0.4",
-    "typescript": "^3.3.3333",
+    "typescript": "3.6.2",
     "webpack": "^4.32.1"
   },
   "files": [

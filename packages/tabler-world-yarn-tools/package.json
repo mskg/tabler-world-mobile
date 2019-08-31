@@ -24,9 +24,9 @@
     "@types/cross-spawn": "^6.0.0"
   },
   "peerDependencies": {
-    "serverless-webpack": "*",
-    "typescript": "*"
+    "serverless-webpack": "*"
   },
   "devDependencies": {
+    "typescript": "3.6.2"
   }
 }

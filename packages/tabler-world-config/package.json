@@ -18,9 +18,9 @@
     "lodash": "*"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.137",
+    "@types/lodash": "4.14.121",
     "@types/lru-cache": "^5.1.0",
     "@types/node": "^12.7.2",
-    "typescript": "^3.5.3"
+    "typescript": "3.6.2"
   }
 }
