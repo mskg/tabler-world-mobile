@@ -7,9 +7,9 @@ import { DataHandler } from "../types/DataHandler";
  * @param handler
  */
 export async function pushChanges(resultChunks: any[], handler: DataHandler) {
-    let result: any[] = [];
+    const result: any[] = [];
 
-    resultChunks.forEach(c => {
+    resultChunks.forEach((c) => {
         result.push(...((c ? c.data : null) || []));
     });
 

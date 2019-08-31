@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/node';
-import { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import * as Sentry from "@sentry/node";
+import { APIGatewayProxyEvent, Context } from "aws-lambda";
 
 export function captureException(event: APIGatewayProxyEvent, context: Context, err: any) {
-  Sentry.withScope(scope => {
+  Sentry.withScope((scope) => {
     const authorizer = event.requestContext.authorizer || {};
     const { iss, email } = authorizer.claims || { iss: null, email: null };
 
@@ -27,12 +27,12 @@ export function captureException(event: APIGatewayProxyEvent, context: Context, 
       logStreamName: context.logStreamName,
       requestid: context.awsRequestId,
       extendedRequestId: event.requestContext.extendedRequestId || context.awsRequestId,
-      requestTime: event.requestContext.requestTime || '',
-      requestTimeEpoch: event.requestContext.requestTimeEpoch.toString() || '',
+      requestTime: event.requestContext.requestTime || "",
+      requestTimeEpoch: event.requestContext.requestTimeEpoch.toString() || "",
       stage: event.requestContext.stage,
       accountId: event.requestContext.accountId,
       apiId: event.requestContext.apiId,
-      region: process.env.SERVERLESS_REGION || process.env.AWS_REGION || '',
+      region: process.env.SERVERLESS_REGION || process.env.AWS_REGION || "",
     });
 
     Sentry.captureException(err);

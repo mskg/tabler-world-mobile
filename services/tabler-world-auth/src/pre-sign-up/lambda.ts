@@ -1,6 +1,7 @@
-import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
-import { withClient } from '@mskg/tabler-world-rds-client';
+import { withClient } from "@mskg/tabler-world-rds-client";
+import { CognitoUserPoolTriggerHandler } from "aws-lambda";
 
+// tslint:disable-next-line: export-name
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
     await withClient(context, async (client) => {
         const res = await client.query(

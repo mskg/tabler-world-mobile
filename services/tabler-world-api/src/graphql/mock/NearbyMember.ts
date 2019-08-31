@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from "faker";
 
 export const NearbyMember = (_root: any, _args: any, context: any, _info: any) => {
   context.memberId = faker.random.number({
@@ -23,5 +23,5 @@ export const NearbyMember = (_root: any, _args: any, context: any, _info: any) =
 
     lastseen: () => faker.date.recent().getTime(),
     state: () => "Steady",
-  }
+  };
 };

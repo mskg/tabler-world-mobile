@@ -3,8 +3,10 @@ import { IApolloContext } from "../types/IApolloContext";
 
 type TokenArgs = {
     token: string,
-}
+};
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const TokenResolver = {
     Mutation: {
         addToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
@@ -25,7 +27,7 @@ ON CONFLICT (id) DO UPDATE
         ORDER BY 1)
     );
 `,
-                        //@ts-ignore
+                        // @ts-ignore
                         [context.principal.id, args.token]);
 
                     // remove token from any other entry as devices can switch users
@@ -39,16 +41,16 @@ SET tokens =
 )
 WHERE id <> $1 and tokens @> ARRAY[$2]
 `,
-                        //@ts-ignore
+                        // @ts-ignore
                         [context.principal.id, args.token]);
 
                     return true;
-                }
-            )
+                },
+            );
         },
 
         removeToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
-            if (args == null) return;
+            if (args == null) { return; }
 
             return useDataService(
                 context,
@@ -64,12 +66,12 @@ SET tokens =
     where elem <> $2 and elem is not null
 )
 WHERE id = $1 and tokens @> ARRAY[$2]`,
-                        //@ts-ignore
+                        // @ts-ignore
                         [context.principal.id, args.token]);
 
                     return true;
-                }
-            )
+                },
+            );
         },
-    }
-}
+    },
+};

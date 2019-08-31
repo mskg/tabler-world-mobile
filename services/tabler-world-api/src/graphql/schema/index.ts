@@ -11,6 +11,7 @@ import { SearchMember } from "./Search";
 import { Settings } from "./Settings";
 import { Structure } from "./Structure";
 
+// tslint:disable-next-line: export-name
 export const schema = [
     gql`
         scalar Date

@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from "faker";
 
 export const Education = () => ({
   school: () => faker.company.companyName(),

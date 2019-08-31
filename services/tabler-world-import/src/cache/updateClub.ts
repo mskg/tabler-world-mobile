@@ -1,7 +1,7 @@
 import { xAWS } from "@mskg/tabler-world-aws";
 import { makeCacheKey } from "@mskg/tabler-world-cache";
 import { IDataService } from "@mskg/tabler-world-rds-client";
-import { cache } from "./cacheInstance";
+import { cacheInstance } from "./cacheInstance";
 
 // we keep an im memory hash of the last updated clubs
 // the lambda is short lived, with a max degree of three
@@ -29,21 +29,20 @@ export async function updateClub(client: IDataService, assoc: string, club: numb
 
     if (newClub != null) {
         console.log("Updating", key);
-        cache.set(key, JSON.stringify(newClub));
+        cacheInstance.set(key, JSON.stringify(newClub));
 
         const addresses = [
             newClub.meetingplace1,
             newClub.meetingplace2,
         ];
 
-        var sqs = new xAWS.SQS();
+        const sqs = new xAWS.SQS();
         await sqs.sendMessage({
             QueueUrl: process.env.geocode_queue as string,
-            MessageBody: JSON.stringify(addresses)
+            MessageBody: JSON.stringify(addresses),
         }).promise();
-    }
-    else {
+    } else {
         console.log("Removing", key);
-        cache.delete(key);
+        cacheInstance.delete(key);
     }
 }

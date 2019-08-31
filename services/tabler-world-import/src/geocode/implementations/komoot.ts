@@ -65,7 +65,7 @@ export async function komoot(address: IAddress): Promise<NodeGeocoder.Entry | nu
     api.maxTries = 1;
     api.waitTime = 5000;
 
-    const result: FeatureCollection = await api.callApi("/api/?" + querystring.encode(thisops))
+    const result: FeatureCollection = await api.callApi("/api/?" + querystring.encode(thisops));
     console.log(JSON.stringify(result));
 
     if (result == null || result.features == null || result.features.length == 0) {
@@ -86,22 +86,22 @@ export async function komoot(address: IAddress): Promise<NodeGeocoder.Entry | nu
 
             extra: {
                 // @ts-ignore
-                osm_id: props["osm_id"],
-                osm_type: props["osm_type"],
-                osm_key: props["osm_key"],
-                osm_value: props["osm_value"],
+                osm_id: props.osm_id,
+                osm_type: props.osm_type,
+                osm_key: props.osm_key,
+                osm_value: props.osm_value,
             },
 
             // @ts-ignore
-            name: props["name"],
+            name: props.name,
 
-            streetName: props["street"] || props["name"],
-            streetNumber: props["housenumber"],
+            streetName: props.street || props.name,
+            streetNumber: props.housenumber,
 
-            zipcode: props["postcode"],
-            city: props["city"],
-            state: props["state"],
-            country: props["country"],
+            zipcode: props.postcode,
+            city: props.city,
+            state: props.state,
+            country: props.country,
         };
     }
 

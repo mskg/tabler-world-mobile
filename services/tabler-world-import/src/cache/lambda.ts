@@ -4,11 +4,12 @@ import { CacheUpdateQueueEntry } from "../shared/CacheUpdateQueueEntry";
 import { updateClub } from "./updateClub";
 import { updateMember } from "./updateMember";
 
+// tslint:disable-next-line: export-name
 export const handler: SQSHandler = async (event, context, callback) => {
 
     // max degree 3
     await withDatabase(context, async (client) => {
-        for (let message of event.Records) {
+        for (const message of event.Records) {
             const payload = JSON.parse(message.body) as CacheUpdateQueueEntry;
 
             if (payload.type === "club") {
@@ -22,4 +23,4 @@ export const handler: SQSHandler = async (event, context, callback) => {
     });
 
     callback();
-}
+};

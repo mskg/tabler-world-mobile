@@ -16,22 +16,21 @@ export function resolveUser(event: APIGatewayProxyEvent): IPrincipal {
         id: 0,
     };
 
-    if (process.env.IS_OFFLINE === 'true' && authorizer.principalId === "offlineContext_authorizer_principalId") {
+    if (process.env.IS_OFFLINE === "true" && authorizer.principalId === "offlineContext_authorizer_principalId") {
         console.warn("********* AUTHENTICATION DEBUG MODE *********");
 
         // single quotes are not allowed in JSON, but encoding in ENV is easier
         const user = (process.env.API_DEBUG_USER || "").replace(/'/g, '"');
         resolvedPrincipal = JSON.parse(user) as IPrincipal;
-    }
-    else {
+    } else {
         const { area, club, association, id, email } = authorizer;
 
-        if (area == null || area == "") throw new AuthenticationError("Authorizer missing (area)");
-        if (club == null || club == "") throw new AuthenticationError("Authorizer missing (club)");
-        if (association == null || association == "") throw new AuthenticationError("Authorizer missing (association)");
-        if (id == null || id == "") throw new AuthenticationError("Authorizer missing (id)");
-        if (email == null || email == "") throw new AuthenticationError("Authorizer missing (email)");
-
+        // tslint:disable: triple-equals
+        if (area == null || area == "") { throw new AuthenticationError("Authorizer missing (area)"); }
+        if (club == null || club == "") { throw new AuthenticationError("Authorizer missing (club)"); }
+        if (association == null || association == "") { throw new AuthenticationError("Authorizer missing (association)"); }
+        if (id == null || id == "") { throw new AuthenticationError("Authorizer missing (id)"); }
+        if (email == null || email == "") { throw new AuthenticationError("Authorizer missing (email)"); }
 
         resolvedPrincipal.email = email;
         resolvedPrincipal.association = association;

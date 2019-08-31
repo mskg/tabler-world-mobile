@@ -42,6 +42,7 @@ const SECTORS = [
 
 type MapType = {[key: string]: string};
 
+// tslint:disable-next-line: export-name
 export const SECTOR_MAPPING: MapType = SECTORS.reduce((p, c) => {
     p[c.replace(/-/ig, "") as string] = c;
     return p;

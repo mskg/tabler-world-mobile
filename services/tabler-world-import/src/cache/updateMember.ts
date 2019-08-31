@@ -1,15 +1,15 @@
 import { xAWS } from "@mskg/tabler-world-aws";
 import { makeCacheKey } from "@mskg/tabler-world-cache";
 import { IDataService } from "@mskg/tabler-world-rds-client";
-import { cache } from "./cacheInstance";
+import { cacheInstance } from "./cacheInstance";
 import { updateClub } from "./updateClub";
 
 export async function updateMember(client: IDataService, id: number) {
     const key = makeCacheKey("Member", [id]);
-    const staleCacheData = await cache.get(key);
+    const staleCacheData = await cacheInstance.get(key);
 
     const res = await client.query(`select * from profiles where id = $1 and removed = FALSE`, [id]);
-    const newMember = res.rows.length == 1 ? res.rows[0] : undefined;
+    const newMember = res.rows.length === 1 ? res.rows[0] : undefined;
 
     if (newMember == null) {
         if (staleCacheData != null) {
@@ -18,13 +18,12 @@ export async function updateMember(client: IDataService, id: number) {
             const clubKey = makeCacheKey("Club", [oldMember.association + "_" + oldMember.club]);
 
             console.log("Removing", clubKey);
-            cache.delete(clubKey);
+            cacheInstance.delete(clubKey);
         }
 
         console.log("Removing", key);
-        cache.delete(key);
-    }
-    else {
+        cacheInstance.delete(key);
+    } else {
         if (staleCacheData != null) {
             // we update the memberlist here
             const oldMember = JSON.parse(staleCacheData);
@@ -34,22 +33,22 @@ export async function updateMember(client: IDataService, id: number) {
         }
 
         console.log("Updating", key);
-        cache.set(key, JSON.stringify(newMember));
+        cacheInstance.set(key, JSON.stringify(newMember));
 
         const addresses = [
             newMember.address,
         ];
 
         if (newMember.companies) {
-            for (let company of newMember.companies) {
+            for (const company of newMember.companies) {
                 addresses.push(company.address);
             }
         }
 
-        var sqs = new xAWS.SQS();
+        const sqs = new xAWS.SQS();
         await sqs.sendMessage({
             QueueUrl: process.env.geocode_queue as string,
-            MessageBody: JSON.stringify(addresses)
+            MessageBody: JSON.stringify(addresses),
         }).promise();
 
         // member list could have changed

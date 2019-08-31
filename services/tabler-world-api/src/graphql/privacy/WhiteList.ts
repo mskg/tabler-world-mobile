@@ -6,12 +6,14 @@ import { hasAccess } from "./hasAccess";
 export type AnyType = { [key: string]: any };
 type WhiteListFunction = (level: FilterLevel, t: AnyType) => string[];
 
+// tslint:disable-next-line: variable-name
 const system_fields = [
-    "id", "area", "areaname", "association", "associationname", "club", "clubname", "roles", "modifiedon"
+    "id", "area", "areaname", "association", "associationname", "club", "clubname", "roles", "modifiedon",
 ];
 
+// tslint:disable-next-line: variable-name
 const standard_fields = [
-    "firstname", "lastname", "pic", "rtemail", "socialmedia"
+    "firstname", "lastname", "pic", "rtemail", "socialmedia",
 ];
 
 const unprotected = [...system_fields, ...standard_fields];

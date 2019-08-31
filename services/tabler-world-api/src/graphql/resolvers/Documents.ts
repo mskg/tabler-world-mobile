@@ -1,21 +1,15 @@
 import _ from "lodash";
 import { IApolloContext } from "../types/IApolloContext";
 
-// type IdQuery = {
-//     id: number,
-// };
-
-// type TopQuery = {
-//     top?: number,
-// };
-
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const DocumentsResolver = {
     Query: {
         ListFiles: async (_root: any, _args: {}, context: IApolloContext) => {
 
 
             return _(await context.dataSources.tablerWorld.getAllDocuments())
-                .filter(f => f.parent == null && f.files != null && f.files.length > 0)
+                .filter((f) => f.parent == null && f.files != null && f.files.length > 0)
                 // .tap(e => context.logger.log(e))
                 .value();
         },
@@ -30,7 +24,7 @@ export const DocumentsResolver = {
 
     Folder: {
         createdby: (root: any, _args: {}, context: IApolloContext) => {
-            if (root.created_by == null) return null;
+            if (root.created_by == null) { return null; }
             return context.dataSources.members.readOne(root.created_by);
         },
 
@@ -43,13 +37,13 @@ export const DocumentsResolver = {
 
                 // files
                 ...root.files,
-            ]
+            ];
         },
     },
 
     File: {
         createdby: (root: any, _args: {}, context: IApolloContext) => {
-            if (root.uploaded_by_id == null) return null;
+            if (root.uploaded_by_id == null) { return null; }
             return context.dataSources.members.readOne(root.uploaded_by_id);
         },
 
@@ -61,4 +55,4 @@ export const DocumentsResolver = {
             return root.file;
         },
     },
-}
+};

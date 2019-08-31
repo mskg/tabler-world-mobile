@@ -7,7 +7,7 @@ type MembersArgs = {
     state?: string,
     cursor?: string,
     limit?: number,
-}
+};
 
 const MIN = 10;
 const DEFAULT = 250000;
@@ -19,24 +19,27 @@ const CURSOR_MODIFIED = "cursor_modified";
 
 function tryParseInt(val: any, def: number, min?: number, max?: number): number {
     let limit = parseInt(val || def.toString(), 10);
-    if (limit == null || isNaN(limit)) { limit = def };
+    if (limit == null || isNaN(limit)) { limit = def; }
 
     if (min != null && max != null) { limit = Math.min(Math.max(limit, min), max); }
     return limit;
 }
 
 function decode(val: string | undefined, def: number, min?: number, max?: number): number {
-    if (val == null || val == "") return def;
-    const buf = Buffer.from(val, 'base64');
+    // tslint:disable-next-line: triple-equals
+    if (val == null || val == "") { return def; }
+    const buf = Buffer.from(val, "base64");
 
     return tryParseInt(buf.toString().replace(PREFIX, ""), def, min, max);
 }
 
 function encode(val: any) {
     const buff = Buffer.from(PREFIX + val.toString());
-    return buff.toString('base64');
+    return buff.toString("base64");
 }
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const MemberSyncResolver = {
 
     Query: {
@@ -44,17 +47,17 @@ export const MemberSyncResolver = {
             return useDataService(
                 context,
                 async (client) => {
-                    let { cursor, limit: strLimit, state: ts } = args;
+                    const { cursor, limit: strLimit, state: ts } = args;
 
                     context.logger.log("diffMembers", "ts", ts, "cursor", cursor, "limit", strLimit);
 
                     // the ts that we have been given
-                    let state: number = decode(ts, new Date(1979, 0, 30).getTime());
+                    const state: number = decode(ts, new Date(1979, 0, 30).getTime());
 
                     // page upon given ts
-                    let calculatedCursor: number = decode(cursor, 0);
+                    const calculatedCursor: number = decode(cursor, 0);
 
-                    let limit = tryParseInt(strLimit, DEFAULT, MIN, MAX);
+                    const limit = tryParseInt(strLimit, DEFAULT, MIN, MAX);
                     context.logger.log("diffMembers", "calculatedCursor", calculatedCursor);
 
                     let res: QueryResult;
@@ -87,7 +90,7 @@ export const MemberSyncResolver = {
                     // next for paging
                     if (res.rows.length > limit) {
                         metadata.next_cursor = encode(
-                            res.rows[res.rows.length - 1][CURSOR_MODIFIED]
+                            res.rows[res.rows.length - 1][CURSOR_MODIFIED],
                         );
 
                         const last = res.rows[res.rows.length - 2][FIELD_MODIFIED];
@@ -106,10 +109,10 @@ export const MemberSyncResolver = {
 
                     return {
                         ts: stableTs,
-                        tabler: res.rows.map(r => {
-                            if (r["removed"] === true) {
+                        tabler: res.rows.map((r) => {
+                            if (r.removed === true) {
                                 return {
-                                    id: r["id"],
+                                    id: r.id,
                                     removed: true,
                                 };
                             }
@@ -118,8 +121,8 @@ export const MemberSyncResolver = {
                         }),
                         response_metadata: metadata,
                     };
-                }
-            )
-        }
-    }
-}
+                },
+            );
+        },
+    },
+};

@@ -1,10 +1,10 @@
-import faker from 'faker';
-import _ from 'lodash';
-import { Area } from './Area';
-import { clubNames, memberNames } from './data';
-import { Member } from './Member';
-import { randomLocation } from './randomLocation';
-import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
+import faker from "faker";
+import _ from "lodash";
+import { Area } from "./Area";
+import { clubNames, memberNames } from "./data";
+import { Member } from "./Member";
+import { randomLocation } from "./randomLocation";
+import { AssistRoles, BoardRoles, PresidentRoles } from "./Roles";
 
 export const Club = (root: any, args: any, _context: any, _info: any) => {
   const clubId = (root || {}).club || (args || {}).id;
@@ -12,7 +12,7 @@ export const Club = (root: any, args: any, _context: any, _info: any) => {
 
   const club = clubNames[clubId - 1] || {};
   const members = _(memberNames)
-    .filter(m => m.club == clubId)
+    .filter((m) => m.club == clubId)
     .map((m: any) => Member({ member: m.id + 1 }, {}, null, null))
     .value();
 
@@ -56,7 +56,7 @@ export const Club = (root: any, args: any, _context: any, _info: any) => {
     area: () => Area({ area: club.area }, args, _context, _info),
 
     members: () => members,
-  }
+  };
 };
 
 export const ClubInfo = () => ({

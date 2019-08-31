@@ -1,6 +1,7 @@
-import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
+import { CognitoUserPoolTriggerHandler } from "aws-lambda";
 
-export const handler: CognitoUserPoolTriggerHandler = async event => {
+// tslint:disable-next-line: export-name
+export const handler: CognitoUserPoolTriggerHandler = async (event) => {
     console.log("[DEFINE]", event.request.userAttributes.email);
 
     if (event.request.session &&
@@ -27,7 +28,7 @@ export const handler: CognitoUserPoolTriggerHandler = async event => {
         // The user did not provide a correct answer yet; present challenge
         event.response.issueTokens = false;
         event.response.failAuthentication = false;
-        event.response.challengeName = 'CUSTOM_CHALLENGE';
+        event.response.challengeName = "CUSTOM_CHALLENGE";
     }
 
     return event;

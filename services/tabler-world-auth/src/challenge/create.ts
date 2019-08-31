@@ -1,8 +1,8 @@
-import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
-import { randomDigits } from 'crypto-secure-random-digit';
-import { sendEmail } from './sendEmail';
-import { withClient } from '@mskg/tabler-world-rds-client';
-import { xAWS } from '@mskg/tabler-world-aws';
+import { xAWS } from "@mskg/tabler-world-aws";
+import { withClient } from "@mskg/tabler-world-rds-client";
+import { CognitoUserPoolTriggerHandler } from "aws-lambda";
+import { randomDigits } from "crypto-secure-random-digit";
+import { sendEmail } from "./sendEmail";
 
 export const ses = new xAWS.SES();
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
@@ -18,12 +18,12 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
                 console.error("[CREATE]", event.request.userAttributes.email, "not found");
                 throw new Error("Sorry, we don't know you.");
             }
-           
+
             console.debug("[CREATE]", event.request.userAttributes.email, "found");
 
             // This is a new auth session
             // Generate a new secret login code and mail it to the user
-            secretLoginCode = randomDigits(6).join('');
+            secretLoginCode = randomDigits(6).join("");
             await sendEmail(event.request.userAttributes.email, secretLoginCode);
         });
     } else {
@@ -32,7 +32,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
         // There's an existing session. Don't generate new digits but
         // re-use the code from the current session. This allows the user to
         // make a mistake when keying in the code and to then retry, rather
-        // the needing to e-mail the user an all new code again.    
+        // the needing to e-mail the user an all new code again.
         const previousChallenge = event.request.session.slice(-1)[0];
         secretLoginCode = previousChallenge.challengeMetadata!.match(/CODE-(\d*)/)![1];
     }

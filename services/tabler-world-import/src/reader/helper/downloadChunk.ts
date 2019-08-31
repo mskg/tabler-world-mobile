@@ -11,7 +11,7 @@ import { TablerWorldApiChunk } from "../types/TablerWorldApiChunk";
  * @param postdata
  */
 export async function downloadChunk(url: string, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
-    const params = await getParameters('tw-api');
+    const params = await getParameters("tw-api");
     const api = JSON.parse(params["tw-api"]) as Param_Api;
 
     const client = new HttpClient(api.host);

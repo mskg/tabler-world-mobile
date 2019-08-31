@@ -5,5 +5,5 @@ export enum FieldNames {
     Association = "association",
     PrivacySettings = "privacysettings",
     Phonenumbers = "phonenumbers",
-    Emails = "emails"
+    Emails = "emails",
 }

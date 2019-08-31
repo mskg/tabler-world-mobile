@@ -13,9 +13,11 @@ type SearchInput = {
         clubs: string[],
 
         sectors: string[],
-    }
-}
+    },
+};
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const SearchMemberResolver = {
     MemberListView: {
         __resolveType(_obj: any, _context: IApolloContext, _info: any) {
@@ -24,6 +26,7 @@ export const SearchMemberResolver = {
     },
 
     Query: {
+        // tslint:disable-next-line: max-func-body-length
         SearchMember: async (_root: any, args: SearchInput, context: IApolloContext) => {
             const PAGE_SIZE = 20;
 
@@ -50,10 +53,10 @@ export const SearchMemberResolver = {
             ];
 
             const terms = (args.query.text || "")
-                .split(' ')
-                .map(r => r.trim())
-                .filter(r => r != "")
-                .map(r => `%${r}%`);
+                .split(" ")
+                .map((r) => r.trim())
+                .filter((r) => r != "")
+                .map((r) => `%${r}%`);
 
             context.logger.log("Terms", terms, "Args", args);
 
@@ -64,7 +67,7 @@ export const SearchMemberResolver = {
 
             const filters = [
                 "removed = FALSE",
-                "cursor_lastfirst > $2"
+                "cursor_lastfirst > $2",
             ];
 
             if (terms.length !== 0) {
@@ -73,7 +76,7 @@ export const SearchMemberResolver = {
 (
         f_unaccent(lastname || ' ' || firstname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
     or  f_unaccent(clubname || ', ' || areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
-)`
+)`,
                 );
             }
 
@@ -93,7 +96,7 @@ export const SearchMemberResolver = {
             }
 
             if (args.query.sectors != null && args.query.sectors.length > 0) {
-                parameters.push(args.query.sectors.map(s => (JSON.stringify([{sector: SECTOR_MAPPING[s]}]))));
+                parameters.push(args.query.sectors.map((s) => (JSON.stringify([{sector: SECTOR_MAPPING[s]}]))));
                 const sectorsId = parameters.length;
 
                 parameters.push(context.principal.id);
@@ -108,7 +111,7 @@ where
     and sectorprofiles.removed = false
     and get_profile_access(sectorpricacy.company,
         sectorprofiles.id, sectorprofiles.club, sectorprofiles.association,
-        $${sectorsId+1}, $${sectorsId+2}, $${sectorsId+3}
+        $${sectorsId + 1}, $${sectorsId + 2}, $${sectorsId + 3}
     ) = true
     and sectorprofiles.companies @> ANY($${sectorsId}::jsonb[])
 )`);
@@ -120,10 +123,10 @@ where
                 context,
                 async (client) => {
                     const res = await client.query(`
-select  ${cols.join(',')}
+select  ${cols.join(",")}
 from profiles
 where
-        ${filters.join(' AND ')}
+        ${filters.join(" AND ")}
 order by cursor_lastfirst
 limit $1`,
                         parameters);
@@ -133,19 +136,19 @@ limit $1`,
 
                     return {
                         nodes: res.rows.length > 0 ? _(res.rows).take(end).map(
-                            r => ({
-                                ...r
-                            })
+                            (r) => ({
+                                ...r,
+                            }),
                         ) : [],
 
                         pageInfo: {
-                            endCursor: end >= 1 ? res.rows[end - 1]["cursor_lastfirst"].toString() : "0",
+                            endCursor: end >= 1 ? res.rows[end - 1].cursor_lastfirst.toString() : "0",
                             hasNextPage: res.rows.length > PAGE_SIZE,
-                        }
+                        },
                     };
-                }
+                },
             );
 
-        }
-    }
-}
+        },
+    },
+};

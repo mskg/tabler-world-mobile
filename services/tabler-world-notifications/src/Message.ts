@@ -15,5 +15,5 @@ const Strings = {
     en: {
         title: "Birthday time",
         text: (n: any) => `Help ${n} to have a great day!`,
-    }
-}
+    },
+};

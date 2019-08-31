@@ -1,9 +1,9 @@
 import { CacheData, CacheValues, IManyKeyValueCache } from "@mskg/tabler-world-cache";
-import { KeyValueCache } from 'apollo-server-core';
+import { KeyValueCache } from "apollo-server-core";
 
 // we still support the query cache
 export class NoCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
-    cache: { [key: string]: string } = {};
+    public cache: { [key: string]: string } = {};
 
     public async set(
         id: string,
@@ -29,8 +29,8 @@ export class NoCache implements KeyValueCache<string>, IManyKeyValueCache<string
     }
 
     public async setMany(data: CacheData<string>[]): Promise<void> {
-        data.forEach(d =>
-            this.cache[d.id] = d.data
+        data.forEach((d) =>
+            this.cache[d.id] = d.data,
         );
     }
 

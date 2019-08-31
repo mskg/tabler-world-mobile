@@ -11,7 +11,7 @@ export async function geocode(client: IDataService, address: IAddress): Promise<
     if (md5 == null) {
         console.log(address, "is not valid");
         return undefined;
-    };
+    }
 
     console.debug(md5, "Encoding", address);
 
@@ -44,8 +44,8 @@ from geocodes where hash = $1`,
         console.log(md5, "storing result", point);
 
         await client.query(
-            'insert into geocodes (hash, query, point, result, modifiedon) values ($1, $2, $3, $4, now())',
-            [md5, hash, point, encoded ? JSON.stringify(encoded) : null]
+            "insert into geocodes (hash, query, point, result, modifiedon) values ($1, $2, $3, $4, now())",
+            [md5, hash, point, encoded ? JSON.stringify(encoded) : null],
         );
 
         return encoded == null

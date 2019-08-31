@@ -1,11 +1,13 @@
-import * as DateParser from 'date-and-time';
-import { addressHash } from '@mskg/tabler-world-geo';
+import { addressHash } from "@mskg/tabler-world-geo";
+import * as DateParser from "date-and-time";
 import { IApolloContext } from "../types/IApolloContext";
 
 type ById = {
     id: string,
 };
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const StructureResolver = {
     Query: {
         Associations: (_root: any, _args: any, context: IApolloContext) => {
@@ -40,7 +42,7 @@ export const StructureResolver = {
             const hash = addressHash(root.meetingplace1);
             context.logger.log(root, hash);
 
-            if (hash == null) return null;
+            if (hash == null) { return null; }
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
             context.logger.log(root, hash, coordinates);
@@ -48,7 +50,7 @@ export const StructureResolver = {
             return coordinates && coordinates.latitude
                 ? {
                     latitude: coordinates.latitude,
-                    longitude: coordinates.longitude
+                    longitude: coordinates.longitude,
                 }
                 : null;
         },
@@ -56,8 +58,8 @@ export const StructureResolver = {
         area: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Area Loading", root);
             return context.dataSources.structure.getArea(
-                root.association, root.area
-            )
+                root.association, root.area,
+            );
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
@@ -68,7 +70,7 @@ export const StructureResolver = {
 
         members: (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.members.readClub(
-                root.association, root.club
+                root.association, root.club,
             );
         },
     },
@@ -76,7 +78,7 @@ export const StructureResolver = {
     ClubInfo: {
         charter_date: (root: any, _args: any, context: IApolloContext) => {
             try {
-                const date = DateParser.parse(root.charter_date, 'DD/MM/YYYY');
+                const date = DateParser.parse(root.charter_date, "DD/MM/YYYY");
                 return new Date(date).toISOString();
             } catch (e) {
                 context.logger.error(e, "Could not parse", root.charter_date);
@@ -102,7 +104,7 @@ export const StructureResolver = {
             if (root.clubs) {
                 return Promise.all(
                     root.clubs.map(async (r: any) =>
-                        await context.dataSources.structure.getClub(r))
+                        await context.dataSources.structure.getClub(r)),
                 );
             }
 
@@ -114,5 +116,5 @@ export const StructureResolver = {
         association: (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.structure.getAssociation(root.association);
         },
-    }
-}
+    },
+};

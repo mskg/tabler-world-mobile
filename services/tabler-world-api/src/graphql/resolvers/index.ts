@@ -14,6 +14,8 @@ import { TokenResolver } from "./Token";
 import { UserResolver } from "./User";
 import { UserRolesResolver } from "./UserRoles";
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const resolvers = merge(
     UserResolver,
     MemberResolver,

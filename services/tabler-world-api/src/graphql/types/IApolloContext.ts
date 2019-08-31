@@ -6,14 +6,14 @@ import { IDataSources } from "../dataSources";
 import { IPrincipal } from "./IPrincipal";
 
 export interface IApolloContext {
-    lambdaEvent: APIGatewayProxyEvent,
-    lambdaContext: Context,
+    lambdaEvent: APIGatewayProxyEvent;
+    lambdaContext: Context;
 
-    logger: ILogger,
-    principal: IPrincipal,
+    logger: ILogger;
+    principal: IPrincipal;
 
-    cache: KeyValueCache<string> & IManyKeyValueCache<string>,
+    cache: KeyValueCache<string> & IManyKeyValueCache<string>;
 
-    requestCache: {[key: string]: any},
-    dataSources: IDataSources,
+    requestCache: {[key: string]: any};
+    dataSources: IDataSources;
 };

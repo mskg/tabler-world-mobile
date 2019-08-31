@@ -19,11 +19,13 @@ type MemberFilter = {
     filter: {
         areas?: number[],
 
-        nationalBoard?: Boolean,
-        areaBoard?: Boolean,
-    }
+        nationalBoard?: boolean,
+        areaBoard?: boolean,
+    },
 };
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const MemberResolver = {
     Member: {
         area: (root: any, _args: {}, _context: IApolloContext) => {
@@ -32,7 +34,7 @@ export const MemberResolver = {
                 association: root.association,
                 area: root.area,
                 name: root.areaname,
-            }
+            };
         },
 
         club: (root: any, _args: {}, _context: IApolloContext) => {
@@ -42,20 +44,20 @@ export const MemberResolver = {
                 name: root.clubname,
                 association: root.association,
                 area: root.area,
-            }
+            };
         },
 
         association: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 name: root.associationname,
                 association: root.association,
-            }
+            };
         },
     },
 
     Company: {
         sector:  (root: any, _args: {}, _context: IApolloContext) => {
-            return root.sector ? root.sector.replace(/-/ig, "") : null
+            return root.sector ? root.sector.replace(/-/ig, "") : null;
         },
     },
 
@@ -76,7 +78,7 @@ export const MemberResolver = {
                     context.logger.log("areaBoard", args.filter);
                     const areas = await context.dataSources.structure.allAreas();
 
-                    for (let area of areas) {
+                    for (const area of areas) {
                         if (area.board) {
                             const board = await context.dataSources.members.readMany(
                                 area.board.map((b: any) => b.member));
@@ -92,7 +94,7 @@ export const MemberResolver = {
                     context.logger.log("nationalBoard", args.filter);
                     const associations = await context.dataSources.structure.allAssociations();
 
-                    for (let assoc of associations) {
+                    for (const assoc of associations) {
                         if (assoc.board) {
                             const board = await context.dataSources.members.readMany(assoc.board.map((b: any) => b.member));
                             if (board) {
@@ -122,7 +124,7 @@ export const MemberResolver = {
             const favorites = await context.dataSources.members.readFavorites();
             if (favorites) {
                 // there could be favorites that no longer exist
-                return favorites.filter(f => f != null);
+                return favorites.filter((f) => f != null);
             } else {
                 return favorites;
             }
@@ -139,5 +141,5 @@ export const MemberResolver = {
         Member: (_root: any, args: IdArgs, context: IApolloContext) => {
             return context.dataSources.members.readOne(args.id);
         },
-    }
-}
+    },
+};

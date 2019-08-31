@@ -10,12 +10,14 @@ type TopQuery = {
     top?: number,
 };
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const AlbumsResolver = {
     Query: {
         Albums: async (_root: any, _args: {}, context: IApolloContext) => {
             return _(await context.dataSources.tablerWorld.getAllAlbums())
-                .filter(f => f.pictures && f.pictures.length > 0)
-                .orderBy(f => f.id)
+                .filter((f) => f.pictures && f.pictures.length > 0)
+                .orderBy((f) => f.id)
                 .reverse()
                 .value();
         },
@@ -29,7 +31,7 @@ export const AlbumsResolver = {
     Album: {
         description: (root: any, _args: {}, _context: IApolloContext) => {
             const val = root.description ? root.description.trim() : null;
-            if (val == null || val === "") return null;
+            if (val == null || val === "") { return null; }
 
             // this kills empty nodes
             return removeEmptyTags(val);
@@ -40,7 +42,7 @@ export const AlbumsResolver = {
                 ? root.pictures.filter((p: any) => p.file && p.file !== "")
                 : [];
 
-            if (args.top != null) return _(result).take(args.top).value();
+            if (args.top != null) { return _(result).take(args.top).value(); }
             return result;
         },
     },
@@ -57,5 +59,5 @@ export const AlbumsResolver = {
         preview_1920: (root: any, _args: {}, _context: IApolloContext) => {
             return root.file.replace(/\.jpg/, "_1920.jpg");
         },
-    }
-}
+    },
+};

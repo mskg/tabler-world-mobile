@@ -1,8 +1,8 @@
 import { XRAY } from "@mskg/tabler-world-aws";
-import { GraphQLResponse } from 'apollo-server-core';
-import { GraphQLExtension } from 'apollo-server-lambda';
-import { GraphQLResolveInfo } from 'graphql';
-import { IApolloContext } from '../types/IApolloContext';
+import { GraphQLResponse } from "apollo-server-core";
+import { GraphQLExtension } from "apollo-server-lambda";
+import { GraphQLResolveInfo } from "graphql";
+import { IApolloContext } from "../types/IApolloContext";
 
 function getFieldName(info: GraphQLResolveInfo) {
     if (
@@ -35,10 +35,10 @@ function getFieldName(info: GraphQLResolveInfo) {
 // }
 
 export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
-    requestDidStart() {
+    public requestDidStart() {
         let close: any;
 
-        XRAY.captureAsyncFunc(`GraphQL`, function (ss: any) {
+        XRAY.captureAsyncFunc(`GraphQL`, (ss: any) => {
             if (ss) {
                 close = () => {
                     ss.close();
@@ -50,11 +50,14 @@ export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
     }
 
     // monitors
-    willResolveField(
+    public willResolveField(
+        // tslint:disable-next-line: variable-name
         _source: any,
+        // tslint:disable-next-line: variable-name
         _args: { [argName: string]: any },
+        // tslint:disable-next-line: variable-name
         _context: IApolloContext,
-        info: GraphQLResolveInfo
+        info: GraphQLResolveInfo,
     ) {
         if (info.path && info.path.prev) {
             // we are currently only interested in the root metrics
@@ -69,9 +72,9 @@ export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
 
         let close: any;
 
-        XRAY.captureAsyncFunc(`GraphQL ${name}`, function (ss: any) {
+        XRAY.captureAsyncFunc(`GraphQL ${name}`, (ss: any) => {
             if (ss) {
-                close = (error: Error | null, _result: any) => {
+                close = (error: Error | null /*, result: any*/) => {
                     ss.close(error);
                 };
             }
@@ -80,7 +83,7 @@ export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
         return close;
     }
 
-    willSendResponse(o: {
+    public willSendResponse(o: {
         graphqlResponse: GraphQLResponse;
         context: IApolloContext;
     }) {
@@ -89,13 +92,12 @@ export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
 
             if (graphqlResponse.errors) {
                 XRAY.captureFunc("GraphQL Errors", (segment: any) => {
-                    //@ts-ignore
+                    // @ts-ignore
                     graphqlResponse.errors.forEach(
-                        err => segment.addError(JSON.stringify(err, null, 2)));
+                        (err) => segment.addError(JSON.stringify(err, null, 2)));
                 });
             }
-        }
-        catch (e) {
+        } catch (e) {
             o.context.logger.error("Faild to add error to segment", e);
         }
     }

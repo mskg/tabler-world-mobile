@@ -1,14 +1,14 @@
-import { removeEmptySlots } from '@mskg/tabler-world-common';
-import { IDataService } from '@mskg/tabler-world-rds-client';
-import { ChangePointer } from '../types/ChangePointer';
-import { DataHandler } from '../types/DataHandler';
+import { removeEmptySlots } from "@mskg/tabler-world-common";
+import { IDataService } from "@mskg/tabler-world-rds-client";
+import { ChangePointer } from "../types/ChangePointer";
+import { DataHandler } from "../types/DataHandler";
 import { RecordType } from "../types/RecordType";
 
 // we create a string association_clubnumber that is unique and allows us to target records directly
-const clubPK = (c: any) => c["subdomain"].replace(/[^a-z]/ig, "") + "_" + c["subdomain"].replace(/[^0-9]/ig, "");
+const clubPK = (c: any) => c.subdomain.replace(/[^a-z]/ig, "") + "_" + c.subdomain.replace(/[^0-9]/ig, "");
 
 // members have a unique id
-const memberPK = (c: any) => c["id"];
+const memberPK = (c: any) => c.id;
 
 /**
  * Returns a DataHandler that persists the given RecordType in our database.
@@ -20,12 +20,12 @@ const memberPK = (c: any) => c["id"];
 export const createWriteToDatabaseHandler = (client: IDataService, type: RecordType): DataHandler => {
     const pk = type === RecordType.clubs ? clubPK : memberPK;
 
-    return async (data: Array<any>): Promise<ChangePointer[]> => {
+    return async (data: any[]): Promise<ChangePointer[]> => {
         console.log("Writing chunk of", data.length, type, "records");
 
         const results: any[] = [];
 
-        for (let r of data) {
+        for (const r of data) {
             const id = pk(r);
             console.log(id);
 

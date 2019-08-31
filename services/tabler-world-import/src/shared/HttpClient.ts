@@ -31,11 +31,11 @@ export class HttpClient {
     protected configureOptions(path: string, method: string) {
         const options = {
             port: this.port,
-            method: method,
+            method,
             headers: {
                 "Content-Type": "application/json",
                 ...this._headers,
-            }
+            },
         };
 
         return {
@@ -61,12 +61,13 @@ export class HttpClient {
 
             return new Promise<T>((resolve, reject) => {
                 try {
-                    var req = xHttps.request(options, async function (res) {
+                    const req = xHttps.request(options, async (res) => {
                         if (res.statusCode === 429 && tryCount < maxTries - 1) {
                             const newTry = tryCount + 1;
 
                             console.log("[API] Got 429, sleeping ", newTry, "s");
-                            await new Promise((resolve) => setTimeout(resolve, newTry * waitTime));
+                            // tslint:disable-next-line: no-string-based-set-timeout
+                            await new Promise((r) => setTimeout(r, newTry * waitTime));
                             return run(url, method, postdata, newTry);
                         }
 
@@ -74,15 +75,15 @@ export class HttpClient {
                             return reject(new Error(`${res.statusCode} ${res.statusMessage}`));
                         }
 
-                        let data = '';
-                        res.setEncoding('utf8');
-                        res.on('data', function (chunk) {
+                        let data = "";
+                        res.setEncoding("utf8");
+                        res.on("data", (chunk) => {
                             data += chunk;
                         });
 
-                        res.on('end', async () => {
+                        res.on("end", async () => {
                             try {
-                                var json = JSON.parse(data);
+                                const json = JSON.parse(data);
                                 return resolve(json as T);
                             } catch (eEnd) {
                                 console.error("[API] on end", eEnd);
@@ -91,7 +92,7 @@ export class HttpClient {
                         });
                     });
 
-                    req.on('error', function (requestFail) {
+                    req.on("error", (requestFail) => {
                         console.error("[API] on error", requestFail);
                         return reject(requestFail);
                     });
@@ -101,14 +102,12 @@ export class HttpClient {
                     }
 
                     req.end();
-                }
-                catch (getFail) {
+                } catch (getFail) {
                     console.error("[API] get fail", getFail);
                     return reject(getFail);
                 }
             });
-        }
-        catch (outerFail) {
+        } catch (outerFail) {
             console.error("[API] outer fail", outerFail);
             return Promise.reject(outerFail);
         }

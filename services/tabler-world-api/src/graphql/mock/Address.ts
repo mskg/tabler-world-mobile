@@ -1,5 +1,5 @@
-import faker from 'faker';
-import { randomLocation } from './randomLocation';
+import faker from "faker";
+import { randomLocation } from "./randomLocation";
 
 export const Address = () => ({
   street1: () => faker.address.streetAddress(false),

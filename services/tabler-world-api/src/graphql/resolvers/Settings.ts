@@ -4,15 +4,17 @@ import { IApolloContext } from "../types/IApolloContext";
 
 type QuerySettings = {
     name: string,
-}
+};
 
 type SettingInput = {
     setting: {
         name: string,
         value: any,
-    }
-}
+    },
+};
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const SettingsResolver = {
     Query: {
         Setting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
@@ -25,7 +27,7 @@ FROM usersettings
 WHERE id = $1`,
                         [context.principal.id, args.name]);
                     return result.rows.length == 1 ? result.rows[0].value : null;
-                }
+                },
             );
         },
 
@@ -39,16 +41,16 @@ FROM usersettings
 WHERE id = $1`,
                         [context.principal.id]);
 
-                    const val = result.rows.length == 1
+                    const val = result.rows.length === 1
                         ? result.rows[0].value
                         : null;
 
-                    if (val == null) return null;
-                    return _(val).keys().map(k => ({
+                    if (val == null) { return null; }
+                    return _(val).keys().map((k) => ({
                         name: k,
-                        value: val[k]
+                        value: val[k],
                     }));
-                }
+                },
             );
         },
     },
@@ -65,12 +67,12 @@ WHERE id = $1
                         `,
                         [context.principal.id, args.name]);
                     return true;
-                }
-            )
+                },
+            );
         },
 
         putSetting: async (_root: any, args: SettingInput, context: IApolloContext) => {
-            if (args == null) return;
+            if (args == null) { return; }
 
             return useDataService(
                 context,
@@ -84,8 +86,8 @@ ON CONFLICT (id) DO UPDATE
                         [context.principal.id, JSON.stringify(args.setting.value), `{${args.setting.name}}`]);
 
                     return true;
-                }
+                },
             );
         },
-    }
+    },
 };

@@ -1,9 +1,10 @@
+import { writeJobLog } from "@mskg/tabler-world-jobs";
 import { withClient } from "@mskg/tabler-world-rds-client";
 import { Context } from "aws-lambda";
 import { readFileSync } from "fs";
-import { writeJobLog } from "@mskg/tabler-world-jobs";
 
 const fileNames = [
+    // tslint:disable: no-var-requires
     require("./00 setup.pgsql"),
     require("./01 tablers.pgsql"),
     require("./01 settings.pgsql"),
@@ -18,16 +19,15 @@ const fileNames = [
     require("./09 geocode.pgsql"),
 ];
 
-export async function handler(_event: Array<any>, context: Context, _callback: (error: any, success?: any) => void) {
+// tslint:disable-next-line: export-name variable-name
+export async function handler(_event: any[], context: Context, _callback: (error: any, success?: any) => void) {
     try {
         await withClient(context, async (client) => {
-            for (let i = 0; i < fileNames.length; ++i) {
-                const fn = fileNames[i];
-
+            for (const fn of fileNames) {
                 console.log("Processing", fn);
 
                 // replace role definition
-                var content = readFileSync(fn, 'utf8');
+                let content = readFileSync(fn, "utf8");
                 content = content.replace("tw_read_dev", process.env.db_role || "tw_read_dev");
 
                 // await withTransaction(client,
@@ -46,11 +46,10 @@ export async function handler(_event: Array<any>, context: Context, _callback: (
         try {
             await withClient(context, async (client) => {
                 await writeJobLog(client, "update::database", false, {
-                    error: e
+                    error: e,
                 });
-            })
-        }
-        catch { }
+            });
+        } catch { }
 
         console.error(e);
         throw e;

@@ -1,5 +1,5 @@
 
-import { gql } from 'apollo-server-lambda';
+import { gql } from "apollo-server-lambda";
 
 export const Structure = gql`
     type AssociationRole {

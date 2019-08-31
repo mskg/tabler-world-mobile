@@ -2,13 +2,16 @@ import { StopWatch } from "@mskg/tabler-world-common";
 import { writeJobLog } from "@mskg/tabler-world-jobs";
 import { withDatabase } from "@mskg/tabler-world-rds-client";
 import { Context } from "aws-lambda";
-import Expo from 'expo-server-sdk';
+import Expo from "expo-server-sdk";
 import _ from "lodash";
 import { removeToken } from "./helper/removeToken";
 import { Receipts } from "./types/Receipts";
 
-let expo = new Expo();
+const expo = new Expo();
 
+// tslint:disable: max-func-body-length
+// tslint:disable: export-name
+// tslint:disable-next-line: variable-name
 export async function handler(_event: any, context: Context, _callback: (error: any, success?: any) => void) {
     try {
         return await withDatabase(context, async (client) => {
@@ -20,7 +23,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
 
             const result = await client.query("select * from notification_receipts");
 
-            for (let row of result.rows) {
+            for (const row of result.rows) {
                 const rr = row as Receipts;
                 console.log("Processing", rr.id, "from", rr.createdon, rr.data);
 
@@ -29,8 +32,8 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                 // notifications to devices that have blocked notifications or have uninstalled
                 // your app. Expo does not control this policy and sends back the feedback from
                 // Apple and Google so you can handle it appropriately.
-                let receiptIds = [];
-                for (let ticket of rr.data) {
+                const receiptIds = [];
+                for (const ticket of rr.data) {
                     // NOTE: Not all tickets have IDs; for example, tickets for notifications
                     // that could not be enqueued will have error information and no receipt ID.
                     if (ticket.status === "ok" && ticket.id) {
@@ -39,21 +42,21 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                     }
                 }
 
-                let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
+                const receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
 
                 // Like sending notifications, there are different strategies you could use
                 // to retrieve batches of receipts from the Expo service.
-                for (let chunk of receiptIdChunks) {
+                for (const chunk of receiptIdChunks) {
                     try {
-                        let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
+                        const receipts = await expo.getPushNotificationReceiptsAsync(chunk);
                         console.log(receipts);
 
                         // The receipts specify whether Apple or Google successfully received the
                         // notification and information about an error, if one occurred.
-                        for (let receipt of _(receipts).values().toArray().value()) {
-                            if (receipt.status === 'ok') {
+                        for (const receipt of _(receipts).values().toArray().value()) {
+                            if (receipt.status === "ok") {
                                 continue;
-                            } else if (receipt.status === 'error') {
+                            } else if (receipt.status === "error") {
                                 console.error(`There was an error sending a notification: ${receipt.message}`);
 
                                 if (receipt.details && receipt.details.error) {
@@ -105,11 +108,11 @@ export async function handler(_event: any, context: Context, _callback: (error: 
         try {
             await withDatabase(context, async (client) => {
                 await writeJobLog(client, "notifications::check", false, {
-                    error: e
+                    error: e,
                 });
-            })
-        }
-        catch { }
+            });
+        // tslint:disable-next-line: no-empty
+        } catch { }
 
         console.error(e);
         throw e;

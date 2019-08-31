@@ -1,8 +1,8 @@
-import { GraphQLExtension } from 'apollo-server-lambda';
-import { IApolloContext } from '../types/IApolloContext';
+import { GraphQLExtension } from "apollo-server-lambda";
+import { IApolloContext } from "../types/IApolloContext";
 
 export class TraceRequestExtension extends GraphQLExtension<IApolloContext> {
-    requestDidStart({ context, queryString, variables }: {
+    public requestDidStart({ context, queryString, variables }: {
         context: IApolloContext,
         queryString?: string,
         variables?: { [key: string]: any },
@@ -17,7 +17,7 @@ export class TraceRequestExtension extends GraphQLExtension<IApolloContext> {
     // willSendResponse({ _context }: {
     //     _context: IApolloContext,
     // }) {
-    willSendResponse() {
+    public willSendResponse() {
         console.log("query done");
     }
 }

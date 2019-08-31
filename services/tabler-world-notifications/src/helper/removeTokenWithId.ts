@@ -12,6 +12,6 @@ SET tokens =
     where elem <> $2 and elem is not null
 )
 WHERE id = $1`,
-        //@ts-ignore
+        // @ts-ignore
         [id, token]);
 }

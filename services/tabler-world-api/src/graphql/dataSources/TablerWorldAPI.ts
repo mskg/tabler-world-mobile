@@ -1,34 +1,34 @@
-import { getParameters, Param_Api } from '@mskg/tabler-world-config';
-import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
-import { TTLs } from '../cache/TTLs';
-import { IApolloContext } from '../types/IApolloContext';
+import { getParameters, Param_Api } from "@mskg/tabler-world-config";
+import { RequestOptions, RESTDataSource } from "apollo-datasource-rest";
+import { TTLs } from "../cache/TTLs";
+import { IApolloContext } from "../types/IApolloContext";
 
 export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     constructor() {
         super();
     }
 
-    async resolveURL(request: RequestOptions) {
-        const params = await getParameters('tw-api');
+    public async resolveURL(request: RequestOptions) {
+        const params = await getParameters("tw-api");
         const api = JSON.parse(params["tw-api"]) as Param_Api;
 
         this.baseURL = `https://${api.host}/v1/admin/`;
         return super.resolveURL(request);
     }
 
-    async willSendRequest(request: RequestOptions): Promise<void> {
-        request.headers.set('Content-Type', 'application/json');
+    public async willSendRequest(request: RequestOptions): Promise<void> {
+        request.headers.set("Content-Type", "application/json");
 
-        const params = await getParameters('tw-api');
+        const params = await getParameters("tw-api");
         const api = JSON.parse(params["tw-api"]) as Param_Api;
 
-        request.headers.set('Authorization', `Token ${api.key}`);
+        request.headers.set("Authorization", `Token ${api.key}`);
     }
 
-    async getAllAlbums(): Promise<Array<any>> {
+    public async getAllAlbums(): Promise<any[]> {
         const ttls = await TTLs();
 
-        return this.get('albums/', undefined,
+        return this.get("albums/", undefined,
             {
                 cacheOptions: {
                     ttl: ttls.Albums,
@@ -36,10 +36,10 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
             });
     }
 
-    async getAllDocuments(): Promise<Array<any>> {
+    public async getAllDocuments(): Promise<any[]> {
         const ttls = await TTLs();
 
-        return this.get('folders/', undefined,
+        return this.get("folders/", undefined,
             {
                 cacheOptions: {
                     ttl: ttls.Documents,
@@ -47,10 +47,10 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
             });
     }
 
-    async getAllNews(): Promise<Array<any>> {
+    public async getAllNews(): Promise<any[]> {
         const ttls = await TTLs();
 
-        return this.get('news/', undefined,
+        return this.get("news/", undefined,
             {
                 cacheOptions: {
                     ttl: ttls.News,

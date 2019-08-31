@@ -23,12 +23,12 @@ const cols = [
     "club",
     "clubname",
 
-    "roles"
+    "roles",
 ];
 
 export class MembersDataSource extends DataSource<IApolloContext> {
-    context!: IApolloContext;
-    memberLoader!: DataLoader<number, any>;
+    public context!: IApolloContext;
+    public memberLoader!: DataLoader<number, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -37,7 +37,7 @@ export class MembersDataSource extends DataSource<IApolloContext> {
             cachedDataLoader<number>(
                 this.context,
                 (k) => makeCacheKey("Member", [k]),
-                (r) => makeCacheKey("Member", [r["id"]]),
+                (r) => makeCacheKey("Member", [r.id]),
                 (ids) => useDataService(
                     this.context,
                     async (client) => {
@@ -52,13 +52,13 @@ export class MembersDataSource extends DataSource<IApolloContext> {
     `, [ids]);
 
                         return res.rows;
-                    }
+                    },
                 ),
                 "Member",
             ),
             {
                 cacheKeyFn: (k: number) => k,
-            }
+            },
         );
     }
 
@@ -75,22 +75,22 @@ select settings->'favorites' as favorites
 from usersettings
 where id = $1`, [this.context.principal.id]);
 
-                if (res.rowCount == 0) return [];
-                const favorites: number[] = res.rows[0]["favorites"];
+                if (res.rowCount == 0) { return []; }
+                const favorites: number[] = res.rows[0].favorites;
 
-                if (favorites == null || favorites.length === 0) return [];
+                if (favorites == null || favorites.length === 0) { return []; }
 
                 return this.memberLoader.loadMany(
-                    favorites.filter(f => typeof (f) === "number" && !isNaN(f))
+                    favorites.filter((f) => typeof (f) === "number" && !isNaN(f)),
                 );
-            }
+            },
         );
     }
 
     public async readAreas(areas: number[]): Promise<any[] | null> {
         this.context.logger.log("readAll");
 
-        const results = await Promise.all(areas.map(a =>
+        const results = await Promise.all(areas.map((a) =>
             writeThrough(this.context,
                 makeCacheKey("Members", [this.context.principal.association, "area", a]),
                 async () => await useDataService(
@@ -99,7 +99,7 @@ where id = $1`, [this.context.principal.id]);
                         this.context.logger.log("executing readByTableAndAreas");
 
                         const res = await client.query(`
-    select ${cols.join(',')}
+    select ${cols.join(",")}
     from profiles
     where
             association = $1
@@ -110,9 +110,9 @@ where id = $1`, [this.context.principal.id]);
                             ]);
 
                         return res.rows;
-                    }
+                    },
                 ),
-                "MemberOverview")
+                "MemberOverview"),
         ));
 
         return _(results).flatMap().value();
@@ -129,14 +129,14 @@ where id = $1`, [this.context.principal.id]);
                     this.context.logger.log("executing readAll");
 
                     const res = await client.query(`
-select ${cols.join(',')}
+select ${cols.join(",")}
 from profiles
 where
     association = $1
 and removed = FALSE`, [this.context.principal.association]);
 
                     return res.rows;
-                }
+                },
             ),
             "MemberOverview");
     }
@@ -148,15 +148,15 @@ and removed = FALSE`, [this.context.principal.association]);
         return this.readMany(clubDetails.members);
     }
 
-    async readMany(ids: number[]): Promise<any[]> {
+    public async readMany(ids: number[]): Promise<any[]> {
         this.context.logger.log("readMany", ids);
         return (await this.memberLoader.loadMany(ids)).map((member: any) => {
-            if (member == null) return member;
+            if (member == null) { return member; }
 
             return filter(
                 this.context.principal,
                 member,
-            )
+            );
         });
     }
 
@@ -164,7 +164,7 @@ and removed = FALSE`, [this.context.principal.association]);
         this.context.logger.log("readOne", id);
 
         const member = await this.memberLoader.load(id);
-        if (member == null) return member;
+        if (member == null) { return member; }
 
         return filter(
             this.context.principal,

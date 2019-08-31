@@ -10,8 +10,8 @@ type MyLocationInput = {
         accuracy: number,
         speed: number,
         address?: any,
-    }
-}
+    },
+};
 
 type NearMembersInput = {
     location: {
@@ -21,16 +21,18 @@ type NearMembersInput = {
 
     query?: {
         excludeOwnTable?: boolean,
-    }
-}
+    },
+};
 
 type UpdateLocationAddress = {
     corrections: {
         member: number,
         address: any,
     }[],
-}
+};
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const LocationResolver = {
     NearbyMember: {
         member: (root: any, _args: {}, context: IApolloContext) => {
@@ -87,11 +89,11 @@ LIMIT 20
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             context.principal.id,
                             context.principal.association,
-                            args.query && args.query.excludeOwnTable ? context.principal.club : undefined
+                            args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
                         ].filter(Boolean));
 
                     return result.rows.length > 0 ? result.rows : [];
-                }
+                },
             );
         },
 
@@ -122,7 +124,7 @@ LIMIT 10
                         ]);
 
                     return result.rows.length > 0 ? result.rows : [];
-                }
+                },
             );
         },
     },
@@ -150,10 +152,10 @@ DO UPDATE
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             args.location.accuracy,
                             Math.round(args.location.speed),
-                            args.location.address ? JSON.stringify(args.location.address) : null
+                            args.location.address ? JSON.stringify(args.location.address) : null,
                         ]);
                     return true;
-                }
+                },
             );
         },
 
@@ -163,7 +165,7 @@ DO UPDATE
             return useDataService(
                 context,
                 async (client) => {
-                    for (let update of args.corrections) {
+                    for (const update of args.corrections) {
                         await client.query(`
 UPDATE userlocations
 SET address = $2
@@ -171,12 +173,12 @@ WHERE id = $1 and address is null
 `,
                             [
                                 update.member,
-                                JSON.stringify(update.address)
+                                JSON.stringify(update.address),
                             ]);
                     }
 
                     return true;
-                }
+                },
             );
         },
 
@@ -191,9 +193,9 @@ WHERE id = $1
                         [context.principal.id]);
 
                     return true;
-                }
+                },
             );
         },
 
-    }
+    },
 };

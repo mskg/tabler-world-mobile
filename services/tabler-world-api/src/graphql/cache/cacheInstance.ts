@@ -9,11 +9,11 @@ export const cacheInstance = disableCache ? new NoCache() : new MemoryBackedCach
         region: process.env.AWS_REGION,
         endpoint:
             EXECUTING_OFFLINE
-                ? 'http://localhost:8000'
-                : undefined
+                ? "http://localhost:8000"
+                : undefined,
     },
     {
         tableName: EXECUTING_OFFLINE ? "tabler-world-cache-dev" : process.env.cache_table as string,
-        ttl: DEFAULT_TTL
-    }
+        ttl: DEFAULT_TTL,
+    },
 ));

@@ -2,11 +2,13 @@ import { addressHash } from "@mskg/tabler-world-geo";
 import { IApolloContext } from "../types/IApolloContext";
 
 function doTrim(s: string | undefined): string | null {
-    if (s == null) return null;
+    if (s == null) { return null; }
     const r = s.trim();
     return r === "" ? null : r;
 }
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const AddressResolver = {
     SocialMedia: {
         twitter: (root: any, _args: any, _context: IApolloContext) => {
@@ -60,15 +62,15 @@ export const AddressResolver = {
             const hash = addressHash(root);
             context.logger.log(root, hash);
 
-            if (hash == null) return null;
+            if (hash == null) { return null; }
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
             return coordinates && coordinates.latitude && coordinates.longitude
                 ? {
                     latitude: coordinates.latitude,
-                    longitude: coordinates.longitude
+                    longitude: coordinates.longitude,
                 }
                 : null;
         },
     },
-}
+};

@@ -1,16 +1,16 @@
 import { StopWatch } from "@mskg/tabler-world-common";
 import { writeJobLog } from "@mskg/tabler-world-jobs";
 import { withDatabase } from "@mskg/tabler-world-rds-client";
-import { Context } from 'aws-lambda';
+import { Context } from "aws-lambda";
 import { SQS } from "aws-sdk";
-import { SendMessageBatchRequestEntry } from 'aws-sdk/clients/sqs';
-import _ from 'lodash';
-import { CacheUpdateQueueEntry } from '../shared/CacheUpdateQueueEntry';
-import { CONFIGURATIONS } from './Configurations';
-import { createWriteToDatabaseHandler } from './helper/createWriteToDatabaseHandler';
+import { SendMessageBatchRequestEntry } from "aws-sdk/clients/sqs";
+import _ from "lodash";
+import { CacheUpdateQueueEntry } from "../shared/CacheUpdateQueueEntry";
+import { CONFIGURATIONS } from "./Configurations";
+import { createWriteToDatabaseHandler } from "./helper/createWriteToDatabaseHandler";
 import { downloadChunk } from "./helper/downloadChunk";
 import { fetchParallel } from "./helper/fetchParallel";
-import { refreshViews } from './helper/refreshViews';
+import { refreshViews } from "./helper/refreshViews";
 import { validateImportEvent } from "./helper/validateImportEvent";
 import { AnyOperationMode } from "./types/AnyOperationMode";
 import { ChangePointer } from "./types/ChangePointer";
@@ -19,6 +19,8 @@ import { OperationMode } from "./types/OperationMode";
 import { RecordType } from "./types/RecordType";
 import { TablerWorldApiChunk } from "./types/TablerWorldApiChunk";
 
+// tslint:disable: max-func-body-length
+// tslint:disable: export-name
 export async function handler(event: ImportEvent, context: Context, callback: (error: any, success?: any) => void) {
     validateImportEvent(event);
 
@@ -33,32 +35,32 @@ export async function handler(event: ImportEvent, context: Context, callback: (e
         const activeConfiguration = CONFIGURATIONS[event.type][activeMode];
         if (activeConfiguration == null) { throw new Error("Unknown mode " + activeMode); }
 
-        let url = activeConfiguration.url;
-        let method = activeConfiguration.method;
-        let postData = activeConfiguration.payload();
+        const url = activeConfiguration.url;
+        const method = activeConfiguration.method;
+        const postData = activeConfiguration.payload();
 
         await withDatabase(context, async (client) => {
             const databaseWriter = createWriteToDatabaseHandler(client, event.type as RecordType);
 
             let total = 0;
-            let allModifications: ChangePointer[] = [];
+            const allModifications: ChangePointer[] = [];
 
             // tracks modifications and maintains global array of changed records
-            const modificationTracker = async (data: Array<any>) => {
+            const modificationTracker = async (data: any[]) => {
                 total += data ? data.length : 0;
 
                 const result = await databaseWriter(data);
                 allModifications.push(...result);
-            }
+            };
 
             // we monitor the execution time
             const watch = new StopWatch();
 
             // read data
-            let firstChunk: TablerWorldApiChunk<any> = await downloadChunk(url, method, postData);
+            const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(url, method, postData);
             if (firstChunk != null) {
                 await modificationTracker(firstChunk.data);
-                await fetchParallel(firstChunk, modificationTracker, method, postData)
+                await fetchParallel(firstChunk, modificationTracker, method, postData);
             }
 
             // we now know how many changes we have
@@ -77,7 +79,7 @@ export async function handler(event: ImportEvent, context: Context, callback: (e
                 await refreshViews(client);
                 refreshTime = watch.stop();
 
-                var sqs = new SQS();
+                const sqs = new SQS();
 
                 const messages = allModifications.map((cp: ChangePointer) => ({
                     Id: `${cp.type}_${cp.id}`,
@@ -90,7 +92,7 @@ export async function handler(event: ImportEvent, context: Context, callback: (e
 
                 // 10 is the AWS batch limit
                 const messageChunks = _(messages).chunk(10).value();
-                for (let chunk of messageChunks) {
+                for (const chunk of messageChunks) {
                     console.log("Sending chunk");
 
                     const sendBatch = await sqs.sendMessageBatch({
@@ -120,9 +122,9 @@ export async function handler(event: ImportEvent, context: Context, callback: (e
                 await writeJobLog(client, jobName, false, {
                     error: e,
                 });
-            })
-        }
-        catch { }
+            });
+        // tslint:disable-next-line: no-empty
+        } catch { }
 
         console.error(e);
         callback(e);

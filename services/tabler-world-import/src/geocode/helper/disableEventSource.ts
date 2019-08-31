@@ -15,6 +15,6 @@ export const disableEventSource = async () => {
   await lambda.updateEventSourceMapping({
     UUID: eventSourceMapping.UUID,
     FunctionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-    Enabled: false
+    Enabled: false,
   }).promise();
 };

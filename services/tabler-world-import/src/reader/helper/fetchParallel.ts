@@ -21,17 +21,17 @@ export async function fetchParallel(
     chunk: TablerWorldApiChunk,
     handler: DataHandler,
     method?: string,
-    payload?: string
+    payload?: string,
 ) {
     if (chunk == null || chunk.next == null) { return; }
 
     // throtteling?
-    const params = await getParameters('tw-api');
+    const params = await getParameters("tw-api");
     const api = JSON.parse(params["tw-api"]) as Param_Api;
 
     const batch = [];
     let end = false;
-    let start = chunk.offset == -1
+    let start = chunk.offset === -1
         ? 0
         : chunk.offset;
 

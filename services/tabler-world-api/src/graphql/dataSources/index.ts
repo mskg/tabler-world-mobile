@@ -1,6 +1,6 @@
-import { GeocoderDataSource } from "./Geocoder";
-import { MembersDataSource } from "./Members";
-import { StructureDataSource } from "./Structure";
+import { GeocoderDataSource } from "./GeocoderDataSource";
+import { MembersDataSource } from "./MembersDataSource";
+import { StructureDataSource } from "./StructureDataSource";
 import { TablerWorldAPI } from "./TablerWorldAPI";
 
 export const dataSources = (): IDataSources => {
@@ -13,8 +13,8 @@ export const dataSources = (): IDataSources => {
 };
 
 export interface IDataSources {
-    members: MembersDataSource,
-    tablerWorld: TablerWorldAPI,
-    structure: StructureDataSource,
-    geocoder: GeocoderDataSource,
+    members: MembersDataSource;
+    tablerWorld: TablerWorldAPI;
+    structure: StructureDataSource;
+    geocoder: GeocoderDataSource;
 }

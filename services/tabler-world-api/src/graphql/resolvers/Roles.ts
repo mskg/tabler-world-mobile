@@ -2,6 +2,8 @@ import { makeCacheKey, writeThrough } from "@mskg/tabler-world-cache";
 import { useDataService } from "@mskg/tabler-world-rds-client";
 import { IApolloContext } from "../types/IApolloContext";
 
+// tslint:disable: export-name
+// tslint:disable: variable-name
 export const RolesResolver = {
     Query: {
         Roles: async (_root: any, _args: any, context: IApolloContext) => {
@@ -20,14 +22,14 @@ select
 from
     structure_tabler_roles
 order by 1`,
-                                []
+                                [],
                             );
 
-                            return res.rows.map(r => r["name"]);
-                        }
+                            return res.rows.map((r) => r.name);
+                        },
                     ),
                 "Structure",
             );
-        }
-    }
-}
+        },
+    },
+};
