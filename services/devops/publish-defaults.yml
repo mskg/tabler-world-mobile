@@ -14,6 +14,11 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
+    PathtoPublish: services/tsconfig.json
+    ArtifactName: ${{ parameters.ARTIFACT }}/services
+
+- task: PublishBuildArtifacts@1
+  inputs:
     PathtoPublish: .yarnrc
     ArtifactName: ${{ parameters.ARTIFACT }}
 
