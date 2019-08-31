@@ -53,7 +53,7 @@
     "deploy": "service deploy",
     "package": "service package",
     "remove": "service remove",
-    "dev": "service dev",
+    "dev": "service dev --port 3002",
     "dynamodb": "run-env serverless dynamodb install && run-env serverless dynamodb start",
     "start": "ntl"
   }
