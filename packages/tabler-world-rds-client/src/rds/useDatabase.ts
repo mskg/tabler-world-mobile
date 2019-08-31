@@ -1,20 +1,21 @@
 
+import { Client, RDS } from "@mskg/tabler-world-aws";
+import { getParameters, Param_Database } from "@mskg/tabler-world-config";
 import { Client as PGClient } from "pg";
 import { ILogger } from "./ILogger";
-import { getParameters, Param_Database } from "@mskg/tabler-world-config";
-import { Client, RDS } from "@mskg/tabler-world-aws";
 
 // const KEY = "__db";
 export async function useDatabase<T>(
     context: {
-        logger: ILogger /*, requestCache: { [key: string]: any } */
+        logger: ILogger, // requestCache: { [key: string]: any }
     },
-    func: (client: PGClient) => Promise<T>
+    func: (client: PGClient) => Promise<T>,
 ): Promise<T> {
-    const params = await getParameters('database');
+    const params = await getParameters("database");
     const connection = JSON.parse(params.database) as Param_Database;
 
     let password = connection.password;
+    // tslint:disable-next-line: possible-timing-attack
     if (password == null || password === "") {
         context.logger.log("[DB]", "-> with token");
 
@@ -46,8 +47,7 @@ export async function useDatabase<T>(
     } finally {
         try {
             await client.end();
-        }
-        catch (e) {
+        } catch (e) {
             context.logger.error("[DB]", "Failed to close connection", e);
         }
     }

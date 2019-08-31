@@ -1,4 +1,5 @@
+export * from "./isServerlessOffline";
 export * from "./xray/aws";
-export * from "./xray/DynamoDB";
-export * from "./xray/Client";
-export * from "./isOffline";
+export * from "./xray/DocumentClient";
+export * from "./xray/pg";
+

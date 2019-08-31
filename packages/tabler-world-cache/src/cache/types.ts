@@ -6,7 +6,7 @@ export type CacheKeyOptions = {
     ttl?: number;
 };
 
-export interface CacheOptions {
+export interface ICacheOptions {
     ttl?: number;
   }
 

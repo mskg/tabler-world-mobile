@@ -1,17 +1,18 @@
 // borrowed from https://raw.githubusercontent.com/toddbluhm/env-cmd
 
-import * as fs from 'fs';
+import * as fs from "fs";
 
 /**
  * Gets the environment vars from an env file
  */
 export function getEnvFileVars(envFilePath: string): { [key: string]: any } {
+    // tslint:disable: non-literal-fs-path
     if (!fs.existsSync(envFilePath)) {
         throw new Error(`Invalid env file path (${envFilePath}).`);
     }
 
-    const file = fs.readFileSync(envFilePath, { encoding: 'utf8' });
-    return parseEnvString(file); 1
+    const file = fs.readFileSync(envFilePath, { encoding: "utf8" });
+    return parseEnvString(file);
 }
 
 /**
@@ -32,6 +33,7 @@ function parseEnvVars(envString: string): { [key: string]: string } {
     const matches: { [key: string]: string } = {};
     let match;
 
+    // tslint:disable-next-line: no-conditional-assignment
     while ((match = envParseRegex.exec(envString)) !== null) {
         // Note: match[1] is the full env=var line
         const key = match[2].trim();
@@ -39,8 +41,8 @@ function parseEnvVars(envString: string): { [key: string]: string } {
 
         // remove any surrounding quotes
         matches[key] = value
-            .replace(/(^['"]|['"]$)/g, '')
-            .replace(/\\n/g, '\n');
+            .replace(/(^['"]|['"]$)/g, "")
+            .replace(/\\n/g, "\n");
     }
 
     return matches;
@@ -55,7 +57,7 @@ function stripComments(envString: string): string {
     let newString = envString;
 
     while (match != null) {
-        newString = newString.replace(match[1], '');
+        newString = newString.replace(match[1], "");
         match = commentsRegex.exec(envString);
     }
 
@@ -64,5 +66,5 @@ function stripComments(envString: string): string {
 
 function stripEmptyLines(envString: string): string {
     const emptyLinesRegex = /(^\n)/gim;
-    return envString.replace(emptyLinesRegex, '');
+    return envString.replace(emptyLinesRegex, "");
 }

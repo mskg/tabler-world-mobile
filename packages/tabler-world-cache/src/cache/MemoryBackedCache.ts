@@ -1,15 +1,15 @@
 import { KeyValueCache } from "apollo-server-caching";
-import LRU from 'lru-cache';
+import LRU from "lru-cache";
+import { CACHE_SIZE } from "./config";
 import { MEMORY_TTL } from "./TTLs";
 import { CacheData, CacheValues, IManyKeyValueCache } from "./types";
-import { CACHE_SIZE } from "./config";
 
 /**
  * Cache invalidation is a global engineering problem. The whole DynamoDB implementation should be changed to
  * MemCached/Redis once the App starts scaling. This is just a(n) (acceptable) workarround to reduce load/cost.
  */
 export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
-    memoryCache = new LRU<string, string>({
+    private memoryCache = new LRU<string, string>({
         max: CACHE_SIZE,
         maxAge: MEMORY_TTL * 1000,
     });
@@ -18,7 +18,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
         console.debug("[MemoryBackedCache] init");
     }
 
-    async get(key: string): Promise<string | undefined> {
+    public async get(key: string): Promise<string | undefined> {
         console.debug("[MemoryBackedCache] get", key);
 
         let cached = this.memoryCache.get(key);
@@ -38,7 +38,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
         return cached;
     }
 
-    async set(key: string, value: string, options?: { ttl?: number | undefined; } | undefined): Promise<void> {
+    public async set(key: string, value: string, options?: { ttl?: number | undefined; } | undefined): Promise<void> {
         console.debug("[MemoryBackedCache] set ", key, options);
 
         this.memoryCache.set(key, value);
@@ -47,7 +47,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
         this.innerCache.set(key, value, options);
     }
 
-    async delete(key: string): Promise<boolean | void> {
+    public async delete(key: string): Promise<boolean | void> {
         console.debug("[MemoryBackedCache] delete ", key);
 
         this.memoryCache.del(key);
@@ -56,11 +56,11 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
         this.innerCache.delete(key);
     }
 
-    async getMany(ids: string[]): Promise<CacheValues> {
+    public async getMany(ids: string[]): Promise<CacheValues> {
         console.debug("[MemoryBackedCache] getMany", ids);
 
         // check memory first
-        let missingKeys: string[] = [];
+        const missingKeys: string[] = [];
         const result = ids.reduce((p, id) => {
             const val = this.memoryCache.get(id);
 
@@ -87,22 +87,22 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
                 foundMissingKeys.forEach(
                     (id) => {
                         this.memoryCache.set(id, missing[id]);
-                    }
+                    },
                 );
             }
 
             return {
                 ...result,
                 ...missing,
-            }
+            };
         }
 
         return result;
     }
 
-    async setMany(data: CacheData<string>[]): Promise<void> {
+    public async setMany(data: CacheData<string>[]): Promise<void> {
         data.forEach(
-            d => this.memoryCache.set(d.id, d.data)
+            (d) => this.memoryCache.set(d.id, d.data),
         );
 
         // we don't wait for it

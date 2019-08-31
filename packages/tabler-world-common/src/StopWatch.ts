@@ -1,7 +1,7 @@
 export class StopWatch {
     constructor(
-        private time = Date.now()
-    ){
+        private time = Date.now(),
+    ) {
     }
 
     public start() {

@@ -1,6 +1,6 @@
+import { Param_TTLS } from "@mskg/tabler-world-config";
 import { KeyValueCache } from "apollo-server-core";
 import { ILogger } from "./ILogger";
-import { Param_TTLS } from "@mskg/tabler-world-config";
 import { TTLs } from "./TTLs";
 
 export async function writeThrough<T>(
@@ -18,7 +18,7 @@ export async function writeThrough<T>(
     if (cached != null && typeof(cached) === "string") {
         context.logger.log("cache hit", key);
 
-        if (cached.startsWith("raw:")) return cached.substr(4) as unknown as T;
+        if (cached.startsWith("raw:")) { return cached.substr(4) as unknown as T; }
         return JSON.parse(cached);
     }
 
@@ -33,7 +33,7 @@ export async function writeThrough<T>(
     context.cache.set(
         key,
         resultSerialized,
-        ttl ? { ttl: ttls[ttl] } : undefined
+        ttl ? { ttl: ttls[ttl] } : undefined,
     );
 
     return result;

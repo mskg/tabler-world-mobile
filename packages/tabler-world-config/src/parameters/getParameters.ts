@@ -1,11 +1,11 @@
-import { values, keys } from "lodash";
-import LRU from 'lru-cache';
-import { isArray } from "util";
 import { EXECUTING_OFFLINE, xAWS } from "@mskg/tabler-world-aws";
-import { setupDebug } from "./debug";
-import { PARAMETER_TTL } from "./ttl";
-import { mapName } from "./mapName";
+import { keys, values } from "lodash";
+import LRU from "lru-cache";
+import { isArray } from "util";
 import { Environments } from "./Environments";
+import { mapName } from "./mapName";
+import { setupDebug } from "./setupDebug";
+import { PARAMETER_TTL } from "./ttl";
 
 const ssm = new xAWS.SSM();
 
@@ -56,14 +56,14 @@ export async function getParameters(
 
     const req = {
         Names: keys(parameterNames),
-        WithDecryption: true
+        WithDecryption: true,
     };
 
-    //@ts-ignore
+    // @ts-ignore
     const params: MapType = {};
     const missing = [];
 
-    for (let p of req.Names) {
+    for (const p of req.Names) {
         const cached = memoryCache.get(p);
         if (cached) {
             params[parameterNames[p] as ParameterNames] = cached;
@@ -79,7 +79,7 @@ export async function getParameters(
         }).promise();
 
         if (resp.Parameters) {
-            for (let p of resp.Parameters) {
+            for (const p of resp.Parameters) {
                 if (p.Value) {
                     params[parameterNames[p.Name as string] as ParameterNames] = p.Value;
                     memoryCache.set(p.Name as string, p.Value);
@@ -99,8 +99,8 @@ export async function getParameters(
                 if (!params[n as ParameterNames]) {
                     throw new Error("Configuration error, parameter " + n + " is not defined");
                 }
-            }
-        )
+            },
+        );
     }
 
     return params;

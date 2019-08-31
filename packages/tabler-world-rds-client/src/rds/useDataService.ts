@@ -1,33 +1,32 @@
 
+import { EXECUTING_OFFLINE, xAWS } from "@mskg/tabler-world-aws";
 import { QueryArrayResult, QueryResult } from "pg";
 import { IDataQuery } from "./IDataQuery";
-import { EXECUTING_OFFLINE } from "@mskg/tabler-world-aws";
-import { ILogger } from "./ILogger";
-import { xAWS } from "@mskg/tabler-world-aws";
 import { IDataService } from "./IDataService";
+import { ILogger } from "./ILogger";
 
 class LambdaClient implements IDataService {
-    static lambda: AWS.Lambda = new xAWS.Lambda(
+    public static lambda: AWS.Lambda = new xAWS.Lambda(
         EXECUTING_OFFLINE
             ? {
-                endpoint: 'http://localhost:3001',
-                region: 'eu-west-1',
+                endpoint: "http://localhost:3001",
+                region: "eu-west-1",
             }
-            : undefined
+            : undefined,
     );
 
-    async query(text: string, values?: any[] | undefined): Promise<QueryResult> {
+    public async query(text: string, values?: any[] | undefined): Promise<QueryResult> {
         const lambdaParams: AWS.Lambda.InvocationRequest = {
             FunctionName:
                 EXECUTING_OFFLINE
                     ? "tabler-world-data-service-dev-api"
                     : process.env.dataservice_arn as string,
-            InvocationType: 'RequestResponse',
-            LogType: 'Tail',
+            InvocationType: "RequestResponse",
+            LogType: "Tail",
             Payload: JSON.stringify({
                 text,
-                parameters: values
-            } as IDataQuery)
+                parameters: values,
+            } as IDataQuery),
         };
 
         const result = await LambdaClient.lambda.invoke(lambdaParams).promise();
@@ -38,8 +37,9 @@ class LambdaClient implements IDataService {
 const remoteClient = new LambdaClient();
 
 export function useDataService<T>(
+    // tslint:disable-next-line: variable-name
     _context: { logger: ILogger },
-    func: (client: IDataService) => Promise<T>
+    func: (client: IDataService) => Promise<T>,
 ): Promise<T> {
     // if (false && EXECUTING_OFFLINE) {
     //     return useDatabase({

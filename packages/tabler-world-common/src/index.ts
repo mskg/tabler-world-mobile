@@ -1,6 +1,7 @@
 export * from "./AsyncThrottle";
-export * from "./Mutex";
-export * from "./StopWatch";
 export * from "./ILogger";
+export * from "./Mutex";
+export * from "./removeEmptySlots";
 export * from "./removeEmptyTags";
-export * from "./removeEmpty";
+export * from "./StopWatch";
+

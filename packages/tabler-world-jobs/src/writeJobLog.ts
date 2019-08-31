@@ -2,13 +2,14 @@
 import { IDataService } from "@mskg/tabler-world-rds-client";
 
 // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+// tslint:disable-next-line: variable-name
 function replaceErrors(_key: string, value: any) {
     if (value instanceof Error) {
-        var error = {};
+        const error = {};
 
-        Object.getOwnPropertyNames(value).forEach(function (key) {
-            //@ts-ignore
-            error[key] = value[key];
+        Object.getOwnPropertyNames(value).forEach((k) => {
+            // @ts-ignore
+            error[k] = value[k];
         });
 
         return error;

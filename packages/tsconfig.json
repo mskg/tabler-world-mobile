@@ -1,20 +1,29 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "removeComments": true,
+        "removeComments": false,
+
         "strict": true,
-        "noImplicitAny": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
-        "noImplicitThis": true,
         "alwaysStrict": true,
+
+        "noImplicitThis": true,
+        "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
 
-        "target": "es2020",    
-        "module": "commonjs",  
-        "esModuleInterop": true
+        "target": "es2020",
+        "module": "commonjs",
+        "esModuleInterop": true,
+
+        "plugins": [
+            {
+                "name": "typescript-tslint-plugin",
+                "configFile": "./tslint.json"
+            }
+        ]
     }
 }

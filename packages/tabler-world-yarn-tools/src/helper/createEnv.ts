@@ -10,14 +10,12 @@ export function createEnv() {
     const envVars = getEnvFileVars(envFile);
     const localEnvVars = getEnvFileVars(localEnvFile);
 
-    const finalEnv = {
+    return {
         // env we define
         ...envVars,
         // local overrides
         ...localEnvVars,
         // don't redefine existing vars
-        ...process.env
+        ...process.env,
     };
-
-    return finalEnv;
 }

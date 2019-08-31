@@ -30,12 +30,12 @@ export function cachedDataLoader<K>(
         logger.log("[cachedDataLoader]", "loading", ids);
 
         const cached = await cache.getMany(
-            ids.map(id => keyFunc(id))
+            ids.map((id) => keyFunc(id)),
         );
 
         const existing = Object.keys(cached);
         const missing = [...ids];
-        remove(missing, id => existing.find(e => e === keyFunc(id)));
+        remove(missing, (id) => existing.find((e) => e === keyFunc(id)));
 
         if (missing.length > 0) {
             logger.log("[cachedDataLoader]", "missing keys", missing);
@@ -45,19 +45,19 @@ export function cachedDataLoader<K>(
 
             // update cache with fresh data
             await cache.setMany(
-                loadFromDb.map(r => ({
+                loadFromDb.map((r) => ({
                     id: keyRecordFunc(r),
                     data: JSON.stringify(r),
-                    options: { ttl: ttls[ttl] }
-                }))
+                    options: { ttl: ttls[ttl] },
+                })),
             );
 
-            for (let row of loadFromDb) {
+            for (const row of loadFromDb) {
                 cached[keyRecordFunc(row)] = row;
             }
         }
 
-        return ids.map(id => {
+        return ids.map((id) => {
             const val = cached[keyFunc(id)];
             if (typeof (val) === "string") { return JSON.parse(val); }
 
