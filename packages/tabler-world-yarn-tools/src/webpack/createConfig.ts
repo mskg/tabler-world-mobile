@@ -3,13 +3,13 @@ import slsw from "serverless-webpack";
 import nodeExternals from "webpack-node-externals";
 
 export default function createConfig(path: string = __dirname) {
-  console.log("Resolving", resolve(path, '../../node_modules'));
+  console.log("Resolving", resolve(path, "../../node_modules"));
 
   return {
     entry: slsw.lib.entries,
 
     // Generate sourcemaps for proper error messages
-    devtool: slsw.lib.webpack.isLocal ? 'source-map' : "none",
+    devtool: slsw.lib.webpack.isLocal ? "source-map" : "none",
 
     // https://github.com/serverless-heaven/serverless-webpack/issues/292
     // this bundles these two dependencies, but removes the indirect depencency to aws-sdk
@@ -19,7 +19,7 @@ export default function createConfig(path: string = __dirname) {
       }),
 
       nodeExternals({
-        modulesDir: resolve(path, '../../node_modules'),
+        modulesDir: resolve(path, "../../node_modules"),
         whitelist: [/^@mskg/i],
       }),
     ],
@@ -33,16 +33,16 @@ export default function createConfig(path: string = __dirname) {
 
     performance: {
       // Turn off size warnings for entry points
-      hints: false
+      hints: false,
     },
 
     resolve: {
       extensions: [
-        '.js',
-        '.json',
-        '.ts',
-        '.tsx'
-      ]
+        ".js",
+        ".json",
+        ".ts",
+        ".tsx",
+      ],
     },
 
     // Run babel on all .js files and skip those in node_modules
@@ -51,23 +51,23 @@ export default function createConfig(path: string = __dirname) {
         {
           test: /\.mjs$/,
           include: /node_modules/,
-          type: 'javascript/auto'
+          type: "javascript/auto",
         },
         {
           test: /\.ts(x?)$/,
           use: [
             {
-              loader: 'ts-loader',
-            }
+              loader: "ts-loader",
+            },
           ],
         },
         {
           test: /\.(png|jpe?g|gif|html|htm)$/,
           use: [
             {
-              loader: 'file-loader',
+              loader: "file-loader",
               options: {
-                name: '[path][name].[ext]',
+                name: "[path][name].[ext]",
               },
             },
           ],
@@ -76,14 +76,14 @@ export default function createConfig(path: string = __dirname) {
           test: /\.(pgsql)$/,
           use: [
             {
-              loader: 'file-loader',
+              loader: "file-loader",
               options: {
-                name: '[path][name].[ext]',
+                name: "[path][name].[ext]",
               },
             },
           ],
         },
-      ]
-    }
+      ],
+    },
   };
 };

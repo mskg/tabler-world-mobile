@@ -16,12 +16,13 @@
   "author": "Markus Kling",
   "license": "Copyright 2019-present Markus Kling",
   "dependencies": {
-    "child_process": "^1.0.2",
-    "path": "^0.12.7",
-    "webpack-node-externals": "^1.7.2",
-    "cross-spawn": "^6.0.5",
+    "@types/cross-spawn": "^6.0.0",
     "@types/webpack-node-externals": "^1.6.3",
-    "@types/cross-spawn": "^6.0.0"
+    "child_process": "^1.0.2",
+    "cross-spawn": "^6.0.5",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "webpack-node-externals": "^1.7.2"
   },
   "peerDependencies": {
     "serverless-webpack": "*"

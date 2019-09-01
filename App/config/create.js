@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const jsonpatch = require('fast-json-patch');
 const { readFileSync, writeFileSync } = require('fs');
 

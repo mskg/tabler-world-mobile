@@ -15,7 +15,7 @@ export default () => {
     // console.debug("running", cmd, args);
     const proc = spwan(cmd, args, {
         stdio: "inherit",
-        //    shell: options.useShell,
+        shell: true,
         env: finalEnv,
     });
 

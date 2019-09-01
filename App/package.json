@@ -1,5 +1,5 @@
 {
-  "name": "@mskg/tabler-world-mobile",
+  "name": "@mskg/tabler-world-app",
   "version": "0.0.1",
   "private": true,
   "author": "Markus Kling",
@@ -7,20 +7,24 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "ntl",
-    "bump-cli": "npm i -g expo-cli && npm i expo-cli -D",
+    "bump-cli": "yarn add expo-cli --dev",
     "licenses": "license-checker --production --json | node config/3rdparty.js > ./assets/docs/licenses.md",
     "config:aws": "bash -c 'source ~/.bashrc && aws cloudformation list-exports > ./config/aws.json'",
-    "config": "npm run config:aws && npm run config:app",
-    "config:app": "env-cmd --no-override ../config/.env cross-env-shell \"source ../config/.env.local && node config/create.js\"",
-    "expo": "npm run config && expo start",
-    "codegen": "rm -f src/model/graphql/*.ts && npx apollo client:codegen --target=typescript --outputFlat src/model/graphql"
+    "config": "yarn run config:aws && yarn run config:app",
+    "config:app": "run-env node config/create.js",
+    "dev": "yarn run config && yarn expo start",
+    "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql"
   },
+  "workspaces": [
+    "../packages/tabler-world-yarn-tools"
+  ],
   "dependencies": {
     "@aws-amplify/analytics": "^1.2.16",
     "@aws-amplify/auth": "^1.2.24",
     "@aws-amplify/core": "^1.0.27",
     "@callstack/react-theme-provider": "^1.0.7",
     "@expo/react-native-action-sheet": "^2.1.0",
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
     "@redux-offline/redux-offline": "^2.5.1",
     "apollo-cache-inmemory": "^1.6.1",
     "apollo-cache-persist": "^0.1.1",
@@ -100,8 +104,6 @@
     "@types/react-redux": "^7.0.2",
     "apollo": "^2.15.0",
     "babel-preset-expo": "^5.0.0",
-    "cross-env": "^5.2.0",
-    "env-cmd": "^8.0.2",
     "expo-cli": "^3.0.10",
     "fast-json-patch": "^2.1.0",
     "jest-expo": "^32.0.0",
