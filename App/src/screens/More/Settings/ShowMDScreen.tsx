@@ -15,27 +15,26 @@ const logger = new Logger(Categories.Screens.Docs);
 
 type State = {
     text?: string,
-}
+};
 class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps, State> {
     constructor(props) {
-        super(props, AuditScreenName.ShowMD)
-        this.state = {}
+        super(props, AuditScreenName.ShowMD);
+        this.state = {};
     }
 
     async componentDidMount() {
         try {
-            this.audit.setParam(AuditPropertyNames.Title, this.props.navigation.getParam("title"));
+            this.audit.setParam(AuditPropertyNames.Title, this.props.navigation.getParam('title'));
 
-            let asset = Asset.fromModule(this.props.navigation.getParam("source"));
+            const asset = Asset.fromModule(this.props.navigation.getParam('source'));
             await asset.downloadAsync();
 
             const file = await fetch(asset.uri);
             const text = await file.text();
 
             this.setState({ text });
-        }
-        catch (e) {
-            logger.error(e, "Failed to load MD " + this.props.navigation.getParam("source"));
+        } catch (e) {
+            logger.error(e, 'Failed to load MD ' + this.props.navigation.getParam('source'));
         }
 
         this.audit.submit();
@@ -44,7 +43,7 @@ class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps
     render() {
         return (
             <ScreenWithHeader header={{
-                title: this.props.navigation.getParam("title"),
+                title: this.props.navigation.getParam('title'),
                 showBack: true,
             }}>
                 <ScrollView style={{ padding: 10, backgroundColor: this.props.theme.colors.surface }}>

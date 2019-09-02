@@ -5,13 +5,13 @@ import { rootSaga } from '../sagas';
 import { getReduxPersistor, getReduxStore, getSagaMiddleware } from './getRedux';
 
 export function withStore(WrappedComponent) {
-  return class extends React.PureComponent {
-    _runSagas = () => {
-      getSagaMiddleware().run(rootSaga);
+    return class extends React.PureComponent {
+      _runSagas = () => {
+        getSagaMiddleware().run(rootSaga);
     }
 
-    render() {
-      return (<Provider store={getReduxStore()}>
+      render() {
+        return (<Provider store={getReduxStore()}>
         <PersistGate persistor={getReduxPersistor()} onBeforeLift={this._runSagas}>
           <WrappedComponent />
         </PersistGate>

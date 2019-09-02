@@ -14,7 +14,7 @@ export function AsyncThrottle<T>(funcToThrottle: AnyArgsFunc<T>, duration: numbe
 
     // throttle function
     // tslint:disable-next-line: no-function-expression
-    return async function(...args: any[]) {
+    return async function (...args: any[]) {
         return new Promise<T>((resolve) => {
             const now = Date.now();
 

@@ -2,7 +2,7 @@ import { PersistConfig, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage';
 import { Features, isFeatureEnabled } from '../../model/Features';
-import { migrateToNull, MIGRATE_VERSION } from '../migrations';
+import { MIGRATE_VERSION, migrateToNull } from '../migrations';
 import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
@@ -16,7 +16,7 @@ import { userReducer } from './user';
 const authUserConfig: PersistConfig = {
     key: 'auth',
     keyPrefix: '',
-    blacklist: ["signinState"],
+    blacklist: ['signinState'],
 
     // storage: encryptedStorage,
     storage: isFeatureEnabled(Features.EncryptedStorage)
@@ -51,23 +51,23 @@ export default {
 
     searchHistory: persistReducer({
         ...defaultConfig,
-        key: "searchHistory",
-    }, searchHistoryReducer),
+        key: 'searchHistory',
+    },                            searchHistoryReducer),
 
     settings: persistReducer({
         ...defaultConfig,
-        key: "settings",
-    }, settingsReducer),
+        key: 'settings',
+    },                       settingsReducer),
 
     filter: persistReducer({
         ...defaultConfig,
-        key: "filter",
-    }, filterReducer),
+        key: 'filter',
+    },                     filterReducer),
 
     location: persistReducer({
         ...defaultConfig,
-        key: "location",
-    }, locationReducer),
+        key: 'location',
+    },                       locationReducer),
 
     snacks: snackReducer,
 };

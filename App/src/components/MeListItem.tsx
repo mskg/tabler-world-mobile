@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import { Card, Theme, Title, TouchableRipple } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { I18N } from '../i18n/translation';
@@ -86,9 +86,9 @@ const styles = StyleSheet.create({
         height: ME_ITEM_HEIGHT,
         paddingVertical: 0,
 
-        alignItems: "center",
-        flexDirection: "row",
-        width: "100%",
+        alignItems: 'center',
+        flexDirection: 'row',
+        width: '100%',
     },
 
     title: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     subTitle: {
         marginLeft: 24,
         lineHeight: 14,
-        minHeight: 13
+        minHeight: 13,
     },
 
     headLine: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     },
 
     headerContainer: {
-        flexDirection: "row",
+        flexDirection: 'row',
         padding: 10,
     },
 

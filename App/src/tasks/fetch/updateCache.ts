@@ -2,19 +2,19 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import ApolloClient, { OperationVariables } from 'apollo-client';
 import { DocumentNode } from 'graphql';
 import { getPersistor } from '../../apollo/bootstrapApollo';
-import { TimeoutDefaults } from "../../helper/parameters/Timeouts";
+import { TimeoutDefaults } from '../../helper/parameters/Timeouts';
 import { logger } from './logger';
 
 export async function updateCache(
     client: ApolloClient<NormalizedCacheObject>,
     query: DocumentNode,
     field: keyof typeof TimeoutDefaults,
-    variables?: OperationVariables
+    variables?: OperationVariables,
 ) {
-    logger.log("Fetching", field);
+    logger.log('Fetching', field);
     await client.query({
         query,
-        fetchPolicy: "network-only",
+        fetchPolicy: 'network-only',
         variables,
     });
 
@@ -22,8 +22,8 @@ export async function updateCache(
         data: {
             LastSync: {
                 __typename: 'LastSync',
-                [field]: Date.now()
-            }
+                [field]: Date.now(),
+            },
         },
     });
 

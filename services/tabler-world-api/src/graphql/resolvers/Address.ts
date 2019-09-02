@@ -1,10 +1,10 @@
-import { addressHash } from "@mskg/tabler-world-geo";
-import { IApolloContext } from "../types/IApolloContext";
+import { addressHash } from '@mskg/tabler-world-geo';
+import { IApolloContext } from '../types/IApolloContext';
 
 function doTrim(s: string | undefined): string | null {
     if (s == null) { return null; }
     const r = s.trim();
-    return r === "" ? null : r;
+    return r === '' ? null : r;
 }
 
 // tslint:disable: export-name

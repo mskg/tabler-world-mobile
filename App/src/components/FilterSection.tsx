@@ -1,10 +1,10 @@
 import color from 'color';
 import React from 'react';
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View } from 'react-native';
 import { Checkbox, Divider, Text, TouchableRipple } from 'react-native-paper';
-import { Accordion } from "./Accordion";
+import { Accordion } from './Accordion';
 
-export type FilterTagType = "area" | "role" | "table" | "sector";
+export type FilterTagType = 'area' | 'role' | 'table' | 'sector';
 
 export type FilterTag = {
     type: FilterTagType,
@@ -12,7 +12,7 @@ export type FilterTag = {
 };
 
 const Element = ({ theme, title, onPress, right }: {
-    theme, title, onPress, right?
+    theme, title, onPress, right?,
 }) => (
         <TouchableRipple
             style={{ backgroundColor: color(theme.colors.background).alpha(0.35).rgb().string() }}
@@ -25,7 +25,7 @@ const Element = ({ theme, title, onPress, right }: {
     );
 
 export const FilterSection = ({ title, data, type, filter, onToggle, theme }) => {
-    if (data.length == 0) return (<React.Fragment key={type}></React.Fragment>);
+    if (data.length == 0) return (<React.Fragment key={type}/>);
 
     return (
         <Accordion
@@ -34,7 +34,7 @@ export const FilterSection = ({ title, data, type, filter, onToggle, theme }) =>
         >
             {
                 data.map((tag, position) => {
-                    const selected = !!filter.find((f: FilterTag) => f.type == type && f.value == tag)
+                    const selected = !!filter.find((f: FilterTag) => f.type == type && f.value == tag);
                     return (
                         <React.Fragment key={type + tag}>
                             <Divider />
@@ -46,7 +46,7 @@ export const FilterSection = ({ title, data, type, filter, onToggle, theme }) =>
                                     <Checkbox.Android
                                         color={theme.colors.accent}
                                         status={selected ? 'checked' : 'unchecked'}
-                                        onPress={() => { requestAnimationFrame(() => onToggle(type, tag)) }}
+                                        onPress={() => { requestAnimationFrame(() => onToggle(type, tag)); }}
                                     />
                                 }
                             />
@@ -70,7 +70,7 @@ export const FilterSection = ({ title, data, type, filter, onToggle, theme }) =>
             }
         </Accordion>
     );
-}
+};
 
 const MAX_WIDTH = 250 - 32 - 16 - 32;
 const styles = StyleSheet.create({

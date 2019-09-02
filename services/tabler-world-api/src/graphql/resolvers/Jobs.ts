@@ -1,6 +1,6 @@
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import { isAdmin } from "../auth/isAdmin";
-import { IApolloContext } from "../types/IApolloContext";
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import { isAdmin } from '../auth/isAdmin';
+import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
@@ -29,20 +29,20 @@ limit 20`);
 
     JobResult: {
         __resolveType: (root: any, _context: IApolloContext) => {
-            if (root.jobstatus === false) { return "JobError"; }
+            if (root.jobstatus === false) { return 'JobError'; }
 
             switch (root.jobname) {
-                case "update::database":
-                    return "JobEmpty";
+            case 'update::database':
+                return 'JobEmpty';
 
-                case "update::tabler::full":
-                case "update::tabler::incremental":
-                case "update::clubs::full":
-                case "update::clubs::incremental":
-                    return "JobSync";
+            case 'update::tabler::full':
+            case 'update::tabler::incremental':
+            case 'update::clubs::full':
+            case 'update::clubs::incremental':
+                return 'JobSync';
 
-                default:
-                    return "JobSend";
+            default:
+                return 'JobSend';
             }
 
             return null;

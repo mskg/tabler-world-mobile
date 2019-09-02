@@ -1,9 +1,9 @@
-import { DocumentClient } from "@mskg/tabler-world-aws";
-import { KeyValueCache } from "apollo-server-core";
-import { chunk } from "lodash";
-import { CacheData, CacheValues, ICacheOptions, IManyKeyValueCache } from "./types";
+import { DocumentClient } from '@mskg/tabler-world-aws';
+import { KeyValueCache } from 'apollo-server-core';
+import { chunk } from 'lodash';
+import { CacheData, CacheValues, ICacheOptions, IManyKeyValueCache } from './types';
 
-type PromiseResult<D, E> = D & {$response: AWS.Response<D, E>};
+type PromiseResult<D, E> = D & { $response: AWS.Response<D, E> };
 
 export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
     private client: AWS.DynamoDB.DocumentClient;
@@ -23,14 +23,14 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         data: string,
         options?: ICacheOptions,
     ) {
-        console.log("[DynamoDBCache] set", id, options);
+        console.log('[DynamoDBCache] set', id, options);
 
         const chunks = this.chunkSubstr(data, 350 * 1024);
         if (chunks.length > 1) {
             await this.setMany([
                 this.addTTL({
                     id,
-                    data: "chunks:" + chunks.length,
+                    data: 'chunks:' + chunks.length,
                 }, options),
                 ...chunks.map((c, i) => this.addTTL({
                     id: `${id}_${i}`,
@@ -50,8 +50,8 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         }
     }
 
-    public async setMany(data: Array<CacheData<string>>) {
-        console.log("[DynamoDBCache] setMany", data.map((d) => d.id).join(", "));
+    public async setMany(data: CacheData<string>[]) {
+        console.log('[DynamoDBCache] setMany', data.map((d) => d.id).join(', '));
 
         const chunks = chunk(data, 25);
         for (const c of chunks) {
@@ -72,7 +72,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             // tslint:disable-next-line: no-constant-condition
             do {
                 if (result.UnprocessedItems && Object.keys(result.UnprocessedItems).length > 0) {
-                    console.log("[DynamoDBCache] retrying write operation");
+                    console.log('[DynamoDBCache] retrying write operation');
 
                     result = await this.client.batchWrite({
                         RequestItems: result.UnprocessedItems,
@@ -86,7 +86,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async delete(id: string): Promise<boolean | void> {
-        console.log("[DynamoDBCache] delete", id);
+        console.log('[DynamoDBCache] delete', id);
 
         await this.client.delete({
             TableName: this.tableOptions.tableName,
@@ -96,7 +96,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async getMany(ids: string[]): Promise<CacheValues> {
-        console.log("[DynamoDBCache] getMany", ids.join(", "));
+        console.log('[DynamoDBCache] getMany', ids.join(', '));
 
         const chunks = chunk(ids, 100);
         const result = {};
@@ -121,7 +121,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                 RequestItems: {
                     [this.tableOptions.tableName]: {
                         Keys: c.map((id) => ({ id })),
-                        AttributesToGet: ["id", "data", "ttl"],
+                        AttributesToGet: ['id', 'data', 'ttl'],
                         ConsistentRead: false,
                     },
                 },
@@ -132,7 +132,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             // tslint:disable-next-line: no-constant-condition
             do {
                 if (chunkResult.UnprocessedKeys && Object.keys(chunkResult.UnprocessedKeys).length > 0) {
-                    console.log("[DynamoDBCache] retrying get operation");
+                    console.log('[DynamoDBCache] retrying get operation');
 
                     chunkResult = await this.client.batchGet({
                         RequestItems: chunkResult.UnprocessedKeys,
@@ -150,17 +150,17 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async get(id: string): Promise<string | undefined> {
-        console.log("[DynamoDBCache] get", id);
+        console.log('[DynamoDBCache] get', id);
 
         const reply = await this.client
             .query({
                 TableName: this.tableOptions.tableName,
-                KeyConditionExpression: "#id = :value",
+                KeyConditionExpression: '#id = :value',
                 ExpressionAttributeNames: {
-                    "#id": "id",
+                    '#id': 'id',
                 },
                 ExpressionAttributeValues: {
-                    ":value": id,
+                    ':value': id,
                 },
             })
             .promise();
@@ -172,20 +172,20 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         ) {
             const item = reply.Items[0];
             if (this.checkTTL(item as any)) {
-                if ((item.data as string).startsWith("chunks:")) {
-                    const count = parseInt(item.data.substr("chunks:".length), 10);
-                    console.log("[DynamoDBCache] found chunk", id, item.data, count);
+                if ((item.data as string).startsWith('chunks:')) {
+                    const count = parseInt(item.data.substr('chunks:'.length), 10);
+                    console.log('[DynamoDBCache] found chunk', id, item.data, count);
 
                     const result = await this.getMany(
                         // @ts-ignore
-                        Array.apply(null, {length: count}).map((_v, i) => `${id}_${i}`));
+                        Array.apply(null, { length: count }).map((_v, i) => `${id}_${i}`));
 
-                    let finalResult = "";
+                    let finalResult = '';
                     for (let i = 0; i < count; ++i) {
                         finalResult += result[`${id}_${i}`];
                     }
 
-                    return finalResult != "" ? finalResult : undefined;
+                    return finalResult != '' ? finalResult : undefined;
                 }
 
                 return item.data;
@@ -202,9 +202,9 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
         if (ttl !== 0) {
             console.log(
-                "[DynamoDBCache] item", t.id, "valid for",
+                '[DynamoDBCache] item', t.id, 'valid for',
                 Math.round(ttl / 60 / 60 * 100) / 100,
-                "h");
+                'h');
 
             t.ttl = Math.floor(Date.now() / 1000) + ttl;
         }
@@ -215,19 +215,19 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     private checkTTL({ ttl, id }: { id: string, ttl?: number }): boolean {
         // never expires
         if (ttl === 0 || ttl == null) {
-            console.log("[DynamoDBCache] item", id, "never expires.");
+            console.log('[DynamoDBCache] item', id, 'never expires.');
             return true;
         }
 
         if (ttl < Math.floor(Date.now() / 1000)) {
-            console.log("[DynamoDBCache] item", id, "was expired.");
+            console.log('[DynamoDBCache] item', id, 'was expired.');
             return false;
-        } else {
-            console.log(
-                "[DynamoDBCache] item", id, "valid for",
-                Math.round((ttl - Math.floor(Date.now() / 1000)) / 60 / 60 * 100) / 100,
-                "h");
         }
+        console.log(
+            '[DynamoDBCache] item', id, 'valid for',
+            Math.round((ttl - Math.floor(Date.now() / 1000)) / 60 / 60 * 100) / 100,
+            'h');
+
 
         return true;
     }

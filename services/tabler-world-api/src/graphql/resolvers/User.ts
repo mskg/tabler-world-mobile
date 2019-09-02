@@ -1,5 +1,5 @@
-import { ForbiddenError } from "apollo-server-lambda";
-import { IApolloContext } from "../types/IApolloContext";
+import { ForbiddenError } from 'apollo-server-lambda';
+import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
@@ -10,7 +10,7 @@ export const UserResolver = {
                 context.principal.id,
             );
 
-            if (me == null) { throw new ForbiddenError("User not found"); }
+            if (me == null) { throw new ForbiddenError('User not found'); }
             return me;
         },
     },

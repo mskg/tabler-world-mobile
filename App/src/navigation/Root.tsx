@@ -8,7 +8,7 @@ import PairScreen from '../screens/Pair';
 import { PictureScreen } from '../screens/Picture';
 import { SearchScreen } from '../screens/Search';
 import { ExperimentsNavigator } from './ExperimentsNavigator';
-import { HomeRoutes } from "./Routes";
+import { HomeRoutes } from './Routes';
 
 const Navigator = createAppContainer(createStackNavigator(
     {
@@ -26,7 +26,7 @@ const Navigator = createAppContainer(createStackNavigator(
         initialRouteName: HomeRoutes.Home,
         headerMode: 'none',
 
-    }
+    },
 ));
 
 export default Navigator;

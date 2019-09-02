@@ -11,11 +11,11 @@ type Props = {
     text: string,
     color: string,
     textColor?: string,
-}
+};
 
-const one = "matrix(1 0 0 1 202.3369 233.3583)";
-const two = "matrix(1 0 0 1 162.0674 233.3583)";
-const three = "matrix(1 0 0 1 121.7983 233.3583)";
+const one = 'matrix(1 0 0 1 202.3369 233.3583)';
+const two = 'matrix(1 0 0 1 162.0674 233.3583)';
+const three = 'matrix(1 0 0 1 121.7983 233.3583)';
 
 class PinBase extends React.PureComponent<Props> {
     render() {

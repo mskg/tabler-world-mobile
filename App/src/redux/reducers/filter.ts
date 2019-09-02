@@ -18,9 +18,9 @@ export function filterReducer(
     | typeof actions.toggleOwnTable.shape
     | typeof actions.replaceFavorites.shape
     | typeof actions.toggleAreaBoard.shape
-    | typeof actions.toggleAssociationBoard.shape
+    | typeof actions.toggleAssociationBoard.shape,
 ): Result {
-  switch (action.type) {
+    switch (action.type) {
     // case actions.addDistrict.type: {
     //   return {
     //     ...state,
@@ -44,140 +44,140 @@ export function filterReducer(
     //   };
     // }
 
-    case actions.toggleDistrict.type: {
-      const area = { ...(state.member.area || {}) };
+  case actions.toggleDistrict.type: {
+        const area = { ...(state.member.area || {}) };
 
-      if (area[action.payload] === true) {
-        delete area[action.payload];
+        if (area[action.payload] === true) {
+          delete area[action.payload];
       } else {
-        area[action.payload] = true;
+          area[action.payload] = true;
       }
 
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          area
-        }
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            area,
+        },
       };
     }
 
-    case actions.toggleAll.type: {
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          area: state.member.area == null ? [] : null,
-          showFavorites: state.member.area == null ? false : true,
-          showOwntable: state.member.area == null ? false : true,
-          showAreaBoard: state.member.area == null ? false : true,
-          showAssociationBoard: state.member.area == null ? false : true,
-        }
+  case actions.toggleAll.type: {
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            area: state.member.area == null ? [] : null,
+            showFavorites: state.member.area == null ? false : true,
+            showOwntable: state.member.area == null ? false : true,
+            showAreaBoard: state.member.area == null ? false : true,
+            showAssociationBoard: state.member.area == null ? false : true,
+        },
       };
     }
 
-    case actions.toggleFavorites.type: {
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          showFavorites: !state.member.showFavorites,
-        }
+  case actions.toggleFavorites.type: {
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            showFavorites: !state.member.showFavorites,
+        },
       };
     }
 
-    case actions.removeFavorite.type: {
-      const favorites = { ...(state.member.favorites || {}) };
-      delete favorites[action.payload.id];
-
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          favorites,
-        }
-      };
-    }
-
-    case actions.addFavorite.type: {
-      const favorites = { ...(state.member.favorites || {}) };
-      favorites[action.payload.id] = true;
-
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          favorites,
-        }
-      };
-    }
-
-    case actions.toggleFavorite.type: {
-      const favorites = { ...(state.member.favorites || {}) };
-
-      if (favorites[action.payload.id] === true) {
+  case actions.removeFavorite.type: {
+        const favorites = { ...(state.member.favorites || {}) };
         delete favorites[action.payload.id];
-      } else {
-        favorites[action.payload.id] = true;
-      }
 
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          favorites,
-        }
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            favorites,
+        },
       };
     }
 
-    case actions.replaceFavorites.type: {
-      const newFavorites = _.reduce(
+  case actions.addFavorite.type: {
+        const favorites = { ...(state.member.favorites || {}) };
+        favorites[action.payload.id] = true;
+
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            favorites,
+        },
+      };
+    }
+
+  case actions.toggleFavorite.type: {
+        const favorites = { ...(state.member.favorites || {}) };
+
+        if (favorites[action.payload.id] === true) {
+          delete favorites[action.payload.id];
+      } else {
+          favorites[action.payload.id] = true;
+      }
+
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            favorites,
+        },
+      };
+    }
+
+  case actions.replaceFavorites.type: {
+        const newFavorites = _.reduce(
         action.payload,
         (r, v) => { r[v] = true; return r; },
-        {length: 0});
+        { length: 0 });
 
-      newFavorites.length = Object.keys(newFavorites).length;
+        newFavorites.length = Object.keys(newFavorites).length;
 
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          favorites: newFavorites,
-        }
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            favorites: newFavorites,
+        },
       };
     }
 
-    case actions.toggleOwnTable.type: {
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          showOwntable: !state.member.showOwntable,
-        }
+  case actions.toggleOwnTable.type: {
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            showOwntable: !state.member.showOwntable,
+        },
       };
     }
 
-    case actions.toggleAreaBoard.type: {
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          showAreaBoard: !state.member.showAreaBoard,
-        }
+  case actions.toggleAreaBoard.type: {
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            showAreaBoard: !state.member.showAreaBoard,
+        },
       };
     }
 
-    case actions.toggleAssociationBoard.type: {
-      return {
-        ...state,
-        member: {
-          ...state.member,
-          showAssociationBoard: !state.member.showAssociationBoard,
-        }
+  case actions.toggleAssociationBoard.type: {
+        return {
+          ...state,
+          member: {
+            ...state.member,
+            showAssociationBoard: !state.member.showAssociationBoard,
+        },
       };
     }
 
-    default:
+  default:
       return state;
   }
 }

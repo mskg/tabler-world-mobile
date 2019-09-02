@@ -20,14 +20,14 @@ import { MeFragment } from '../../model/graphql/MeFragment';
 import { MembersByAreas, MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
 import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
-import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
+import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
-import { GetMembersByAreasQuery } from "../../queries/GetMembersByAreasQuery";
+import { GetMembersByAreasQuery } from '../../queries/GetMembersByAreasQuery';
 import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
 import { showFilter, showSearch } from '../../redux/actions/navigation';
 import { BOTTOM_HEIGHT, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { MemberDataSource } from './MemberDataSource';
-import { MemberListPlaceholder } from "./MemberListPlaceholder";
+import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { Predicates } from './Predicates';
 
 const logger = new Logger(Categories.Screens.Contacts);
@@ -88,7 +88,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.state = {
             ...this.state,
             ...this.calculateNewState(props),
-        }
+        };
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -109,10 +109,10 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
     }
 
     calculateNewState(nextProps: Props) {
-        logger.debug("componentWillReceiveProps",
-            "fav?", nextProps.showFavorites,
-            "own?", nextProps.showOwntable,
-            "areas", nextProps.areas);
+        logger.debug('componentWillReceiveProps',
+                     'fav?', nextProps.showFavorites,
+                     'own?', nextProps.showOwntable,
+                     'areas', nextProps.areas);
 
         const data = nextProps.data != null && nextProps.data.MembersOverview != null
             ? nextProps.data.MembersOverview
@@ -140,7 +140,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.state.dataSource.groupBy = nextProps.sortBy;
 
         this.state.dataSource.update(
-            _(data).uniqBy(d => d.id).value() as IMemberOverviewFragment[]
+            _(data).uniqBy(d => d.id).value() as IMemberOverviewFragment[],
         );
 
         const res = this.state.dataSource.data.filter(s => s.title == this.state.letter);
@@ -155,10 +155,10 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
 
     _jumptoLetterDirect = (letter: string | undefined): void => {
         if (letter == null || letter == this.state.letter) return;
-        this.setState({ letter: letter });
+        this.setState({ letter });
 
         if (this._sectionList != null && letter != null) {
-            if (__DEV__) { logger.debug("_jumptoLetterDirect", letter); }
+            if (__DEV__) { logger.debug('_jumptoLetterDirect', letter); }
 
             requestAnimationFrame(() => {
                 if (this._sectionList != null) {
@@ -177,11 +177,11 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                 <ScreenWithHeader header={
                     {
                         content:
-                            [
-                                <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Members.title} />,
-                                <Appbar.Action key="filter" icon="filter-list" onPress={() => this.props.showFilter()} />,
-                                <Appbar.Action key="search" icon="search" onPress={() => this.props.showSearch()} />,
-                            ]
+                        [
+                            <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Members.title} />,
+                            <Appbar.Action key="filter" icon="filter-list" onPress={() => this.props.showFilter()} />,
+                            <Appbar.Action key="search" icon="search" onPress={() => this.props.showSearch()} />,
+                        ],
                     }
                 }>
                     <Placeholder ready={
@@ -223,9 +223,9 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
 
 const styles = StyleSheet.create({
     sectionList: {
-        width: Dimensions.get("window").width,
-        height: Dimensions.get("window").height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT - (StatusBar.currentHeight || 0)
-    }
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT - (StatusBar.currentHeight || 0),
+    },
 });
 
 const ConnectedMembersScreen = connect(
@@ -238,13 +238,13 @@ const ConnectedMembersScreen = connect(
         areas: state.filter.member.area,
         favorites: state.filter.member.favorites,
 
-        sortBy: state.settings.sortByLastName ? "lastname" : "firstname",
+        sortBy: state.settings.sortByLastName ? 'lastname' : 'firstname',
         diplayFirstNameFirst: state.settings.diplayFirstNameFirst,
     }),
     {
         showSearch,
         showFilter,
-    }
+    },
 )(withTheme(MembersScreenBase));
 
 // processing time is too slow if we add the @client directive
@@ -271,8 +271,8 @@ const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard,
                 variables={{
                     areas: areas != null ? _(areas)
                         .keys()
-                        .filter(k => k !== "length")
-                        .map(a => a.replace(/[^\d]/g, ""))
+                        .filter(k => k !== 'length')
+                        .map(a => a.replace(/[^\d]/g, ''))
                         .map(a => parseInt(a, 10))
                         .value()
                         : null,
@@ -297,21 +297,21 @@ const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard,
                         loading={isLoading}
                         data={data}
                         offlineData={oData}
-                        refresh={() => { refetch(); oRefetch(); }} />
+                        refresh={() => { refetch(); oRefetch(); }} />;
                 }}
-            </Query>
+            </Query>;
         }}
     </Query>
 );
 
 const MembersQueryWithCacheInvalidation = withCacheInvalidation(
-    "members",
+    'members',
     connect((s: IAppState) => ({
         areas: s.filter.member.area,
         showAssociationBoard: s.filter.member.showAssociationBoard,
         showAreaBoard: s.filter.member.showAreaBoard,
         offline: s.connection.offline,
-    }))(MembersQuery)
+    }))(MembersQuery),
 );
 
 export const MembersScreen = withWhoopsErrorBoundary(MembersQueryWithCacheInvalidation);

@@ -1,11 +1,11 @@
-import { PRIVATE, PUBLIC } from "./DBLevels";
-import { FieldNames } from "./FieldNames";
-import { PrivacySetting } from "./PrivacySetting";
-import { AnyType } from "./WhiteList";
+import { PRIVATE, PUBLIC } from './DBLevels';
+import { FieldNames } from './FieldNames';
+import { PrivacySetting } from './PrivacySetting';
+import { AnyType } from './WhiteList';
 
 export function getPrivacySetting(tabler: AnyType, type: string) {
     // tslint:disable-next-line: no-string-literal
-    const settings: any = tabler["_PrivacySettings"] || tabler[FieldNames.PrivacySettings];
+    const settings: any = tabler['_PrivacySettings'] || tabler[FieldNames.PrivacySettings];
 
     if (settings == null) {
         return PRIVATE; // be save
@@ -13,11 +13,11 @@ export function getPrivacySetting(tabler: AnyType, type: string) {
 
     let parsedSetting = settings;
 
-    if (typeof(parsedSetting) === "string") {
+    if (typeof(parsedSetting) === 'string') {
         parsedSetting = JSON.parse(settings);
 
         // tslint:disable-next-line: no-string-literal
-        tabler["_PrivacySettings"] = parsedSetting;
+        tabler['_PrivacySettings'] = parsedSetting;
     }
 
     const setting = parsedSetting.find((f: PrivacySetting) => f.type.startsWith(type));

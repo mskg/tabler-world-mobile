@@ -1,14 +1,14 @@
 import React from 'react';
-import { FlatList, ListRenderItemInfo, Platform } from "react-native";
+import { FlatList, ListRenderItemInfo, Platform } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, withNavigation } from "react-navigation";
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { I18N } from '../i18n/translation';
-import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
+import { IMemberOverviewFragment } from '../model/IMemberOverviewFragment';
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
 import { extractKey, renderDivider, renderItem } from './ListRenderer';
-import { MeListItem, ME_ITEM_HEIGHT } from "./MeListItem";
+import { ME_ITEM_HEIGHT, MeListItem } from './MeListItem';
 import { ITEM_HEIGHT } from './Member/Dimensions';
 import { EmptyComponent } from './NoResults';
 
@@ -31,7 +31,7 @@ type OwnProps = {
 };
 
 type DispatchPros = {
-    showProfile: typeof showProfile
+    showProfile: typeof showProfile,
 };
 
 type Props = OwnProps & DispatchPros & NavigationInjectedProps;
@@ -46,11 +46,10 @@ export class MemberListBase extends React.Component<Props> {
     _onPress = (item: IMemberOverviewFragment) => {
         if (this.props.onItemSelected != null) {
             this.props.onItemSelected(item);
-        }
-        else {
+        } else {
             this.props.showProfile(item.id);
         }
-    };
+    }
 
     _renderItem = (c: ListRenderItemInfo<IMemberOverviewFragment>) => {
         return this.props.renderItem != null ?
@@ -65,15 +64,15 @@ export class MemberListBase extends React.Component<Props> {
             length: index == 0 ? firstHeight : ITEM_HEIGHT,
             offset: ITEM_HEIGHT * index + (index > 0 ? firstHeight - ITEM_HEIGHT : 0),
             index,
-        }
-    };
+        };
+    }
 
     _renderHeader = () => {
         const { me } = this.props;
         const canShowMe = me != null && me.firstname;
 
         return canShowMe ? <MeListItem theme={this.props.theme} me={this.props.me as IWhoAmI} /> : null;
-    };
+    }
 
     _renderDivider = () => renderDivider(this.props.theme);
 
@@ -86,7 +85,7 @@ export class MemberListBase extends React.Component<Props> {
                 scrollEventThrottle={16}
                 ItemSeparatorComponent={this._renderDivider}
 
-                removeClippedSubviews={Platform.OS !== "ios"}
+                removeClippedSubviews={Platform.OS !== 'ios'}
 
                 ListHeaderComponent={this._renderHeader}
                 renderItem={this._renderItem}
@@ -110,5 +109,5 @@ export class MemberListBase extends React.Component<Props> {
 
 export const MemberList = withNavigation(withTheme(connect(
     null, {
-        showProfile
+        showProfile,
     })(MemberListBase)));

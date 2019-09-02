@@ -31,7 +31,7 @@ type State = {
 class RoleAvatarBase extends React.Component<Props, State> {
     _onPress = () =>
         requestAnimationFrame(() =>
-            this.props.showProfile(this.props.member.id));
+            this.props.showProfile(this.props.member.id))
 
     render() {
         const boardMember = this.props.member;

@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-lambda";
+import { gql } from 'apollo-server-lambda';
 
 export const Documents = gql`
     type Folder {

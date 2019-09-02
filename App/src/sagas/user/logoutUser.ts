@@ -14,24 +14,24 @@ import { removePushToken } from '../tokens/removePushToken';
 import { logger } from './logger';
 
 export function* logoutUser(_: typeof actions.logoutUser.shape) {
-  logger.debug("logoutUser");
+    logger.debug('logoutUser');
 
-  try { yield removePushToken(); } catch (e) { logger.error(e, "Failed to remove token"); }
-  try { yield disableNearbyTablers(); } catch (e) { logger.error(e, "Failed to disable tracking"); }
+    try { yield removePushToken(); } catch (e) { logger.error(e, 'Failed to remove token'); }
+    try { yield disableNearbyTablers(); } catch (e) { logger.error(e, 'Failed to disable tracking'); }
 
-  yield AsyncStorage.clear();
-  yield SecureStore.deleteItemAsync(FILESTORAGE_KEY);
+    yield AsyncStorage.clear();
+    yield SecureStore.deleteItemAsync(FILESTORAGE_KEY);
 
-  yield put({ type: "__CLEAR__ALL__" });
-  yield getReduxPersistor().flush();
+    yield put({ type: '__CLEAR__ALL__' });
+    yield getReduxPersistor().flush();
 
-  yield getReduxPersistor().purge();
-  yield getReduxPersistor().flush();
+    yield getReduxPersistor().purge();
+    yield getReduxPersistor().flush();
 
-  const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
-  yield client.cache.reset();
-  yield getPersistor().purge();
+    const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
+    yield client.cache.reset();
+    yield getPersistor().purge();
 
-  yield Auth.signOut();
-  yield Updates.reloadFromCache();
+    yield Auth.signOut();
+    yield Updates.reloadFromCache();
 }

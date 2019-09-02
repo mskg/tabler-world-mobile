@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Modal, ScrollView, TouchableWithoutFeedback, View } from "react-native";
+import { Modal, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
 import { Appbar, Chip, Divider, List, Searchbar, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
-import { FilterSection, FilterTag, FilterTagType } from "../../components/FilterSection";
+import { FilterSection, FilterTag, FilterTagType } from '../../components/FilterSection';
 import { StandardHeader } from '../../components/Header';
-import ListSubheader from "../../components/ListSubheader";
+import ListSubheader from '../../components/ListSubheader';
 import { InlineLoading } from '../../components/Loading';
 import { MemberListItem } from '../../components/Member/MemberListItem';
 import { Screen } from '../../components/Screen';
@@ -18,7 +18,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { I18N } from '../../i18n/translation';
 import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
 import { IAppState } from '../../model/IAppState';
-import { GetFiltersQuery } from "../../queries/GetFiltersQuery";
+import { GetFiltersQuery } from '../../queries/GetFiltersQuery';
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
@@ -60,8 +60,8 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     mounted = true;
 
     state: State = {
-        query: "",
-        debouncedQuery: "",
+        query: '',
+        debouncedQuery: '',
 
         searching: false,
         update: false,
@@ -87,7 +87,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             });
         }
 
-        logger.debug("Logged");
+        logger.debug('Logged');
         this.audit.submit();
     }
 
@@ -103,7 +103,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             return;
         }
 
-        if (text != "" && text != null) {
+        if (text != '' && text != null) {
             this.audit.increment(MetricNames.Count);
         }
 
@@ -113,12 +113,12 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             update: !this.state.update,
             filterTags: filters || [],
         });
-    }, 250);
+    },                         250);
 
     _clearSearch = () => {
         this.setState({
-            query: "",
-            debouncedQuery: "",
+            query: '',
+            debouncedQuery: '',
             searching: false,
             filterTags: [],
             showFilter: false,
@@ -126,14 +126,14 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     searchFilterFunction = (text) => {
-        if (text == null || text == "") {
+        if (text == null || text == '') {
             this._adjustSearch.cancel();
             this._clearSearch();
         } else {
             this.setState({ query: text });
             this._adjustSearch(text, this.state.filterTags);
         }
-    };
+    }
 
     _itemSelected = (item) => {
         this.props.addTablerSearch(this.state.query);
@@ -145,7 +145,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             theme={this.props.theme}
             onPress={onPress}
             member={member}
-        />
+        />;
 
         // return (<HighLightMemberListItem
         //     theme={this.props.theme}
@@ -157,19 +157,19 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     _onToggleTag = (type: FilterTagType, value: string) => {
-        logger.debug("toggle", type, value);
+        logger.debug('toggle', type, value);
 
-        //@ts-ignore
+        // @ts-ignore
         this.audit.increment(`Toggle ${type}`);
 
         const tags = [...this.state.filterTags];
 
         if (_.remove(tags, (f: FilterTag) => f.type == type && f.value == value).length === 0) {
-            //@ts-ignore
+            // @ts-ignore
             tags.push({
                 type,
                 value,
-            })
+            });
         }
 
         this._adjustSearch(this.state.query, tags);
@@ -190,10 +190,10 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                         <>
                             <View style={[styles.chips, { backgroundColor: this.props.theme.colors.primary }]}>
                                 {
-                                    _.sortBy(this.state.filterTags, ["type", "value"]).map((f: FilterTag) => (
+                                    _.sortBy(this.state.filterTags, ['type', 'value']).map((f: FilterTag) => (
                                         <Chip
                                             style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                                            key={f.type + ":" + f.value}
+                                            key={f.type + ':' + f.value}
                                             selected={true}
                                             onPress={() => this._onToggleTag(f.type, f.value)}
                                         >
@@ -252,14 +252,14 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                     }}>
                         <List.Section>
                             <View style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
                                 marginRight: 4,
                             }}>
                                 <ListSubheader>{I18N.Search.filter}</ListSubheader>
-                                <Appbar.Action color={this.props.theme.colors.accent} icon={"clear"} onPress={this._clearSearch} />
+                                <Appbar.Action color={this.props.theme.colors.accent} icon={'clear'} onPress={this._clearSearch} />
                             </View>
-                            <ScrollView style={{ minHeight: "100%" }}>
+                            <ScrollView style={{ minHeight: '100%' }}>
                                 <Divider />
                                 <Query<Filters> query={GetFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
                                     {({ loading, data, error, refetch }) => {
@@ -351,8 +351,8 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                 />
                             </View>
                             <Appbar.Action
-                                color={this.props.theme.dark ? "white" : "black"}
-                                icon={"filter-list"}
+                                color={this.props.theme.dark ? 'white' : 'black'}
+                                icon={'filter-list'}
                                 onPress={this._showFilterDialog}
                             />
                         </View>
@@ -365,15 +365,15 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
 
 export const SearchScreen = connect(
     (state: IAppState) => ({
-        sortBy: state.settings.sortByLastName ? "lastname" : "firstname",
+        sortBy: state.settings.sortByLastName ? 'lastname' : 'firstname',
         offline: state.connection.offline,
     }), {
         addTablerSearch,
         showProfile,
     })(
         withWhoopsErrorBoundary(
-            withCacheInvalidation("utility",
-                withTheme(SearchScreenBase)
-            )
-        )
+            withCacheInvalidation('utility',
+                                  withTheme(SearchScreenBase),
+            ),
+        ),
     );

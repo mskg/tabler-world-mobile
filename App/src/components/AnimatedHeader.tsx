@@ -15,7 +15,7 @@ type Props = {
     renderContent(): any,
     renderHeader(scrollY: Animated.AnimatedAddition, distance: number): any,
     refresh?: () => Promise<void>,
-}
+};
 
 class AnimatedHeaderBase extends Component<Props> {
     state = {
@@ -42,7 +42,7 @@ class AnimatedHeaderBase extends Component<Props> {
 
         let minHeight = 0;
 
-        if (Platform.OS === "ios") {
+        if (Platform.OS === 'ios') {
             minHeight = windowHeight - (this.props.minHeight || HEADER_MIN_HEIGHT);
         } else {
             minHeight = windowHeight
@@ -51,15 +51,15 @@ class AnimatedHeaderBase extends Component<Props> {
         }
 
         logger.debug(
-            "window height", Dimensions.get('window').height,
-            "content height", height,
+            'window height', Dimensions.get('window').height,
+            'content height', height,
 
-            "header height", this.props.height,
-            "header min", this.props.minHeight,
+            'header height', this.props.height,
+            'header min', this.props.minHeight,
 
-            "content min", minHeight);
+            'content min', minHeight);
 
-        this.setState({ minHeight: minHeight });
+        this.setState({ minHeight });
     }
 
     _scrollView;
@@ -76,17 +76,17 @@ class AnimatedHeaderBase extends Component<Props> {
         // else {
         //     this._scrollView.scrollTo({ y: -this.props.height});
         // }
-        logger.debug("onScrollEndSnapToEdge", y, scrollRangeForAnimation);
+        logger.debug('onScrollEndSnapToEdge', y, scrollRangeForAnimation);
 
 
         if (y < scrollRangeForAnimation && y > 200) {
-            logger.debug("adjust");
+            logger.debug('adjust');
 
             if (this._scrollView) {
                 setImmediate(() => this._scrollView.scrollTo({ y: -this.props.height }));
             }
         } else if (y < scrollRangeForAnimation) {
-            logger.debug("adjust");
+            logger.debug('adjust');
 
             if (this._scrollView) {
                 setImmediate(() => this._scrollView.scrollTo({ y: -this.props.height }));
@@ -100,7 +100,7 @@ class AnimatedHeaderBase extends Component<Props> {
         //         this._scrollView.scrollTo({ y: -1 * scrollRangeForAnimation });
         //     }
         // }
-    };
+    }
 
     render() {
         const distance = this.props.height - (this.props.minHeight || HEADER_MIN_HEIGHT);

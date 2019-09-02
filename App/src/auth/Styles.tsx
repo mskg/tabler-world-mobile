@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
 
     heading: {
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
 
     headingImage: {
-        width: "100%",
-        height: 100
+        width: '100%',
+        height: 100,
     },
 
     errorMessage: {
@@ -17,13 +17,13 @@ export const styles = StyleSheet.create({
 
     demo: {
         marginTop: 80,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
     },
 
     demoText: {
-        textDecorationLine: "underline",
+        textDecorationLine: 'underline',
         paddingRight: 8,
         // fontSize: 16,
     },
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        display: "flex",
+        display: 'flex',
         flex: 0,
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        width: "100%",
+        width: '100%',
         justifyContent: 'center',
         paddingHorizontal: 40,
         // paddingBottom: 100,
@@ -60,5 +60,5 @@ export const styles = StyleSheet.create({
     },
     greeting2: {
         marginTop: 5,
-    }
+    },
 });

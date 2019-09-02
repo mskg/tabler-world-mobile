@@ -8,10 +8,10 @@ import { updateSetting } from '../../redux/actions/settings';
 import { getReduxStore } from '../../redux/getRedux';
 import { LOCATION_TASK_NAME } from '../../tasks/Constants';
 import { stopLocationTaks } from '../../tasks/location/stopLocationTaks';
-import { logger } from "./logger";
+import { logger } from './logger';
 
 export async function disableNearbyTablers() {
-    logger.log("disableNearbyTablers");
+    logger.log('disableNearbyTablers');
 
     const client: ApolloClient<any> = await bootstrapApollo();
     await client.mutate<DisableLocationServices>({
@@ -25,10 +25,10 @@ export async function disableNearbyTablers() {
         location: undefined,
     }));
 
-    logger.log("Disabling location services", LOCATION_TASK_NAME);
+    logger.log('Disabling location services', LOCATION_TASK_NAME);
 
     await AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
     getReduxStore().dispatch(
-        updateSetting({ name: "nearbyMembers", value: false })
+        updateSetting({ name: 'nearbyMembers', value: false }),
     );
 }

@@ -6,5 +6,5 @@ export function withAuthenticator(App) {
         render() {
             return (<Authenticator app={<App />} />);
         }
-    }
+    };
 }

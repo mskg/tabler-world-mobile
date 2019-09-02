@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View } from "react-native";
+import { ScrollView, View } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
@@ -31,7 +31,7 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                                     <NextScreen theme={this.props.theme} text={d.title} onPress={
                                         () => this.props.navigation.navigate(Routes.External, {
                                             title: d.title,
-                                            source: d.url + "?refresh=" + Date.now,
+                                            source: d.url + '?refresh=' + Date.now,
                                         })}
                                     />
                                     <Divider />

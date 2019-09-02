@@ -2,12 +2,12 @@ import { Dimensions, StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
     imageThumbnail: {
-        height: Dimensions.get("screen").width / 4 - 3,
-        width: Dimensions.get("screen").width / 4 - 3,
+        height: Dimensions.get('screen').width / 4 - 3,
+        width: Dimensions.get('screen').width / 4 - 3,
     },
 
     imageContainer: {
-        flex: 1/4,
+        flex: 1 / 4,
         margin: 1,
     },
 
@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
 
 
     image: {
-        position: "absolute",
+        position: 'absolute',
         top: 0, bottom: 0,
         left: 16, right: 16,
 

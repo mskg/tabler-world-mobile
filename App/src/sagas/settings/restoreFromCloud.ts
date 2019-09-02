@@ -2,7 +2,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient, ApolloQueryResult } from 'apollo-client';
 import gql from 'graphql-tag';
 import { put } from 'redux-saga/effects';
-import { Audit } from "../../analytics/Audit";
+import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { GetFavoritesSetting } from '../../model/graphql/GetFavoritesSetting';
@@ -15,7 +15,7 @@ import { logger } from './logger';
  */
 export function* restoreSettingsFromCloud(a: typeof settingsActions.restoreSettings.shape) {
     Audit.trackEvent(AuditEventName.RestoreSettings);
-    logger.debug("Restoring settings");
+    logger.debug('Restoring settings');
 
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
 
@@ -24,11 +24,11 @@ export function* restoreSettingsFromCloud(a: typeof settingsActions.restoreSetti
 query GetFavoritesSetting {
   Setting (name: favorites)
 }`,
-        fetchPolicy: "network-only"
+        fetchPolicy: 'network-only',
     });
 
     if (result.data.Setting != null) {
-        logger.debug("Restoring favorites", result);
+        logger.debug('Restoring favorites', result);
         yield put(filterActions.replaceFavorites(result.data.Setting));
     }
 }

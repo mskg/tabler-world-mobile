@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Text } from "react-native-paper";
+import { Text } from 'react-native-paper';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { I18N } from '../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR } from '../theme/colors';
@@ -31,6 +31,6 @@ export const MainBottomNavigation = createMaterialBottomTabNavigator(
         barStyle: {
             backgroundColor: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
             paddingBottom: 0,
-        }
-    }
+        },
+    },
 );

@@ -1,5 +1,5 @@
-import _ from "lodash";
-import { IApolloContext } from "../types/IApolloContext";
+import _ from 'lodash';
+import { IApolloContext } from '../types/IApolloContext';
 
 // type MembersArgs = {
 //     state?: string,
@@ -30,7 +30,7 @@ export const MemberResolver = {
     Member: {
         area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
-                id: root.association + "_" + root.area,
+                id: root.association + '_' + root.area,
                 association: root.association,
                 area: root.area,
                 name: root.areaname,
@@ -39,7 +39,7 @@ export const MemberResolver = {
 
         club: (root: any, _args: {}, _context: IApolloContext) => {
             return {
-                id: root.association + "_" + root.club,
+                id: root.association + '_' + root.club,
                 club: root.club, // needs to be added to allow subsent resolvers to work
                 name: root.clubname,
                 association: root.association,
@@ -57,7 +57,7 @@ export const MemberResolver = {
 
     Company: {
         sector:  (root: any, _args: {}, _context: IApolloContext) => {
-            return root.sector ? root.sector.replace(/-/ig, "") : null;
+            return root.sector ? root.sector.replace(/-/ig, '') : null;
         },
     },
 
@@ -68,14 +68,14 @@ export const MemberResolver = {
             // the optional filters only make sense if we don't retrieve all
             if (args.filter != null && args.filter.areas != null) {
                 if (args.filter != null && args.filter.areas != null) {
-                    context.logger.log("areas", args.filter.areas);
+                    context.logger.log('areas', args.filter.areas);
                     const areaMembers = await context.dataSources.members.readAreas(args.filter.areas);
                     result.push(... (areaMembers || []));
                 }
 
                 // we make this sync
                 if (args.filter != null && args.filter.areaBoard === true) {
-                    context.logger.log("areaBoard", args.filter);
+                    context.logger.log('areaBoard', args.filter);
                     const areas = await context.dataSources.structure.allAreas();
 
                     for (const area of areas) {
@@ -91,7 +91,7 @@ export const MemberResolver = {
                 }
 
                 if (args.filter != null && args.filter.nationalBoard === true) {
-                    context.logger.log("nationalBoard", args.filter);
+                    context.logger.log('nationalBoard', args.filter);
                     const associations = await context.dataSources.structure.allAssociations();
 
                     for (const assoc of associations) {
@@ -112,7 +112,7 @@ export const MemberResolver = {
                 }
 
                 if (result.length > 0) {
-                    context.logger.log("result", result.length, "entries");
+                    context.logger.log('result', result.length, 'entries');
                     return _.uniqBy(result, (m) => m.id);
                 }
             }
@@ -125,9 +125,9 @@ export const MemberResolver = {
             if (favorites) {
                 // there could be favorites that no longer exist
                 return favorites.filter((f) => f != null);
-            } else {
+            } 
                 return favorites;
-            }
+            
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {

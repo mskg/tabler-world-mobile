@@ -10,7 +10,7 @@ import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 type Props = {
     theme: Theme,
     title: string,
-}
+};
 
 class ScreenWithBarBase extends React.Component<Props> {
     render() {

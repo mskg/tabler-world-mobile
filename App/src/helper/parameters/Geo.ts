@@ -1,4 +1,4 @@
-import * as Location from "expo-location";
+import * as Location from 'expo-location';
 
 interface LocationTaskOptions {
     accuracy?: Location.Accuracy;
@@ -25,8 +25,8 @@ export type GeoParameters = {
 // https://docs.expo.io/versions/latest/sdk/location/
 export const GeoParametersDefaults: GeoParameters = {
     accuracy: Location.Accuracy.Low,
-    pollInterval: 10*1000, // ms
-    reverseGeocodeTimeout: 10*1000, //ms
+    pollInterval: 10 * 1000, // ms
+    reverseGeocodeTimeout: 10 * 1000, // ms
 
     distanceInterval: 500,
     deferredUpdatesInterval:

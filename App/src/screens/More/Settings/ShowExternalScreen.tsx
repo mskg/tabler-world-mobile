@@ -14,20 +14,20 @@ class ShowExternalScreenBase extends AuditedScreen<{ theme } & NavigationInjecte
 
     componentDidMount() {
         this.audit.submit({
-            [AuditPropertyNames.Title]: this.props.navigation.getParam("title")
+            [AuditPropertyNames.Title]: this.props.navigation.getParam('title'),
         });
     }
 
     render() {
         return (
             <ScreenWithHeader header={{
-                title: this.props.navigation.getParam("title"),
+                title: this.props.navigation.getParam('title'),
                 showBack: true,
             }}>
                 <WebView
                     startInLoadingState={true}
-                    source={{ uri: this.props.navigation.getParam("source") }}
-                    mixedContentMode={"never"}
+                    source={{ uri: this.props.navigation.getParam('source') }}
+                    mixedContentMode={'never'}
                 />
             </ScreenWithHeader>
         );

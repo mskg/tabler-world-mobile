@@ -1,0 +1,48 @@
+{
+    "rulesDirectory": [
+        "../node_modules/tslint-microsoft-contrib"
+    ],
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-airbnb",
+        "tslint-microsoft-contrib/recommended",
+        "tslint-react"
+    ],
+    "rules": {
+        "ter-indent": [
+            true,
+            4
+        ],
+        "quotemark": [
+            true,
+            "single",
+            "jsx-double"
+        ],
+        "no-relative-imports": false,
+        "object-literal-sort-keys": false,
+        "no-consecutive-blank-lines": false,
+        "max-line-length": false,
+        "prefer-type-cast": false,
+        "array-type": false,
+        "interface-over-type-literal": false,
+        "member-access": [
+            true,
+            "no-public"
+        ],
+        "import-name": false,
+        "jsx-no-multiline-js": false,
+        "jsx-no-lambda": false,
+        "react-this-binding-issue": false,
+        "no-backbone-get-set-outside-model": false,
+        // we want to allow expressions
+        "use-simple-attributes": false,
+        "member-ordering": false,
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-pascal-case"
+        ]
+    }
+}

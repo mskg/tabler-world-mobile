@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, View } from "react-native";
+import { Dimensions, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 import { Circle } from '../Placeholder/Circle';
 import { Line } from '../Placeholder/Line';
@@ -14,7 +14,7 @@ export const SectionPlaceholder = () => {
             </View>
             <View style={{ marginVertical: 8, marginHorizontal: 8 }}>
                 <Line height={14} width={200} />
-                <Line height={30} style={{ marginTop: 8 }} width={Dimensions.get("window").width - 80} />
+                <Line height={30} style={{ marginTop: 8 }} width={Dimensions.get('window').width - 80} />
             </View>
         </View>
         <Divider style={styles.divider} />
@@ -36,7 +36,7 @@ export const SectionSquarePlaceholder = () => {
                 <Line height={14} width={200} />
                 <Square style={{
                     marginTop: 8, borderRadius: 10,
-                }} width={Dimensions.get("window").width - 80} height={120} />
+                }} width={Dimensions.get('window').width - 80} height={120} />
             </View>
         </View>
         <Divider style={styles.divider} />

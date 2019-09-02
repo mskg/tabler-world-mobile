@@ -1,6 +1,6 @@
-import spwan from "cross-spawn";
-import { createEnv } from "../helper/createEnv";
-import { TermSignals } from "../helper/TermSignals";
+import spwan from 'cross-spawn';
+import { createEnv } from '../helper/createEnv';
+import { TermSignals } from '../helper/TermSignals';
 
 // tslint:disable-next-line: export-name
 export default () => {
@@ -14,43 +14,43 @@ export default () => {
     const [, , cmd, ...userArgs] = process.argv;
 
     if (cmd == null) {
-        console.log("<deploy> [...args]");
-        console.log("<package> [...args]");
-        console.log("<remove> [...args]");
-        console.log("");
-        console.log("<dev> [...args]");
+        console.log('<deploy> [...args]');
+        console.log('<package> [...args]');
+        console.log('<remove> [...args]');
+        console.log('');
+        console.log('<dev> [...args]');
 
         process.exit(-1);
     }
 
     let baseArgs: string[] = [];
     switch (cmd.toLowerCase()) {
-        case "deploy":
-            baseArgs = ["deploy", "--force", "--verbose"];
-            break;
+    case 'deploy':
+        baseArgs = ['deploy', '--force', '--verbose'];
+        break;
 
-        case "package":
-            baseArgs = ["package", "--force", "--verbose"];
-            break;
+    case 'package':
+        baseArgs = ['package', '--force', '--verbose'];
+        break;
 
-        case "remove":
-            baseArgs = ["remove", "--verbose"];
-            break;
+    case 'remove':
+        baseArgs = ['remove', '--verbose'];
+        break;
 
-        case "dev":
-            baseArgs = ["offline", "start", "--verbose", "--noTimeout", "--noAuth"];
-            break;
+    case 'dev':
+        baseArgs = ['offline', 'start', '--verbose', '--noTimeout', '--noAuth'];
+        break;
 
-        default:
-            console.error("Invalid cmd", cmd);
-            process.exit(-1);
-            break;
+    default:
+        console.error('Invalid cmd', cmd);
+        process.exit(-1);
+        break;
     }
 
     // console.debug("running", cmd, args);
 
-    const proc = spwan("serverless", [...baseArgs, ...(userArgs || [])], {
-        stdio: "inherit",
+    const proc = spwan('serverless', [...baseArgs, ...(userArgs || [])], {
+        stdio: 'inherit',
         //    shell: options.useShell,
         env: finalEnv,
     });

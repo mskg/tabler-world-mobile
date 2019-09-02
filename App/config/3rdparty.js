@@ -19,11 +19,10 @@ const json = JSON.parse(stdinBuffer);
 */
 for (key in json) {
     const val = json[key];
-    const vals = key.split('@');
+    const vals = key.split("@");
 
     const version = vals.pop();
-    const name = vals.join('@');
+    const name = vals.join("@");
 
     console.log(`- **${name}** v${version} ${val.publisher ? "by " + val.publisher + " " : ""}under ${val.licenses} license - [repository](${val.repository})`);
 }
-

@@ -8,7 +8,7 @@ type Props = {
     height?: number,
 
     style: any,
-}
+};
 
 class SquareBase extends PureComponent<Props> {
     render() {
@@ -18,7 +18,7 @@ class SquareBase extends PureComponent<Props> {
             <Fade>
                 <View style={[{
                     height: height || width,
-                    width: width,
+                    width,
                     backgroundColor: COLOR,
                 }, style]} />
             </Fade>);

@@ -6,12 +6,12 @@ import { logger } from './state/logger';
 
 function networkState() {
     return eventChannel(emit => {
-        logger.log("Waiting for app state changes");
+        logger.log('Waiting for app state changes');
 
         const handler = (connectionInfo: ConnectionInfo | ConnectionType) => {
-            logger.log("connectionChange", connectionInfo);
+            logger.log('connectionChange', connectionInfo);
             emit(connectionInfo);
-        }
+        };
 
         const listener = NetInfo.addEventListener('connectionChange', handler);
         return () => listener.remove();
@@ -19,13 +19,13 @@ function networkState() {
 }
 
 function* storeInfo(state: ConnectionInfo) {
-    logger.log("storeInfo", state);
+    logger.log('storeInfo', state);
     yield put(updateNetwork(state));
 }
 
 function* init() {
     const ci = yield NetInfo.getConnectionInfo();
-    logger.log("init", ci);
+    logger.log('init', ci);
 
     yield put(updateNetwork(ci));
 }

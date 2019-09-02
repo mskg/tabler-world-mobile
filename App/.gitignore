@@ -1,13 +1,15 @@
-node_modules/**/*
-.expo/*
-npm-debug.*
+.expo
+.tmp
+
+# certificates
 *.jks
 *.p12
 *.key
 *.mobileprovision
+
+# generated scripts
 app.json
 compile/
 config/aws.json
 !config/app.json
-.DS_Store
 deployment.json

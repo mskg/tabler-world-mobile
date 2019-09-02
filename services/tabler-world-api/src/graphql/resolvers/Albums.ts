@@ -1,6 +1,6 @@
-import { removeEmptyTags } from "@mskg/tabler-world-common";
-import _ from "lodash";
-import { IApolloContext } from "../types/IApolloContext";
+import { removeEmptyTags } from '@mskg/tabler-world-common';
+import _ from 'lodash';
+import { IApolloContext } from '../types/IApolloContext';
 
 type IdQuery = {
     id: number,
@@ -31,7 +31,7 @@ export const AlbumsResolver = {
     Album: {
         description: (root: any, _args: {}, _context: IApolloContext) => {
             const val = root.description ? root.description.trim() : null;
-            if (val == null || val === "") { return null; }
+            if (val == null || val === '') { return null; }
 
             // this kills empty nodes
             return removeEmptyTags(val);
@@ -39,7 +39,7 @@ export const AlbumsResolver = {
 
         pictures: (root: any, args: TopQuery, _context: IApolloContext) => {
             const result = root.pictures
-                ? root.pictures.filter((p: any) => p.file && p.file !== "")
+                ? root.pictures.filter((p: any) => p.file && p.file !== '')
                 : [];
 
             if (args.top != null) { return _(result).take(args.top).value(); }
@@ -49,15 +49,15 @@ export const AlbumsResolver = {
 
     AlbumPicture: {
         preview_60: (root: any, _args: {}, _context: IApolloContext) => {
-            return root.file.replace(/\.jpg/, "_60x60.jpg");
+            return root.file.replace(/\.jpg/, '_60x60.jpg');
         },
 
         preview_100: (root: any, _args: {}, _context: IApolloContext) => {
-            return root.file.replace(/\.jpg/, "_150x100.jpg");
+            return root.file.replace(/\.jpg/, '_150x100.jpg');
         },
 
         preview_1920: (root: any, _args: {}, _context: IApolloContext) => {
-            return root.file.replace(/\.jpg/, "_1920.jpg");
+            return root.file.replace(/\.jpg/, '_1920.jpg');
         },
     },
 };

@@ -1,16 +1,16 @@
 
-import { EXECUTING_OFFLINE, xAWS } from "@mskg/tabler-world-aws";
-import { QueryArrayResult, QueryResult } from "pg";
-import { IDataQuery } from "./IDataQuery";
-import { IDataService } from "./IDataService";
-import { ILogger } from "./ILogger";
+import { EXECUTING_OFFLINE, xAWS } from '@mskg/tabler-world-aws';
+import { QueryArrayResult, QueryResult } from 'pg';
+import { IDataQuery } from './IDataQuery';
+import { IDataService } from './IDataService';
+import { ILogger } from './ILogger';
 
 class LambdaClient implements IDataService {
     public static lambda: AWS.Lambda = new xAWS.Lambda(
         EXECUTING_OFFLINE
             ? {
-                endpoint: "http://localhost:3001",
-                region: "eu-west-1",
+                endpoint: 'http://localhost:3001',
+                region: 'eu-west-1',
             }
             : undefined,
     );
@@ -19,10 +19,10 @@ class LambdaClient implements IDataService {
         const lambdaParams: AWS.Lambda.InvocationRequest = {
             FunctionName:
                 EXECUTING_OFFLINE
-                    ? "tabler-world-data-service-dev-api"
+                    ? 'tabler-world-data-service-dev-api'
                     : process.env.dataservice_arn as string,
-            InvocationType: "RequestResponse",
-            LogType: "Tail",
+            InvocationType: 'RequestResponse',
+            LogType: 'Tail',
             Payload: JSON.stringify({
                 text,
                 parameters: values,

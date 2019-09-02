@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "noEmitHelpers": true,
     "noImplicitReturns": true,
+    "noImplicitThis": true,
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "noImplicitAny": false,
@@ -19,14 +20,17 @@
     "allowJs": true,
     "sourceMap": false,
     "strict": true,
+    "alwaysStrict": true,
+    "strictFunctionTypes": true,
+    "resolveJsonModule": true,
     "target": "es2017",
-    "outDir": "./compile"
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+    "rootDir": "src",
+    "outDir": "dist",
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin",
+        "configFile": "./tslint.json"
+      }
+    ]
+  }
 }

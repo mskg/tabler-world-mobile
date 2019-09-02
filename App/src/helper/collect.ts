@@ -4,10 +4,10 @@ import { Member_Member, Member_Member_companies, Member_Member_emails, Member_Me
 function normalizePhone(p: string | null): string | undefined {
     if (p == null) return undefined;
 
-    let nbrs = p.replace(/[^\d]/g, "");
-    nbrs = nbrs.replace(/[^\d]/g, "");
-    nbrs = nbrs.replace(/^(49)/, "");
-    nbrs = nbrs.replace(/^0*/, "");
+    let nbrs = p.replace(/[^\d]/g, '');
+    nbrs = nbrs.replace(/[^\d]/g, '');
+    nbrs = nbrs.replace(/^(49)/, '');
+    nbrs = nbrs.replace(/^0*/, '');
 
     return nbrs;
 }
@@ -18,14 +18,14 @@ export function collectPhones(member?: Member_Member | null): Member_Member_phon
     return _(member.phonenumbers || [])
         .concat(
             (member.companies || []).map(
-                (c: Member_Member_companies) => c.phone != null && c.phone !== ""
+                (c: Member_Member_companies) => c.phone != null && c.phone !== ''
                     ? ({
-                        type: "work",
+                        type: 'work',
                         value: c.phone || '',
-                        __typename: "CommunicationElement" as 'CommunicationElement',
+                        __typename: 'CommunicationElement' as 'CommunicationElement',
                     })
-                    : undefined
-            )
+                    : undefined,
+            ),
         )
         .filter(v => v != null)
         .uniqBy(v => normalizePhone(v.value))
@@ -38,20 +38,20 @@ export function collectEMails(member?: Member_Member | null): Member_Member_emai
 
     return _([{
         __typename: 'CommunicationElement' as 'CommunicationElement',
-        type: "rt",
+        type: 'rt',
         value: member.rtemail,
     }])
         .concat(member.emails || [])
         .concat(
             (member.companies || []).map(
                 (c: Member_Member_companies) => ({
-                    type: "work",
+                    type: 'work',
                     value: c.email || '',
                     __typename: 'CommunicationElement' as 'CommunicationElement',
-                })
-            )
+                }),
+            ),
         )
-        .filter(r => r.value != null && r.value != "")
+        .filter(r => r.value != null && r.value != '')
         .uniqBy(v => v.value)
         .toArray()
         .value();

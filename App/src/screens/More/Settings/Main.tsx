@@ -3,7 +3,7 @@ import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, ScrollView, StyleSheet, Text as NativeText, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text as NativeText, View } from 'react-native';
 import { Banner, Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -24,7 +24,7 @@ import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
-import { SettingsState } from "../../../model/state/SettingsState";
+import { SettingsState } from '../../../model/state/SettingsState';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
 import { Action, NextScreen } from './Action';
@@ -63,10 +63,10 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     state = {
-        smsOptions: [{ label: "", value: "", }],
-        browserOptions: [{ label: "", value: "", }],
-        callOptions: [{ label: "", value: "", }],
-        emailOptions: [{ label: "", value: "", }],
+        smsOptions: [{ label: '', value: '' }],
+        browserOptions: [{ label: '', value: '' }],
+        callOptions: [{ label: '', value: '' }],
+        emailOptions: [{ label: '', value: '' }],
         showExperiments: false,
         demoMode: false,
         wait: false,
@@ -110,10 +110,10 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             data: {
                                 LastSync: {
                                     __typename: 'LastSync',
-                                }
+                                },
                             },
                         });
-                    }
+                    },
                 },
             ],
         );
@@ -121,15 +121,14 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
     _clearCache = async () => {
         try {
-            await CacheManager.clearCache("album");
-            await CacheManager.clearCache("news");
-            await CacheManager.clearCache("other");
+            await CacheManager.clearCache('album');
+            await CacheManager.clearCache('news');
+            await CacheManager.clearCache('other');
 
-            await CacheManager.outDateCache("avatar");
-            await CacheManager.outDateCache("club");
-        }
-        catch (e) {
-            logger.error(e, "Failed to clear image caches");
+            await CacheManager.outDateCache('avatar');
+            await CacheManager.outDateCache('club');
+        } catch (e) {
+            logger.error(e, 'Failed to clear image caches');
         }
 
         Alert.alert(
@@ -152,45 +151,44 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     onPress: () => {
                         this.audit.trackAction(ActionNames.Logout);
                         this.props.logoutUser();
-                    }
+                    },
                 },
             ],
         );
     }
 
     _updateSyncFavorites = async () => {
-        let { status } = await Permissions.askAsync(Permissions.CONTACTS);
+        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
         if (status !== 'granted') {
             Alert.alert(I18N.Settings.contactpermissions);
-            this.updateSetting({ name: "syncFavorites", value: false });
+            this.updateSetting({ name: 'syncFavorites', value: false });
         } else {
-            this.updateSetting({ name: "syncFavorites", value: !this.props.settings.syncFavorites });
+            this.updateSetting({ name: 'syncFavorites', value: !this.props.settings.syncFavorites });
         }
     }
 
     _updateMode = async () => {
-        this.updateSetting({ name: "darkMode", value: !this.props.settings.darkMode });
+        this.updateSetting({ name: 'darkMode', value: !this.props.settings.darkMode });
     }
 
     _toggleLocationServices = async () => {
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
         if (status !== 'granted') {
             Alert.alert(I18N.Settings.locationpermission);
-            this.updateSetting({ name: "nearbyMembers", value: false });
+            this.updateSetting({ name: 'nearbyMembers', value: false });
         } else {
             this.setState({ wait: true }, async () => {
                 try {
                     // switch is flipped
-                    if (!this.props.settings.nearbyMembers /* enable */) {
+                    if (!this.props.settings.nearbyMembers) {
                         await enableNearbyTablers();
                     } else {
                         await disableNearbyTablers();
                     }
-                }
-                catch {
-                    if (!this.props.settings.nearbyMembers /* enable */) {
+                } catch {
+                    if (!this.props.settings.nearbyMembers) {
                         try { disableNearbyTablers(); } catch {}
                     }
 
@@ -203,7 +201,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _updateExperimentAlbums = async () => {
-        this.updateSetting({ name: "experiments", value: !this.props.settings.experiments });
+        this.updateSetting({ name: 'experiments', value: !this.props.settings.experiments });
 
         Alert.alert(
             I18N.Settings.reload.title,
@@ -219,20 +217,20 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     onPress: async () => {
                         await getPersistor().persist();
                         Updates.reloadFromCache();
-                    }
+                    },
                 },
             ],
         );
     }
 
     _updateSyncOwntable = async () => {
-        let { status } = await Permissions.askAsync(Permissions.CONTACTS);
+        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
         if (status !== 'granted') {
             Alert.alert(I18N.Settings.contactpermissions);
-            this.updateSetting({ name: "syncOwnTable", value: false });
+            this.updateSetting({ name: 'syncOwnTable', value: false });
         } else {
-            this.updateSetting({ name: "syncOwnTable", value: !this.props.settings.syncOwnTable });
+            this.updateSetting({ name: 'syncOwnTable', value: !this.props.settings.syncOwnTable });
         }
     }
 
@@ -240,13 +238,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         logger.debug(type);
 
         if (this.props.settings[type.name] === type.value) {
-            logger.debug("Setting is equal, skipping");
+            logger.debug('Setting is equal, skipping');
             return;
         }
 
         this.audit.trackAction(ActionNames.ChangeSetting, {
             [AuditPropertyNames.Setting]: type.name,
-            [AuditPropertyNames.SettingValue]: (type.value || "").toString(),
+            [AuditPropertyNames.SettingValue]: (type.value || '').toString(),
         });
 
         this.props.updateSetting(type);
@@ -347,7 +345,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <NextScreen theme={this.props.theme} text={I18N.Settings.ReleaseNotes} onPress={
                                 () => this.props.navigation.navigate(Routes.MD, {
                                     title: I18N.Settings.ReleaseNotes,
-                                    source: Assets.files.releasenotes
+                                    source: Assets.files.releasenotes,
                                 })} />
                             <Divider />
                             <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.title} onPress={
@@ -383,9 +381,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         value={this.props.settings.phoneApp}
                                         onChange={(value: string) => {
                                             this.updateSetting({
-                                                name: "phoneApp",
+                                                name: 'phoneApp',
                                                 value,
-                                            })
+                                            });
                                         }}
                                     />
                                 </>
@@ -401,9 +399,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         value={this.props.settings.messagingApp}
                                         onChange={(value: string) => {
                                             this.updateSetting({
-                                                name: "messagingApp",
+                                                name: 'messagingApp',
                                                 value,
-                                            })
+                                            });
                                         }}
                                     />
                                 </>
@@ -419,9 +417,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         value={this.props.settings.browserApp}
                                         onChange={(value: string) => {
                                             this.updateSetting({
-                                                name: "browserApp",
+                                                name: 'browserApp',
                                                 value,
-                                            })
+                                            });
                                         }}
                                     />
                                 </>
@@ -437,9 +435,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         value={this.props.settings.emailApp}
                                         onChange={(value: string) => {
                                             this.updateSetting({
-                                                name: "emailApp",
+                                                name: 'emailApp',
                                                 value,
-                                            })
+                                            });
                                         }}
                                     />
                                     <Divider />
@@ -458,14 +456,14 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 theme={this.props.theme}
                                 field={I18N.Settings.fields.displayOrder}
                                 items={[
-                                    { label: I18N.Settings.firstlast, value: "1" },
-                                    { label: I18N.Settings.lastfirst, value: "0" },
+                                    { label: I18N.Settings.firstlast, value: '1' },
+                                    { label: I18N.Settings.lastfirst, value: '0' },
                                 ]}
-                                value={this.props.settings.diplayFirstNameFirst ? "1" : "0"}
+                                value={this.props.settings.diplayFirstNameFirst ? '1' : '0'}
                                 onChange={value => {
                                     this.updateSetting({
-                                        name: "diplayFirstNameFirst", value: value == "1"
-                                    })
+                                        name: 'diplayFirstNameFirst', value: value == '1',
+                                    });
                                 }}
                             />
                             <Divider />
@@ -473,14 +471,14 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 theme={this.props.theme}
                                 field={I18N.Settings.fields.sortOrder}
                                 items={[
-                                    { label: I18N.Settings.firstlast, value: "0" },
-                                    { label: I18N.Settings.lastfirst, value: "1" },
+                                    { label: I18N.Settings.firstlast, value: '0' },
+                                    { label: I18N.Settings.lastfirst, value: '1' },
                                 ]}
-                                value={this.props.settings.sortByLastName ? "1" : "0"}
+                                value={this.props.settings.sortByLastName ? '1' : '0'}
                                 onChange={value => {
                                     this.updateSetting({
-                                        name: "sortByLastName", value: value == "1"
-                                    })
+                                        name: 'sortByLastName', value: value == '1',
+                                    });
                                 }}
                             />
                             <Divider />
@@ -574,8 +572,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                 </ScreenWithHeader>
                 {this.state.wait && <Portal>
                     <>
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: this.props.theme.colors.backdrop, opacity: 0.8 }]}>
-                        </View>
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: this.props.theme.colors.backdrop, opacity: 0.8 }]}/>
                         <FullScreenLoading />
                     </>
                 </Portal>
@@ -587,7 +584,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
 export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
-        settings: state.settings
+        settings: state.settings,
     }),
     {
         logoutUser,

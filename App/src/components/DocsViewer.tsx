@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import Markdown, { getUniqueID, styles } from 'react-native-markdown-renderer';
-import { Subheading, Theme, Title, withTheme } from "react-native-paper";
+import { Subheading, Theme, Title, withTheme } from 'react-native-paper';
 
 type Props = {
     text: string,
@@ -10,10 +10,10 @@ type Props = {
 
 class DocViewer extends React.PureComponent<Props> {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            text: "",
-        }
+            text: '',
+        };
     }
 
     styles = StyleSheet.create({
@@ -33,8 +33,8 @@ class DocViewer extends React.PureComponent<Props> {
         },
 
         strong: {
-            fontFamily: this.props.theme.fonts.medium
-        }
+            fontFamily: this.props.theme.fonts.medium,
+        },
     });
 
     rules = {

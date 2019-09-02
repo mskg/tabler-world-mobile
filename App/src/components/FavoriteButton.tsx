@@ -3,13 +3,13 @@ import React from 'react';
 import { IconButton, Theme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../model/IAppState';
-import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
+import { IMemberOverviewFragment } from '../model/IMemberOverviewFragment';
 import { HashMap } from '../model/Maps';
 import { toggleFavorite } from '../redux/actions/filter';
 
 const testIsFavorite = (member: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
     return favorites[member.id] === true;
-}
+};
 
 type Props = {
     member: IMemberOverviewFragment,
@@ -18,7 +18,7 @@ type Props = {
     theme: Theme,
     style?: any,
     size: number,
-}
+};
 
 class FavoriteButtonBase extends React.Component<Props> {
     shouldComponentUpdate(nextProps, nextState) {
@@ -43,7 +43,7 @@ class FavoriteButtonBase extends React.Component<Props> {
                 size={this.props.size}
                 style={this.props.style}
                 color={isFavorite ? this.props.theme.colors.accent : this.props.theme.colors.disabled}
-                icon={isFavorite ? "star" : "star-border"}
+                icon={isFavorite ? 'star' : 'star-border'}
                 onPress={this._toggleFavorite}
             />
         );
@@ -54,7 +54,7 @@ export const FavoriteButton = connect(
     (state: IAppState) => ({ favorites: state.filter.member.favorites }),
     {
         toggleFavorite,
-    }
+    },
 )(FavoriteButtonBase);
 
 
@@ -83,7 +83,7 @@ class FavoriteIconBase extends React.Component<Props> {
                 size={this.props.size}
                 style={this.props.style}
                 color={this.props.theme.colors.placeholder}
-                name={"md-star"}
+                name={'md-star'}
             />
         );
     }
@@ -93,5 +93,5 @@ export const FavoriteIcon = connect(
     (state: IAppState) => ({ favorites: state.filter.member.favorites }),
     {
         toggleFavorite,
-    }
+    },
 )(FavoriteIconBase);

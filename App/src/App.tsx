@@ -5,7 +5,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
-import { bootstrapAuthentication } from "./auth/bootstrapAuthentication";
+import { bootstrapAuthentication } from './auth/bootstrapAuthentication';
 import { withAuthenticator } from './auth/withAuthenticator';
 import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
@@ -17,7 +17,7 @@ import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
 import { Snacks } from './components/Snacks';
 import { withPreCached } from './components/withPreCached';
-import { disableFontScaling } from "./helper/disableFontScaling";
+import { disableFontScaling } from './helper/disableFontScaling';
 import { Categories, Logger } from './helper/Logger';
 import { bootStrapSentry } from './helper/Sentry';
 import { Features, isFeatureEnabled } from './model/Features';
@@ -31,46 +31,46 @@ import { registerForPushNotificationsAsync } from './tasks/Push';
 import { withPaperProvider } from './theme/withPaperProvider';
 
 const logger = new Logger(Categories.App);
-logger.log("Bootstrap");
+logger.log('Bootstrap');
 
-logger.log("Bootstrapping Sentry");
+logger.log('Bootstrapping Sentry');
 bootStrapSentry();
 
-logger.log("Bootstrapping UI settings");
+logger.log('Bootstrapping UI settings');
 disableFontScaling();
 ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
-logger.log("Bootstrapping Authentication");
+logger.log('Bootstrapping Authentication');
 bootstrapAuthentication();
 
-logger.log("Bootstrapping Analytics");
+logger.log('Bootstrapping Analytics');
 bootstrapAnalytics();
 
-logger.log("Bootstrapping redux");
+logger.log('Bootstrapping redux');
 bootstrapRedux();
 
 if (isFeatureEnabled(Features.BackgroundFetch)) {
-  logger.log("Bootstrapping background-fetch");
-  registerFetchTask();
+    logger.log('Bootstrapping background-fetch');
+    registerFetchTask();
 }
 
 if (isFeatureEnabled(Features.BackgroundLocation)) {
-  logger.log("Bootstrapping background-location");
-  registerLocationTask();
+    logger.log('Bootstrapping background-location');
+    registerLocationTask();
 }
 
-logger.log("Bootstrapping push notifications");
+logger.log('Bootstrapping push notifications');
 registerForPushNotificationsAsync();
 
 fix2940();
 
 const App = () => {
-  if (__DEV__) useKeepAwake();
+    if (__DEV__) useKeepAwake();
 
-  const dispatch = useDispatch();
-  dispatch(checkNetwork());
+    const dispatch = useDispatch();
+    dispatch(checkNetwork());
 
-  return (
+    return (
     <React.Fragment>
       <StandardStatusBar />
       <Reloader />
@@ -82,10 +82,10 @@ const App = () => {
       <Linking />
       <Loading />
     </React.Fragment>
-  )
+  );
 };
 
-logger.log("Loading...");
+logger.log('Loading...');
 export default withPreCached(
   withApollo(
     withStore(
@@ -93,9 +93,9 @@ export default withPreCached(
         withSkakeErrorReport(
           withAuthenticator(
             withWhoopsErrorBoundary(
-              App))
-        )
-      )
-    )
-  )
+              App)),
+        ),
+      ),
+    ),
+  ),
 );

@@ -13,7 +13,8 @@
     "config": "yarn run config:aws && yarn run config:app",
     "config:app": "run-env node config/create.js",
     "dev": "yarn run config && yarn expo start",
-    "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql"
+    "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql",
+    "android": "emulator -avd expo -gpu host"
   },
   "workspaces": [
     "../packages/tabler-world-yarn-tools"
@@ -109,6 +110,11 @@
     "jest-expo": "^32.0.0",
     "license-checker": "^25.0.1",
     "ntl": "^3.2.4",
-    "typescript": "3.6.2"
+    "tslint": "^5.19.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "3.6.2",
+    "typescript-tslint-plugin": "^0.5.4"
   }
 }

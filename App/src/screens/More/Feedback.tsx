@@ -7,21 +7,21 @@ import { ParameterName } from '../../model/graphql/globalTypes';
 
 export class FeedbackScreen extends React.Component {
     state = {
-        url: "",
-    }
+        url: '',
+    };
 
     async componentDidMount() {
         const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
-        this.setState({url: urls.feedback})
+        this.setState({ url: urls.feedback });
     }
 
     render() {
-        if (this.state.url === "") return null;
+        if (this.state.url === '') return null;
 
         return <WebScreen
             showBack={true}
             url={this.state.url}
             title={I18N.Feedback.title}
-        />
+        />;
     }
 }

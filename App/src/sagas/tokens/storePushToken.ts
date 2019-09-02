@@ -13,12 +13,12 @@ import { logger } from './logger';
 
 export function* storePushToken(arg: typeof actions.storePushToken.shape) {
     const state = yield select((state: IAppState) => state.auth.state);
-    if (state !== "singedIn") {
-        logger.log("User is not singed in, defering");
+    if (state !== 'singedIn') {
+        logger.log('User is not singed in, defering');
         yield take(userActions.singedIn.type);
     }
 
-    logger.debug("storeToken", arg.payload);
+    logger.debug('storeToken', arg.payload);
 
     try {
         const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
@@ -34,8 +34,7 @@ mutation AddToken($token: String!) {
 
         // avoid cycling require
         yield AsyncStorage.setItem(TOKEN_KEY, arg.payload);
-    }
-    catch (error) {
+    } catch (error) {
         logger.log(error);
     }
 }

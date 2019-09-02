@@ -12,10 +12,10 @@ export function sortRoles(roles?: IAssociationRole[] | null): IAssociationRole[]
         .sortBy(r => {
             const mapped = RoleOrderByMapping[r.role];
             if (mapped == null) {
-                logger.log("Failed to map", r.role);
+                logger.log('Failed to map', r.role);
             }
 
-            return mapped || 99
+            return mapped || 99;
         })
         // .groupBy(r => r.member)
         // .map((v, k) => ({
@@ -25,7 +25,7 @@ export function sortRoles(roles?: IAssociationRole[] | null): IAssociationRole[]
         .toArray()
         .value();
 
-    //@ts-ignore
+    // @ts-ignore
     return sorted;
 }
 
@@ -33,7 +33,7 @@ type Role = {
     role: string,
     member: {
         id: number,
-    }
+    },
 };
 
 export function sortGroupRoles<T extends Role>(roles?: T[] | null): T[] | undefined {
@@ -44,7 +44,7 @@ export function sortGroupRoles<T extends Role>(roles?: T[] | null): T[] | undefi
         .map((v, k) => ({
             member: v[0].member,
             role: _(v).map(f => f.role).toArray().value().join(', '),
-            sortrole: RoleOrderByMapping[v[0].role] || 99
+            sortrole: RoleOrderByMapping[v[0].role] || 99,
         }))
         .sortBy(r => {
             return r.sortrole;
@@ -52,6 +52,6 @@ export function sortGroupRoles<T extends Role>(roles?: T[] | null): T[] | undefi
         .toArray()
         .value();
 
-    //@ts-ignore
+    // @ts-ignore
     return sorted;
 }

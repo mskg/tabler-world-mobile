@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View } from 'react-native';
 import { Caption, Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { I18N } from '../../i18n/translation';
 
@@ -9,11 +9,11 @@ type ActionProps = {
     theme: Theme,
 
     disabled?: boolean,
-}
+};
 
 type State = {
     expanded: boolean,
-}
+};
 
 class ExpandableElementBase extends React.Component<ActionProps, State> {
     state = {
@@ -64,9 +64,9 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        width: "100%",
+        width: '100%',
 
         paddingRight: 24,
-    }
+    },
 });
 

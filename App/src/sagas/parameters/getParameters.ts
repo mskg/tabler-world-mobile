@@ -13,11 +13,11 @@ import { singedIn } from '../../redux/actions/user';
 import { logger } from './logger';
 
 export function* getParameters(a: typeof settingsActions.restoreSettings.shape) {
-    logger.debug("Getting parameters");
+    logger.debug('Getting parameters');
 
     const authState = yield select((state: IAppState) => state.auth.state);
-    if (authState !== "singedIn") {
-        logger.debug("Not signed in");
+    if (authState !== 'singedIn') {
+        logger.debug('Not signed in');
         yield take(singedIn.type);
     }
 
@@ -26,32 +26,32 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
     try {
         const result: ApolloQueryResult<GetParameters> = yield client.query<GetParameters, GetParametersVariables>({
             query: GetParametersQuery,
-            fetchPolicy: "network-only",
+            fetchPolicy: 'network-only',
             variables: {
                 info: {
                     version: Constants.manifest.revisionId || 'dev',
-                    os: Platform.OS == "android" ? ParameterPlatform.android : ParameterPlatform.ios,
-                }
-            }
+                    os: Platform.OS == 'android' ? ParameterPlatform.android : ParameterPlatform.ios,
+                },
+            },
         });
 
         yield getPersistor().persist();
 
         if (result.data.getParameters != null) {
             const keys = Object.keys(ParameterName).map(k => `Parameter_${ParameterName[k]}`);
-            logger.debug("Removing", keys);
+            logger.debug('Removing', keys);
 
             yield AsyncStorage.multiRemove(keys);
 
             if (result.data.getParameters.length > 0) {
                 yield AsyncStorage.multiSet(
-                    result.data.getParameters.map(p => ([`Parameter_${p.name}`, JSON.stringify(p.value)]))
+                    result.data.getParameters.map(p => ([`Parameter_${p.name}`, JSON.stringify(p.value)])),
                 );
             }
 
-            logger.debug("Settings are", yield AsyncStorage.multiGet(keys));
+            logger.debug('Settings are', yield AsyncStorage.multiGet(keys));
         }
     } catch (e) {
-        logger.error(e, "Failed to load parameters");
+        logger.error(e, 'Failed to load parameters');
     }
 }

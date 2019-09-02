@@ -1,5 +1,5 @@
 import React from 'react';
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider } from 'react-apollo';
 import { AsyncStorage } from 'react-native';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
@@ -14,7 +14,7 @@ export function withApollo(App) {
     return class extends React.PureComponent {
         state = {
             client: null,
-        }
+        };
 
         async componentDidMount() {
             const client = await bootstrapApollo(await isDemoModeEnabled());
@@ -33,35 +33,33 @@ export function withApollo(App) {
                 }
 
                 await persistor.restore();
-            }
-            catch (e) {
-                logger.error(e, "Failed to restore cache");
+            } catch (e) {
+                logger.error(e, 'Failed to restore cache');
 
                 try {
                     persistor.purge();
                     await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
-                }
-                catch { }
+                } catch { }
             }
 
             this.setState({ client });
-            logger.log("Loaded Apollo.");
+            logger.log('Loaded Apollo.');
         }
 
         render() {
             const { client } = this.state;
 
             if (client == null) {
-                logger.log("Apollo not loaded yet.");
+                logger.log('Apollo not loaded yet.');
                 return null;
             }
 
             return (
-                //@ts-ignore
+                // @ts-ignore
                 <ApolloProvider client={client}>
                     <App />
                 </ApolloProvider>
             );
         }
-    }
+    };
 }

@@ -15,33 +15,33 @@ export function snackReducer(
   state = INITIAL_STATE.snacks,
   action: Actions,
 ): Result {
-  switch (action.type) {
-    case actions.addErrorSnack.type:
+    switch (action.type) {
+  case actions.addErrorSnack.type:
       let error = action.payload;
 
       if (error.response && error.response.data && error.response.data.message) {
-        error = error.response.data.message;
+          error = error.response.data.message;
       } else if (error.message) {
-        error = error.message;
+          error = error.message;
       }
 
       return uniqBy([...state, ...flatMap([error]).map(e => ({
-        message: e,
-      }))], t => t.message)
+          message: e,
+      }))],         t => t.message);
 
-    case actions.addSnack.type:
+  case actions.addSnack.type:
       return uniqBy([...state, action.payload], t => t.message);
 
-    case actions.shiftSnack.type:
+  case actions.shiftSnack.type:
       const newState = [...state];
       newState.shift();
 
       return newState;
 
-    case actions.clearSnacks.type:
+  case actions.clearSnacks.type:
       return [];
 
-    default:
+  default:
       return state;
   }
 }

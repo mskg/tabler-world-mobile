@@ -20,7 +20,7 @@ export class PictureScreenBase extends AuditedScreen<{ theme } & NavigationInjec
 
     render() {
         const { title, picture } = this.props.navigation.state.params as IPictureParams;
-        logger.debug("url", picture);
+        logger.debug('url', picture);
 
         return (
             <ScreenWithHeader header={{
@@ -41,9 +41,9 @@ export const PictureScreen = withTheme(withNavigation(PictureScreenBase));
 
 const styles = StyleSheet.create({
     container: {
-      alignItems: "center",
+        alignItems: 'center',
 
-      position: "relative",
-      flex: 1
+        position: 'relative',
+        flex: 1,
     },
-  });
+});

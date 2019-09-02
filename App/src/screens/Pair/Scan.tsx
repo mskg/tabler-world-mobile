@@ -19,62 +19,62 @@ import { addSnack } from '../../redux/actions/snacks';
 const logger = new Logger(Categories.Screens.Scan);
 
 type Props = {
-  showProfile: typeof showProfile,
-  addSnack: typeof addSnack,
-  removeFavorite: typeof removeFavorite
-  addFavorite: typeof addFavorite
-  theme: Theme,
+    showProfile: typeof showProfile,
+    addSnack: typeof addSnack,
+    removeFavorite: typeof removeFavorite
+    addFavorite: typeof addFavorite
+    theme: Theme,
 };
 
 class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
-  state = {
-    hasCameraPermission: null,
-    visible: true,
+    state = {
+      hasCameraPermission: null,
+      visible: true,
   };
 
-  listeners: NavigationEventSubscription[] = [];
+    listeners: NavigationEventSubscription[] = [];
 
-  constructor(props: Props) {
-    super(props, AuditScreenName.MemberScanQR);
+    constructor(props: Props) {
+      super(props, AuditScreenName.MemberScanQR);
   }
 
-  async componentDidMount() {
-    this.getPermissionsAsync();
+    async componentDidMount() {
+      this.getPermissionsAsync();
 
-    this.listeners = [
-      this.props.navigation.addListener('didFocus', this._focus),
-      this.props.navigation.addListener('didBlur', this._blur),
+      this.listeners = [
+        this.props.navigation.addListener('didFocus', this._focus),
+        this.props.navigation.addListener('didBlur', this._blur),
     ];
 
-    this.audit.submit();
+      this.audit.submit();
   }
 
-  _focus = () => this.setState({ visible: true });
-  _blur = () => this.setState({ visible: false });
+    _focus = () => this.setState({ visible: true });
+    _blur = () => this.setState({ visible: false });
 
-  componentWillUnmount() {
-    if (this.listeners) {
-      this.listeners.forEach(item => item.remove());
+    componentWillUnmount() {
+      if (this.listeners) {
+        this.listeners.forEach(item => item.remove());
     }
   }
 
-  getPermissionsAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted', visible: true });
-  };
+    getPermissionsAsync = async () => {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      this.setState({ hasCameraPermission: status === 'granted', visible: true });
+  }
 
-  render() {
-    const { hasCameraPermission } = this.state;
-    if (!this.state.visible) return null;
+    render() {
+      const { hasCameraPermission } = this.state;
+      if (!this.state.visible) return null;
 
-    return (
+      return (
       <View
         style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: hasCameraPermission
-            ? "black"
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: hasCameraPermission
+            ? 'black'
             : this.props.theme.colors.background,
         }}>
 
@@ -102,30 +102,30 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
     );
   }
 
-  handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
-    logger.log("Scanned", type, data);
+    handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
+      logger.log('Scanned', type, data);
 
-    let { path, queryParams } = Linking.parse(data);
-    logger.debug("path", path, "params", queryParams);
+      const { path, queryParams } = Linking.parse(data);
+      logger.debug('path', path, 'params', queryParams);
 
-    if (path.endsWith("member") && queryParams.id != null) {
-      logger.log("Member", queryParams.id);
+      if (path.endsWith('member') && queryParams.id != null) {
+        logger.log('Member', queryParams.id);
 
-      this.audit.trackAction(ActionNames.ReadQRCode, {
-        [AuditPropertyNames.Id]: queryParams.id
+        this.audit.trackAction(ActionNames.ReadQRCode, {
+          [AuditPropertyNames.Id]: queryParams.id,
       });
 
-      this.props.addFavorite({id: parseInt(queryParams.id, 10)});
-      this.props.showProfile(parseInt(queryParams.id, 10));
-      this.props.addSnack({
-        message: I18N.Pair.remove,
-        action: {
-          label: I18N.Pair.undo,
-          onPress: () => this.props.removeFavorite({id: parseInt(queryParams.id, 10)}),
-        }
+        this.props.addFavorite({ id: parseInt(queryParams.id, 10) });
+        this.props.showProfile(parseInt(queryParams.id, 10));
+        this.props.addSnack({
+          message: I18N.Pair.remove,
+          action: {
+            label: I18N.Pair.undo,
+            onPress: () => this.props.removeFavorite({ id: parseInt(queryParams.id, 10) }),
+        },
       });
     }
-  };
+  }
 }
 
 // const opacity = 'rgba(0, 0, 0, .6)';

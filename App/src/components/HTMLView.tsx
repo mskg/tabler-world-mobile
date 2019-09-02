@@ -1,4 +1,4 @@
-import * as WebBrowser from "expo-web-browser";
+import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { WebView } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
@@ -40,10 +40,10 @@ class HTMLViewBase extends React.Component<Props, State> {
                     // h4: { color: this.props.theme.colors.text },
                     // h5: { color: this.props.theme.colors.text },
                     b: {
-                        fontFamily: this.props.theme.fonts.medium
+                        fontFamily: this.props.theme.fonts.medium,
                     },
                     strong: {
-                        fontFamily: this.props.theme.fonts.medium
+                        fontFamily: this.props.theme.fonts.medium,
                     },
                 }
             }
@@ -58,7 +58,7 @@ class HTMLViewBase extends React.Component<Props, State> {
                         tagName: 'img',
                         htmlAttribs,
                         passProps,
-                        styleSet: 'IMAGE'
+                        styleSet: 'IMAGE',
                     });
 
                     const { src, alt, width, height } = htmlAttribs;
@@ -81,7 +81,7 @@ class HTMLViewBase extends React.Component<Props, State> {
                     const { height, width } = htmlAttribs;
 
                     let newHeight = 200;
-                    let newWidth = this.props.maxWidth;
+                    const newWidth = this.props.maxWidth;
 
                     // recalculate width based on factoring with new widtth
                     if (height && width) {
@@ -98,9 +98,9 @@ class HTMLViewBase extends React.Component<Props, State> {
                             source={source}
                             style={{ width: newWidth, height: newHeight }} />
                     );
-                }
+                },
             }}
-        />
+        />;
     }
 }
 

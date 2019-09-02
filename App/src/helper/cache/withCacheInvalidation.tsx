@@ -26,7 +26,7 @@ type CacheInvalidationProps = {
     children: any,
 
     offline: boolean,
-}
+};
 
 let MaxTTL = TimeoutDefaults;
 
@@ -35,17 +35,17 @@ export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
     const compareDate = Date.now() - age;
 
     if (val <= compareDate) {
-        logger.debug(type, "*** REFETCHING DATA ***");
+        logger.debug(type, '*** REFETCHING DATA ***');
         return false;
-    } else {
-        logger.log(type, "*** IS VALID ***",
-            "age", age / MS_PER_MINUTE,
-            "last fetch", new Date(val),
-            "not older than", new Date(compareDate));
+    } 
+        logger.log(type, '*** IS VALID ***',
+                   'age', age / MS_PER_MINUTE,
+                   'last fetch', new Date(val),
+                   'not older than', new Date(compareDate));
 
         return true;
-    }
-};
+    
+}
 
 export async function updateTimeouts() {
     const settings = await getParameterValue<TimeoutParameters>(ParameterName.timeouts);
@@ -63,17 +63,16 @@ class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> 
 
         try {
             data = client.readQuery({
-                query
+                query,
             });
 
-            logger.log("Found cache for", this.props.field);
-        }
-        catch {
+            logger.log('Found cache for', this.props.field);
+        } catch {
             data = {
                 LastSync: {
                     [this.props.field]: 0,
-                }
-            }
+                },
+            };
         }
 
         return data.LastSync[this.props.field];
@@ -81,8 +80,8 @@ class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> 
 
     determine(): WatchQueryFetchPolicy | undefined {
         if (this.props.offline) {
-            logger.debug("*** OFFLINE ***");
-            return "cache-only";
+            logger.debug('*** OFFLINE ***');
+            return 'cache-only';
         }
 
         const client = cachedAolloClient();
@@ -93,20 +92,20 @@ class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> 
         let policy: WatchQueryFetchPolicy | undefined;
 
         if (!valid) {
-            policy = "cache-and-network";
+            policy = 'cache-and-network';
 
             // defer update
             setTimeout(() => {
-                logger.debug(this.props.field, "*** SETTING NEW TIMESTAMP ***");
+                logger.debug(this.props.field, '*** SETTING NEW TIMESTAMP ***');
                 client.writeData({
                     data: {
                         LastSync: {
                             __typename: 'LastSync',
-                            [this.props.field]: Date.now()
-                        }
+                            [this.props.field]: Date.now(),
+                        },
                     },
-                })
-            }, 100);
+                });
+            },         100);
         }
 
         return policy;
@@ -122,7 +121,7 @@ class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> 
 }
 
 export const CacheInvalidation = connect((state: IAppState) => ({
-    offline: state.connection.offline
+    offline: state.connection.offline,
 }))(CacheInvalidationBase);
 
 export function withCacheInvalidation(field: FieldType, WrappedComponent: any, maxAge?: number) {

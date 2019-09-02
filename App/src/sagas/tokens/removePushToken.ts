@@ -10,11 +10,11 @@ import { logger } from './logger';
 export function* removePushToken() {
     const token = yield AsyncStorage.getItem(TOKEN_KEY);
     if (token == null) {
-        logger.debug("no token");
+        logger.debug('no token');
         return;
     }
 
-    logger.debug("removeToken", token);
+    logger.debug('removeToken', token);
 
     try {
         const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
@@ -29,8 +29,7 @@ mutation RemoveToken($token: String!) {
         });
 
         yield AsyncStorage.removeItem(TOKEN_KEY);
-    }
-    catch (error) {
+    } catch (error) {
         logger.log(error);
     }
 }

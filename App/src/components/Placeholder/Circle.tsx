@@ -6,7 +6,7 @@ import { Fade } from './Fade';
 type Props = {
     size: number,
     style: any,
-}
+};
 
 class CircleBase extends PureComponent<Props> {
     render() {

@@ -9,16 +9,16 @@ import { Whoops } from './Whoops';
 type Props = {
     children?: React.ReactNode,
     FallbackComponent: any,
-    onError?: Function
-}
+    onError?: Function,
+};
 
-type State = { error: Error | null, hasError: boolean }
+type State = { error: Error | null, hasError: boolean };
 
 export class ErrorBoundary extends React.Component<Props, State> {
-    state = { error: null, hasError: false }
+    state = { error: null, hasError: false };
 
     static getDerivedStateFromError(error: Error) {
-        return { error, hasError: true }
+        return { error, hasError: true };
     }
 
     handleAppStateChange = (nextAppState: string) => {
@@ -42,7 +42,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
         // if (typeof this.props.onError === 'function') {
         //     this.props.onError(this.state.error);
         // } else {
-        this.setState({ hasError: true, error: error });
+        this.setState({ hasError: true, error });
         // }
     }
 
@@ -64,12 +64,11 @@ export class ErrorBoundary extends React.Component<Props, State> {
                 />
                 : this.props.children;
 
-        }
-        catch (e) {
+        } catch (e) {
             return <FallbackComponent
                 error={e}
                 resetError={this.resetError}
-            />
+            />;
         }
     }
 }

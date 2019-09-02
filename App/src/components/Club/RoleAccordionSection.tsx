@@ -6,11 +6,11 @@ import { sortGroupRoles } from '../../helper/sortRoles';
 import { Accordion } from '../Accordion';
 import { Placeholder } from '../Placeholder/Placeholder';
 import { RoleCard } from './RoleCard';
-import { RolesPlaceholder } from "./RolesPlaceholder";
+import { RolesPlaceholder } from './RolesPlaceholder';
 
 type Props = {
     group: string,
-    groupDetails: "board" | "boardassistants",
+    groupDetails: 'board' | 'boardassistants',
     expanded?: boolean,
     club: string,
     fetchPolicy?: any,
@@ -60,7 +60,7 @@ class RoleAccordionSectionBase extends React.Component<Props, State> {
                 <Query query={RolesQuery} variables={{ id: this.props.club }}>
                     {({ loading, data, refetch }) => {
                         if (data && data.Club != null) {
-                            if (!isRecordValid("club", data.Club.LastSync)) {
+                            if (!isRecordValid('club', data.Club.LastSync)) {
                                 setTimeout(() => refetch({ id: this.props.club }));
                             }
                         }

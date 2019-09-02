@@ -22,10 +22,10 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.LocationHistory) {
-        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith("-beta");
+        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-beta');
     }
 
-    if (feature === Features.SendToAdressbook && Platform.OS === "ios") {
+    if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {
         return true;
     }
 

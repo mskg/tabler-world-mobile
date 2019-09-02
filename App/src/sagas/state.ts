@@ -7,12 +7,12 @@ import { logger } from './state/logger';
 
 function appState() {
     return eventChannel(emit => {
-        logger.log("Waiting for app state changes");
+        logger.log('Waiting for app state changes');
 
         const handler = (nextAppState: AppStateStatus) => {
             logger.log(nextAppState);
             emit(nextAppState);
-        }
+        };
 
         AppState.addEventListener('change', handler);
         return () => AppState.removeEventListener('change', handler);

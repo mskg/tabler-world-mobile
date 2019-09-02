@@ -1,7 +1,7 @@
-import CryptoJS from "crypto-js";
+import CryptoJS from 'crypto-js';
 import * as FileSystem from 'expo-file-system';
 import { Categories, Logger } from '../../helper/Logger';
-import { getKey } from "./Secret";
+import { getKey } from './Secret';
 
 const logger = new Logger(Categories.ReduxComponent.FileStorage);
 
@@ -54,14 +54,14 @@ export const EncryptedFileStorage = (
     ): Promise<void> =>
         withCallback(callback, async () => {
             const { exists } = await FileSystem.getInfoAsync(baseFolder);
-            if (exists == false) {
+            if (!exists) {
                 await FileSystem.makeDirectoryAsync(baseFolder, {
                     intermediates: true,
                 });
             }
 
             const path = pathForKey(key);
-            logger.debug("setItem", path);
+            logger.debug('setItem', path);
 
             await FileSystem.writeAsStringAsync(
                 path,
@@ -71,7 +71,7 @@ export const EncryptedFileStorage = (
                             .toString()
                     : value);
 
-            logger.debug("wrote", path);
+            logger.debug('wrote', path);
         });
 
     const getItem = (
@@ -81,17 +81,17 @@ export const EncryptedFileStorage = (
         withCallback(callback, async () => {
             const pathKey = pathForKey(key);
             const { exists } = await FileSystem.getInfoAsync(pathKey);
-            logger.debug("getItem", pathKey, "exists?", exists);
+            logger.debug('getItem', pathKey, 'exists?', exists);
 
             if (exists) {
                 const value = await FileSystem.readAsStringAsync(pathKey);
                 if (!encrypt) return value;
 
-                var bytes = CryptoJS.AES.decrypt(
+                let bytes = CryptoJS.AES.decrypt(
                     value,
                     await getKey());
 
-                logger.debug("read", pathKey);
+                logger.debug('read', pathKey);
                 return bytes.toString(CryptoJS.enc.Utf8);
             }
 
@@ -107,20 +107,20 @@ export const EncryptedFileStorage = (
     ): Promise<void> =>
         withCallback(callback, async () => {
             const pathKey = pathForKey(key);
-            logger.debug("removeItem", pathKey);
+            logger.debug('removeItem', pathKey);
 
             await FileSystem.deleteAsync(pathKey, {
                 idempotent: true,
             });
 
-            logger.debug("deleted", pathKey);
+            logger.debug('deleted', pathKey);
         });
 
     const getAllKeys = (
         callback: (error: Error | null, keys: Array<string> | null) => void,
     ) =>
         withCallback(callback, async () => {
-            logger.debug("getAllKeys");
+            logger.debug('getAllKeys');
 
             await FileSystem.makeDirectoryAsync(baseFolder, {
                 intermediates: true,
@@ -133,7 +133,7 @@ export const EncryptedFileStorage = (
                 decodeURIComponent(fileUri.substring(baseFolderLength)),
             );
 
-            logger.debug("getAllKeys", result);
+            logger.debug('getAllKeys', result);
             return result;
         });
 

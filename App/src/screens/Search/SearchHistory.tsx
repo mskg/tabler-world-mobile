@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ListRenderItemInfo } from "react-native";
+import { FlatList, ListRenderItemInfo } from 'react-native';
 import { Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { I18N } from '../../i18n/translation';
@@ -32,7 +32,7 @@ class SearchHistoryBase extends React.Component<Props, State> {
                 onPress={() => this.props.applyFilter(c.item)} />
             <Divider />
         </React.Fragment>
-    );
+    )
 
     _keyExtractor = (item: string) => item;
 
@@ -58,5 +58,5 @@ export const SearchHistory = connect(
         history: state.searchHistory.members,
     }), {
     })(
-        withTheme(SearchHistoryBase)
+        withTheme(SearchHistoryBase),
     );

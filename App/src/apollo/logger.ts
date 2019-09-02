@@ -1,3 +1,3 @@
-import { Categories, Logger } from "../helper/Logger";
+import { Categories, Logger } from '../helper/Logger';
 
 export const logger = new Logger(Categories.Api);

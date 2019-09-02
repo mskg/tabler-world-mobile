@@ -10,9 +10,9 @@ import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
+import { Categories, Logger } from '../../helper/Logger';
 import { Areas, Areas_Areas } from '../../model/graphql/Areas';
-import { GetAreasQuery } from "../../queries/GetAreasQuery";
+import { GetAreasQuery } from '../../queries/GetAreasQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
@@ -25,7 +25,7 @@ type State = {};
 type Props = {
     theme: Theme,
     refreshing: boolean,
-    fetchPolicy?: any
+    fetchPolicy?: any,
 };
 
 class AreasScreenBase extends AuditedScreen<Props, State> {
@@ -45,9 +45,9 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                     avatar={
 
                         // there can only be one :)
-                        item.area === 9 && item.association.association === "de"
-                            ? "DIX"
-                            : "D" + item.area
+                        item.area === 9 && item.association.association === 'de'
+                            ? 'DIX'
+                            : 'D' + item.area
                     }
                 />
 
@@ -79,7 +79,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                         >
                             <FlatList
                                 contentContainerStyle={styles.container}
-                                //@ts-ignore
+                                // @ts-ignore
                                 data={
                                     _(data != null ? data.Areas : [])
                                         // my own area goes on top
@@ -93,7 +93,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                                 keyExtractor={this._key}
                             />
                         </Placeholder>
-                    )
+                    );
                 }}
             </Query>
         );
@@ -102,5 +102,5 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
 
 export const AreasScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("areas",
-            withTheme(AreasScreenBase)));
+        withCacheInvalidation('areas',
+                              withTheme(AreasScreenBase)));

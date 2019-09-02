@@ -11,7 +11,7 @@ const Navigator = createStackNavigator(
     {
         initialRouteName: Routes.List,
         headerMode: 'none',
-    }
+    },
 );
 
 export default Navigator;

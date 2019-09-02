@@ -15,13 +15,13 @@ type Props = {
     onLeftButtonsShowed?: (swipeItem: SwipableItem) => any,
     onRightButtonsShowed?: (swipeItem: SwipableItem) => any,
     onMovedToOrigin?: (swipeItem: SwipableItem) => any,
-}
+};
 
 type States = {
     panDistance: Animated.ValueXY,
     rightButtonTriggerPosition: number,
     leftButtonTriggerPosition: number,
-}
+};
 
 export class SwipeButtonsContainer extends React.Component<Props> {
     render() {
@@ -52,7 +52,7 @@ export class SwipableItem extends React.Component<Props, States> {
         panDistance: new Animated.ValueXY(),
         rightButtonTriggerPosition: 0,
         leftButtonTriggerPosition: 0,
-    }
+    };
 
     constructor(props: Props) {
         super(props);
@@ -71,13 +71,13 @@ export class SwipableItem extends React.Component<Props, States> {
      * create panResponder
      */
     _createPanResponderInstance(): PanResponderInstance {
-        let instance: PanResponderInstance = PanResponder.create({
+        const instance: PanResponderInstance = PanResponder.create({
             onMoveShouldSetPanResponderCapture: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
                 if (Math.abs(gestureState.dx) < 5) {
                     return false;
                 }
                 const {
-                    x: offsetX
+                    x: offsetX,
                 } = this._panDistanceOffset;
 
                 if (Math.round(offsetX) === 0) {
@@ -87,9 +87,9 @@ export class SwipableItem extends React.Component<Props, States> {
             },
 
             onPanResponderGrant: (evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-                //setting pan distance offset, make sure next touch will not jump to touch position immediately
+                // setting pan distance offset, make sure next touch will not jump to touch position immediately
                 this.state.panDistance.setOffset(this._panDistanceOffset);
-                //initial panDistance
+                // initial panDistance
                 this.state.panDistance.setValue({ x: 0, y: 0 });
             },
 
@@ -134,12 +134,12 @@ export class SwipableItem extends React.Component<Props, States> {
             this.props.onMovedToOrigin && this.props.onMovedToOrigin(this._swipeItem);
         }
 
-        //Merges the offset value into the base value and resets the offset to zero.
+        // Merges the offset value into the base value and resets the offset to zero.
         this.state.panDistance.flattenOffset();
         Animated.spring(this.state.panDistance, {
             toValue: {
                 x: toX,
-                y: 0
+                y: 0,
             },
             friction: 10,
         }).start();
@@ -160,8 +160,8 @@ export class SwipableItem extends React.Component<Props, States> {
         } = this.state;
 
         let toValueX: number = 0;
-        let panSide: string = (panDistanceX > 0) ? 'right' : 'left';
-        let containerOffset: number = this._panDistanceOffset.x;
+        const panSide: string = (panDistanceX > 0) ? 'right' : 'left';
+        const containerOffset: number = this._panDistanceOffset.x;
 
         if (panSide === 'right' && containerOffset > leftButtonTriggerPosition) {
             toValueX = leftButtonTriggerPosition;
@@ -178,11 +178,11 @@ export class SwipableItem extends React.Component<Props, States> {
 
     _renderleftButtonsIfNotNull(): JSX.Element | null {
         const {
-            leftButtons = null
+            leftButtons = null,
         } = this.props;
 
         const {
-            leftButtonTriggerPosition
+            leftButtonTriggerPosition,
         } = this.state;
 
         if (leftButtons == null) {
@@ -191,16 +191,16 @@ export class SwipableItem extends React.Component<Props, States> {
 
         const {
             style,
-            children
+            children,
         } = leftButtons.props;
 
-        let scale = this.state.panDistance.x.interpolate({
+        const scale = this.state.panDistance.x.interpolate({
             inputRange: [-Infinity, -0.01, 0, leftButtonTriggerPosition, Infinity],
             outputRange: [0.01, 0.01, 0.7, 1, 1],
         });
 
-        let widthStyle = {
-            transform: [{ scaleX: scale }]
+        const widthStyle = {
+            transform: [{ scaleX: scale }],
         };
 
         return (
@@ -208,7 +208,7 @@ export class SwipableItem extends React.Component<Props, States> {
                 style={[style, buttonViewStyles.container, buttonViewStyles.left, widthStyle]}
                 onLayout={({ nativeEvent }) => {
                     this.setState({
-                        leftButtonTriggerPosition: nativeEvent.layout.width
+                        leftButtonTriggerPosition: nativeEvent.layout.width,
                     });
                 }}
             >
@@ -219,11 +219,11 @@ export class SwipableItem extends React.Component<Props, States> {
 
     _renderrightButtonsIfNotNull(): JSX.Element | null {
         const {
-            rightButtons = null
+            rightButtons = null,
         } = this.props;
 
         const {
-            rightButtonTriggerPosition
+            rightButtonTriggerPosition,
         } = this.state;
 
         if (rightButtons == null) {
@@ -235,13 +235,13 @@ export class SwipableItem extends React.Component<Props, States> {
             children,
         } = rightButtons.props;
 
-        let scale = this.state.panDistance.x.interpolate({
+        const scale = this.state.panDistance.x.interpolate({
             inputRange: [-Infinity, rightButtonTriggerPosition, 0, 0.1, Infinity],
             outputRange: [1, 1, 0.7, 0.01, 0.01],
         });
 
-        let widthStyle = {
-            transform: [{ scaleX: scale }]
+        const widthStyle = {
+            transform: [{ scaleX: scale }],
         };
 
         return (
@@ -260,7 +260,7 @@ export class SwipableItem extends React.Component<Props, States> {
 
     render() {
         const panStyle = {
-            transform: this.state.panDistance.getTranslateTransform()
+            transform: this.state.panDistance.getTranslateTransform(),
         };
 
         const {

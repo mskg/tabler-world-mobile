@@ -1,17 +1,17 @@
 export function isAuthenticationError(e: any): boolean {
-    if (e.code === "E_SECURESTORE_DECRYPT_ERROR") {
+    if (e.code === 'E_SECURESTORE_DECRYPT_ERROR') {
         return true;
     }
 
-    if (e.code === "ResourceNotFoundException") {
+    if (e.code === 'ResourceNotFoundException') {
         return true;
     }
 
-    if (e.code === "NotAuthorizedException") {
+    if (e.code === 'NotAuthorizedException') {
         return true;
     }
 
-    if (e === "No current user") {
+    if (e === 'No current user') {
         return true;
     }
 

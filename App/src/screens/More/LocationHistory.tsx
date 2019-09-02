@@ -30,7 +30,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
         return (
             <ScreenWithHeader header={{
                 showBack: true,
-                title: "Location History"
+                title: 'Location History',
             }}>
                 <Banner
                     visible={true}
@@ -57,16 +57,16 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
 
                         return (
                             <ScrollView horizontal={true} contentContainerStyle={styles.content}>
-                                <ScrollView nestedScrollEnabled>
+                                <ScrollView nestedScrollEnabled={true}>
                                     <Card>
                                         <DataTable style={{ width: 900 }}>
                                             <DataTable.Header>
                                                 <DataTable.Title style={{ width: 160, flex: 0 }}>Timestamp</DataTable.Title>
                                                 <DataTable.Title>Location</DataTable.Title>
 
-                                                <DataTable.Title style={{ width: 120, flex: 0 }} numeric>Latitude</DataTable.Title>
-                                                <DataTable.Title style={{ width: 120, flex: 0 }} numeric>Longitude</DataTable.Title>
-                                                <DataTable.Title style={{ width: 60, flex: 0 }} numeric>Accuracy</DataTable.Title>
+                                                <DataTable.Title style={{ width: 120, flex: 0 }} numeric={true}>Latitude</DataTable.Title>
+                                                <DataTable.Title style={{ width: 120, flex: 0 }} numeric={true}>Longitude</DataTable.Title>
+                                                <DataTable.Title style={{ width: 60, flex: 0 }} numeric={true}>Accuracy</DataTable.Title>
                                             </DataTable.Header>
 
                                             {data.LocationHistory.map((l, i) => (
@@ -74,9 +74,9 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                                                     <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.lastseen).toLocaleString()}</DataTable.Cell>
                                                     <DataTable.Cell onPress={() => OpenLink.url(`https://maps.google.com/?q=${l.latitude},${l.longitude}`)}>{l.street}, {l.city} ({l.country})</DataTable.Cell>
 
-                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric>{l.latitude}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric>{l.longitude}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 60, flex: 0 }} numeric>{Math.round(l.accuracy)}m</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.latitude}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.longitude}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 60, flex: 0 }} numeric={true}>{Math.round(l.accuracy)}m</DataTable.Cell>
                                                 </DataTable.Row>))
                                             }
                                         </DataTable>

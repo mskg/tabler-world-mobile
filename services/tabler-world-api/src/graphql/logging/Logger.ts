@@ -1,4 +1,4 @@
-import { ILogger } from "@mskg/tabler-world-common";
+import { ILogger } from '@mskg/tabler-world-common';
 
 export class Logger implements ILogger {
     constructor(private id: string, private user: any) {}

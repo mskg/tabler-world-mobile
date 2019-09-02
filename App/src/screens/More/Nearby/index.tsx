@@ -3,7 +3,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Alert, AppState, Linking, Platform, ScrollView } from "react-native";
+import { Alert, AppState, Linking, Platform, ScrollView } from 'react-native';
 import { Appbar, Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationEventSubscription, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -88,19 +88,19 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         this.audit.submit();
 
         const setting = await getParameterValue<GeoParameters>(ParameterName.geo);
-        this.setState({ interval: setting.pollInterval })
+        this.setState({ interval: setting.pollInterval });
     }
 
-    _focus = () => { if (this.mounted) { this.setState({ visible: true }); } }
-    _blur = () => { if (this.mounted) { this.setState({ visible: false }); } }
+    _focus = () => { if (this.mounted) { this.setState({ visible: true }); } };
+    _blur = () => { if (this.mounted) { this.setState({ visible: false }); } };
 
     handleAppStateChange = (nextAppState: string) => {
         if (nextAppState !== 'active') {
             this._blur();
             return;
-        } else {
-            this._focus();
-        }
+        } 
+        this._focus();
+        
 
         this.didFocus();
     }
@@ -118,23 +118,23 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
         const result = await Permissions.askAsync(Permissions.LOCATION);
 
-        if (result.status != "granted") {
+        if (result.status != 'granted') {
             this.setState({
                 message: I18N.NearbyMembers.permissions,
-                canSet: Platform.OS == "ios",
+                canSet: Platform.OS == 'ios',
             });
             return;
-        } else {
-            if (Platform.OS == "ios" && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== "always")) {
+        } 
+        if (Platform.OS == 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
                 this.setState({
                     message: I18N.NearbyMembers.always,
-                    canSet: Platform.OS == "ios",
+                    canSet: Platform.OS == 'ios',
                 });
                 return;
             }
 
-            this.setState({ message: undefined });
-        }
+        this.setState({ message: undefined });
+        
     }
 
     componentWillMount() {
@@ -169,8 +169,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
         try {
             await enableNearbyTablers();
-        }
-        catch {
+        } catch {
             try { disableNearbyTablers(); } catch { }
             Alert.alert(I18N.Settings.locationfailed);
         }
@@ -181,18 +180,18 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
     job?: number;
     _planUpdate = (refetch: () => Promise<any>) => {
-        logger.debug("_planUpdate", this.job, this.state.interval, this.mounted);
+        logger.debug('_planUpdate', this.job, this.state.interval, this.mounted);
 
         if (this.state.interval && this.mounted) {
             this.job = setTimeout(() => {
                 if (this.mounted && this.state.visible) {
-                    logger.log("Refetching");
+                    logger.log('Refetching');
 
                     refetch().finally(() => {
                         this._planUpdate(refetch);
                     });
                 }
-            }, this.state.interval);
+            },                    this.state.interval);
         }
     }
 
@@ -200,25 +199,25 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         if (this.job) { clearTimeout(this.job); this.job = undefined; }
 
         if (!this.mounted) {
-            logger.debug("Not mounted");
+            logger.debug('Not mounted');
             return;
         }
 
         if (data.nearbyMembers) {
-            logger.debug("Found", data.nearbyMembers.length, "nearby members.");
+            logger.debug('Found', data.nearbyMembers.length, 'nearby members.');
 
             const result = await geocodeMissing(data.nearbyMembers);
             if (result) {
-                logger.debug("Updating server store with", result.length, "new datasets");
+                logger.debug('Updating server store with', result.length, 'new datasets');
 
                 const mutation = client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
                     mutation: UpdateLocationAddressMutation,
                     variables: {
                         corrections: result,
-                    }
+                    },
                 });
 
-                logger.debug("update with locations");
+                logger.debug('update with locations');
                 if (this.props.location) {
                     // Read the data from our cache for this query.
                     const data = client.readQuery<NearbyMembers>({
@@ -226,10 +225,10 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                         variables: {
                             location: {
                                 longitude: this.props.location.coords.longitude,
-                                latitude: this.props.location.coords.latitude
-                            }
+                                latitude: this.props.location.coords.latitude,
+                            },
 
-                        }
+                        },
                     });
 
                     if (data && data.nearbyMembers) {
@@ -240,17 +239,17 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     if (n.address.city == null && n.address.country == null && n.address.location != null) {
                                         const updated = result.find(r => r.member == n.member.id);
                                         if (updated) {
-                                            logger.debug("Updating UI for", n.member.id, "with", updated.address);
+                                            logger.debug('Updating UI for', n.member.id, 'with', updated.address);
                                             n.address = {
                                                 ...n.address,
-                                                ...updated.address
+                                                ...updated.address,
                                             };
                                         }
                                     }
 
                                     return n;
-                                })
-                            } as NearbyMembers
+                                }),
+                            } as NearbyMembers,
                         });
                     }
                 }
@@ -264,7 +263,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
     makeTitle(location, country) {
         if (this.props.address && I18N.Countries.translate(country) != I18N.Countries.translate(this.props.address.country)) {
-            return I18N.NearbyMembers.near(location + ", " + I18N.Countries.translate(country));
+            return I18N.NearbyMembers.near(location + ', ' + I18N.Countries.translate(country));
         }
 
         return I18N.NearbyMembers.near(location);
@@ -275,11 +274,11 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
             <ScreenWithHeader header={{
                 showBack: true,
                 content:
-                    [
-                        <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.NearbyMembers.title} />,
+                [
+                    <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.NearbyMembers.title} />,
                         // <Appbar.Action key="filter" icon="filter-list" onPress={() => {}} />,
-                        <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showSettings()} />,
-                    ]
+                    <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showSettings()} />,
+                ],
             }}>
                 {this.state.visible && this.props.offline &&
                     <CannotLoadWhileOffline />
@@ -314,8 +313,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                 {
                                     location: {
                                         longitude: this.props.location.coords.longitude,
-                                        latitude: this.props.location.coords.latitude
-                                    }
+                                        latitude: this.props.location.coords.latitude,
+                                    },
                                 }
                             }
                             // pollInterval={this.state.visible ? this.state.interval : undefined}
@@ -351,22 +350,22 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
                                                                     title={<MemberTitle member={m.member} />}
                                                                     subtitle={
-                                                                        distance(m.distance) + ", " + I18N.NearbyMembers.ago(
+                                                                        distance(m.distance) + ', ' + I18N.NearbyMembers.ago(
                                                                             timespan(
                                                                                 Date.now(),
-                                                                                new Date(m.lastseen).getTime()
+                                                                                new Date(m.lastseen).getTime(),
                                                                             ))
                                                                     }
                                                                 />
                                                                 <Divider inset={true} />
                                                             </React.Fragment>
-                                                        )
+                                                        ),
                                                     )
                                                 }
-                                            </List.Section>
+                                            </List.Section>,
                                         )
                                     }
-                                </Placeholder>
+                                </Placeholder>;
                             }}
                         </Query>
                     </ScrollView>
@@ -382,7 +381,7 @@ export const NearbyScreen = connect<StateProps, DispatchPros, OwnProps, IAppStat
         address: state.location.address,
         timestamp: state.location.timestamp,
         nearbyMembers: state.settings.nearbyMembers,
-        offline: state.connection.offline
+        offline: state.connection.offline,
     }),
     {
         showProfile,

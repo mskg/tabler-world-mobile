@@ -1,30 +1,30 @@
 export enum AuditPropertyNames {
-    Album = "[Albums] Name",
-    NewsArticle = "[News] Article",
+    Album = '[Albums] Name',
+    NewsArticle = '[News] Article',
 
-    Club = "[Structure] Club",
-    Area = "[Structure] Area",
-    Association = "[Structure] Association",
+    Club = '[Structure] Club',
+    Area = '[Structure] Area',
+    Association = '[Structure] Association',
 
-    EventType = "[Meta] Event Type",
+    EventType = '[Meta] Event Type',
 
-    View = "[Meta] View",
-    Action = "[Meta] Action",
-    Event = "[Meta] Event",
+    View = '[Meta] View',
+    Action = '[Meta] Action',
+    Event = '[Meta] Event',
 
-    Id = "ID",
-    LinkingApp = "[Linking] App",
+    Id = 'ID',
+    LinkingApp = '[Linking] App',
 
-    Channel = "[App] Channel",
-    Version=  "[App] Version",
-    Locale = "[App] Locale",
+    Channel = '[App] Channel',
+    Version=  '[App] Version',
+    Locale = '[App] Locale',
 
-    Title = "Title",
-    Url = "Url",
+    Title = 'Title',
+    Url = 'Url',
 
-    Setting = "Setting",
-    SettingValue = "Setting Value",
+    Setting = 'Setting',
+    SettingValue = 'Setting Value',
 
-    BackgroundFetchResult = "Result",
+    BackgroundFetchResult = 'Result',
 }
 

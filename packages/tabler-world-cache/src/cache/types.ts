@@ -8,7 +8,7 @@ export type CacheKeyOptions = {
 
 export interface ICacheOptions {
     ttl?: number;
-  }
+}
 
 export type CacheData<T> = {
     id: string;

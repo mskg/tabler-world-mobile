@@ -12,12 +12,12 @@ export const SelectionList = ({ theme, field, items, value, onChange }) => {
             <RNPickerSelect
                 items={items}
                 placeholder={{}}
-                value={value || ""}
+                value={value || ''}
                 onValueChange={onChange}
                 textInputProps={{
                     style: {
                         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
-                        fontFamily: theme.fonts.regular
+                        fontFamily: theme.fonts.regular,
                     },
                     underlineColorAndroid: 'transparent',
                 }}
@@ -28,5 +28,5 @@ export const SelectionList = ({ theme, field, items, value, onChange }) => {
                 }}
             />
         }
-    />
-}
+    />;
+};

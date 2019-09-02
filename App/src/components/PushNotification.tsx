@@ -36,11 +36,11 @@ type State = {
     containerScale: Animated.Value,
 
     message?: Message,
-}
+};
 
 type Props = {
     theme: Theme,
-}
+};
 
 type Message = {
     onPress?: () => void,
@@ -51,7 +51,7 @@ type Message = {
     time?: string,
     title?: string,
     body?: string,
-}
+};
 
 export class PushNotificationBase extends Component<Props, State> {
     _panResponder: PanResponderInstance;
@@ -166,7 +166,7 @@ export class PushNotificationBase extends Component<Props, State> {
         const { containerSlideOffsetY } = this.state;
 
         Animated
-            .timing(containerSlideOffsetY, { toValue: 1, duration: duration || SLIDE_DURATION, })
+            .timing(containerSlideOffsetY, { toValue: 1, duration: duration || SLIDE_DURATION })
             .start(() => {
                 this._countdownToSlideOut();
             });
@@ -175,7 +175,7 @@ export class PushNotificationBase extends Component<Props, State> {
     _countdownToSlideOut = () => {
         const slideOutTimer = setTimeout(() => {
             this._slideOutAndDismiss();
-        }, TIMEOUT);
+        },                               TIMEOUT);
 
         this.setState({ slideOutTimer });
     }
@@ -184,14 +184,14 @@ export class PushNotificationBase extends Component<Props, State> {
         const { containerSlideOffsetY } = this.state;
 
         Animated
-            .timing(containerSlideOffsetY, { toValue: 0, duration: duration || SLIDE_DURATION, })
+            .timing(containerSlideOffsetY, { toValue: 0, duration: duration || SLIDE_DURATION })
             .start(() => {
                 if (this.state.message && this.state.message.onDismiss != null) { this.state.message.onDismiss(); }
                 this.setState({ show: false });
             });
     }
 
-    public showMessage(message: Message) {
+    showMessage(message: Message) {
         this.clearTimerIfExist();
 
         this.setState({
@@ -203,8 +203,8 @@ export class PushNotificationBase extends Component<Props, State> {
             containerDragOffsetY: new Animated.Value(0),
             containerScale: new Animated.Value(1),
 
-            message: message,
-        }, this._slideIn);
+            message,
+        },            this._slideIn);
     }
 
     render() {
@@ -219,7 +219,7 @@ export class PushNotificationBase extends Component<Props, State> {
 
         const slideOffsetYToTranslatePixelMapping = {
             inputRange: [0, 1],
-            outputRange: [-150, 0]
+            outputRange: [-150, 0],
         };
 
         const slideInAnimationStyle = {

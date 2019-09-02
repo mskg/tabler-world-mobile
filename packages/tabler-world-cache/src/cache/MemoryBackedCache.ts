@@ -1,8 +1,8 @@
-import { KeyValueCache } from "apollo-server-caching";
-import LRU from "lru-cache";
-import { CACHE_SIZE } from "./config";
-import { MEMORY_TTL } from "./TTLs";
-import { CacheData, CacheValues, IManyKeyValueCache } from "./types";
+import { KeyValueCache } from 'apollo-server-caching';
+import LRU from 'lru-cache';
+import { CACHE_SIZE } from './config';
+import { MEMORY_TTL } from './TTLs';
+import { CacheData, CacheValues, IManyKeyValueCache } from './types';
 
 /**
  * Cache invalidation is a global engineering problem. The whole DynamoDB implementation should be changed to
@@ -15,11 +15,11 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     });
 
     constructor(private innerCache: KeyValueCache<string> & IManyKeyValueCache<string>) {
-        console.debug("[MemoryBackedCache] init");
+        console.debug('[MemoryBackedCache] init');
     }
 
     public async get(key: string): Promise<string | undefined> {
-        console.debug("[MemoryBackedCache] get", key);
+        console.debug('[MemoryBackedCache] get', key);
 
         let cached = this.memoryCache.get(key);
         if (cached) {
@@ -28,7 +28,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
 
         cached = await this.innerCache.get(key);
         if (cached) {
-            console.debug("[MemoryBackedCache] updating store", key);
+            console.debug('[MemoryBackedCache] updating store', key);
 
             // we could extend the value by TTLS.Memoy here, but we live with that
             // we don't wait for it
@@ -39,7 +39,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     }
 
     public async set(key: string, value: string, options?: { ttl?: number | undefined; } | undefined): Promise<void> {
-        console.debug("[MemoryBackedCache] set ", key, options);
+        console.debug('[MemoryBackedCache] set ', key, options);
 
         this.memoryCache.set(key, value);
 
@@ -48,7 +48,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     }
 
     public async delete(key: string): Promise<boolean | void> {
-        console.debug("[MemoryBackedCache] delete ", key);
+        console.debug('[MemoryBackedCache] delete ', key);
 
         this.memoryCache.del(key);
 
@@ -57,7 +57,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     }
 
     public async getMany(ids: string[]): Promise<CacheValues> {
-        console.debug("[MemoryBackedCache] getMany", ids);
+        console.debug('[MemoryBackedCache] getMany', ids);
 
         // check memory first
         const missingKeys: string[] = [];
@@ -71,17 +71,17 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
             }
 
             return p;
-        }, {} as CacheValues);
+        },                        {} as CacheValues);
 
         // check backend
         if (missingKeys.length > 0) {
-            console.debug("[MemoryBackedCache] missed keys", missingKeys);
+            console.debug('[MemoryBackedCache] missed keys', missingKeys);
 
             const missing = await this.innerCache.getMany(missingKeys);
             const foundMissingKeys = Object.keys(missing);
 
             if (foundMissingKeys.length > 0) {
-                console.debug("[MemoryBackedCache] updating store", foundMissingKeys);
+                console.debug('[MemoryBackedCache] updating store', foundMissingKeys);
 
                 // write through missing keys
                 foundMissingKeys.forEach(
@@ -101,9 +101,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     }
 
     public async setMany(data: CacheData<string>[]): Promise<void> {
-        data.forEach(
-            (d) => this.memoryCache.set(d.id, d.data),
-        );
+        data.forEach(d => this.memoryCache.set(d.id, d.data));
 
         // we don't wait for it
         this.innerCache.setMany(data);

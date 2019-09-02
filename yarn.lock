@@ -30,6 +30,25 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@fimbul/bifrost@^0.17.0":
+  version "0.17.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@fimbul/bifrost/-/bifrost-0.17.0.tgz#f0383ba7e40992e3193dc87e2ddfde2ad62a9cf4"
+  integrity sha1-8Dg7p+QJkuMZPch+Ld/eKtYqnPQ=
+  dependencies:
+    "@fimbul/ymir" "^0.17.0"
+    get-caller-file "^2.0.0"
+    tslib "^1.8.1"
+    tsutils "^3.5.0"
+
+"@fimbul/ymir@^0.17.0":
+  version "0.17.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@fimbul/ymir/-/ymir-0.17.0.tgz#4f28389b9f804d1cd202e11983af1743488b7815"
+  integrity sha1-Tyg4m5+ATRzSAuEZg68XQ0iLeBU=
+  dependencies:
+    inversify "^5.0.0"
+    reflect-metadata "^0.1.12"
+    tslib "^1.8.1"
+
 "@hapi/accept@3.x.x":
   version "3.2.3"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@hapi/accept/-/accept-3.2.3.tgz#6947259928ed28df2736c7daffbfc739b72adfcc"
@@ -183,9 +202,9 @@
   integrity sha1-ADHqaOW5JVNrbFK351hoYmV1XGc=
 
 "@hapi/hoek@8.x.x":
-  version "8.2.1"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@hapi/hoek/-/hoek-8.2.1.tgz#924af04cbb22e17359c620d2a9c946e63f58eb77"
-  integrity sha1-kkrwTLsi4XNZxiDSqclG5j9Y63c=
+  version "8.2.2"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@hapi/hoek/-/hoek-8.2.2.tgz#6eaa2e1ec3b50dfb8dccbe705dc289094652bc2d"
+  integrity sha1-bqouHsO1DfuNzL5wXcKJCUZSvC0=
 
 "@hapi/iron@5.x.x":
   version "5.1.1"
@@ -1113,18 +1132,18 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-apollo-cache-control@^0.8.3:
-  version "0.8.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-cache-control/-/apollo-cache-control-0.8.3.tgz#50c2d652aa2962b6d5bde27400558a9fbc771b63"
-  integrity sha1-UMLWUqopYrbVveJ0AFWKn7x3G2M=
+apollo-cache-control@^0.8.4:
+  version "0.8.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-cache-control/-/apollo-cache-control-0.8.4.tgz#a3650d5e4173953e2a3af995bea62147f1ffe4d7"
+  integrity sha1-o2UNXkFzlT4qOvmVvqYhR/H/5Nc=
   dependencies:
     apollo-server-env "^2.4.3"
-    graphql-extensions "^0.10.2"
+    graphql-extensions "^0.10.3"
 
 apollo-datasource-rest@^0.6.3:
-  version "0.6.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-datasource-rest/-/apollo-datasource-rest-0.6.3.tgz#b5f42e4623c7cb4edfbaff296efc0b77f5e3e6d6"
-  integrity sha1-tfQuRiPHy07fuv8pbvwLd/Xj5tY=
+  version "0.6.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-datasource-rest/-/apollo-datasource-rest-0.6.4.tgz#7d42d8b41e9e8d001ff4925df799c326f44eeb78"
+  integrity sha1-fULYtB6ejQAf9JJd95nDJvRO63g=
   dependencies:
     apollo-datasource "^0.6.3"
     apollo-server-caching "^0.5.0"
@@ -1147,18 +1166,18 @@ apollo-engine-reporting-protobuf@^0.4.0:
   dependencies:
     protobufjs "^6.8.6"
 
-apollo-engine-reporting@^1.4.5:
-  version "1.4.5"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-engine-reporting/-/apollo-engine-reporting-1.4.5.tgz#a77a8eae64e2f511ae48e79a58469b8d6b6b9b49"
-  integrity sha1-p3qOrmTi9RGuSOeaWEabjWtrm0k=
+apollo-engine-reporting@^1.4.6:
+  version "1.4.6"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-engine-reporting/-/apollo-engine-reporting-1.4.6.tgz#83af6689c4ab82d1c62c3f5dde7651975508114f"
+  integrity sha1-g69micSrgtHGLD9d3nZRl1UIEU8=
   dependencies:
     apollo-engine-reporting-protobuf "^0.4.0"
     apollo-graphql "^0.3.3"
     apollo-server-caching "^0.5.0"
     apollo-server-env "^2.4.3"
-    apollo-server-types "^0.2.3"
+    apollo-server-types "^0.2.4"
     async-retry "^1.2.1"
-    graphql-extensions "^0.10.2"
+    graphql-extensions "^0.10.3"
 
 apollo-env@0.5.1:
   version "0.5.1"
@@ -1194,26 +1213,26 @@ apollo-server-caching@^0.5.0:
   dependencies:
     lru-cache "^5.0.0"
 
-apollo-server-core@^2.8.2, apollo-server-core@^2.9.1, apollo-server-core@^2.9.2:
-  version "2.9.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-core/-/apollo-server-core-2.9.2.tgz#087101fc1a1cd98a79f4b605ca6a476de3986047"
-  integrity sha1-CHEB/Boc2Yp59LYFympHbeOYYEc=
+apollo-server-core@^2.8.2, apollo-server-core@^2.9.1, apollo-server-core@^2.9.3:
+  version "2.9.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-core/-/apollo-server-core-2.9.3.tgz#918f836c8215d371935c831c72d0840c7bf0250f"
+  integrity sha1-kY+DbIIV03GTXIMcctCEDHvwJQ8=
   dependencies:
     "@apollographql/apollo-tools" "^0.4.0"
     "@apollographql/graphql-playground-html" "1.6.24"
     "@types/graphql-upload" "^8.0.0"
     "@types/ws" "^6.0.0"
-    apollo-cache-control "^0.8.3"
+    apollo-cache-control "^0.8.4"
     apollo-datasource "^0.6.3"
-    apollo-engine-reporting "^1.4.5"
+    apollo-engine-reporting "^1.4.6"
     apollo-server-caching "^0.5.0"
     apollo-server-env "^2.4.3"
     apollo-server-errors "^2.3.3"
-    apollo-server-plugin-base "^0.6.3"
-    apollo-server-types "^0.2.3"
-    apollo-tracing "^0.8.3"
+    apollo-server-plugin-base "^0.6.4"
+    apollo-server-types "^0.2.4"
+    apollo-tracing "^0.8.4"
     fast-json-stable-stringify "^2.0.0"
-    graphql-extensions "^0.10.2"
+    graphql-extensions "^0.10.3"
     graphql-tag "^2.9.2"
     graphql-tools "^4.0.0"
     graphql-upload "^8.0.2"
@@ -1234,10 +1253,10 @@ apollo-server-errors@^2.3.3:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-errors/-/apollo-server-errors-2.3.3.tgz#83763b00352c10dc68fbb0d41744ade66de549ff"
   integrity sha1-g3Y7ADUsENxo+7DUF0St5m3lSf8=
 
-apollo-server-express@^2.9.2:
-  version "2.9.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-express/-/apollo-server-express-2.9.2.tgz#8b68ad4687b715441652e2c821bfe8a4a306509f"
-  integrity sha1-i2itRoe3FUQWUuLIIb/opKMGUJ8=
+apollo-server-express@^2.9.3:
+  version "2.9.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-express/-/apollo-server-express-2.9.3.tgz#67573404030c2676be49a7bf97d423b8462e295c"
+  integrity sha1-Z1c0BAMMJna+Sae/l9QjuEYuKVw=
   dependencies:
     "@apollographql/graphql-playground-html" "1.6.24"
     "@types/accepts" "^1.3.5"
@@ -1245,10 +1264,11 @@ apollo-server-express@^2.9.2:
     "@types/cors" "^2.8.4"
     "@types/express" "4.17.1"
     accepts "^1.3.5"
-    apollo-server-core "^2.9.2"
-    apollo-server-types "^0.2.3"
+    apollo-server-core "^2.9.3"
+    apollo-server-types "^0.2.4"
     body-parser "^1.18.3"
     cors "^2.8.4"
+    express "^4.17.1"
     graphql-subscriptions "^1.0.0"
     graphql-tools "^4.0.0"
     parseurl "^1.3.2"
@@ -1256,50 +1276,51 @@ apollo-server-express@^2.9.2:
     type-is "^1.6.16"
 
 apollo-server-lambda@^2.8.1:
-  version "2.9.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-lambda/-/apollo-server-lambda-2.9.2.tgz#24aa440150c48b71739ae883cc057edbbb9f1f3b"
-  integrity sha1-JKpEAVDEi3FzmuiDzAV+27ufHzs=
+  version "2.9.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-lambda/-/apollo-server-lambda-2.9.3.tgz#6848ba3312d6e00ec05fec2948790a2f86ca5b63"
+  integrity sha1-aEi6MxLW4A7AX+wpSHkKL4bKW2M=
   dependencies:
     "@apollographql/graphql-playground-html" "1.6.24"
-    apollo-server-core "^2.9.2"
+    "@types/aws-lambda" "^8.10.31"
+    apollo-server-core "^2.9.3"
     apollo-server-env "^2.4.3"
-    apollo-server-types "^0.2.3"
+    apollo-server-types "^0.2.4"
     graphql-tools "^4.0.0"
 
-apollo-server-plugin-base@^0.6.3:
-  version "0.6.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-plugin-base/-/apollo-server-plugin-base-0.6.3.tgz#e2eda552804cd96d4e1cc7ad42f7637e55512d92"
-  integrity sha1-4u2lUoBM2W1OHMetQvdjflVRLZI=
+apollo-server-plugin-base@^0.6.4:
+  version "0.6.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-plugin-base/-/apollo-server-plugin-base-0.6.4.tgz#63ea4fd0bbb6c4510bc8d0d2ad0a0684c8d0da8c"
+  integrity sha1-Y+pP0Lu2xFELyNDSrQoGhMjQ2ow=
   dependencies:
-    apollo-server-types "^0.2.3"
+    apollo-server-types "^0.2.4"
 
-apollo-server-types@^0.2.3:
-  version "0.2.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-types/-/apollo-server-types-0.2.3.tgz#de442395f2944eab67a10ac70ac987e41e72a290"
-  integrity sha1-3kQjlfKUTqtnoQrHCsmH5B5yopA=
+apollo-server-types@^0.2.4:
+  version "0.2.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server-types/-/apollo-server-types-0.2.4.tgz#28864900ffc7f9711a859297c143a833fdb6aa43"
+  integrity sha1-KIZJAP/H+XEahZKXwUOoM/22qkM=
   dependencies:
     apollo-engine-reporting-protobuf "^0.4.0"
     apollo-server-caching "^0.5.0"
     apollo-server-env "^2.4.3"
 
 apollo-server@^2.8.1:
-  version "2.9.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server/-/apollo-server-2.9.2.tgz#4b2787a249a943c0f0a558923f92028f7eb5f3ed"
-  integrity sha1-SyeHokmpQ8DwpViSP5ICj3618+0=
+  version "2.9.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-server/-/apollo-server-2.9.3.tgz#2a79fcee25da0b0673eb70d73839c40c3c4b8cca"
+  integrity sha1-Knn87iXaCwZz63DXODnEDDxLjMo=
   dependencies:
-    apollo-server-core "^2.9.2"
-    apollo-server-express "^2.9.2"
+    apollo-server-core "^2.9.3"
+    apollo-server-express "^2.9.3"
     express "^4.0.0"
     graphql-subscriptions "^1.0.0"
     graphql-tools "^4.0.0"
 
-apollo-tracing@^0.8.3:
-  version "0.8.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-tracing/-/apollo-tracing-0.8.3.tgz#4b985eb6cf31fc0b7b9d345eebf573c9ac961a73"
-  integrity sha1-S5hets8x/At7nTRe6/VzyayWGnM=
+apollo-tracing@^0.8.4:
+  version "0.8.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/apollo-tracing/-/apollo-tracing-0.8.4.tgz#0117820c3f0ad3aa6daf7bf13ddbb923cbefa6de"
+  integrity sha1-AReCDD8K06ptr3vxPdu5I8vvpt4=
   dependencies:
     apollo-server-env "^2.4.3"
-    graphql-extensions "^0.10.2"
+    graphql-extensions "^0.10.3"
 
 apollo-utilities@^1.0.1, apollo-utilities@^1.3.0:
   version "1.3.2"
@@ -2749,6 +2770,14 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
+doctrine@0.7.2:
+  version "0.7.2"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/doctrine/-/doctrine-0.7.2.tgz#7cb860359ba3be90e040b26b729ce4bfa654c523"
+  integrity sha1-fLhgNZujvpDgQLJrcpzkv6ZUxSM=
+  dependencies:
+    esutils "^1.1.6"
+    isarray "0.0.1"
+
 domain-browser@^1.1.1:
   version "1.2.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
@@ -3029,6 +3058,11 @@ estraverse@^4.1.0, estraverse@^4.1.1:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/estraverse/-/estraverse-4.3.0.tgz#398ad3f3c5a24948be7725e83d11a7de28cdbd1d"
   integrity sha1-OYrT88WiSUi+dyXoPRGn3ijNvR0=
 
+esutils@^1.1.6:
+  version "1.1.6"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/esutils/-/esutils-1.1.6.tgz#c01ccaa9ae4b897c6d0c3e210ae52f3c7a844375"
+  integrity sha1-wBzKqa5LiXxtDD4hCuUvPHqEQ3U=
+
 esutils@^2.0.2:
   version "2.0.3"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
@@ -3127,7 +3161,7 @@ expo-server-sdk@^3.3.0:
     node-fetch "^2.3.0"
     promise-limit "^2.7.0"
 
-express@^4.0.0, express@^4.16.3:
+express@^4.0.0, express@^4.16.3, express@^4.17.1:
   version "4.17.1"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
   integrity sha1-RJH8OGBc9R+GKdOcK10Cb5ikwTQ=
@@ -3609,7 +3643,7 @@ get-caller-file@^1.0.1, get-caller-file@^1.0.2:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/get-caller-file/-/get-caller-file-1.0.3.tgz#f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a"
   integrity sha1-+Xj6TJDR3+f/LWvtoqUV5xO9z0o=
 
-get-caller-file@^2.0.1:
+get-caller-file@^2.0.0, get-caller-file@^2.0.1:
   version "2.0.5"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha1-T5RBKoLbMvNuOwuXQfipf+sDH34=
@@ -3764,14 +3798,14 @@ graphlib@^2.1.1, graphlib@^2.1.7:
   dependencies:
     lodash "^4.17.5"
 
-graphql-extensions@^0.10.2:
-  version "0.10.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/graphql-extensions/-/graphql-extensions-0.10.2.tgz#231654fe3c2959fd9a40717f5d46bfa22be7108c"
-  integrity sha1-IxZU/jwpWf2aQHF/XUa/oivnEIw=
+graphql-extensions@^0.10.3:
+  version "0.10.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/graphql-extensions/-/graphql-extensions-0.10.3.tgz#9e37f3bd26309c40b03a0be0e63e02b3f99d52ea"
+  integrity sha1-njfzvSYwnECwOgvg5j4Cs/mdUuo=
   dependencies:
     "@apollographql/apollo-tools" "^0.4.0"
     apollo-server-env "^2.4.3"
-    apollo-server-types "^0.2.3"
+    apollo-server-types "^0.2.4"
 
 graphql-subscriptions@^1.0.0:
   version "1.1.0"
@@ -3943,6 +3977,13 @@ hmac-drbg@^1.0.0:
     hash.js "^1.0.3"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
+
+hoist-non-react-statics@^3.3.0:
+  version "3.3.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
+  integrity sha1-sJF48BIhhPuVrPUl2q7LTY9FlYs=
+  dependencies:
+    react-is "^16.7.0"
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"
@@ -4153,6 +4194,11 @@ int64-buffer@^0.1.9:
   version "0.1.10"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/int64-buffer/-/int64-buffer-0.1.10.tgz#277b228a87d95ad777d07c13832022406a473423"
   integrity sha1-J3siiofZWtd30HwTgyAiQGpHNCM=
+
+inversify@^5.0.0:
+  version "5.0.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/inversify/-/inversify-5.0.1.tgz#500d709b1434896ce5a0d58915c4a4210e34fb6e"
+  integrity sha1-UA1wmxQ0iWzloNWJFcSkIQ40+24=
 
 invert-kv@^2.0.0:
   version "2.0.0"
@@ -4448,6 +4494,11 @@ is@~0.2.6:
   version "0.2.7"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/is/-/is-0.2.7.tgz#3b34a2c48f359972f35042849193ae7264b63562"
   integrity sha1-OzSixI81mXLzUEKEkZOucmS2NWI=
+
+isarray@0.0.1:
+  version "0.0.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
+  integrity sha1-ihis/Kmo9Bd+Cav8YDiTmwXR7t8=
 
 isarray@1.0.0, isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"
@@ -6183,6 +6234,11 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-is@^16.7.0:
+  version "16.9.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
+  integrity sha1-IcqVYTmarQ/xp3AcAWg+jKmB7cs=
+
 read-pkg@^4.0.1:
   version "4.0.1"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/read-pkg/-/read-pkg-4.0.1.tgz#963625378f3e1c4d48c85872b5a6ec7d5d093237"
@@ -6223,6 +6279,11 @@ readdirp@^2.2.1:
     graceful-fs "^4.1.11"
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
+
+reflect-metadata@^0.1.12:
+  version "0.1.13"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+  integrity sha1-Z648pXyXKiqhZCsQ/jY/4y1J3Ag=
 
 regenerator-runtime@^0.13.1:
   version "0.13.3"
@@ -6779,9 +6840,9 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   integrity sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=
 
 simple-git@^1.118.0:
-  version "1.125.0"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/simple-git/-/simple-git-1.125.0.tgz#a5977c554d98b1c54f896ec3e5578055b0d84185"
-  integrity sha1-pZd8VU2YscVPiW7D5VeAVbDYQYU=
+  version "1.126.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/simple-git/-/simple-git-1.126.0.tgz#0c345372275139c8433b8277f4b3e155092aa434"
+  integrity sha1-DDRTcidROchDO4J39LPhVQkqpDQ=
   dependencies:
     debug "^4.0.1"
 
@@ -7439,15 +7500,54 @@ tsconfig@^6.0.0:
     strip-bom "^3.0.0"
     strip-json-comments "^2.0.0"
 
-tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@1.9.0:
+  version "1.9.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
+  integrity sha1-43qG/ajLuvI6BX9HPJ9Nxk5fwug=
+
+tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.10.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha1-w8GflZc/sKYpc/sJ2Q2WHuQ+XIo=
+
+tslint-config-airbnb@^5.11.1:
+  version "5.11.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslint-config-airbnb/-/tslint-config-airbnb-5.11.1.tgz#51a27fbb8bf24c144d064a274a71da47e7ece617"
+  integrity sha1-UaJ/u4vyTBRNBkonSnHaR+fs5hc=
+  dependencies:
+    tslint-consistent-codestyle "^1.14.1"
+    tslint-eslint-rules "^5.4.0"
+    tslint-microsoft-contrib "~5.2.1"
+
+tslint-consistent-codestyle@^1.14.1:
+  version "1.15.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslint-consistent-codestyle/-/tslint-consistent-codestyle-1.15.1.tgz#a0c5cd5a5860d40b659c490d8013c5732e02af8c"
+  integrity sha1-oMXNWlhg1AtlnEkNgBPFcy4Cr4w=
+  dependencies:
+    "@fimbul/bifrost" "^0.17.0"
+    tslib "^1.7.1"
+    tsutils "^2.29.0"
+
+tslint-eslint-rules@^5.4.0:
+  version "5.4.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslint-eslint-rules/-/tslint-eslint-rules-5.4.0.tgz#e488cc9181bf193fe5cd7bfca213a7695f1737b5"
+  integrity sha1-5IjMkYG/GT/lzXv8ohOnaV8XN7U=
+  dependencies:
+    doctrine "0.7.2"
+    tslib "1.9.0"
+    tsutils "^3.0.0"
 
 tslint-microsoft-contrib@^6.2.0:
   version "6.2.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslint-microsoft-contrib/-/tslint-microsoft-contrib-6.2.0.tgz#8aa0f40584d066d05e6a5e7988da5163b85f2ad4"
   integrity sha1-iqD0BYTQZtBeal55iNpRY7hfKtQ=
+  dependencies:
+    tsutils "^2.27.2 <2.29.0"
+
+tslint-microsoft-contrib@~5.2.1:
+  version "5.2.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tslint-microsoft-contrib/-/tslint-microsoft-contrib-5.2.1.tgz#a6286839f800e2591d041ea2800c77487844ad81"
+  integrity sha1-pihoOfgA4lkdBB6igAx3SHhErYE=
   dependencies:
     tsutils "^2.27.2 <2.29.0"
 
@@ -7481,6 +7581,13 @@ tsutils@^2.29.0:
   version "2.29.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tsutils/-/tsutils-2.29.0.tgz#32b488501467acbedd4b85498673a0812aca0b99"
   integrity sha1-MrSIUBRnrL7dS4VJhnOggSrKC5k=
+  dependencies:
+    tslib "^1.8.1"
+
+tsutils@^3.0.0, tsutils@^3.5.0:
+  version "3.17.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/tsutils/-/tsutils-3.17.1.tgz#ed719917f11ca0dee586272b2ac49e015a2dd759"
+  integrity sha1-7XGZF/EcoN7lhicrKsSeAVot11k=
   dependencies:
     tslib "^1.8.1"
 

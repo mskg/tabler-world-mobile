@@ -20,7 +20,7 @@ export type TimeoutParameters = {
     newsarticle: number,
 
     userroles: number,
-}
+};
 
 export const TimeoutDefaults: TimeoutParameters = {
     albums: hours(4),
@@ -39,5 +39,5 @@ export const TimeoutDefaults: TimeoutParameters = {
     news: hours(4),
     newsarticle: hours(4),
 
-    userroles: hours(24*7),
+    userroles: hours(24 * 7),
 };

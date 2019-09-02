@@ -5,11 +5,12 @@
         },
         "**/*.js.map": true
     },
-
     "editor.trimAutoWhitespace": true,
     "files.trimTrailingWhitespace": true,
     "editor.tabSize": 4,
-    "editor.useTabStops": true,
+    "editor.useTabStops": false,
+    "editor.formatOnSave": true,
+    "editor.detectIndentation": false,
     "editor.codeActionsOnSave": {
         "source.organizeImports": true,
         "source.fixAll": true

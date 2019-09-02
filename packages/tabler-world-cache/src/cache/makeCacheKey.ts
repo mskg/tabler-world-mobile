@@ -1,15 +1,15 @@
 
 type CacheTypes =
-    | "Members"
-    | "Member"
+    | 'Members'
+    | 'Member'
 
-    | "Structure"
+    | 'Structure'
 
-    | "Club"
-    | "Area"
-    | "Association"
+    | 'Club'
+    | 'Area'
+    | 'Association'
 ;
 
 export function makeCacheKey(type: CacheTypes, ids: (string | number)[]) {
-    return `tw::${type}::${ids.join(":")}`;
+    return `tw::${type}::${ids.join(':')}`;
 }

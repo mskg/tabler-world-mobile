@@ -8,39 +8,39 @@ import { LogWrapper } from './LogWrapper';
 const logger = new Logger(Categories.Audit);
 
 export function bootstrapAnalytics() {
-  const region = getConfigValue("region");
-  const cognitoAnalytics = getConfigValue("cognitoAnalytics");
-  const amplitudeAnalytics = getConfigValue("amplitudeAnalytics");
+    const region = getConfigValue('region');
+    const cognitoAnalytics = getConfigValue('cognitoAnalytics');
+    const amplitudeAnalytics = getConfigValue('amplitudeAnalytics');
 
-  logger.log(
-    "region", region,
-    "cognito", cognitoAnalytics,
-    "amplitude", amplitudeAnalytics);
+    logger.log(
+    'region', region,
+    'cognito', cognitoAnalytics,
+    'amplitude', amplitudeAnalytics);
 
-  let provider: IAnalyticsProvider | undefined;
+    let provider: IAnalyticsProvider | undefined;
 
-  if (cognitoAnalytics != null && cognitoAnalytics != "") {
-    const analytics = require ('./CognitoAnalytics');
+    if (cognitoAnalytics != null && cognitoAnalytics != '') {
+      const analytics = require('./CognitoAnalytics');
 
-    provider = new analytics.CognitoAnalytics(
-      region, cognitoAnalytics
+      provider = new analytics.CognitoAnalytics(
+      region, cognitoAnalytics,
     );
   }
 
-  if (amplitudeAnalytics != null && amplitudeAnalytics != "") {
-    const analytics = require ('./AmplitudeAnalytics');
+    if (amplitudeAnalytics != null && amplitudeAnalytics != '') {
+      const analytics = require('./AmplitudeAnalytics');
 
-    provider = new analytics.AmplitudeAnalytics(
-      amplitudeAnalytics
+      provider = new analytics.AmplitudeAnalytics(
+      amplitudeAnalytics,
     );
   }
 
   // allow inspection
-  if (__DEV__ && provider != null) {
-    provider = new LogWrapper(provider);
+    if (__DEV__ && provider != null) {
+      provider = new LogWrapper(provider);
   }
 
-  if (provider != null) {
-    Audit.init(provider);
+    if (provider != null) {
+      Audit.init(provider);
   }
 }

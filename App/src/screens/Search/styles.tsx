@@ -1,10 +1,10 @@
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet } from 'react-native';
 import { Colors } from 'react-native-paper';
 import { HEADER_HEIGHT, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 
 export const styles = StyleSheet.create({
     overlay: {
-        position: "absolute",
+        position: 'absolute',
         right: 0,
         left: 0,
         top: 0,
@@ -14,10 +14,10 @@ export const styles = StyleSheet.create({
     chips: {
         paddingBottom: 8,
         paddingRight: 8,
-        flexDirection: "row",
-        alignItems: "flex-start",
-        alignContent: "center",
-        flexWrap: "wrap",
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        alignContent: 'center',
+        flexWrap: 'wrap',
     },
     chip: {
         marginTop: 8,
@@ -25,9 +25,9 @@ export const styles = StyleSheet.create({
     },
     popup: {
         width: 250,
-        position: "absolute",
+        position: 'absolute',
         right: 0,
-        top: (Platform.OS == "ios" ? TOTAL_HEADER_HEIGHT : HEADER_HEIGHT) + 3,
+        top: (Platform.OS == 'ios' ? TOTAL_HEADER_HEIGHT : HEADER_HEIGHT) + 3,
         paddingBottom: TOTAL_HEADER_HEIGHT + 3,
         bottom: 0,
         borderWidth: StyleSheet.hairlineWidth,
@@ -42,8 +42,8 @@ export const styles = StyleSheet.create({
         borderRightWidth: 8,
         borderBottomWidth: 12,
         borderLeftWidth: 8,
-        position: "absolute",
-        top: (Platform.OS == "ios" ? TOTAL_HEADER_HEIGHT : HEADER_HEIGHT) - 8,
+        position: 'absolute',
+        top: (Platform.OS == 'ios' ? TOTAL_HEADER_HEIGHT : HEADER_HEIGHT) - 8,
         right: 28,
         borderTopColor: 'transparent',
         borderRightColor: 'transparent',
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
         // backgroundColor: "red",
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: "flex-start",
+        justifyContent: 'flex-start',
         // marginTop: 6,
         paddingHorizontal: 8,
     },

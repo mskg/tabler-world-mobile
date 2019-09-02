@@ -22,6 +22,10 @@
     "cross-spawn": "^6.0.5",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
+    "tslint": "^5.19.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript-tslint-plugin": "^0.5.4",
     "webpack-node-externals": "^1.7.2"
   },
   "peerDependencies": {

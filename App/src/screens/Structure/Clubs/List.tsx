@@ -14,7 +14,7 @@ import { CachedImage } from '../../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../../helper/Logger";
+import { Categories, Logger } from '../../../helper/Logger';
 import { normalizeForSearch } from '../../../helper/normalizeForSearch';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
@@ -48,9 +48,9 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         super(props, ScreenName.Clubs);
 
         this.state = {
-            search: "",
+            search: '',
             filtered: this.filterData(props.data),
-        }
+        };
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -59,7 +59,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
             this.setState({
                 search: this.state.search,
-                filtered: this.filterData(nextProps.data, this.state.search)
+                filtered: this.filterData(nextProps.data, this.state.search),
             });
         }
     }
@@ -77,7 +77,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
             <Card style={styles.card}>
                 <CardTitle
                     title={name}
-                    subtitle={item.area.name + ", " + item.association.name}
+                    subtitle={item.area.name + ', ' + item.association.name}
                     avatar={item.club}
                 />
 
@@ -135,19 +135,19 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         return [
             c.name,
             c.area.name,
-            "D" + c.area.area,
+            'D' + c.area.area,
         ].filter(Boolean);
     }
 
     filterData(data?: Clubs | null, text?: string): Clubs_Clubs[] {
         if (data == null) { return []; }
 
-        //@ts-ignore
+        // @ts-ignore
         return _(data.Clubs)
             .map((item: Clubs_Clubs) => {
-                var match = _.find(
+                let match = _.find(
                     this.makeSearchTexts(item),
-                    this._normalizedSearch(text || ""));
+                    this._normalizedSearch(text || ''));
 
                 return match ? {
                     ...item,
@@ -157,9 +157,9 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
             .filter(r => r != null)
             .orderBy((a) =>
                 (
-                    a != null && data != null && (text === "" || text == null) && data.Me.club.club == a.club)
+                    a != null && data != null && (text === '' || text == null) && data.Me.club.club == a.club)
                     ? 0
-                    : a ? a.club : -1
+                    : a ? a.club : -1,
             )
             .toArray()
             .value();
@@ -168,7 +168,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
     _search = (text) => {
         this.setState({
             search: text,
-            filtered: this.filterData(this.props.data, text)
+            filtered: this.filterData(this.props.data, text),
         });
     }
 
@@ -184,7 +184,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                     contentContainerStyle={styles.container}
                     data={this.state.filtered}
                     ListHeaderComponent={
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: 'row' }}>
                             <Searchbar
                                 style={[styles.searchbar]}
                                 selectionColor={this.props.theme.colors.accent}
@@ -242,4 +242,4 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
 );
 
 export const ClubsScreen = withWhoopsErrorBoundary(
-    withCacheInvalidation("clubs", ClubsScreenWithQuery));
+    withCacheInvalidation('clubs', ClubsScreenWithQuery));

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { MemberOverviewFragment } from "./MemberOverviewFragment";
+import { MemberOverviewFragment } from './MemberOverviewFragment';
 
 export const GetNearbyMembersQuery = gql`
     query NearbyMembers($location: MyCurrentLocationInput!) {

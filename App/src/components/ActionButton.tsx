@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { View } from "react-native";
+import { View } from 'react-native';
 import { Text, TouchableRipple } from 'react-native-paper';
 
 export const ActionButton = ({ size, color, disabledColor, icon, text, disabled, onPress, ...others }) => (
@@ -16,12 +16,12 @@ export const ActionButton = ({ size, color, disabledColor, icon, text, disabled,
     >
         <View
             style={
-                {
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }
+            {
+                justifyContent: 'center',
+                alignItems: 'center',
+            }
             }>
-            {icon !== "" && typeof (icon) === "string" &&
+            {icon !== '' && typeof (icon) === 'string' &&
                 <Ionicons name={icon} size={size} color={!disabled ? color : disabledColor} />
             }
 

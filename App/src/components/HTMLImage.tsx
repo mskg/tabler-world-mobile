@@ -16,7 +16,7 @@ type Props = {
     imagesInitialDimensions: {
         width: number,
         height: number,
-    }
+    },
 };
 
 type State = {
@@ -31,15 +31,15 @@ export default class HTMLImage extends PureComponent<Props, State> {
     static defaultProps = {
         imagesInitialDimensions: {
             width: 100,
-            height: 100
-        }
-    }
+            height: 100,
+        },
+    };
 
     constructor(props) {
         super(props);
         this.state = {
             width: props.imagesInitialDimensions.width,
-            height: props.imagesInitialDimensions.height
+            height: props.imagesInitialDimensions.height,
         };
     }
 
@@ -70,19 +70,19 @@ export default class HTMLImage extends PureComponent<Props, State> {
 
         if (Array.isArray(style)) {
             style.forEach((styles) => {
-                if (!width && styles['width']) {
-                    styleWidth = styles['width'];
+                if (!width && styles.width) {
+                    styleWidth = styles.width;
                 }
-                if (!height && styles['height']) {
-                    styleHeight = styles['height'];
+                if (!height && styles.height) {
+                    styleHeight = styles.height;
                 }
             });
         } else {
-            if (!width && style['width']) {
-                styleWidth = style['width'];
+            if (!width && style.width) {
+                styleWidth = style.width;
             }
-            if (!height && style['height']) {
-                styleHeight = style['height'];
+            if (!height && style.height) {
+                styleHeight = style.height;
             }
         }
 
@@ -96,7 +96,7 @@ export default class HTMLImage extends PureComponent<Props, State> {
         if (styleWidth && styleHeight) {
             return this.mounted && this.setState({
                 width: typeof styleWidth === 'string' && styleWidth.search('%') !== -1 ? styleWidth : parseInt(styleWidth, 10),
-                height: typeof styleHeight === 'string' && styleHeight.search('%') !== -1 ? styleHeight : parseInt(styleHeight, 10)
+                height: typeof styleHeight === 'string' && styleHeight.search('%') !== -1 ? styleHeight : parseInt(styleHeight, 10),
             });
         }
 
@@ -104,7 +104,7 @@ export default class HTMLImage extends PureComponent<Props, State> {
 
         // Fetch image dimensions only if they aren't supplied or if with or height is missing
         Image.getSize(
-            //source.uri,
+            // source.uri,
             path,
             (originalWidth, originalHeight) => {
                 if (!imagesMaxWidth) {
@@ -117,7 +117,7 @@ export default class HTMLImage extends PureComponent<Props, State> {
             },
             () => {
                 this.mounted && this.setState({ error: true });
-            }
+            },
         );
     }
 

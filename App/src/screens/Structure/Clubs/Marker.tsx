@@ -13,18 +13,18 @@ type Props = {
     theme: Theme,
     showClub: typeof showClub,
     club: ClubsMap_Clubs,
-}
+};
 
 type State = {
     visible: boolean,
-}
+};
 
-const maxWidth = Dimensions.get("window").width - 32 - 16;
+const maxWidth = Dimensions.get('window').width - 32 - 16;
 
 class MarkerBase extends React.Component<Props> {
     state: State = {
         visible: false,
-    }
+    };
 
     _showClub = () => {
         this.props.showClub(this.props.club.id);
@@ -47,7 +47,7 @@ class MarkerBase extends React.Component<Props> {
                 />
 
                 <Callout
-                    tooltip
+                    tooltip={true}
                     style={[styles.callout, {
                         backgroundColor: this.props.theme.colors.surface,
                     }]}
@@ -70,20 +70,20 @@ class MarkerBase extends React.Component<Props> {
 }
 
 export const ClubMarker = connect(null, {
-    showClub
+    showClub,
 })(withTheme(MarkerBase));
 
 
 export const styles = StyleSheet.create({
     title: {
         paddingHorizontal: 8,
-        maxWidth
+        maxWidth,
     },
 
     callout: {
         height: 190, width: 190,
-        flexDirection: "column",
-        alignItems: "center",
+        flexDirection: 'column',
+        alignItems: 'center',
         elevation: 3,
-    }
+    },
 });

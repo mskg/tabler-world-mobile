@@ -7,10 +7,10 @@ type Props = {
     thumbnailSource: any,
     source: any,
     style?: any,
-}
+};
 
 type State = {
-}
+};
 
 class ProgressiveImage extends React.PureComponent<Props, State> {
     imageAnimated = new Animated.Value(0);

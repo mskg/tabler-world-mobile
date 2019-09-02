@@ -1,14 +1,14 @@
 import Analytics from '@aws-amplify/analytics';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import { EventType } from "./EventType";
+import { EventType } from './EventType';
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from "./logger";
+import { logger } from './logger';
 import { Metrics, Params } from './Types';
 
 export class CognitoAnalytics implements IAnalyticsProvider {
     constructor(region: string, appId: string) {
-        logger.log("Boostrapping CognitoAnalytics");
+        logger.log('Boostrapping CognitoAnalytics');
 
         Analytics.configure({
             autoSessionRecord: true,
@@ -16,7 +16,7 @@ export class CognitoAnalytics implements IAnalyticsProvider {
             AWSPinpoint: {
                 appId,
                 region,
-            }
+            },
         });
     }
 
@@ -55,13 +55,13 @@ export class CognitoAnalytics implements IAnalyticsProvider {
             },
             metrics: {
                 ...(metrics || {}),
-            }
+            },
         });
     }
 
     trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
         Analytics.record({
-            name: "Event",
+            name: 'Event',
             attributes: {
                 ...(attributes || {}),
                 event,
@@ -69,7 +69,7 @@ export class CognitoAnalytics implements IAnalyticsProvider {
             },
             metrics: {
                 ...(metrics || {}),
-            }
+            },
         });
     }
 
@@ -84,7 +84,7 @@ export class CognitoAnalytics implements IAnalyticsProvider {
             },
             metrics: {
                 ...(metrics || {}),
-            }
+            },
         });
     }
 }

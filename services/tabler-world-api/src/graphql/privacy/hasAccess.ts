@@ -1,5 +1,5 @@
-import { ASSOCIATION, CLUB, PRIVATE, PUBLIC } from "./DBLevels";
-import { FilterLevel } from "./FilterLevel";
+import { ASSOCIATION, CLUB, PRIVATE, PUBLIC } from './DBLevels';
+import { FilterLevel } from './FilterLevel';
 
 export function hasAccess(priv: string, level: FilterLevel) {
     if (priv === PUBLIC) {

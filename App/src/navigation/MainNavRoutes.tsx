@@ -14,32 +14,32 @@ export const MainNavRoutes = {
         screen: MembersScreen,
         navigationOptions: {
             tabBarLabel: I18N.Members.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-body" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-body" />),
+        },
     },
 
     [MainRoutes.Structure]: {
         screen: StructureScreen,
         navigationOptions: {
             tabBarLabel: I18N.Structure.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />),
+        },
     },
 
     [MainRoutes.News]: {
         screen: NewsScreen,
         navigationOptions: {
             tabBarLabel: I18N.News.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-paper" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-paper" />),
+        },
     },
 
     [MainRoutes.Albums]: {
         screen: AlbumsScreen,
         navigationOptions: {
             tabBarLabel: I18N.Albums.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-image" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-image" />),
+        },
     },
 
     [MainRoutes.World]: {
@@ -47,14 +47,14 @@ export const MainNavRoutes = {
         navigationOptions: {
             tabBarLabel: I18N.World.tab,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-globe" />),
-        }
+        },
     },
 
     [MainRoutes.More]: {
         screen: MoreScreen,
         navigationOptions: {
             tabBarLabel: I18N.Menu.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-menu" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-menu" />),
+        },
     },
 };

@@ -1,7 +1,7 @@
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import { DataSource, DataSourceConfig } from "apollo-datasource";
-import DataLoader from "dataloader";
-import { IApolloContext } from "../types/IApolloContext";
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import { DataSource, DataSourceConfig } from 'apollo-datasource';
+import DataLoader from 'dataloader';
+import { IApolloContext } from '../types/IApolloContext';
 
 export class GeocoderDataSource extends DataSource<IApolloContext> {
     public context!: IApolloContext;
@@ -18,7 +18,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
                     ST_X (point::geometry) AS longitude,
                     ST_Y (point::geometry) AS latitude
                 from geocodes where hash = ANY($1)`,
-                [ids]);
+                                               [ids]);
 
                 // this.context.logger.log(ids, res.rows);
                 return ids.map((id) => res.rows.find((r) => r.hash == id));
@@ -30,7 +30,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
     }
 
     public readOne(hash: string): Promise<any | null> {
-        this.context.logger.log("readOne", hash);
+        this.context.logger.log('readOne', hash);
         return this.data.load(hash);
     }
 }

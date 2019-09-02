@@ -16,7 +16,7 @@ import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../../helper/Logger";
+import { Categories, Logger } from '../../../helper/Logger';
 import { normalizeForSearch } from '../../../helper/normalizeForSearch';
 import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
@@ -56,7 +56,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
         this.state = {
             marginBottom: 1,
-            search: "",
+            search: '',
             filtered: this.filterData(props.data),
         };
     }
@@ -67,18 +67,18 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
             this.setState({
                 search: this.state.search,
-                filtered: this.filterData(nextProps.data, this.state.search)
+                filtered: this.filterData(nextProps.data, this.state.search),
             });
         }
     }
 
     _getLocationAsync = async () => {
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        const { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
             return;
         }
 
-        let location = await Location.getCurrentPositionAsync({});
+        const location = await Location.getCurrentPositionAsync({});
         this.setState({
             location,
             centerOn: {
@@ -86,11 +86,11 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 latitude: location.coords.latitude,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
-            }
+            },
         });
-    };
+    }
 
-    _onMapReady = () => this.setState({ marginBottom: 0 })
+    _onMapReady = () => this.setState({ marginBottom: 0 });
 
     componentWillMount() {
         if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -125,13 +125,13 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     filterData(data?: ClubsMap | null, text?: string): ClubsMap_Clubs[] {
         if (data == null) { return []; }
 
-        //@ts-ignore
+        // @ts-ignore
         return _(data.Clubs)
             .filter(d => d.location != null)
             .map((item: ClubsMap_Clubs) => {
-                var match = _.find(
+                const match = _.find(
                     this.makeSearchTexts(item),
-                    this._normalizedSearch(text || ""));
+                    this._normalizedSearch(text || ''));
 
                 return match ? {
                     ...item,
@@ -147,15 +147,15 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
     _fitMap = _.debounce(() => {
         if (this.mapRef) {
-            if (this.state.search === "") {
+            if (this.state.search === '') {
                 this._getLocationAsync();
             } else {
                 this.mapRef.fitToSuppliedMarkers(
-                    this.state.filtered.map(d => d.id)
+                    this.state.filtered.map(d => d.id),
                 );
             }
-        };
-    }, 1000);
+        }
+    },                   1000);
 
     // _fitCluster = (_coordinates,markers) => {
     //     if (this.mapRef) {
@@ -170,7 +170,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
             search: text,
             filtered: this.filterData(this.props.data, text),
             centerOn: undefined,
-        }, this._fitMap);
+        },            this._fitMap);
     }
 
     render() {
@@ -266,4 +266,4 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
 );
 
 export const ClubsMapScreen = withWhoopsErrorBoundary(
-    withCacheInvalidation("clubs", ClubsScreenWithQuery));
+    withCacheInvalidation('clubs', ClubsScreenWithQuery));

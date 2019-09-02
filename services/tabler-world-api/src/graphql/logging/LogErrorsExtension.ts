@@ -1,7 +1,7 @@
-import { GraphQLResponse } from "apollo-server-core";
-import { GraphQLExtension } from "apollo-server-lambda";
-import { print } from "graphql";
-import { IApolloContext } from "../types/IApolloContext";
+import { GraphQLResponse } from 'apollo-server-core';
+import { GraphQLExtension } from 'apollo-server-lambda';
+import { print } from 'graphql';
+import { IApolloContext } from '../types/IApolloContext';
 
 export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
     // need to save variables
@@ -11,7 +11,7 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
             o.context.requestCache.parsedQuery = o.parsedQuery;
             o.context.requestCache.variables = o.variables;
         } catch (e) {
-            o.context.logger.error("Faild to extract query and variables", e);
+            o.context.logger.error('Faild to extract query and variables', e);
         }
     }
 
@@ -27,10 +27,10 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
                 const variables = context.requestCache.variables;
 
                 graphqlResponse.errors.forEach(
-                    (err) => context.logger.error("Query", query, "Variables", variables, "Error", err));
+                    (err) => context.logger.error('Query', query, 'Variables', variables, 'Error', err));
             }
         } catch (e) {
-            o.context.logger.error("Faild to log error", e);
+            o.context.logger.error('Faild to log error', e);
         }
     }
 }

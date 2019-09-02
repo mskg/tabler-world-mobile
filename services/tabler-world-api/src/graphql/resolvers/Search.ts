@@ -1,7 +1,7 @@
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import _ from "lodash";
-import { SECTOR_MAPPING } from "../helper/Sectors";
-import { IApolloContext } from "../types/IApolloContext";
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import _ from 'lodash';
+import { SECTOR_MAPPING } from '../helper/Sectors';
+import { IApolloContext } from '../types/IApolloContext';
 
 type SearchInput = {
     after: string,
@@ -21,7 +21,7 @@ type SearchInput = {
 export const SearchMemberResolver = {
     MemberListView: {
         __resolveType(_obj: any, _context: IApolloContext, _info: any) {
-            return "Member";
+            return 'Member';
         },
     },
 
@@ -31,43 +31,43 @@ export const SearchMemberResolver = {
             const PAGE_SIZE = 20;
 
             const cols = [
-                "id",
+                'id',
 
-                "pic",
+                'pic',
 
-                "firstname",
-                "lastname",
+                'firstname',
+                'lastname',
 
-                "association",
-                "associationname",
+                'association',
+                'associationname',
 
-                "area",
-                "areaname",
+                'area',
+                'areaname',
 
-                "club",
-                "clubname",
+                'club',
+                'clubname',
 
-                "roles",
+                'roles',
 
-                "cursor_lastfirst",
+                'cursor_lastfirst',
             ];
 
-            const terms = (args.query.text || "")
-                .split(" ")
+            const terms = (args.query.text || '')
+                .split(' ')
                 .map((r) => r.trim())
-                .filter((r) => r != "")
+                .filter((r) => r != '')
                 .map((r) => `%${r}%`);
 
-            context.logger.log("Terms", terms, "Args", args);
+            context.logger.log('Terms', terms, 'Args', args);
 
             const parameters: any[] = [
                 PAGE_SIZE + 1,
-                parseInt(args.after || "0", 10),
+                parseInt(args.after || '0', 10),
             ];
 
             const filters = [
-                "removed = FALSE",
-                "cursor_lastfirst > $2",
+                'removed = FALSE',
+                'cursor_lastfirst > $2',
             ];
 
             if (terms.length !== 0) {
@@ -96,7 +96,7 @@ export const SearchMemberResolver = {
             }
 
             if (args.query.sectors != null && args.query.sectors.length > 0) {
-                parameters.push(args.query.sectors.map((s) => (JSON.stringify([{sector: SECTOR_MAPPING[s]}]))));
+                parameters.push(args.query.sectors.map((s) => (JSON.stringify([{ sector: SECTOR_MAPPING[s] }]))));
                 const sectorsId = parameters.length;
 
                 parameters.push(context.principal.id);
@@ -123,16 +123,16 @@ where
                 context,
                 async (client) => {
                     const res = await client.query(`
-select  ${cols.join(",")}
+select  ${cols.join(',')}
 from profiles
 where
-        ${filters.join(" AND ")}
+        ${filters.join(' AND ')}
 order by cursor_lastfirst
 limit $1`,
-                        parameters);
+                                                   parameters);
 
                     const end = Math.min(PAGE_SIZE, res.rows.length);
-                    context.logger.log("Size", end);
+                    context.logger.log('Size', end);
 
                     return {
                         nodes: res.rows.length > 0 ? _(res.rows).take(end).map(
@@ -142,7 +142,7 @@ limit $1`,
                         ) : [],
 
                         pageInfo: {
-                            endCursor: end >= 1 ? res.rows[end - 1].cursor_lastfirst.toString() : "0",
+                            endCursor: end >= 1 ? res.rows[end - 1].cursor_lastfirst.toString() : '0',
                             hasNextPage: res.rows.length > PAGE_SIZE,
                         },
                     };

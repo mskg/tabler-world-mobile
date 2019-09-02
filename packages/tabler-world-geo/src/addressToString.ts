@@ -1,4 +1,4 @@
-import { IAddress } from "./IAddress";
+import { IAddress } from './IAddress';
 
 export function addressToString(address: IAddress): string | null {
     // we cannot encode that
@@ -13,9 +13,9 @@ export function addressToString(address: IAddress): string | null {
         address.city,
         address.country,
     ]
-    // we replace all "spaces" as real spaces
-    .map((a) => a ? a.trim().replace(/\s/ig, " ") : undefined)
-    .filter((a) => a && a !== "");
+        // we replace all "spaces" as real spaces
+        .map((a) => a ? a.trim().replace(/\s/ig, ' ') : undefined)
+        .filter((a) => a && a !== '');
 
-    return fields.length === 0 ? null : fields.join(",");
+    return fields.length === 0 ? null : fields.join(',');
 }

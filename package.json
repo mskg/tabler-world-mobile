@@ -14,9 +14,9 @@
         "services/*"
     ],
     "devDependencies": {
-        "concurrently": "^4.1.2",
-        "tslint": "^5.19.0",
-        "tslint-microsoft-contrib": "^6.2.0",
-        "typescript-tslint-plugin": "^0.5.4"
+        "concurrently": "^4.1.2"
+    },
+    "dependencies": {
+        "@mskg/tabler-world-tslint-rules": "0.0.1"
     }
 }

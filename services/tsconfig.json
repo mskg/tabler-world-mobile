@@ -1,14 +1,6 @@
 {
     "extends": "../tsconfig.json",
-
     "compilerOptions": {
-        "declaration": false,
-
-        "plugins": [
-            {
-                "name": "typescript-tslint-plugin",
-                "configFile": "./tslint.json"
-            }
-        ]
+        "declaration": false
     }
 }

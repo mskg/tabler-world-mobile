@@ -1,5 +1,5 @@
-import _ from "lodash";
-import { IApolloContext } from "../types/IApolloContext";
+import _ from 'lodash';
+import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
@@ -18,7 +18,7 @@ export const DocumentsResolver = {
 
     DirectoryItem: {
         __resolveType: (root: any, _context: IApolloContext) => {
-            return root.filename ? "File" : "Folder";
+            return root.filename ? 'File' : 'Folder';
         },
     },
 

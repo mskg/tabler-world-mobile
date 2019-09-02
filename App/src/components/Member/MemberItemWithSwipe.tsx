@@ -3,12 +3,12 @@ import React from 'react';
 import { Theme, TouchableRipple } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../../model/IAppState';
-import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
+import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
 import { FavoriteIcon } from '../FavoriteButton';
 import { SwipableItem, SwipeButtonsContainer } from '../SwipableItem';
-import { MemberListItem } from "./MemberListItem";
+import { MemberListItem } from './MemberListItem';
 
 type Props = {
     item: IMemberOverviewFragment;
@@ -28,7 +28,7 @@ type State = {
 
 const testIsFavorite = (member: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
     return favorites[member.id] === true;
-}
+};
 
 export class MemberItemWithSwipeBase extends React.Component<Props, State> {
     ref;
@@ -52,7 +52,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
             member={this.props.item}
             style={{ marginRight: this.props.margin }}
             size={size} />
-    );
+    )
 
     _toggle = () => {
         requestAnimationFrame(() => {
@@ -85,7 +85,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
                     <TouchableRipple
                         onPress={this._toggle}
                         style={{
-                            height: "100%",
+                            height: '100%',
                             width: 24 * 3,
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -94,7 +94,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
                     >
                         <Ionicons
                             size={24}
-                            name={isFavorite ? "md-star-outline" : "md-star"}
+                            name={isFavorite ? 'md-star-outline' : 'md-star'}
                             color={this.props.theme.colors.placeholder}
                         />
                     </TouchableRipple>
@@ -166,5 +166,5 @@ export const MemberItemWithSwipe = connect(
     (state: IAppState) => ({ favorites: state.filter.member.favorites }),
     {
         toggleFavorite,
-    }
+    },
 )(MemberItemWithSwipeBase);

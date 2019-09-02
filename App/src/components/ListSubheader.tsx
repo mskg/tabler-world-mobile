@@ -4,21 +4,21 @@ import { StyleSheet } from 'react-native';
 import { Text, Theme, withTheme } from 'react-native-paper';
 
 type Props = {
-  theme: Theme,
-  style?: any,
+    theme: Theme,
+    style?: any,
 };
 
 class ListSubheader extends React.Component<Props> {
-  render() {
-    const { style, theme, ...rest } = this.props;
-    const { colors, fonts } = theme;
-    const fontFamily = fonts.medium;
-    const textColor = color(colors.text)
+    render() {
+      const { style, theme, ...rest } = this.props;
+      const { colors, fonts } = theme;
+      const fontFamily = fonts.medium;
+      const textColor = color(colors.text)
       .alpha(0.54)
       .rgb()
       .string();
 
-    return (
+      return (
       <Text
         numberOfLines={1}
         {...rest}
@@ -29,9 +29,9 @@ class ListSubheader extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    paddingVertical: 13,
+    container: {
+      paddingHorizontal: 16,
+      paddingVertical: 13,
   },
 });
 

@@ -1,6 +1,6 @@
-import { removeEmptyTags } from "@mskg/tabler-world-common";
-import _ from "lodash";
-import { IApolloContext } from "../types/IApolloContext";
+import { removeEmptyTags } from '@mskg/tabler-world-common';
+import _ from 'lodash';
+import { IApolloContext } from '../types/IApolloContext';
 
 type IdQuery = {
     id: number,
@@ -20,7 +20,7 @@ export const NewsResolver = {
         },
 
         TopNews: async (_root: any, _args: {}, context: IApolloContext) => {
-                return _(await context.dataSources.tablerWorld.getAllNews())
+            return _(await context.dataSources.tablerWorld.getAllNews())
                 .filter((f) => f.is_published === true)
                 .filter((f) => f.is_published_start_date == null || Date.now() > new Date(f.is_published_start_date).getTime())
                 .filter((f) => f.is_published_end_date == null || Date.now() < new Date(f.is_published_end_date).getTime())
@@ -33,7 +33,7 @@ export const NewsResolver = {
     NewsArticle: {
         album: async (root: any, _args: {}, context: IApolloContext) => {
             const val = root.album_id ? root.album_id : null;
-            if (val == null || val === "") { return null; }
+            if (val == null || val === '') { return null; }
 
             const all = await (context.dataSources.tablerWorld.getAllAlbums());
             return all.find((a: any) => a.id === val);
@@ -41,7 +41,7 @@ export const NewsResolver = {
 
         description: (root: any, _args: {}, _context: IApolloContext) => {
             const val = root.content ? root.content.trim() : null;
-            if (val == null || val === "") { return null; }
+            if (val == null || val === '') { return null; }
 
             // this kills empty nodes
             return removeEmptyTags(val);

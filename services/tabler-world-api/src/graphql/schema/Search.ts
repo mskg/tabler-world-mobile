@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-lambda";
+import { gql } from 'apollo-server-lambda';
 
 // tslint:disable-next-line: export-name
 export const SearchMember = gql`

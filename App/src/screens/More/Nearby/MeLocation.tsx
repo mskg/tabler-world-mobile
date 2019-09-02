@@ -1,4 +1,4 @@
-    import { Ionicons } from '@expo/vector-icons';
+ import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import React from 'react';
 import { Query } from 'react-apollo';
@@ -28,10 +28,10 @@ type StateProps = {
     address?: Location.Address,
     timestamp?: number,
     now: number,
-  };
+};
 
 type DispatchPros = {
-    showLocationHistory: typeof showLocationHistory
+    showLocationHistory: typeof showLocationHistory,
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
@@ -44,7 +44,7 @@ class MeLocationBase extends React.Component<Props, State> {
 
     _update = () => {
         requestAnimationFrame(async () =>
-            await handleLocationUpdate([await Location.getCurrentPositionAsync()])
+            await handleLocationUpdate([await Location.getCurrentPositionAsync()]),
         );
     }
 
@@ -56,19 +56,19 @@ class MeLocationBase extends React.Component<Props, State> {
                 {({ data: medata, error }) => {
                     if (error || medata == null || medata.Me == null) return null;
                     return (
-                        <List.Section title={I18N.NearbyMembers.location} key={"me"}>
+                        <List.Section title={I18N.NearbyMembers.location} key={'me'}>
                             <InternalMeListItemBase
                                 theme={this.props.theme}
                                 title={<Title>{medata.Me.firstname} {medata.Me.lastname}</Title>}
-                                subtitle={this.getLocation() + ", " + I18N.NearbyMembers.ago(
+                                subtitle={this.getLocation() + ', ' + I18N.NearbyMembers.ago(
                                     timespan(
                                         this.props.now,
-                                        this.props.timestamp
+                                        this.props.timestamp,
                                     ))}
                                 me={medata.Me}
                                 onPress={isFeatureEnabled(Features.LocationHistory) ? () => this.props.showLocationHistory() : undefined}
 
-                                right={({size}) =>
+                                right={({ size }) =>
                                     <IconButton
                                         onPress={this._update}
                                         icon={() => (<Ionicons name="md-refresh" size={size} />)}
@@ -89,7 +89,7 @@ export const MeLocation = connect<StateProps, DispatchPros, OwnProps, IAppState>
         timestamp: state.location.timestamp,
     }),
     {
-        showLocationHistory
+        showLocationHistory,
     })(withNavigation(withTheme(MeLocationBase)));
 
 

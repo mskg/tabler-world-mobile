@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { PanResponder, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { AlphabetSrollBarPointer } from "./AlphabetScrollBarPointer";
+import { AlphabetSrollBarPointer } from './AlphabetScrollBarPointer';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
 
@@ -18,14 +18,14 @@ type AlphabeticScrollBarProps = {
     scrollBarContainerStyle?: any
 
     onScroll?: (letter: string, top: number) => void,
-    onScrollEnds?: (letter: string | undefined) => void
+    onScrollEnds?: (letter: string | undefined) => void,
 };
 
 type State = {
     activeLetter: string | undefined,
     alphabet: string[],
-    activeLetterViewTop: number | undefined
-}
+    activeLetterViewTop: number | undefined,
+};
 
 export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, State> {
     alphabetContainer;
@@ -39,7 +39,7 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
         this.state = {
             activeLetter: undefined,
             activeLetterViewTop: undefined,
-            alphabet: props.reverse ? [...ALPHABET].reverse() : ALPHABET
+            alphabet: props.reverse ? [...ALPHABET].reverse() : ALPHABET,
         };
     }
 
@@ -59,7 +59,7 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
             const alphabet = newProps.reverse ? [...ALPHABET].reverse() : ALPHABET;
 
             this.setState({
-                alphabet
+                alphabet,
             });
         }
     }
@@ -72,12 +72,11 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
                 activeLetterViewTop: y
                 - (
                     this.props.top || 0
-                )
+                ),
             });
 
-            return this.state.alphabet[
-                Math.round((top / this.containerHeight) * this.state.alphabet.length)
-            ];
+            return this.state.alphabet[ Math.round((top / this.containerHeight) * this.state.alphabet.length)
+];
         }
 
         return undefined;
@@ -118,7 +117,7 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
                 <View
                     style={[
                         styles.main,
-                        { top: this.props.top || 0 }
+                        { top: this.props.top || 0 },
                     ]}
                 >
                     <View
@@ -140,10 +139,10 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
                                     this.props.fontColor ? {
                                         color:
                                             // !!(this.props.supports || ALPHABET).find(s => s == letter) ?
-                                            this.props.fontColor
+                                            this.props.fontColor,
                                         // : "grey"
                                     } : {},
-                                    { fontSize: this.props.fontSize }
+                                    { fontSize: this.props.fontSize },
                                 ]}>
                                     {letter}
                                 </Text>
@@ -167,28 +166,28 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
 
 const styles = StyleSheet.create({
     main: {
-        position: "absolute",
+        position: 'absolute',
 
         bottom: 0,
         right: 0,
 
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     container: {
         width: 25,
         right: 0,
         // bottom: 0,
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
 
     letter: {
         // marginVertical: 1
-        alignSelf: "center",
-        fontWeight: "bold",
-    }
+        alignSelf: 'center',
+        fontWeight: 'bold',
+    },
 });

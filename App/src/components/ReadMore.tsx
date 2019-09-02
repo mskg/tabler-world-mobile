@@ -1,13 +1,13 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { I18N } from '../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../theme/colors';
 
 type State = {
     shouldShowReadMore: boolean,
-    showAllText: boolean
-}
+    showAllText: boolean,
+};
 
 type VoidFunc = () => void;
 
@@ -19,7 +19,7 @@ type Props = {
 
     renderTruncatedFooter?: (click: VoidFunc) => void;
     renderRevealedFooter?: (click: VoidFunc) => void;
-}
+};
 
 export class ReadMore extends React.Component<Props, State> {
     _isMounted: boolean = false;
@@ -27,7 +27,7 @@ export class ReadMore extends React.Component<Props, State> {
 
     state = {
         shouldShowReadMore: false,
-        showAllText: false
+        showAllText: false,
     };
 
     async componentDidMount() {
@@ -50,11 +50,11 @@ export class ReadMore extends React.Component<Props, State> {
         // const limitedHeight = await measureHeightAsync(this._text);
         if (fullHeight > this.props.maxHeight) {
             this.setState({
-                shouldShowReadMore: true
+                shouldShowReadMore: true,
             },
-                () => {
+                          () => {
                     this.props.onReady && this.props.onReady();
-                }
+                },
             );
         } else {
             this.props.onReady && this.props.onReady();
@@ -73,11 +73,11 @@ export class ReadMore extends React.Component<Props, State> {
                         height: this.state.shouldShowReadMore && !this.state.showAllText
                             ? this.props.maxHeight
                             : undefined,
-                        overflow: "hidden"
+                        overflow: 'hidden',
                     }}
 
                     ref={(ref) => {
-                        this._text = ref
+                        this._text = ref;
                     }}
                 >
                     {this.props.children}
@@ -89,14 +89,14 @@ export class ReadMore extends React.Component<Props, State> {
 
     _handlePressReadMore = () => {
         this.setState({ showAllText: true });
-    };
+    }
 
     _handlePressReadLess = () => {
         this.setState({ showAllText: false });
-    };
+    }
 
     _maybeRenderReadMore() {
-        let { shouldShowReadMore, showAllText } = this.state;
+        const { shouldShowReadMore, showAllText } = this.state;
 
         if (shouldShowReadMore && !showAllText) {
             if (this.props.renderTruncatedFooter) {
@@ -108,7 +108,7 @@ export class ReadMore extends React.Component<Props, State> {
                     {I18N.ReadMore.more}
                 </Text>
             );
-        } else if (shouldShowReadMore && showAllText) {
+        }  if (shouldShowReadMore && showAllText) {
             if (this.props.renderRevealedFooter) {
                 return this.props.renderRevealedFooter(this._handlePressReadLess);
             }
@@ -137,6 +137,6 @@ function nextFrameAsync(): Promise<void> {
 const styles = StyleSheet.create({
     button: {
         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
-        marginTop: 5
-    }
+        marginTop: 5,
+    },
 });

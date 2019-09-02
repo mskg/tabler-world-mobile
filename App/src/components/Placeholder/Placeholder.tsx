@@ -4,7 +4,7 @@ type Props = {
     ready: boolean,
     previewComponent: React.ReactNode,
     children?: any,
-}
+};
 
 const TEST_PLACHOLDERS = false;
 

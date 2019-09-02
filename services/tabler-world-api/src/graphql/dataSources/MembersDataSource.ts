@@ -1,29 +1,29 @@
-import { cachedDataLoader, makeCacheKey, writeThrough } from "@mskg/tabler-world-cache";
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import { DataSource, DataSourceConfig } from "apollo-datasource";
-import DataLoader from "dataloader";
-import _ from "lodash";
-import { filter } from "../privacy/filter";
-import { IApolloContext } from "../types/IApolloContext";
+import { cachedDataLoader, makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import { DataSource, DataSourceConfig } from 'apollo-datasource';
+import DataLoader from 'dataloader';
+import _ from 'lodash';
+import { filter } from '../privacy/filter';
+import { IApolloContext } from '../types/IApolloContext';
 
 const cols = [
-    "id",
+    'id',
 
-    "pic",
+    'pic',
 
-    "firstname",
-    "lastname",
+    'firstname',
+    'lastname',
 
-    "association",
-    "associationname",
+    'association',
+    'associationname',
 
-    "area",
-    "areaname",
+    'area',
+    'areaname',
 
-    "club",
-    "clubname",
+    'club',
+    'clubname',
 
-    "roles",
+    'roles',
 ];
 
 export class MembersDataSource extends DataSource<IApolloContext> {
@@ -36,12 +36,12 @@ export class MembersDataSource extends DataSource<IApolloContext> {
         this.memberLoader = new DataLoader<number, any>(
             cachedDataLoader<number>(
                 this.context,
-                (k) => makeCacheKey("Member", [k]),
-                (r) => makeCacheKey("Member", [r.id]),
+                (k) => makeCacheKey('Member', [k]),
+                (r) => makeCacheKey('Member', [r.id]),
                 (ids) => useDataService(
                     this.context,
                     async (client) => {
-                        this.context.logger.log("DB reading members", ids);
+                        this.context.logger.log('DB reading members', ids);
 
                         const res = await client.query(`
     select *
@@ -49,12 +49,12 @@ export class MembersDataSource extends DataSource<IApolloContext> {
     where
         id = ANY($1)
     and removed = FALSE
-    `, [ids]);
+    `,                                                 [ids]);
 
                         return res.rows;
                     },
                 ),
-                "Member",
+                'Member',
             ),
             {
                 cacheKeyFn: (k: number) => k,
@@ -63,17 +63,17 @@ export class MembersDataSource extends DataSource<IApolloContext> {
     }
 
     public async readFavorites(): Promise<any[] | null> {
-        this.context.logger.log("readAll");
+        this.context.logger.log('readAll');
 
         return await useDataService(
             this.context,
             async (client) => {
-                this.context.logger.log("executing readFavorites");
+                this.context.logger.log('executing readFavorites');
 
                 const res = await client.query(`
 select settings->'favorites' as favorites
 from usersettings
-where id = $1`, [this.context.principal.id]);
+where id = $1`,                                [this.context.principal.id]);
 
                 if (res.rowCount == 0) { return []; }
                 const favorites: number[] = res.rows[0].favorites;
@@ -81,75 +81,75 @@ where id = $1`, [this.context.principal.id]);
                 if (favorites == null || favorites.length === 0) { return []; }
 
                 return this.memberLoader.loadMany(
-                    favorites.filter((f) => typeof (f) === "number" && !isNaN(f)),
+                    favorites.filter((f) => typeof (f) === 'number' && !isNaN(f)),
                 );
             },
         );
     }
 
     public async readAreas(areas: number[]): Promise<any[] | null> {
-        this.context.logger.log("readAll");
+        this.context.logger.log('readAll');
 
         const results = await Promise.all(areas.map((a) =>
             writeThrough(this.context,
-                makeCacheKey("Members", [this.context.principal.association, "area", a]),
-                async () => await useDataService(
+                         makeCacheKey('Members', [this.context.principal.association, 'area', a]),
+                         async () => await useDataService(
                     this.context,
                     async (client) => {
-                        this.context.logger.log("executing readByTableAndAreas");
+                        this.context.logger.log('executing readByTableAndAreas');
 
                         const res = await client.query(`
-    select ${cols.join(",")}
+    select ${cols.join(',')}
     from profiles
     where
             association = $1
         and area = ANY ($2::int[])
-        and removed = FALSE`, [
-                                this.context.principal.association,
-                                areas,
-                            ]);
+        and removed = FALSE`,                          [
+            this.context.principal.association,
+            areas,
+        ]);
 
                         return res.rows;
                     },
                 ),
-                "MemberOverview"),
+                         'MemberOverview'),
         ));
 
         return _(results).flatMap().value();
     }
 
     public async readAll(): Promise<any[] | null> {
-        this.context.logger.log("readAll");
+        this.context.logger.log('readAll');
 
         return await writeThrough(this.context,
-            makeCacheKey("Members", [this.context.principal.association, "all"]),
-            async () => await useDataService(
+                                  makeCacheKey('Members', [this.context.principal.association, 'all']),
+                                  async () => await useDataService(
                 this.context,
                 async (client) => {
-                    this.context.logger.log("executing readAll");
+                    this.context.logger.log('executing readAll');
 
                     const res = await client.query(`
-select ${cols.join(",")}
+select ${cols.join(',')}
 from profiles
 where
     association = $1
-and removed = FALSE`, [this.context.principal.association]);
+and removed = FALSE`,                              [this.context.principal.association]);
 
                     return res.rows;
                 },
             ),
-            "MemberOverview");
+                                  'MemberOverview');
     }
 
     public async readClub(association: string, club: number): Promise<any[] | null> {
-        this.context.logger.log("readClub", association, club);
-        const clubDetails = await this.context.dataSources.structure.getClub(association + "_" + club);
+        this.context.logger.log('readClub', association, club);
+        const clubDetails = await this.context.dataSources.structure.getClub(association + '_' + club);
 
         return this.readMany(clubDetails.members);
     }
 
     public async readMany(ids: number[]): Promise<any[]> {
-        this.context.logger.log("readMany", ids);
+        this.context.logger.log('readMany', ids);
         return (await this.memberLoader.loadMany(ids)).map((member: any) => {
             if (member == null) { return member; }
 
@@ -161,7 +161,7 @@ and removed = FALSE`, [this.context.principal.association]);
     }
 
     public async readOne(id: number): Promise<any | null> {
-        this.context.logger.log("readOne", id);
+        this.context.logger.log('readOne', id);
 
         const member = await this.memberLoader.load(id);
         if (member == null) { return member; }

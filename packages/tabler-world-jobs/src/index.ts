@@ -1,2 +1,2 @@
-export * from "./writeJobLog";
+export * from './writeJobLog';
 

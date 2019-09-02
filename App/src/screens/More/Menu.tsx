@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { ScrollView, View } from "react-native";
+import { ScrollView, View } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -82,7 +82,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                                 if (data && data.MyRoles && data.MyRoles.find(i => i == UserRole.jobs)) {
                                     return (
                                         <>
-                                            <NavigationItem icon="md-alarm" theme={this.props.theme} text={"Job History"} onPress={
+                                            <NavigationItem icon="md-alarm" theme={this.props.theme} text={'Job History'} onPress={
                                                 () => this.props.navigation.navigate(Routes.JobHistory)} />
 
                                             <Divider inset={true} />
@@ -90,7 +90,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                                     );
                                 }
 
-                                return null
+                                return null;
                             }}
                         </Query>
 
@@ -109,7 +109,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
 
 export const MenuScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
-        showExperiments: state.settings.experiments
+        showExperiments: state.settings.experiments,
     }),
     {
-    })(withCacheInvalidation("userroles", withNavigation(withTheme(MenuScreenBase))));
+    })(withCacheInvalidation('userroles', withNavigation(withTheme(MenuScreenBase))));

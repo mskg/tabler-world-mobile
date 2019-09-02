@@ -12,7 +12,7 @@ import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
+import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { TopNews, TopNews_TopNews } from '../../model/graphql/TopNews';
 import { GetNewsQuery } from '../../queries/GetNewsQuery';
@@ -48,7 +48,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
             <Card key={item.id} style={styles.card}>
                 <Card.Title
                     title={item.name}
-                    subtitle={item.createdby.firstname + " " + item.createdby.lastname}
+                    subtitle={item.createdby.firstname + ' ' + item.createdby.lastname}
                     left={({ size }) => <MemberAvatar size={size} member={item.createdby} />}
                     style={styles.title}
                 />
@@ -56,10 +56,10 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                 {item.description != null &&
                     <Card.Content>
                         <View
-                            style={{ maxHeight: 200, overflow: "hidden", }}
+                            style={{ maxHeight: 200, overflow: 'hidden' }}
                         >
                             <HTMLView
-                                maxWidth={Dimensions.get("window").width - 32 * 2}
+                                maxWidth={Dimensions.get('window').width - 32 * 2}
                                 html={item.description}
                                 skipIFrames={true}
                             />
@@ -104,7 +104,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                             >
                                 <FlatList
                                     contentContainerStyle={styles.container}
-                                    //@ts-ignore
+                                    // @ts-ignore
                                     data={data != null ? data.TopNews : []}
 
                                     refreshing={loading}
@@ -124,6 +124,6 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
 
 export const NewsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("news",
-            withTheme(
+        withCacheInvalidation('news',
+                              withTheme(
                 connect(null, { showAlbum, showNewsArticle })(NewsScreenBase))));

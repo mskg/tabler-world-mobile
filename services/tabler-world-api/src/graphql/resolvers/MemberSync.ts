@@ -1,7 +1,7 @@
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import { QueryResult } from "pg";
-import { filter } from "../privacy/filter";
-import { IApolloContext } from "../types/IApolloContext";
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import { QueryResult } from 'pg';
+import { filter } from '../privacy/filter';
+import { IApolloContext } from '../types/IApolloContext';
 
 type MembersArgs = {
     state?: string,
@@ -12,10 +12,10 @@ type MembersArgs = {
 const MIN = 10;
 const DEFAULT = 250000;
 const MAX = 500000;
-const PREFIX = "diffTablers:";
+const PREFIX = 'diffTablers:';
 
-const FIELD_MODIFIED = "modifiedon";
-const CURSOR_MODIFIED = "cursor_modified";
+const FIELD_MODIFIED = 'modifiedon';
+const CURSOR_MODIFIED = 'cursor_modified';
 
 function tryParseInt(val: any, def: number, min?: number, max?: number): number {
     let limit = parseInt(val || def.toString(), 10);
@@ -27,15 +27,15 @@ function tryParseInt(val: any, def: number, min?: number, max?: number): number 
 
 function decode(val: string | undefined, def: number, min?: number, max?: number): number {
     // tslint:disable-next-line: triple-equals
-    if (val == null || val == "") { return def; }
-    const buf = Buffer.from(val, "base64");
+    if (val == null || val == '') { return def; }
+    const buf = Buffer.from(val, 'base64');
 
-    return tryParseInt(buf.toString().replace(PREFIX, ""), def, min, max);
+    return tryParseInt(buf.toString().replace(PREFIX, ''), def, min, max);
 }
 
 function encode(val: any) {
     const buff = Buffer.from(PREFIX + val.toString());
-    return buff.toString("base64");
+    return buff.toString('base64');
 }
 
 // tslint:disable: export-name
@@ -49,7 +49,7 @@ export const MemberSyncResolver = {
                 async (client) => {
                     const { cursor, limit: strLimit, state: ts } = args;
 
-                    context.logger.log("diffMembers", "ts", ts, "cursor", cursor, "limit", strLimit);
+                    context.logger.log('diffMembers', 'ts', ts, 'cursor', cursor, 'limit', strLimit);
 
                     // the ts that we have been given
                     const state: number = decode(ts, new Date(1979, 0, 30).getTime());
@@ -58,7 +58,7 @@ export const MemberSyncResolver = {
                     const calculatedCursor: number = decode(cursor, 0);
 
                     const limit = tryParseInt(strLimit, DEFAULT, MIN, MAX);
-                    context.logger.log("diffMembers", "calculatedCursor", calculatedCursor);
+                    context.logger.log('diffMembers', 'calculatedCursor', calculatedCursor);
 
                     let res: QueryResult;
                     if (calculatedCursor > 0) {
@@ -67,7 +67,7 @@ export const MemberSyncResolver = {
                             select * from profiles
                             where ${CURSOR_MODIFIED} >= $1
                             order by ${CURSOR_MODIFIED} asc
-                            limit $2`, [calculatedCursor, limit + 1]);
+                            limit $2`,           [calculatedCursor, limit + 1]);
 
                     } else {
                         // the first time, we query by modified on
@@ -75,17 +75,17 @@ export const MemberSyncResolver = {
                             select * from profiles
                             where ${FIELD_MODIFIED} > $1::timestamptz(0)
                             order by ${CURSOR_MODIFIED} asc
-                            limit $2`, [new Date(state).toISOString(), limit + 1]);
+                            limit $2`,           [new Date(state).toISOString(), limit + 1]);
                     }
 
                     // no next
                     const metadata = {
-                        next_cursor: "",
+                        next_cursor: '',
                     };
 
                     let stableTs = null;
 
-                    context.logger.log("Found", res.rows.length, "results");
+                    context.logger.log('Found', res.rows.length, 'results');
 
                     // next for paging
                     if (res.rows.length > limit) {

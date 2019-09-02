@@ -26,15 +26,15 @@ class MemberRoleCover extends React.Component<Props> {
         const { style, theme, ...rest } = this.props;
 
         // needs to be squared
-        const maxWidth = (Dimensions.get("screen").width - 16 * 2 /* padding */);
+        const maxWidth = (Dimensions.get('screen').width - 16 * 2);
 
-        let coverStyle = {
+        const coverStyle = {
             height: this.props.width || maxWidth,
             width: this.props.width || maxWidth,
             backgroundColor: this.props.theme.colors.primary,
         };
 
-        let nameStyle = {
+        const nameStyle = {
             width: this.props.width || maxWidth,
         };
 
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
 
-        flexDirection: "column",
+        flexDirection: 'column',
 
         borderTopLeftRadius: ROUNDNESS,
         borderTopRightRadius: ROUNDNESS,

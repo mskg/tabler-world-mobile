@@ -16,7 +16,7 @@ export function* settingsSaga(): SagaIterator {
         takeLatest(settingsActions.storeLanguage.type, pushLanguage),
 
         // mark record as modified on favorite toggle
-        debounce(2*1000, [filterActions.toggleFavorite.type, filterActions.addFavorite.type, filterActions.removeFavorite.type], saveFavoritesToCloud),
+        debounce(2 * 1000, [filterActions.toggleFavorite.type, filterActions.addFavorite.type, filterActions.removeFavorite.type], saveFavoritesToCloud),
         // takeLatest(settingsActions.updateSetting.type, checkLocationTask),
     ]);
 }

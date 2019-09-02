@@ -13,7 +13,7 @@ type BoardMember = {
 type Props = {
     roles: {
         role: string,
-        member: BoardMember
+        member: BoardMember,
     }[] | null,
     items: number,
 };
@@ -29,7 +29,7 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
         const nbr = this.props.items;
         const margin = 16;
         const size = (
-            Dimensions.get("screen").width
+            Dimensions.get('screen').width
             - 16 * 2 /* padding screen */
             - margin * (nbr + 1) /* padding items */
         ) / nbr; // needs to be squared
@@ -57,10 +57,10 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        alignContent: "center",
-        flexWrap: "wrap",
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        alignContent: 'center',
+        flexWrap: 'wrap',
         marginHorizontal: 8,
     },
 });

@@ -1,5 +1,5 @@
 
-import { IDataService } from "@mskg/tabler-world-rds-client";
+import { IDataService } from '@mskg/tabler-world-rds-client';
 
 // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
 // tslint:disable-next-line: variable-name
@@ -22,5 +22,5 @@ export async function writeJobLog(client: IDataService, job: string, success: bo
     await client.query(`
 INSERT INTO jobhistory (runon, name, success, data)
 VALUES(now(), $1, $3, $2)
-`, [job, JSON.stringify(data, replaceErrors), success]);
+`,                     [job, JSON.stringify(data, replaceErrors), success]);
 }

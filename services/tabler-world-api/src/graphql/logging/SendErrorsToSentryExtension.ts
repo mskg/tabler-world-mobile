@@ -1,7 +1,7 @@
-import { GraphQLResponse } from "apollo-server-core";
-import { GraphQLExtension } from "apollo-server-lambda";
-import { IApolloContext } from "../types/IApolloContext";
-import { captureException } from "./captureException";
+import { GraphQLResponse } from 'apollo-server-core';
+import { GraphQLExtension } from 'apollo-server-lambda';
+import { IApolloContext } from '../types/IApolloContext';
+import { captureException } from './captureException';
 
 export class SendErrorsToSentryExtension extends GraphQLExtension<IApolloContext> {
     public willSendResponse(o: {

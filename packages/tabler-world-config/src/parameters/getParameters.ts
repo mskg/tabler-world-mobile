@@ -1,23 +1,23 @@
-import { EXECUTING_OFFLINE, xAWS } from "@mskg/tabler-world-aws";
-import { keys, values } from "lodash";
-import LRU from "lru-cache";
-import { isArray } from "util";
-import { Environments } from "./Environments";
-import { mapName } from "./mapName";
-import { setupDebug } from "./setupDebug";
-import { PARAMETER_TTL } from "./ttl";
+import { EXECUTING_OFFLINE, xAWS } from '@mskg/tabler-world-aws';
+import { keys, values } from 'lodash';
+import LRU from 'lru-cache';
+import { isArray } from 'util';
+import { Environments } from './Environments';
+import { mapName } from './mapName';
+import { setupDebug } from './setupDebug';
+import { PARAMETER_TTL } from './ttl';
 
 const ssm = new xAWS.SSM();
 
 type ParameterNames =
-    | "tw-api"
-    | "database"
-    | "nearby"
-    | "app"
-    | "app/ios"
-    | "app/android"
-    | "cachettl"
-;
+    | 'tw-api'
+    | 'database'
+    | 'nearby'
+    | 'app'
+    | 'app/ios'
+    | 'app/android'
+    | 'cachettl'
+    ;
 
 type MapType = {
     [key in ParameterNames]: string
@@ -31,7 +31,7 @@ const memoryCache = new LRU<string, string>({
  * Setup DEBUG mode
  */
 if (EXECUTING_OFFLINE) {
-    console.log("Setting up debug keys");
+    console.log('Setting up debug keys');
     setupDebug(memoryCache);
 }
 
@@ -89,7 +89,7 @@ export async function getParameters(
     }
 
     if (EXECUTING_OFFLINE) {
-        console.log("[SSM] resolved parameters to", params);
+        console.log('[SSM] resolved parameters to', params);
     }
 
     if (failOnMissingValues) {
@@ -97,7 +97,7 @@ export async function getParameters(
         values(parameterNames).forEach(
             (n) => {
                 if (!params[n as ParameterNames]) {
-                    throw new Error("Configuration error, parameter " + n + " is not defined");
+                    throw new Error('Configuration error, parameter ' + n + ' is not defined');
                 }
             },
         );

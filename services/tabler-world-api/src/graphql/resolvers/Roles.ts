@@ -1,6 +1,6 @@
-import { makeCacheKey, writeThrough } from "@mskg/tabler-world-cache";
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import { IApolloContext } from "../types/IApolloContext";
+import { makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
@@ -9,7 +9,7 @@ export const RolesResolver = {
         Roles: async (_root: any, _args: any, context: IApolloContext) => {
             return writeThrough(
                 context,
-                makeCacheKey("Structure", ["roles", context.principal.association]),
+                makeCacheKey('Structure', ['roles', context.principal.association]),
                 () =>
 
                 useDataService(
@@ -28,7 +28,7 @@ order by 1`,
                             return res.rows.map((r) => r.name);
                         },
                     ),
-                "Structure",
+                'Structure',
             );
         },
     },

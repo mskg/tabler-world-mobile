@@ -7,18 +7,18 @@ import { SettingsState } from './state/SettingsState';
 import { SnacksState } from './state/SnacksState';
 
 export interface IAppState {
-  connection: ConnectionInfo & { offline: boolean },
+    connection: ConnectionInfo & { offline: boolean };
 
-  updateAvailable: boolean,
-  location: LocationState,
+    updateAvailable: boolean;
+    location: LocationState;
 
-  searchHistory: SearchHistoryState,
+    searchHistory: SearchHistoryState;
 
-  settings: SettingsState,
-  snacks: SnacksState,
+    settings: SettingsState;
+    snacks: SnacksState;
 
-  filter: FilterState,
+    filter: FilterState;
 
-  auth: AuthState,
+    auth: AuthState;
   // parameter: ParameterState,
-};
+}

@@ -1,8 +1,8 @@
-import { Param_TTLS } from "@mskg/tabler-world-config";
-import { remove } from "lodash";
-import { ILogger } from "./ILogger";
-import { TTLs } from "./TTLs";
-import { DefaultCacheType } from "./types";
+import { Param_TTLS } from '@mskg/tabler-world-config';
+import { remove } from 'lodash';
+import { ILogger } from './ILogger';
+import { TTLs } from './TTLs';
+import { DefaultCacheType } from './types';
 
 type CacheKeyType = string;
 
@@ -27,7 +27,7 @@ export function cachedDataLoader<K>(
 ): LoadFunc<K> {
 
     return async (ids: K[]) => {
-        logger.log("[cachedDataLoader]", "loading", ids);
+        logger.log('[cachedDataLoader]', 'loading', ids);
 
         const cached = await cache.getMany(
             ids.map((id) => keyFunc(id)),
@@ -38,7 +38,7 @@ export function cachedDataLoader<K>(
         remove(missing, (id) => existing.find((e) => e === keyFunc(id)));
 
         if (missing.length > 0) {
-            logger.log("[cachedDataLoader]", "missing keys", missing);
+            logger.log('[cachedDataLoader]', 'missing keys', missing);
 
             const loadFromDb: any[] = await loadFunc(missing);
             const ttls = await TTLs();
@@ -59,7 +59,7 @@ export function cachedDataLoader<K>(
 
         return ids.map((id) => {
             const val = cached[keyFunc(id)];
-            if (typeof (val) === "string") { return JSON.parse(val); }
+            if (typeof (val) === 'string') { return JSON.parse(val); }
 
             return val;
         });

@@ -5,10 +5,10 @@ import { Circle } from '../../components/Placeholder/Circle';
 import { Line } from '../../components/Placeholder/Line';
 import { styles } from './Styles';
 
-export const CardPlaceholder = ({count = 10}) => {
+export const CardPlaceholder = ({ count = 10 }) => {
     return (
         <View style={styles.container}>
-            {Array.apply(null, { length: count})
+            {Array.apply(null, { length: count })
                 .map(Number.call, Number)
                 .map(i => (
                     <Surface style={styles.card} key={i.toString()}>
@@ -25,20 +25,20 @@ export const CardPlaceholder = ({count = 10}) => {
                 ))}
         </View>
     );
-}
+};
 
 const innerStyles = StyleSheet.create({
     circle: {
-        margin: 6
+        margin: 6,
     },
 
     headerContainer: {
         marginVertical: 8,
-        marginHorizontal: 8
+        marginHorizontal: 8,
     },
 
     subtitle: {
-        marginTop: 8
+        marginTop: 8,
     },
 
     divider: {
@@ -46,8 +46,8 @@ const innerStyles = StyleSheet.create({
     },
 
     section: {
-        flexDirection: "row",
-        alignItems: "flex-start",
+        flexDirection: 'row',
+        alignItems: 'flex-start',
     },
 
     sectionIcon: {

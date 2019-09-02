@@ -28,16 +28,16 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
     formatData(data: GetJobs_Jobs_data | null) {
         if (data == null) return null;
 
-        if (data.__typename === "JobError") {
+        if (data.__typename === 'JobError') {
             return JSON.stringify(data.error);
         }
 
-        if (data.__typename === "JobSend") {
+        if (data.__typename === 'JobSend') {
             return `Count: ${data.recipients}, Errors: ${data.errors}`;
         }
 
-        if (data.__typename === "JobSync") {
-            return `Count: ${data.records}, Modified: ${data.modified}, Duration: ${data.readTime ? timespan(data.readTime * 1000) : "unknown"}`;
+        if (data.__typename === 'JobSync') {
+            return `Count: ${data.records}, Modified: ${data.modified}, Duration: ${data.readTime ? timespan(data.readTime * 1000) : 'unknown'}`;
         }
 
         return null;
@@ -47,7 +47,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
         return (
             <ScreenWithHeader header={{
                 showBack: true,
-                title: "Job History"
+                title: 'Job History',
             }}>
                 <Query<GetJobs>
                     query={GetJobsQuery}
@@ -64,7 +64,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
 
                         return (
                             <ScrollView horizontal={true} contentContainerStyle={styles.content}>
-                                <ScrollView nestedScrollEnabled>
+                                <ScrollView nestedScrollEnabled={true}>
                                     <Card>
                                         <DataTable style={{ width: 900 }}>
                                             <DataTable.Header>
@@ -79,7 +79,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                                                 <DataTable.Row key={i.toString()}>
                                                     <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.runon).toLocaleString()}</DataTable.Cell>
                                                     <DataTable.Cell style={{ width: 240, flex: 0 }}>{l.name}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 60, flex: 0 }}>{l.success ? "Yes" : "No"}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 60, flex: 0 }}>{l.success ? 'Yes' : 'No'}</DataTable.Cell>
 
                                                     <DataTable.Cell>{this.formatData(l.data)}</DataTable.Cell>
                                                 </DataTable.Row>))

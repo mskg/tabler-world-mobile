@@ -8,7 +8,7 @@ type Props = {
     width?: any,
     style?: any,
     // backgroundColor: any,
-}
+};
 
 export class Line extends PureComponent<Props> {
     render() {
@@ -19,7 +19,7 @@ export class Line extends PureComponent<Props> {
             <Fade>
                 <View style={StyleSheet.flatten([{
                     height: textSize,
-                    width: width || "100%",
+                    width: width || '100%',
                     borderRadius: textSize / 4,
                     backgroundColor: COLOR,
                 }, style])} />

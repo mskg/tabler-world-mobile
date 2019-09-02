@@ -1,11 +1,11 @@
 import React from 'react';
-import { Animated, View } from "react-native";
+import { Animated, View } from 'react-native';
 import { Headline, Subheading, Surface, Theme, withTheme } from 'react-native-paper';
 import { Circle } from '../../components/Placeholder/Circle';
 import { Line } from '../../components/Placeholder/Line';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Categories, Logger } from '../../helper/Logger';
-import { HeaderStyles, HEADER_HEIGHT, HEADER_MARGIN_TOP, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
+import { HEADER_HEIGHT, HEADER_MARGIN_TOP, HeaderStyles, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { Header } from '../Header';
 import { IMAGE_SIZE, MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from './Dimensions';
 import { styles } from './Styles';
@@ -50,7 +50,7 @@ class ProfileHeaderBase extends React.Component<Props> {
             inputRange: [0, distance],
             outputRange: [
                 TOTAL_HEADER_HEIGHT - IMAGE_SIZE - 20,
-                HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6 - 10
+                HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6 - 10,
             ],
             extrapolate: 'clamp',
         });
@@ -79,7 +79,7 @@ class ProfileHeaderBase extends React.Component<Props> {
             extrapolate: 'clamp',
         });
 
-        if (__DEV__) { logger.debug("headerTranslate", headerTranslate); }
+        if (__DEV__) { logger.debug('headerTranslate', headerTranslate); }
 
         const fabTop = scrollY.interpolate({
             inputRange: [0, distance],
@@ -95,7 +95,7 @@ class ProfileHeaderBase extends React.Component<Props> {
                 <AnimatedSurface
                     style={{
                         ...HeaderStyles.header,
-                        paddingTop: paddingTop,
+                        paddingTop,
                         height: headerTranslate,
                         backgroundColor: this.props.theme.colors.background,
                     }}>
@@ -141,7 +141,7 @@ class ProfileHeaderBase extends React.Component<Props> {
                             style={[
                                 styles.header,
                                 {
-                                    opacity: subTitleOpacity
+                                    opacity: subTitleOpacity,
                                 },
                                 {
                                     transform: [
@@ -153,7 +153,7 @@ class ProfileHeaderBase extends React.Component<Props> {
                             <Placeholder
                                 ready={!loading}
                                 previewComponent={
-                                    <View style={{ alignItems: "center" }}>
+                                    <View style={{ alignItems: 'center' }}>
                                         <Line style={styles.subTitlePlaceholder} width={160} height={16} />
                                         <Line style={styles.subTitlePlaceholder} width={200} height={16} />
                                     </View>

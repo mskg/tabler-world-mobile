@@ -2,7 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Dimensions, ScrollView, View } from 'react-native';
 import { List, Theme, withTheme } from 'react-native-paper';
-import { withNavigation } from "react-navigation";
+import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { RoleAvatar } from '../../components/Club/RoleAvatar';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -31,7 +31,7 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros;
 
-const widthMax = Dimensions.get("window").width / 2 - 32 - 18;
+const widthMax = Dimensions.get('window').width / 2 - 32 - 18;
 
 class LRUBase extends React.Component<Props> {
     render() {
@@ -75,5 +75,5 @@ export const LRU = connect(
     }), {
         showProfile,
     })(withNavigation(withTheme(
-        withCacheInvalidation("members", LRUBase)
+        withCacheInvalidation('members', LRUBase),
     )));

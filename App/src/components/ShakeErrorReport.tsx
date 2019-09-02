@@ -28,17 +28,17 @@ class ShakeEvent {
 
         Accelerometer.setUpdateInterval(100);
         Accelerometer.addListener(accelerometerData => {
-            let { x, y, z } = accelerometerData;
-            let currTime = Date.now();
+            const { x, y, z } = accelerometerData;
+            const currTime = Date.now();
 
             if ((currTime - lastUpdate) > 100) {
-                let diffTime = (currTime - lastUpdate);
+                const diffTime = (currTime - lastUpdate);
                 lastUpdate = currTime;
 
-                let speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+                const speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
 
                 if (speed > SHAKE_SPEED) {
-                    logger.log("sensor", "shake detected w/ speed: " + speed);
+                    logger.log('sensor', 'shake detected w/ speed: ' + speed);
                     handler();
                 }
 
@@ -50,9 +50,9 @@ class ShakeEvent {
     }
 
     static removeListener() {
-        Accelerometer.removeAllListeners()
+        Accelerometer.removeAllListeners();
     }
-};
+}
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
@@ -64,11 +64,11 @@ const TIMEOUT = 8000;
 
 type Props = {
     theme: Theme,
-}
+};
 
 type State = {
     open: boolean,
-}
+};
 
 class ErrorReportBase extends React.Component<Props, State> {
     constructor(props) {
@@ -76,7 +76,7 @@ class ErrorReportBase extends React.Component<Props, State> {
 
         this.state = {
             open: false,
-        }
+        };
     }
 
     mounted = false;
@@ -107,8 +107,8 @@ class ErrorReportBase extends React.Component<Props, State> {
                 // rotate in other direction, to minimum value (= twice the duration of above)
                 Animated.timing(this.animatedValue, { toValue: -1.0, duration: 300, easing: Easing.linear, useNativeDriver: true }),
                 // return to begin position
-                Animated.timing(this.animatedValue, { toValue: 0.0, duration: 150, easing: Easing.linear, useNativeDriver: true })
-            ])
+                Animated.timing(this.animatedValue, { toValue: 0.0, duration: 150, easing: Easing.linear, useNativeDriver: true }),
+            ]),
         );
         // }
 
@@ -128,7 +128,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                 tension: 2,
                 friction: 8,
                 // speed: 12,
-            }
+            },
         ).start();
 
         this.twiggleIcon();
@@ -144,7 +144,7 @@ class ErrorReportBase extends React.Component<Props, State> {
             this.closeAction = setTimeout(() => {
                 this.audit.trackAction(ActionNames.Timeout);
                 this._close();
-            }, TIMEOUT);
+            },                            TIMEOUT);
         }
     }
 
@@ -173,23 +173,21 @@ App Version: ${Constants.nativeAppVersion}
 Build Version: ${Constants.manifest.version}
 Device Id: ${Constants.deviceId}
 Time: ${new Date().toISOString()}
-`.replace(/\n/ig, "<br/>"),
+`.replace(/\n/ig, '<br/>'),
                 recipients: [urls.support],
             });
 
             this.audit.trackAction(ActionNames.SendErrorReport, {
-                Result: result.status
+                Result: result.status,
             });
-        }
-        catch (e) {
+        } catch (e) {
             this.audit.trackAction(ActionNames.SendErrorReport, {
-                Result: "Error"
+                Result: 'Error',
             });
 
             logger.error(e);
             Alert.alert(I18N.ErrorReport.noMail);
-        }
-        finally {
+        } finally {
             this._close();
         }
     }
@@ -198,13 +196,13 @@ Time: ${new Date().toISOString()}
         return <Portal>
             {this.state.open &&
                 <TouchableWithoutFeedback onPress={this._close}>
-                    <View style={styles.shade}></View>
+                    <View style={styles.shade}/>
                 </TouchableWithoutFeedback>
             }
 
             <Surface style={[
                 styles.container,
-                { transform: [{ translateY: this.bounceValue }] }
+                { transform: [{ translateY: this.bounceValue }] },
             ]}>
                 <Title>{I18N.ErrorReport.title}</Title>
                 <Text>{I18N.ErrorReport.text}</Text>
@@ -214,8 +212,8 @@ Time: ${new Date().toISOString()}
                         transform: [{
                             rotate: this.animatedValue.interpolate({
                                 inputRange: [-1, 1],
-                                outputRange: ['-0.1rad', '0.1rad']
-                            })
+                                outputRange: ['-0.1rad', '0.1rad'],
+                            }),
                         }],
                         color: this.props.theme.colors.accent,
                     }, styles.icon]}
@@ -242,7 +240,7 @@ export function withSkakeErrorReport(WrappedComponent) {
                 <ShakeErrorReport />
             </>;
         }
-    }
+    };
 }
 
 const styles = StyleSheet.create({
@@ -252,13 +250,13 @@ const styles = StyleSheet.create({
     },
 
     touch: {
-        width: Dimensions.get("screen").width,
+        width: Dimensions.get('screen').width,
     },
 
     row: {
-        flexDirection: "row",
-        alignItems: "center",
-        width: "100%",
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
         paddingLeft: 32,
         paddingVertical: 8,
     },
@@ -271,7 +269,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
 
         opacity: 0.35,
-        backgroundColor: "black",
+        backgroundColor: 'black',
     },
 
     container: {
@@ -281,12 +279,12 @@ const styles = StyleSheet.create({
         height: HEIGHT,
         left: 0,
         right: 0,
-        position: "absolute",
+        position: 'absolute',
 
         paddingVertical: 16,
         paddingHorizontal: 16,
 
-        alignItems: "center",
+        alignItems: 'center',
         borderRadius: 10,
     },
 });

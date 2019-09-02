@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { FetchParameterDefaults, FetchParameters } from './Fetch';
-import { GeoParameters, GeoParametersDefaults } from "./Geo";
+import { GeoParameters, GeoParametersDefaults } from './Geo';
 import { TimeoutDefaults, TimeoutParameters } from './Timeouts';
 import { UrlDefaults, UrlParameters } from './Urls';
 
@@ -26,10 +26,10 @@ export async function getParameterValue<T extends AllParameterTypes>(name: Param
     return param != null
         ? {
             ...defaults[name],
-            ...JSON.parse(param)
+            ...JSON.parse(param),
         }
         : {
-            ...defaults[name]
+            ...defaults[name],
         } as T;
 }
 

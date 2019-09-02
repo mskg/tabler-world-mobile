@@ -14,7 +14,7 @@ import { FullScreenLoading } from '../../components/Loading';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
+import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { NewsArticle, NewsArticleVariables } from '../../model/graphql/NewsArticle';
 import { GetNewsArticleQuery } from '../../queries/GetNewsArticle';
@@ -42,9 +42,9 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
         const { id } = this.props.navigation.state.params as INewsArticleParams;
 
         this.audit.submit({
-          [AuditPropertyNames.NewsArticle]: id.toString(),
+            [AuditPropertyNames.NewsArticle]: id.toString(),
         });
-      }
+    }
 
     render() {
         const { id } = this.props.navigation.state.params as INewsArticleParams;
@@ -77,7 +77,7 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
                                     <View style={styles.author}>
                                         <MemberAvatar size={32} member={data.NewsArticle.createdby} />
                                         <Subheading style={styles.authorIcon}>
-                                            {data.NewsArticle.createdby.firstname + " " + data.NewsArticle.createdby.lastname}
+                                            {data.NewsArticle.createdby.firstname + ' ' + data.NewsArticle.createdby.lastname}
                                         </Subheading>
 
                                         {data.NewsArticle.album &&
@@ -93,7 +93,7 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
                                     </View>
                                     <View style={styles.text}>
                                         <HTMLView
-                                            maxWidth={Dimensions.get("window").width - 16 * 2}
+                                            maxWidth={Dimensions.get('window').width - 16 * 2}
                                             html={data.NewsArticle.description}
                                         />
                                     </View>
@@ -101,7 +101,7 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
                             }
 
                         </Surface>
-                    </ScreenWithHeader>
+                    </ScreenWithHeader>;
                 }}
             </Query>
         );
@@ -111,6 +111,6 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
 
 export const NewsArticleScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("newsarticle",
-            withTheme(
-                connect(null, {showAlbum})(NewsArticleScreenBase))));
+        withCacheInvalidation('newsarticle',
+                              withTheme(
+                connect(null, { showAlbum })(NewsArticleScreenBase))));

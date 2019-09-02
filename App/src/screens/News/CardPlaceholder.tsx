@@ -31,25 +31,25 @@ export const CardPlaceholder = ({ count = 10 }) => {
                 ))}
         </View>
     );
-}
+};
 
 const innerStyles = StyleSheet.create({
     circle: {
-        margin: 6
+        margin: 6,
     },
 
     headerContainer: {
         marginVertical: 8,
-        paddingHorizontal: 8
+        paddingHorizontal: 8,
     },
 
     contentContainer: {
         marginVertical: 8,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
     },
 
     subtitle: {
-        marginTop: 8
+        marginTop: 8,
     },
 
     divider: {
@@ -57,9 +57,9 @@ const innerStyles = StyleSheet.create({
     },
 
     section: {
-        flexDirection: "row",
+        flexDirection: 'row',
         // paddingVertical: 4,
-        alignItems: "flex-start",
+        alignItems: 'flex-start',
     },
 
     sectionIcon: {

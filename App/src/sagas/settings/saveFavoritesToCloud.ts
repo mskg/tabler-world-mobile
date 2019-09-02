@@ -2,7 +2,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import { select } from 'redux-saga/effects';
-import { Audit } from "../../analytics/Audit";
+import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
@@ -28,7 +28,7 @@ export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.sha
     const result = Object
         .keys(favorites)
         .map(f => parseInt(f, 10))
-        .filter(f => !isNaN(f) && typeof (f) === "number");
+        .filter(f => !isNaN(f) && typeof (f) === 'number');
 
     logger.debug(favorites, result);
 
@@ -42,12 +42,12 @@ mutation PutSetting($input: SettingInput!) {
             input: {
                 name: SettingName.favorites,
                 value: result,
-            }
+            },
         },
 
         awaitRefetchQueries: false,
         refetchQueries: [{
-            query: GetFavoriteMembersQuery
-        }]
+            query: GetFavoriteMembersQuery,
+        }],
     });
 }

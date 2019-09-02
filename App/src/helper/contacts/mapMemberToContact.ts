@@ -11,39 +11,39 @@ import { logger } from './logger';
 import { removeNulls } from './removeNulls';
 
 export async function mapMemberToContact(member: Member_Member): Promise<Contacts.Contact> {
-    //@ts-ignore
+    // @ts-ignore
     let contact: Contacts.Contact = {
-        [Contacts.Fields.FirstName]: member.firstname || "",
-        [Contacts.Fields.LastName]: member.lastname || "",
-        [Contacts.Fields.Name]: member.firstname + " " + member.lastname,
+        [Contacts.Fields.FirstName]: member.firstname || '',
+        [Contacts.Fields.LastName]: member.lastname || '',
+        [Contacts.Fields.Name]: member.firstname + ' ' + member.lastname,
 
         [Contacts.Fields.Company]: member.association.name,
         [Contacts.Fields.Department]: member.club.name,
         [Contacts.Fields.ContactType]: Contacts.ContactTypes.Person,
     };
 
-    let i = 1;
+    const i = 1;
 
     const emails = collectEMails(member);
     if (emails.length > 0) {
-        //@ts-ignore
+        // @ts-ignore
         contact[Contacts.Fields.Emails] = emails.map(e => ({
             // id: ++i,
             label: e.type,
             email: e.value,
             isPrimary: false,
-        }))
+        }));
     }
 
     const phones = collectPhones(member);
     if (phones.length > 0) {
-        //@ts-ignore
+        // @ts-ignore
         contact[Contacts.Fields.PhoneNumbers] = phones.map(e => ({
             // id: ++i,
             label: e.type,
             number: e.value,
             isPrimary: false,
-        }))
+        }));
     }
 
     if (member.address) {
@@ -52,16 +52,16 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
         contact = {
             ...contact,
 
-            //@ts-ignore
+            // @ts-ignore
             [Contacts.Fields.Addresses]: [{
                 // id: ++i,
                 label: I18N.ContactSync.primaryaddress,
                 street: [member.address.street1, member.address.street2].filter(Boolean).join('\n'),
                 city: member.address.city,
                 postalCode: member.address.postal_code,
-                isoCountryCode: I18N.Countries.translate(member.address.country || "de"),
+                isoCountryCode: I18N.Countries.translate(member.address.country || 'de'),
             }],
-        }
+        };
 
     }
 
@@ -73,7 +73,7 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
                 [Contacts.Fields.Image]: {
                     uri: fileUri,
                 },
-            }
+            };
         }
     }
 
@@ -83,14 +83,14 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
         contact = {
             ...contact,
 
-            //@ts-ignore
+            // @ts-ignore
             [Contacts.Fields.Birthday]: {
                 day: date.getUTCDate(),
                 month: date.getUTCMonth(),
                 year: date.getUTCFullYear(),
-                format: "gregorian",
+                format: 'gregorian',
             },
-        }
+        };
     }
 
     const config = await getParameterValue<UrlParameters>(ParameterName.urls);
@@ -98,9 +98,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
     const profiles: Contacts.SocialProfile[] = [];
     profiles.push({
-        id: "",
-        label: "TABLER.WORLD",
-        service: "TABLER.WORLD",
+        id: '',
+        label: 'TABLER.WORLD',
+        service: 'TABLER.WORLD',
         username: twUrl,
         url: makeMemberLink(member.id),
     });
@@ -108,9 +108,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
     if (member.socialmedia) {
         if (member.socialmedia.facebook) {
             profiles.push({
-                id: "",
-                label: "Facebook",
-                service: "Facebook",
+                id: '',
+                label: 'Facebook',
+                service: 'Facebook',
                 username: (member.socialmedia.facebook),
                 url: member.socialmedia.facebook,
             });
@@ -118,9 +118,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
         if (member.socialmedia.instagram) {
             profiles.push({
-                id: "",
-                label: "Instagram",
-                service: "Instagram",
+                id: '',
+                label: 'Instagram',
+                service: 'Instagram',
                 username: (member.socialmedia.instagram),
                 url: member.socialmedia.instagram,
             });
@@ -128,9 +128,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
         if (member.socialmedia.linkedin) {
             profiles.push({
-                id: "",
-                label: "LinkedIn",
-                service: "LinkedIn",
+                id: '',
+                label: 'LinkedIn',
+                service: 'LinkedIn',
                 username: (member.socialmedia.linkedin),
                 url: member.socialmedia.linkedin,
             });
@@ -138,9 +138,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
         if (member.socialmedia.twitter) {
             profiles.push({
-                id: "",
-                label: "Twitter",
-                service: "Twitter",
+                id: '',
+                label: 'Twitter',
+                service: 'Twitter',
                 username: (member.socialmedia.twitter),
                 url: member.socialmedia.twitter,
             });
@@ -150,7 +150,7 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
     contact = {
         ...contact,
 
-        //@ts-ignore
+        // @ts-ignore
         [Contacts.Fields.SocialProfiles]: profiles,
     };
 

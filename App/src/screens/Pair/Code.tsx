@@ -7,33 +7,33 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import Assets from '../../Assets';
 import { InlineLoading } from '../../components/Loading';
-import { makeMemberLink } from "../../helper/linking/member";
+import { makeMemberLink } from '../../helper/linking/member';
 import { Me } from '../../model/graphql/Me';
 import { GetMeQuery } from '../../queries/MeQuery';
 
 class CodeScreenBase extends AuditedScreen<{theme}> {
 
-  constructor(props: any) {
-    super(props, AuditScreenName.MemberShowQR);
+    constructor(props: any) {
+      super(props, AuditScreenName.MemberShowQR);
   }
 
-  render() {
-    return (<View style={{
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+    render() {
+      return (<View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
       // backgroundColor: this.props.theme.colors.surface,
     }}>
       <Query<Me> query={GetMeQuery}>
         {({ loading, data, error, refetch }) => {
-          if (error) throw (error);
-          if (!data || !data.Me) return <InlineLoading />
+            if (error) throw (error);
+            if (!data || !data.Me) return <InlineLoading />;
 
-          return (<QRCode
+            return (<QRCode
             value={makeMemberLink(data.Me.id)}
             logo={Assets.images.icon}
             logoSize={60}
-            logoBackgroundColor='transparent'
+            logoBackgroundColor="transparent"
             size={250}
           />);
         }}

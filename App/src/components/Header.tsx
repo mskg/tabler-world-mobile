@@ -24,7 +24,7 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
     }
 
     handleBackPress = () => {
-        if (typeof (this.props.showBack) === "boolean") {
+        if (typeof (this.props.showBack) === 'boolean') {
             (async () => this.props.navigation.goBack(null))();
         }
 
@@ -38,20 +38,19 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
                     ...HeaderStyles.header,
                     backgroundColor: this.props.backgroundColor
                         ? this.props.backgroundColor
-                        : this.props.theme.colors.primary
-                }}>
-                </View>
+                        : this.props.theme.colors.primary,
+                }}/>
 
                 {this.props.showAppBar == null || this.props.showAppBar &&
                     <Appbar style={[this.props.style, {
                         elevation: 0,
                         backgroundColor: this.props.backgroundColor ?
-                            this.props.backgroundColor : this.props.theme.colors.primary
+                            this.props.backgroundColor : this.props.theme.colors.primary,
                     }]}>
                         {/* {this.props.showBack && <BackButtonWithText title="Go Back" theme={this.props.theme} onPress={() => this.props.navigation.goBack(null)} />} */}
                         {this.props.showBack &&
-                            typeof (this.props.showBack) === "boolean"
-                            ? <Appbar.BackAction color={this.props.theme.dark ? "white" : "black"} onPress={() => this.props.navigation.goBack(null)} />
+                            typeof (this.props.showBack) === 'boolean'
+                            ? <Appbar.BackAction color={this.props.theme.dark ? 'white' : 'black'} onPress={() => this.props.navigation.goBack(null)} />
                             : this.props.showBack
                         }
                         {this.props.content != null
@@ -65,7 +64,7 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
 
                 {(this.props.showLine == null || this.props.showLine) &&
                     <Divider style={{
-                        position: "absolute",
+                        position: 'absolute',
                         top: TOTAL_HEADER_HEIGHT,
                         left: 0,
                         right: 0,
@@ -87,7 +86,7 @@ class StandardStatusBarBase extends React.PureComponent<{ theme: Theme }> {
         return (
             <StatusBar
                 translucent={true}
-                barStyle={this.props.theme.dark ? "light-content" : "dark-content"}
+                barStyle={this.props.theme.dark ? 'light-content' : 'dark-content'}
                 backgroundColor="transparent"
                 showHideTransition={false}
                 animated={false}

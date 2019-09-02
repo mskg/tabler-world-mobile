@@ -12,7 +12,7 @@ import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ReadMore } from '../../components/ReadMore';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
+import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { AlbumsOverview, AlbumsOverview_Albums } from '../../model/graphql/AlbumsOverview';
 import { GetAlbumsOverviewQuery } from '../../queries/GetAlbumsQuery';
@@ -60,7 +60,7 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                     <Card.Content>
                         <ReadMore maxHeight={60} renderRevealedFooter={() => null}>
                             <HTMLView
-                                maxWidth={Dimensions.get("window").width - 32 * 2}
+                                maxWidth={Dimensions.get('window').width - 32 * 2}
                                 html={item.description}
                             />
                         </ReadMore>
@@ -98,7 +98,7 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                             >
                                 <FlatList
                                     contentContainerStyle={styles.container}
-                                    //@ts-ignore
+                                    // @ts-ignore
                                     data={data != null ? data.Albums : []}
 
                                     refreshing={loading}
@@ -118,6 +118,6 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
 
 export const AlbumsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("albums",
-            withTheme(
+        withCacheInvalidation('albums',
+                              withTheme(
                 connect(null, { showAlbum })(AlbumsScreenBase))));

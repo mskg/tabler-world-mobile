@@ -29,7 +29,7 @@ type State = {
 class RoleCardBase extends React.Component<Props, State> {
     _onPress = () =>
         requestAnimationFrame(() =>
-            this.props.showProfile(this.props.member.id));
+            this.props.showProfile(this.props.member.id))
 
     render() {
         return (

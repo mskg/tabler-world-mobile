@@ -19,12 +19,12 @@ type Props = {
 class LinkingBase extends React.Component<Props> {
 
     _handleOpenURL = (event) => {
-        let { path, queryParams } = Linking.parse(event.url);
-        logger.debug("path", path, "params", queryParams);
+        const { path, queryParams } = Linking.parse(event.url);
+        logger.debug('path', path, 'params', queryParams);
 
         Audit.trackEvent(AuditEventName.Linking, {
             Url: path,
-        })
+        });
 
         const memberLink = parseMemberLink(path, queryParams);
         if (memberLink.valid && memberLink.id) {
@@ -33,7 +33,7 @@ class LinkingBase extends React.Component<Props> {
     }
 
     async componentDidMount() {
-        if (__DEV__) { logger.log("********** LINKING", Linking.makeUrl("/")); }
+        if (__DEV__) { logger.log('********** LINKING', Linking.makeUrl('/')); }
         Linking.addEventListener('url', this._handleOpenURL);
 
         // try to attach to initial opening
@@ -42,7 +42,7 @@ class LinkingBase extends React.Component<Props> {
         if (url != null) {
             this._handleOpenURL({
                 url,
-            })
+            });
         }
     }
 
@@ -58,6 +58,6 @@ class LinkingBase extends React.Component<Props> {
 export default connect(
     null,
     {
-        showProfile
-    }
+        showProfile,
+    },
 )(LinkingBase);

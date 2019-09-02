@@ -7,11 +7,10 @@ export function distance(d: number) {
     if (d >= 1000) {
         format = 'km';
         result = Math.floor(d / 1000);
-    }
-    else {
+    } else {
         // More than one month
         format = 'm';
     }
 
     return result + ' ' + I18N.Distance[format];
-};
+}

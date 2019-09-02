@@ -1,7 +1,7 @@
-import { EXECUTING_OFFLINE } from "@mskg/tabler-world-aws";
-import { getParameters, Param_Nearby } from "@mskg/tabler-world-config";
-import { useDataService } from "@mskg/tabler-world-rds-client";
-import { IApolloContext } from "../types/IApolloContext";
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { getParameters, Param_Nearby } from '@mskg/tabler-world-config';
+import { useDataService } from '@mskg/tabler-world-rds-client';
+import { IApolloContext } from '../types/IApolloContext';
 
 type MyLocationInput = {
     location: {
@@ -40,15 +40,15 @@ export const LocationResolver = {
         },
 
         state: (root: any, _args: {}, _context: IApolloContext) => {
-            return !root.speed || root.speed < 8 ? "Steady" : "Traveling";
+            return !root.speed || root.speed < 8 ? 'Steady' : 'Traveling';
         },
     },
 
     Query: {
         nearbyMembers: async (_root: any, args: NearMembersInput, context: IApolloContext) => {
-            context.logger.log("nearby", args);
+            context.logger.log('nearby', args);
 
-            const params = await getParameters("nearby");
+            const params = await getParameters('nearby');
             const nearBy = JSON.parse(params.nearby) as Param_Nearby;
 
             return useDataService(
@@ -79,13 +79,13 @@ WHERE
 
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     and association = $3
-    ${EXECUTING_OFFLINE ? "" : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
-    ${args.query && args.query.excludeOwnTable ? "and club <> $4" : ""}
+    ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
+    ${args.query && args.query.excludeOwnTable ? 'and club <> $4' : ''}
 ORDER BY
     locations.point <-> $1::geography
 LIMIT 20
 `,
-                        [
+                                                      [
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             context.principal.id,
                             context.principal.association,
@@ -98,7 +98,7 @@ LIMIT 20
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
-            context.logger.log("locationHistory", args);
+            context.logger.log('locationHistory', args);
 
             return useDataService(
                 context,
@@ -119,7 +119,7 @@ where
 order by lastseen desc
 LIMIT 10
 `,
-                        [
+                                                      [
                             context.principal.id,
                         ]);
 
@@ -131,7 +131,7 @@ LIMIT 10
 
     Mutation: {
         putLocation: (_root: any, args: MyLocationInput, context: IApolloContext) => {
-            context.logger.log("putLocation", args);
+            context.logger.log('putLocation', args);
 
             useDataService(
                 context,
@@ -147,7 +147,7 @@ DO UPDATE
         lastseen = excluded.lastseen,
         speed = excluded.speed
 `,
-                        [
+                                       [
                             context.principal.id,
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             args.location.accuracy,
@@ -160,7 +160,7 @@ DO UPDATE
         },
 
         updateLocationAddress: (_root: any, args: UpdateLocationAddress, context: IApolloContext) => {
-            context.logger.log("updateLocationAddress", args);
+            context.logger.log('updateLocationAddress', args);
 
             return useDataService(
                 context,
@@ -171,7 +171,7 @@ UPDATE userlocations
 SET address = $2
 WHERE id = $1 and address is null
 `,
-                            [
+                                           [
                                 update.member,
                                 JSON.stringify(update.address),
                             ]);
@@ -190,7 +190,7 @@ WHERE id = $1 and address is null
 delete from userlocations
 WHERE id = $1
                         `,
-                        [context.principal.id]);
+                                       [context.principal.id]);
 
                     return true;
                 },

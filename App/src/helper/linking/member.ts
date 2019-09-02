@@ -6,14 +6,14 @@ export function makeMemberLink(id: number) {
 }
 
 export function parseMemberLink(path: string, queryParams: any) {
-    if (path.endsWith("member") && queryParams.id != null) {
+    if (path.endsWith('member') && queryParams.id != null) {
         return {
             id: parseInt(queryParams.id, 10),
-            valid: true
-        }
+            valid: true,
+        };
     }
 
     return {
         valid: false,
-    }
+    };
 }

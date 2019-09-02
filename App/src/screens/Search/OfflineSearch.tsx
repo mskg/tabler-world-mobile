@@ -3,7 +3,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { FilterTag } from "../../components/FilterSection";
+import { FilterTag } from '../../components/FilterSection';
 import { MemberList } from '../../components/MemberList';
 import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
@@ -44,14 +44,14 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                 || newData.OwnTable != cachedData.OwnTable
                 || newData.FavoriteMembers != cachedData.FavoriteMembers
             )) {
-                logger.log("calculating new data");
+                logger.log('calculating new data');
 
                 result = func(newData);
                 cachedData = newData;
             }
 
             return result;
-        }
+        };
     }
 
     render() {
@@ -61,9 +61,9 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                 if (data && data.OwnTable) { result.push(...data.OwnTable); }
                 if (data && data.FavoriteMembers) { result.push(...data.FavoriteMembers); }
 
-                const roles = this.props.filterTags.filter(r => r.type === "role").reduce((p, v) => { p[v.value] = true; return p }, {});
-                const tables = this.props.filterTags.filter(r => r.type === "table").reduce((p, v) => { p[v.value] = true; return p }, {});
-                const areas = this.props.filterTags.filter(r => r.type === "area").reduce((p, v) => { p[v.value] = true; return p }, {});
+                const roles = this.props.filterTags.filter(r => r.type === 'role').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const tables = this.props.filterTags.filter(r => r.type === 'table').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const areas = this.props.filterTags.filter(r => r.type === 'area').reduce((p, v) => { p[v.value] = true; return p; }, {});
 
                 // const newData = result
                 const predicate = Predicates.and(
@@ -73,7 +73,7 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                     Object.keys(areas).length > 0 ? Predicates.area(areas) : null,
                 );
 
-                //@ts-ignore
+                // @ts-ignore
                 return _(result)
                     .filter(predicate)
                     .uniqBy(m => m.id)
@@ -105,6 +105,6 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
 
 export const OfflineSearchQuery =
     connect((state: IAppState) => ({
-        sortby: state.settings.sortByLastName ? "lastname" : "firstname"
+        sortby: state.settings.sortByLastName ? 'lastname' : 'firstname',
     }))(withTheme(OfflineSearchQueryBase))
 ;

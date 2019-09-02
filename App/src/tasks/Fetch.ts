@@ -15,19 +15,19 @@ export async function registerFetchTask() {
         switch (status) {
             case BackgroundFetch.Status.Restricted:
             case BackgroundFetch.Status.Denied:
-                logger.log("Background execution is disabled");
+                logger.log('Background execution is disabled');
                 return;
 
             default: {
-                logger.debug("Background execution allowed");
+                logger.debug('Background execution allowed');
 
                 const settings = await getParameterValue<FetchParameters>(ParameterName.fetch);
                 await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME, settings);
 
-                logger.debug("Registered task", FETCH_TASKNAME);
+                logger.debug('Registered task', FETCH_TASKNAME);
             }
         }
     } catch (e) {
-        logger.error(e, "Registering of tasks failed");
+        logger.error(e, 'Registering of tasks failed');
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { showPictureSceen } from "../../redux/actions/navigation";
+import { showPictureSceen } from '../../redux/actions/navigation';
 
 type AvatarPopupProps = {
     title: string,
@@ -14,8 +14,8 @@ type AvatarPopupProps = {
 class AvatarPopupBase extends React.Component<AvatarPopupProps> {
     _showScreen = () => {
         requestAnimationFrame(() =>
-            //@ts-ignore
-            this.props.showPictureSceen(this.props.pic, this.props.title)
+            // @ts-ignore
+            this.props.showPictureSceen(this.props.pic, this.props.title),
         );
     }
 
@@ -25,14 +25,14 @@ class AvatarPopupBase extends React.Component<AvatarPopupProps> {
         return (
             // <Portal>
             <TouchableWithoutFeedback
-                onPress={pic == null || pic === "" ? undefined : this._showScreen}
-                disabled={pic == null || pic === ""}
-                style={{margin: 10}}
+                onPress={pic == null || pic === '' ? undefined : this._showScreen}
+                disabled={pic == null || pic === ''}
+                style={{ margin: 10 }}
             >
                 {
                     React.cloneElement(children, {
                         size,
-                        ...other
+                        ...other,
                     })
                 }
             </TouchableWithoutFeedback>

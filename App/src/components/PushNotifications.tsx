@@ -32,7 +32,7 @@ class PushNotificationsBase extends PureComponent<Props> {
     }
 
     _handleAction = (el: INotificationPayload<any>) => () => {
-        if (el != null && el.reason === "birthday") {
+        if (el != null && el.reason === 'birthday') {
             const bd = el as BirthdayNotification;
 
             // const tabler = this.props.member[bd.payload.id];
@@ -43,12 +43,12 @@ class PushNotificationsBase extends PureComponent<Props> {
     }
 
     _showNext = () => {
-        var el = this.notifications.pop();
+        let el = this.notifications.pop();
 
         if (el == null) {
             this.showing = false;
             return;
-        };
+        }
 
         this.showing = true;
 
@@ -58,21 +58,21 @@ class PushNotificationsBase extends PureComponent<Props> {
             onPress: this._handleAction(el.data),
             appName: Constants.manifest.name,
             icon: Assets.images.icon,
-            title: title,
+            title,
             body: body || JSON.stringify(el.data),
         });
     }
 
     _handleNotification = (notification: Notifications.Notification) => {
-        logger.log("received", notification);
+        logger.log('received', notification);
 
-        if (notification.origin === "received") {
+        if (notification.origin === 'received') {
             this.notifications.push(notification);
             if (!this.showing) { this._showNext(); }
         } else {
             this._handleAction(notification.data)();
         }
-    };
+    }
 
     render() {
         return (
@@ -87,5 +87,5 @@ export const PushNotifications = connect(
     }),
     {
         showProfile,
-    }
+    },
 )(PushNotificationsBase);

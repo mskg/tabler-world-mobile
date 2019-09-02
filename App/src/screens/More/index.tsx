@@ -21,7 +21,7 @@ const Navigator = createStackNavigator(
     {
         initialRouteName: Routes.Menu,
         headerMode: 'none',
-    }
+    },
 );
 
 export default Navigator;

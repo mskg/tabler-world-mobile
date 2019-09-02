@@ -16,7 +16,7 @@ import { restoreSettings, storeLanguage } from '../redux/actions/settings';
 import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
-import { styles } from "./Styles";
+import { styles } from './Styles';
 
 type Props = {
     theme: Theme,
@@ -47,11 +47,11 @@ class ConfirmBase extends AuditedScreen<Props, State> {
             noretry: false,
             tries: 3,
             error: null,
-        }
+        };
     }
 
     _handleOpenURL = (event) => {
-        let { path, queryParams } = Linking.parse(event.url);
+        const { path, queryParams } = Linking.parse(event.url);
         logger.debug(path, queryParams);
 
         const result = parseCodeLink(path, queryParams);
@@ -85,16 +85,16 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
     _confirm = async () => {
         try {
-            logger.debug("confirming signing");
-            this.setState({ working: true, error: null, });
+            logger.debug('confirming signing');
+            this.setState({ working: true, error: null });
 
             const { code } = this.state;
             const user = this.props.authState;
 
-            logger.debug("sendCustomChallengeAnswer");
+            logger.debug('sendCustomChallengeAnswer');
             await Auth.sendCustomChallengeAnswer(user, code);
 
-            logger.debug("checking currentSession");
+            logger.debug('checking currentSession');
             await Auth.currentSession();
 
             try {
@@ -107,32 +107,30 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 this.props.restoreSettings();
                 this.props.storeLanguage();
                 this.props.singedIn();
-            }
-            catch (e) {
-                logger.error(e, "failed to login");
+            } catch (e) {
+                logger.error(e, 'failed to login');
                 this.audit.trackAction(ActionNames.LogonConfirmFailed);
 
                 this.setState({
                     error: I18N.SignIn.accessDenied,
                     noretry: true,
-                    working: false
+                    working: false,
                 });
             }
-        }
-        catch (err) {
+        } catch (err) {
             logger.log(err);
 
-            if (err.code === "NotAuthorizedException") {
+            if (err.code === 'NotAuthorizedException') {
                 this.setState({
                     error: I18N.SignIn.codeWrong,
                     noretry: true,
-                    working: false
+                    working: false,
                 });
             } else {
                 this.setState({
                     tries: this.state.tries - 1,
                     working: false,
-                    error: I18N.SignIn.codeVerify(this.state.tries)
+                    error: I18N.SignIn.codeVerify(this.state.tries),
                 });
             }
         }
@@ -152,7 +150,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                 <Input
                                     placeholder={I18N.SignIn.placeholderCode}
                                     value={this.state.code}
-                                    keyboardType='numeric'
+                                    keyboardType="numeric"
                                     onChangeText={text => this.setState({ code: text })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
                                     style={{ borderBottomColor: this.props.theme.colors.accent }} />
@@ -196,5 +194,5 @@ export default connect(
         singedIn,
         signin,
         storeLanguage,
-    }
+    },
 )(withTheme(ConfirmBase));

@@ -12,7 +12,7 @@ export function AsyncThrottle<T>(funcToThrottle: AnyArgsFunc<T>, duration: numbe
     let ticks = 0;
 
     // throttle function
-    return async function(...args: any[]) {
+    return async function (...args: any[]) {
         return new Promise<T>((resolve, _reject) => {
             const now = Date.now();
 

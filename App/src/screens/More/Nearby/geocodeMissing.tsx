@@ -12,9 +12,9 @@ const throttledCode = AsyncThrottle(reverseGeocode, 1000, 1);
 export const geocodeMissing = async (data: NearbyMembers_nearbyMembers[]) => {
     const newData: AddressUpdateInput[] = [];
 
-    for (let member of data) {
+    for (const member of data) {
         if (member.address.city == null && member.address.country == null && member.address.location != null) {
-            logger.debug("Found missing address");
+            logger.debug('Found missing address');
             const address = await throttledCode(member.address.location);
 
             if (address) {

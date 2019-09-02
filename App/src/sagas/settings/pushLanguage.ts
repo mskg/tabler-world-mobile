@@ -19,7 +19,7 @@ putSetting (setting: $input)
             input: {
                 name: SettingName.language,
                 value: I18N.id,
-            }
+            },
         },
     });
 }

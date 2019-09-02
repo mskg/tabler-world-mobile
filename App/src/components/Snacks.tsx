@@ -3,7 +3,7 @@ import { Portal, Snackbar } from 'react-native-paper';
 import { connect, MapStateToProps } from 'react-redux';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
-import { ISnack } from "../model/ISnacks";
+import { ISnack } from '../model/ISnacks';
 import { shiftSnack } from '../redux/actions/snacks';
 import { BOTTOM_HEIGHT } from '../theme/dimensions';
 
@@ -49,18 +49,18 @@ export class SnacksBase extends React.Component<Props, State> {
                 // authentication errors
                 if (this.mounted) {
                     this.setState({
-                        visible: nextProps.snacks.length > 0
+                        visible: nextProps.snacks.length > 0,
                     });
                 }
-            }, 200);
+            },         200);
         }
     }
 
     _onDismiss = () => {
         this.setState({ visible: false },
             // give enough time to hide, before render update
-            () => setTimeout(
-                () => this.props.shiftSnack(), 100))
+                      () => setTimeout(
+                () => this.props.shiftSnack(), 100));
     }
 
     render() {
@@ -95,7 +95,7 @@ export class SnacksBase extends React.Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state: IAppState): StateProps => {
     return {
         snacks: state.snacks,
-    }
+    };
 };
 
 export const Snacks = connect(

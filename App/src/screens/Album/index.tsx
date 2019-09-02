@@ -18,7 +18,7 @@ import { Square } from '../../components/Placeholder/Square';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { Album, AlbumVariables, Album_Album_pictures } from '../../model/graphql/Album';
+import { Album, Album_Album_pictures, AlbumVariables } from '../../model/graphql/Album';
 import { GetAlbumQuery } from '../../queries/GetAlbumQuery';
 import { IAlbumParams } from '../../redux/actions/navigation';
 import { HEADER_MARGIN_TOP } from '../../theme/dimensions';
@@ -27,42 +27,42 @@ import ProgressiveImage from './ProgressiveImage';
 import { styles } from './Styles';
 
 type State = {
-  viewGallery: boolean,
-  selectedIndex: number,
-  hideButtons: boolean,
+    viewGallery: boolean,
+    selectedIndex: number,
+    hideButtons: boolean,
 };
 
 type Props = {
-  theme: Theme,
-  navigation: any,
-  fetchPolicy: any,
+    theme: Theme,
+    navigation: any,
+    fetchPolicy: any,
 };
 
 class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlbumParams>, State> {
-  data: Album | undefined;
+    data: Album | undefined;
 
-  constructor(props) {
-    super(props, AuditScreenName.Album);
+    constructor(props) {
+      super(props, AuditScreenName.Album);
 
-    this.state = {
-      viewGallery: false,
-      selectedIndex: 0,
-      hideButtons: false,
+      this.state = {
+        viewGallery: false,
+        selectedIndex: 0,
+        hideButtons: false,
     };
   }
 
-  componentDidMount() {
-    const { album } = this.props.navigation.state.params as IAlbumParams;
+    componentDidMount() {
+      const { album } = this.props.navigation.state.params as IAlbumParams;
 
-    this.audit.submit({
-      [AuditPropertyNames.Album]: album.toString(),
+      this.audit.submit({
+        [AuditPropertyNames.Album]: album.toString(),
     });
   }
 
-  _renderItem = (params) => {
-    const item = params.item;
+    _renderItem = (params) => {
+      const item = params.item;
 
-    return (
+      return (
       <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, hideButtons: false, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
         <View style={styles.imageContainer}>
 
@@ -72,9 +72,9 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
               cacheGroup="album"
               preview={
                 // android doesn't like the animation here?
-                Platform.OS == "android" ? undefined :
+                Platform.OS == 'android' ? undefined :
                   <Placeholder ready={false} previewComponent={
-                    <Square width={Dimensions.get("screen").width / 4 - 3} />
+                    <Square width={Dimensions.get('screen').width / 4 - 3} />
                   }
                   />
               }
@@ -86,86 +86,86 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
     );
   }
 
-  _key = (item: Album_Album_pictures, index: number) => {
-    return index.toString();
+    _key = (item: Album_Album_pictures, index: number) => {
+      return index.toString();
   }
 
-  _toggleButtons = () => requestAnimationFrame(() => this.setState(
-    { hideButtons: !this.state.hideButtons }));
+    _toggleButtons = () => requestAnimationFrame(() => this.setState(
+    { hideButtons: !this.state.hideButtons }))
 
-  _hideGallery = () => requestAnimationFrame(() => this.setState(
+    _hideGallery = () => requestAnimationFrame(() => this.setState(
     { viewGallery: false },
-    () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)));
+    () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)))
 
-  _export = () => requestAnimationFrame(() => {
-    if (!this.data || !this.data.Album) return;
+    _export = () => requestAnimationFrame(() => {
+      if (!this.data || !this.data.Album) return;
 
-    const source = this.data.Album.pictures[this.state.selectedIndex].preview_1920;
+      const source = this.data.Album.pictures[this.state.selectedIndex].preview_1920;
 
-    FileSystem.downloadAsync(
+      FileSystem.downloadAsync(
       source,
-      FileSystem.cacheDirectory + 'share.jpeg'
+      FileSystem.cacheDirectory + 'share.jpeg',
     )
       .then(({ uri }) => {
-        if (Platform.OS === "android") {
-          Sharing.shareAsync(
+          if (Platform.OS === 'android') {
+            Sharing.shareAsync(
             uri,
-            {
-              mimeType: "image/jpeg",
-              UTI: "image/jpeg",
-            }
+              {
+                  mimeType: 'image/jpeg',
+                  UTI: 'image/jpeg',
+              },
           );
         } else {
-          ShareNative.share({
-            url: uri,
+            ShareNative.share({
+              url: uri,
           });
         }
       })
       .catch(error => {
-        console.error(error);
+          console.error(error);
       });
-  });
+  })
 
-  _pageSelected = (page) => this.setState({ selectedIndex: page });
+    _pageSelected = (page) => this.setState({ selectedIndex: page });
 
-  _preview = ({ image, ...props }) => {
-    return <ProgressiveImage
+    _preview = ({ image, ...props }) => {
+      return <ProgressiveImage
       thumbnailSource={{
-        uri: image.source.preview
+          uri: image.source.preview,
       }}
 
       source={{
-        uri: image.source.uri
+          uri: image.source.uri,
       }}
 
-      {...props} />
+      {...props} />;
   }
 
-  render() {
-    const { album } = this.props.navigation.state.params as IAlbumParams;
+    render() {
+      const { album } = this.props.navigation.state.params as IAlbumParams;
 
-    return (
+      return (
       <Query<Album, AlbumVariables>
         query={GetAlbumQuery}
         fetchPolicy={this.props.fetchPolicy}
         variables={{
-          id: album,
+            id: album,
         }}
       >
         {({ loading, error, data, refetch }) => {
-          if (error) throw error;
-          this.data = data;
+            if (error) throw error;
+            this.data = data;
 
-          return (
+            return (
             <>
               <ScreenWithHeader header={{
-                title: data != null && data.Album != null ? data.Album.name : I18N.Album.title,
-                showBack: true,
+                  title: data != null && data.Album != null ? data.Album.name : I18N.Album.title,
+                  showBack: true,
               }}
               >
                 <FlatList
                   contentContainerStyle={styles.container}
-                  //@ts-ignore
+                  // @ts-ignore
                   data={mapResults(data)}
                   numColumns={4}
 
@@ -182,7 +182,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                 <Portal>
                   <StatusBar hidden={true} />
                   <Gallery
-                    style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop, }}
+                    style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop }}
                     images={mapResults(data)}
 
                     onPageSelected={this._pageSelected}
@@ -191,9 +191,9 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                     imageComponent={this._preview}
 
                     flatListProps={{
-                      windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
-                      initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
-                      maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
+                        windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
+                        initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
+                        maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
                       // initialScrollIndex: this.state.selectedIndex,
                       // getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
                       //   length: Dimensions.get('screen').width,
@@ -210,9 +210,9 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                         color={this.props.theme.colors.accent}
                         onPress={this._hideGallery}
                         style={{
-                          position: "absolute",
-                          top: HEADER_MARGIN_TOP + 8,
-                          left: 8,
+                            position: 'absolute',
+                            top: HEADER_MARGIN_TOP + 8,
+                            left: 8,
                         }}
                       />
 
@@ -221,9 +221,9 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                         onPress={this._export}
                         color={this.props.theme.colors.accent}
                         style={{
-                          position: "absolute",
-                          top: HEADER_MARGIN_TOP + 8,
-                          right: 8,
+                            position: 'absolute',
+                            top: HEADER_MARGIN_TOP + 8,
+                            right: 8,
                         }}
                       />
                     </>
@@ -240,31 +240,31 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
 
 const mapResults = memoize((data: Album) => data != null && data.Album != null
   ? data.Album.pictures.map(p => ({
-    source:
+      source:
     {
-      uri: encodeURI(p.preview_1920),
-      preview: encodeURI(p.preview_100),
-    }
+        uri: encodeURI(p.preview_1920),
+        preview: encodeURI(p.preview_100),
+    },
   }))
   : []);
 
 function memoize(func: (data: Album) => any) {
-  let result;
-  let cachedData: Album;
+    let result;
+    let cachedData: Album;
 
-  return (newData: Album) => {
-    if (newData != null && (cachedData == null || newData.Album != cachedData.Album)) {
-      logger.log("calculating new data");
+    return (newData: Album) => {
+      if (newData != null && (cachedData == null || newData.Album != cachedData.Album)) {
+        logger.log('calculating new data');
 
-      result = func(newData);
-      cachedData = newData;
+        result = func(newData);
+        cachedData = newData;
     }
 
-    return result;
-  }
+      return result;
+  };
 }
 
 export const AlbumScreen =
   withWhoopsErrorBoundary(
-    withCacheInvalidation("album",
-      withTheme(AlbumScreenBase)));
+    withCacheInvalidation('album',
+                          withTheme(AlbumScreenBase)));

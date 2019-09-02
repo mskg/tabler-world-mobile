@@ -8,11 +8,11 @@ function makeDisplayString(member: NearbyMembers_nearbyMembers) {
 /**
  * Apollo reuses instances, so we create new ones every time
  */
-export function makeGroups (data: NearbyMembers_nearbyMembers[]) {
+export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     let group = {
         title: makeDisplayString(data[0]),
         country: data[0].address.country,
-        members: [] as NearbyMembers_nearbyMembers[]
+        members: [] as NearbyMembers_nearbyMembers[],
     };
 
     const result: typeof group[] = [];
@@ -20,21 +20,21 @@ export function makeGroups (data: NearbyMembers_nearbyMembers[]) {
         const r = {
             ...m,
             member: {
-                ...m.member
-            }
+                ...m.member,
+            },
         };
 
         r.member.roles = [...(m.member.roles || []), {
-            __typename: "Role",
-            name: "Member",
-            group: "Member",
+            __typename: 'Role',
+            name: 'Member',
+            group: 'Member',
             level: m.member.club.name,
             ref: {
-                __typename: "RoleRef",
+                __typename: 'RoleRef',
                 type: RoleType.club,
-                name: "RT" + m.member.club.club,
+                name: 'RT' + m.member.club.club,
                 id: m.member.club.id,
-            }
+            },
         }];
 
         return r;
@@ -49,12 +49,11 @@ export function makeGroups (data: NearbyMembers_nearbyMembers[]) {
                 country: member.address.country,
                 members: [member],
             };
-        }
-        else {
+        } else {
             group.members.push(member);
         }
     }
 
     result.push(group);
     return result;
-};
+}

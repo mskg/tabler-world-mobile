@@ -1,8 +1,8 @@
 import { SplashScreen } from 'expo';
-import React from "react";
-import { Image, StatusBar, StyleSheet, View } from "react-native";
+import React from 'react';
+import { Image, StatusBar, StyleSheet, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
-import Assets from "../Assets";
+import Assets from '../Assets';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT } from '../theme/colors';
 
 export default class Loading extends React.PureComponent {
@@ -13,7 +13,7 @@ export default class Loading extends React.PureComponent {
     async componentDidMount() {
         setTimeout(() => {
             SplashScreen.hide();
-        }, 1000);
+        },         1000);
     }
 
     // resources are preloaded by withPreCached
@@ -58,19 +58,19 @@ export const FullScreenLoading = (...props: any[]) =>
     </View>
     ;
 
-export const InlineLoading = (...props: any[]) => <ActivityIndicator size="large" color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
+export const InlineLoading = (...props: any[]) => <ActivityIndicator size='large' color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
 
 const styles = StyleSheet.create({
     image: {
         flex: 1,
-        resizeMode: "contain",
+        resizeMode: 'contain',
         width: undefined,
-        height: undefined
+        height: undefined,
     },
 
     center: {
         // top: 100,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
-})
+});

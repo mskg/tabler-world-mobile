@@ -1,7 +1,7 @@
-import { GeocoderDataSource } from "./GeocoderDataSource";
-import { MembersDataSource } from "./MembersDataSource";
-import { StructureDataSource } from "./StructureDataSource";
-import { TablerWorldAPI } from "./TablerWorldAPI";
+import { GeocoderDataSource } from './GeocoderDataSource';
+import { MembersDataSource } from './MembersDataSource';
+import { StructureDataSource } from './StructureDataSource';
+import { TablerWorldAPI } from './TablerWorldAPI';
 
 export const dataSources = (): IDataSources => {
     return {

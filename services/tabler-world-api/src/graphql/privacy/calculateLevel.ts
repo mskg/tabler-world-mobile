@@ -1,7 +1,7 @@
-import { IPrincipal } from "../types/IPrincipal";
-import { FieldNames } from "./FieldNames";
-import { FilterLevel } from "./FilterLevel";
-import { AnyType } from "./WhiteList";
+import { IPrincipal } from '../types/IPrincipal';
+import { FieldNames } from './FieldNames';
+import { FilterLevel } from './FilterLevel';
+import { AnyType } from './WhiteList';
 
 export function calculateLevel(ctx: IPrincipal, tabler: AnyType): FilterLevel {
     if (tabler[FieldNames.Id] === ctx.id) {

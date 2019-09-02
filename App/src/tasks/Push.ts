@@ -4,15 +4,15 @@ import { AsyncStorage } from 'react-native';
 import { Categories, Logger } from '../helper/Logger';
 import { storePushToken } from '../redux/actions/settings';
 import { getReduxStore } from '../redux/getRedux';
-import { TOKEN_KEY } from "./Constants";
+import { TOKEN_KEY } from './Constants';
 
-const logger = new Logger(Categories.Sagas.Push)
+const logger = new Logger(Categories.Sagas.Push);
 
 export async function registerForPushNotificationsAsync() {
-    //TODO: dupliacte code with checkPersmissions
+    // TODO: dupliacte code with checkPersmissions
     try {
         const { status: existingStatus } = await Permissions.getAsync(
-            Permissions.NOTIFICATIONS
+            Permissions.NOTIFICATIONS,
         );
 
         let finalStatus = existingStatus;
@@ -28,25 +28,25 @@ export async function registerForPushNotificationsAsync() {
 
         // Stop here if the user did not grant permissions
         if (finalStatus !== 'granted') {
-            logger.log("status", finalStatus);
+            logger.log('status', finalStatus);
             return;
         }
 
         const existingToken = await AsyncStorage.getItem(TOKEN_KEY);
 
         // Get the token that uniquely identifies this device
-        let token = await Notifications.getExpoPushTokenAsync();
+        const token = await Notifications.getExpoPushTokenAsync();
 
         if (token != existingToken) {
-            logger.log("token is ", token);
+            logger.log('token is ', token);
             getReduxStore().dispatch(storePushToken(token));
         } else {
-            logger.log("Token known", existingToken);
+            logger.log('Token known', existingToken);
         }
     } catch (e) {
         // push not supported when not logged in
         if (!__DEV__) {
-            logger.error(e, "Failed to acquire push token");
+            logger.error(e, 'Failed to acquire push token');
         }
     }
 }

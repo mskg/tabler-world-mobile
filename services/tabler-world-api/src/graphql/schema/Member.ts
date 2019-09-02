@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-lambda";
+import { gql } from 'apollo-server-lambda';
 
 export const Member = gql`
     type Address {

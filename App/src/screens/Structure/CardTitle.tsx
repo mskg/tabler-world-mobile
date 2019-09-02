@@ -21,5 +21,5 @@ export function CardTitle({ avatar, title, subtitle }) {
                 size={50}
                 label={avatar} />
         }
-    />
+    />;
 }

@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const { readFileSync } = require("fs");
 
 const name = (process.argv && process.argv.length > 2) ? process.argv[2] : "channel";
 

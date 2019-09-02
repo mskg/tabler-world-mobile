@@ -4,18 +4,18 @@ import { INITIAL_STATE } from '../initialState';
 export function locationReducer(
   state = INITIAL_STATE.location,
   action:
-    | typeof actions.setLocation.shape
+    | typeof actions.setLocation.shape,
 ): typeof INITIAL_STATE.location {
-  switch (action.type) {
-    case actions.setLocation.type:
+    switch (action.type) {
+  case actions.setLocation.type:
       return {
-        ...state,
-        address: action.payload.address,
-        location: action.payload.location,
-        timestamp: Date.now(),
+          ...state,
+          address: action.payload.address,
+          location: action.payload.location,
+          timestamp: Date.now(),
       };
 
-    default:
+  default:
       return state;
   }
 }

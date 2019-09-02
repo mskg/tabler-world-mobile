@@ -1,6 +1,6 @@
-import { addressHash } from "@mskg/tabler-world-geo";
-import * as DateParser from "date-and-time";
-import { IApolloContext } from "../types/IApolloContext";
+import { addressHash } from '@mskg/tabler-world-geo';
+import * as DateParser from 'date-and-time';
+import { IApolloContext } from '../types/IApolloContext';
 
 type ById = {
     id: string,
@@ -11,22 +11,22 @@ type ById = {
 export const StructureResolver = {
     Query: {
         Associations: (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log("Associations");
+            context.logger.log('Associations');
             return context.dataSources.structure.allAssociations();
         },
 
         Clubs: (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log("Clubs");
+            context.logger.log('Clubs');
             return context.dataSources.structure.allClubs();
         },
 
         Areas: (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log("Areas");
+            context.logger.log('Areas');
             return context.dataSources.structure.allAreas();
         },
 
         Club: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log("Club", args.id);
+            context.logger.log('Club', args.id);
             return context.dataSources.structure.getClub(args.id);
         },
     },
@@ -78,10 +78,10 @@ export const StructureResolver = {
     ClubInfo: {
         charter_date: (root: any, _args: any, context: IApolloContext) => {
             try {
-                const date = DateParser.parse(root.charter_date, "DD/MM/YYYY");
+                const date = DateParser.parse(root.charter_date, 'DD/MM/YYYY');
                 return new Date(date).toISOString();
             } catch (e) {
-                context.logger.error(e, "Could not parse", root.charter_date);
+                context.logger.error(e, 'Could not parse', root.charter_date);
                 return null;
             }
         },

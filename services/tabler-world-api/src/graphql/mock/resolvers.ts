@@ -1,10 +1,10 @@
 
 export const resolvers = {
     MemberListView: {
-        __resolveType: () => "Member",
+        __resolveType: () => 'Member',
     },
 
     JobResult: {
-        __resolveType: () => "JobError",
+        __resolveType: () => 'JobError',
     },
 };

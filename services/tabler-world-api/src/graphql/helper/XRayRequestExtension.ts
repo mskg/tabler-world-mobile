@@ -1,8 +1,8 @@
-import { XRAY } from "@mskg/tabler-world-aws";
-import { GraphQLResponse } from "apollo-server-core";
-import { GraphQLExtension } from "apollo-server-lambda";
-import { GraphQLResolveInfo } from "graphql";
-import { IApolloContext } from "../types/IApolloContext";
+import { XRAY } from '@mskg/tabler-world-aws';
+import { GraphQLResponse } from 'apollo-server-core';
+import { GraphQLExtension } from 'apollo-server-lambda';
+import { GraphQLResolveInfo } from 'graphql';
+import { IApolloContext } from '../types/IApolloContext';
 
 function getFieldName(info: GraphQLResolveInfo) {
     if (
@@ -13,7 +13,7 @@ function getFieldName(info: GraphQLResolveInfo) {
         return info.fieldNodes[0].alias.value;
     }
 
-    return info.fieldName || "field";
+    return info.fieldName || 'field';
 }
 
 // function isArrayPath(path: ResponsePath) {
@@ -74,7 +74,7 @@ export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
 
         XRAY.captureAsyncFunc(`GraphQL ${name}`, (ss: any) => {
             if (ss) {
-                close = (error: Error | null /*, result: any*/) => {
+                close = (error: Error | null) => {
                     ss.close(error);
                 };
             }
@@ -91,14 +91,14 @@ export class XRayRequestExtension extends GraphQLExtension<IApolloContext> {
             const { graphqlResponse } = o;
 
             if (graphqlResponse.errors) {
-                XRAY.captureFunc("GraphQL Errors", (segment: any) => {
+                XRAY.captureFunc('GraphQL Errors', (segment: any) => {
                     // @ts-ignore
                     graphqlResponse.errors.forEach(
                         (err) => segment.addError(JSON.stringify(err, null, 2)));
                 });
             }
         } catch (e) {
-            o.context.logger.error("Faild to add error to segment", e);
+            o.context.logger.error('Faild to add error to segment', e);
         }
     }
 }

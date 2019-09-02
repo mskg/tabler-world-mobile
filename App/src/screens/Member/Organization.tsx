@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 import { View } from 'react-native';
-import { Chip, Theme, withTheme } from "react-native-paper";
+import { Chip, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { GetMemberQueryType_Member } from "../../queries/GetMemberQuery";
+import { GetMemberQueryType_Member } from '../../queries/GetMemberQuery';
 import { showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
 
@@ -10,7 +10,7 @@ type Props = {
     member: GetMemberQueryType_Member,
     theme: Theme,
     showClub: typeof showClub,
-}
+};
 
 class OrganizationBase extends React.PureComponent<Props> {
     render() {
@@ -32,6 +32,6 @@ class OrganizationBase extends React.PureComponent<Props> {
 }
 
 export const Organization = connect(undefined,
-    {
-        showClub
+                                    {
+        showClub,
     })(withTheme(OrganizationBase));

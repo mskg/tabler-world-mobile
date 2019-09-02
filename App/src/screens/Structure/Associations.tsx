@@ -12,11 +12,11 @@ import { CachedImage } from '../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
+import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Associations, Associations_Associations } from '../../model/graphql/Associations';
 import { RoleNames } from '../../model/IRole';
-import { GetAssociationsQuery } from "../../queries/GetAssociationsQuery";
+import { GetAssociationsQuery } from '../../queries/GetAssociationsQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
@@ -113,11 +113,11 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                         >
                             <FlatList
                                 contentContainerStyle={styles.container}
-                                //@ts-ignore
+                                // @ts-ignore
                                 data={
                                     _(data != null ? data.Associations : [])
                                         .orderBy(a => (data != null && data.Me.association.association == a.association)
-                                            ? "aa"
+                                            ? 'aa'
                                             : a.association)
                                         .toArray()
                                         .value()
@@ -139,5 +139,5 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
 
 export const AssociationsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("associations",
-            withTheme(AssociationsScreenBase)));
+        withCacheInvalidation('associations',
+                              withTheme(AssociationsScreenBase)));
