@@ -9,7 +9,7 @@
 
 # generated scripts
 app.json
-compile/
+dist/
 config/aws.json
 !config/app.json
 deployment.json
