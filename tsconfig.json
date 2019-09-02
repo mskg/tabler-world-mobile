@@ -26,5 +26,8 @@
                 "configFile": "./tslint.json"
             }
         ]
-    }
+    },
+    "exclude": [
+        "**/*.spec.ts"
+    ]
 }
