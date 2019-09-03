@@ -19,7 +19,7 @@ steps:
   displayName: 'Get cloudformation exports'
   inputs:
     awsCredentials: AWS
-    regionName: $(AWS_DEFAULT_REGIONO)
+    regionName: $(AWS_DEFAULT_REGION)
     scriptType: inline
     inlineScript: |
      sudo pip3 install --upgrade pip
