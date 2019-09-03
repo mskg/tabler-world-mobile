@@ -1,5 +1,5 @@
 # build number
-name: $(VERSION).047
+name: $(VERSION).$(PATCH)
 
 pool:
   name: 'Default' # 'Hosted Ubuntu 1604
@@ -8,6 +8,8 @@ pool:
 variables:
   - name: VERSION
     value: '1.1'
+  - name: PATCH
+    value: counter(variables['VERSION'], 47)
   - name: EXPO_RELEASE_CHANNEL
     value: 'beta'
   - group: 'expo'
