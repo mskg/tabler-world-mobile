@@ -7,21 +7,23 @@ import { Square } from './Placeholder/Square';
 
 type Props = {
     source: any,
-    alt: string,
+    alt?: string,
     height: string | number,
     width: string | number,
     style: any
-    imagesMaxWidth: number,
 
-    imagesInitialDimensions: {
+    imagesMaxWidth?: number,
+    imagesInitialDimensions?: {
         width: number,
         height: number,
-    }
+    },
+
+    passProps?: any,
 };
 
 type State = {
-    width: number,
-    height: number,
+    width: number | string,
+    height: number | string,
     error?: boolean,
 };
 
@@ -31,15 +33,15 @@ export default class HTMLImage extends PureComponent<Props, State> {
     static defaultProps = {
         imagesInitialDimensions: {
             width: 100,
-            height: 100
-        }
-    }
+            height: 100,
+        },
+    };
 
     constructor(props) {
         super(props);
         this.state = {
             width: props.imagesInitialDimensions.width,
-            height: props.imagesInitialDimensions.height
+            height: props.imagesInitialDimensions.height,
         };
     }
 
@@ -70,19 +72,19 @@ export default class HTMLImage extends PureComponent<Props, State> {
 
         if (Array.isArray(style)) {
             style.forEach((styles) => {
-                if (!width && styles['width']) {
-                    styleWidth = styles['width'];
+                if (!width && styles.width) {
+                    styleWidth = styles.width;
                 }
-                if (!height && styles['height']) {
-                    styleHeight = styles['height'];
+                if (!height && styles.height) {
+                    styleHeight = styles.height;
                 }
             });
         } else {
-            if (!width && style['width']) {
-                styleWidth = style['width'];
+            if (!width && style.width) {
+                styleWidth = style.width;
             }
-            if (!height && style['height']) {
-                styleHeight = style['height'];
+            if (!height && style.height) {
+                styleHeight = style.height;
             }
         }
 
@@ -94,19 +96,21 @@ export default class HTMLImage extends PureComponent<Props, State> {
         const { styleWidth, styleHeight } = this.getDimensionsFromStyle(style, height, width);
 
         if (styleWidth && styleHeight) {
-            return this.mounted && this.setState({
-                width: typeof styleWidth === 'string' && styleWidth.search('%') !== -1 ? styleWidth : parseInt(styleWidth, 10),
-                height: typeof styleHeight === 'string' && styleHeight.search('%') !== -1 ? styleHeight : parseInt(styleHeight, 10)
-            });
+            if (this.mounted) {
+                this.setState({
+                    width: typeof styleWidth === 'string' && styleWidth.search('%') !== -1 ? styleWidth : parseInt(styleWidth, 10),
+                    height: typeof styleHeight === 'string' && styleHeight.search('%') !== -1 ? styleHeight : parseInt(styleHeight, 10),
+                });
+            }
+            return;
         }
 
-        console.log("********************", source.uri);
         const path = await CacheManager.get(source.uri, {}).getPath() as string;
 
         // Fetch image dimensions only if they aren't supplied or if with or height is missing
         Image.getSize(
-            //source.uri,
-            encodeURI(path),
+            // source.uri,
+            path,
             (originalWidth, originalHeight) => {
                 if (!imagesMaxWidth) {
                     return this.mounted && this.setState({ width: originalWidth, height: originalHeight });
@@ -114,11 +118,14 @@ export default class HTMLImage extends PureComponent<Props, State> {
 
                 const optimalWidth = imagesMaxWidth <= originalWidth ? imagesMaxWidth : originalWidth;
                 const optimalHeight = (optimalWidth * originalHeight) / originalWidth;
-                this.mounted && this.setState({ width: optimalWidth, height: optimalHeight, error: false });
+
+                if (this.mounted) {
+                    this.setState({ width: optimalWidth, height: optimalHeight, error: false });
+                }
             },
             () => {
-                this.mounted && this.setState({ error: true });
-            }
+                if (this.mounted) { this.setState({ error: true }); }
+            },
         );
     }
 

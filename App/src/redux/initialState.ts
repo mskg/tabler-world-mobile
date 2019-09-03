@@ -1,47 +1,57 @@
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 import { IAppState } from '../model/IAppState';
 
+// tslint:disable-next-line: export-name
 export const INITIAL_STATE: IAppState = {
-  updateAvailable: false,
+    connection: {
+        effectiveType: 'unknown',
+        type: 'unknown',
+        offline: true,
+    },
 
-  snacks: [],
+    updateAvailable: false,
 
-  auth: {
-    state: "signin",
-    username: undefined,
-    signinState: undefined,
-  },
+    snacks: [],
 
-  searchHistory: {
-    members: ["Markus Kling"],
-    lru: [],
-  },
+    auth: {
+        state: 'signin',
+        username: undefined,
+        signinState: undefined,
+    },
 
-  settings: {
-    syncFavorites: false,
-    syncOwnTable: false,
-    sortByLastName: true,
-    diplayFirstNameFirst: true,
+    location: {
+    },
 
-    messagingApp: MessagingApps.Default,
-    browserApp: WebApps.Default,
-    phoneApp: CallApps.Default,
-    emailApp: MailApps.Default,
+    searchHistory: {
+        members: ['Markus Kling'],
+        lru: [],
+    },
 
-    darkMode: false,
-    optOutAnalytics: false,
-  },
+    settings: {
+        syncFavorites: false,
+        syncOwnTable: false,
+        sortByLastName: true,
+        diplayFirstNameFirst: true,
 
-  filter: {
-    member: {
-      showFavorites: true,
-      showOwntable: true,
+        messagingApp: MessagingApps.Default,
+        browserApp: WebApps.Default,
+        phoneApp: CallApps.Default,
+        emailApp: MailApps.Default,
 
-      showAreaBoard: false,
-      showAssociationBoard: false,
+        darkMode: false,
+        optOutAnalytics: false,
+    },
 
-      area: [],
-      favorites: {},
-    }
-  }
+    filter: {
+        member: {
+            showFavorites: true,
+            showOwntable: true,
+
+            showAreaBoard: false,
+            showAssociationBoard: false,
+
+            area: [],
+            favorites: {},
+        },
+    },
 };

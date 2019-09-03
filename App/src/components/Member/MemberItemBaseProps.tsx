@@ -1,16 +1,16 @@
-import React from "react";
-import { Theme } from "react-native-paper";
-import { IMemberOverviewFragment } from "../../model/IMemberOverviewFragment";
+import React from 'react';
+import { Theme } from 'react-native-paper';
+import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 
 export type MemberItemBaseProps = {
-  theme: Theme;
-  member: IMemberOverviewFragment;
+    theme: Theme;
+    member: IMemberOverviewFragment;
 
-  onPress: (member: IMemberOverviewFragment) => void;
+    onPress?: (member: IMemberOverviewFragment) => void;
 
-  right?: (props: {
-    size: number;
-  }) => React.ReactNode;
+    right?: (props: {
+        size: number;
+    }) => React.ReactNode;
 
-  height?: number,
+    height?: number,
 };

@@ -1,38 +1,39 @@
-import _ from 'lodash';
+import { take, uniq } from 'lodash';
 import * as actions from '../actions/history';
 import { INITIAL_STATE } from '../initialState';
 
 const HISTORY_LENGTH = 20;
 
+// tslint:disable-next-line: max-func-body-length export-name
 export function searchHistoryReducer(
-  state = INITIAL_STATE.searchHistory,
-  action:
-    | typeof actions.addTablerSearch.shape
-    | typeof actions.addTablerLRU.shape
+    state = INITIAL_STATE.searchHistory,
+    action:
+        | typeof actions.addTablerSearch.shape
+        | typeof actions.addTablerLRU.shape,
 ) {
-  switch (action.type) {
-    case actions.addTablerSearch.type:
-      // workaround for advanced search
-      if (action.payload == "" || action.payload == null) return state;
+    switch (action.type) {
+        case actions.addTablerSearch.type:
+            // workaround for advanced search
+            if (action.payload === '' || action.payload == null) return state;
 
-      const newState = { ...state, members: [action.payload, ...state.members] };
-      newState.members = _.uniq(newState.members);
+            const newState = { ...state, members: [action.payload, ...state.members] };
+            newState.members = uniq(newState.members);
 
-      while (newState.members.length > HISTORY_LENGTH) {
-        newState.members.shift();
-      }
+            while (newState.members.length > HISTORY_LENGTH) {
+                newState.members.shift();
+            }
 
-      return newState;
+            return newState;
 
-    case actions.addTablerLRU.type:
-      const lruState = _.take(_.uniq([action.payload, ...state.lru]), 10);
+        case actions.addTablerLRU.type:
+            const lruState = take(uniq([action.payload, ...state.lru]), 10);
 
-      return {
-        ...state,
-        lru: lruState,
-      };
+            return {
+                ...state,
+                lru: lruState,
+            };
 
-    default:
-      return state;
-  }
+        default:
+            return state;
+    }
 }

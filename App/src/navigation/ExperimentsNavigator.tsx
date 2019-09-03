@@ -10,5 +10,5 @@ export const ExperimentsNavigator = createSwitchNavigator(
         Experiments: ExperimentsNavigation,
     }, {
         initialRouteName: 'Loading',
-    }
+    },
 );

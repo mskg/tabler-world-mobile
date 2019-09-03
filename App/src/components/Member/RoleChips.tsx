@@ -1,14 +1,14 @@
-import color from "color";
+import color from 'color';
 import _ from 'lodash';
-import React from "react";
-import { Theme } from "react-native-paper";
-import { IRole } from "../../model/IRole";
+import React from 'react';
+import { Theme } from 'react-native-paper';
+import { IRole } from '../../model/IRole';
 import { RoleChip } from './RoleChip';
 
 type Props = {
     roles: IRole[],
     theme: Theme,
-}
+};
 
 export class RoleChips extends React.PureComponent<Props> {
     render() {
@@ -19,7 +19,7 @@ export class RoleChips extends React.PureComponent<Props> {
             .rgb()
             .string();
 
-        return _(this.props.roles).orderBy(r => r.ref.type === "assoc" ? 1 : r.ref.type === "area" ? 2 : 3).map((r, i) => (
+        return _(this.props.roles).orderBy(r => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
             <RoleChip
                 key={i}
                 color={this.props.theme.colors.primary}

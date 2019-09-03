@@ -1,0 +1,34 @@
+{
+    "files.exclude": {
+        "**/*.js*": {
+            "when": "$(basename).ts"
+        },
+        "**/*.js.map": true
+    },
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.tabSize": 4,
+    "editor.useTabStops": false,
+    "editor.formatOnSave": true,
+    "editor.detectIndentation": false,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "source.fixAll": true
+    },
+    "search.exclude": {
+        "**/.expo": true,
+        "**/.serverless": true,
+        "**/.webpack": true,
+        "**/dist": true,
+        "**/.dynamodb": true,
+        "**/.tmp": true
+    },
+    "files.watcherExclude": {
+        "**/.dynamodb/**": true,
+        "**/.expo/**": true,
+        "**/.serverless/**": true,
+        "**/.webpack/**": true,
+        "**/.tmp/**": true
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+}

@@ -16,7 +16,7 @@ const LabelBase =
     ({ text, theme, color }) =>
         <Text
             numberOfLines={1}
-            style={{ color, fontFamily: theme.fonts.medium, }}
+            style={{ color, fontFamily: theme.fonts.medium }}
         >
             {text.toUpperCase()}
         </Text>;
@@ -29,14 +29,14 @@ const Navigator = createMaterialTopTabNavigator(
             screen: ScanScreen,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Pair.scan} />,
-            }
+            },
         },
 
         [Routes.Me]: {
             screen: CodeScreen,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Pair.me} />,
-            }
+            },
         },
     },
     {
@@ -46,7 +46,7 @@ const Navigator = createMaterialTopTabNavigator(
         removeClippedSubviews: true,
         swipeEnabled: true,
         tabBarPosition: 'top',
-    }
+    },
 );
 
 export default Navigator;

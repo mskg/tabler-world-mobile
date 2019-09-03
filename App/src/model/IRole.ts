@@ -1,6 +1,6 @@
 
-export const ROLE_GROUP_BOARD = "Board";
-export const ROLE_GROUP_BOARD_ASSIST = "Board Assistants";
+export const ROLE_GROUP_BOARD = 'Board';
+export const ROLE_GROUP_BOARD_ASSIST = 'Board Assistants';
 
 export enum RoleNames {
     President = 'President',
@@ -43,14 +43,14 @@ export const RoleOrderByMapping = {
 };
 
 export interface IRole {
-    name: string,
+    name: string;
 
-    level: string,
-    group: string, // Board, VIP, etc.
+    level: string;
+    group: string; // Board, VIP, etc.
 
     ref: {
         id: string,
         name: string,
         type: 'club' | 'assoc' | 'area',
-    }
+    };
 }

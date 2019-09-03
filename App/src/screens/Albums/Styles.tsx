@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
 
 
     action: {
-        justifyContent: "flex-end",
+        justifyContent: 'flex-end',
         marginRight: 8,
     },
 
@@ -41,14 +41,14 @@ export const styles = StyleSheet.create({
         paddingRight: 16,
         height: 60,
 
-        flexDirection: "row",
-        flexWrap: "wrap",
-        overflow: "hidden",
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        overflow: 'hidden',
     },
 
     imagePreview: {
         marginLeft: 8,
         width: 60,
-        height: 60
-    }
+        height: 60,
+    },
 });

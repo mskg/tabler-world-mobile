@@ -1,30 +1,36 @@
 export enum AuditScreenName {
-    NewsArticle     = "News/Article",
-    TopNews         = "News/TopNews",
+    NewsArticle     = 'News/Article',
+    TopNews         = 'News/TopNews',
 
-    Album           = "Albums/Album",
-    AlbumList       = "Albums/List",
+    Album           = 'Albums/Album',
+    AlbumList       = 'Albums/List',
 
-    SignIn          = "Auth/SignIn",
-    ConfirmSignIn   = "Auth/Confirm",
+    SignIn          = 'Auth/SignIn',
+    ConfirmSignIn   = 'Auth/Confirm',
 
-    Member          = "Members/Member",
-    Club            = "Structure/Club",
-    Web             = "Web",
-    Picture         = "Picture",
+    Member          = 'Members/Member',
+    Club            = 'Structure/Club',
+    Web             = 'Web',
+    Picture         = 'Picture',
 
-    Associations    = "Structure/Associations",
-    Areas           = "Structure/Areas",
-    Clubs           = "Structure/Clubs",
+    Associations    = 'Structure/Associations',
+    Areas           = 'Structure/Areas',
+    Clubs           = 'Structure/Clubs',
+    ClubMap         = 'Structure/ClubMap',
 
-    MemberList      = "Members/List",
-    FilterMember    = "Members/Filter",
-    MemberSearch    = "Members/Search",
+    MemberList      = 'Members/List',
+    FilterMember    = 'Members/Filter',
+    MemberSearch    = 'Members/Search',
 
-    Settings        = "Settings",
-    Legal           = "Settings/Legal",
-    ShowMD          = "Settings/Show MD",
-    ShowExternal    = "Settings/Show External",
+    MemberScanQR    = 'Members/ScanQRCode',
+    MemberShowQR    = 'Members/ShowQRCode',
+    NearbyMembers   = 'Members/Nearby',
 
-    ErrorReport     = "ErrorReport",
+    Settings        = 'Settings',
+    Legal           = 'Settings/Legal',
+    ShowMD          = 'Settings/Show MD',
+    ShowExternal    = 'Settings/Show External',
+
+    ErrorReport     = 'ErrorReport',
+    Menu            = 'Menu',
 }

@@ -1,0 +1,14 @@
+{
+    "name": "@mskg/tabler-world-tslint-rules",
+    "version": "0.0.1",
+    "description": "",
+    "main": "tslint.json",
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "dependencies": {
+        "tslint": "^5.19.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "tslint-microsoft-contrib": "^6.2.0",
+        "typescript-tslint-plugin": "^0.5.4"
+    }
+}

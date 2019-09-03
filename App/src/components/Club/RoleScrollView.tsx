@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, ScrollView, View } from "react-native";
+import { Dimensions, ScrollView, View } from 'react-native';
 import { sortGroupRoles } from '../../helper/sortRoles';
 import { RoleAvatar } from './RoleAvatar';
 
@@ -13,7 +13,7 @@ type BoardMember = {
 type Props = {
     roles: {
         role: string,
-        member: BoardMember
+        member: BoardMember,
     }[],
 
     expand?: boolean,
@@ -23,7 +23,7 @@ type State = {
 };
 
 // const width = Dimensions.get("window").width / 2 - 32 - 32;
-const widthMax = Dimensions.get("window").width / 2 - 32 - 18;
+const widthMax = Dimensions.get('window').width / 2 - 32 - 18;
 
 export class RoleScrollView extends React.Component<Props, State> {
     render() {
@@ -32,9 +32,9 @@ export class RoleScrollView extends React.Component<Props, State> {
 
         if (this.props.expand === true) {
             return (
-                <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
+                <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
                     {
-                        grouped.map((r, i) => (
+                        grouped.map((r, _i) => (
                             <View style={{ marginRight: 16, marginTop: 4, marginBottom: 12 }} key={r.member.id}>
                                 <RoleAvatar
                                     member={r.member}
@@ -45,13 +45,13 @@ export class RoleScrollView extends React.Component<Props, State> {
                         ))
                     }
                 </View>
-            )
+            );
         }
 
         return (
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 {
-                    grouped.map((r, i) => (
+                    grouped.map((r, _i) => (
                         <View style={{ marginRight: 16, marginTop: 4 }} key={r.member.id}>
                             <RoleAvatar
                                 member={r.member}

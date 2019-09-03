@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, View } from "react-native";
+import { Animated, View } from 'react-native';
 import { Headline, Subheading, Surface, Theme, withTheme } from 'react-native-paper';
 import { Circle } from '../../components/Placeholder/Circle';
 import { Line } from '../../components/Placeholder/Line';
@@ -31,6 +31,7 @@ type Props = {
 const AnimatedSurface = Animated.createAnimatedComponent(Surface);
 
 class ProfileHeaderBase extends React.Component<Props> {
+    // tslint:disable-next-line: max-func-body-length
     render() {
         const { scrollY, distance, loading, avatar: Avatar, fab: Fab } = this.props;
 
@@ -50,7 +51,7 @@ class ProfileHeaderBase extends React.Component<Props> {
             inputRange: [0, distance],
             outputRange: [
                 TOTAL_HEADER_HEIGHT - IMAGE_SIZE - 20,
-                HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6 - 10
+                HEADER_MARGIN_TOP + IMAGE_SIZE / 2 - 6 - 10,
             ],
             extrapolate: 'clamp',
         });
@@ -79,7 +80,7 @@ class ProfileHeaderBase extends React.Component<Props> {
             extrapolate: 'clamp',
         });
 
-        if (__DEV__) { logger.debug("headerTranslate", headerTranslate); }
+        if (__DEV__) { logger.debug('headerTranslate', headerTranslate); }
 
         const fabTop = scrollY.interpolate({
             inputRange: [0, distance],
@@ -95,19 +96,21 @@ class ProfileHeaderBase extends React.Component<Props> {
                 <AnimatedSurface
                     style={{
                         ...HeaderStyles.header,
-                        paddingTop: paddingTop,
+                        paddingTop,
                         height: headerTranslate,
                         backgroundColor: this.props.theme.colors.background,
                     }}>
 
-                    <View style={{
-                        ...styles.header,
-                    }}>
+                    <View
+                        style={{
+                            ...styles.header,
+                        }}
+                    >
                         <Placeholder
                             ready={!loading}
                             previewComponent={<Circle size={imageTranslate} />}
                         >
-                            {!loading && React.cloneElement(Avatar, {
+                            {!loading && Avatar && React.cloneElement(Avatar, {
                                 size: imageTranslate,
                                 background: this.props.theme.colors.backdrop,
                             })}
@@ -141,7 +144,7 @@ class ProfileHeaderBase extends React.Component<Props> {
                             style={[
                                 styles.header,
                                 {
-                                    opacity: subTitleOpacity
+                                    opacity: subTitleOpacity,
                                 },
                                 {
                                     transform: [
@@ -153,7 +156,7 @@ class ProfileHeaderBase extends React.Component<Props> {
                             <Placeholder
                                 ready={!loading}
                                 previewComponent={
-                                    <View style={{ alignItems: "center" }}>
+                                    <View style={{ alignItems: 'center' }}>
                                         <Line style={styles.subTitlePlaceholder} width={160} height={16} />
                                         <Line style={styles.subTitlePlaceholder} width={200} height={16} />
                                     </View>
@@ -199,4 +202,5 @@ class ProfileHeaderBase extends React.Component<Props> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const ProfileHeader = withTheme(ProfileHeaderBase);

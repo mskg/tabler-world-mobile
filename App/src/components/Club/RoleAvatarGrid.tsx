@@ -13,7 +13,7 @@ type BoardMember = {
 type Props = {
     roles: {
         role: string,
-        member: BoardMember
+        member: BoardMember,
     }[] | null,
     items: number,
 };
@@ -29,15 +29,15 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
         const nbr = this.props.items;
         const margin = 16;
         const size = (
-            Dimensions.get("screen").width
-            - 16 * 2 /* padding screen */
-            - margin * (nbr + 1) /* padding items */
+            Dimensions.get('screen').width
+            - 16 * 2 // padding screen
+            - margin * (nbr + 1)  // padding items
         ) / nbr; // needs to be squared
 
         return (
             <View style={styles.container}>
                 {
-                    grouped.map((r, i) => (
+                    grouped.map((r) => (
                         <RoleAvatar
                             style={{ marginHorizontal: margin / 2, marginVertical: margin / 2 }}
 
@@ -46,8 +46,7 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
 
                             width={size}
                             role={r.role}
-
-                            />
+                        />
                     ))
                 }
             </View>
@@ -57,10 +56,10 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        alignContent: "center",
-        flexWrap: "wrap",
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        alignContent: 'center',
+        flexWrap: 'wrap',
         marginHorizontal: 8,
     },
 });

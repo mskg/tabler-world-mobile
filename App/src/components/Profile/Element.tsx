@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Clipboard, Platform, View } from "react-native";
+import { Clipboard, Platform, View } from 'react-native';
 import { Caption, Text, TouchableRipple } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { I18N } from '../../i18n/translation';
@@ -12,8 +12,9 @@ type ActionProps = {
 
     onPress?: () => void,
     addSnack: typeof addSnack,
-}
+};
 
+// tslint:disable-next-line: no-empty
 const VOID = () => { };
 const withAnimation = (func) => () => requestAnimationFrame(func || VOID);
 
@@ -29,11 +30,10 @@ class ElementBase extends React.Component<ActionProps> {
     render() {
         const { field, text, onPress } = this.props;
 
-        let display = typeof (text) !== "string";
-        if (!display && text != null) { display = (text as string).trim() !== ""; }
-        else if (text == null) { display = false; }
+        let display = typeof (text) !== 'string';
+        if (!display && text != null) { display = (text as string).trim() !== ''; } else if (text == null) { display = false; }
 
-        const addCopy = typeof (text) === "string" && Platform.OS == "android";
+        const addCopy = typeof (text) === 'string' && Platform.OS === 'android';
 
         if (display) {
             return (
@@ -55,8 +55,8 @@ class ElementBase extends React.Component<ActionProps> {
                     <View style={styles.row}>
                         <Caption>{field}</Caption>
                         {
-                            typeof (text) === "string"
-                                ? <Text selectable={Platform.OS == "ios"} style={{ width: "100%" }}>{text}</Text>
+                            typeof (text) === 'string'
+                                ? <Text selectable={Platform.OS === 'ios'} style={{ width: '100%' }}>{text}</Text>
                                 : text
                         }
                     </View>
@@ -69,22 +69,6 @@ class ElementBase extends React.Component<ActionProps> {
 }
 
 export const Element = connect(
-    null, { addSnack }
+    null,
+    { addSnack },
 )(ElementBase);
-
-// type ActionProps = {
-//     theme: Theme,
-//     text: string,
-//     onPress?: () => void,
-//     canCopyText?: boolean,
-// }
-
-// export const ActionElement = ({ theme, text, onPress, canCopyText }: ActionProps) => {
-//     return (
-//         <TouchableRipple onPress={() => requestAnimationFrame(onPress)}>
-//             <View style={styles.row}>
-//                 <Text style={{ color: theme.colors.accent }}>{text}</Text>
-//             </View>
-//         </TouchableRipple>
-//     );
-// }

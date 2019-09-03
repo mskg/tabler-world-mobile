@@ -4,20 +4,22 @@ import React from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import uuid4 from "uuid4";
+import uuid4 from 'uuid4';
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { getConfigValue } from '../helper/Configuration';
 import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
+import { getParameterValue } from '../helper/parameters/getParameter';
+import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
+import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
 import { confirmSignIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
-import Input from "./Input";
-import { styles } from "./Styles";
+import Input from './Input';
+import { styles } from './Styles';
 
 type Props = {
     theme: Theme,
@@ -41,11 +43,11 @@ class SignInBase extends AuditedScreen<Props, State> {
             username: props.username,
             working: false,
             error: null,
-        }
+        };
     }
 
-    async getRandomString(bytes: number) {
-        //TOOD: will move to cryto in expo v33
+    async getRandomString(_bytes: number) {
+        // TOOD: will move to cryto in expo v33
         return uuid4();
     }
 
@@ -56,19 +58,18 @@ class SignInBase extends AuditedScreen<Props, State> {
         try {
             this.audit.trackAction(ActionNames.SignIn);
             const user = await Auth.signIn(username as string);
-            logger.debug("signIn response", user);
+            logger.debug('signIn response', user);
 
             this.props.confirmSignIn({
                 username: username as string,
-                state: user
+                state: user,
             });
-        }
-        catch (err) {
+        } catch (err) {
             this.audit.trackAction(ActionNames.SignInFailed);
             if (doThrow) throw err;
 
-            logger.error(err, "Error signIn");
-            this.setState({ error: err.message || err, working: false, });
+            logger.error(err, 'Error signIn');
+            this.setState({ error: err.message || err, working: false });
         }
     }
 
@@ -87,49 +88,48 @@ class SignInBase extends AuditedScreen<Props, State> {
                     onPress: async () => {
                         await enableDemoMode();
                         Updates.reloadFromCache();
-                    }
+                    },
                 },
             ],
         );
     }
 
     _signInOrUp = async () => {
-        logger.debug("signInOrUp");
+        logger.debug('signInOrUp');
         const { username } = this.state;
 
         try {
-            this.setState({ working: true, error: null, });
+            this.setState({ working: true, error: null });
             await this.signIn(true);
-        }
-        catch (err) {
+        } catch (err) {
             // which is ok here
-            if (err.code === "UserNotFoundException") {
+            if (err.code === 'UserNotFoundException') {
                 this.audit.trackAction(ActionNames.SignUp);
 
                 const newUser = {
                     username: username as string,
                     password: await this.getRandomString(30),
-                }
+                };
 
                 try {
                     await Auth.signUp(newUser);
                     await this.signIn();
-                }
-                catch (signUpError) {
+                } catch (signUpError) {
                     this.audit.trackAction(ActionNames.SignUpFailed);
 
-                    logger.error(signUpError, "Error signUp");
-                    this.setState({ error: signUpError.message || signUpError, working: false, });
+                    logger.error(signUpError, 'Error signUp');
+                    this.setState({ error: signUpError.message || signUpError, working: false });
                 }
             } else {
-                logger.error(err, "Error signInOrUp");
-                this.setState({ error: err.message || err, working: false, });
+                logger.error(err, 'Error signInOrUp');
+                this.setState({ error: err.message || err, working: false });
             }
         }
     }
 
-    _lauchJoin = () => {
-        OpenLink.url(getConfigValue("join"));
+    _lauchJoin = async () => {
+        const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
+        OpenLink.url(urls.join);
     }
 
     render() {
@@ -146,7 +146,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                 <Input
                                     placeholder={I18N.SignIn.placeholderEMail}
                                     value={this.state.username}
-                                    onChangeText={text => this.setState({ username: (text || "").toLowerCase() })}
+                                    onChangeText={text => this.setState({ username: (text || '').toLowerCase() })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
                                     style={{ borderBottomColor: this.props.theme.colors.accent }} />
                             </View>
@@ -187,6 +187,6 @@ export default connect(
     (state: IAppState) => ({
         username: state.auth.username,
     }), {
-        confirmSignIn,
-    }
+    confirmSignIn,
+},
 )(withTheme(SignInBase));

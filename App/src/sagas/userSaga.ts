@@ -4,8 +4,8 @@ import * as actions from '../redux/actions/user';
 import { logoutUser } from './user/logoutUser';
 
 export function* userSaga(): SagaIterator {
-  yield all([
-    // logout the user from the application
-    takeEvery(actions.logoutUser.type, logoutUser),
-  ]);
+    yield all([
+        // logout the user from the application
+        takeEvery(actions.logoutUser.type, logoutUser),
+    ]);
 }

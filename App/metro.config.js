@@ -5,6 +5,6 @@ module.exports = {
     assetExts: [
       ...defaultAssetExts,
       "md",
-    ]
-  }
+    ],
+  },
 };

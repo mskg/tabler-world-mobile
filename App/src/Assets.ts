@@ -18,5 +18,5 @@ export default {
         about: require(ASSETS + '/docs/about.md'),
         license: require(ASSETS + '/docs/licenses.md'),
         releasenotes: require(ASSETS + '/docs/releasenotes.md'),
-    }
-}
+    },
+};

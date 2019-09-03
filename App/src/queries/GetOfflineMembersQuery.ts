@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { MemberDetailsFragment } from "./MemberDetailsFragment";
+import { MemberDetailsFragment } from './MemberDetailsFragment';
 
 export const GetOfflineMembersQuery = gql`
   query OfflineMembers {

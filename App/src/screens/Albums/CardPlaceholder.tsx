@@ -8,11 +8,11 @@ import { styles } from './Styles';
 export const CardPlaceholder = ({ count = 10 }) => {
     return (
         <View style={styles.container}>
-            {Array.apply(null, { length: count })
+            {Array.apply(null, { length: count } as [])
                 .map(Number.call, Number)
-                .map(i => (
+                .map((i: any) => (
                     <Surface style={styles.card} key={i.toString()}>
-                        <Square width={Dimensions.get("window").width - 32} height={200} />
+                        <Square width={Dimensions.get('window').width - 32} height={200} />
 
                         <View style={innerStyles.headerContainer}>
                             <Line height={30} width={250} />
@@ -27,20 +27,20 @@ export const CardPlaceholder = ({ count = 10 }) => {
                 ))}
         </View>
     );
-}
+};
 
 const innerStyles = StyleSheet.create({
     headerContainer: {
         marginVertical: 8,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
     },
 
     contentContainer: {
         marginBottom: 8,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
     },
 
     subtitle: {
-        marginTop: 8
+        marginTop: 8,
     },
 });

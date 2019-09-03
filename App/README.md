@@ -3,11 +3,11 @@
 ## DEV Environment
 
 1. Configure aws default credentials
-1. `npm install -g expo-cli` (once, should be kept same version)
-1. `npm start config` (fetches configuration information from Amazon)
+1. `yarn install` (once, should be kept same version)
+1. `yarn run config` (fetches configuration information from Amazon)
     - Creates `config/aws.json`
     - Creates `app.json`
-1. `expo start`
+1. `yarn dev`
     - `i` (to launch iOS simulator and install appp)
     - `a` (to launch Android simulator and install app)
 

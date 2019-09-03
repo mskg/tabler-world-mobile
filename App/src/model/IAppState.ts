@@ -1,19 +1,24 @@
+import { ConnectionInfo } from 'react-native';
 import { AuthState } from './state/AuthState';
 import { FilterState } from './state/FilterState';
+import { LocationState } from './state/LocationState';
 import { SearchHistoryState } from './state/SearchHistoryState';
 import { SettingsState } from './state/SettingsState';
 import { SnacksState } from './state/SnacksState';
 
 export interface IAppState {
-  updateAvailable: boolean,
-  // offline: OfflineState,
+    connection: ConnectionInfo & { offline: boolean };
 
-  searchHistory: SearchHistoryState,
+    updateAvailable: boolean;
+    location: LocationState;
 
-  settings: SettingsState,
-  snacks: SnacksState,
+    searchHistory: SearchHistoryState;
 
-  filter: FilterState,
+    settings: SettingsState;
+    snacks: SnacksState;
 
-  auth: AuthState,
-};
+    filter: FilterState;
+
+    auth: AuthState;
+    // parameter: ParameterState,
+}

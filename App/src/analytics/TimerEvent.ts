@@ -1,6 +1,6 @@
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from "./logger";
-import { MetricNames } from "./MetricNames";
+import { logger } from './logger';
+import { MetricNames } from './MetricNames';
 import { Metrics, Params } from './Types';
 
 export class TimerEvent {
@@ -12,7 +12,7 @@ export class TimerEvent {
         this.start = Date.now();
     }
 
-    public submit(params?: Params, metrics?: Metrics) {
+    submit(params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
 
         try {
@@ -20,9 +20,8 @@ export class TimerEvent {
                 ...(metrics || {}),
                 [MetricNames.Duration]: Date.now() - this.start,
             });
-        }
-        catch (e) {
-            logger.error(e, "trackAction failed");
+        } catch (e) {
+            logger.error(e, 'trackAction failed');
         }
     }
 }

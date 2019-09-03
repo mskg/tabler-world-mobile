@@ -1,3 +1,3 @@
 
-export { MemberOverviewFragment as IMemberOverviewFragment } from "./graphql/MemberOverviewFragment";
+export { MemberOverviewFragment as IMemberOverviewFragment } from './graphql/MemberOverviewFragment';
 

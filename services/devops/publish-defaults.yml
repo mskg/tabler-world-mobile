@@ -1,0 +1,43 @@
+parameters:
+  ARTIFACT: 'source'
+
+steps:
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: package.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: tsconfig.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: services/tsconfig.json
+    ArtifactName: ${{ parameters.ARTIFACT }}/services
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: .yarnrc
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: yarn.lock
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: packages
+    ArtifactName: ${{ parameters.ARTIFACT }}/packages
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: config
+    ArtifactName: ${{ parameters.ARTIFACT }}/config
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '.git-crypt'
+    ArtifactName: ${{ parameters.ARTIFACT }}/.git-crypt

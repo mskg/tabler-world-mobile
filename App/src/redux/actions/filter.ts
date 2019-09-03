@@ -12,54 +12,62 @@ import { createAction } from './action';
  * Enable or disable a district global filter
  */
 export const toggleDistrict = createAction<'@@filter/tabler/toggle', string>(
-  '@@filter/tabler/toggle'
+  '@@filter/tabler/toggle',
 );
 
 /**
  * Switch betwenn all/no records
  */
 export const toggleAll = createAction<'@@filter/tabler/clear'>(
-  '@@filter/tabler/clear'
+  '@@filter/tabler/clear',
 );
 
 /**
  * Enable/disable favorites
  */
 export const toggleFavorites = createAction<'@@filter/tabler/favorites/toggle'>(
-  '@@filter/tabler/favorites/toggle'
+  '@@filter/tabler/favorites/toggle',
 );
 
 /**
  * Enable/disable a favorite
  */
 export const toggleFavorite = createAction<'@@filter/tabler/favorite/toggle', {id: number}>(
-  '@@filter/tabler/favorite/toggle'
+  '@@filter/tabler/favorite/toggle',
+);
+
+export const addFavorite = createAction<'@@filter/tabler/favorite/add', {id: number}>(
+  '@@filter/tabler/favorite/add',
+);
+
+export const removeFavorite = createAction<'@@filter/tabler/favorite/remove', {id: number}>(
+  '@@filter/tabler/favorite/remove',
 );
 
 /**
  * Enable/disable own table
  */
 export const toggleOwnTable = createAction<'@@filter/tabler/ownTable/toggle'>(
-  '@@filter/tabler/ownTable/toggle'
+  '@@filter/tabler/ownTable/toggle',
 );
 
 /**
  * Enable/disable a favorite
  */
 export const replaceFavorites = createAction<'@@filter/tabler/favorites/replace', number[]>(
-  '@@filter/tabler/favorites/replace'
+  '@@filter/tabler/favorites/replace',
 );
 
 /**
  * Enable/disable own association board
  */
 export const toggleAssociationBoard = createAction<'@@filter/tabler/associationBoard/toggle'>(
-  '@@filter/tabler/associationBoard/toggle'
+  '@@filter/tabler/associationBoard/toggle',
 );
 
 /**
  * Enable/disable own area board
  */
 export const toggleAreaBoard = createAction<'@@filter/tabler/areaBoard/toggle'>(
-  '@@filter/tabler/areaBoard/toggle'
+  '@@filter/tabler/areaBoard/toggle',
 );

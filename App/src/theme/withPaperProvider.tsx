@@ -17,7 +17,7 @@ class ProviderBase extends React.PureComponent<{ darkMode: boolean }> {
 }
 export const Provider = connect(
     (state: IAppState) => ({
-        darkMode: state.settings.darkMode
+        darkMode: state.settings.darkMode,
     }),
     {
     })(ProviderBase);

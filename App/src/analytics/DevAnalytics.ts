@@ -1,30 +1,30 @@
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from "./logger";
+import { logger } from './logger';
 import { Metrics, Params } from './Types';
 
 export class DevAnalytics implements IAnalyticsProvider {
     enable(): void {
-        if (__DEV__) { logger.debug("enable"); }
+        if (__DEV__) { logger.debug('enable'); }
     }
 
     disable(): void {
-        if (__DEV__) { logger.debug("disable"); }
+        if (__DEV__) { logger.debug('disable'); }
     }
 
     updateUser(id: string, attributes?: Params | undefined) {
-        if (__DEV__) { logger.debug("updateUser", id, attributes); }
+        if (__DEV__) { logger.debug('updateUser', id, attributes); }
     }
 
-    trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
-        if (__DEV__) { logger.debug("Show Screen", screen, attributes); }
+    trackPageView(screen: string, attributes?: Params, _metrics?: Metrics): void {
+        if (__DEV__) { logger.debug('Show Screen', screen, attributes); }
     }
 
-    trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
-        if (__DEV__) { logger.debug("Track Event", event); }
+    trackEvent(event: string, _attributes?: Params, _metrics?: Metrics): void {
+        if (__DEV__) { logger.debug('Track Event', event); }
     }
 
-    trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
-        if (__DEV__) { logger.debug("Track Action", screen, action, attributes); }
+    trackAction(screen: string, action: string, attributes?: Params, _metrics?: Metrics): void {
+        if (__DEV__) { logger.debug('Track Action', screen, action, attributes); }
     }
 }
 

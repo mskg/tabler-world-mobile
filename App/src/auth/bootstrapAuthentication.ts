@@ -9,24 +9,24 @@ import { SecureStorage } from './SecureStorage';
 const logger = new Logger(Categories.Authentication);
 
 export function bootstrapAuthentication() {
-  if (__DEV__) {
-    Amplify.Logger.LOG_LEVEL = 'INFO';
-  }
+    if (__DEV__) {
+        Amplify.Logger.LOG_LEVEL = 'INFO';
+    }
 
-  const region = getConfigValue("region");
-  const userPoolId = getConfigValue("userPoolId");
-  const userPoolWebClientId = getConfigValue("userPoolWebClientId");
-  const api = getConfigValue("api");
-  const identityPoolId = getConfigValue("identityPoolId");
+    const region = getConfigValue('region');
+    const userPoolId = getConfigValue('userPoolId');
+    const userPoolWebClientId = getConfigValue('userPoolWebClientId');
+    const api = getConfigValue('api');
+    const identityPoolId = getConfigValue('identityPoolId');
 
-  logger.log("region", region, "api", api);
-  logger.log("pool", userPoolId, "client", userPoolWebClientId, "identity", identityPoolId);
+    logger.log('region', region, 'api', api);
+    logger.log('pool', userPoolId, 'client', userPoolWebClientId, 'identity', identityPoolId);
 
-  Auth.configure({
-    identityPoolId,
-    region,
-    userPoolId,
-    userPoolWebClientId,
-    storage: SecureStorage,
-  });
+    Auth.configure({
+        identityPoolId,
+        region,
+        userPoolId,
+        userPoolWebClientId,
+        storage: SecureStorage,
+    });
 }

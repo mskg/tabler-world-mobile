@@ -1,20 +1,22 @@
 export enum ActionNames {
-    SignIn = "Sign-in",
-    SignInFailed = "Sign-in Failed",
+    SignIn = 'Sign-in',
+    SignInFailed = 'Sign-in Failed',
 
-    SignUp = "Sign-up",
-    SignUpFailed = "Sign-up Failed",
+    SignUp = 'Sign-up',
+    SignUpFailed = 'Sign-up Failed',
 
-    LogonEmailLink = "Send E-Mail",
+    LogonEmailLink = 'Send E-Mail',
 
-    LogonConfirm = "Click Confirm",
-    LogonConfirmFailed = "Confirm Failed",
+    LogonConfirm = 'Click Confirm',
+    LogonConfirmFailed = 'Confirm Failed',
 
-    RemoveData = "Remove Data",
-    Logout = "Logout",
+    RemoveData = 'Remove Data',
+    Logout = 'Logout',
 
-    ChangeSetting = "Change Setting",
+    ChangeSetting = 'Change Setting',
 
-    Timeout = "Timeout",
-    SendErrorReport = "Send Error Report"
+    Timeout = 'Timeout',
+    SendErrorReport = 'Send Error Report',
+
+    ReadQRCode = 'Read QR Code',
 }

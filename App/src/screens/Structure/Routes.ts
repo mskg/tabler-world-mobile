@@ -1,5 +1,5 @@
 export enum Routes {
-    Associations = "Associations",
-    Areas = "Areas",
-    Clubs = "Clubs",
+    Associations = 'Associations',
+    Areas = 'Areas',
+    Clubs = 'Clubs',
 }

@@ -1,0 +1,5 @@
+{
+    "extends": [
+        "@mskg/tabler-world-tslint-rules"
+    ]
+}

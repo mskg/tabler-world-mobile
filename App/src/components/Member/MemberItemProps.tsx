@@ -1,7 +1,7 @@
-import React from "react";
-import { MemberItemBaseProps } from "./MemberItemBaseProps";
+import React from 'react';
+import { MemberItemBaseProps } from './MemberItemBaseProps';
 
 export type MemberItemProps = {
-  title: React.ReactNode;
-  subtitle: React.ReactNode;
+    title: React.ReactNode;
+    subtitle: React.ReactNode;
 } & MemberItemBaseProps;

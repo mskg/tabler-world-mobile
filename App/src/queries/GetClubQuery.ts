@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { AddressFragment } from './AddressFragment';
-import { ClubOverviewFragment } from "./ClubOverviewFragment";
+import { ClubOverviewFragment } from './ClubOverviewFragment';
 import { MemberFragment } from './MemberFragment';
 import { RolesFragment } from './RolesFragment';
 

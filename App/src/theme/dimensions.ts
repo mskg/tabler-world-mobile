@@ -1,17 +1,17 @@
-import { Platform, StatusBar, StyleSheet } from "react-native";
+import { Platform, StatusBar, StyleSheet } from 'react-native';
 
-export const HEADER_MARGIN_TOP = Platform.OS === "ios"
+export const HEADER_MARGIN_TOP = Platform.OS === 'ios'
     ?  28
     : (StatusBar.currentHeight || 38);
 
 export const HEADER_HEIGHT = 56;
 
 export const TOTAL_HEADER_HEIGHT = HEADER_MARGIN_TOP + HEADER_HEIGHT;
-export const BOTTOM_HEIGHT = 56;
+export const BOTTOM_HEIGHT = 88;
 
 export const HeaderStyles = StyleSheet.create({
     header: {
-        position: "absolute",
+        position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
@@ -20,12 +20,12 @@ export const HeaderStyles = StyleSheet.create({
     },
 
     topBar: {
-        backgroundColor: "transparent",
+        backgroundColor: 'transparent',
         marginTop: HEADER_MARGIN_TOP,
         height: HEADER_HEIGHT,
         // alignItems: "center",
         // justifyContent: "center",
-        position: "absolute",
+        position: 'absolute',
         top: 0,
         left: 0,
         right: 0,

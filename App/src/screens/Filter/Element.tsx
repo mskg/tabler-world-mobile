@@ -1,7 +1,7 @@
 import React from 'react';
-import { View } from "react-native";
+import { View } from 'react-native';
 import { Text, TouchableRipple } from 'react-native-paper';
-import { styles } from "./styles";
+import { styles } from './styles';
 
 export const Element = ({ theme, title, onPress, right }: {
     theme;

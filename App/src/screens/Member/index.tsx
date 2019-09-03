@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated } from "react-native";
+import { Animated } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -9,9 +9,10 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { MemberAvatar } from '../../components/MemberAvatar';
-import { AvatarPopup } from "../../components/Profile/AvatarPopup";
+import { AvatarPopup } from '../../components/Profile/AvatarPopup';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
+import createAnimatedComponentFrowardingRef from '../../helper/createAnimatedComponentFrowardingRef';
 import { I18N } from '../../i18n/translation';
 import { Member as MemberType } from '../../model/graphql/Member';
 import { addTablerLRU } from '../../redux/actions/history';
@@ -36,7 +37,7 @@ export type StateProps = {
 
 type Props = OwnProps & StateProps & NavigationInjectedProps<IProfileParams>;
 
-const AnimatedFab = Animated.createAnimatedComponent(ActionsFab);
+const AnimatedFab = createAnimatedComponentFrowardingRef(ActionsFab);
 const AnimatedAvatar = Animated.createAnimatedComponent(MemberAvatar);
 
 class MemberBase extends AuditedScreen<Props> {
@@ -55,9 +56,9 @@ class MemberBase extends AuditedScreen<Props> {
 
         this.audit.submit({
             [AuditPropertyNames.Id]: this.props.id.toString(),
-            [AuditPropertyNames.Club]: member ? member.club.name : "",
-            [AuditPropertyNames.Association]: member ? member.association.name : "",
-            [AuditPropertyNames.Area]: member ? member.area.name : "",
+            [AuditPropertyNames.Club]: member ? member.club.name : '',
+            [AuditPropertyNames.Association]: member ? member.association.name : '',
+            [AuditPropertyNames.Area]: member ? member.area.name : '',
         });
     }
 
@@ -79,9 +80,9 @@ class MemberBase extends AuditedScreen<Props> {
                     </AvatarPopup>
                     : undefined}
 
-                title={member ? member.firstname + " " + member.lastname : undefined}
+                title={member ? member.firstname + ' ' + member.lastname : undefined}
                 line1={member ? member.club.name : undefined}
-                line2={member ? member.area.name + " " + member.association.name : undefined}
+                line2={member ? member.area.name + ' ' + member.association.name : undefined}
 
                 fab={
                     member
@@ -98,12 +99,13 @@ class MemberBase extends AuditedScreen<Props> {
     _renderContent = () => {
         const member = this.props.member || this.props.preview;
 
-        //@ts-ignore
-        return <Profile
-            member={member != null ? member.Member : undefined}
-            theme={this.props.theme}
-            loading={this.props.loading}
-        />
+        return (
+            <Profile
+                member={member != null ? member.Member : undefined}
+                theme={this.props.theme}
+                loading={this.props.loading}
+            />
+        );
     }
 
     render() {
@@ -112,15 +114,20 @@ class MemberBase extends AuditedScreen<Props> {
                 minHeight={MEMBER_HEADER_HEIGHT - MEMBER_HEADER_SCROLL_HEIGHT}
                 height={MEMBER_HEADER_HEIGHT}
                 renderContent={this._renderContent}
-                renderHeader={this._renderHeader} />
+                renderHeader={this._renderHeader}
+            />
         );
     }
 }
 
-const Member = connect(null, { addTablerLRU })(
+const Member = connect(
+    null,
+    { addTablerLRU },
+)(
     withTheme(
         MemberBase));
 
+// tslint:disable-next-line: max-classes-per-file
 export class MemberScreenBase extends React.Component<NavigationInjectedProps<IProfileParams>> {
     render() {
         const { tabler } = this.props.navigation.state.params as IProfileParams;
@@ -131,7 +138,7 @@ export class MemberScreenBase extends React.Component<NavigationInjectedProps<IP
                     <Member id={tabler} />
                 </MemberQueryWithPreviewAndInvalidation>
             </GoHomeErrorBoundary>
-        )
+        );
     }
 }
 

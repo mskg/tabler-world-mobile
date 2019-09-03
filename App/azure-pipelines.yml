@@ -1,0 +1,77 @@
+# build number
+name: $(VERSION).$(PATCH)
+
+pool:
+  name: 'Default' # 'Hosted Ubuntu 1604
+  demands: npm
+
+variables:
+  - name: VERSION
+    value: '1.1'
+  - name: PATCH
+    value: $[counter(variables['VERSION'], 47)]
+  - name: ANDROID_VERSION
+    value: $[counter('ANDROID_VERSION', 11070)]
+  - name: EXPO_RELEASE_CHANNEL
+    value: 'beta'
+  - group: 'expo'
+  - group: 'git-crypt'
+  - group: 'AWS Germany'
+  - group: 'ENV Germany Shared'
+  - group: 'ENV Germany TEST'
+
+trigger:
+  branches:
+    include:
+    - development
+    - workspace-layout
+    - releases/*
+
+  paths:
+    include:
+      - App/**
+
+steps:
+# - powershell: |
+#     Write-Host 'Patch# $(PATCH)'
+#     $n = ([int]'$(PATCH)').tostring('000')
+#     Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
+
+#   displayName: Define build#
+
+- script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: Save commit message
+
+# prepare node environment
+- template: ./devops/node.yml
+
+# yarn /
+- template: ./devops/yarn.yml
+  parameters:
+    SOURCEDIR: $(System.DefaultWorkingDirectory)
+
+# yarn /App
+- template: ./devops/yarn.yml
+  parameters:
+    SOURCEDIR: $(System.DefaultWorkingDirectory)/App
+
+# Init expo environment
+- template: ./devops/init-expo.yml
+  parameters:
+    APPDIR: $(System.DefaultWorkingDirectory)/App
+    APP_VERSION: $(build.buildNumber)
+    SOURCESDIR: $(System.DefaultWorkingDirectory)
+
+# Publish expo
+- script: |
+   export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
+   npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
+   npx expo publish:history --release-channel $CHANNEL -r > deployment.json
+  workingDirectory: '$(System.DefaultWorkingDirectory)/App'
+  displayName: publish
+  env:
+    SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+
+# yarn /App
+- template: ./devops/publish.yml

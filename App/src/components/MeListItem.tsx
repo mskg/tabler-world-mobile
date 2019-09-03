@@ -1,16 +1,49 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import { Card, Theme, Title, TouchableRipple } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { getConfigValue } from '../helper/Configuration';
 import { I18N } from '../i18n/translation';
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showPair } from '../redux/actions/navigation';
 import { MeAvatar } from './MemberAvatar';
 
-type State = {
+type OwnInternalProps = {
+    theme: Theme,
+    onPress?: any,
+
+    title: any,
+    subtitle: any,
+
+    right?: any,
+
+    me: IWhoAmI,
 };
+
+export const ME_ITEM_HEIGHT = 93;
+
+export class InternalMeListItemBase extends React.PureComponent<OwnInternalProps> {
+    render() {
+        return (
+            <Card style={styles.card}>
+                <TouchableRipple onPress={this.props.onPress}>
+                    <Card.Title
+                        style={{ height: ME_ITEM_HEIGHT }}
+                        titleStyle={styles.title}
+                        subtitleStyle={styles.subTitle}
+
+                        title={this.props.title}
+                        subtitle={this.props.subtitle}
+                        left={() => <MeAvatar me={this.props.me} size={48 + 16} background={this.props.theme.colors.backdrop} />}
+
+                        rightStyle={styles.right}
+                        right={this.props.right}
+                    />
+                </TouchableRipple>
+            </Card>
+        );
+    }
+}
 
 type OwnProps = {
     theme: Theme,
@@ -22,31 +55,22 @@ type StateProps = {
 };
 
 type Props = OwnProps & StateProps;
-
-export const ME_ITEM_HEIGHT = 93;
-
-class MeListItemBase extends React.PureComponent<Props, State> {
+class MeListItemBase extends React.PureComponent<Props> {
     render() {
         const { me } = this.props;
-        const profile = getConfigValue("profile");
+        // const profile = getConfigValue("profile");
 
         return (
-            <Card style={styles.card}>
-                <TouchableRipple onPress={this.props.showPair}>
-                    <Card.Title
-                        style={{height: ME_ITEM_HEIGHT}}
-                        titleStyle={styles.title}
-                        subtitleStyle={styles.subTitle}
+            <InternalMeListItemBase
+                me={me}
+                onPress={this.props.showPair}
+                theme={this.props.theme}
 
-                        title={<Title>{me.firstname} {me.lastname}</Title>}
-                        subtitle={I18N.Pair.action}
-                        left={() => <MeAvatar me={this.props.me} size={48 + 16} background={this.props.theme.colors.backdrop} />}
+                title={<Title>{me.firstname} {me.lastname}</Title>}
+                subtitle={I18N.Pair.action}
 
-                        rightStyle={styles.right}
-                        right={({size}) => <Ionicons name="md-qr-scanner" size={size} />}
-                    />
-                </TouchableRipple>
-            </Card>
+                right={({ size }) => <Ionicons name="md-qr-scanner" size={size} />}
+            />
         );
     }
 }
@@ -62,9 +86,9 @@ const styles = StyleSheet.create({
         height: ME_ITEM_HEIGHT,
         paddingVertical: 0,
 
-        alignItems: "center",
-        flexDirection: "row",
-        width: "100%",
+        alignItems: 'center',
+        flexDirection: 'row',
+        width: '100%',
     },
 
     title: {
@@ -77,7 +101,7 @@ const styles = StyleSheet.create({
     subTitle: {
         marginLeft: 24,
         lineHeight: 14,
-        minHeight: 13
+        minHeight: 13,
     },
 
     headLine: {
@@ -86,7 +110,7 @@ const styles = StyleSheet.create({
     },
 
     headerContainer: {
-        flexDirection: "row",
+        flexDirection: 'row',
         padding: 10,
     },
 

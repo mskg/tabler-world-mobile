@@ -44,7 +44,25 @@ export enum CompanySector {
   sales = "sales",
   scienceresearch = "scienceresearch",
   telecommunications = "telecommunications",
+  voluntaryservices = "voluntaryservices",
   warehousingdistribution = "warehousingdistribution",
+}
+
+export enum NearbyMemberState {
+  Steady = "Steady",
+  Traveling = "Traveling",
+}
+
+export enum ParameterName {
+  fetch = "fetch",
+  geo = "geo",
+  timeouts = "timeouts",
+  urls = "urls",
+}
+
+export enum ParameterPlatform {
+  android = "android",
+  ios = "ios",
 }
 
 export enum RoleType {
@@ -53,8 +71,41 @@ export enum RoleType {
   club = "club",
 }
 
+export enum SettingName {
+  favorites = "favorites",
+  language = "language",
+  nearbymembers = "nearbymembers",
+}
+
+export enum UserRole {
+  jobs = "jobs",
+}
+
+export interface AddressUpdateInput {
+  member: number;
+  address?: any | null;
+}
+
+export interface MyCurrentLocationInput {
+  longitude: number;
+  latitude: number;
+}
+
+export interface MyLocationInput {
+  longitude: number;
+  latitude: number;
+  accuracy: number;
+  speed: number;
+  address?: any | null;
+}
+
+export interface ParameterInput {
+  version: string;
+  os: ParameterPlatform;
+}
+
 export interface SettingInput {
-  name: string;
+  name: SettingName;
   value: any;
 }
 

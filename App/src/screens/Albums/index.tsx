@@ -7,11 +7,11 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { HTMLView } from '../../components/HTMLView';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ReadMore } from '../../components/ReadMore';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from "../../helper/Logger";
 import { I18N } from '../../i18n/translation';
 import { AlbumsOverview, AlbumsOverview_Albums } from '../../model/graphql/AlbumsOverview';
 import { GetAlbumsOverviewQuery } from '../../queries/GetAlbumsQuery';
@@ -19,7 +19,7 @@ import { showAlbum } from '../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
-const logger = new Logger(Categories.Screens.Albums);
+// const logger = new Logger(Categories.Screens.Albums);
 
 type State = {};
 
@@ -39,15 +39,18 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
 
     _renderItem = (params) => {
         const item: AlbumsOverview_Albums = params.item;
-        const showAlbum = () => this.props.showAlbum(item.id);
+        const showAlbumFunc = () => this.props.showAlbum(item.id);
 
         return (
             <Card key={item.id} style={styles.card}>
-                <TouchableWithoutFeedback onPress={showAlbum}>
-                    <Card.Cover source={{ uri: item.pictures[0].preview_1920 }} style={{
-                        borderTopLeftRadius: 8,
-                        borderTopRightRadius: 8,
-                    }} />
+                <TouchableWithoutFeedback onPress={showAlbumFunc}>
+                    <Card.Cover
+                        source={{ uri: item.pictures[0].preview_1920 }}
+                        style={{
+                            borderTopLeftRadius: 8,
+                            borderTopRightRadius: 8,
+                        }}
+                    />
                 </TouchableWithoutFeedback>
 
                 <Card.Title
@@ -59,7 +62,7 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                     <Card.Content>
                         <ReadMore maxHeight={60} renderRevealedFooter={() => null}>
                             <HTMLView
-                                maxWidth={Dimensions.get("window").width - 32 * 2}
+                                maxWidth={Dimensions.get('window').width - 32 * 2}
                                 html={item.description}
                             />
                         </ReadMore>
@@ -69,13 +72,13 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                 <View style={styles.bottom} />
 
                 <Card.Actions style={styles.action}>
-                    <Button color={this.props.theme.colors.accent} onPress={showAlbum}>{I18N.Albums.details}</Button>
+                    <Button color={this.props.theme.colors.accent} onPress={showAlbumFunc}>{I18N.Albums.details}</Button>
                 </Card.Actions>
             </Card>
         );
     }
 
-    _key = (item: AlbumsOverview_Albums, index: number) => {
+    _key = (item: AlbumsOverview_Albums, _index: number) => {
         return item.id.toString();
     }
 
@@ -86,6 +89,10 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;
 
+                        if (!loading && (data == null || data.Albums == null)) {
+                            return <CannotLoadWhileOffline />;
+                        }
+
                         return (
                             <Placeholder
                                 ready={data != null && data.Albums != null}
@@ -93,7 +100,6 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                             >
                                 <FlatList
                                     contentContainerStyle={styles.container}
-                                    //@ts-ignore
                                     data={data != null ? data.Albums : []}
 
                                     refreshing={loading}
@@ -111,8 +117,10 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const AlbumsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation("albums",
+        withCacheInvalidation(
+            'albums',
             withTheme(
                 connect(null, { showAlbum })(AlbumsScreenBase))));

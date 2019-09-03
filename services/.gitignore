@@ -1,0 +1,16 @@
+# expo
+.expo
+
+# dynamodb
+.dynamodb
+
+# produced by serverlesss
+.serverless
+.webpack
+.vscode
+
+# javascript files
+*/src/*.js
+*/src/*/*.js
+*/src/*.map
+*/src/*/*.map

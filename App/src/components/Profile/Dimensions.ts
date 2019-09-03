@@ -2,7 +2,7 @@
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 
 export const IMAGE_SIZE = 32;
-export const HEADER_IMAGE_HEIGHT = IMAGE_SIZE*3;
+export const HEADER_IMAGE_HEIGHT = IMAGE_SIZE * 3;
 
 export const MEMBER_HEADER_HEIGHT = 224 + TOTAL_HEADER_HEIGHT;
 export const MEMBER_HEADER_SCROLL_HEIGHT = IMAGE_SIZE * 2 + 90 + 22;

@@ -1,14 +1,14 @@
 import React from 'react';
-import { Dimensions, Platform, RefreshControl, StyleSheet } from "react-native";
+import { Dimensions, Platform, RefreshControl, StyleSheet } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, withNavigation } from "react-navigation";
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { DataProvider, LayoutProvider, RecyclerListView } from 'recyclerlistview';
 import StickyContainer from 'recyclerlistview/dist/reactnative/core/StickyContainer';
 import { Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { MeFragment } from '../model/graphql/MeFragment';
-import { IMemberOverviewFragment } from "../model/IMemberOverviewFragment";
+import { IMemberOverviewFragment } from '../model/IMemberOverviewFragment';
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
 import { SectionData } from '../screens/Members/MemberDataSource';
@@ -34,7 +34,9 @@ type OwnProps = {
     onRefresh?: () => void,
     onItemSelected?: (member: IMemberOverviewFragment) => void,
 
-    setRef?: (ref) => void;
+    setRef?: (ref: any) => any;
+
+    style?: any,
 };
 
 type DispatchPros = {
@@ -42,7 +44,7 @@ type DispatchPros = {
 };
 
 type Props = OwnProps & DispatchPros & NavigationInjectedProps;
-const ME_ITEM = "###ME###";
+const ME_ITEM = '###ME###';
 
 enum ItemType {
     Me,
@@ -54,13 +56,13 @@ enum ItemType {
     Unknown,
 }
 
-const logger = new Logger("MemberSectionList");
-const SCREEN_FACTOR = Dimensions.get("screen").width / 375 /* 6S */;
+const logger = new Logger('MemberSectionList');
+const SCREEN_FACTOR = Dimensions.get('screen').width / 375 /* 6S */;
 
 export class MemberSectionListBase extends React.Component<Props, State>  {
     dataProvider: DataProvider;
     layoutProvider: LayoutProvider;
-    width = Dimensions.get("screen").width;
+    width = Dimensions.get('screen').width;
 
     constructor(props) {
         super(props);
@@ -73,21 +75,20 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                 if (index > this.state.data.length) return ItemType.Unknown;
 
                 const data = this.state.data[index];
-                if (typeof (data) === "string") {
-                    if (data === ME_ITEM) { return ItemType.Me }
-                    else { return ItemType.Section; }
-                } else {
+                if (typeof (data) === 'string') {
+                    if (data === ME_ITEM) { return ItemType.Me; } return ItemType.Section;
+                } {
                     const roles = (data != null && (data as IMemberOverviewFragment).roles) || [];
                     if (roles.length == 0) return ItemType.Small;
 
                     const length = roles.reduce(
-                        (p,c) => (p > 0 ? 3 : 0) + p + (c.name||"").length + ((c.ref || {name: ""}).name || "").length,
+                        (p, c) => (p > 0 ? 3 : 0) + p + (c.name || '').length + ((c.ref || { name: '' }).name || '').length,
                         0);
 
                     // this kills the performance of the "debugger" as
                     // code is executed many many times in every render cycle
                     // if (__DEV__) { logger.debug((data as IMemberOverviewFragment).lastname, length); }
-                    if (length >= 47*2 * SCREEN_FACTOR) return ItemType.Large3;
+                    if (length >= 47 * 2 * SCREEN_FACTOR) return ItemType.Large3;
                     if (length >= 47 * SCREEN_FACTOR) return ItemType.Large2;
 
                     return ItemType.Large;
@@ -105,7 +106,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         };
     }
 
-    _getLayout =  (type, dimension) => {
+    _getLayout = (type, dimension) => {
         dimension.width = this.width;
 
         switch (type) {
@@ -126,14 +127,14 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                 break;
 
             case ItemType.Large3:
-                dimension.height = ITEM_HEIGHT_TAGS + CHIP_HEIGHT*2 + StyleSheet.hairlineWidth;
+                dimension.height = ITEM_HEIGHT_TAGS + CHIP_HEIGHT * 2 + StyleSheet.hairlineWidth;
                 break;
 
             default:
                 dimension.height = ITEM_HEIGHT + StyleSheet.hairlineWidth;
                 break;
-        };
-    };
+        }
+    }
 
     componentDidMount() {
         this.updateFrom(this.props);
@@ -156,18 +157,18 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         }
 
         this.setState({
-            sectionIndexes: undefined
+            sectionIndexes: undefined,
         });
 
         this.setState({
             data: newData,
-            sectionIndexes: sections
+            sectionIndexes: sections,
         });
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.extraData != this.props.extraData) {
-            logger.log("Update!");
+            logger.log('Update!');
             this.updateFrom(nextProps);
         }
     }
@@ -175,13 +176,12 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
     _onPress = (item) => {
         if (this.props.onItemSelected != null) {
             this.props.onItemSelected(item);
-        }
-        else {
+        } else {
             this.props.showProfile(item.id);
         }
-    };
+    }
 
-    _rowRenderer = (type, data, index) => {
+    _rowRenderer = (type, data, _index) => {
         // on resetting data, we receive old data here
         if (data == null) return null;
 
@@ -189,29 +189,32 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
             return <MeListItem theme={this.props.theme} me={this.props.me as IWhoAmI} />;
         }
 
-        let height: number | undefined = undefined;
+        let height: number | undefined;
 
-        if (Platform.OS === "android") {
-            const dimension = {height: 0, width: 0};
+        if (Platform.OS === 'android') {
+            const dimension = { height: 0, width: 0 };
             this._getLayout(type, dimension);
             height = dimension.height - StyleSheet.hairlineWidth;
         }
+
 
         // workarround for Android
         // hight must be explicitly given
         return renderItem(data, this.props.theme, this._onPress, 30, height);
     }
 
-
     render() {
-        if (this.props.data.length == 0 && !this.props.me) {
+        if (this.props.data.length === 0 && !this.props.me) {
             return (<EmptyComponent title={I18N.Members.noresults} />);
         }
 
         return (
+            // @ts-ignore compatible
             <StickyContainer stickyHeaderIndices={this.state.sectionIndexes}>
+                {/* @ts-ignore compatbile */}
                 <RecyclerListView
                     ref={this.props.setRef}
+                    style={this.props.style}
 
                     initialOffset={0}
                     initialRenderIndex={0}
@@ -227,7 +230,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                                 refreshing={this.props.refreshing}
                                 onRefresh={this.props.onRefresh}
                             />
-                        )
+                        ),
                     }}
                 />
             </StickyContainer>
@@ -236,6 +239,6 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 }
 
 export const MemberSectionList = withNavigation(withTheme(connect(
-    null, {
-        showProfile,
-    })(MemberSectionListBase)));
+    null,
+    { showProfile },
+)(MemberSectionListBase)));

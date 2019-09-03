@@ -67,7 +67,7 @@ class CardTitleBase extends React.Component<Props> {
                 ) : null}
 
                 <View style={[styles.titles]}>
-                    {typeof (title) == "string" ? (
+                    {typeof (title) == 'string' ? (
 
                         <Title
                             style={[
@@ -85,7 +85,7 @@ class CardTitleBase extends React.Component<Props> {
                         titleStyle,
                     ]} numberOfLines={1}>{title}</Text>}
 
-                    {typeof (subtitle) === "string" ? (
+                    {typeof (subtitle) === 'string' ? (
                         <Caption style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
                             {subtitle}
                         </Caption>

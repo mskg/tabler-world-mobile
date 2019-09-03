@@ -3,27 +3,38 @@ import { BASE_DIR } from './BASE_DIR';
 import { CacheEntry } from './CacheEntry';
 import { CacheGroup } from './CacheGroup';
 import { DownloadOptions } from './DownloadOptions';
+import { logger } from './logger';
 
 export default class CacheManager {
-  // static entries: { [uri: string]: CacheEntry } = {};
+    // static entries: { [uri: string]: CacheEntry } = {};
 
-  static get(uri: string, options: DownloadOptions, group: CacheGroup = "other"): CacheEntry {
-    return  new CacheEntry(uri, options, group);
+    static get(uri: string, options: DownloadOptions, group: CacheGroup = 'other'): CacheEntry {
+        return new CacheEntry(uri, options, group);
+    }
 
-    // if (!CacheManager.entries[uri]) {
-    //   CacheManager.entries[uri] = new CacheEntry(uri, options);
-    // }
+    static async clearCache(group: CacheGroup): Promise<void> {
+        logger.log('clearCache', group);
+        const baseDir = `${BASE_DIR}${group}/`;
 
-    // return CacheManager.entries[uri];
-  }
+        await FileSystem.deleteAsync(baseDir, { idempotent: true });
+        await FileSystem.makeDirectoryAsync(baseDir, { intermediates: true });
+    }
 
-  static async clearCache(group: CacheGroup): Promise<void> {
-    await FileSystem.deleteAsync(BASE_DIR, { idempotent: true });
-    await FileSystem.makeDirectoryAsync(BASE_DIR);
-  }
+    static async outDateCache(group: CacheGroup): Promise<void> {
+        logger.log('outdate cache', group);
+        const baseDir = `${BASE_DIR}${group}/`;
 
-  // static async getCacheSize(): Promise<number> {
-  //   const { size } = await FileSystem.getInfoAsync(BASE_DIR, { size: true });
-  //   return size;
-  // }
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 14);
+
+        const files = await FileSystem.readDirectoryAsync(baseDir);
+        for (const file of files) {
+            const fi = await FileSystem.getInfoAsync(baseDir + file);
+
+            if (fi.modificationTime && fi.modificationTime < oneWeekAgo.getTime()) {
+                logger.debug('Removing', fi.uri);
+                await FileSystem.deleteAsync(fi.uri, { idempotent: true });
+            }
+        }
+    }
 }

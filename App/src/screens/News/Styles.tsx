@@ -14,9 +14,9 @@ export const styles = StyleSheet.create({
     },
 
     author: {
-        flexDirection: "row",
+        flexDirection: 'row',
         paddingTop: 8,
-        alignItems: "center",
+        alignItems: 'center',
     },
 
     authorIcon: {
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
 
     images: {
         flex: 1,
-        alignItems: "flex-end",
+        alignItems: 'flex-end',
     },
 
     text: {
@@ -48,11 +48,11 @@ export const styles = StyleSheet.create({
 
     button: {
         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
-        marginTop: 5
+        marginTop: 5,
     },
 
     action: {
-        justifyContent: "flex-end",
+        justifyContent: 'flex-end',
         marginRight: 8,
     },
 
@@ -71,14 +71,14 @@ export const styles = StyleSheet.create({
         paddingRight: 16,
         height: 60,
 
-        flexDirection: "row",
-        flexWrap: "wrap",
-        overflow: "hidden",
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        overflow: 'hidden',
     },
 
     imagePreview: {
         marginLeft: 8,
         width: 60,
-        height: 60
-    }
+        height: 60,
+    },
 });

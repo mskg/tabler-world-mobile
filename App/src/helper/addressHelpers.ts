@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
 import { I18N } from '../i18n/translation';
-import { IAddress } from "../model/IAddress";
-import { ICompany } from "../model/ICompany";
-import { IEducation } from "../model/IEducation";
+import { IAddress } from '../model/IAddress';
+import { ICompany } from '../model/ICompany';
+import { IEducation } from '../model/IEducation';
 import { OpenLink } from './OpenLink';
 
 export function formatAddress(address?: IAddress | null) {
@@ -11,9 +11,9 @@ export function formatAddress(address?: IAddress | null) {
     return [
         address.street1,
         address.street2,
-        address.postal_code != null && address.postal_code != ""
-            && address.city != null && address.city != ""
-            ? address.postal_code + " " + address.city
+        address.postal_code != null && address.postal_code != ''
+            && address.city != null && address.city != ''
+            ? address.postal_code + ' ' + address.city
             : null,
         address.country = I18N.Countries.translate(address.country),
     ].filter(Boolean).join('\n');
@@ -39,7 +39,7 @@ export function formatCompany(company?: ICompany | null) {
     ].filter(Boolean).join('\n');
 }
 
-const isNullOrEmpty = (s) => s == null || s === "";
+const isNullOrEmpty = (s) => s == null || s === '';
 
 export function formatRoutableAddress(address?: IAddress | null) {
     if (address == null) { return undefined; }
@@ -49,9 +49,9 @@ export function formatRoutableAddress(address?: IAddress | null) {
     return [
         address.street1,
         address.street2,
-        address.postal_code != null && address.postal_code != ""
-            && address.city != null && address.city != ""
-            ? address.postal_code + " " + address.city
+        address.postal_code != null && address.postal_code != ''
+            && address.city != null && address.city != ''
+            ? address.postal_code + ' ' + address.city
             : null,
         address.country = I18N.Countries.translate(address.country),
     ].filter(Boolean).join(',');
@@ -62,9 +62,9 @@ export function showAddress(address?: IAddress | null) {
     if (addr == null) return;
 
     // needs rework #30
-    const url = Platform.OS == "ios"
-     ? "http://maps.apple.com/?q="
-     : "https://www.google.com/maps/search/?api=1&query="
+    const url = Platform.OS == 'ios'
+     ? 'http://maps.apple.com/?q='
+     : 'https://www.google.com/maps/search/?api=1&query=';
 
     OpenLink.url(url + encodeURIComponent(addr));
 }

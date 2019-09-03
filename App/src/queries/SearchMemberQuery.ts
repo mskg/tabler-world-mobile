@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { MemberOverviewFragment } from "./MemberOverviewFragment";
+import { MemberOverviewFragment } from './MemberOverviewFragment';
 
 export const SearchMemberQuery = gql`
     query SearchMember (
