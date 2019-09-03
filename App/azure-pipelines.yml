@@ -21,12 +21,12 @@ variables:
   - group: 'ENV Germany TEST'
 
 steps:
-- powershell: |
-    Write-Host 'Patch# $(PATCH)'
-    $n = ([int]'$(PATCH)').tostring('000')
-    Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
+# - powershell: |
+#     Write-Host 'Patch# $(PATCH)'
+#     $n = ([int]'$(PATCH)').tostring('000')
+#     Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
 
-  displayName: Define build#
+#   displayName: Define build#
 
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
