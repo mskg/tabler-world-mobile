@@ -14,6 +14,7 @@ variables:
     value: 'beta'
   - group: 'expo'
   - group: 'git-crypt'
+  - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
   - group: 'ENV Germany TEST'
 
