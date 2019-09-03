@@ -20,7 +20,7 @@ variables:
 steps:
 - powershell: |
     Write-Host 'Patch# $(PATCH)'
-    $n = ([int]'$(PATCH)').tostring('###')
+    $n = ([int]'$(PATCH)').tostring('000')
     Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
 
   env:
