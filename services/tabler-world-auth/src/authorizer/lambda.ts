@@ -1,57 +1,65 @@
-import { withClient } from "@mskg/tabler-world-rds-client";
-import { CustomAuthorizerHandler } from "aws-lambda";
-import jwt from "jsonwebtoken";
-import { AuthPolicy, HttpVerb } from "./AuthPolicy";
-import { downloadPems } from "./downloadPems";
-import { Token } from "./types";
+import { withClient } from '@mskg/tabler-world-rds-client';
+import { CustomAuthorizerHandler } from 'aws-lambda';
+import jwt from 'jsonwebtoken';
+import { AuthPolicy, HttpVerb } from './AuthPolicy';
+import { downloadPems } from './downloadPems';
+import { Token } from './types';
 
 // tslint:disable: export-name
 // tslint:disable: max-func-body-length
 export const handler: CustomAuthorizerHandler = async (event, context) => {
-    const iss = "https://cognito-idp."
+    const iss = 'https://cognito-idp.'
         + process.env.AWS_REGION
-        + ".amazonaws.com/"
+        + '.amazonaws.com/'
         + process.env.UserPoolId;
 
     const pems = await downloadPems(iss);
 
     const token = event.authorizationToken;
     if (!token) {
-        console.log("No token provided");
-        throw new Error("Unauthorized (token)");
+        console.log('No token provided');
+        throw new Error('Unauthorized (token)');
     }
 
-    if (token.startsWith("DEMO ")) {
-        const awsAccountId = context.invokedFunctionArn.split(":")[4];
+    // Get AWS AccountId and API Options
+    const apiOptions: any = {};
+    const tmp = event.methodArn.split(':');
+    const apiGatewayArnTmp = tmp[5].split('/');
+    const awsAccountId = tmp[4];
 
-        const policy = new AuthPolicy("demo", awsAccountId, apiOptions);
-        policy.allowMethod(HttpVerb.OPTIONS, "/graphql-demo");
-        policy.allowMethod(HttpVerb.POST, "/graphql-demo");
+    apiOptions.region = tmp[3];
+    apiOptions.restApiId = apiGatewayArnTmp[0];
+    apiOptions.stage = apiGatewayArnTmp[1];
 
-        const result = policy.build();
-        result.usageIdentifierKey = token.substring("DEMO ".length);
+    if (token.startsWith('DEMO ')) {
+        const demoPolicy = new AuthPolicy('demo', awsAccountId, apiOptions);
+        demoPolicy.allowMethod(HttpVerb.OPTIONS, '/graphql-demo');
+        demoPolicy.allowMethod(HttpVerb.POST, '/graphql-demo');
 
-        return result;
+        const demoResult = demoPolicy.build();
+        demoResult.usageIdentifierKey = token.substring('DEMO '.length);
+
+        return demoResult;
     }
 
     // Fail if the token is not jwt
     const decodedJwt = jwt.decode(token, { complete: true }) as Token;
     if (!decodedJwt) {
-        console.log("Not a valid JWT token");
-        throw new Error("Unauthorized (jwt)");
+        console.log('Not a valid JWT token');
+        throw new Error('Unauthorized (jwt)');
     }
 
     // Fail if token is not from your UserPool
     // tslint:disable-next-line: triple-equals
     if (decodedJwt.payload.iss != iss) {
-        console.log("invalid issuer");
-        throw new Error("Unauthorized (iss)");
+        console.log('invalid issuer');
+        throw new Error('Unauthorized (iss)');
     }
 
     // Reject the jwt if it's not an 'Access Token'
     // tslint:disable-next-line: triple-equals
-    if (decodedJwt.payload.token_use != "id") {
-        console.log("Not an id token");
+    if (decodedJwt.payload.token_use != 'id') {
+        console.log('Not an id token');
         throw new Error(`Unauthorized (${decodedJwt.payload.token_use})`);
     }
 
@@ -59,8 +67,8 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
     const kid = decodedJwt.header.kid;
     const pem = pems[kid];
     if (!pem) {
-        console.log("Invalid access token");
-        throw new Error("Unauthorized (invalid)");
+        console.log('Invalid access token');
+        throw new Error('Unauthorized (invalid)');
     }
 
     const payload: any = jwt.verify(token as string, pem, { issuer: iss });
@@ -71,16 +79,6 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
     // sub is UUID for a user which is never reassigned to another user.
     const principalId = payload.sub;
 
-    // Get AWS AccountId and API Options
-    const apiOptions: any = {};
-    const tmp = event.methodArn.split(":");
-    const apiGatewayArnTmp = tmp[5].split("/");
-    const awsAccountId = tmp[4];
-
-    apiOptions.region = tmp[3];
-    apiOptions.restApiId = apiGatewayArnTmp[0];
-    apiOptions.stage = apiGatewayArnTmp[1];
-
     // var method = apiGatewayArnTmp[2];
     // var resource = '/'; // root resource
 
@@ -89,19 +87,19 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
     // }
 
     const policy = new AuthPolicy(principalId, awsAccountId, apiOptions);
-    policy.allowMethod(HttpVerb.OPTIONS, "/graphql");
-    policy.allowMethod(HttpVerb.GET, "/graphql");
-    policy.allowMethod(HttpVerb.POST, "/graphql");
+    policy.allowMethod(HttpVerb.OPTIONS, '/graphql');
+    policy.allowMethod(HttpVerb.GET, '/graphql');
+    policy.allowMethod(HttpVerb.POST, '/graphql');
 
     const result = policy.build();
 
     return await withClient(context, async (client) => {
         const res = await client.query(
-            "select * from profiles where rtemail = $1 and removed = false",
+            'select * from profiles where rtemail = $1 and removed = false',
             [payload.email]);
 
         if (res.rowCount !== 1) {
-            throw new Error("User not found");
+            throw new Error('User not found');
         }
 
         const me = res.rows[0];
@@ -116,7 +114,7 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
         };
 
         // this enforces rate throtteling on the API
-        result.usageIdentifierKey = "tabler-world-api-lambda-authorizer-" + apiGatewayArnTmp[1]; // stage
+        result.usageIdentifierKey = 'tabler-world-api-lambda-authorizer-' + apiGatewayArnTmp[1]; // stage
 
         return result;
     });
