@@ -99,12 +99,13 @@ class MemberBase extends AuditedScreen<Props> {
     _renderContent = () => {
         const member = this.props.member || this.props.preview;
 
-        // @ts-ignore
-        return <Profile
-            member={member != null ? member.Member : undefined}
-            theme={this.props.theme}
-            loading={this.props.loading}
-        />;
+        return (
+            <Profile
+                member={member != null ? member.Member : undefined}
+                theme={this.props.theme}
+                loading={this.props.loading}
+            />
+        );
     }
 
     render() {
@@ -113,15 +114,20 @@ class MemberBase extends AuditedScreen<Props> {
                 minHeight={MEMBER_HEADER_HEIGHT - MEMBER_HEADER_SCROLL_HEIGHT}
                 height={MEMBER_HEADER_HEIGHT}
                 renderContent={this._renderContent}
-                renderHeader={this._renderHeader} />
+                renderHeader={this._renderHeader}
+            />
         );
     }
 }
 
-const Member = connect(null, { addTablerLRU })(
+const Member = connect(
+    null,
+    { addTablerLRU },
+)(
     withTheme(
         MemberBase));
 
+// tslint:disable-next-line: max-classes-per-file
 export class MemberScreenBase extends React.Component<NavigationInjectedProps<IProfileParams>> {
     render() {
         const { tabler } = this.props.navigation.state.params as IProfileParams;

@@ -14,6 +14,7 @@ type ActionProps = {
     addSnack: typeof addSnack,
 };
 
+// tslint:disable-next-line: no-empty
 const VOID = () => { };
 const withAnimation = (func) => () => requestAnimationFrame(func || VOID);
 
@@ -32,7 +33,7 @@ class ElementBase extends React.Component<ActionProps> {
         let display = typeof (text) !== 'string';
         if (!display && text != null) { display = (text as string).trim() !== ''; } else if (text == null) { display = false; }
 
-        const addCopy = typeof (text) === 'string' && Platform.OS == 'android';
+        const addCopy = typeof (text) === 'string' && Platform.OS === 'android';
 
         if (display) {
             return (
@@ -55,7 +56,7 @@ class ElementBase extends React.Component<ActionProps> {
                         <Caption>{field}</Caption>
                         {
                             typeof (text) === 'string'
-                                ? <Text selectable={Platform.OS == 'ios'} style={{ width: '100%' }}>{text}</Text>
+                                ? <Text selectable={Platform.OS === 'ios'} style={{ width: '100%' }}>{text}</Text>
                                 : text
                         }
                     </View>
@@ -68,22 +69,6 @@ class ElementBase extends React.Component<ActionProps> {
 }
 
 export const Element = connect(
-    null, { addSnack },
+    null,
+    { addSnack },
 )(ElementBase);
-
-// type ActionProps = {
-//     theme: Theme,
-//     text: string,
-//     onPress?: () => void,
-//     canCopyText?: boolean,
-// }
-
-// export const ActionElement = ({ theme, text, onPress, canCopyText }: ActionProps) => {
-//     return (
-//         <TouchableRipple onPress={() => requestAnimationFrame(onPress)}>
-//             <View style={styles.row}>
-//                 <Text style={{ color: theme.colors.accent }}>{text}</Text>
-//             </View>
-//         </TouchableRipple>
-//     );
-// }

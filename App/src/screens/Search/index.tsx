@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { debounce, orderBy, remove, sortBy, values } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Modal, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
@@ -97,23 +97,26 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
 
     _searchBar!: Searchbar | null;
 
-    _adjustSearch = _.debounce((text, filters: FilterTag[]) => {
-        if (!this.mounted) {
-            // due to async nature, we can already be unmounted
-            return;
-        }
+    _adjustSearch = debounce(
+        (text, filters: FilterTag[]) => {
+            if (!this.mounted) {
+                // due to async nature, we can already be unmounted
+                return;
+            }
 
-        if (text != '' && text != null) {
-            this.audit.increment(MetricNames.Count);
-        }
+            if (text !== '' && text != null) {
+                this.audit.increment(MetricNames.Count);
+            }
 
-        this.setState({
-            searching: true,
-            debouncedQuery: text,
-            update: !this.state.update,
-            filterTags: filters || [],
-        });
-    },                         250);
+            this.setState({
+                searching: true,
+                debouncedQuery: text,
+                update: !this.state.update,
+                filterTags: filters || [],
+            });
+        },
+        250,
+    );
 
     _clearSearch = () => {
         this.setState({
@@ -126,7 +129,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     searchFilterFunction = (text) => {
-        if (text == null || text == '') {
+        if (text == null || text === '') {
             this._adjustSearch.cancel();
             this._clearSearch();
         } else {
@@ -140,12 +143,15 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         this.props.showProfile(item.id);
     }
 
+    // tslint:disable-next-line: function-name
     _renderMatch(member, onPress) {
-        return <MemberListItem
-            theme={this.props.theme}
-            onPress={onPress}
-            member={member}
-        />;
+        return (
+            <MemberListItem
+                theme={this.props.theme}
+                onPress={onPress}
+                member={member}
+            />
+        );
 
         // return (<HighLightMemberListItem
         //     theme={this.props.theme}
@@ -159,13 +165,12 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     _onToggleTag = (type: FilterTagType, value: string) => {
         logger.debug('toggle', type, value);
 
-        // @ts-ignore
+        // @ts-ignore range is supported
         this.audit.increment(`Toggle ${type}`);
 
         const tags = [...this.state.filterTags];
 
-        if (_.remove(tags, (f: FilterTag) => f.type == type && f.value == value).length === 0) {
-            // @ts-ignore
+        if (remove(tags, (f: FilterTag) => f.type === type && f.value === value).length === 0) {
             tags.push({
                 type,
                 value,
@@ -182,6 +187,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         this.setState({ showFilter: !this.state.showFilter });
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <Screen>
@@ -190,7 +196,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                         <>
                             <View style={[styles.chips, { backgroundColor: this.props.theme.colors.primary }]}>
                                 {
-                                    _.sortBy(this.state.filterTags, ['type', 'value']).map((f: FilterTag) => (
+                                    sortBy(this.state.filterTags, ['type', 'value']).map((f: FilterTag) => (
                                         <Chip
                                             style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
                                             key={f.type + ':' + f.value}
@@ -245,11 +251,13 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                         }} />
                     </TouchableWithoutFeedback>
 
-                    <View style={{
-                        ...styles.popup,
-                        backgroundColor: this.props.theme.colors.background,
-                        borderColor: this.props.theme.colors.backdrop,
-                    }}>
+                    <View
+                        style={{
+                            ...styles.popup,
+                            backgroundColor: this.props.theme.colors.background,
+                            borderColor: this.props.theme.colors.backdrop,
+                        }}
+                    >
                         <List.Section>
                             <View style={{
                                 flexDirection: 'row',
@@ -262,7 +270,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                             <ScrollView style={{ minHeight: '100%' }}>
                                 <Divider />
                                 <Query<Filters> query={GetFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
-                                    {({ loading, data, error, refetch }) => {
+                                    {({ data, error }) => {
                                         // ok for now
                                         if (error) return null;
 
@@ -299,10 +307,9 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     title={I18N.Search.tables(data.Clubs.length)}
                                                     type="table"
                                                     filter={this.state.filterTags}
-                                                    data={_(data.Clubs).orderBy((a: Filters_Clubs) => a.name.substring(a.name.indexOf(' ')))
-                                                        .map(a => a.name)
-                                                        .toArray()
-                                                        .value()
+                                                    data={
+                                                        orderBy(data.Clubs, (a: Filters_Clubs) => a.name.substring(a.name.indexOf(' ')))
+                                                            .map((a) => a.name)
                                                     }
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
@@ -313,7 +320,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     title={I18N.Search.sectors(Object.keys(I18N.Search.sectorNames).length)}
                                                     type="sector"
                                                     filter={this.state.filterTags}
-                                                    data={_(I18N.Search.sectorNames).values().sort().toArray().value()}
+                                                    data={values(I18N.Search.sectorNames).sort()}
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
                                                 />
@@ -327,10 +334,12 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                         </List.Section>
                     </View>
 
-                    <View style={{
-                        ...styles.triangle,
-                        borderBottomColor: this.props.theme.colors.background,
-                    }} />
+                    <View
+                        style={{
+                            ...styles.triangle,
+                            borderBottomColor: this.props.theme.colors.background,
+                        }}
+                    />
                 </Modal>
 
                 <StandardHeader
@@ -363,17 +372,21 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const SearchScreen = connect(
     (state: IAppState) => ({
         sortBy: state.settings.sortByLastName ? 'lastname' : 'firstname',
         offline: state.connection.offline,
-    }), {
+    }),
+    {
         addTablerSearch,
         showProfile,
-    })(
-        withWhoopsErrorBoundary(
-            withCacheInvalidation('utility',
-                                  withTheme(SearchScreenBase),
-            ),
+    },
+)(
+    withWhoopsErrorBoundary(
+        withCacheInvalidation(
+            'utility',
+            withTheme(SearchScreenBase),
         ),
-    );
+    ),
+);

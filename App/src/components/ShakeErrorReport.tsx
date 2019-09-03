@@ -18,16 +18,17 @@ const logger = new Logger(Categories.UIComponents.ErrorReport);
 
 const SHAKE_SPEED = 350;
 class ShakeEvent {
+    // tslint:disable-next-line: function-name
     static addListener(handler) {
-        let
-            last_x,
-            last_y,
-            last_z;
+        // tslint:disable: variable-name
+        let last_x;
+        let last_y;
+        let last_z;
 
         let lastUpdate = 0;
 
         Accelerometer.setUpdateInterval(100);
-        Accelerometer.addListener(accelerometerData => {
+        Accelerometer.addListener((accelerometerData) => {
             const { x, y, z } = accelerometerData;
             const currTime = Date.now();
 
@@ -49,6 +50,7 @@ class ShakeEvent {
         });
     }
 
+    // tslint:disable-next-line: function-name
     static removeListener() {
         Accelerometer.removeAllListeners();
     }
@@ -70,6 +72,7 @@ type State = {
     open: boolean,
 };
 
+// tslint:disable-next-line: max-classes-per-file
 class ErrorReportBase extends React.Component<Props, State> {
     constructor(props) {
         super(props);
@@ -93,8 +96,8 @@ class ErrorReportBase extends React.Component<Props, State> {
     }
 
     animatedValue = new Animated.Value(0);
-    twiggle?: Animated.CompositeAnimation = undefined;
-    closeAction?: NodeJS.Timeout = undefined;
+    twiggle?: Animated.CompositeAnimation;
+    closeAction?: number;
 
     twiggleIcon = () => {
         // if (this.twiggle == null) {
@@ -141,10 +144,12 @@ class ErrorReportBase extends React.Component<Props, State> {
 
             this.setState({ open: true }, this._slide);
 
-            this.closeAction = setTimeout(() => {
-                this.audit.trackAction(ActionNames.Timeout);
-                this._close();
-            },                            TIMEOUT);
+            this.closeAction = setTimeout(
+                () => {
+                    this.audit.trackAction(ActionNames.Timeout);
+                    this._close();
+                },
+                TIMEOUT);
         }
     }
 
@@ -193,52 +198,66 @@ Time: ${new Date().toISOString()}
     }
 
     render() {
-        return <Portal>
-            {this.state.open &&
-                <TouchableWithoutFeedback onPress={this._close}>
-                    <View style={styles.shade}/>
-                </TouchableWithoutFeedback>
-            }
+        return (
+            <Portal>
+                {this.state.open &&
+                    <TouchableWithoutFeedback onPress={this._close}>
+                        <View style={styles.shade} />
+                    </TouchableWithoutFeedback>
+                }
 
-            <Surface style={[
-                styles.container,
-                { transform: [{ translateY: this.bounceValue }] },
-            ]}>
-                <Title>{I18N.ErrorReport.title}</Title>
-                <Text>{I18N.ErrorReport.text}</Text>
+                <Surface
+                    // @ts-ignore transform seems not to exist?
+                    style={[
+                        styles.container,
+                        { transform: [{ translateY: this.bounceValue }] },
+                    ]}
+                >
+                    <Title>{I18N.ErrorReport.title}</Title>
+                    <Text>{I18N.ErrorReport.text}</Text>
 
-                <AnimatedIcon name="md-phone-portrait" size={64 + 32}
-                    style={[{
-                        transform: [{
-                            rotate: this.animatedValue.interpolate({
-                                inputRange: [-1, 1],
-                                outputRange: ['-0.1rad', '0.1rad'],
-                            }),
-                        }],
-                        color: this.props.theme.colors.accent,
-                    }, styles.icon]}
-                />
+                    <AnimatedIcon
+                        name="md-phone-portrait"
+                        size={64 + 32}
+                        style={[
+                            {
+                                transform: [{
+                                    rotate: this.animatedValue.interpolate({
+                                        inputRange: [-1, 1],
+                                        outputRange: ['-0.1rad', '0.1rad'],
+                                    }),
+                                }],
+                                color: this.props.theme.colors.accent,
+                            },
+                            styles.icon,
+                        ]}
+                    />
 
-                <TouchableRipple style={styles.touch} onPress={this._runSupport}>
-                    <View style={styles.row}>
-                        <Ionicons name="md-bug" size={32} />
-                        <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
-                    </View>
-                </TouchableRipple>
-            </Surface>
-        </Portal>;
+                    <TouchableRipple style={styles.touch} onPress={this._runSupport}>
+                        <View style={styles.row}>
+                            <Ionicons name="md-bug" size={32} />
+                            <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
+                        </View>
+                    </TouchableRipple>
+                </Surface>
+            </Portal>
+        );
     }
 }
 
 const ShakeErrorReport = withTheme(ErrorReportBase);
 
+// tslint:disable-next-line: export-name
 export function withSkakeErrorReport(WrappedComponent) {
+    // tslint:disable-next-line: max-classes-per-file
     return class extends React.PureComponent {
         render() {
-            return <>
-                <WrappedComponent />
-                <ShakeErrorReport />
-            </>;
+            return (
+                <>
+                    <WrappedComponent />
+                    <ShakeErrorReport />
+                </>
+            );
         }
     };
 }

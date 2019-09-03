@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Alert } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { FABGroup } from '../../components/FABGroup';
+import { Action, FABGroup } from '../../components/FABGroup';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { getParameterValue } from '../../helper/parameters/getParameter';
@@ -19,7 +19,7 @@ import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
 
 type Props = {
-    top: number,
+    top?: number,
 
     member: Member_Member
     theme: Theme,
@@ -34,83 +34,87 @@ const testIsFavorite = (tabler: IMemberOverviewFragment, favorites: HashMap<bool
 
 class ActionsFabBase extends React.Component<Props> {
     state = {
-      open: false,
-  };
+        open: false,
+    };
 
     _toggle = () => {
-      this.props.toggleFavorite(this.props.member);
-  }
+        this.props.toggleFavorite(this.props.member);
+    }
 
-    _handleWeb = async() => {
-      const { member } = this.props;
-      const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
+    _handleWeb = async () => {
+        const { member } = this.props;
+        const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
 
-      OpenLink.url(
-      urls.profile.replace('#id#', member.id.toString()),
-    );
-  }
+        OpenLink.url(
+            urls.profile.replace('#id#', member.id.toString()),
+        );
+    }
 
     _contact = async () => {
-      const { status } = await Permissions.askAsync(Permissions.CONTACTS);
+        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
-      if (status !== 'granted') {
-        Alert.alert(I18N.Settings.contactpermissions);
-    } else {
-        const contact = await mapMemberToContact(this.props.member);
-      // @ts-ignore
-        Contacts.presentFormAsync(null, contact, {
-          shouldShowLinkedContacts: true,
-          allowsEditing: true,
-          allowsActions: true,
-      });
+        if (status !== 'granted') {
+            Alert.alert(I18N.Settings.contactpermissions);
+        } else {
+            const contact = await mapMemberToContact(this.props.member);
+            Contacts.presentFormAsync(
+                null,
+                contact,
+                {
+                    shouldShowLinkedContacts: true,
+                    allowsEditing: true,
+                    allowsActions: true,
+                }
+            );
+        }
     }
-  }
 
     render() {
-      const isFav = testIsFavorite(this.props.member, this.props.favorites);
+        const isFav = testIsFavorite(this.props.member, this.props.favorites);
 
-      return (
-      // <Portal>
-      <FABGroup
-        areaStyle={{
-            alignItems: 'flex-end',
-            marginTop: this.props.top,
-        }}
+        return (
+            // <Portal>
+            <FABGroup
+                areaStyle={{
+                    alignItems: 'flex-end',
+                    marginTop: this.props.top,
+                }}
 
-        open={this.state.open}
-        icon={this.state.open ? 'close' : 'menu'}
-        actions={[
-            {
-                icon: 'star',
-                label: isFav ? I18N.Member.Actions.remfav : I18N.Member.Actions.favadd,
-                onPress: this._toggle,
-                color: isFav ? this.props.theme.colors.accent : undefined,
-            },
+                open={this.state.open}
+                icon={this.state.open ? 'close' : 'menu'}
+                actions={[
+                    {
+                        icon: 'star',
+                        label: isFav ? I18N.Member.Actions.remfav : I18N.Member.Actions.favadd,
+                        onPress: this._toggle,
+                        color: isFav ? this.props.theme.colors.accent : undefined,
+                    },
 
-            isFeatureEnabled(Features.SendToAdressbook)
-            ? {
-                icon: 'contacts',
-                label: I18N.Member.Actions.contact,
-                onPress: this._contact,
-            }
-            : undefined,
+                    isFeatureEnabled(Features.SendToAdressbook)
+                        ? {
+                            icon: 'contacts',
+                            label: I18N.Member.Actions.contact,
+                            onPress: this._contact,
+                        }
+                        : undefined,
 
-            OpenLink.canOpenUrl() ?
-              {
-                  icon: 'web',
-                  label: I18N.Member.Actions.openweb,
-                  onPress: this._handleWeb,
-              } : undefined,
-        ].filter(Boolean)}
-        onStateChange={({ open }) => this.setState({ open })}
-      />
-      // </Portal>
-    );
-  }
+                    OpenLink.canOpenUrl()
+                        ? {
+                            icon: 'web',
+                            label: I18N.Member.Actions.openweb,
+                            onPress: this._handleWeb,
+                        }
+                        : undefined,
+                ].filter(Boolean) as Action[]}
+                onStateChange={({ open }) => this.setState({ open })}
+            />
+            // </Portal>
+        );
+    }
 }
 
 export const ActionsFab = connect(
-  (state: IAppState) => ({ favorites: state.filter.member.favorites }),
+    (state: IAppState) => ({ favorites: state.filter.member.favorites }),
     {
         toggleFavorite,
     },

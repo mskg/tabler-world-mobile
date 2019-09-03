@@ -17,18 +17,19 @@ export function collectPhones(member?: Member_Member | null): Member_Member_phon
 
     return _(member.phonenumbers || [])
         .concat(
+            // @ts-ignore nulls are filtered
             (member.companies || []).map(
                 (c: Member_Member_companies) => c.phone != null && c.phone !== ''
                     ? ({
                         type: 'work',
                         value: c.phone || '',
                         __typename: 'CommunicationElement' as 'CommunicationElement',
-                    })
+                    }) as Member_Member_phonenumbers
                     : undefined,
             ),
         )
-        .filter(v => v != null)
-        .uniqBy(v => normalizePhone(v.value))
+        .filter((v) => v != null)
+        .uniqBy((v) => normalizePhone(v.value))
         .toArray()
         .value();
 }
@@ -40,9 +41,10 @@ export function collectEMails(member?: Member_Member | null): Member_Member_emai
         __typename: 'CommunicationElement' as 'CommunicationElement',
         type: 'rt',
         value: member.rtemail,
-    }])
+    } as Member_Member_emails])
         .concat(member.emails || [])
         .concat(
+            // @ts-ignore nulls are filtered
             (member.companies || []).map(
                 (c: Member_Member_companies) => ({
                     type: 'work',
@@ -51,8 +53,8 @@ export function collectEMails(member?: Member_Member | null): Member_Member_emai
                 }),
             ),
         )
-        .filter(r => r.value != null && r.value != '')
-        .uniqBy(v => v.value)
+        .filter((r) => r.value != null && r.value !== '')
+        .uniqBy((v) => v.value)
         .toArray()
         .value();
 }

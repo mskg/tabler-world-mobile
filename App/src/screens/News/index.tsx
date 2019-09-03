@@ -12,7 +12,6 @@ import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { TopNews, TopNews_TopNews } from '../../model/graphql/TopNews';
 import { GetNewsQuery } from '../../queries/GetNewsQuery';
@@ -20,7 +19,7 @@ import { showAlbum, showNewsArticle } from '../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
-const logger = new Logger(Categories.Screens.News);
+// const logger = new Logger(Categories.Screens.News);
 
 type State = {};
 
@@ -41,7 +40,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
 
     _renderItem = (params) => {
         const item: TopNews_TopNews = params.item;
-        const showAlbum = () => item.album && this.props.showAlbum(item.album.id);
+        const _showAlbum = () => item.album && this.props.showAlbum(item.album.id);
         const showArticle = () => { this.props.showNewsArticle(item.id); return null; };
 
         return (
@@ -75,14 +74,14 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
 
                 {false && item.album &&
                     <Card.Actions style={styles.action}>
-                        <Button color={this.props.theme.colors.accent} onPress={showAlbum}>{I18N.Albums.details}</Button>
+                        <Button color={this.props.theme.colors.accent} onPress={_showAlbum}>{I18N.Albums.details}</Button>
                     </Card.Actions>
                 }
             </Card>
         );
     }
 
-    _key = (item: TopNews_TopNews, index: number) => {
+    _key = (item: TopNews_TopNews, _index: number) => {
         return item.id.toString();
     }
 
@@ -104,7 +103,6 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                             >
                                 <FlatList
                                     contentContainerStyle={styles.container}
-                                    // @ts-ignore
                                     data={data != null ? data.TopNews : []}
 
                                     refreshing={loading}
@@ -122,8 +120,10 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const NewsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation('news',
-                              withTheme(
+        withCacheInvalidation(
+            'news',
+            withTheme(
                 connect(null, { showAlbum, showNewsArticle })(NewsScreenBase))));

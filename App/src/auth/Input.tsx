@@ -16,12 +16,12 @@ export default ({ placeholder, style, ...props }) => (
 
 const styles = StyleSheet.create({
     input: {
-      height: 45,
-      marginBottom: 15,
-      borderBottomWidth: 1.5,
-      fontSize: 16,
-      paddingHorizontal: 0,
+        height: 45,
+        marginBottom: 15,
+        borderBottomWidth: 1.5,
+        fontSize: 16,
+        paddingHorizontal: 0,
     // borderBottomColor: colors.primary,
     // fontFamily: fonts.light
-  },
+    },
 });

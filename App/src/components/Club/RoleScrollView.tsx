@@ -34,7 +34,7 @@ export class RoleScrollView extends React.Component<Props, State> {
             return (
                 <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
                     {
-                        grouped.map((r, i) => (
+                        grouped.map((r, _i) => (
                             <View style={{ marginRight: 16, marginTop: 4, marginBottom: 12 }} key={r.member.id}>
                                 <RoleAvatar
                                     member={r.member}
@@ -51,7 +51,7 @@ export class RoleScrollView extends React.Component<Props, State> {
         return (
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 {
-                    grouped.map((r, i) => (
+                    grouped.map((r, _i) => (
                         <View style={{ marginRight: 16, marginTop: 4 }} key={r.member.id}>
                             <RoleAvatar
                                 member={r.member}

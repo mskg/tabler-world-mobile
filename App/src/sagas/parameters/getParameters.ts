@@ -12,7 +12,7 @@ import * as settingsActions from '../../redux/actions/settings';
 import { singedIn } from '../../redux/actions/user';
 import { logger } from './logger';
 
-export function* getParameters(a: typeof settingsActions.restoreSettings.shape) {
+export function* getParameters(_a: typeof settingsActions.restoreSettings.shape) {
     logger.debug('Getting parameters');
 
     const authState = yield select((state: IAppState) => state.auth.state);
@@ -30,7 +30,7 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
             variables: {
                 info: {
                     version: Constants.manifest.revisionId || 'dev',
-                    os: Platform.OS == 'android' ? ParameterPlatform.android : ParameterPlatform.ios,
+                    os: Platform.OS === 'android' ? ParameterPlatform.android : ParameterPlatform.ios,
                 },
             },
         });
@@ -38,14 +38,14 @@ export function* getParameters(a: typeof settingsActions.restoreSettings.shape) 
         yield getPersistor().persist();
 
         if (result.data.getParameters != null) {
-            const keys = Object.keys(ParameterName).map(k => `Parameter_${ParameterName[k]}`);
+            const keys = Object.keys(ParameterName).map((k) => `Parameter_${ParameterName[k]}`);
             logger.debug('Removing', keys);
 
             yield AsyncStorage.multiRemove(keys);
 
             if (result.data.getParameters.length > 0) {
                 yield AsyncStorage.multiSet(
-                    result.data.getParameters.map(p => ([`Parameter_${p.name}`, JSON.stringify(p.value)])),
+                    result.data.getParameters.map((p) => ([`Parameter_${p.name}`, JSON.stringify(p.value)])),
                 );
             }
 

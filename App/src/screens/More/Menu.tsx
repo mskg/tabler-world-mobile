@@ -8,7 +8,6 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { GetMyRoles } from '../../model/graphql/GetMyRoles';
@@ -18,7 +17,7 @@ import { GetMyRolesQuery } from '../../queries/GetMyRoles';
 import { Routes } from './Routes';
 import { NavigationItem } from './Settings/Action';
 
-const logger = new Logger(Categories.Screens.Menu);
+// const logger = new Logger(Categories.Screens.Menu);
 
 type State = {
 };
@@ -107,9 +106,14 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
-export const MenuScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
-    (state) => ({
+// tslint:disable-next-line: export-name
+export const MenuScreen = connect(
+    (state: IAppState) => ({
         showExperiments: state.settings.experiments,
     }),
-    {
-    })(withCacheInvalidation('userroles', withNavigation(withTheme(MenuScreenBase))));
+    {},
+)(
+    withCacheInvalidation(
+        'userroles',
+        withNavigation(
+            withTheme(MenuScreenBase))));

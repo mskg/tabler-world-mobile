@@ -11,7 +11,7 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
 
     try {
         const session = await Auth.currentSession();
-        const cred = await Auth.currentCredentials();
+        await Auth.currentCredentials();
 
         const token = session.getIdToken().getJwtToken();
 
@@ -32,6 +32,7 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
             logger.debug('fetch', uri, newOptions);
         }
 
+        // @ts-ignore options are compatible
         return await fetch(uri, newOptions);
     } catch (e) {
         if (isAuthenticationError(e)) {
@@ -44,8 +45,6 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
 };
 
 export const fetchAuthDemo = async (uri: RequestInfo, options?: RequestInit): Promise<Response> => {
-    debugger;
-
     const newOptions = {
         ...(options || {}),
         headers: {
@@ -56,6 +55,10 @@ export const fetchAuthDemo = async (uri: RequestInfo, options?: RequestInit): Pr
         },
     };
 
-    logger.debug('fetch', uri, newOptions);
+    if (__DEV__) {
+        logger.debug('fetch', uri, newOptions);
+    }
+
+    // @ts-ignore options are compatible
     return await fetch(uri, newOptions);
 };

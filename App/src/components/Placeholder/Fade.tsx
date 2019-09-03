@@ -16,43 +16,43 @@ let running = 0;
 
 function start() {
     Animated.sequence([
-      Animated.timing(animation, {
-        toValue: END_VALUE,
-        duration: DURATION,
-        useNativeDriver,
-    }),
-      Animated.timing(animation, {
-        toValue: START_VALUE,
-        duration: DURATION,
-        useNativeDriver,
-    }),
-  ]).start((e) => {
+        Animated.timing(animation, {
+          toValue: END_VALUE,
+          duration: DURATION,
+          useNativeDriver,
+      }),
+        Animated.timing(animation, {
+          toValue: START_VALUE,
+          duration: DURATION,
+          useNativeDriver,
+      }),
+    ]).start((e) => {
       if (e.finished) {
-        if (running !== 0) {
-          start();
+          if (running !== 0) {
+            start();
+        }
       }
-    }
   });
 }
 
 export class Fade extends React.PureComponent<Props> {
     componentWillUnmount() {
-      running--;
-  }
+        running--;
+    }
 
     componentDidMount() {
-      if (++running === 1) {
-        start();
+        if (++running === 1) {
+          start();
+      }
     }
-  }
 
     render() {
-      const customStyle = { opacity: animation };
+        const customStyle = { opacity: animation };
 
-      return (
+        return (
       <Animated.View style={[this.props.style, customStyle]}>
         {this.props.children}
       </Animated.View>
-    );
-  }
+      );
+    }
 }

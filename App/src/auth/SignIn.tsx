@@ -46,7 +46,7 @@ class SignInBase extends AuditedScreen<Props, State> {
         };
     }
 
-    async getRandomString(bytes: number) {
+    async getRandomString(_bytes: number) {
         // TOOD: will move to cryto in expo v33
         return uuid4();
     }
@@ -187,6 +187,6 @@ export default connect(
     (state: IAppState) => ({
         username: state.auth.username,
     }), {
-        confirmSignIn,
-    },
+    confirmSignIn,
+},
 )(withTheme(SignInBase));

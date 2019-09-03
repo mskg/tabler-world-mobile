@@ -5,7 +5,7 @@ import { Circle } from '../../components/Placeholder/Circle';
 import { Line } from '../../components/Placeholder/Line';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Categories, Logger } from '../../helper/Logger';
-import { HEADER_HEIGHT, HEADER_MARGIN_TOP, HeaderStyles, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
+import { HeaderStyles, HEADER_HEIGHT, HEADER_MARGIN_TOP, TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { Header } from '../Header';
 import { IMAGE_SIZE, MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from './Dimensions';
 import { styles } from './Styles';
@@ -31,6 +31,7 @@ type Props = {
 const AnimatedSurface = Animated.createAnimatedComponent(Surface);
 
 class ProfileHeaderBase extends React.Component<Props> {
+    // tslint:disable-next-line: max-func-body-length
     render() {
         const { scrollY, distance, loading, avatar: Avatar, fab: Fab } = this.props;
 
@@ -100,14 +101,16 @@ class ProfileHeaderBase extends React.Component<Props> {
                         backgroundColor: this.props.theme.colors.background,
                     }}>
 
-                    <View style={{
-                        ...styles.header,
-                    }}>
+                    <View
+                        style={{
+                            ...styles.header,
+                        }}
+                    >
                         <Placeholder
                             ready={!loading}
                             previewComponent={<Circle size={imageTranslate} />}
                         >
-                            {!loading && React.cloneElement(Avatar, {
+                            {!loading && Avatar && React.cloneElement(Avatar, {
                                 size: imageTranslate,
                                 background: this.props.theme.colors.backdrop,
                             })}
@@ -199,4 +202,5 @@ class ProfileHeaderBase extends React.Component<Props> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const ProfileHeader = withTheme(ProfileHeaderBase);

@@ -5,7 +5,7 @@ export function timespan(time1: number, time2?: number) {
         time2 = 0;
     }
 
-    let period = Math.abs(time1 - time2) / 1000;
+    const period = Math.abs(time1 - time2) / 1000;
 
     let timespan = 1;
     let format = 'seconds';

@@ -14,9 +14,9 @@ function cacheImages(images) {
         logger.debug('Caching image', image);
         if (typeof image === 'string') {
             return Image.prefetch(image);
-        } 
-            return Asset.fromModule(image).downloadAsync();
-        
+        }
+        return Asset.fromModule(image).downloadAsync();
+
     });
 }
 

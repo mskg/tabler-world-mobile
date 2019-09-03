@@ -14,7 +14,7 @@ import { showProfile } from '../redux/actions/navigation';
 import { SectionData } from '../screens/Members/MemberDataSource';
 import { SECTION_HEIGHT } from './List/Section';
 import { renderItem } from './ListRenderer';
-import { ME_ITEM_HEIGHT, MeListItem } from './MeListItem';
+import { MeListItem, ME_ITEM_HEIGHT } from './MeListItem';
 import { CHIP_HEIGHT, ITEM_HEIGHT, ITEM_HEIGHT_TAGS } from './Member/Dimensions';
 import { EmptyComponent } from './NoResults';
 
@@ -34,7 +34,7 @@ type OwnProps = {
     onRefresh?: () => void,
     onItemSelected?: (member: IMemberOverviewFragment) => void,
 
-    setRef?: (ref) => void;
+    setRef?: (ref: any) => any;
 
     style?: any,
 };
@@ -76,8 +76,8 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
                 const data = this.state.data[index];
                 if (typeof (data) === 'string') {
-                    if (data === ME_ITEM) { return ItemType.Me; }  return ItemType.Section; 
-                }  {
+                    if (data === ME_ITEM) { return ItemType.Me; } return ItemType.Section;
+                } {
                     const roles = (data != null && (data as IMemberOverviewFragment).roles) || [];
                     if (roles.length == 0) return ItemType.Small;
 
@@ -106,33 +106,33 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         };
     }
 
-    _getLayout =  (type, dimension) => {
+    _getLayout = (type, dimension) => {
         dimension.width = this.width;
 
         switch (type) {
-        case ItemType.Me:
-            dimension.height = ME_ITEM_HEIGHT;
-            break;
+            case ItemType.Me:
+                dimension.height = ME_ITEM_HEIGHT;
+                break;
 
-        case ItemType.Section:
-            dimension.height = SECTION_HEIGHT;
-            break;
+            case ItemType.Section:
+                dimension.height = SECTION_HEIGHT;
+                break;
 
-        case ItemType.Large:
-            dimension.height = ITEM_HEIGHT_TAGS + StyleSheet.hairlineWidth;
-            break;
+            case ItemType.Large:
+                dimension.height = ITEM_HEIGHT_TAGS + StyleSheet.hairlineWidth;
+                break;
 
-        case ItemType.Large2:
-            dimension.height = ITEM_HEIGHT_TAGS + CHIP_HEIGHT + StyleSheet.hairlineWidth;
-            break;
+            case ItemType.Large2:
+                dimension.height = ITEM_HEIGHT_TAGS + CHIP_HEIGHT + StyleSheet.hairlineWidth;
+                break;
 
-        case ItemType.Large3:
-            dimension.height = ITEM_HEIGHT_TAGS + CHIP_HEIGHT * 2 + StyleSheet.hairlineWidth;
-            break;
+            case ItemType.Large3:
+                dimension.height = ITEM_HEIGHT_TAGS + CHIP_HEIGHT * 2 + StyleSheet.hairlineWidth;
+                break;
 
-        default:
-            dimension.height = ITEM_HEIGHT + StyleSheet.hairlineWidth;
-            break;
+            default:
+                dimension.height = ITEM_HEIGHT + StyleSheet.hairlineWidth;
+                break;
         }
     }
 
@@ -181,7 +181,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         }
     }
 
-    _rowRenderer = (type, data, index) => {
+    _rowRenderer = (type, data, _index) => {
         // on resetting data, we receive old data here
         if (data == null) return null;
 
@@ -204,12 +204,14 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
     }
 
     render() {
-        if (this.props.data.length == 0 && !this.props.me) {
+        if (this.props.data.length === 0 && !this.props.me) {
             return (<EmptyComponent title={I18N.Members.noresults} />);
         }
 
         return (
+            // @ts-ignore compatible
             <StickyContainer stickyHeaderIndices={this.state.sectionIndexes}>
+                {/* @ts-ignore compatbile */}
                 <RecyclerListView
                     ref={this.props.setRef}
                     style={this.props.style}
@@ -237,6 +239,6 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 }
 
 export const MemberSectionList = withNavigation(withTheme(connect(
-    null, {
-        showProfile,
-    })(MemberSectionListBase)));
+    null,
+    { showProfile },
+)(MemberSectionListBase)));

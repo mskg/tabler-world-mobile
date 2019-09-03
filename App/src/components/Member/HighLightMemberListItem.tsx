@@ -21,7 +21,7 @@ export class HighLightMemberListItem extends React.PureComponent<Props> {
   )
 
     render() {
-      return (
+        return (
       <InternalMemberListItem
         theme={this.props.theme}
         member={this.props.member}
@@ -41,6 +41,6 @@ export class HighLightMemberListItem extends React.PureComponent<Props> {
 
         right={this.props.right || this._right}
       />
-    );
-  }
+      );
+    }
 }

@@ -98,9 +98,9 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         if (nextAppState !== 'active') {
             this._blur();
             return;
-        } 
+        }
         this._focus();
-        
+
 
         this.didFocus();
     }
@@ -124,17 +124,17 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                 canSet: Platform.OS == 'ios',
             });
             return;
-        } 
+        }
         if (Platform.OS == 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
-                this.setState({
-                    message: I18N.NearbyMembers.always,
-                    canSet: Platform.OS == 'ios',
-                });
-                return;
-            }
+            this.setState({
+                message: I18N.NearbyMembers.always,
+                canSet: Platform.OS == 'ios',
+            });
+            return;
+        }
 
         this.setState({ message: undefined });
-        
+
     }
 
     componentWillMount() {
@@ -191,7 +191,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                         this._planUpdate(refetch);
                     });
                 }
-            },                    this.state.interval);
+            }, this.state.interval);
         }
     }
 
@@ -269,23 +269,25 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         return I18N.NearbyMembers.near(location);
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
-            <ScreenWithHeader header={{
-                showBack: true,
-                content:
-                [
-                    <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.NearbyMembers.title} />,
+            <ScreenWithHeader
+                header={{
+                    showBack: true,
+                    content: [
+                        <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.NearbyMembers.title} />,
                         // <Appbar.Action key="filter" icon="filter-list" onPress={() => {}} />,
-                    <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showSettings()} />,
-                ],
-            }}>
+                        <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showSettings()} />,
+                    ],
+                }}
+            >
                 {this.state.visible && this.props.offline &&
                     <CannotLoadWhileOffline />
                 }
 
                 {this.state.visible && this.state.enabling &&
-                   <MemberListPlaceholder />
+                    <MemberListPlaceholder />
                 }
 
                 {this.state.visible && !this.state.enabling && !this.props.nearbyMembers && !this.props.offline &&
@@ -320,7 +322,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                             // pollInterval={this.state.visible ? this.state.interval : undefined}
                             fetchPolicy="cache-and-network"
                         >
-                            {({ loading, data, error, refetch, client }) => {
+                            {({ data, error, refetch, client }) => {
                                 if (error) throw error;
 
                                 if (data != null && data.nearbyMembers != null) {
@@ -350,6 +352,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
                                                                     title={<MemberTitle member={m.member} />}
                                                                     subtitle={
+                                                                        // tslint:disable-next-line: prefer-template
                                                                         distance(m.distance) + ', ' + I18N.NearbyMembers.ago(
                                                                             timespan(
                                                                                 Date.now(),
@@ -375,6 +378,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const NearbyScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
         location: state.location.location,
@@ -388,6 +392,8 @@ export const NearbyScreen = connect<StateProps, DispatchPros, OwnProps, IAppStat
         updateSetting,
         showSettings,
         showLocationHistory,
-    })(withWhoopsErrorBoundary(withNavigation(withTheme(NearbyScreenBase))));
-
-
+    },
+)(
+    withWhoopsErrorBoundary(
+        withNavigation(
+            withTheme(NearbyScreenBase))));

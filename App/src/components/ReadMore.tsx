@@ -53,8 +53,8 @@ export class ReadMore extends React.Component<Props, State> {
                 shouldShowReadMore: true,
             },
                           () => {
-                    this.props.onReady && this.props.onReady();
-                },
+                              this.props.onReady && this.props.onReady();
+                          },
             );
         } else {
             this.props.onReady && this.props.onReady();

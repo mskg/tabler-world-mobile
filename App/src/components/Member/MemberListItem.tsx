@@ -14,7 +14,7 @@ export class MemberListItem extends React.PureComponent<{ margin?; } & MemberIte
     />)
 
     render() {
-      return (
+        return (
       <InternalMemberListItem
         theme={this.props.theme}
         member={this.props.member}
@@ -24,6 +24,6 @@ export class MemberListItem extends React.PureComponent<{ margin?; } & MemberIte
         subtitle={this.props.member.club.name}
         right={this.props.right || this._right}
       />
-    );
-  }
+      );
+    }
 }

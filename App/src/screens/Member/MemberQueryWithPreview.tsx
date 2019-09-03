@@ -1,5 +1,5 @@
 import { WatchQueryFetchPolicy } from 'apollo-client';
-import React, { PureComponent, ReactElement } from 'react';
+import React, { PureComponent } from 'react';
 import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
@@ -12,7 +12,7 @@ import { addSnack } from '../../redux/actions/snacks';
 import { logger } from './logger';
 
 class MemberQueryWithPreview extends PureComponent<{
-    children: ReactElement;
+    children: React.ReactElement<any>;
     id: number;
     fetchPolicy?: WatchQueryFetchPolicy;
     addSnack: typeof addSnack;
@@ -66,9 +66,11 @@ class MemberQueryWithPreview extends PureComponent<{
                     preview: preview ? { Member: preview } : undefined,
                 });
             }}
-        </Query>);
+        </Query>
+        );
     }
 }
 
+// tslint:disable-next-line: export-name
 export const MemberQueryWithPreviewAndInvalidation =
     connect(null, { addSnack })(MemberQueryWithPreview);

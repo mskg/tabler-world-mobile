@@ -8,9 +8,9 @@ import { styles } from './Styles';
 export const CardPlaceholder = ({ count = 10 }) => {
     return (
         <View style={styles.container}>
-            {Array.apply(null, { length: count })
+            {Array.apply(null, { length: count } as [])
                 .map(Number.call, Number)
-                .map(i => (
+                .map((i: any) => (
                     <Surface style={styles.card} key={i.toString()}>
                         <View style={innerStyles.section}>
                             <View style={innerStyles.sectionIcon}>

@@ -9,7 +9,7 @@ import { IAppState } from '../model/IAppState';
 import { navMiddleware, navReducer } from '../navigation/redux';
 import { setReduxPersistor, setReduxStore, setSagaMiddleware } from './getRedux';
 import { INITIAL_STATE } from './initialState';
-import { MIGRATE_VERSION, migrateToNull } from './migrations';
+import { migrateToNull, MIGRATE_VERSION } from './migrations';
 import reducers from './reducers';
 
 const logger = new Logger(Categories.Redux);
@@ -19,65 +19,66 @@ export function bootstrapRedux() {
     setSagaMiddleware(sagaMiddleware);
 
     const persistConfig: PersistConfig = {
-      key: 'root',
-      storage,
-      stateReconciler: autoMergeLevel2,
+        storage,
+        key: 'root',
+        stateReconciler: autoMergeLevel2,
 
-      blacklist: ['snacks', 'updateAvailable', 'connection'],
+        blacklist: ['snacks', 'updateAvailable', 'connection'],
 
-      version: MIGRATE_VERSION,
-      migrate: migrateToNull,
-  };
+        version: MIGRATE_VERSION,
+        migrate: migrateToNull,
+    };
 
-  // this breaks the experimental navigation option in DEV!
+    // this breaks the experimental navigation option in DEV!
     if (!__DEV__) {
-      persistConfig.blacklist = [...(persistConfig.blacklist || []), 'navigation'];
-  }
+        persistConfig.blacklist = [...(persistConfig.blacklist || []), 'navigation'];
+    }
 
     const appReducer = persistReducer(persistConfig, combineReducers<IAppState>(
-      {
-          ...reducers,
+        {
+            ...reducers,
 
-      // @ts-ignore
-          navigation: navReducer,
-      }));
+            // @ts-ignore navigation is not part of the state and removed
+            navigation: navReducer,
+        }));
 
 
     const clearReducer = (state, action) => {
-      if (action.type === '__CLEAR__ALL__') {
-        logger.log('********** DESTROYING STATE **********');
+        let newState = state;
 
-      // https://github.com/rt2zz/redux-persist/issues/845
-        Object.keys(state).forEach(key => {
-          storage.removeItem(`persist:${key}`);
-      });
+        if (action.type === '__CLEAR__ALL__') {
+            logger.log('********** DESTROYING STATE **********');
 
-        state = Object.assign({}, INITIAL_STATE);
-    } else if (action.type === 'RESET_STORE') {
-        state = Object.assign({}, INITIAL_STATE);
-    }
+            // https://github.com/rt2zz/redux-persist/issues/845
+            Object.keys(state).forEach(key => {
+                storage.removeItem(`persist:${key}`);
+            });
 
-      return appReducer(state, action);
-  };
+            newState = Object.assign({}, INITIAL_STATE);
+        } else if (action.type === 'RESET_STORE') {
+            newState = Object.assign({}, INITIAL_STATE);
+        }
 
-    const reduxLogger = store => next => action => {
-      logger.debug(action.type, action.key);
-      const result = next(action);
-      return result;
-  };
+        return appReducer(newState, action);
+    };
+
+    const reduxLogger = (_store) => (next) => (action) => {
+        logger.debug(action.type, action.key);
+        return next(action);
+    };
 
     const store = createStore(
-    clearReducer,
-    // @ts-ignore
-    INITIAL_STATE,
-    compose(
-      applyMiddleware(
-        reduxLogger,
-        navMiddleware,
-        sagaMiddleware,
-      ),
-    ),
-  );
+        clearReducer,
+        // @ts-ignore types are compatible
+        INITIAL_STATE,
+        compose(
+            applyMiddleware(
+                reduxLogger,
+                navMiddleware,
+                sagaMiddleware,
+            ),
+        ),
+    );
 
     setReduxStore(store);
 

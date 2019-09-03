@@ -26,14 +26,14 @@ class AccordionBase extends React.Component<Props, State> {
     };
 
     _handlePress = () => {
-        this.props.onPress && this.props.onPress();
+        if (this.props.onPress) { this.props.onPress(); }
 
         // if (this.props.expanded === undefined) {
-            // Only update state of the `expanded` prop was not passed
-            // If it was passed, the component will act as a controlled component
-        this.setState(state => ({
-                expanded: !state.expanded,
-            }));
+        // Only update state of the `expanded` prop was not passed
+        // If it was passed, the component will act as a controlled component
+        this.setState((state) => ({
+            expanded: !state.expanded,
+        }));
         // }
     }
 
@@ -106,16 +106,13 @@ class AccordionBase extends React.Component<Props, State> {
                 {expanded &&
                     <View style={{ /*paddingBottom: 16,*/ backgroundColor: this.props.theme.colors.surface }}>
                         {
-                            // @ts-ignore
                             React.Children.map(children, (child) => {
                                 if (
                                     left &&
                                     React.isValidElement(child) &&
-                                    // @ts-ignore
                                     !child.props.left && !child.props.right
                                 ) {
                                     return React.cloneElement(child, {
-                                        // @ts-ignore
                                         style: [styles.child, child.props.style],
                                     });
                                 }

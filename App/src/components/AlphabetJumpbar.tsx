@@ -27,6 +27,7 @@ type State = {
     activeLetterViewTop: number | undefined,
 };
 
+// tslint:disable-next-line: export-name
 export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, State> {
     alphabetContainer;
     panResponder;
@@ -70,40 +71,40 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
         if (top >= 1 && top <= this.containerHeight) {
             this.setState({
                 activeLetterViewTop: y
-                - (
-                    this.props.top || 0
-                ),
+                    - (
+                        this.props.top || 0
+                    ),
             });
 
-            return this.state.alphabet[ Math.round((top / this.containerHeight) * this.state.alphabet.length)
-];
+            return this.state.alphabet[Math.round((top / this.containerHeight) * this.state.alphabet.length)
+            ];
         }
 
         return undefined;
     }
 
-    handleOnFingerTouch(e, gestureState) {
+    handleOnFingerTouch(_e, gestureState) {
         this.handleOnTouchLetter(this.getTouchedLetter(gestureState.y0));
     }
 
-    handleOnFingerMove(evt, gestureState) {
+    handleOnFingerMove(_evt, gestureState) {
         this.handleOnTouchLetter(this.getTouchedLetter(gestureState.moveY));
     }
 
     handleOnTouchLetter(activeLetter) {
-        if (!!(this.props.supports || ALPHABET).find(s => s == activeLetter)) {
+        if (!!(this.props.supports || ALPHABET).find((s) => s === activeLetter)) {
             this.setState({ activeLetter });
-            this.props.onScroll && this.props.onScroll(activeLetter, this.state.activeLetterViewTop as number);
+            if (this.props.onScroll) { this.props.onScroll(activeLetter, this.state.activeLetterViewTop as number); }
         }
     }
 
     handleOnFingerStop() {
-        this.props.onScrollEnds && this.props.onScrollEnds(this.state.activeLetter);
+        if (this.props.onScrollEnds) { this.props.onScrollEnds(this.state.activeLetter); }
         this.setState({ activeLetter: undefined });
     }
 
-    handleOnLayout() {
-        this.alphabetContainer.measure((x1, y1, width, height, px, py) => {
+    _handleOnLayout = () => {
+        this.alphabetContainer.measure((_x1, _y1, _width, height, _px, py) => {
             if (!this.containerTop && !this.containerHeight) {
                 this.containerTop = py;
                 this.containerHeight = height;
@@ -121,29 +122,31 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
                     ]}
                 >
                     <View
-                        ref={elem => this.alphabetContainer = elem}
+                        ref={(elem) => this.alphabetContainer = elem}
                         {...this.panResponder.panHandlers}
-                        onLayout={this.handleOnLayout.bind(this)}
+                        onLayout={this._handleOnLayout}
                         style={[
                             styles.container,
                             this.props.scrollBarContainerStyle,
                         ]}
                     >
-                        {this.state.alphabet.map(letter => (
+                        {this.state.alphabet.map((letter) => (
                             <View key={letter}>
-                                <Text style={[
-                                    styles.letter,
-                                    this.props.font ? {
-                                        fontFamily: this.props.font,
-                                    } : {},
-                                    this.props.fontColor ? {
-                                        color:
-                                            // !!(this.props.supports || ALPHABET).find(s => s == letter) ?
-                                            this.props.fontColor,
-                                        // : "grey"
-                                    } : {},
-                                    { fontSize: this.props.fontSize },
-                                ]}>
+                                <Text
+                                    style={[
+                                        styles.letter,
+                                        this.props.font ? {
+                                            fontFamily: this.props.font,
+                                        } : {},
+                                        this.props.fontColor ? {
+                                            color:
+                                                // !!(this.props.supports || ALPHABET).find(s => s == letter) ?
+                                                this.props.fontColor,
+                                            // : "grey"
+                                        } : {},
+                                        { fontSize: this.props.fontSize },
+                                    ]}
+                                >
                                     {letter}
                                 </Text>
                             </View>

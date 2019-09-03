@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import _ from 'lodash';
+import _, { find } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Platform, View } from 'react-native';
@@ -16,7 +16,6 @@ import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../../helper/Logger';
 import { normalizeForSearch } from '../../../helper/normalizeForSearch';
 import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
@@ -28,7 +27,7 @@ import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
 
-const logger = new Logger(Categories.Screens.Structure);
+// const logger = new Logger(Categories.Screens.Structure);
 
 type State = {
     location?: Location.LocationData,
@@ -125,11 +124,11 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     filterData(data?: ClubsMap | null, text?: string): ClubsMap_Clubs[] {
         if (data == null) { return []; }
 
-        // @ts-ignore
+        // @ts-ignore null is filtered
         return _(data.Clubs)
-            .filter(d => d.location != null)
+            .filter((d) => d.location != null)
             .map((item: ClubsMap_Clubs) => {
-                const match = _.find(
+                const match = find(
                     this.makeSearchTexts(item),
                     this._normalizedSearch(text || ''));
 
@@ -155,7 +154,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 );
             }
         }
-    },                   1000);
+    }, 1000);
 
     // _fitCluster = (_coordinates,markers) => {
     //     if (this.mapRef) {
@@ -170,7 +169,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
             search: text,
             filtered: this.filterData(this.props.data, text),
             centerOn: undefined,
-        },            this._fitMap);
+        }, this._fitMap);
     }
 
     render() {

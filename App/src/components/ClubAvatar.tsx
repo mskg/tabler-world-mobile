@@ -17,13 +17,13 @@ type Props = {
 
 export class ClubAvatarBase extends React.PureComponent<Props> {
     constructor(props) {
-      super(props);
-  }
+        super(props);
+    }
 
     render() {
-      const { source, label, size } = this.props;
+        const { source, label, size } = this.props;
 
-      return (
+        return (
       <Surface
         style={[{
             width: size,
@@ -45,15 +45,15 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
           resizeMode="contain"
           style={
               [styles.imageStyles,
-                {
-                    top: size / 7, bottom: size / 7,
-                    left: size / 7, right: size / 7,
-                }]
+                  {
+                      top: size / 7, bottom: size / 7,
+                      left: size / 7, right: size / 7,
+                  }]
           }
         />
       </Surface>
-    );
-  }
+      );
+    }
 }
 
 export const ClubAvatar = withTheme(ClubAvatarBase);
@@ -61,9 +61,9 @@ export const ClubAvatar = withTheme(ClubAvatarBase);
 
 const styles = StyleSheet.create({
     imageStyles: {
-      position: 'absolute',
-      top: 0, bottom: 0,
-      left: 0, right: 0,
-      overflow: 'hidden',
-  },
+        position: 'absolute',
+        top: 0, bottom: 0,
+        left: 0, right: 0,
+        overflow: 'hidden',
+    },
 });

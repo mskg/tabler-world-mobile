@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text, TouchableRipple } from 'react-native-paper';
 
-export const ActionButton = ({ size, color, disabledColor, icon, text, disabled, onPress, ...others }) => (
+export const ActionButton = ({ size, color, disabledColor, icon, text, disabled, onPress }) => (
     <TouchableRipple
         disabled={disabled}
         onPress={disabled ? null : onPress}
@@ -16,21 +16,24 @@ export const ActionButton = ({ size, color, disabledColor, icon, text, disabled,
     >
         <View
             style={
-            {
-                justifyContent: 'center',
-                alignItems: 'center',
-            }
+                {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }
             }>
             {icon !== '' && typeof (icon) === 'string' &&
                 <Ionicons name={icon} size={size} color={!disabled ? color : disabledColor} />
             }
 
             {text &&
-                <Text style={{
-                    color: !disabled ? color : disabledColor,
-                    fontSize: 12,
-                    paddingTop: 4,
-                }}>{text}</Text>
+                <Text
+                    style={{
+                        color: !disabled ? color : disabledColor,
+                        fontSize: 12,
+                        paddingTop: 4,
+                    }}
+                >{text}
+                </Text>
             }
         </View>
     </TouchableRipple>

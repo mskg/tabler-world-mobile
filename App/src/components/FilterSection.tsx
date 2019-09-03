@@ -25,7 +25,7 @@ const Element = ({ theme, title, onPress, right }: {
     );
 
 export const FilterSection = ({ title, data, type, filter, onToggle, theme }) => {
-    if (data.length == 0) return (<React.Fragment key={type}/>);
+    if (data.length == 0) return (<React.Fragment key={type} />);
 
     return (
         <Accordion
@@ -33,8 +33,8 @@ export const FilterSection = ({ title, data, type, filter, onToggle, theme }) =>
             title={title}
         >
             {
-                data.map((tag, position) => {
-                    const selected = !!filter.find((f: FilterTag) => f.type == type && f.value == tag);
+                data.map((tag, _position) => {
+                    const selected = !!filter.find((f: FilterTag) => f.type === type && f.value === tag);
                     return (
                         <React.Fragment key={type + tag}>
                             <Divider />

@@ -21,11 +21,11 @@ type Props = {
 };
 
 class FavoriteButtonBase extends React.Component<Props> {
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps, _nextState) {
         const isnewFavorite = testIsFavorite(nextProps.member, nextProps.favorites);
         const isoldFavorite = testIsFavorite(this.props.member, this.props.favorites);
 
-        return isnewFavorite != isoldFavorite;
+        return isnewFavorite !== isoldFavorite;
     }
 
     _toggleFavorite = () => {
@@ -58,12 +58,13 @@ export const FavoriteButton = connect(
 )(FavoriteButtonBase);
 
 
+// tslint:disable-next-line: max-classes-per-file
 class FavoriteIconBase extends React.Component<Props> {
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps, _nextState) {
         const isnewFavorite = testIsFavorite(nextProps.member, nextProps.favorites);
         const isoldFavorite = testIsFavorite(this.props.member, this.props.favorites);
 
-        return isnewFavorite != isoldFavorite;
+        return isnewFavorite !== isoldFavorite;
     }
 
     _toggleFavorite = () => {

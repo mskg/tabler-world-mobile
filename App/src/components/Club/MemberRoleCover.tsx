@@ -2,10 +2,9 @@ import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Caption, Surface, Theme, withTheme } from 'react-native-paper';
-import { Categories, Logger } from '../../helper/Logger';
 import { CachedImage } from '../Image/CachedImage';
 
-const logger = new Logger(Categories.Screens.Structure);
+// const logger = new Logger(Categories.Screens.Structure);
 
 type Props = {
     width?: number,

@@ -57,9 +57,9 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
     render() {
         const result = this.memoize(
             (data) => {
-                const result: any[] = [];
-                if (data && data.OwnTable) { result.push(...data.OwnTable); }
-                if (data && data.FavoriteMembers) { result.push(...data.FavoriteMembers); }
+                const finalResult: any[] = [];
+                if (data && data.OwnTable) { finalResult.push(...data.OwnTable); }
+                if (data && data.FavoriteMembers) { finalResult.push(...data.FavoriteMembers); }
 
                 const roles = this.props.filterTags.filter(r => r.type === 'role').reduce((p, v) => { p[v.value] = true; return p; }, {});
                 const tables = this.props.filterTags.filter(r => r.type === 'table').reduce((p, v) => { p[v.value] = true; return p; }, {});
@@ -73,10 +73,9 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                     Object.keys(areas).length > 0 ? Predicates.area(areas) : null,
                 );
 
-                // @ts-ignore
-                return _(result)
+                return _(finalResult)
                     .filter(predicate)
-                    .uniqBy(m => m.id)
+                    .uniqBy((m) => m.id)
                     .sortBy(this.props.sortby)
                     .toArray()
                     .value();
@@ -87,7 +86,7 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                 query={GetOfflineMembersQuery}
                 fetchPolicy="cache-only"
             >
-                {({ loading, data, fetchMore, error, refetch }) => {
+                {({ data, error }) => {
                     if (error) throw error;
 
                     return (
@@ -103,8 +102,9 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const OfflineSearchQuery =
     connect((state: IAppState) => ({
         sortby: state.settings.sortByLastName ? 'lastname' : 'firstname',
     }))(withTheme(OfflineSearchQueryBase))
-;
+    ;

@@ -1,3 +1,4 @@
+import { ApolloClient } from 'apollo-client';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { AsyncStorage } from 'react-native';
@@ -10,12 +11,12 @@ const logger = new Logger(Categories.Api);
 const SCHEMA_VERSION = '1'; // Must be a string.
 const SCHEMA_VERSION_KEY = 'apollo-schema-version';
 
-export function withApollo(App) {
-    return class extends React.PureComponent {
-        state = {
-            client: null,
-        };
+type State = {
+    client?: ApolloClient<any>,
+};
 
+export function withApollo(App) {
+    return class extends React.PureComponent<{}, State> {
         async componentDidMount() {
             const client = await bootstrapApollo(await isDemoModeEnabled());
             const persistor = getPersistor();
@@ -39,6 +40,7 @@ export function withApollo(App) {
                 try {
                     persistor.purge();
                     await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
+                    // tslint:disable-next-line: no-empty
                 } catch { }
             }
 
@@ -47,7 +49,7 @@ export function withApollo(App) {
         }
 
         render() {
-            const { client } = this.state;
+            const { client } = this.state || {};
 
             if (client == null) {
                 logger.log('Apollo not loaded yet.');
@@ -55,7 +57,6 @@ export function withApollo(App) {
             }
 
             return (
-                // @ts-ignore
                 <ApolloProvider client={client}>
                     <App />
                 </ApolloProvider>

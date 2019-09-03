@@ -2,13 +2,13 @@ import { HashMap } from '../Maps';
 
 export type FilterState = {
     member: {
-      showFavorites: boolean;
-      showOwntable: boolean;
+        showFavorites: boolean;
+        showOwntable: boolean;
 
-      showAssociationBoard: boolean;
-      showAreaBoard: boolean;
+        showAssociationBoard: boolean;
+        showAreaBoard: boolean;
 
-      favorites: HashMap<boolean>;
-      area: HashMap<boolean, string> | null;
-  };
+        favorites: HashMap<boolean>;
+        area: HashMap<boolean, string> | null;
+    };
 };

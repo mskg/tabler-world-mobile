@@ -10,7 +10,6 @@ import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
 import { Areas, Areas_Areas } from '../../model/graphql/Areas';
 import { GetAreasQuery } from '../../queries/GetAreasQuery';
 import { CardPlaceholder } from './CardPlaceholder';
@@ -18,7 +17,7 @@ import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
 import { styles } from './Styles';
 
-const logger = new Logger(Categories.Screens.Structure);
+// const logger = new Logger(Categories.Screens.Structure);
 
 type State = {};
 
@@ -47,7 +46,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                         // there can only be one :)
                         item.area === 9 && item.association.association === 'de'
                             ? 'DIX'
-                            : 'D' + item.area
+                            : `D${item.area}`
                     }
                 />
 
@@ -59,7 +58,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
         );
     }
 
-    _key = (item: Areas_Areas, index: number) => {
+    _key = (item: Areas_Areas, _index: number) => {
         return item.id;
     }
 
@@ -79,11 +78,10 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                         >
                             <FlatList
                                 contentContainerStyle={styles.container}
-                                // @ts-ignore
                                 data={
                                     _(data != null ? data.Areas : [])
                                         // my own area goes on top
-                                        .orderBy((a) => (data != null && data.Me.area.area == a.area) ? 0 : a.area)
+                                        .orderBy((a) => (data != null && data.Me.area.area === a.area) ? 0 : a.area)
                                         .toArray()
                                         .value()
                                 }
@@ -100,7 +98,9 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const AreasScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation('areas',
-                              withTheme(AreasScreenBase)));
+        withCacheInvalidation(
+            'areas',
+            withTheme(AreasScreenBase)));

@@ -5,7 +5,7 @@ export interface ISnack {
     hideAction?: boolean;
 
     action?: {
-      label: string
-      onPress: () => void,
-  };
+        label: string
+        onPress: () => void,
+    };
 }

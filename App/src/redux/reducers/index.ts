@@ -2,7 +2,7 @@ import { PersistConfig, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage';
 import { Features, isFeatureEnabled } from '../../model/Features';
-import { MIGRATE_VERSION, migrateToNull } from '../migrations';
+import { migrateToNull, MIGRATE_VERSION } from '../migrations';
 import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
@@ -43,31 +43,44 @@ const defaultConfig = {
     migrate: migrateToNull,
 };
 
+// tslint:disable-next-line: export-name
 export default {
     connection: networkReducer,
     updateAvailable: stateReducer,
 
     auth: persistReducer(authUserConfig, userReducer),
 
-    searchHistory: persistReducer({
-        ...defaultConfig,
-        key: 'searchHistory',
-    },                            searchHistoryReducer),
+    searchHistory: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'searchHistory',
+        },
+        searchHistoryReducer,
+    ),
 
-    settings: persistReducer({
-        ...defaultConfig,
-        key: 'settings',
-    },                       settingsReducer),
+    settings: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'settings',
+        },
+        settingsReducer,
+    ),
 
-    filter: persistReducer({
-        ...defaultConfig,
-        key: 'filter',
-    },                     filterReducer),
+    filter: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'filter',
+        },
+        filterReducer,
+    ),
 
-    location: persistReducer({
-        ...defaultConfig,
-        key: 'location',
-    },                       locationReducer),
+    location: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'location',
+        },
+        locationReducer,
+    ),
 
     snacks: snackReducer,
 };

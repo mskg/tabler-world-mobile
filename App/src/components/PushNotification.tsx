@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Animated, Dimensions, Image, ImageSourcePropType, PanResponder, PanResponderInstance, Platform, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Portal, Surface, Text, Theme, Title, withTheme } from 'react-native-paper';
 import { isIphoneX } from '../helper/isIphoneX';
@@ -40,7 +40,7 @@ type State = {
 
 type Props = {
     theme: Theme,
-};
+} & React.RefAttributes<PushNotificationBase>;
 
 type Message = {
     onPress?: () => void,
@@ -53,7 +53,7 @@ type Message = {
     body?: string,
 };
 
-export class PushNotificationBase extends Component<Props, State> {
+export class PushNotificationBase extends React.Component<Props, State> {
     _panResponder: PanResponderInstance;
 
     constructor(props) {
@@ -68,10 +68,10 @@ export class PushNotificationBase extends Component<Props, State> {
         };
 
         this._panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: (e, gestureState) => true,
+            onStartShouldSetPanResponder: (_e, _gestureState) => true,
             // onStartShouldSetPanResponderCapture: (e, gestureState) => false,
 
-            onMoveShouldSetPanResponder: (e, gestureState) => true,
+            onMoveShouldSetPanResponder: (_e, _gestureState) => true,
             // onMoveShouldSetPanResponderCapture: (e, gestureState) => false,
 
             onPanResponderGrant: this._onPanResponderGrant,
@@ -81,21 +81,21 @@ export class PushNotificationBase extends Component<Props, State> {
     }
 
     _onPanResponderGrant = (_e, gestureState) => {
-        DEBUG_UI && logger.debug('_onPanResponderGrant', gestureState);
+        if (DEBUG_UI) { logger.debug('_onPanResponderGrant', gestureState); }
         this._onPressInFeedback();
     }
 
     _onPanResponderMove = (_e, gestureState) => {
-        DEBUG_UI && logger.debug('_onPanResponderMove', gestureState);
+        if (DEBUG_UI) { logger.debug('_onPanResponderMove', gestureState); }
         const { containerDragOffsetY } = this.state;
 
         // Prevent dragging down too much
-        const newDragOffset = gestureState.dy < 100 ? gestureState.dy : 100;  // TODO: customize
+        const newDragOffset = gestureState.dy < 100 ? gestureState.dy : 100;
         containerDragOffsetY.setValue(newDragOffset);
     }
 
     _onPanResponderRelease = (_e, gestureState) => {
-        DEBUG_UI && logger.debug('_onPanResponderRelease', gestureState);
+        if (DEBUG_UI) { logger.debug('_onPanResponderRelease', gestureState); }
         const { containerDragOffsetY } = this.state;
 
         // Present feedback
@@ -109,6 +109,7 @@ export class PushNotificationBase extends Component<Props, State> {
         }
 
         // Check if it is leaving the screen
+        // @ts-ignore value can be accessed directly by ._value
         if (containerDragOffsetY._value < SLIDE_OUT_OFFSET) {
             // 1. If leaving screen -> slide out
             this._slideOutAndDismiss(SLIDE_DURATION);
@@ -116,7 +117,7 @@ export class PushNotificationBase extends Component<Props, State> {
             // 2. If not leaving screen -> slide back to original position
             this.clearTimerIfExist();
             Animated.timing(containerDragOffsetY, { toValue: 0, duration: SLIDE_DURATION })
-                .start(({ finished }) => {
+                .start((/*{ finished }*/) => {
                     // Reset a new countdown
                     this._countdownToSlideOut();
                 });
@@ -127,7 +128,7 @@ export class PushNotificationBase extends Component<Props, State> {
      * Show feedback as soon as user press down
      */
     _onPressInFeedback = () => {
-        DEBUG_UI && logger.debug('PressIn!');
+        if (DEBUG_UI) { logger.debug('PressIn!'); }
         const { containerScale } = this.state;
 
         Animated
@@ -139,7 +140,7 @@ export class PushNotificationBase extends Component<Props, State> {
      * Show feedback as soon as user press down
      */
     _onPressOutFeedback = () => {
-        DEBUG_UI && logger.debug('PressOut!');
+        if (DEBUG_UI) { logger.debug('PressOut!'); }
         const { containerScale } = this.state;
 
         Animated
@@ -173,9 +174,10 @@ export class PushNotificationBase extends Component<Props, State> {
     }
 
     _countdownToSlideOut = () => {
-        const slideOutTimer = setTimeout(() => {
-            this._slideOutAndDismiss();
-        },                               TIMEOUT);
+        const slideOutTimer = setTimeout(
+            () => { this._slideOutAndDismiss(); },
+            TIMEOUT,
+        );
 
         this.setState({ slideOutTimer });
     }
@@ -194,17 +196,19 @@ export class PushNotificationBase extends Component<Props, State> {
     showMessage(message: Message) {
         this.clearTimerIfExist();
 
-        this.setState({
-            show: true,
+        this.setState(
+            {
+                message,
+                show: true,
 
-            containerSlideOffsetY: new Animated.Value(0),
-            slideOutTimer: null,
+                containerSlideOffsetY: new Animated.Value(0),
+                slideOutTimer: null,
 
-            containerDragOffsetY: new Animated.Value(0),
-            containerScale: new Animated.Value(1),
-
-            message,
-        },            this._slideIn);
+                containerDragOffsetY: new Animated.Value(0),
+                containerScale: new Animated.Value(1),
+            },
+            this._slideIn,
+        );
     }
 
     render() {

@@ -13,7 +13,7 @@ export function renderItem(
     onPress?: (item: IMemberOverviewFragment) => void,
     margin: number = 30,
     height?: number,
-) {
+): React.ReactElement | null {
     if (typeof (item) === 'string') {
         return <Section title={item} backgroundColor={theme.colors.primary} />;
     }
@@ -27,9 +27,11 @@ export function renderItem(
 }
 
 export function renderDivider(theme: Theme) {
-    return <View style={{ backgroundColor: theme.colors.surface, height: StyleSheet.hairlineWidth }}>
-        <Divider inset={true} theme={theme} />
-    </View>;
+    return (
+        <View style={{ backgroundColor: theme.colors.surface, height: StyleSheet.hairlineWidth }}>
+            <Divider inset={true} theme={theme} />
+        </View>
+    );
 }
 
 export function extractKey(item: IMemberOverviewFragment | string) {

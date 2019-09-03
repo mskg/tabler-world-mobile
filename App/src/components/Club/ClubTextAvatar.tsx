@@ -14,12 +14,12 @@ type Props = {
 
 class ClubTextAvatar extends React.Component<Props> {
     render() {
-      const { label, size, style, theme } = this.props;
+        const { label, size, style, theme } = this.props;
 
-      const { backgroundColor = theme.colors.primary, ...restStyle } = StyleSheet.flatten(style) || {};
-      const textColor = this.props.color || (color(backgroundColor).lighten() ? 'rgba(0, 0, 0, .54)' : 'white');
+        const { backgroundColor = theme.colors.primary, ...restStyle } = StyleSheet.flatten(style) || {};
+        const textColor = this.props.color || (color(backgroundColor).lighten() ? 'rgba(0, 0, 0, .54)' : 'white');
 
-      return (
+        return (
       <View
         style={[
             {
@@ -47,19 +47,19 @@ class ClubTextAvatar extends React.Component<Props> {
           {label}
         </Text>
       </View>
-    );
-  }
+      );
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     text: {
-      textAlign: 'center',
-      textAlignVertical: 'center',
-  },
+        textAlign: 'center',
+        textAlignVertical: 'center',
+    },
 });
 
 export default withTheme(ClubTextAvatar);

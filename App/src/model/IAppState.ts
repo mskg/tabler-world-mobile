@@ -20,5 +20,5 @@ export interface IAppState {
     filter: FilterState;
 
     auth: AuthState;
-  // parameter: ParameterState,
+    // parameter: ParameterState,
 }

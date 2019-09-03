@@ -9,21 +9,21 @@ import { styles } from './Styles';
 
 export class InternalMemberListItem extends React.PureComponent<MemberItemProps> {
     _onPress = () => {
-      requestAnimationFrame(() => {
-        if (this.props.onPress) {
-          this.props.onPress(this.props.member);
-      }
-    });
-  }
+        requestAnimationFrame(() => {
+          if (this.props.onPress) {
+            this.props.onPress(this.props.member);
+        }
+      });
+    }
 
     _avatar = () => {
-      return <MemberAvatar member={this.props.member} />;
-  }
+        return <MemberAvatar member={this.props.member} />;
+    }
 
     render() {
-      const { title, subtitle, member } = this.props;
+        const { title, subtitle, member } = this.props;
 
-      return (
+        return (
       <View style={{
           height: this.props.height,
           backgroundColor: this.props.theme.colors.surface,
@@ -57,5 +57,5 @@ export class InternalMemberListItem extends React.PureComponent<MemberItemProps>
           </>
         </TouchableRipple>
       </View>);
-  }
+    }
 }

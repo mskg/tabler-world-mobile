@@ -58,7 +58,7 @@ export const FullScreenLoading = (...props: any[]) =>
     </View>
     ;
 
-export const InlineLoading = (...props: any[]) => <ActivityIndicator size='large' color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
+export const InlineLoading = (...props: any[]) => <ActivityIndicator size="large" color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
 
 const styles = StyleSheet.create({
     image: {

@@ -9,6 +9,7 @@ import { Whoops } from './Whoops';
 type Props = {
     children?: React.ReactNode,
     FallbackComponent: any,
+    // tslint:disable-next-line: ban-types
     onError?: Function,
 };
 
@@ -17,6 +18,7 @@ type State = { error: Error | null, hasError: boolean };
 export class ErrorBoundary extends React.Component<Props, State> {
     state = { error: null, hasError: false };
 
+    // tslint:disable-next-line: function-name
     static getDerivedStateFromError(error: Error) {
         return { error, hasError: true };
     }
@@ -58,17 +60,21 @@ export class ErrorBoundary extends React.Component<Props, State> {
         const { FallbackComponent } = this.props;
         try {
             return this.state.hasError
-                ? <FallbackComponent
-                    error={this.state.error}
-                    resetError={this.resetError}
-                />
+                ? (
+                    <FallbackComponent
+                        error={this.state.error}
+                        resetError={this.resetError}
+                    />
+                )
                 : this.props.children;
 
         } catch (e) {
-            return <FallbackComponent
-                error={e}
-                resetError={this.resetError}
-            />;
+            return (
+                <FallbackComponent
+                    error={e}
+                    resetError={this.resetError}
+                />
+            );
         }
     }
 }

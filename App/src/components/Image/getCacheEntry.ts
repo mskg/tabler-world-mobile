@@ -20,10 +20,10 @@ export const getCacheEntry = async (uri: string, group: CacheGroup): Promise<{
 
   // TODO: maybe we don't have to do this every time
     try {
-      await FileSystem.makeDirectoryAsync(baseDir, { intermediates: true });
-  } catch (e) {
+        await FileSystem.makeDirectoryAsync(baseDir, { intermediates: true });
+    } catch (e) {
     // do nothing
-  }
+    }
 
     const info = await FileSystem.getInfoAsync(path);
     const { exists } = info;

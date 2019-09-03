@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import _ from 'lodash';
+import _, { find } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, TouchableWithoutFeedback, View } from 'react-native';
@@ -14,7 +14,6 @@ import { CachedImage } from '../../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../../helper/Logger';
 import { normalizeForSearch } from '../../../helper/normalizeForSearch';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
@@ -27,7 +26,7 @@ import { styles } from '../Styles';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
 
-const logger = new Logger(Categories.Screens.Structure);
+// const logger = new Logger(Categories.Screens.Structure);
 
 type State = {
     search: string,
@@ -71,18 +70,18 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
         // remove RT
         const name = item.name.substring(item.name.indexOf(' ') + 1);
-        const showClub = () => this.props.showClub(item.id);
+        const showClubFunc = () => this.props.showClub(item.id);
 
         return (
             <Card style={styles.card}>
                 <CardTitle
                     title={name}
-                    subtitle={item.area.name + ', ' + item.association.name}
+                    subtitle={`${item.area.name}, ${item.association.name}`}
                     avatar={item.club}
                 />
 
                 {item.logo &&
-                    <TouchableWithoutFeedback onPress={showClub}>
+                    <TouchableWithoutFeedback onPress={showClubFunc}>
                         <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                             <CachedImage
                                 style={styles.image}
@@ -106,12 +105,12 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                 <RoleAccordionSection group={I18N.Structure.assist} groupDetails="boardassistants" club={item.id} />
 
                 <Card.Actions style={styles.action}>
-                    <Button color={this.props.theme.colors.accent} onPress={showClub}>{I18N.Structure.details}</Button>
+                    <Button color={this.props.theme.colors.accent} onPress={showClubFunc}>{I18N.Structure.details}</Button>
                 </Card.Actions>
             </Card>);
     }
 
-    _key = (item: Clubs_Clubs, index: number) => {
+    _key = (item: Clubs_Clubs, _index: number) => {
         return item.id;
     }
 
@@ -120,8 +119,8 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         const changedTarget = normalizeForSearch(target);
 
         let found = false;
-        for (const search of segments) {
-            if (changedTarget.indexOf(search) < 0) {
+        for (const segment of segments) {
+            if (changedTarget.indexOf(segment) < 0) {
                 return false;
             }
 
@@ -135,17 +134,17 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         return [
             c.name,
             c.area.name,
-            'D' + c.area.area,
+            `D${c.area.area}`,
         ].filter(Boolean);
     }
 
     filterData(data?: Clubs | null, text?: string): Clubs_Clubs[] {
         if (data == null) { return []; }
 
-        // @ts-ignore
+        // @ts-ignore output is compatble
         return _(data.Clubs)
             .map((item: Clubs_Clubs) => {
-                let match = _.find(
+                const match = find(
                     this.makeSearchTexts(item),
                     this._normalizedSearch(text || ''));
 
@@ -157,7 +156,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
             .filter(r => r != null)
             .orderBy((a) =>
                 (
-                    a != null && data != null && (text === '' || text == null) && data.Me.club.club == a.club)
+                    a != null && data != null && (text === '' || text == null) && data.Me.club.club === a.club)
                     ? 0
                     : a ? a.club : -1,
             )
@@ -241,5 +240,9 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     </Tab>
 );
 
-export const ClubsScreen = withWhoopsErrorBoundary(
-    withCacheInvalidation('clubs', ClubsScreenWithQuery));
+// tslint:disable-next-line: export-name
+export const ClubsScreen =
+    withWhoopsErrorBoundary(
+        withCacheInvalidation(
+            'clubs',
+            ClubsScreenWithQuery));

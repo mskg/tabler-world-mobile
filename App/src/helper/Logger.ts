@@ -93,7 +93,6 @@ export class Logger {
     }
 
     debug(...args: any[]): void {
-        // @ts-ignore
         if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
 
         if (!__DEV__) {
@@ -119,7 +118,6 @@ export class Logger {
     }
 
     log(...args: any[]): void {
-        // @ts-ignore
         if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
 
         if (!__DEV__) {

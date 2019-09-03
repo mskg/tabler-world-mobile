@@ -18,9 +18,9 @@ type Props = {
 class TextImageAvatarBase extends React.PureComponent<Props> {
 
     render() {
-      const { source, label, size, style, containerStyle } = this.props;
+        const { source, label, size, style, containerStyle } = this.props;
 
-      return (
+        return (
       <Surface
         style={{
             width: size,
@@ -56,8 +56,8 @@ class TextImageAvatarBase extends React.PureComponent<Props> {
           }}
         />
       </Surface>
-    );
-  }
+      );
+    }
 }
 
 export const TextImageAvatar = withTheme(TextImageAvatarBase);

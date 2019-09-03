@@ -13,7 +13,7 @@ type Props = {
 
 export class Highlighter extends React.Component<Props> {
     render() {
-      const {
+        const {
         autoEscape,
         highlightStyle,
         searchWords,
@@ -22,14 +22,14 @@ export class Highlighter extends React.Component<Props> {
         style,
     } = this.props;
 
-      const chunks = findAll({
-        textToHighlight,
-        searchWords,
-        sanitize,
-        autoEscape,
-    });
+        const chunks = findAll({
+          textToHighlight,
+          searchWords,
+          sanitize,
+          autoEscape,
+      });
 
-      return (
+        return (
       <Text style={style}>
         {chunks.map((chunk, index) => {
             const text = textToHighlight.substr(chunk.start, chunk.end - chunk.start);
@@ -39,6 +39,6 @@ export class Highlighter extends React.Component<Props> {
             : (<Text key={index} style={chunk.highlight && highlightStyle}>{text}</Text>);
         })}
       </Text>
-    );
-  }
+      );
+    }
 }

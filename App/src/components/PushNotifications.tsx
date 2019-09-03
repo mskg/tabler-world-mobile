@@ -5,7 +5,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
-import { IAppState } from '../model/IAppState';
 import { BirthdayNotification, INotificationPayload } from '../model/NotificationPayload';
 import { showProfile } from '../redux/actions/navigation';
 import { PushNotification, PushNotificationBase } from './PushNotification';
@@ -17,10 +16,17 @@ type Props = {
     // member: HashMap<IMember>,
 };
 
+type Notification = {
+    origin: 'selected' | 'received';
+    data: any;
+    remote: boolean;
+    isMultiple: boolean;
+};
+
 class PushNotificationsBase extends PureComponent<Props> {
     _notificationSubscription!: EventSubscription;
-    pushnotification!: PushNotificationBase;
-    notifications: Notifications.Notification[] = [];
+    pushnotification!: PushNotificationBase | null;
+    notifications: Notification[] = [];
     showing = false;
 
     componentDidMount() {
@@ -43,7 +49,7 @@ class PushNotificationsBase extends PureComponent<Props> {
     }
 
     _showNext = () => {
-        let el = this.notifications.pop();
+        const el = this.notifications.pop();
 
         if (el == null) {
             this.showing = false;
@@ -53,17 +59,20 @@ class PushNotificationsBase extends PureComponent<Props> {
         this.showing = true;
 
         const { title, body } = el.data;
-        this.pushnotification.showMessage({
-            onDismiss: this._showNext,
-            onPress: this._handleAction(el.data),
-            appName: Constants.manifest.name,
-            icon: Assets.images.icon,
-            title,
-            body: body || JSON.stringify(el.data),
-        });
+
+        if (this.pushnotification) {
+            this.pushnotification.showMessage({
+                title,
+                onDismiss: this._showNext,
+                onPress: this._handleAction(el.data),
+                appName: Constants.manifest.name,
+                icon: Assets.images.icon,
+                body: body || JSON.stringify(el.data),
+            });
+        }
     }
 
-    _handleNotification = (notification: Notifications.Notification) => {
+    _handleNotification = (notification: Notification) => {
         logger.log('received', notification);
 
         if (notification.origin === 'received') {
@@ -82,9 +91,7 @@ class PushNotificationsBase extends PureComponent<Props> {
 }
 
 export const PushNotifications = connect(
-    (state: IAppState) => ({
-        // member: state.members.data
-    }),
+    null,
     {
         showProfile,
     },

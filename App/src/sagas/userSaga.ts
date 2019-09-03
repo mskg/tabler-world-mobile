@@ -5,7 +5,7 @@ import { logoutUser } from './user/logoutUser';
 
 export function* userSaga(): SagaIterator {
     yield all([
-    // logout the user from the application
-      takeEvery(actions.logoutUser.type, logoutUser),
-  ]);
+        // logout the user from the application
+        takeEvery(actions.logoutUser.type, logoutUser),
+    ]);
 }

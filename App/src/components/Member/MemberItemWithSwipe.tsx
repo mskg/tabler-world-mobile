@@ -34,13 +34,13 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
     ref;
 
     getSnapshotBeforeUpdate(prevProps) {
-        if (prevProps.item != this.props.item) {
+        if (prevProps.item !== this.props.item) {
             return true;
         }
         return false;
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(_prevProps, _prevState, snapshot) {
         if (snapshot) {
             this.ref.close();
         }
@@ -51,7 +51,8 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
             theme={this.props.theme}
             member={this.props.item}
             style={{ marginRight: this.props.margin }}
-            size={size} />
+            size={size}
+        />
     )
 
     _toggle = () => {
@@ -61,6 +62,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
         });
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         const { item, favorites } = this.props;
         const isFavorite = testIsFavorite(item, favorites);
@@ -69,36 +71,38 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
             <SwipableItem
                 ref={(o) => { this.ref = o; }}
 
-                leftButtons={<SwipeButtonsContainer style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    // height: this.props.height,
-                    backgroundColor: this.props.theme.colors.accent,
-                }}>
-                    {/* <FavoriteButton
+                leftButtons={
+                    <SwipeButtonsContainer
+                        style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                            // height: this.props.height,
+                            backgroundColor: this.props.theme.colors.accent,
+                        }}>
+                        {/* <FavoriteButton
                         theme={this.props.theme}
                         member={this.props.item}
                         size={24}
                     /> */}
 
-                    <TouchableRipple
-                        onPress={this._toggle}
-                        style={{
-                            height: '100%',
-                            width: 24 * 3,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: this.props.theme.colors.accent,
-                        }}
-                    >
-                        <Ionicons
-                            size={24}
-                            name={isFavorite ? 'md-star-outline' : 'md-star'}
-                            color={this.props.theme.colors.placeholder}
-                        />
-                    </TouchableRipple>
-                </SwipeButtonsContainer>}
+                        <TouchableRipple
+                            onPress={this._toggle}
+                            style={{
+                                height: '100%',
+                                width: 24 * 3,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: this.props.theme.colors.accent,
+                            }}
+                        >
+                            <Ionicons
+                                size={24}
+                                name={isFavorite ? 'md-star-outline' : 'md-star'}
+                                color={this.props.theme.colors.placeholder}
+                            />
+                        </TouchableRipple>
+                    </SwipeButtonsContainer>}
 
             // rightButtons={
             //     <SwipeButtonsContainer style={{
@@ -157,7 +161,8 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
                     margin={this.props.margin}
                     right={this._right}
                 />
-            </SwipableItem>);
+            </SwipableItem>
+        );
     }
 }
 

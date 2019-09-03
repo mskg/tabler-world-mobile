@@ -8,10 +8,10 @@ export function stateReducer(
 
 ): typeof INITIAL_STATE.updateAvailable {
     switch (action.type) {
-  case actions.updateAvailable.type:
-      return true;
+    case actions.updateAvailable.type:
+        return true;
 
-  default:
-      return state;
-  }
+    default:
+        return state;
+    }
 }

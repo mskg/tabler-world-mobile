@@ -7,21 +7,23 @@ import { Square } from './Placeholder/Square';
 
 type Props = {
     source: any,
-    alt: string,
+    alt?: string,
     height: string | number,
     width: string | number,
     style: any
-    imagesMaxWidth: number,
 
-    imagesInitialDimensions: {
+    imagesMaxWidth?: number,
+    imagesInitialDimensions?: {
         width: number,
         height: number,
     },
+
+    passProps?: any,
 };
 
 type State = {
-    width: number,
-    height: number,
+    width: number | string,
+    height: number | string,
     error?: boolean,
 };
 
@@ -94,10 +96,13 @@ export default class HTMLImage extends PureComponent<Props, State> {
         const { styleWidth, styleHeight } = this.getDimensionsFromStyle(style, height, width);
 
         if (styleWidth && styleHeight) {
-            return this.mounted && this.setState({
-                width: typeof styleWidth === 'string' && styleWidth.search('%') !== -1 ? styleWidth : parseInt(styleWidth, 10),
-                height: typeof styleHeight === 'string' && styleHeight.search('%') !== -1 ? styleHeight : parseInt(styleHeight, 10),
-            });
+            if (this.mounted) {
+                this.setState({
+                    width: typeof styleWidth === 'string' && styleWidth.search('%') !== -1 ? styleWidth : parseInt(styleWidth, 10),
+                    height: typeof styleHeight === 'string' && styleHeight.search('%') !== -1 ? styleHeight : parseInt(styleHeight, 10),
+                });
+            }
+            return;
         }
 
         const path = await CacheManager.get(source.uri, {}).getPath() as string;
@@ -113,10 +118,13 @@ export default class HTMLImage extends PureComponent<Props, State> {
 
                 const optimalWidth = imagesMaxWidth <= originalWidth ? imagesMaxWidth : originalWidth;
                 const optimalHeight = (optimalWidth * originalHeight) / originalWidth;
-                this.mounted && this.setState({ width: optimalWidth, height: optimalHeight, error: false });
+
+                if (this.mounted) {
+                    this.setState({ width: optimalWidth, height: optimalHeight, error: false });
+                }
             },
             () => {
-                this.mounted && this.setState({ error: true });
+                if (this.mounted) { this.setState({ error: true }); }
             },
         );
     }

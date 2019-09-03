@@ -24,6 +24,7 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
+// tslint:disable-next-line: export-name
 export class JobsHistoryScreen extends React.Component<Props, State> {
     formatData(data: GetJobs_Jobs_data | null) {
         if (data == null) return null;
@@ -45,15 +46,17 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
 
     render() {
         return (
-            <ScreenWithHeader header={{
-                showBack: true,
-                title: 'Job History',
-            }}>
+            <ScreenWithHeader
+                header={{
+                    showBack: true,
+                    title: 'Job History',
+                }}
+            >
                 <Query<GetJobs>
                     query={GetJobsQuery}
                     fetchPolicy="network-only"
                 >
-                    {({ loading, data, error, refetch, client }) => {
+                    {({ data, error }) => {
                         if (error) return null;
 
                         if (data == null || data.Jobs == null) {
@@ -95,7 +98,6 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
         );
     }
 }
-
 
 const styles = StyleSheet.create({
     container: {

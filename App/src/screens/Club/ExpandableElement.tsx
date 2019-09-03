@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Caption, Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { I18N } from '../../i18n/translation';
 
 type ActionProps = {
     field: string,
-    text: ReactNode,
+    text: ReactElement,
     theme: Theme,
 
     disabled?: boolean,

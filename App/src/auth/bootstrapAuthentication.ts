@@ -10,8 +10,8 @@ const logger = new Logger(Categories.Authentication);
 
 export function bootstrapAuthentication() {
     if (__DEV__) {
-      Amplify.Logger.LOG_LEVEL = 'INFO';
-  }
+        Amplify.Logger.LOG_LEVEL = 'INFO';
+    }
 
     const region = getConfigValue('region');
     const userPoolId = getConfigValue('userPoolId');
@@ -23,10 +23,10 @@ export function bootstrapAuthentication() {
     logger.log('pool', userPoolId, 'client', userPoolWebClientId, 'identity', identityPoolId);
 
     Auth.configure({
-      identityPoolId,
-      region,
-      userPoolId,
-      userPoolWebClientId,
-      storage: SecureStorage,
-  });
+        identityPoolId,
+        region,
+        userPoolId,
+        userPoolWebClientId,
+        storage: SecureStorage,
+    });
 }

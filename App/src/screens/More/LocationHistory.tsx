@@ -28,10 +28,12 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 class LocationHistoryScreenBase extends React.Component<Props, State> {
     render() {
         return (
-            <ScreenWithHeader header={{
-                showBack: true,
-                title: 'Location History',
-            }}>
+            <ScreenWithHeader
+                header={{
+                    showBack: true,
+                    title: 'Location History',
+                }}
+            >
                 <Banner
                     visible={true}
                     actions={[]}
@@ -46,7 +48,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                     query={GetLocationHistoryQuery}
                     fetchPolicy="network-only"
                 >
-                    {({ loading, data, error, refetch, client }) => {
+                    {({ data, error }) => {
                         if (error) return null;
 
                         if (data == null || data.LocationHistory == null) {
@@ -91,6 +93,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const LocationHistoryScreen = withTheme(LocationHistoryScreenBase);
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
- import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import React from 'react';
 import { Query } from 'react-apollo';
@@ -60,11 +60,13 @@ class MeLocationBase extends React.Component<Props, State> {
                             <InternalMeListItemBase
                                 theme={this.props.theme}
                                 title={<Title>{medata.Me.firstname} {medata.Me.lastname}</Title>}
-                                subtitle={this.getLocation() + ', ' + I18N.NearbyMembers.ago(
-                                    timespan(
-                                        this.props.now,
-                                        this.props.timestamp,
-                                    ))}
+                                subtitle={
+                                    // tslint:disable-next-line: prefer-template
+                                    this.getLocation() + ', ' + I18N.NearbyMembers.ago(
+                                        timespan(
+                                            this.props.now,
+                                            this.props.timestamp,
+                                        ))}
                                 me={medata.Me}
                                 onPress={isFeatureEnabled(Features.LocationHistory) ? () => this.props.showLocationHistory() : undefined}
 
@@ -83,13 +85,16 @@ class MeLocationBase extends React.Component<Props, State> {
     }
 }
 
-export const MeLocation = connect<StateProps, DispatchPros, OwnProps, IAppState>(
-    (state) => ({
+export const MeLocation = connect(
+    (state: IAppState) => ({
         address: state.location.address,
         timestamp: state.location.timestamp,
     }),
     {
         showLocationHistory,
-    })(withNavigation(withTheme(MeLocationBase)));
+    }
+)(
+    withNavigation(withTheme(
+        MeLocationBase)));
 
 

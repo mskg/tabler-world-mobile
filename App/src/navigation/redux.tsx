@@ -6,8 +6,7 @@ import AppNavigator from './Root';
 const navReducer = createNavigationReducer(AppNavigator);
 
 const middleware = createReactNavigationReduxMiddleware(
-    // @ts-ignore
-    state => state.navigation,
+    (state: any) => state.navigation,
 );
 
 const App = createReduxContainer(AppNavigator);

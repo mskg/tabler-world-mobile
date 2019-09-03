@@ -12,15 +12,15 @@ type Props = {
 
 export class RoleChip extends React.PureComponent<Props> {
     render() {
-      const { text, level, font, color, textColor } = this.props;
+        const { text, level, font, color, textColor } = this.props;
 
-      return (
+        return (
       <View style={[styles.chip, { backgroundColor: color }]}>
         <Text style={[styles.chipText, { color: textColor }]}>
           {level && level !== '' && <Text>{level} </Text>}
           <Text style={{ fontFamily: font }}>{text}</Text>
         </Text>
       </View>
-    );
-  }
+      );
+    }
 }

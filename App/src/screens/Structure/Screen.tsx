@@ -20,10 +20,13 @@ class ScreenWithBarBase extends React.Component<Props> {
             .string();
 
         return (
-            <View style={{
-                paddingTop: TOTAL_HEADER_HEIGHT,
-                backgroundColor: this.props.theme.colors.background,
-            }}>
+            <View
+                style={{
+                    paddingTop: TOTAL_HEADER_HEIGHT,
+                    backgroundColor: this.props.theme.colors.background,
+                }}
+            >
+                {/* @ts-ignore style is missing in .d.ts */}
                 <MaterialTopTabBar
                     allowFontScaling={false}
                     showIcon={false}
@@ -39,35 +42,40 @@ class ScreenWithBarBase extends React.Component<Props> {
                         fontFamily: this.props.theme.fonts.medium,
                     }}
 
-
                     style={
                         {
                             backgroundColor: this.props.theme.colors.primary,
                         }
                     }
-                    {...this.props} />
 
-                <StandardHeader showLine={false} showAppBar={true} title={I18N.Structure.title}
+                    {...this.props}
+                />
 
-                    // content={(
-                    //     <View style={[styles.top]}>
-                    //         <View style={styles.search}>
-                    //             <Searchbar
-                    //                 style={[styles.searchbar]}
-                    //                 selectionColor={this.props.theme.colors.accent}
-                    //                 placeholder={I18N.Search.search}
-                    //                 autoCorrect={false}
+                <StandardHeader
+                    showLine={false}
+                    showAppBar={true}
+                    title={I18N.Structure.title}
 
-                    //                 value={""}
-                    //                 onChangeText={text => { }}
-                    //             />
-                    //         </View>
-                    //     </View>
-                    // )}
+                // content={(
+                //     <View style={[styles.top]}>
+                //         <View style={styles.search}>
+                //             <Searchbar
+                //                 style={[styles.searchbar]}
+                //                 selectionColor={this.props.theme.colors.accent}
+                //                 placeholder={I18N.Search.search}
+                //                 autoCorrect={false}
+
+                //                 value={""}
+                //                 onChangeText={text => { }}
+                //             />
+                //         </View>
+                //     </View>
+                // )}
                 />
             </View>
         );
     }
 }
 
+// tslint:disable-next-line: export-name
 export const StructureScreen = withTheme(ScreenWithBarBase);

@@ -8,8 +8,8 @@ export class MemberTitleBase extends React.PureComponent<{
     sortByLastName;
 }> {
     render() {
-      const { member, sortByLastName, diplayFirstNameFirst } = this.props;
-      return diplayFirstNameFirst
+        const { member, sortByLastName, diplayFirstNameFirst } = this.props;
+        return diplayFirstNameFirst
       ? sortByLastName
         ? [
             <Text key="1">{member.firstname}</Text>,
@@ -38,5 +38,5 @@ export class MemberTitleBase extends React.PureComponent<{
             {member.firstname}
           </Title>,
         ];
-  }
+    }
 }

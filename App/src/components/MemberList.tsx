@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ListRenderItemInfo, Platform } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import { IMemberOverviewFragment } from '../model/IMemberOverviewFragment';
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
 import { extractKey, renderDivider, renderItem } from './ListRenderer';
-import { ME_ITEM_HEIGHT, MeListItem } from './MeListItem';
+import { MeListItem, ME_ITEM_HEIGHT } from './MeListItem';
 import { ITEM_HEIGHT } from './Member/Dimensions';
 import { EmptyComponent } from './NoResults';
 
@@ -16,7 +16,7 @@ type OwnProps = {
     theme: Theme,
 
     section?: string,
-    me?: IWhoAmI ,
+    me?: IWhoAmI,
 
     data: IMemberOverviewFragment[],
     extraData?: any,
@@ -24,7 +24,7 @@ type OwnProps = {
     refreshing?: boolean,
     onRefresh?: () => void,
 
-    renderItem?: (member: IMemberOverviewFragment, onPress: any) => React.ReactNode,
+    renderItem?: (member: IMemberOverviewFragment, onPress: any) => React.ReactElement | null,
     onItemSelected?: (member: IMemberOverviewFragment) => void,
 
     onEndReached?: () => any;
@@ -51,19 +51,19 @@ export class MemberListBase extends React.Component<Props> {
         }
     }
 
-    _renderItem = (c: ListRenderItemInfo<IMemberOverviewFragment>) => {
-        return this.props.renderItem != null ?
-            this.props.renderItem(c.item, this._onPress)
-            : renderItem(c.item, this.props.theme, this._onPress);
+    _renderItem = ({ item }): React.ReactElement | null => {
+        return this.props.renderItem != null
+            ? this.props.renderItem(item, this._onPress)
+            : renderItem(item, this.props.theme, this._onPress);
     }
 
     _getItemLayout = (_data, index) => {
-        const firstHeight = this.props.showMe ? ME_ITEM_HEIGHT : ITEM_HEIGHT;
+        const firstHeight = this.props.me != null ? ME_ITEM_HEIGHT : ITEM_HEIGHT;
 
         return {
-            length: index == 0 ? firstHeight : ITEM_HEIGHT,
-            offset: ITEM_HEIGHT * index + (index > 0 ? firstHeight - ITEM_HEIGHT : 0),
             index,
+            length: index === 0 ? firstHeight : ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index + (index > 0 ? firstHeight - ITEM_HEIGHT : 0),
         };
     }
 
@@ -109,5 +109,5 @@ export class MemberListBase extends React.Component<Props> {
 
 export const MemberList = withNavigation(withTheme(connect(
     null, {
-        showProfile,
-    })(MemberListBase)));
+    showProfile,
+})(MemberListBase)));

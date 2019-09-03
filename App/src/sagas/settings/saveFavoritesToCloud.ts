@@ -17,7 +17,7 @@ import { logger } from './logger';
 /**
  * When a favorite is toggled, mark the record as modified
  */
-export function* saveFavoritesToCloud(a: typeof filterActions.toggleFavorite.shape) {
+export function* saveFavoritesToCloud(_a: typeof filterActions.toggleFavorite.shape) {
     const favorites: HashMap<boolean> = yield select(
         (state: IAppState) => state.filter.member.favorites);
 

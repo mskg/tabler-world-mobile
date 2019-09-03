@@ -7,16 +7,19 @@
         "importHelpers": true,
         "jsx": "react-native",
         "lib": [
-            "es2017"
+            "dom",
+            "esnext"
         ],
+        "allowJs": false,
+        "noEmit": true,
+        "noImplicitAny": false,
         "module": "es2015",
         "moduleResolution": "node",
         "noEmitHelpers": true,
         "skipLibCheck": true,
         "sourceMap": false,
         "resolveJsonModule": true,
-        "target": "es2017",
-        "rootDir": "src",
+        "target": "esnext",
         "outDir": "dist",
         "plugins": [
             {
@@ -24,5 +27,12 @@
                 "configFile": "./tslint.json"
             }
         ]
-    }
+    },
+    "include": [
+        "App.ts",
+        "src/**/*.ts?",
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

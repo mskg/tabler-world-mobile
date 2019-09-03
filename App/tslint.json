@@ -13,6 +13,13 @@
             true,
             "no-public"
         ],
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "any",
+                "named-imports-order": "any"
+            }
+        ],
         "jsx-no-multiline-js": false,
         "jsx-no-lambda": false,
         "react-this-binding-issue": false,

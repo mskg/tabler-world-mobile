@@ -33,95 +33,95 @@ class AuthenticatorBase extends PureComponent<Props, State> {
     state: State = {};
 
     async componentDidMount() {
-      if (this.props.authState === 'singedIn') {
-        this.configureContext(this.props);
+        if (this.props.authState === 'singedIn') {
+          this.configureContext(this.props);
+      }
+
+        const demoMode = await isDemoModeEnabled();
+
+        if (demoMode) {
+          Audit.disable();
+      } else {
+          Audit.enable();
+      }
+
+        this.setState({ demoMode });
     }
-
-      const demoMode = await isDemoModeEnabled();
-
-      if (demoMode) {
-        Audit.disable();
-    } else {
-        Audit.enable();
-    }
-
-      this.setState({ demoMode });
-  }
 
     configureContext(nextProps) {
-      logger.debug('setting usercontext');
+        logger.debug('setting usercontext');
 
-      if (nextProps.optOutAnalytics) {
-        Audit.disable();
-    } else {
-        Audit.enable();
+        if (nextProps.optOutAnalytics) {
+          Audit.disable();
+      } else {
+          Audit.enable();
 
       // only place where those are used
-        const appProps = {
-          [AuditPropertyNames.Channel]: Constants.manifest.releaseChannel,
-          [AuditPropertyNames.Version]: Constants.manifest.version || 'dev',
-          [AuditPropertyNames.Locale]: Localization.locale.toLocaleLowerCase(),
-      };
+          const appProps = {
+            [AuditPropertyNames.Channel]: Constants.manifest.releaseChannel,
+            [AuditPropertyNames.Version]: Constants.manifest.version || 'dev',
+            [AuditPropertyNames.Locale]: Localization.locale.toLocaleLowerCase(),
+        };
 
-        const client = cachedAolloClient();
-        client.query({
-          query: GetMeQuery,
-          fetchPolicy: 'cache-first',
-      }).then(result => {
+          const client = cachedAolloClient();
+          client.query({
+            query: GetMeQuery,
+            fetchPolicy: 'cache-first',
+        }).then(result => {
           if (result.errors) {
-            result.errors.forEach(e => logger.error(e, 'Could not load me'));
-            throw new Error('Could not load me');
-        }
+              result.errors.forEach(e => logger.error(e, 'Could not load me'));
+              throw new Error('Could not load me');
+          }
 
           logger.log('Updating user profile');
           Audit.updateUser(
           result.data.Me.id,
-            {
-                ...appProps,
-                [AuditPropertyNames.Association]: result.data.Me.association.name,
-                [AuditPropertyNames.Area]: result.data.Me.area.name,
-                [AuditPropertyNames.Club]: result.data.Me.club.name,
-            },
+              {
+                  ...appProps,
+                  [AuditPropertyNames.Association]: result.data.Me.association.name,
+                  [AuditPropertyNames.Area]: result.data.Me.area.name,
+                  [AuditPropertyNames.Club]: result.data.Me.club.name,
+              },
         );
 
           ExpoSentry.setUserContext({
-            id: result.data.Me.id,
-        });
+              id: result.data.Me.id,
+          });
       }).catch(e => {
           Audit.updateUser(undefined, appProps);
           logger.error(e, 'Could not load me');
       });
+      }
     }
-  }
 
     componentWillReceiveProps(nextProps) {
-      if (nextProps.authState === 'singedIn') {
-        this.configureContext(nextProps);
+        if (nextProps.authState === 'singedIn') {
+          this.configureContext(nextProps);
+      }
     }
-  }
 
     render() {
-      if (this.state.demoMode == null) return null;
+        if (this.state.demoMode == null) return null;
 
-      if (!this.state.demoMode && this.props.authState === 'confirm') {
-        return (
+        if (!this.state.demoMode && this.props.authState === 'confirm') {
+          return (
         <>
           <Reloader />
           <ConfirmSignIn />
           <Loading />
         </>
-      );
-    }  if (!this.state.demoMode && this.props.authState === 'signin') {
+        );
+      }  if (!this.state.demoMode && this.props.authState === 'signin') {
         return (
         <>
           <Reloader />
           <SignIn />
           <Loading />
         </>);
-    } else {
+    } 
         return this.props.app;
+    
     }
-  }
 }
 
 export const Authenticator = connect((state: IAppState) => ({

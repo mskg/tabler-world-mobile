@@ -30,14 +30,14 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
         const margin = 16;
         const size = (
             Dimensions.get('screen').width
-            - 16 * 2 /* padding screen */
-            - margin * (nbr + 1) /* padding items */
+            - 16 * 2 // padding screen
+            - margin * (nbr + 1)  // padding items
         ) / nbr; // needs to be squared
 
         return (
             <View style={styles.container}>
                 {
-                    grouped.map((r, i) => (
+                    grouped.map((r) => (
                         <RoleAvatar
                             style={{ marginHorizontal: margin / 2, marginVertical: margin / 2 }}
 
@@ -46,8 +46,7 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
 
                             width={size}
                             role={r.role}
-
-                            />
+                        />
                     ))
                 }
             </View>

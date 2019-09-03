@@ -189,7 +189,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     }
                 } catch {
                     if (!this.props.settings.nearbyMembers) {
-                        try { disableNearbyTablers(); } catch {}
+                        try { disableNearbyTablers(); } catch { }
                     }
 
                     Alert.alert(I18N.Settings.locationfailed);
@@ -307,6 +307,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.setState({ showExperiments: !demo, demoMode: demo });
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <>
@@ -317,6 +318,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 visible={true}
                                 actions={[
                                     {
+                                        // @ts-ignore We provide a Text to color it
                                         label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Settings.logout.button}</NativeText>,
                                         onPress: this._confirmUnload,
                                     },
@@ -342,14 +344,22 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 text={Constants.manifest.releaseChannel || 'dev'} />
                             <Divider />
 
-                            <NextScreen theme={this.props.theme} text={I18N.Settings.ReleaseNotes} onPress={
-                                () => this.props.navigation.navigate(Routes.MD, {
-                                    title: I18N.Settings.ReleaseNotes,
-                                    source: Assets.files.releasenotes,
-                                })} />
+                            <NextScreen
+                                theme={this.props.theme}
+                                text={I18N.Settings.ReleaseNotes}
+                                onPress={
+                                    () => this.props.navigation.navigate(Routes.MD, {
+                                        title: I18N.Settings.ReleaseNotes,
+                                        source: Assets.files.releasenotes,
+                                    })}
+                            />
                             <Divider />
-                            <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.title} onPress={
-                                () => this.props.navigation.navigate(Routes.Legal)} />
+                            <NextScreen
+                                theme={this.props.theme}
+                                text={I18N.Settings.Legal.title}
+                                onPress={
+                                    () => this.props.navigation.navigate(Routes.Legal)}
+                            />
                             <Divider />
                         </List.Section>
 
@@ -572,7 +582,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                 </ScreenWithHeader>
                 {this.state.wait && <Portal>
                     <>
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: this.props.theme.colors.backdrop, opacity: 0.8 }]}/>
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: this.props.theme.colors.backdrop, opacity: 0.8 }]} />
                         <FullScreenLoading />
                     </>
                 </Portal>

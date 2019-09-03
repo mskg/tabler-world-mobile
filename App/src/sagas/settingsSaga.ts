@@ -4,7 +4,7 @@ import * as filterActions from '../redux/actions/filter';
 import * as settingsActions from '../redux/actions/settings';
 import { checkLinking } from './settings/checkLinking';
 import { pushLanguage } from './settings/pushLanguage';
-import { restoreSettingsFromCloud } from './settings/restoreFromCloud';
+import { restoreSettingsFromCloud } from './settings/restoreSettingsFromCloud';
 import { saveFavoritesToCloud } from './settings/saveFavoritesToCloud';
 
 export function* settingsSaga(): SagaIterator {

@@ -161,45 +161,45 @@ const de: I18NType = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, 'D. MMMM YYYY' , { locale: dateDE })} (${differenceInYears(Date.now(), date)})`;
+                return `${format(date, 'D. MMMM YYYY', { locale: dateDE })} (${differenceInYears(Date.now(), date)})`;
             },
         },
 
         email: (s) => {
             switch (s) {
-            case 'rt':
-                return 'TABLER.WORLD';
+                case 'rt':
+                    return 'TABLER.WORLD';
 
-            case 'home':
-                return 'Private E-Mail';
+                case 'home':
+                    return 'Private E-Mail';
 
-            case 'work':
-                return 'Geschäftliche E-Mail';
+                case 'work':
+                    return 'Geschäftliche E-Mail';
 
-            case 'other':
-                return 'E-Mail';
+                case 'other':
+                    return 'E-Mail';
 
-            default:
-                return s;
+                default:
+                    return s;
             }
         },
 
         telephone: (s) => {
             switch (s) {
-            case 'home':
-                return 'Telefon Privat';
+                case 'home':
+                    return 'Telefon Privat';
 
-            case 'mobile':
-                return 'Mobiltelefon';
+                case 'mobile':
+                    return 'Mobiltelefon';
 
-            case 'work':
-                return 'Telefon Geschäftlich';
+                case 'work':
+                    return 'Telefon Geschäftlich';
 
-            case 'other':
-                return 'Telefon';
+                case 'other':
+                    return 'Telefon';
 
-            default:
-                return s;
+                default:
+                    return s;
             }
         },
 
@@ -327,7 +327,7 @@ const de: I18NType = {
             title: 'Wir werden ALLE lokalen Daten löschen!',
             text: 'Diese Aktion kann nicht rückgängig gemacht werden.',
             date: (date: Date | null) => {
-                let options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
                 return date == null
                     ? 'nie'
@@ -468,7 +468,7 @@ const de: I18NType = {
         title: 'Mitglieder in der Nähe',
         location: 'Dein Standort',
 
-        near: (s: string) => s ? 'In der Nähe von ' + s : 'Unbekannter Standort',
+        near: (s: string | undefined) => s ? 'In der Nähe von ' + s : 'Unbekannter Standort',
         ago: (s: string) => `vor ${s}`,
 
         notsupported: 'Die Übermittlung der Position im Hintergrund wird von diesem Gerät nicht unterstützt.',

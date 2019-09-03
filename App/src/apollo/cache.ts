@@ -22,26 +22,22 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 export const cache = new InMemoryCache({
     fragmentMatcher,
 
-    dataIdFromObject: object => {
+    dataIdFromObject: (object: any) => {
         switch (object.__typename) {
             // has an id field, but that is not a unique id
-        case 'RoleRef':
-            return null;
+            case 'RoleRef':
+                return null;
 
-        case 'Parameter':
-                // @ts-ignore
-            if (object.name == null) return defaultDataIdFromObject(object);
-                // @ts-ignore
-            return `${object.__typename}:${object.name}`;
+            case 'Parameter':
+                if (object.name == null) return defaultDataIdFromObject(object);
+                return `${object.__typename}:${object.name}`;
 
-        case 'Association':
-                // @ts-ignore
-            if (object.association == null) return defaultDataIdFromObject(object);
-                // @ts-ignore
-            return `${object.__typename}:${object.association}`;
+            case 'Association':
+                if (object.association == null) return defaultDataIdFromObject(object);
+                return `${object.__typename}:${object.association}`;
 
-        default:
-            return defaultDataIdFromObject(object); // fall back to default handling
+            default:
+                return defaultDataIdFromObject(object); // fall back to default handling
         }
     },
 

@@ -324,7 +324,7 @@ const en = {
             title: 'We will remove all local data!',
             text: 'This action cannot be undone.',
             date: (date: Date | null) => {
-                let options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
                 return date == null
                     ? 'never'

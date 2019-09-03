@@ -12,7 +12,7 @@
         "config:aws": "bash -c 'source ~/.bashrc && aws cloudformation list-exports > ./config/aws.json'",
         "config": "yarn run config:aws && yarn run config:app",
         "config:app": "run-env node config/create.js",
-        "dev": "yarn run config && yarn expo start",
+        "dev": "yarn expo start",
         "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql",
         "android": "emulator -avd expo -gpu host"
     },
@@ -95,8 +95,8 @@
         "uuid4": "^1.1.4"
     },
     "devDependencies": {
-        "@mskg/tabler-world-yarn-tools": "0.0.1",
         "@mskg/tabler-world-tslint-rules": "0.0.1",
+        "@mskg/tabler-world-yarn-tools": "0.0.1",
         "@types/crypto-js": "^3.1.43",
         "@types/expo": "^32.0.9",
         "@types/expo__vector-icons": "^9.0.1",

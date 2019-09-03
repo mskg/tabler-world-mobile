@@ -20,27 +20,27 @@ export function bootstrapAnalytics() {
     let provider: IAnalyticsProvider | undefined;
 
     if (cognitoAnalytics != null && cognitoAnalytics != '') {
-      const analytics = require('./CognitoAnalytics');
+        const analytics = require('./CognitoAnalytics');
 
-      provider = new analytics.CognitoAnalytics(
+        provider = new analytics.CognitoAnalytics(
       region, cognitoAnalytics,
     );
-  }
+    }
 
     if (amplitudeAnalytics != null && amplitudeAnalytics != '') {
-      const analytics = require('./AmplitudeAnalytics');
+        const analytics = require('./AmplitudeAnalytics');
 
-      provider = new analytics.AmplitudeAnalytics(
+        provider = new analytics.AmplitudeAnalytics(
       amplitudeAnalytics,
     );
-  }
+    }
 
   // allow inspection
     if (__DEV__ && provider != null) {
-      provider = new LogWrapper(provider);
-  }
+        provider = new LogWrapper(provider);
+    }
 
     if (provider != null) {
-      Audit.init(provider);
-  }
+        Audit.init(provider);
+    }
 }

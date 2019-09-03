@@ -12,7 +12,6 @@ import { CachedImage } from '../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { Associations, Associations_Associations } from '../../model/graphql/Associations';
 import { RoleNames } from '../../model/IRole';
@@ -20,7 +19,7 @@ import { GetAssociationsQuery } from '../../queries/GetAssociationsQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 
-const logger = new Logger(Categories.Screens.Structure);
+// const logger = new Logger(Categories.Screens.Structure);
 
 type State = {};
 
@@ -44,7 +43,6 @@ class AssociationsScreenBase extends AuditedScreen<Props, State> {
 
                 <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                     <CachedImage
-                        theme={this.props.theme}
                         style={styles.image}
                         cacheGroup="club"
                         uri="https://www.round-table.de/theme/public/assets/frontend/img/logo.png"
@@ -92,7 +90,7 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
         );
     }
 
-    _key = (item: Associations_Associations, index: number) => {
+    _key = (item: Associations_Associations, _index: number) => {
         return item.association;
     }
 
@@ -113,10 +111,9 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                         >
                             <FlatList
                                 contentContainerStyle={styles.container}
-                                // @ts-ignore
                                 data={
                                     _(data != null ? data.Associations : [])
-                                        .orderBy(a => (data != null && data.Me.association.association == a.association)
+                                        .orderBy((a) => (data != null && data.Me.association.association === a.association)
                                             ? 'aa'
                                             : a.association)
                                         .toArray()
@@ -137,7 +134,9 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
     }
 }
 
+// tslint:disable-next-line: export-name
 export const AssociationsScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation('associations',
-                              withTheme(AssociationsScreenBase)));
+        withCacheInvalidation(
+            'associations',
+            withTheme(AssociationsScreenBase)));

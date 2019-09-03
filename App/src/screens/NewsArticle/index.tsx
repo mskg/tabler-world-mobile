@@ -14,14 +14,13 @@ import { FullScreenLoading } from '../../components/Loading';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { NewsArticle, NewsArticleVariables } from '../../model/graphql/NewsArticle';
 import { GetNewsArticleQuery } from '../../queries/GetNewsArticle';
 import { INewsArticleParams, showAlbum } from '../../redux/actions/navigation';
 import { styles } from '../News/Styles';
 
-const logger = new Logger(Categories.Screens.News);
+// const logger = new Logger(Categories.Screens.News);
 
 type State = {};
 
@@ -57,51 +56,61 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
                     id,
                 }}
             >
-                {({ loading, error, data, refetch }) => {
+                {({ error, data }) => {
                     if (error) throw error;
 
-                    return <ScreenWithHeader header={{
-                        // title: data != null && data.NewsArticle != null ? data.NewsArticle.name : I18N.News.title,
-                        title: I18N.News.title,
-                        showBack: true,
-                    }}>
-                        <Surface style={[styles.outerContainer, { flexGrow: 1 }]}>
-                            {!data || !data.NewsArticle &&
-                                <FullScreenLoading />
-                            }
+                    return (
+                        <ScreenWithHeader
+                            header={{
+                                // title: data != null && data.NewsArticle != null ? data.NewsArticle.name : I18N.News.title,
+                                title: I18N.News.title,
+                                showBack: true,
+                            }}
+                        >
+                            <Surface style={[styles.outerContainer, { flexGrow: 1 }]}>
+                                {!data || !data.NewsArticle &&
+                                    <FullScreenLoading />
+                                }
 
-                            {data && data.NewsArticle &&
-                                <ScrollView>
-                                    <Title>{data.NewsArticle.name}</Title>
+                                {data && data.NewsArticle &&
+                                    <ScrollView>
+                                        <Title>{data.NewsArticle.name}</Title>
 
-                                    <View style={styles.author}>
-                                        <MemberAvatar size={32} member={data.NewsArticle.createdby} />
-                                        <Subheading style={styles.authorIcon}>
-                                            {data.NewsArticle.createdby.firstname + ' ' + data.NewsArticle.createdby.lastname}
-                                        </Subheading>
+                                        <View style={styles.author}>
+                                            <MemberAvatar size={32} member={data.NewsArticle.createdby} />
+                                            <Subheading style={styles.authorIcon}>
+                                                {`${data.NewsArticle.createdby.firstname} ${data.NewsArticle.createdby.lastname}`}
+                                            </Subheading>
 
-                                        {data.NewsArticle.album &&
-                                            <View style={styles.images}>
-                                                <FAB
-                                                    icon={
-                                                        ({ size, color }) => <Ionicons name="md-camera" size={size} color={color} />
-                                                    }
-                                                    onPress={() => this.props.showAlbum(data.NewsArticle.album.id)}
-                                                />
-                                            </View>
-                                        }
-                                    </View>
-                                    <View style={styles.text}>
-                                        <HTMLView
-                                            maxWidth={Dimensions.get('window').width - 16 * 2}
-                                            html={data.NewsArticle.description}
-                                        />
-                                    </View>
-                                </ScrollView>
-                            }
+                                            {data.NewsArticle.album &&
+                                                <View style={styles.images}>
+                                                    <FAB
+                                                        icon={
+                                                            ({ size, color }) => <Ionicons name="md-camera" size={size} color={color} />
+                                                        }
+                                                        onPress={
+                                                            () => {
+                                                                if (data && data.NewsArticle && data.NewsArticle.album) {
+                                                                    this.props.showAlbum(data.NewsArticle.album.id);
+                                                                }
+                                                            }
+                                                        }
+                                                    />
+                                                </View>
+                                            }
+                                        </View>
+                                        <View style={styles.text}>
+                                            <HTMLView
+                                                maxWidth={Dimensions.get('window').width - 16 * 2}
+                                                html={data.NewsArticle.description}
+                                            />
+                                        </View>
+                                    </ScrollView>
+                                }
 
-                        </Surface>
-                    </ScreenWithHeader>;
+                            </Surface>
+                        </ScreenWithHeader>
+                    );
                 }}
             </Query>
         );
@@ -109,8 +118,10 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
 }
 
 
+// tslint:disable-next-line: export-name
 export const NewsArticleScreen =
     withWhoopsErrorBoundary(
-        withCacheInvalidation('newsarticle',
-                              withTheme(
+        withCacheInvalidation(
+            'newsarticle',
+            withTheme(
                 connect(null, { showAlbum })(NewsArticleScreenBase))));

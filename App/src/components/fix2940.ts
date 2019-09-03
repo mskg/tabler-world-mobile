@@ -5,7 +5,7 @@ import { HEADER_MARGIN_TOP } from '../theme/dimensions';
 export function fix2940() {
     // https://github.com/expo/expo/issues/2940
     if (Platform.OS === 'android') {
-        // @ts-ignore
+        // @ts-ignore method exists, types are wrong
         SafeAreaView.setStatusBarHeight(HEADER_MARGIN_TOP);
     }
 }

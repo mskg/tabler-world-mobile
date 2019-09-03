@@ -101,7 +101,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         //     || this.props.diplayFirstNameFirst != nextProps.diplayFirstNameFirst
         //     || this.props.theme != nextProps.theme;
 
-        const forceUpdate = true;
+        // const forceUpdate = true;
         this.setState({
             ...this.calculateNewState(nextProps),
             forceUpdate: !this.state.forceUpdate,
@@ -109,10 +109,11 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
     }
 
     calculateNewState(nextProps: Props) {
-        logger.debug('componentWillReceiveProps',
-                     'fav?', nextProps.showFavorites,
-                     'own?', nextProps.showOwntable,
-                     'areas', nextProps.areas);
+        logger.debug(
+            'componentWillReceiveProps',
+            'fav?', nextProps.showFavorites,
+            'own?', nextProps.showOwntable,
+            'areas', nextProps.areas);
 
         const data = nextProps.data != null && nextProps.data.MembersOverview != null
             ? nextProps.data.MembersOverview
@@ -174,28 +175,32 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
     render() {
         return (
             <React.Fragment>
-                <ScreenWithHeader header={
-                    {
-                        content:
-                        [
-                            <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Members.title} />,
-                            <Appbar.Action key="filter" icon="filter-list" onPress={() => this.props.showFilter()} />,
-                            <Appbar.Action key="search" icon="search" onPress={() => this.props.showSearch()} />,
-                        ],
+                <ScreenWithHeader
+                    header={
+                        {
+                            content: [
+                                <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Members.title} />,
+                                <Appbar.Action key="filter" icon="filter-list" onPress={() => this.props.showFilter()} />,
+                                <Appbar.Action key="search" icon="search" onPress={() => this.props.showSearch()} />,
+                            ],
+                        }
                     }
-                }>
-                    <Placeholder ready={
-                        this.props.data != null
-                        && this.props.data.MembersOverview != null
-                        && this.props.data.Me != null
-                        && (
-                            !this.props.loading
-                            || this.state.dataSource.data != null
-                        )
-                    } previewComponent={<MemberListPlaceholder />}>
+                >
+                    <Placeholder
+                        ready={
+                            this.props.data != null
+                            && this.props.data.MembersOverview != null
+                            && this.props.data.Me != null
+                            && (
+                                !this.props.loading
+                                || this.state.dataSource.data != null
+                            )
+                        }
+                        previewComponent={<MemberListPlaceholder />}
+                    >
                         <View style={styles.sectionList}>
                             <MemberSectionList
-                                setRef={ref => this._sectionList = ref}
+                                setRef={(ref) => this._sectionList = ref}
                                 extraData={this.state.forceUpdate}
                                 me={this.state.me}
                                 refreshing={this.props.loading}
@@ -314,4 +319,5 @@ const MembersQueryWithCacheInvalidation = withCacheInvalidation(
     }))(MembersQuery),
 );
 
+// tslint:disable-next-line: export-name
 export const MembersScreen = withWhoopsErrorBoundary(MembersQueryWithCacheInvalidation);

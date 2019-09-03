@@ -9,8 +9,8 @@ export type MemberItemBaseProps = {
     onPress?: (member: IMemberOverviewFragment) => void;
 
     right?: (props: {
-      size: number;
-  }) => React.ReactNode;
+        size: number;
+    }) => React.ReactNode;
 
     height?: number,
 };

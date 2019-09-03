@@ -15,15 +15,15 @@ export class DevAnalytics implements IAnalyticsProvider {
         if (__DEV__) { logger.debug('updateUser', id, attributes); }
     }
 
-    trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
+    trackPageView(screen: string, attributes?: Params, _metrics?: Metrics): void {
         if (__DEV__) { logger.debug('Show Screen', screen, attributes); }
     }
 
-    trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
+    trackEvent(event: string, _attributes?: Params, _metrics?: Metrics): void {
         if (__DEV__) { logger.debug('Track Event', event); }
     }
 
-    trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
+    trackAction(screen: string, action: string, attributes?: Params, _metrics?: Metrics): void {
         if (__DEV__) { logger.debug('Track Action', screen, action, attributes); }
     }
 }

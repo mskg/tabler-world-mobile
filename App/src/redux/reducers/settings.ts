@@ -10,15 +10,15 @@ export function settingsReducer(
   action: typeof actions.updateSetting.shape,
 ): Result {
     switch (action.type) {
-  case actions.updateSetting.type:
-      logger.debug('[settings]', action.payload.name, '=>', action.payload.value);
+    case actions.updateSetting.type:
+        logger.debug('[settings]', action.payload.name, '=>', action.payload.value);
 
-      return {
+        return {
           ...state,
           [action.payload.name]: action.payload.value,
       };
 
-  default:
-      return state;
-  }
+    default:
+        return state;
+    }
 }

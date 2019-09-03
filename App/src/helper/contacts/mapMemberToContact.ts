@@ -10,25 +10,22 @@ import { downloadPic } from './downloadPic';
 import { logger } from './logger';
 import { removeNulls } from './removeNulls';
 
+// tslint:disable-next-line: max-func-body-length
 export async function mapMemberToContact(member: Member_Member): Promise<Contacts.Contact> {
-    // @ts-ignore
+    // @ts-ignore all fields are present
     let contact: Contacts.Contact = {
         [Contacts.Fields.FirstName]: member.firstname || '',
         [Contacts.Fields.LastName]: member.lastname || '',
-        [Contacts.Fields.Name]: member.firstname + ' ' + member.lastname,
+        [Contacts.Fields.Name]: `${member.firstname} ${member.lastname}`,
 
         [Contacts.Fields.Company]: member.association.name,
         [Contacts.Fields.Department]: member.club.name,
         [Contacts.Fields.ContactType]: Contacts.ContactTypes.Person,
     };
 
-    const i = 1;
-
     const emails = collectEMails(member);
     if (emails.length > 0) {
-        // @ts-ignore
-        contact[Contacts.Fields.Emails] = emails.map(e => ({
-            // id: ++i,
+        contact[Contacts.Fields.Emails] = emails.map((e) => ({
             label: e.type,
             email: e.value,
             isPrimary: false,
@@ -37,9 +34,7 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
     const phones = collectPhones(member);
     if (phones.length > 0) {
-        // @ts-ignore
-        contact[Contacts.Fields.PhoneNumbers] = phones.map(e => ({
-            // id: ++i,
+        contact[Contacts.Fields.PhoneNumbers] = phones.map((e) => ({
             label: e.type,
             number: e.value,
             isPrimary: false,
@@ -47,14 +42,10 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
     }
 
     if (member.address) {
-        // if (member.address.city != null)
-
         contact = {
             ...contact,
 
-            // @ts-ignore
             [Contacts.Fields.Addresses]: [{
-                // id: ++i,
                 label: I18N.ContactSync.primaryaddress,
                 street: [member.address.street1, member.address.street2].filter(Boolean).join('\n'),
                 city: member.address.city,
@@ -83,7 +74,6 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
         contact = {
             ...contact,
 
-            // @ts-ignore
             [Contacts.Fields.Birthday]: {
                 day: date.getUTCDate(),
                 month: date.getUTCMonth(),
@@ -149,8 +139,6 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
     contact = {
         ...contact,
-
-        // @ts-ignore
         [Contacts.Fields.SocialProfiles]: profiles,
     };
 

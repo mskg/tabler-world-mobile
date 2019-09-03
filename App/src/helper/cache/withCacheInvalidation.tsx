@@ -37,14 +37,16 @@ export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
     if (val <= compareDate) {
         logger.debug(type, '*** REFETCHING DATA ***');
         return false;
-    } 
-        logger.log(type, '*** IS VALID ***',
-                   'age', age / MS_PER_MINUTE,
-                   'last fetch', new Date(val),
-                   'not older than', new Date(compareDate));
+    }
+    logger.log(
+        type,
+        '*** IS VALID ***',
+        'age', age / MS_PER_MINUTE,
+        'last fetch', new Date(val),
+        'not older than', new Date(compareDate));
 
-        return true;
-    
+    return true;
+
 }
 
 export async function updateTimeouts() {
@@ -105,15 +107,15 @@ class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> 
                         },
                     },
                 });
-            },         100);
+            }, 100);
         }
 
         return policy;
     }
 
     render() {
-        return React.Children.map(this.props.children, child =>
-            React.cloneElement(this.props.children, {
+        return React.Children.map(this.props.children, (child) =>
+            React.cloneElement(child, {
                 ...this.props,
                 fetchPolicy: this.determine(),
             }));
@@ -125,6 +127,7 @@ export const CacheInvalidation = connect((state: IAppState) => ({
 }))(CacheInvalidationBase);
 
 export function withCacheInvalidation(field: FieldType, WrappedComponent: any, maxAge?: number) {
+    // tslint:disable-next-line: max-classes-per-file
     return class extends React.PureComponent {
         render() {
             return (

@@ -23,7 +23,7 @@ type OwnProps = {
 
 export type StateProps = {
     id: string,
-    loading: boolean;
+    loading?: boolean;
     club?: ClubType;
     preview?: ClubType;
 };
@@ -80,7 +80,7 @@ class ClubBase extends AuditedScreen<Props> {
         const clubProp = this.props.club || this.props.preview;
         const club = clubProp ? clubProp.Club : undefined;
 
-        return <ClubDetails club={club} loading={this.props.loading} />;
+        return <ClubDetails club={club} loading={this.props.loading || false} />;
     }
 
     render() {
@@ -97,6 +97,7 @@ class ClubBase extends AuditedScreen<Props> {
 
 const Club = withTheme(ClubBase);
 
+// tslint:disable-next-line: max-classes-per-file
 export class ClubScreenBase extends React.Component<NavigationInjectedProps<IClubParams>> {
     render() {
         const { club } = this.props.navigation.state.params as IClubParams;

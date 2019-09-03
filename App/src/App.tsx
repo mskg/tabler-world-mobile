@@ -82,7 +82,7 @@ const App = () => {
       <Linking />
       <Loading />
     </React.Fragment>
-  );
+    );
 };
 
 logger.log('Loading...');

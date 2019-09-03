@@ -9,22 +9,22 @@ import { logger } from './logger';
  */
 export function* checkForUpdates(state: AppStateStatus) {
     if (state !== 'active') {
-      return;
-  }
+        return;
+    }
 
     try {
-      const update = yield Updates.checkForUpdateAsync();
+        const update = yield Updates.checkForUpdateAsync();
 
-      if (update.isAvailable) {
-        logger.log('An update was found, downloading...');
-        yield Updates.fetchUpdateAsync();
+        if (update.isAvailable) {
+            logger.log('An update was found, downloading...');
+            yield Updates.fetchUpdateAsync();
 
-        yield put(updateAvailable());
-    } else {
-        logger.debug('No updates were found');
+            yield put(updateAvailable());
+        } else {
+            logger.debug('No updates were found');
+        }
+    } catch (e) {
+        // we don't handle this as errors
+        logger.log(e, 'Error while trying to check for updates');
     }
-  } catch (e) {
-    // we don't handle this as errors
-      logger.log(e, 'Error while trying to check for updates');
-  }
 }

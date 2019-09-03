@@ -85,7 +85,7 @@ export class MemberDataSource {
             .sortBy(t => (t[this.sortByField] || '').toUpperCase())
             .groupBy(t => sectionFrom(t[this.groupByfield]))
             .mapValues(t => {
-                let newId = sectionFrom(t[0][this.groupByfield]);
+                const newId = sectionFrom(t[0][this.groupByfield]);
                 const section = _.find(old, s => s.title == newId) || {
                     title: newId,
                     data: [],

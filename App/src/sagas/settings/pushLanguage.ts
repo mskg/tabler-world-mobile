@@ -7,7 +7,7 @@ import { SettingName } from '../../model/graphql/globalTypes';
 import { PutSetting, PutSettingVariables } from '../../model/graphql/PutSetting';
 import * as settingsActions from '../../redux/actions/settings';
 
-export function* pushLanguage(a: typeof settingsActions.storeLanguage.shape) {
+export function* pushLanguage(_a: typeof settingsActions.storeLanguage.shape) {
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
 
     yield client.mutate<PutSetting, PutSettingVariables>({
