@@ -1,0 +1,53 @@
+parameters:
+  ARTIFACT: 'app-config'
+
+steps:
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: commit.txt
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/app.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/package.json
+    ArtifactName: ${{ parameters.ARTIFACT }}/services
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: .yarnrc
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: yarn.lock
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/yarn.lock
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/deployment.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/config/deployment.json
+    ArtifactName: ${{ parameters.ARTIFACT }}/config
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/config/setvar.ps1
+    ArtifactName: ${{ parameters.ARTIFACT }}/config
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/assets
+    ArtifactName: ${{ parameters.ARTIFACT }}/assets

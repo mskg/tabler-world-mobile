@@ -1,0 +1,20 @@
+parameters:
+  SOURCEDIR: $(System.DefaultWorkingDirectory)
+
+steps:
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
+  displayName: 'Use Yarn 1.17.3'
+  inputs:
+    versionSpec: 1.17.3
+    checkLatest: true
+
+- powershell: |
+   Add-Content ~/.npmrc "always-auth=true`r`n//tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/:_authToken=$(System.AccessToken)"
+   Get-Content  ~/.npmrc
+  displayName: 'PowerShell Script'
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
+  displayName: install
+  inputs:
+    projectDirectory: ${{ parameters.SOURCEDIR }}
+    arguments: install --frozen-lockfile --production=false --non-interactive

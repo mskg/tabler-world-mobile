@@ -1,0 +1,61 @@
+parameters:
+  APPDIR: $(System.DefaultWorkingDirectory)/App
+  AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+  EXPO_PASSWORD: $(EXPO_PASSWORD)
+  EXPO_USERNAME: $(EXPO_USERNAME)
+  GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
+  SOURCESDIR: $(System.DefaultWorkingDirectory)
+
+steps:
+- script: |
+   sudo sysctl fs.inotify.max_user_watches=524288
+   sudo sysctl -p
+
+  displayName: 'Increase max_user_watches'
+  continueOnError: true
+
+- template: ./git-crypt.yml
+  parameters:
+    GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
+    WORKINGDIR: $(SOURCESDIR)
+
+- task: NodeTool@0
+  displayName: 'Use Node 12.x'
+  inputs:
+    versionSpec: 12.x
+    checkLatest: true
+
+- template: ./git-crypt.yml
+  parameters:
+    GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
+    WORKINGDIR: $(SOURCESDIR)
+
+- task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  displayName: 'Get cloudformation exports'
+  inputs:
+    awsCredentials: AWS
+    regionName: '$(AWS_DEFAULT_REGION)'
+    scriptType: inline
+    inlineScript: |
+     sudo pip3 install --upgrade pip
+     sudo pip3 install --upgrade setuptools
+
+     pip3 install awscli --upgrade --user
+
+     export PATH="/home/vsts/.local/bin:/root/.local/bin:/Users/vsts/Library/Python/3.7/bin:/Users/vsts/Library/Python/3.5/bin:$PATH"
+     aws cloudformation list-exports > ./config/aws.json
+
+    disableAutoCwd: true
+    workingDirectory: '$(APPDIR)'
+
+- script: 'node config/create.js'
+  workingDirectory: '$(APPDIR)'
+  displayName: 'create config'
+
+- script: 'cat app.json'
+  workingDirectory: '$(APPDIR)'
+  displayName: 'Show app.json'
+
+- script: 'npx expo login -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD)'
+  workingDirectory: '$(APPDIR)'
+  displayName: 'Login to expo'

@@ -1,0 +1,29 @@
+parameters:
+  GITCRYPT_SYMETRIC_KEY: ''
+  WORKINGDIR: ''
+
+steps:
+- script: |
+   if command -v brew ; then
+     echo mac
+     brew install git-crypt
+   else
+     echo linux
+     curl -L https://github.com/minrk/git-crypt-bin/releases/download/0.6.0/git-crypt > git-crypt
+     echo "128817a63de17a5af03fe69241e453436c6c286c86dd37fb70ed9b3bf7171d7d  git-crypt" | shasum -a 256 -c -
+     chmod +x git-crypt
+   fi
+
+  workingDirectory: '$(WORKINGDIR)'
+  displayName: 'install git-crypt'
+
+- script: |
+   if command -v git-crypt ; then
+     git-crypt unlock <(echo $(GITCRYPT_SYMETRIC_KEY) | base64 --decode)
+   else
+     ./git-crypt unlock <(echo $(GITCRYPT_SYMETRIC_KEY) | base64 --decode)
+   fi
+
+  workingDirectory: '$(WORKINGDIR)'
+  displayName: 'Unlock repository'
+  condition: succeededOrFailed()

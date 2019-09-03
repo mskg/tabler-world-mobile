@@ -1,0 +1,53 @@
+# build number
+name: $(VERSION).$(rev:r)
+
+pool:
+  name: Hosted Ubuntu 1604
+  demands: npm yarn
+
+variables:
+  - name: VERSION
+    value: 1.1
+  - name: EXPO_RELEASE_CHANNEL
+    value: beta
+  - name: APP_VERSION
+    value: $(build.buildNumber)
+  - group: 'ENV Germany Shared'
+  - group: 'ENV Germany TEST'
+  - group: 'expo'
+  - group: 'git-crypt'
+
+steps:
+- script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+# yarn /
+- template: ./devops/yarn.yml
+  parameters:
+    SOURCEDIR: $(System.DefaultWorkingDirectory)
+
+# yarn /App
+- template: ./devops/yarn.yml
+  parameters:
+    SOURCEDIR: $(System.DefaultWorkingDirectory)/App
+
+# yarn /App
+- template: ./devops/yarn.yml
+  parameters:
+    SOURCEDIR: $(System.DefaultWorkingDirectory)/App
+
+# yarn /App
+- template: ./devops/init-expo.yml
+
+- script: |
+   export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
+   npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
+   npx expo publish:history --release-channel $CHANNEL -r > deployment.json
+  workingDirectory: '$(System.DefaultWorkingDirectory)/App'
+  displayName: publish
+  env:
+    SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+
+
+# yarn /App
+- template: ./devops/publish.yml
