@@ -1,5 +1,5 @@
 # build number
-name: $(VERSION).$(rev:rrr)
+name: $(VERSION).047
 
 parameters:
   pool: 'Hosted Ubuntu 1604'
