@@ -32,11 +32,6 @@ steps:
     SOURCEDIR: $(System.DefaultWorkingDirectory)/App
 
 # yarn /App
-- template: ./devops/yarn.yml
-  parameters:
-    SOURCEDIR: $(System.DefaultWorkingDirectory)/App
-
-# yarn /App
 - template: ./devops/init-expo.yml
   parameters:
     APPDIR: $(System.DefaultWorkingDirectory)/App

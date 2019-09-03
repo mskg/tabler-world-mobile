@@ -21,10 +21,6 @@ steps:
     versionSpec: 12.x
     checkLatest: true
 
-- template: ./git-crypt.yml
-  parameters:
-    WORKINGDIR: $(SOURCESDIR)
-
 - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
   displayName: 'Get cloudformation exports'
   inputs:
@@ -46,6 +42,8 @@ steps:
 - script: 'node config/create.js'
   workingDirectory: ${{ parameters.APPDIR }}
   displayName: 'create config'
+  env:
+    APP_VERSION: ${{ APP_VERSION }}
 
 - script: 'cat app.json'
   workingDirectory: ${{ parameters.APPDIR }}
