@@ -37,7 +37,7 @@ steps:
   workingDirectory: ${{ parameters.APPDIR }}
   displayName: 'create config'
   env:
-    APP_VERSION: ${{ APP_VERSION }}
+    APP_VERSION: ${{ parameters.APP_VERSION }}
 
 - script: 'cat app.json'
   workingDirectory: ${{ parameters.APPDIR }}
