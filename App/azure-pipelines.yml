@@ -1,15 +1,20 @@
 # build number
 name: $(VERSION).$(rev:rrr)
 
+parameters:
+  pool: 'Hosted Ubuntu 1604'
+  version: '1.1'
+  channel: 'beta'
+
 pool:
-  name: Default # Hosted Ubuntu 1604
+  name: ${{ parameters.pool }}
   demands: npm
 
 variables:
   - name: VERSION
-    value: 1.1
+    value: ${{ parameters.version }}
   - name: EXPO_RELEASE_CHANNEL
-    value: beta
+    value: ${{ parameters.channel }}
   - group: 'expo'
   - group: 'ENV Germany Shared'
   - group: 'ENV Germany TEST'
