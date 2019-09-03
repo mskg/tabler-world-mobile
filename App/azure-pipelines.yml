@@ -1,5 +1,5 @@
 # build number
-name: $(VERSION).$(rev:r)
+name: $(VERSION).$(rev:rrr)
 
 pool:
   name: Default # Hosted Ubuntu 1604
