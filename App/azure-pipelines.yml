@@ -21,6 +21,8 @@ steps:
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
+- template: ./devops/node.yml
+
 # yarn /
 - template: ./devops/yarn.yml
   parameters:

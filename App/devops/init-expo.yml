@@ -15,12 +15,6 @@ steps:
   parameters:
     WORKINGDIR: ${{ parameters.SOURCESDIR }}
 
-- task: NodeTool@0
-  displayName: 'Use Node 12.x'
-  inputs:
-    versionSpec: 12.x
-    checkLatest: true
-
 - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
   displayName: 'Get cloudformation exports'
   inputs:
