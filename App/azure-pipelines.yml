@@ -9,7 +9,7 @@ variables:
   - name: VERSION
     value: '1.1'
   - name: PATCH
-    value: counter(variables['VERSION'], 47)
+    value: ${{ counter(variables['VERSION'], 47) }}
   - name: EXPO_RELEASE_CHANNEL
     value: 'beta'
   - group: 'expo'
