@@ -5,7 +5,8 @@ const { readFileSync, writeFileSync } = require("fs");
 
 let channel = process.env.INFRASTRUCTURE_RELEASE_CHANNEL || "dev";
 let version = process.env.APP_VERSION || "0.0.0";
-let android = parseInt(version.replace(/[^\d]/ig, ""), 10);
+let aVersion = process.env.ANDROID_VERSION || version;
+let android = parseInt(aVersion.replace(/[^\d]/ig, ""), 10);
 
 let aws = JSON.parse(readFileSync(__dirname + "/aws.json"));
 function findAWSValue(key) {
@@ -32,7 +33,7 @@ const patch = [
     { op: "replace", path: "/expo/extra/cognitoAnalytics", value: process.env.ANALYTICS_APPID },
     { op: "replace", path: "/expo/extra/amplitudeAnalytics", value: process.env.AMPLITUDE_KEY },
 
-    { op: "add", path: "/expo/ios/bundleIdentifier", value:  process.env.APP_IOS_BUNDLE },
+    { op: "add", path: "/expo/ios/bundleIdentifier", value: process.env.APP_IOS_BUNDLE },
 
     { op: "add", path: "/expo/android/package", value: process.env.APP_ANDROID_PACKAGE },
     { op: "add", path: "/expo/android/googleServicesFile", value: "../config/google-services.json" },

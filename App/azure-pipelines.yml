@@ -10,6 +10,8 @@ variables:
     value: '1.1'
   - name: PATCH
     value: $[counter(variables['VERSION'], 47)]
+  - name: ANDROID_VERSION
+    value: $[counter('ANDROID_VERSION', 11070)]
   - name: EXPO_RELEASE_CHANNEL
     value: 'beta'
   - group: 'expo'
@@ -24,13 +26,13 @@ steps:
     $n = ([int]'$(PATCH)').tostring('000')
     Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
 
-  env:
-    PATCH: $(PATCH)
-    VERSION: $(VERSION)
+  displayName: Define build#
 
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: Save commit message
 
+# prepare node environment
 - template: ./devops/node.yml
 
 # yarn /
@@ -43,13 +45,14 @@ steps:
   parameters:
     SOURCEDIR: $(System.DefaultWorkingDirectory)/App
 
-# yarn /App
+# Init expo environment
 - template: ./devops/init-expo.yml
   parameters:
     APPDIR: $(System.DefaultWorkingDirectory)/App
     APP_VERSION: $(build.buildNumber)
     SOURCESDIR: $(System.DefaultWorkingDirectory)
 
+# Publish expo
 - script: |
    export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
    npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
