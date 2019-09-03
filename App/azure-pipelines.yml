@@ -10,12 +10,6 @@ variables:
     value: 1.1
   - name: EXPO_RELEASE_CHANNEL
     value: beta
-  - name: APP_VERSION
-    value: $(build.buildNumber)
-  - group: 'ENV Germany Shared'
-  - group: 'ENV Germany TEST'
-  - group: 'expo'
-  - group: 'git-crypt'
 
 steps:
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
@@ -38,6 +32,10 @@ steps:
 
 # yarn /App
 - template: ./devops/init-expo.yml
+  parameters:
+    APPDIR: $(System.DefaultWorkingDirectory)/App
+    APP_VERSION: $(build.buildNumber)
+    SOURCESDIR: $(System.DefaultWorkingDirectory)
 
 - script: |
    export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
@@ -47,7 +45,6 @@ steps:
   displayName: publish
   env:
     SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
-
 
 # yarn /App
 - template: ./devops/publish.yml

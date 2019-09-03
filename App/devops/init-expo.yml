@@ -1,10 +1,12 @@
 parameters:
+  APP_VERSION: $(APP_VERSION)
   APPDIR: $(System.DefaultWorkingDirectory)/App
-  AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
-  EXPO_PASSWORD: $(EXPO_PASSWORD)
-  EXPO_USERNAME: $(EXPO_USERNAME)
-  GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
   SOURCESDIR: $(System.DefaultWorkingDirectory)
+
+variables:
+  - group: 'expo'
+  - group: 'ENV Germany Shared'
+  - group: 'ENV Germany TEST'
 
 steps:
 - script: |
@@ -16,8 +18,7 @@ steps:
 
 - template: ./git-crypt.yml
   parameters:
-    GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
-    WORKINGDIR: $(SOURCESDIR)
+    WORKINGDIR: ${{ parameters.SOURCESDIR }}
 
 - task: NodeTool@0
   displayName: 'Use Node 12.x'
@@ -27,14 +28,13 @@ steps:
 
 - template: ./git-crypt.yml
   parameters:
-    GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
     WORKINGDIR: $(SOURCESDIR)
 
 - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
   displayName: 'Get cloudformation exports'
   inputs:
     awsCredentials: AWS
-    regionName: '$(AWS_DEFAULT_REGION)'
+    regionName: $(AWS_DEFAULT_REGIONO)
     scriptType: inline
     inlineScript: |
      sudo pip3 install --upgrade pip
@@ -46,16 +46,16 @@ steps:
      aws cloudformation list-exports > ./config/aws.json
 
     disableAutoCwd: true
-    workingDirectory: '$(APPDIR)'
+    workingDirectory: ${{ parameters.APPDIR }}
 
 - script: 'node config/create.js'
-  workingDirectory: '$(APPDIR)'
+  workingDirectory: ${{ parameters.APPDIR }}
   displayName: 'create config'
 
 - script: 'cat app.json'
-  workingDirectory: '$(APPDIR)'
+  workingDirectory: ${{ parameters.APPDIR }}
   displayName: 'Show app.json'
 
 - script: 'npx expo login -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD)'
-  workingDirectory: '$(APPDIR)'
+  workingDirectory: ${{ parameters.APPDIR }}
   displayName: 'Login to expo'

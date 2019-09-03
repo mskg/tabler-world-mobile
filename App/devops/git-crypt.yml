@@ -1,6 +1,8 @@
 parameters:
-  GITCRYPT_SYMETRIC_KEY: ''
   WORKINGDIR: ''
+
+variables:
+  - group: 'git-crypt'
 
 steps:
 - script: |
@@ -14,7 +16,7 @@ steps:
      chmod +x git-crypt
    fi
 
-  workingDirectory: '$(WORKINGDIR)'
+  workingDirectory: ${{ parameters.WORKINGDIR }}
   displayName: 'install git-crypt'
 
 - script: |
@@ -24,6 +26,8 @@ steps:
      ./git-crypt unlock <(echo $(GITCRYPT_SYMETRIC_KEY) | base64 --decode)
    fi
 
-  workingDirectory: '$(WORKINGDIR)'
+  workingDirectory: ${{ parameters.WORKINGDIR }}
   displayName: 'Unlock repository'
   condition: succeededOrFailed()
+  env:
+    GITCRYPT_SYMETRIC_KEY: $(GITCRYPT_SYMETRIC_KEY)
