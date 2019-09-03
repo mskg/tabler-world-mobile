@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { View } from "react-native";
+import { View } from 'react-native';
 import { Divider, IconButton, Theme, TouchableRipple } from 'react-native-paper';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { styles } from './Styles';
@@ -17,7 +17,7 @@ type SectionProps = {
 
     secondIcon?: string,
     secondPress?: () => void,
-}
+};
 
 const VOID = () => { };
 const withAnimation = (func) => () => requestAnimationFrame(func || VOID);
@@ -26,7 +26,7 @@ export const Section = ({ theme, children, icon, onPress, disableRipple, secondI
     return (
         <>
             <TouchableRipple disabled={disableRipple === true} onPress={withAnimation(onPress)}>
-                <View style={[styles.section,]}>
+                <View style={[styles.section]}>
                     <View style={styles.sectionIcon}>
                         <IconButton
                             icon={() => <Ionicons
@@ -59,4 +59,4 @@ export const Section = ({ theme, children, icon, onPress, disableRipple, secondI
             <Divider style={styles.divider} />
         </>
     );
-}
+};

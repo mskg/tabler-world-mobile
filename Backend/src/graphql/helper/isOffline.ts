@@ -1,1 +1,0 @@
-export const EXECUTING_OFFLINE = process.env.IS_OFFLINE === "true";

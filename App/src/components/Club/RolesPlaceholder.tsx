@@ -3,8 +3,12 @@ import { MemberListItemPlaceholder } from '../Placeholder/MemberListItemPlacehol
 
 export const RolesPlaceholder = ({ count }) => (
     <>
-        {Array.apply(null, { length: count || 4 })
-            .map(Number.call, Number)
-            .map(i => (<MemberListItemPlaceholder icon={35} key={i} />))}
-    </>);
+        {
+            Array
+                .apply(null, { length: count || 4 } as [])
+                .map(Number.call, Number)
+                .map((i: any) => (<MemberListItemPlaceholder icon={35} key={i.toString()} />))
+        }
+    </>
+);
 

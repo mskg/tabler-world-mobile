@@ -1,0 +1,24 @@
+# build number
+name: $(VERSION).$(rev:r)
+
+parameters:
+  SOURCEDIR: ''
+  STAGE: ''
+  AWS_DEFAULT_REGION: ''
+
+steps:
+- template: ./yarn.yml
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)'
+    arguments: 'build-common'
+
+- task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  inputs:
+    awsCredentials: AWS
+    regionName: '$(AWS_DEFAULT_REGION)'
+    scriptType: inline
+    inlineScript: npx serverless deploy --stage $(STAGE)
+    disableAutoCwd: true
+    workingDirectory: '$(SOURCEDIR)'

@@ -1,10 +1,10 @@
 import { ActionSheetProps, connectActionSheet } from '@expo/react-native-action-sheet';
-import _ from 'lodash';
+import { uniq } from 'lodash';
 import React from 'react';
-import { Platform, View } from "react-native";
+import { Platform, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { logger } from "../../analytics/logger";
+import { logger } from '../../analytics/logger';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
@@ -15,9 +15,9 @@ import { LinkingHelper } from '../../helper/LinkingHelper';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
 import { Member_Member } from '../../model/graphql/Member';
-import { IAddress } from "../../model/IAddress";
+import { IAddress } from '../../model/IAddress';
 import { IAppState } from '../../model/IAppState';
-import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from "./openLink";
+import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from './openLink';
 import { Organization } from './Organization';
 import { Roles } from './Roles';
 import { Social } from './Social';
@@ -42,7 +42,14 @@ type StateProps = {
 };
 
 type Props = OwnProps & StateProps & ActionSheetProps;
-type Sections = {
+
+type SectionValue = {
+    field?: string,
+    text?: string | undefined | React.ReactNode,
+    onPress?: () => void,
+};
+
+type Section = {
     icon: string,
     onPress?: () => void,
 
@@ -52,151 +59,150 @@ type Sections = {
     disableRipple?: boolean,
     highlight?: boolean,
 
-    values: {
-        field: string,
-        text?: string | undefined | React.ReactNode,
-        onPress?: () => void,
-    }[],
-}[];
+    values: SectionValue[],
+};
 
-@connectActionSheet
+type Sections = Section[];
+
 class ProfileBase extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            numbers: collectPhones(props.member).map(n => n.value),
-            emails: collectEMails(props.member).map(n => n.value),
-        }
+            numbers: collectPhones(props.member).map((n) => n.value),
+            emails: collectEMails(props.member).map((n) => n.value),
+        };
     }
 
     componentWillUpdate(nextProps: Props) {
         if (this.props.member !== nextProps.member) {
             this.setState({
-                numbers: collectPhones(nextProps.member).map(n => n.value),
-                emails: collectEMails(nextProps.member).map(n => n.value),
+                numbers: collectPhones(nextProps.member).map((n) => n.value),
+                emails: collectEMails(nextProps.member).map((n) => n.value),
             });
         }
     }
 
-    buildSingleAppMenu(title: string, reduced: Array<string | undefined>, protocol: LinkType, app: string) {
-        if (reduced.length == 1) {
+    buildSingleAppMenu(title: string, reduced: string[] | undefined[], protocol: LinkType, app: string) {
+        if (reduced.length === 1) {
             openLinkWithApp(protocol, app, reduced[0] as string);
             return;
         }
 
         const filteredOptions = [...reduced, I18N.Member.Menu.cancel];
 
-        this.props.showActionSheetWithOptions(
-            {
-                message: title,
-                options: filteredOptions as string[],
-                cancelButtonIndex: filteredOptions.length - 1,
-            },
+        // https://github.com/expo/react-native-action-sheet/issues/112
+        setTimeout(
+            () => this.props.showActionSheetWithOptions(
+                {
+                    message: title,
+                    options: filteredOptions as string[],
+                    cancelButtonIndex: filteredOptions.length - 1,
+                },
 
-            buttonIndex => {
-                if (buttonIndex != filteredOptions.length - 1) {
-                    const text = filteredOptions[buttonIndex] as string;
-                    openLinkWithApp(protocol, app, text);
-                }
-            }
+                (buttonIndex) => {
+                    if (buttonIndex !== filteredOptions.length - 1) {
+                        const text = filteredOptions[buttonIndex] as string;
+                        openLinkWithApp(protocol, app, text);
+                    }
+                },
+            ),
+            Platform.OS === 'android' ? 400 : 0,
         );
     }
 
-    async buildMenu(title: string, selection: Array<string | undefined>, protocol: LinkType) {
-        //@ts-ignore
-        const original: string[] = _.uniq([...selection.filter(Boolean)]);
+    async buildMenu(title: string, selection: (string | undefined)[], protocol: LinkType) {
+        const original: string[] = uniq([...selection.filter(Boolean)]) as string[];
 
-        //@ts-ignore
-        const reduced: { text: string, action: () => void }[] = _.uniq([...selection.filter(Boolean)])
-            .map(e => ({
+        const reduced: { text: string, action: () => void }[] = [...original]
+            .map((e) => ({
                 text: e,
-                action: () => openLinkWithDefaultApp(protocol, e as string)
+                action: () => openLinkWithDefaultApp(protocol, e as string),
             }));
 
         switch (protocol) {
             case LinkType.EMail:
                 reduced.push(
                     ...(await LinkingHelper.mailApps())
-                        .filter(app => app != this.props.emailApp)
-                        .map(app => ({
-                            text: I18N.Settings.apps.mail(app) + " >",
+                        .filter((app) => app !== this.props.emailApp)
+                        .map((app) => ({
+                            text: `${I18N.Settings.apps.mail(app)} >`,
                             action: () => this.buildSingleAppMenu(
                                 I18N.Settings.apps.mail(app),
                                 original,
                                 LinkType.EMail,
                                 app,
-                            )
-                        }))
+                            ),
+                        })),
                 );
                 break;
 
             case LinkType.Message:
                 reduced.push(
                     ...(await LinkingHelper.messagingApps())
-                        .filter(app => app != this.props.messagingApp)
-                        .map(app => ({
-                            text: I18N.Settings.apps.messaging(app) + " >",
+                        .filter((app) => app !== this.props.messagingApp)
+                        .map((app) => ({
+                            text: `${I18N.Settings.apps.messaging(app)} >`,
                             action: () => this.buildSingleAppMenu(
                                 I18N.Settings.apps.messaging(app),
                                 original,
                                 LinkType.Message,
                                 app,
-                            )
+                            ),
                         })));
                 break;
 
             case LinkType.Phone:
                 reduced.push(
                     ...(await LinkingHelper.callApps())
-                        .filter(app => app != this.props.phoneApp)
-                        .map(app => ({
-                            text: I18N.Settings.apps.call(app) + " >",
+                        .filter((app) => app !== this.props.phoneApp)
+                        .map((app) => ({
+                            text: `${I18N.Settings.apps.call(app)} >`,
                             action: () => this.buildSingleAppMenu(
                                 I18N.Settings.apps.call(app),
                                 original,
                                 LinkType.Phone,
                                 app,
-                            )
+                            ),
                         })));
                 break;
 
             case LinkType.Internet:
                 reduced.push(
                     ...(await LinkingHelper.webApps())
-                        .filter(app => app != this.props.browserApp)
-                        .map(app => ({
-                            text: I18N.Settings.apps.web(app) + " >",
+                        .filter((app) => app !== this.props.browserApp)
+                        .map((app) => ({
+                            text: `${I18N.Settings.apps.web(app)} >`,
                             action: () => this.buildSingleAppMenu(
                                 I18N.Settings.apps.web(app),
                                 original,
                                 LinkType.Internet,
                                 app,
-                            )
+                            ),
                         })));
                 break;
         }
 
-        logger.debug("buildMenu", reduced);
+        logger.debug('buildMenu', reduced);
 
         if (reduced.length > 1) {
             reduced.push({
                 text: I18N.Member.Menu.cancel,
-                action: () => { } // do nothing
+                // tslint:disable-next-line: no-empty
+                action: () => { },
             });
 
             this.props.showActionSheetWithOptions(
                 {
                     message: title,
-                    options: reduced.map(f => f.text),
+                    options: reduced.map((f) => f.text),
                     cancelButtonIndex: reduced.length - 1,
                 },
 
-                buttonIndex => reduced[buttonIndex].action(),
+                (buttonIndex) => reduced[buttonIndex].action(),
             );
-        }
-        else if (reduced.length == 1) {
+        } else if (reduced.length === 1) {
             reduced[0].action();
         }
     }
@@ -220,7 +226,7 @@ class ProfileBase extends React.Component<Props, State> {
             I18N.Member.Menu.email,
             this.state.emails,
             LinkType.EMail);
-    };
+    }
 
     handleAddress = (address?: IAddress | null) => () => {
         showAddress(address);
@@ -230,7 +236,7 @@ class ProfileBase extends React.Component<Props, State> {
         if (this.props.member == null) return false;
 
         return (this.props.member.companies || [])
-            .find(c => formatRoutableAddress(c.address) != null)
+            .find((c) => formatRoutableAddress(c.address) != null)
             != null;
     }
 
@@ -253,130 +259,135 @@ class ProfileBase extends React.Component<Props, State> {
         return true;
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         const { member } = this.props;
 
         if (member == null || this.props.loading) {
-            return <View style={{ paddingTop: 32, paddingBottom: 32 }}>
-                <Placeholder ready={false} previewComponent={
-                    <>
-                        <SectionsPlaceholder count={7} />
-                    </>
-                }>
-                </Placeholder>
-            </View>;
+            return (
+                <View style={{ paddingTop: 32, paddingBottom: 32 }}>
+                    <Placeholder
+                        ready={false}
+                        previewComponent={
+                            <>
+                                <SectionsPlaceholder count={7} />
+                            </>
+                        }
+                    />
+                </View>
+            );
         }
 
         const sections: Sections = [
             {
-                icon: "md-call",
+                icon: 'md-call',
                 values: (collectPhones(member)).map(
-                    p => ({
+                    (p) => ({
                         field: I18N.Member.telephone(p.type),
                         text: p.value,
-                    })
+                    }),
                 ),
                 onPress: OpenLink.canCall() ? this._handleCall : undefined,
 
-                secondIcon: "md-chatbubbles",
+                secondIcon: 'md-chatbubbles',
                 secondPress: OpenLink.canSendMessage() ? this._handleSMS : undefined,
             },
             {
-                icon: "md-mail",
+                icon: 'md-mail',
                 values: (collectEMails(member)).map(
-                    p => ({
+                    (p) => ({
                         field: I18N.Member.email(p.type),
                         text: p.value,
-                    })
+                    }),
                 ),
                 onPress: OpenLink.canEmail() ? this._handleEmail : undefined,
             },
             {
-                icon: "md-person",
+                icon: 'md-person',
                 values: [
                     {
                         text: this.checkSocial() ?
                             <Social social={member.socialmedia} theme={this.props.theme} />
-                            : undefined
-                    }
+                            : undefined,
+                    },
                 ],
             },
             {
-                icon: "md-book",
+                icon: 'md-book',
                 disableRipple: true,
                 values: [
                     {
                         field: I18N.Member.Fields.rtorg,
                         text: <Organization member={member} />,
-                    }
-                ]
+                    },
+                ],
             },
             {
-                icon: "md-medal",
+                icon: 'md-medal',
                 disableRipple: true,
                 values: [
                     {
                         field: I18N.Member.Fields.roles,
-                        text: member.roles && member.roles.length > 0 ? <Roles roles={member.roles} /> : undefined
-                    }
-                ]
+                        text: member.roles && member.roles.length > 0 ? <Roles roles={member.roles} /> : undefined,
+                    },
+                ],
             },
             {
-                icon: "md-pin",
+                icon: 'md-pin',
                 highlight: OpenLink.canOpenUrl() && this.checkAddress(),
                 values: [
                     {
                         field: I18N.Member.Fields.home,
-                        text: formatAddress(member.address)
+                        text: formatAddress(member.address),
                     },
                 ],
                 onPress: OpenLink.canOpenUrl() ? this.handleAddress(member.address) : undefined,
             },
             {
-                icon: "md-business",
+                icon: 'md-business',
                 highlight: OpenLink.canOpenUrl() && this.checkCompanies(),
                 disableRipple: true,
                 values: (member.companies || []).map(
-                    p => ({
-                        field: I18N.Member.Fields.companies + (p.sector ? ` (${I18N.Search.sectorNames[p.sector]})` : ""),
+                    (p) => ({
+                        field: I18N.Member.Fields.companies + (p.sector ? ` (${I18N.Search.sectorNames[p.sector]})` : ''),
                         text: formatCompany(p),
                         onPress: OpenLink.canOpenUrl() ? this.handleAddress(p.address) : undefined,
-                    })
-                )
+                    }),
+                ),
             },
             {
-                icon: "md-school",
+                icon: 'md-school',
                 values: (member.educations || []).map(
-                    p => ({
+                    (p) => ({
                         field: I18N.Member.Fields.educations,
                         text: formatEducation(p),
-                    })
-                )
+                    }),
+                ),
             },
             {
-                icon: "md-heart",
+                icon: 'md-heart',
                 values: [
                     {
                         field: I18N.Member.Fields.partner,
-                        text: member.partner
-                    }
-                ]
+                        text: member.partner,
+                    },
+                ],
             },
             {
-                icon: "md-gift",
+                icon: 'md-gift',
                 values: [
                     {
                         field: I18N.Member.Fields.birthday,
                         text: I18N.Member.Formats.date(member.birthdate),
-                    }
-                ]
+                    },
+                ],
             },
         ]
-            .map(s => ({
+            .map((s: Section) => ({
                 ...s,
-                values: s.values.filter(v => v.text != null && v.text != ""),
+                values: s.values.filter((v) => v.text != null && v.text !== '') as SectionValue[],
             }))
-            .filter(s => s.values.length > 0);
+            .filter((s: Section) => s.values.length > 0);
 
         return (
             <View style={{ paddingTop: 32, paddingBottom: 32 }}>
@@ -395,16 +406,18 @@ class ProfileBase extends React.Component<Props, State> {
                             {
                                 s.values.map((v, j) => (
                                     <Element
-                                        key={i + "-" + j}
-                                        field={v.field}
-                                        onPress={v.onPress || (Platform.OS == "android" ? s.onPress : undefined)}
-                                        text={v.text} />
+                                        key={`${i}-${j}`}
+                                        field={v.field || ''}
+                                        onPress={v.onPress || (Platform.OS === 'android' ? s.onPress : undefined)}
+                                        text={v.text}
+                                    />
                                 ))
                             }
                         </Section>
                     ))
                 }
-            </View>);
+            </View>
+        );
     }
 }
 
@@ -414,7 +427,7 @@ export const Profile = connect(
         browserApp: state.settings.browserApp,
         phoneApp: state.settings.phoneApp,
         emailApp: state.settings.emailApp,
-    }), {
-        // toggleFavorite,
-    }
-)(withTheme(ProfileBase));
+    }),
+    null,
+)(
+    withTheme(connectActionSheet(ProfileBase)));

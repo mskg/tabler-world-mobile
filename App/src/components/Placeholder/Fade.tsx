@@ -7,55 +7,52 @@ const DURATION = 500;
 const useNativeDriver = true;
 
 type Props = {
-  children: any,
-  style?: any
+    children: any,
+    style?: any,
 };
 
 const animation = new Animated.Value(START_VALUE);
 let running = 0;
 
 function start() {
-  Animated.sequence([
-    Animated.timing(animation, {
-      toValue: END_VALUE,
-      duration: DURATION,
-      useNativeDriver,
-    }),
-    Animated.timing(animation, {
-      toValue: START_VALUE,
-      duration: DURATION,
-      useNativeDriver,
-    }),
-  ]).start((e) => {
-    if (e.finished) {
-      if (running !== 0) {
-        start();
+    Animated.sequence([
+        Animated.timing(animation, {
+          toValue: END_VALUE,
+          duration: DURATION,
+          useNativeDriver,
+      }),
+        Animated.timing(animation, {
+          toValue: START_VALUE,
+          duration: DURATION,
+          useNativeDriver,
+      }),
+    ]).start((e) => {
+      if (e.finished) {
+          if (running !== 0) {
+            start();
+        }
       }
-    }
   });
 }
 
 export class Fade extends React.PureComponent<Props> {
-  componentWillUnmount() {
-    running--;
-  }
-
-  componentDidMount() {
-    running++;
-
-    if (running == 1) {
-      // console.log("Starting new animation");
-      start();
+    componentWillUnmount() {
+        running--;
     }
-  }
 
-  render() {
-    const customStyle = { opacity: animation };
+    componentDidMount() {
+        if (++running === 1) {
+          start();
+      }
+    }
 
-    return (
+    render() {
+        const customStyle = { opacity: animation };
+
+        return (
       <Animated.View style={[this.props.style, customStyle]}>
         {this.props.children}
       </Animated.View>
-    );
-  }
+      );
+    }
 }

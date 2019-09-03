@@ -1,10 +1,10 @@
-type Reasons = "birthday";
+type Reasons = 'birthday';
 
 export interface INotificationPayload<T = void> {
-    title?: string,
-    body: string,
-    reason: Reasons,
-    payload: T,
+    title?: string;
+    body: string;
+    reason: Reasons;
+    payload: T;
 }
 
 export type BirthdayNotification = INotificationPayload<{

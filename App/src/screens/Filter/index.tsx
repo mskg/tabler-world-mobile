@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { FlatList, ListRenderItemInfo, ScrollView, View } from "react-native";
+import { FlatList, ListRenderItemInfo, ScrollView, View } from 'react-native';
 import { Checkbox, Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
@@ -192,5 +192,5 @@ export const FilterScreen = connect(
         toggleAssociationBoard,
     })(
         withWhoopsErrorBoundary(
-            withCacheInvalidation("areas", withTheme(FilterScreenBase)))
+            withCacheInvalidation('areas', withTheme(FilterScreenBase))),
     );

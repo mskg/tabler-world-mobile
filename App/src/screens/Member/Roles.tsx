@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import React from "react";
+import React from 'react';
 import { View } from 'react-native';
-import { Chip, Text, Theme, withTheme } from "react-native-paper";
+import { Chip, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { IRole } from "../../model/IRole";
+import { IRole } from '../../model/IRole';
 import { showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
 
@@ -11,7 +11,7 @@ type Props = {
     roles: IRole[],
     theme: Theme,
     showClub: typeof showClub;
-}
+};
 
 class RolesBase extends React.PureComponent<Props> {
     getOnPress(role: IRole) {
@@ -27,7 +27,7 @@ class RolesBase extends React.PureComponent<Props> {
     render() {
         return <View style={styles.chipContainer}>
             {
-                _(this.props.roles || []).orderBy(r => r.ref.type === "assoc" ? 1 : r.ref.type === "area" ? 2 : 3).map((r, i) => (
+                _(this.props.roles || []).orderBy(r => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
                     <Chip
                         style={[styles.chip, { backgroundColor: this.getColor(r) }]}
                         key={i}
@@ -42,5 +42,5 @@ class RolesBase extends React.PureComponent<Props> {
 }
 
 export const Roles = connect(undefined, {
-    showClub
+    showClub,
 })(withTheme(RolesBase));

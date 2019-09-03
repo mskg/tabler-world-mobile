@@ -8,35 +8,38 @@ import { Portal, Surface, Text, Theme, Title, TouchableRipple, withTheme } from 
 import { ActionNames } from '../analytics/ActionNames';
 import { Audit } from '../analytics/Audit';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { getConfigValue } from '../helper/Configuration';
 import { Categories, Logger } from '../helper/Logger';
+import { getParameterValue } from '../helper/parameters/getParameter';
+import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
+import { ParameterName } from '../model/graphql/globalTypes';
 
 const logger = new Logger(Categories.UIComponents.ErrorReport);
 
 const SHAKE_SPEED = 350;
 class ShakeEvent {
+    // tslint:disable-next-line: function-name
     static addListener(handler) {
-        let
-            last_x,
-            last_y,
-            last_z;
+        // tslint:disable: variable-name
+        let last_x;
+        let last_y;
+        let last_z;
 
         let lastUpdate = 0;
 
         Accelerometer.setUpdateInterval(100);
-        Accelerometer.addListener(accelerometerData => {
-            let { x, y, z } = accelerometerData;
-            let currTime = Date.now();
+        Accelerometer.addListener((accelerometerData) => {
+            const { x, y, z } = accelerometerData;
+            const currTime = Date.now();
 
             if ((currTime - lastUpdate) > 100) {
-                let diffTime = (currTime - lastUpdate);
+                const diffTime = (currTime - lastUpdate);
                 lastUpdate = currTime;
 
-                let speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+                const speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
 
                 if (speed > SHAKE_SPEED) {
-                    logger.log("sensor", "shake detected w/ speed: " + speed);
+                    logger.log('sensor', 'shake detected w/ speed: ' + speed);
                     handler();
                 }
 
@@ -47,10 +50,11 @@ class ShakeEvent {
         });
     }
 
+    // tslint:disable-next-line: function-name
     static removeListener() {
-        Accelerometer.removeAllListeners()
+        Accelerometer.removeAllListeners();
     }
-};
+}
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
@@ -62,19 +66,20 @@ const TIMEOUT = 8000;
 
 type Props = {
     theme: Theme,
-}
+};
 
 type State = {
     open: boolean,
-}
+};
 
+// tslint:disable-next-line: max-classes-per-file
 class ErrorReportBase extends React.Component<Props, State> {
     constructor(props) {
         super(props);
 
         this.state = {
             open: false,
-        }
+        };
     }
 
     mounted = false;
@@ -91,8 +96,8 @@ class ErrorReportBase extends React.Component<Props, State> {
     }
 
     animatedValue = new Animated.Value(0);
-    twiggle?: Animated.CompositeAnimation = undefined;
-    closeAction?: NodeJS.Timeout = undefined;
+    twiggle?: Animated.CompositeAnimation;
+    closeAction?: number;
 
     twiggleIcon = () => {
         // if (this.twiggle == null) {
@@ -105,8 +110,8 @@ class ErrorReportBase extends React.Component<Props, State> {
                 // rotate in other direction, to minimum value (= twice the duration of above)
                 Animated.timing(this.animatedValue, { toValue: -1.0, duration: 300, easing: Easing.linear, useNativeDriver: true }),
                 // return to begin position
-                Animated.timing(this.animatedValue, { toValue: 0.0, duration: 150, easing: Easing.linear, useNativeDriver: true })
-            ])
+                Animated.timing(this.animatedValue, { toValue: 0.0, duration: 150, easing: Easing.linear, useNativeDriver: true }),
+            ]),
         );
         // }
 
@@ -126,7 +131,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                 tension: 2,
                 friction: 8,
                 // speed: 12,
-            }
+            },
         ).start();
 
         this.twiggleIcon();
@@ -139,10 +144,12 @@ class ErrorReportBase extends React.Component<Props, State> {
 
             this.setState({ open: true }, this._slide);
 
-            this.closeAction = setTimeout(() => {
-                this.audit.trackAction(ActionNames.Timeout);
-                this._close();
-            }, TIMEOUT);
+            this.closeAction = setTimeout(
+                () => {
+                    this.audit.trackAction(ActionNames.Timeout);
+                    this._close();
+                },
+                TIMEOUT);
         }
     }
 
@@ -158,6 +165,8 @@ class ErrorReportBase extends React.Component<Props, State> {
 
     _runSupport = async () => {
         try {
+            const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
+
             const result = await MailComposer.composeAsync({
                 subject: I18N.ErrorReport.subject,
                 isHtml: true,
@@ -169,76 +178,88 @@ App Version: ${Constants.nativeAppVersion}
 Build Version: ${Constants.manifest.version}
 Device Id: ${Constants.deviceId}
 Time: ${new Date().toISOString()}
-`.replace(/\n/ig, "<br/>"),
-                recipients: [getConfigValue("support")],
+`.replace(/\n/ig, '<br/>'),
+                recipients: [urls.support],
             });
 
             this.audit.trackAction(ActionNames.SendErrorReport, {
-                Result: result.status
+                Result: result.status,
             });
-        }
-        catch (e) {
+        } catch (e) {
             this.audit.trackAction(ActionNames.SendErrorReport, {
-                Result: "Error"
+                Result: 'Error',
             });
 
             logger.error(e);
             Alert.alert(I18N.ErrorReport.noMail);
-        }
-        finally {
+        } finally {
             this._close();
         }
     }
 
     render() {
-        return <Portal>
-            {this.state.open &&
-                <TouchableWithoutFeedback onPress={this._close}>
-                    <View style={styles.shade}></View>
-                </TouchableWithoutFeedback>
-            }
+        return (
+            <Portal>
+                {this.state.open &&
+                    <TouchableWithoutFeedback onPress={this._close}>
+                        <View style={styles.shade} />
+                    </TouchableWithoutFeedback>
+                }
 
-            <Surface style={[
-                styles.container,
-                { transform: [{ translateY: this.bounceValue }] }
-            ]}>
-                <Title>{I18N.ErrorReport.title}</Title>
-                <Text>{I18N.ErrorReport.text}</Text>
+                <Surface
+                    // @ts-ignore transform seems not to exist?
+                    style={[
+                        styles.container,
+                        { transform: [{ translateY: this.bounceValue }] },
+                    ]}
+                >
+                    <Title>{I18N.ErrorReport.title}</Title>
+                    <Text>{I18N.ErrorReport.text}</Text>
 
-                <AnimatedIcon name="md-phone-portrait" size={64 + 32}
-                    style={[{
-                        transform: [{
-                            rotate: this.animatedValue.interpolate({
-                                inputRange: [-1, 1],
-                                outputRange: ['-0.1rad', '0.1rad']
-                            })
-                        }],
-                        color: this.props.theme.colors.accent,
-                    }, styles.icon]}
-                />
+                    <AnimatedIcon
+                        name="md-phone-portrait"
+                        size={64 + 32}
+                        style={[
+                            {
+                                transform: [{
+                                    rotate: this.animatedValue.interpolate({
+                                        inputRange: [-1, 1],
+                                        outputRange: ['-0.1rad', '0.1rad'],
+                                    }),
+                                }],
+                                color: this.props.theme.colors.accent,
+                            },
+                            styles.icon,
+                        ]}
+                    />
 
-                <TouchableRipple style={styles.touch} onPress={this._runSupport}>
-                    <View style={styles.row}>
-                        <Ionicons name="md-bug" size={32} />
-                        <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
-                    </View>
-                </TouchableRipple>
-            </Surface>
-        </Portal>;
+                    <TouchableRipple style={styles.touch} onPress={this._runSupport}>
+                        <View style={styles.row}>
+                            <Ionicons name="md-bug" size={32} />
+                            <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
+                        </View>
+                    </TouchableRipple>
+                </Surface>
+            </Portal>
+        );
     }
 }
 
 const ShakeErrorReport = withTheme(ErrorReportBase);
 
+// tslint:disable-next-line: export-name
 export function withSkakeErrorReport(WrappedComponent) {
+    // tslint:disable-next-line: max-classes-per-file
     return class extends React.PureComponent {
         render() {
-            return <>
-                <WrappedComponent />
-                <ShakeErrorReport />
-            </>;
+            return (
+                <>
+                    <WrappedComponent />
+                    <ShakeErrorReport />
+                </>
+            );
         }
-    }
+    };
 }
 
 const styles = StyleSheet.create({
@@ -248,13 +269,13 @@ const styles = StyleSheet.create({
     },
 
     touch: {
-        width: Dimensions.get("screen").width,
+        width: Dimensions.get('screen').width,
     },
 
     row: {
-        flexDirection: "row",
-        alignItems: "center",
-        width: "100%",
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
         paddingLeft: 32,
         paddingVertical: 8,
     },
@@ -267,7 +288,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
 
         opacity: 0.35,
-        backgroundColor: "black",
+        backgroundColor: 'black',
     },
 
     container: {
@@ -277,12 +298,12 @@ const styles = StyleSheet.create({
         height: HEIGHT,
         left: 0,
         right: 0,
-        position: "absolute",
+        position: 'absolute',
 
         paddingVertical: 16,
         paddingHorizontal: 16,
 
-        alignItems: "center",
+        alignItems: 'center',
         borderRadius: 10,
     },
 });

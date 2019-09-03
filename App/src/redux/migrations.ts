@@ -1,25 +1,20 @@
 import { createMigrate } from 'redux-persist';
+import { Categories, Logger } from '../helper/Logger';
 
-export const MIGRATE_VERSION = 30;
+const logger = new Logger(Categories.Redux);
 
-const NULL = (state) => {
-  console.warn('Migration running to version', MIGRATE_VERSION);
-  return undefined;
-};
+// if you want to wipe the store just increment the number here
+export const MIGRATE_VERSION = 49;
 
-const migrations = {
-  19: NULL,
-  20: NULL,
-  21: NULL,
-  22: NULL,
-  23: NULL,
-  24: NULL,
-  25: NULL,
-  26: NULL,
-  27: NULL,
-  28: NULL,
-  29: NULL,
-  MIGRATE_VERSION: NULL,
-};
+export const migrateToNull = createMigrate(
+    {
+        [MIGRATE_VERSION]: ({ _persist }) => {
+            logger.log('Running migration, previous', _persist);
 
-export const migrateToNull = createMigrate(migrations, { debug: false });
+            return {
+                _persist,
+            };
+        },
+    },
+    { debug: __DEV__ },
+);

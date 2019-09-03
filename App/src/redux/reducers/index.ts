@@ -6,6 +6,8 @@ import { migrateToNull, MIGRATE_VERSION } from '../migrations';
 import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
+import { locationReducer } from './location';
+import { networkReducer } from './network';
 import { settingsReducer } from './settings';
 import { snackReducer } from './snacks';
 import { stateReducer } from './state';
@@ -14,7 +16,7 @@ import { userReducer } from './user';
 const authUserConfig: PersistConfig = {
     key: 'auth',
     keyPrefix: '',
-    blacklist: ["signinState"],
+    blacklist: ['signinState'],
 
     // storage: encryptedStorage,
     storage: isFeatureEnabled(Features.EncryptedStorage)
@@ -22,25 +24,63 @@ const authUserConfig: PersistConfig = {
         : storage,
 
     timeout: 0,
+
+    version: MIGRATE_VERSION,
+    migrate: migrateToNull,
+    debug: __DEV__,
 };
 
 const defaultConfig = {
     storage,
     stateReconciler: autoMergeLevel2,
+    // whitelist: ["_persist"],
+
+    timeout: 0,
+    // version: MIGRATE_VERSION,
+    debug: __DEV__,
 
     version: MIGRATE_VERSION,
-    migrate: migrateToNull
+    migrate: migrateToNull,
 };
 
+// tslint:disable-next-line: export-name
 export default {
+    connection: networkReducer,
     updateAvailable: stateReducer,
 
     auth: persistReducer(authUserConfig, userReducer),
 
-    searchHistory: persistReducer({ ...defaultConfig, key: "searchHistory" }, searchHistoryReducer),
+    searchHistory: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'searchHistory',
+        },
+        searchHistoryReducer,
+    ),
 
-    settings: persistReducer({ ...defaultConfig, key: "settings" }, settingsReducer),
-    filter: persistReducer({ ...defaultConfig, key: "filter" }, filterReducer),
+    settings: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'settings',
+        },
+        settingsReducer,
+    ),
+
+    filter: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'filter',
+        },
+        filterReducer,
+    ),
+
+    location: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'location',
+        },
+        locationReducer,
+    ),
 
     snacks: snackReducer,
 };

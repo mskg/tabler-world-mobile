@@ -1,0 +1,37 @@
+{
+    "name": "@mskg/tabler-world-yarn-tools",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "postinstall": "tsc"
+    },
+    "bin": {
+        "run-env": "./bin/run-env.js",
+        "service": "./bin/service.js"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "dependencies": {
+        "@types/cross-spawn": "^6.0.0",
+        "@types/webpack-node-externals": "^1.6.3",
+        "child_process": "^1.0.2",
+        "cross-spawn": "^6.0.5",
+        "fs": "^0.0.1-security",
+        "path": "^0.12.7",
+        "tslint": "^5.19.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "tslint-microsoft-contrib": "^6.2.0",
+        "typescript-tslint-plugin": "^0.5.4",
+        "webpack-node-externals": "^1.7.2"
+    },
+    "peerDependencies": {
+        "serverless-webpack": "*"
+    },
+    "devDependencies": {
+        "typescript": "3.6.2"
+    }
+}

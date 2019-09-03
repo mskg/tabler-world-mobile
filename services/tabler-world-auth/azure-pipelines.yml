@@ -1,0 +1,45 @@
+# build number
+name: $(VERSION).$(rev:r)
+
+pool:
+  name: Default
+  demands: npm
+
+variables:
+  VERSION: 1.2
+  PACKAGE_DIR: 'services/tabler-world-auth'
+
+pr:
+  branches:
+    exclude:
+      - '*'
+
+trigger:
+  branches:
+    include:
+    - development
+    - workspace-layout
+    - releases/*
+
+  paths:
+    include:
+      - packages/**/src/*
+      - services/tabler-world-auth/src/*
+      - services/tabler-world-auth/azure-pipelines.yml
+
+steps:
+# - template: ../devops/yarn.yml
+
+- task: Npm@1
+  inputs:
+    command: custom
+    workingDir: '$(PACKAGE_DIR)'
+    verbose: false
+    customCommand: 'version $(Build.BuildNumber)'
+
+- template: ../devops/publish-defaults.yml
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(PACKAGE_DIR)'
+    ArtifactName: source/services/tabler-world-auth

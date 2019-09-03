@@ -10,7 +10,6 @@ export const Background = ({ children }) => (
     </ImageBackground>
 );
 
-
 export const Logo = () => (
     <View style={styles.heading}>
         <Image

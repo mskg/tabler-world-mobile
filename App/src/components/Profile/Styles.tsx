@@ -5,16 +5,16 @@ export const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingVertical: 8,
-        width: "100%",
+        width: '100%',
     },
 
     header: {
         alignItems: 'center',
-        width: "100%",
+        width: '100%',
     },
 
     title: {
-        paddingTop: 16-10,
+        paddingTop: 16 - 10,
         marginVertical: 0,
         paddingHorizontal: 16,
     },
@@ -26,11 +26,11 @@ export const styles = StyleSheet.create({
 
     titlePlaceholder: {
         marginBottom: 4,
-         marginTop: 16
+        marginTop: 16,
     },
 
     subTitlePlaceholder: {
-        marginVertical: 4
+        marginVertical: 4,
     },
 
     divider: {
@@ -56,9 +56,9 @@ export const styles = StyleSheet.create({
 
 
     section: {
-        flexDirection: "row",
+        flexDirection: 'row',
         // paddingVertical: 4,
-        alignItems: "flex-start",
+        alignItems: 'flex-start',
     },
 
     sectionIcon: {
@@ -78,7 +78,7 @@ export const styles = StyleSheet.create({
     },
 
     sectionElements: {
-        flexDirection: "column",
+        flexDirection: 'column',
         flex: 1,
         marginVertical: 8,
         marginRight: -16,

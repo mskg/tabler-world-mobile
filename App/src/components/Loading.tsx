@@ -1,13 +1,26 @@
-import { SplashScreen } from "expo";
-import React from "react";
-import { Image, StatusBar, StyleSheet, View } from "react-native";
+import { SplashScreen } from 'expo';
+import React from 'react';
+import { Image, StatusBar, StyleSheet, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
-import Assets from "../Assets";
+import Assets from '../Assets';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT } from '../theme/colors';
 
 export default class Loading extends React.PureComponent {
+    // state = {
+    //     hide: false
+    // }
+
+    async componentDidMount() {
+        setTimeout(() => {
+            SplashScreen.hide();
+        },         1000);
+    }
+
     // resources are preloaded by withPreCached
     render() {
+        return null;
+
+        // we don't neeed that, we introduced the timeout to remove the flickering
         return (
             <View style={{ flex: 1 }}>
                 <StatusBar hidden={true} />
@@ -18,7 +31,9 @@ export default class Loading extends React.PureComponent {
                     onLoadEnd={() => {
                         // wait for image's content to fully load [`Image#onLoadEnd`]
                         // (https://facebook.github.io/react-native/docs/image#onloadend)
-                        SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
+                        // Image is fully presented, instruct SplashScreen to hide
+
+                        SplashScreen.hide();
                     }}
 
                     // we need to adjust Android devices
@@ -36,28 +51,26 @@ export default class Loading extends React.PureComponent {
 }
 
 export const FullScreenLoading = (...props: any[]) =>
-    <View style={{ flex: 1, position: "absolute", top: 0, bottom: 0, left: 0, right: 0, }}>
-        <View style={styles.center}>
+    <View style={StyleSheet.absoluteFill}>
+        <View style={[StyleSheet.absoluteFill, styles.center]}>
             <InlineLoading {...props} />
         </View>
     </View>
-;
+    ;
 
 export const InlineLoading = (...props: any[]) => <ActivityIndicator size="large" color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
 
 const styles = StyleSheet.create({
     image: {
         flex: 1,
-        resizeMode: "contain",
+        resizeMode: 'contain',
         width: undefined,
-        height: undefined
+        height: undefined,
     },
 
     center: {
-        position: 'absolute',
-        top: 100, left: 0,
-        right: 0, bottom: 0,
+        // top: 100,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
-})
+});

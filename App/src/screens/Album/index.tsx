@@ -27,248 +27,252 @@ import ProgressiveImage from './ProgressiveImage';
 import { styles } from './Styles';
 
 type State = {
-  viewGallery: boolean,
-  selectedIndex: number,
-  hideButtons: boolean,
+    viewGallery: boolean,
+    selectedIndex: number,
+    hideButtons: boolean,
 };
 
 type Props = {
-  theme: Theme,
-  navigation: any,
-  fetchPolicy: any,
+    theme: Theme,
+    navigation: any,
+    fetchPolicy: any,
 };
 
 class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlbumParams>, State> {
-  data: Album | undefined;
+    data: Album | undefined;
 
-  constructor(props) {
-    super(props, AuditScreenName.Album);
+    constructor(props) {
+        super(props, AuditScreenName.Album);
 
-    this.state = {
-      viewGallery: false,
-      selectedIndex: 0,
-      hideButtons: false,
-    };
-  }
+        this.state = {
+            viewGallery: false,
+            selectedIndex: 0,
+            hideButtons: false,
+        };
+    }
 
-  componentDidMount() {
-    const { album } = this.props.navigation.state.params as IAlbumParams;
+    componentDidMount() {
+        const { album } = this.props.navigation.state.params as IAlbumParams;
 
-    this.audit.submit({
-      [AuditPropertyNames.Album]: album.toString(),
-    });
-  }
+        this.audit.submit({
+            [AuditPropertyNames.Album]: album.toString(),
+        });
+    }
 
-  _renderItem = (params) => {
-    const item = params.item;
+    _renderItem = (params) => {
+        const item = params.item;
 
-    return (
-      <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, hideButtons: false, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
-        <View style={styles.imageContainer}>
+        return (
+            <TouchableWithoutFeedback onPress={() => this.setState({ viewGallery: true, hideButtons: false, selectedIndex: params.index }, () => ScreenOrientation.unlockAsync())}>
+                <View style={styles.imageContainer}>
 
-          <View style={styles.imageThumbnail}>
-            <CachedImage
-              resizeMode="cover"
-              cacheGroup="album"
-              preview={
-                // android doesn't like the animation here?
-                Platform.OS == "android" ? undefined :
-                  <Placeholder ready={false} previewComponent={
-                    <Square width={Dimensions.get("screen").width / 4 - 3} />
-                  }
-                  />
-              }
-              uri={item.source.preview}
+                    <View style={styles.imageThumbnail}>
+                        <CachedImage
+                            resizeMode="cover"
+                            cacheGroup="album"
+                            preview={
+                                // android doesn't like the animation here?
+                                Platform.OS === 'android' ? undefined :
+                                    <Placeholder
+                                        ready={false}
+                                        previewComponent={
+                                            <Square width={Dimensions.get('screen').width / 4 - 3} />
+                                        }
+                                    />
+                            }
+                            uri={item.source.preview}
+                        />
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        );
+    }
+
+    _key = (_item: Album_Album_pictures, index: number) => {
+        return index.toString();
+    }
+
+    _toggleButtons = () => requestAnimationFrame(() => this.setState(
+        { hideButtons: !this.state.hideButtons }))
+
+    _hideGallery = () => requestAnimationFrame(() => this.setState(
+        { viewGallery: false },
+        () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)))
+
+    _export = () => requestAnimationFrame(() => {
+        if (!this.data || !this.data.Album) return;
+
+        const source = this.data.Album.pictures[this.state.selectedIndex].preview_1920;
+
+        FileSystem.downloadAsync(
+            source,
+            `${FileSystem.cacheDirectory}share.jpeg`,
+        )
+            .then(({ uri }) => {
+                if (Platform.OS === 'android') {
+                    Sharing.shareAsync(
+                        uri,
+                        {
+                            mimeType: 'image/jpeg',
+                            UTI: 'image/jpeg',
+                        },
+                    );
+                } else {
+                    ShareNative.share({
+                        url: uri,
+                    });
+                }
+            })
+            .catch((error) => {
+                logger.error(error);
+            });
+    })
+
+    _pageSelected = (page) => this.setState({ selectedIndex: page });
+
+    _preview = ({ image, ...props }) => {
+        return (
+            <ProgressiveImage
+                thumbnailSource={{
+                    uri: image.source.preview,
+                }}
+
+                source={{
+                    uri: image.source.uri,
+                }}
+
+                {...props}
             />
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  }
+        );
+    }
 
-  _key = (item: Album_Album_pictures, index: number) => {
-    return index.toString();
-  }
+    render() {
+        const { album } = this.props.navigation.state.params as IAlbumParams;
 
-  _toggleButtons = () => requestAnimationFrame(() => this.setState(
-    { hideButtons: !this.state.hideButtons }));
+        return (
+            <Query<Album, AlbumVariables>
+                query={GetAlbumQuery}
+                fetchPolicy={this.props.fetchPolicy}
+                variables={{
+                    id: album,
+                }}
+            >
+                {({ loading, error, data, refetch }) => {
+                    if (error) throw error;
+                    this.data = data;
 
-  _hideGallery = () => requestAnimationFrame(() => this.setState(
-    { viewGallery: false },
-    () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)));
+                    return (
+                        <>
+                            <ScreenWithHeader
+                                header={{
+                                    title: data != null && data.Album != null ? data.Album.name : I18N.Album.title,
+                                    showBack: true,
+                                }}
+                            >
+                                <FlatList
+                                    contentContainerStyle={styles.container}
+                                    data={mapResults(data)}
+                                    numColumns={4}
 
-  _export = () => requestAnimationFrame(() => {
-    if (!this.data || !this.data.Album) return;
+                                    refreshing={loading}
+                                    onRefresh={refetch}
 
-    const source = this.data.Album.pictures[this.state.selectedIndex].preview_1920;
+                                    renderItem={this._renderItem}
+                                    keyExtractor={this._key}
+                                />
+                            </ScreenWithHeader>
 
-    FileSystem.downloadAsync(
-      source,
-      FileSystem.cacheDirectory + 'share.jpeg'
-    )
-      .then(({ uri }) => {
-        console.log('Finished downloading to ', uri);
 
-        if (Platform.OS === "android") {
-          Sharing.shareAsync(
-            uri,
-            {
-              mimeType: "image/jpeg",
-              UTI: "image/jpeg",
-            }
-          );
-        } else {
-          ShareNative.share({
-            url: uri,
-          });
+                            {this.state.viewGallery &&
+                                <Portal>
+                                    <StatusBar hidden={true} />
+                                    <Gallery
+                                        style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop }}
+                                        images={mapResults(data)}
+
+                                        onPageSelected={this._pageSelected}
+                                        onSingleTapConfirmed={this._toggleButtons}
+                                        initialPage={this.state.selectedIndex}
+                                        imageComponent={this._preview}
+
+                                        flatListProps={{
+                                            windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
+                                            initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
+                                            maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
+                                            // initialScrollIndex: this.state.selectedIndex,
+                                            // getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
+                                            //   length: Dimensions.get('screen').width,
+                                            //   offset: Dimensions.get('screen').width * index,
+                                            //   index,
+                                            // }),
+                                        }}
+                                    />
+
+                                    {!this.state.hideButtons &&
+                                        <>
+                                            <IconButton
+                                                icon="close"
+                                                color={this.props.theme.colors.accent}
+                                                onPress={this._hideGallery}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: HEADER_MARGIN_TOP + 8,
+                                                    left: 8,
+                                                }}
+                                            />
+
+                                            <IconButton
+                                                icon="share"
+                                                onPress={this._export}
+                                                color={this.props.theme.colors.accent}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: HEADER_MARGIN_TOP + 8,
+                                                    right: 8,
+                                                }}
+                                            />
+                                        </>
+                                    }
+                                </Portal>
+                            }
+                        </>
+                    );
+                }}
+            </Query>
+        );
+    }
+}
+
+const mapResults = memoize((data: Album | undefined) => data != null && data.Album != null
+    ? data.Album.pictures.map((p) => ({
+        source:
+        {
+            uri: encodeURI(p.preview_1920),
+            preview: encodeURI(p.preview_100),
+        },
+    }))
+    : []);
+
+function memoize(func: (data: Album | undefined) => any) {
+    let result;
+    let cachedData: Album;
+
+    return (newData: Album | undefined) => {
+        // tslint:disable-next-line: triple-equals
+        if (newData != null && (cachedData == null || newData.Album != cachedData.Album)) {
+            logger.log('calculating new data');
+
+            result = func(newData);
+            cachedData = newData;
         }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  });
 
-  _pageSelected = (page) => this.setState({ selectedIndex: page });
-
-  _preview = ({ image, ...props }) => {
-    // console.log(image);
-
-    return <ProgressiveImage
-      thumbnailSource={{
-        uri: image.source.preview
-      }}
-
-      source={{
-        uri: image.source.uri
-      }}
-
-      {...props} />
-  }
-
-  render() {
-    const { album } = this.props.navigation.state.params as IAlbumParams;
-
-    return (
-      <Query<Album, AlbumVariables>
-        query={GetAlbumQuery}
-        fetchPolicy={this.props.fetchPolicy}
-        variables={{
-          id: album,
-        }}
-      >
-        {({ loading, error, data, refetch }) => {
-          if (error) throw error;
-          this.data = data;
-
-          return (
-            <>
-              <ScreenWithHeader header={{
-                title: data != null && data.Album != null ? data.Album.name : I18N.Album.title,
-                showBack: true,
-              }}
-              >
-                <FlatList
-                  contentContainerStyle={styles.container}
-                  //@ts-ignore
-                  data={mapResults(data)}
-                  numColumns={4}
-
-                  refreshing={loading}
-                  onRefresh={refetch}
-
-                  renderItem={this._renderItem}
-                  keyExtractor={this._key}
-                />
-              </ScreenWithHeader>
-
-
-              {this.state.viewGallery &&
-                <Portal>
-                  <StatusBar hidden={true} />
-                  <Gallery
-                    style={{ flex: 1, backgroundColor: this.props.theme.colors.backdrop, }}
-                    images={mapResults(data)}
-
-                    onPageSelected={this._pageSelected}
-                    onSingleTapConfirmed={this._toggleButtons}
-                    initialPage={this.state.selectedIndex}
-                    imageComponent={this._preview}
-
-                    flatListProps={{
-                      windowSize: 3, // limits memory usage to 3 screens full of photos (ie. 3 photos)
-                      initialNumToRender: 3, // limit amount, must also be limited, is not controlled by other props
-                      maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
-                      // initialScrollIndex: this.state.selectedIndex,
-                      // getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
-                      //   length: Dimensions.get('screen').width,
-                      //   offset: Dimensions.get('screen').width * index,
-                      //   index,
-                      // }),
-                    }}
-                  />
-
-                  {!this.state.hideButtons &&
-                    <>
-                      <IconButton
-                        icon="close"
-                        color={this.props.theme.colors.accent}
-                        onPress={this._hideGallery}
-                        style={{
-                          position: "absolute",
-                          top: HEADER_MARGIN_TOP + 8,
-                          left: 8,
-                        }}
-                      />
-
-                      <IconButton
-                        icon="share"
-                        onPress={this._export}
-                        color={this.props.theme.colors.accent}
-                        style={{
-                          position: "absolute",
-                          top: HEADER_MARGIN_TOP + 8,
-                          right: 8,
-                        }}
-                      />
-                    </>
-                  }
-                </Portal>
-              }
-            </>
-          );
-        }}
-      </Query>
-    );
-  }
+        return result;
+    };
 }
 
-const mapResults = memoize((data: Album) => data != null && data.Album != null
-  ? data.Album.pictures.map(p => ({
-    source:
-    {
-      uri: encodeURI(p.preview_1920),
-      preview: encodeURI(p.preview_100),
-    }
-  }))
-  : []);
-
-function memoize(func: (data: Album) => any) {
-  let result;
-  let cachedData: Album;
-
-  return (newData: Album) => {
-    if (newData != null && (cachedData == null || newData.Album != cachedData.Album)) {
-      logger.log("calculating new data");
-
-      result = func(newData);
-      cachedData = newData;
-    }
-
-    return result;
-  }
-}
-
+// tslint:disable-next-line: export-name
 export const AlbumScreen =
-  withWhoopsErrorBoundary(
-    withCacheInvalidation("album",
-      withTheme(AlbumScreenBase)));
+    withWhoopsErrorBoundary(
+        withCacheInvalidation(
+            'album',
+            withTheme(AlbumScreenBase)));

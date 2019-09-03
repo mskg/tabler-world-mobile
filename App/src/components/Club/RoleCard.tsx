@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Divider, Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { IAppState } from '../../model/IAppState';
 import { showProfile } from '../../redux/actions/navigation';
 import { MemberTitle } from '../Member/MemberTitle';
 import { styles } from '../Member/Styles';
@@ -12,7 +11,7 @@ type Props = {
 
     member: {
         id: number,
-        pic?: string,
+        pic: string | null,
         firstname: string,
         lastname: string,
     },
@@ -29,7 +28,7 @@ type State = {
 class RoleCardBase extends React.Component<Props, State> {
     _onPress = () =>
         requestAnimationFrame(() =>
-            this.props.showProfile(this.props.member.id));
+            this.props.showProfile(this.props.member.id))
 
     render() {
         return (
@@ -51,8 +50,4 @@ class RoleCardBase extends React.Component<Props, State> {
     }
 }
 
-export const RoleCard = connect(
-    (state: IAppState) => ({
-    }), {
-        showProfile,
-    })(withTheme(RoleCardBase));
+export const RoleCard = connect(null, { showProfile })(withTheme(RoleCardBase));

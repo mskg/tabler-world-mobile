@@ -7,18 +7,18 @@ const logger = new Logger(Categories.Redux);
 
 export function settingsReducer(
   state = INITIAL_STATE.settings,
-  action: typeof actions.updateSetting.shape
+  action: typeof actions.updateSetting.shape,
 ): Result {
-  switch (action.type) {
+    switch (action.type) {
     case actions.updateSetting.type:
-      logger.debug("[settings]", action.payload.name, "=>", action.payload.value);
+        logger.debug('[settings]', action.payload.name, '=>', action.payload.value);
 
-      return {
-        ...state,
-        [action.payload.name]: action.payload.value
+        return {
+          ...state,
+          [action.payload.name]: action.payload.value,
       };
 
     default:
-      return state;
-  }
+        return state;
+    }
 }

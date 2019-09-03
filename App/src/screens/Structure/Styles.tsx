@@ -8,6 +8,33 @@ export const styles = StyleSheet.create({
         borderRadius: 8,
     },
 
+    search: {
+        position: 'absolute',
+        margin: 16,
+        top: 0,
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+    },
+
+    switchLayoutButton: {
+        width: 32 + 8,
+        height: 32 + 8,
+        marginLeft: 8,
+        elevation: 2,
+        borderRadius: 4,
+
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+    },
+
     container: {
         padding: 16,
     },
@@ -27,15 +54,16 @@ export const styles = StyleSheet.create({
         elevation: 1,
 
         marginBottom: 16,
+        flex: 1,
     },
 
     chipContainer: {
         paddingHorizontal: 16,
 
-        flexDirection: "row",
-        alignItems: "flex-start",
-        alignContent: "center",
-        flexWrap: "wrap",
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        alignContent: 'center',
+        flexWrap: 'wrap',
     },
 
     chip: {
@@ -46,7 +74,7 @@ export const styles = StyleSheet.create({
     },
 
     action: {
-        justifyContent: "flex-end",
+        justifyContent: 'flex-end',
         marginRight: 8,
     },
 
@@ -64,7 +92,7 @@ export const styles = StyleSheet.create({
     },
 
     image: {
-        position: "absolute",
+        position: 'absolute',
         top: 0, bottom: 0,
         left: 16, right: 16,
 

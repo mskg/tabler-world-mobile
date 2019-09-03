@@ -1,0 +1,48 @@
+parameters:
+  APP_VERSION: $(APP_VERSION)
+  APPDIR: $(System.DefaultWorkingDirectory)/App
+  SOURCESDIR: $(System.DefaultWorkingDirectory)
+
+steps:
+- script: |
+   sudo sysctl fs.inotify.max_user_watches=524288
+   sudo sysctl -p
+
+  displayName: 'Increase max_user_watches'
+  continueOnError: true
+
+- template: ./git-crypt.yml
+  parameters:
+    WORKINGDIR: ${{ parameters.SOURCESDIR }}
+
+- task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  displayName: 'Get cloudformation exports'
+  inputs:
+    awsCredentials: AWS
+    regionName: $(AWS_DEFAULT_REGION)
+    scriptType: inline
+    inlineScript: |
+     sudo pip3 install --upgrade pip
+     sudo pip3 install --upgrade setuptools
+
+     pip3 install awscli --upgrade --user
+
+     export PATH="/home/vsts/.local/bin:/root/.local/bin:/Users/vsts/Library/Python/3.7/bin:/Users/vsts/Library/Python/3.5/bin:$PATH"
+     aws cloudformation list-exports > ./config/aws.json
+
+    disableAutoCwd: true
+    workingDirectory: ${{ parameters.APPDIR }}
+
+- script: 'node config/create.js'
+  workingDirectory: ${{ parameters.APPDIR }}
+  displayName: 'create config'
+  env:
+    APP_VERSION: ${{ parameters.APP_VERSION }}
+
+- script: 'cat app.json'
+  workingDirectory: ${{ parameters.APPDIR }}
+  displayName: 'Show app.json'
+
+- script: 'npx expo login -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD)'
+  workingDirectory: ${{ parameters.APPDIR }}
+  displayName: 'Login to expo'

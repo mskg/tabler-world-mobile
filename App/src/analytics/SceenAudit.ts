@@ -1,7 +1,7 @@
 import { ActionNames } from './ActionNames';
 import { AuditPropertyNames } from './AuditPropertyNames';
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from "./logger";
+import { logger } from './logger';
 import { IAuditor, Metrics, Params } from './Types';
 
 /**
@@ -14,11 +14,11 @@ export class SceenAudit implements IAuditor {
     constructor(private provider: IAnalyticsProvider, private screen: string) {
     }
 
-    public setParam(name: AuditPropertyNames, value: string | string[]) {
+    setParam(name: AuditPropertyNames, value: string | string[]) {
         this.params[name] = value;
     }
 
-    public increment(metric: string) {
+    increment(metric: string) {
         if (!this.metrics[metric]) {
             this.metrics[metric] = 0;
         }
@@ -26,31 +26,29 @@ export class SceenAudit implements IAuditor {
         this.metrics[metric] = this.metrics[metric] + 1;
     }
 
-    public trackAction(action: ActionNames, params?: Params, metrics?: Metrics) {
+    trackAction(action: ActionNames, params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
 
         try {
             this.provider.trackAction(this.screen, action, params, metrics);
-        }
-        catch (e) {
-            logger.error(e, "trackAction failed");
+        } catch (e) {
+            logger.error(e, 'trackAction failed');
         }
     }
 
-    public submit(params?: Params, metrics?: Metrics) {
+    submit(params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
 
         try {
             this.provider.trackPageView(this.screen, {
                 ...this.params,
-                ...(params || {})
-            }, {
-                    ...this.metrics,
-                    ...(metrics || {})
-                });
-        }
-        catch (e) {
-            logger.error(e, "trackAction failed");
+                ...(params || {}),
+            },                          {
+                ...this.metrics,
+                ...(metrics || {}),
+            });
+        } catch (e) {
+            logger.error(e, 'trackAction failed');
         }
     }
 }

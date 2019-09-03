@@ -1,4 +1,4 @@
 export enum Routes {
-    Me = "Me",
-    Scan = "Scan",
+    Me = 'Me',
+    Scan = 'Scan',
 }

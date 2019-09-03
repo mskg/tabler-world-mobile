@@ -54,4 +54,4 @@ export const Social = ({ social, theme }: { social: Member_Member_socialmedia | 
                 disabledColor={theme.colors.disabled} />
         </View>
     );
-}
+};

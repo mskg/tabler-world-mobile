@@ -1,0 +1,60 @@
+{
+  "name": "@mskg/tabler-world-import",
+  "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@mskg/tabler-world-aws": "0.0.1",
+    "@mskg/tabler-world-cache": "0.0.1",
+    "@mskg/tabler-world-geo": "0.0.1",
+    "@mskg/tabler-world-jobs": "0.0.1",
+    "@mskg/tabler-world-rds-client": "0.0.1",
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
+    "@sentry/node": "^5.4.0",
+    "apollo-server-caching": "^0.5.0",
+    "apollo-server-core": "^2.9.1",
+    "aws-xray-sdk": "^2.3.3",
+    "https": "^1.0.0",
+    "lodash": "^4.17.11",
+    "node-geocoder": "^3.23.0",
+    "node-gzip": "^1.1.2",
+    "pg": "^7.9.0"
+  },
+  "devDependencies": {
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
+    "@types/aws-lambda": "^8.10.26",
+    "@types/date-and-time": "^0.6.0",
+    "@types/geojson": "^7946.0.7",
+    "@types/lru-cache": "^5.1.0",
+    "@types/node": "^12.7.3",
+    "@types/node-geocoder": "^3.19.1",
+    "@types/pg": "^7.4.13",
+    "aws-sdk": "^2.414.0",
+    "file-loader": "^4.2.0",
+    "ntl": "^4.0.0",
+    "serverless": "^1.49.0",
+    "serverless-dynamodb-local": "^0.2.38",
+    "serverless-iam-roles-per-function": "^2.0.1",
+    "serverless-offline": "^5.8.0",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-webpack": "^5.3.0",
+    "ts-loader": "^6.0.1",
+    "ts-node": "^8.0.2",
+    "typescript": "3.6.2",
+    "webpack": "^4.32.1"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test-export": "run-env ts-node --project ./tsconfig.json scripts/export",
+    "test-geo": "run-env ts-node --project ./tsconfig.json scripts/geocode",
+    "deploy": "service deploy",
+    "package": "service package",
+    "remove": "service remove",
+    "dev": "service dev --port 3002",
+    "dynamodb": "run-env serverless dynamodb install && run-env serverless dynamodb start",
+    "start": "ntl"
+  }
+}

@@ -1,11 +1,11 @@
 export interface ISnack {
-  message: string;
-  duration?: number;
+    message: string;
+    duration?: number;
 
-  hideAction?: boolean,
+    hideAction?: boolean;
 
-  action?: {
-    label: string
-    onPress: () => void,
-  },
+    action?: {
+        label: string
+        onPress: () => void,
+    };
 }

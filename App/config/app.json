@@ -21,7 +21,8 @@
       "profile": "https://rti.roundtable.world/de/members/#id#/",
       "world": "https://rti.roundtable.world/de/",
       "join": "https://www.round-table.de/bist-du-wir/",
-      "support": "support@round-table.de"
+      "support": "support@round-table.de",
+      "feedback": "http://feedback.app.roundtable.world/"
     },
     "orientation": "portrait",
     "icon": "./assets/images/logo_iOS.png",
@@ -53,7 +54,8 @@
       },
       "infoPlist": {
         "UIBackgroundModes": [
-          "fetch"
+          "fetch",
+          "location"
         ],
         "LSApplicationQueriesSchemes": [
           "googlechrome",
@@ -68,8 +70,17 @@
           "tel",
           "sms",
           "comgooglemaps"
-        ]
+        ],
+        "NSCameraUsageDescription": "TABLER.APP uses the camera to scan barcodes of other members.",
+        "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
+        "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
+        "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
+        "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription" : "TABLER.APP tracks your position to allow other members to get in touch with you."
       }
+    },
+    "locales": {
+      "de": "./src/i18n/permissions/de.json"
     },
     "android": {
       "permissions": [
@@ -78,11 +89,16 @@
         "READ_CALENDAR",
         "WRITE_CALENDAR",
         "VIBRATE",
-        "CAMERA"
+        "CAMERA",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo_Android.png",
         "backgroundColor": "#ffffff"
+      },
+      "config":{
+        "googleMaps": {}
       }
     }
   }

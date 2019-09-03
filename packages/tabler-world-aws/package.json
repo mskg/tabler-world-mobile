@@ -1,0 +1,25 @@
+{
+  "name": "@mskg/tabler-world-aws",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
+  "dependencies": {},
+  "peerDependencies": {
+    "aws-sdk": "*",
+    "aws-xray-sdk": "*",
+    "https": "*",
+    "pg": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.2",
+    "@types/pg": "^7.11.0",
+    "typescript": "3.6.2"
+  }
+}

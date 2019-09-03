@@ -1,5 +1,5 @@
 import { WatchQueryFetchPolicy } from 'apollo-client';
-import React, { PureComponent, ReactElement } from 'react';
+import React, { PureComponent } from 'react';
 import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
@@ -7,12 +7,12 @@ import { I18N } from '../../i18n/translation';
 import { Member } from '../../model/graphql/Member';
 import { MemberOverviewFragment as MemberOverviewFragmentType } from '../../model/graphql/MemberOverviewFragment';
 import { GetMemberQuery } from '../../queries/GetMemberQuery';
-import { MemberOverviewFragment } from "../../queries/MemberOverviewFragment";
+import { MemberOverviewFragment } from '../../queries/MemberOverviewFragment';
 import { addSnack } from '../../redux/actions/snacks';
-import { logger } from "./logger";
+import { logger } from './logger';
 
 class MemberQueryWithPreview extends PureComponent<{
-    children: ReactElement;
+    children: React.ReactElement<any>;
     id: number;
     fetchPolicy?: WatchQueryFetchPolicy;
     addSnack: typeof addSnack;
@@ -21,7 +21,7 @@ class MemberQueryWithPreview extends PureComponent<{
         return (<Query<Member>
             query={GetMemberQuery}
             variables={{
-                id: this.props.id
+                id: this.props.id,
             }}
         >
             {({ client, loading, data, error, refetch }) => {
@@ -30,47 +30,47 @@ class MemberQueryWithPreview extends PureComponent<{
                 if ((loading || error) && (data == null || data.Member == null)) {
                     try {
                         preview = client.readFragment<MemberOverviewFragmentType>({
-                            id: "Member:" + this.props.id,
-                            fragment: MemberOverviewFragment
+                            id: 'Member:' + this.props.id,
+                            fragment: MemberOverviewFragment,
                         });
 
-                        logger.log("found preview", preview);
-                    }
-                    catch (e) {
-                        logger.log(e, "Failed to read fragment");
+                        logger.log('found preview', preview);
+                    } catch (e) {
+                        logger.log(e, 'Failed to read fragment');
                     }
                 }
 
                 if (error && !preview) {
                     throw error;
-                }
-                else if (error && preview) {
+                } else if (error && preview) {
                     setTimeout(() => this.props.addSnack({
                         message: I18N.Whoops.partialData,
                         action: {
                             label: I18N.Whoops.refresh,
                             onPress: () => refetch({
-                                id: this.props.id
+                                id: this.props.id,
                             }),
-                        }
+                        },
                     }));
                 }
 
                 if (data && data.Member != null) {
-                    if (!isRecordValid("member", data.Member.LastSync)) {
+                    if (!isRecordValid('member', data.Member.LastSync)) {
                         setTimeout(() => refetch());
                     }
                 }
 
                 return React.cloneElement(this.props.children, {
-                    loading: loading,
+                    loading,
                     member: loading ? undefined : data,
                     preview: preview ? { Member: preview } : undefined,
                 });
             }}
-        </Query>);
+        </Query>
+        );
     }
 }
 
+// tslint:disable-next-line: export-name
 export const MemberQueryWithPreviewAndInvalidation =
     connect(null, { addSnack })(MemberQueryWithPreview);

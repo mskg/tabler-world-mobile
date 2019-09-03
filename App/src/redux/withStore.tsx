@@ -1,18 +1,21 @@
-import { SplashScreen } from 'expo';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import Loading from '../components/Loading';
-import { getReduxPersistor, getReduxStore } from './getRedux';
+import { rootSaga } from '../sagas';
+import { getReduxPersistor, getReduxStore, getSagaMiddleware } from './getRedux';
 
 export function withStore(WrappedComponent) {
-  return class extends React.PureComponent {
-    render() {
-      return (<Provider store={getReduxStore()}>
-        <PersistGate loading={<Loading />} onBeforeLift={SplashScreen.hide} persistor={getReduxPersistor()}>
+    return class extends React.PureComponent {
+        _runSagas = () => {
+          getSagaMiddleware().run(rootSaga);
+      }
+
+        render() {
+          return (<Provider store={getReduxStore()}>
+        <PersistGate persistor={getReduxPersistor()} onBeforeLift={this._runSagas}>
           <WrappedComponent />
         </PersistGate>
       </Provider>);
-    }
-  };
+      }
+    };
 }

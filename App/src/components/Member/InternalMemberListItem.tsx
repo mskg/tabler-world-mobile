@@ -1,39 +1,41 @@
-import React from "react";
-import { View } from "react-native";
-import { Card, TouchableRipple } from "react-native-paper";
-import { MemberAvatar } from "../MemberAvatar";
+import React from 'react';
+import { View } from 'react-native';
+import { Card, TouchableRipple } from 'react-native-paper';
+import { MemberAvatar } from '../MemberAvatar';
 import { CardTitle } from './CardTitle';
-import { MemberItemProps } from "./MemberItemProps";
+import { MemberItemProps } from './MemberItemProps';
 import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
 
 export class InternalMemberListItem extends React.PureComponent<MemberItemProps> {
-  _onPress = () => {
-    requestAnimationFrame(() => {
-      this.props.onPress(this.props.member);
-    });
-  };
+    _onPress = () => {
+        requestAnimationFrame(() => {
+          if (this.props.onPress) {
+            this.props.onPress(this.props.member);
+        }
+      });
+    }
 
-  _avatar = () => {
-    return <MemberAvatar member={this.props.member} />;
-  };
+    _avatar = () => {
+        return <MemberAvatar member={this.props.member} />;
+    }
 
-  render() {
-    const { title, subtitle, member } = this.props;
+    render() {
+        const { title, subtitle, member } = this.props;
 
-    return (
+        return (
       <View style={{
-        height: this.props.height,
-        backgroundColor: this.props.theme.colors.surface,
+          height: this.props.height,
+          backgroundColor: this.props.theme.colors.surface,
         // width: ITEM_WIDTH
       }}>
         <TouchableRipple
-          onPress={this._onPress}
+          onPress={this.props.onPress ? this._onPress : undefined}
           style={{
-            height: this.props.height,
+              height: this.props.height,
             // width: ITEM_WIDTH,
-            margin: 0,
-            padding: 0
+              margin: 0,
+              padding: 0,
           }}>
           <>
             <CardTitle
@@ -55,5 +57,5 @@ export class InternalMemberListItem extends React.PureComponent<MemberItemProps>
           </>
         </TouchableRipple>
       </View>);
-  }
+    }
 }

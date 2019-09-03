@@ -17,7 +17,7 @@ export class Mutex {
         this.locking = Promise.resolve((): void => {});
     }
 
-    public lock(): Promise<VoidFunction> {
+    lock(): Promise<VoidFunction> {
         let unlockNext: VoidFunction;
 
         const willLock = new Promise<VoidFunction>((resolve) => unlockNext = () => {

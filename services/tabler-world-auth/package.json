@@ -1,0 +1,50 @@
+{
+  "name": "@mskg/tabler-world-auth",
+  "author": "Markus Kling",
+  "license": "Copyright 2019-present Markus Kling",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@mskg/tabler-world-aws": "0.0.1",
+    "@mskg/tabler-world-rds-client": "0.0.1",
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
+    "aws-xray-sdk": "^2.3.3",
+    "crypto-secure-random-digit": "^1.0.7",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.1",
+    "pg": "^7.9.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "@mskg/tabler-world-yarn-tools": "0.0.1",
+    "@types/aws-lambda": "^8.10.17",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/node": "^12.7.3",
+    "@types/pg": "^7.4.13",
+    "@types/request": "^2.48.1",
+    "aws-sdk": "^2.414.0",
+    "file-loader": "^4.2.0",
+    "ntl": "^4.0.0",
+    "serverless": "^1.49.0",
+    "serverless-iam-roles-per-function": "^2.0.1",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-sync-s3buckets": "^1.0.1",
+    "serverless-webpack": "^5.3.0",
+    "ts-loader": "^6.0.1",
+    "typescript": "3.6.2",
+    "webpack": "^4.32.1"
+  },
+  "files": [
+    "src/**/*.js",
+    "src/**/*.html"
+  ],
+  "scripts": {
+    "compile": "tsc",
+    "deploy": "service deploy",
+    "package": "service package",
+    "remove": "service remove",
+    "dev": "service dev",
+    "start": "ntl"
+  }
+}

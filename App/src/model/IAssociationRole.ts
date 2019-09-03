@@ -1,7 +1,7 @@
 
 export interface IAssociationRole {
-    role: string,
+    role: string;
     member: {
         id: number,
-    }
+    };
 }

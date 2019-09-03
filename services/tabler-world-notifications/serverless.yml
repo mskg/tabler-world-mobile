@@ -1,0 +1,173 @@
+service: tabler-world-notifications
+
+plugins:
+  - serverless-plugin-aws-alerts
+  - serverless-offline
+  - serverless-webpack
+
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+
+  webpack:
+    keepOutputDirectory: true
+    packager: 'yarn'
+    includeModules:
+      forceExclude:
+        - aws-sdk
+  
+  email: ${env:ALERT_EMAIL}
+
+  bundle:
+    dev: false
+    test: true
+    prod: true
+
+  cron_enabled:
+    dev: false
+    test: true
+    prod: true
+
+  # SNS topics to check env
+  alerts:
+    stages:
+      - test
+      - prod
+
+    topics:
+      alarm:
+        topic: ${self:service}-${self:custom.stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${self:custom.email}
+
+    alarms:
+      - functionErrors
+      - processTimeouts
+
+    definitions:
+      processTimeouts:
+        metric: processTimeouts
+        threshold: 0
+        statistic: Minimum
+        period: 60
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanThreshold
+        pattern: 'Process exited before completing'
+
+
+# we want seperate files to minimize depenencies in files
+package:
+  individually: ${self:custom.bundle.${self:custom.stage}}
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+
+  runtime: nodejs10.x
+
+  memorySize: 128
+  versionFunctions: false
+
+  tracing:
+    apiGateway: true
+
+  # allow to redefine variables for debug purposes
+  environment:
+    ${file(serverless.env.yml):${self:custom.stage}}
+
+  vpc:
+    securityGroupIds:
+      - Fn::ImportValue: DatabaseSecurityGroupId
+    subnetIds:
+      - Fn::ImportValue: DatabaseSubnetAId
+      - Fn::ImportValue: DatabaseSubnetBId
+      - Fn::ImportValue: DatabaseSubnetCId
+  
+  # global role definition
+  iamRoleStatements:
+    # read parameters from SSM
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParameter
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:ssm:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":parameter*/"
+            - ${self:custom.stage}
+            - "/*"
+          
+    # tracing AWSXrayWriteOnlyAccess
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+        - xray:GetSamplingRules
+        - xray:GetSamplingTargets
+        - xray:GetSamplingStatisticSummaries
+
+      Resource:
+        - "*"
+
+functions:
+  #
+  # Send push notifications
+  #
+  send:
+    handler: src/send.handler
+    timeout: 600
+
+    environment:
+      XRAY_DISABLED: true
+
+    events:
+      # - http:
+      #     path: send-notifications
+      #     method: get
+      #     cors: true
+      - schedule:
+          name: ${self:service}-send-${self:custom.stage}
+          description: Sends push notifications from TABLER.WORLD
+
+          ## 07 UTC => 9 GMT+2
+          rate: cron(0 07 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+  #
+  # Check push notifications
+  #
+  check:
+    handler: src/check.handler
+    timeout: 600
+
+    environment:
+      XRAY_DISABLED: true
+
+    events:
+      # - http:
+      #     path: check-notifications
+      #     method: get
+      #     cors: true
+      - schedule:
+          name: ${self:service}-check-${self:custom.stage}
+          description: Checks delivery status of push notifications
+
+          rate: rate(6 hours)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+resources:
+  Resources:
+    SendLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    CheckLogGroup:
+      Properties:
+        RetentionInDays: "7"

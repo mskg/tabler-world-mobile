@@ -1,17 +1,19 @@
-import React, { ReactNode } from 'react';
-import { StyleSheet, View } from "react-native";
+import React, { ReactElement } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Caption, Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { I18N } from '../../i18n/translation';
 
 type ActionProps = {
     field: string,
-    text: ReactNode,
+    text: ReactElement,
     theme: Theme,
-}
+
+    disabled?: boolean,
+};
 
 type State = {
     expanded: boolean,
-}
+};
 
 class ExpandableElementBase extends React.Component<ActionProps, State> {
     state = {
@@ -19,7 +21,7 @@ class ExpandableElementBase extends React.Component<ActionProps, State> {
     };
 
     _toggle = () => {
-        this.setState({expanded: true});
+        this.setState({ expanded: true });
     }
 
     render() {
@@ -30,14 +32,14 @@ class ExpandableElementBase extends React.Component<ActionProps, State> {
                 <View style={styles.row}>
                     <View style={styles.header}>
                         <Caption>{field}</Caption>
-                        {!this.state.expanded &&
+                        {!this.props.disabled && !this.state.expanded &&
                             <TouchableRipple onPress={this._toggle}>
-                                <Caption style={{color: this.props.theme.colors.accent}}>{I18N.Club.expand}</Caption>
+                                <Caption style={{ color: this.props.theme.colors.accent }}>{I18N.Club.expand}</Caption>
                             </TouchableRipple>
                         }
                     </View>
                     {
-                        React.cloneElement(text, {expand: this.state.expanded})
+                        React.cloneElement(text, { expand: this.state.expanded })
                     }
                 </View>
             );
@@ -62,9 +64,9 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        width: "100%",
+        width: '100%',
 
         paddingRight: 24,
-    }
+    },
 });
 

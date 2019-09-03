@@ -5,7 +5,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
-import { IAppState } from '../model/IAppState';
 import { BirthdayNotification, INotificationPayload } from '../model/NotificationPayload';
 import { showProfile } from '../redux/actions/navigation';
 import { PushNotification, PushNotificationBase } from './PushNotification';
@@ -17,10 +16,17 @@ type Props = {
     // member: HashMap<IMember>,
 };
 
+type Notification = {
+    origin: 'selected' | 'received';
+    data: any;
+    remote: boolean;
+    isMultiple: boolean;
+};
+
 class PushNotificationsBase extends PureComponent<Props> {
     _notificationSubscription!: EventSubscription;
-    pushnotification!: PushNotificationBase;
-    notifications: Notifications.Notification[] = [];
+    pushnotification!: PushNotificationBase | null;
+    notifications: Notification[] = [];
     showing = false;
 
     componentDidMount() {
@@ -32,7 +38,7 @@ class PushNotificationsBase extends PureComponent<Props> {
     }
 
     _handleAction = (el: INotificationPayload<any>) => () => {
-        if (el != null && el.reason === "birthday") {
+        if (el != null && el.reason === 'birthday') {
             const bd = el as BirthdayNotification;
 
             // const tabler = this.props.member[bd.payload.id];
@@ -43,36 +49,39 @@ class PushNotificationsBase extends PureComponent<Props> {
     }
 
     _showNext = () => {
-        var el = this.notifications.pop();
+        const el = this.notifications.pop();
 
         if (el == null) {
             this.showing = false;
             return;
-        };
+        }
 
         this.showing = true;
 
         const { title, body } = el.data;
-        this.pushnotification.showMessage({
-            onDismiss: this._showNext,
-            onPress: this._handleAction(el.data),
-            appName: Constants.manifest.name,
-            icon: Assets.images.icon,
-            title: title,
-            body: body || JSON.stringify(el.data),
-        });
+
+        if (this.pushnotification) {
+            this.pushnotification.showMessage({
+                title,
+                onDismiss: this._showNext,
+                onPress: this._handleAction(el.data),
+                appName: Constants.manifest.name,
+                icon: Assets.images.icon,
+                body: body || JSON.stringify(el.data),
+            });
+        }
     }
 
-    _handleNotification = (notification: Notifications.Notification) => {
-        logger.log("received", notification);
+    _handleNotification = (notification: Notification) => {
+        logger.log('received', notification);
 
-        if (notification.origin === "received") {
+        if (notification.origin === 'received') {
             this.notifications.push(notification);
             if (!this.showing) { this._showNext(); }
         } else {
             this._handleAction(notification.data)();
         }
-    };
+    }
 
     render() {
         return (
@@ -82,10 +91,8 @@ class PushNotificationsBase extends PureComponent<Props> {
 }
 
 export const PushNotifications = connect(
-    (state: IAppState) => ({
-        // member: state.members.data
-    }),
+    null,
     {
         showProfile,
-    }
+    },
 )(PushNotificationsBase);

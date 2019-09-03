@@ -9,16 +9,15 @@ import { Categories, Logger } from '../helper/Logger';
 import { ScreenWithHeader } from './Screen';
 
 const logger = new Logger(Categories.UIComponents.WebScreen);
-
-export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
+export class WebScreenBase extends AuditedScreen<{theme, url, title, showBack?}, {url}> {
     ref: any;
 
     constructor(props) {
         super(props, AuditScreenName.Web);
 
         this.state = {
-            url: this.props.url
-        }
+            url: this.props.url,
+        };
     }
 
     componentDidMount() {
@@ -28,7 +27,7 @@ export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
     }
 
     render() {
-        logger.debug("url", this.props.url);
+        logger.debug('url', this.props.url);
 
         return (
             <ScreenWithHeader header={{
@@ -36,21 +35,22 @@ export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
                     <Appbar.Content key="content" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={this.props.title} />,
 
                     <Appbar.Action key="home"
-                        icon={({size, color}) => <Ionicons name="ios-home" color={color} size={size} />}
-                        onPress={() => this.setState({url: this.props.url + "?req=" + Date.now()}) } />,
+                        icon={({ size, color }) => <Ionicons name="ios-home" color={color} size={size} />}
+                        onPress={() => this.setState({ url: this.props.url + '?req=' + Date.now() })} />,
 
                     <Appbar.Action key="back"
                         // style={{margin: 0, marginLeft: 6}}
-                        icon={({size, color}) => <Ionicons name="ios-arrow-back" color={color} size={size} />}
+                        icon={({ size, color }) => <Ionicons name="ios-arrow-back" color={color} size={size} />}
                         onPress={() => this.ref.goBack()} />,
 
                     <Appbar.Action key="forward"
                         // style={{margin: 0, marginRight: 6}}
-                        icon={({size, color}) => <Ionicons name="ios-arrow-forward" color={color} size={size} />}
+                        icon={({ size, color }) => <Ionicons name="ios-arrow-forward" color={color} size={size} />}
                         onPress={() => this.ref.goForward()}
                     />,
                 ],
-                title: this.props.title
+                title: this.props.title,
+                showBack: this.props.showBack,
             }}>
                 <WebView
                     ref={r => this.ref = r}
@@ -58,7 +58,7 @@ export class WebScreenBase extends AuditedScreen<{theme, url, title}, {url}> {
                     source={{
                         uri: this.state.url,
                     }}
-                    mixedContentMode={"never"}
+                    mixedContentMode={'never'}
                 />
             </ScreenWithHeader>
         );

@@ -1,0 +1,11 @@
+# typescript
+dist
+
+# vscode
+.vscode
+
+# javascript
+*/src/*.js
+*/src/*/*.js
+*/src/*.map
+*/src/*/*.map

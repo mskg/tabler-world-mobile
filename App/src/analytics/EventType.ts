@@ -1,5 +1,5 @@
 export enum EventType {
-    PageView = "page",
-    Action = "action",
-    Event = "event"
+    PageView = 'page',
+    Action = 'action',
+    Event = 'event',
 }

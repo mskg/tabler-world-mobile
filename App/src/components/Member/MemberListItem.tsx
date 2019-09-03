@@ -1,20 +1,20 @@
-import React from "react";
-import { FavoriteButton } from "../FavoriteButton";
+import React from 'react';
+import { FavoriteButton } from '../FavoriteButton';
 import { InternalMemberListItem } from './InternalMemberListItem';
-import { MemberItemBaseProps } from "./MemberItemBaseProps";
-import { MemberTitle } from "./MemberTitle";
+import { MemberItemBaseProps } from './MemberItemBaseProps';
+import { MemberTitle } from './MemberTitle';
 
-export class MemberListItem extends React.PureComponent<{ margin?;} & MemberItemBaseProps> {
-  _right = ({ size }) => (
+export class MemberListItem extends React.PureComponent<{ margin?; } & MemberItemBaseProps> {
+    _right = ({ size }) => (
     <FavoriteButton
       theme={this.props.theme}
       member={this.props.member}
       style={{ marginRight: this.props.margin }}
       size={size}
-    />);
+    />)
 
-  render() {
-    return (
+    render() {
+        return (
       <InternalMemberListItem
         theme={this.props.theme}
         member={this.props.member}
@@ -24,6 +24,6 @@ export class MemberListItem extends React.PureComponent<{ margin?;} & MemberItem
         subtitle={this.props.member.club.name}
         right={this.props.right || this._right}
       />
-    );
-  }
+      );
+    }
 }

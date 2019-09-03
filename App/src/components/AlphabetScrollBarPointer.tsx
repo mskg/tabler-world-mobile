@@ -5,7 +5,7 @@ import { Title } from 'react-native-paper';
 type Props = {
     top: number,
     letter: string,
-    style?: any
+    style?: any,
 };
 
 export class AlphabetSrollBarPointer extends Component<Props> {
@@ -17,7 +17,7 @@ export class AlphabetSrollBarPointer extends Component<Props> {
                         ...styles.container,
                         top: this.props.top - 15,
                     },
-                    this.props.style
+                    this.props.style,
                 ]}
             >
                 <Title style={styles.letter}>
@@ -39,12 +39,12 @@ const styles = {
         height: 50,
         zIndex: 999,
 
-        right: 55
+        right: 55,
     },
 
     letter: {
         color: '#fff',
         alignSelf: 'center',
         textAlign: 'center',
-    }
+    },
 };

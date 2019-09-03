@@ -1,6 +1,6 @@
-import { IAppState } from "../model/IAppState";
-import { getReduxStore } from "../redux/getRedux";
-import { CallApps, LinkingHelper, MailApps, MessagingApps, WebApps } from "./LinkingHelper";
+import { IAppState } from '../model/IAppState';
+import { getReduxStore } from '../redux/getRedux';
+import { CallApps, LinkingHelper, MailApps, MessagingApps, WebApps } from './LinkingHelper';
 
 function state(): IAppState {
     return (getReduxStore().getState() as IAppState);
@@ -8,11 +8,11 @@ function state(): IAppState {
 
 export class OpenLink {
 
-    public static canSendMessage() {
+    static canSendMessage() {
         return state().settings.messagingApp != null;
     }
 
-    public static sms(number: string) {
+    static sms(number: string) {
         const app = state().settings.messagingApp;
 
         if (app != null) {
@@ -22,11 +22,11 @@ export class OpenLink {
         }
     }
 
-    public static canOpenUrl() {
+    static canOpenUrl() {
         return state().settings.browserApp != null;
     }
 
-    public static url(url: string) {
+    static url(url: string) {
         const app = state().settings.browserApp;
 
         if (app != null) {
@@ -36,11 +36,11 @@ export class OpenLink {
         }
     }
 
-    public static canCall() {
+    static canCall() {
         return state().settings.phoneApp != null;
     }
 
-    public static call(number: string) {
+    static call(number: string) {
         const app = state().settings.phoneApp;
 
         if (app != null) {
@@ -50,11 +50,11 @@ export class OpenLink {
         }
     }
 
-    public static canEmail() {
+    static canEmail() {
         return state().settings.emailApp != null;
     }
 
-    public static email(recipient: string) {
+    static email(recipient: string) {
         const app = state().settings.emailApp;
 
         if (app != null) {

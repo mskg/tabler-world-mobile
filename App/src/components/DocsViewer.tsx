@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet } from "react-native";
-import Markdown, { getUniqueID } from 'react-native-markdown-renderer';
-import { Subheading, Theme, Title, withTheme } from "react-native-paper";
+import { StyleSheet } from 'react-native';
+import Markdown, { getUniqueID, styles } from 'react-native-markdown-renderer';
+import { Subheading, Theme, Title, withTheme } from 'react-native-paper';
 
 type Props = {
     text: string,
@@ -10,20 +10,31 @@ type Props = {
 
 class DocViewer extends React.PureComponent<Props> {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            text: "",
-        }
+            text: '',
+        };
     }
 
     styles = StyleSheet.create({
         text: {
-            fontFamily: this.props.theme.fonts.regular
+            fontFamily: this.props.theme.fonts.regular,
+            color: this.props.theme.colors.text,
+        },
+
+        listUnorderedItemIcon: {
+            ...styles.listUnorderedItemIcon,
+            color: this.props.theme.colors.text,
+        },
+
+        listOrderedItemIcon: {
+            ...styles.listOrderedItemIcon,
+            color: this.props.theme.colors.text,
         },
 
         strong: {
-            fontFamily: this.props.theme.fonts.medium
-        }
+            fontFamily: this.props.theme.fonts.medium,
+        },
     });
 
     rules = {

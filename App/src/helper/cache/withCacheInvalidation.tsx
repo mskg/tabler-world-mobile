@@ -2,7 +2,12 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import ApolloClient, { WatchQueryFetchPolicy } from 'apollo-client';
 import gql from 'graphql-tag';
 import React from 'react';
+import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { ParameterName } from '../../model/graphql/globalTypes';
+import { IAppState } from '../../model/IAppState';
+import { getParameterValue } from '../parameters/getParameter';
+import { MS_PER_MINUTE, TimeoutDefaults, TimeoutParameters } from '../parameters/Timeouts';
 import { logger } from './logger';
 
 const GetLastSyncQuery = (field) => gql`
@@ -19,71 +24,68 @@ type CacheInvalidationProps = {
     field: FieldType,
     maxAge?: number,
     children: any,
-}
 
-export const MS_PER_MINUTE = 60000;
-const hours = (hours: number) => 60 * hours * MS_PER_MINUTE;
+    offline: boolean,
+};
 
-export const MaxTTL = {
-    albums: hours(4),
-    album: hours(4),
-
-    members: hours(12),
-    member: hours(12),
-
-    associations: hours(24),
-    areas: hours(24),
-
-    clubs: hours(24),
-    club: hours(24),
-
-
-    utility: hours(4),
-    news: hours(4),
-    newsarticle: hours(4),
-}
+let MaxTTL = TimeoutDefaults;
 
 export function isRecordValid(type: keyof typeof MaxTTL, val: number): boolean {
     const age = MaxTTL[type];
     const compareDate = Date.now() - age;
 
     if (val <= compareDate) {
-        logger.debug(type, "*** REFETCHING DATA ***");
+        logger.debug(type, '*** REFETCHING DATA ***');
         return false;
-    } else {
-        logger.log(type, "*** IS VALID ***",
-            "age", age / MS_PER_MINUTE,
-            "last fetch", new Date(val),
-            "not older than", new Date(compareDate));
-
-        return true;
     }
-};
+    logger.log(
+        type,
+        '*** IS VALID ***',
+        'age', age / MS_PER_MINUTE,
+        'last fetch', new Date(val),
+        'not older than', new Date(compareDate));
 
-export class CacheInvalidation extends React.PureComponent<CacheInvalidationProps> {
+    return true;
+
+}
+
+export async function updateTimeouts() {
+    const settings = await getParameterValue<TimeoutParameters>(ParameterName.timeouts);
+    MaxTTL = settings;
+}
+
+class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> {
+    componentWillMount() {
+        updateTimeouts();
+    }
+
     checkLastSync(client: ApolloClient<NormalizedCacheObject>): number {
         let data: any = null;
         const query = GetLastSyncQuery(this.props.field);
 
         try {
             data = client.readQuery({
-                query
+                query,
             });
 
-            logger.log("Found cache for", this.props.field);
-        }
-        catch {
+            logger.log('Found cache for', this.props.field);
+        } catch {
             data = {
                 LastSync: {
                     [this.props.field]: 0,
-                }
-            }
+                },
+            };
         }
 
         return data.LastSync[this.props.field];
     }
 
-    determine() {
+    determine(): WatchQueryFetchPolicy | undefined {
+        if (this.props.offline) {
+            logger.debug('*** OFFLINE ***');
+            return 'cache-only';
+        }
+
         const client = cachedAolloClient();
 
         const syncDate = this.checkLastSync(client);
@@ -92,19 +94,19 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
         let policy: WatchQueryFetchPolicy | undefined;
 
         if (!valid) {
-            policy = "cache-and-network";
+            policy = 'cache-and-network';
 
             // defer update
             setTimeout(() => {
-                logger.debug(this.props.field, "*** SETTING NEW TIMESTAMP ***");
+                logger.debug(this.props.field, '*** SETTING NEW TIMESTAMP ***');
                 client.writeData({
                     data: {
                         LastSync: {
                             __typename: 'LastSync',
-                            [this.props.field]: Date.now()
-                        }
+                            [this.props.field]: Date.now(),
+                        },
                     },
-                })
+                });
             }, 100);
         }
 
@@ -112,15 +114,20 @@ export class CacheInvalidation extends React.PureComponent<CacheInvalidationProp
     }
 
     render() {
-        return React.Children.map(this.props.children, child =>
-            React.cloneElement(this.props.children, {
+        return React.Children.map(this.props.children, (child) =>
+            React.cloneElement(child, {
                 ...this.props,
                 fetchPolicy: this.determine(),
             }));
     }
-};
+}
+
+export const CacheInvalidation = connect((state: IAppState) => ({
+    offline: state.connection.offline,
+}))(CacheInvalidationBase);
 
 export function withCacheInvalidation(field: FieldType, WrappedComponent: any, maxAge?: number) {
+    // tslint:disable-next-line: max-classes-per-file
     return class extends React.PureComponent {
         render() {
             return (

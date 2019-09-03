@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { LastSyncResolver } from "../helper/cache/LastSyncResolver";
+import { LastSyncResolver } from '../helper/cache/LastSyncResolver';
 
 const lastUpdate = () => {
     return Date.now();
@@ -44,18 +44,18 @@ export const Resolvers = {
     },
 
     Member: {
-        LastSync: lastUpdate
+        LastSync: lastUpdate,
     },
 
     Club: {
-        LastSync: lastUpdate
+        LastSync: lastUpdate,
     },
 
     Album: {
-        LastSync: lastUpdate
+        LastSync: lastUpdate,
     },
 
     NewsArticle: {
-        LastSync: lastUpdate
-    }
+        LastSync: lastUpdate,
+    },
 };

@@ -1,0 +1,36 @@
+{
+    "extends": [
+        "@mskg/tabler-world-tslint-rules",
+        "tslint-react"
+    ],
+    "rules": {
+        "quotemark": [
+            true,
+            "single",
+            "jsx-double"
+        ],
+        "member-access": [
+            true,
+            "no-public"
+        ],
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "any",
+                "named-imports-order": "any"
+            }
+        ],
+        "jsx-no-multiline-js": false,
+        "jsx-no-lambda": false,
+        "react-this-binding-issue": false,
+        "use-simple-attributes": false,
+        "member-ordering": false,
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-pascal-case"
+        ]
+    }
+}

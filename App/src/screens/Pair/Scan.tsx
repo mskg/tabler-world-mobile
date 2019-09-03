@@ -3,98 +3,129 @@ import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Theme, withTheme } from 'react-native-paper';
 import { NavigationEventSubscription, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
+import { ActionNames } from '../../analytics/ActionNames';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { addFavorite, removeFavorite } from '../../redux/actions/filter';
 import { showProfile } from '../../redux/actions/navigation';
+import { addSnack } from '../../redux/actions/snacks';
 
 const logger = new Logger(Categories.Screens.Scan);
 
 type Props = {
-  showProfile: typeof showProfile,
+    showProfile: typeof showProfile,
+    addSnack: typeof addSnack,
+    removeFavorite: typeof removeFavorite
+    addFavorite: typeof addFavorite
+    theme: Theme,
 };
 
-class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
-  state = {
-    hasCameraPermission: null,
-    visible: true,
-  };
+class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
+    state = {
+        hasCameraPermission: null,
+        visible: true,
+    };
 
-  listeners: NavigationEventSubscription[] = [];
+    listeners: NavigationEventSubscription[] = [];
 
-  async componentDidMount() {
-    this.getPermissionsAsync();
-
-    this.listeners = [
-      this.props.navigation.addListener('didFocus', this._focus),
-      this.props.navigation.addListener('didBlur', this._blur),
-    ];
-  }
-
-  _focus = () => this.setState({ visible: true });
-  _blur = () => this.setState({ visible: false });
-
-  componentWillUnmount() {
-    if (this.listeners) {
-      this.listeners.forEach(item => item.remove());
+    constructor(props: Props) {
+        super(props, AuditScreenName.MemberScanQR);
     }
-  }
 
-  getPermissionsAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted', visible: true });
-  };
+    async componentDidMount() {
+        this.getPermissionsAsync();
 
-  render() {
-    const { hasCameraPermission } = this.state;
-    if (!this.state.visible) return null;
+        this.listeners = [
+            this.props.navigation.addListener('didFocus', this._focus),
+            this.props.navigation.addListener('didBlur', this._blur),
+        ];
 
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "black",
-        }}>
+        this.audit.submit();
+    }
 
-        {hasCameraPermission === null &&
-          <Text>{I18N.Pair.request}</Text>
+    _focus = () => this.setState({ visible: true });
+    _blur = () => this.setState({ visible: false });
+
+    componentWillUnmount() {
+        if (this.listeners) {
+            this.listeners.forEach(item => item.remove());
         }
+    }
 
-        {hasCameraPermission === false
-          ? <Text>{I18N.Pair.permission}</Text>
-          : <BarCodeScanner
-            onBarCodeScanned={this.handleBarCodeScanned}
-            style={StyleSheet.absoluteFillObject}
+    getPermissionsAsync = async () => {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA);
+        this.setState({ hasCameraPermission: status === 'granted', visible: true });
+    }
 
-          >
-            {/* <View style={styles.layerTop} />
+    render() {
+        const { hasCameraPermission } = this.state;
+        if (!this.state.visible) return null;
+
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: hasCameraPermission
+                        ? 'black'
+                        : this.props.theme.colors.background,
+                }}>
+
+                {hasCameraPermission === null &&
+                    <Text>{I18N.Pair.request}</Text>
+                }
+
+                {hasCameraPermission === false
+                    ? <Text>{I18N.Pair.permission}</Text>
+                    : <BarCodeScanner
+                        onBarCodeScanned={this.handleBarCodeScanned}
+                        style={StyleSheet.absoluteFillObject}
+
+                    >
+                        {/* <View style={styles.layerTop} />
             <View style={styles.layerCenter}>
               <View style={styles.layerLeft} />
               <View style={styles.focused} />
               <View style={styles.layerRight} />
             </View>
             <View style={styles.layerBottom} /> */}
-          </BarCodeScanner>
-        }
-      </View>
-    );
-  }
-
-  handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
-    logger.log("Scanned", type, data);
-
-    let { path, queryParams } = Linking.parse(data);
-    logger.debug("path", path, "params", queryParams);
-
-    if (path.endsWith("member") && queryParams.id != null) {
-      logger.log("Member", queryParams.id);
-
-      this.props.showProfile(parseInt(queryParams.id, 10));
+                    </BarCodeScanner>
+                }
+            </View>
+        );
     }
-  };
+
+    handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
+        logger.log('Scanned', type, data);
+
+        const { path, queryParams } = Linking.parse(data);
+        logger.debug('path', path, 'params', queryParams);
+
+        if (path.endsWith('member') && queryParams.id != null) {
+            logger.log('Member', queryParams.id);
+
+            this.audit.trackAction(ActionNames.ReadQRCode, {
+                [AuditPropertyNames.Id]: queryParams.id,
+            });
+
+            this.props.addFavorite({ id: parseInt(queryParams.id, 10) });
+            this.props.showProfile(parseInt(queryParams.id, 10));
+            this.props.addSnack({
+                message: I18N.Pair.remove,
+                action: {
+                    label: I18N.Pair.undo,
+                    onPress: () => this.props.removeFavorite({ id: parseInt(queryParams.id, 10) }),
+                },
+            });
+        }
+    }
 }
 
 // const opacity = 'rgba(0, 0, 0, .6)';
@@ -133,4 +164,4 @@ class ScanScreenBase extends React.Component<Props & NavigationInjectedProps> {
 //   },
 // });
 
-export const ScanScreen = connect(null, { showProfile })(ScanScreenBase);
+export const ScanScreen = connect(null, { showProfile, addSnack, removeFavorite, addFavorite })(withTheme(ScanScreenBase));

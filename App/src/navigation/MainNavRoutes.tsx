@@ -3,8 +3,8 @@ import React from 'react';
 import { I18N } from '../i18n/translation';
 import { AlbumsScreen } from '../screens/Albums';
 import { MembersScreen } from '../screens/Members';
+import MoreScreen from '../screens/More';
 import { NewsScreen } from '../screens/News';
-import SettingsScreen from '../screens/Settings';
 import StructureScreen from '../screens/Structure';
 import { WorldScreen } from '../screens/World';
 import { MainRoutes } from './Routes';
@@ -14,32 +14,32 @@ export const MainNavRoutes = {
         screen: MembersScreen,
         navigationOptions: {
             tabBarLabel: I18N.Members.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-body" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-body" />),
+        },
     },
 
     [MainRoutes.Structure]: {
         screen: StructureScreen,
         navigationOptions: {
             tabBarLabel: I18N.Structure.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />),
+        },
     },
 
     [MainRoutes.News]: {
         screen: NewsScreen,
         navigationOptions: {
             tabBarLabel: I18N.News.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-paper" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-paper" />),
+        },
     },
 
     [MainRoutes.Albums]: {
         screen: AlbumsScreen,
         navigationOptions: {
             tabBarLabel: I18N.Albums.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-image" />)
-        }
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-image" />),
+        },
     },
 
     [MainRoutes.World]: {
@@ -47,14 +47,14 @@ export const MainNavRoutes = {
         navigationOptions: {
             tabBarLabel: I18N.World.tab,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-globe" />),
-        }
+        },
     },
 
-    [MainRoutes.Settings]: {
-        screen: SettingsScreen,
+    [MainRoutes.More]: {
+        screen: MoreScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Settings.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-settings" />)
-        }
+            tabBarLabel: I18N.Menu.title,
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-menu" />),
+        },
     },
 };

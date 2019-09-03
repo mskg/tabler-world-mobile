@@ -1,3 +1,3 @@
 
-export { MeFragment as IWhoAmI } from "./graphql/MeFragment";
+export { MeFragment as IWhoAmI } from './graphql/MeFragment';
 

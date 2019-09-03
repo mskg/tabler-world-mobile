@@ -1,8 +1,8 @@
 import * as Amplitude from 'expo-analytics-amplitude';
 import { AuditPropertyNames } from './AuditPropertyNames';
-import { EventType } from "./EventType";
+import { EventType } from './EventType';
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from "./logger";
+import { logger } from './logger';
 import { Metrics, Params } from './Types';
 
 const ensureStrings = (o: any) => {
@@ -12,25 +12,25 @@ const ensureStrings = (o: any) => {
     Object.keys(o).forEach(key => {
         let val = o[key];
 
-        if (typeof (val) !== "string" && val != null) {
+        if (typeof (val) !== 'string' && val != null) {
             val = val.toString();
         }
 
-        result[key] = val || "";
+        result[key] = val || '';
     });
 
     return Object.keys(result).length > 0 ? result : null;
-}
+};
 
 export class AmplitudeAnalytics implements IAnalyticsProvider {
     disabled: boolean = false;
     init: Promise<void>;
 
     constructor(apiKey: string) {
-        logger.log("Boostrapping AmplitudeAnalytics");
+        logger.log('Boostrapping AmplitudeAnalytics');
         this.init = Amplitude
             .initialize(apiKey)
-            .then(() => logger.log("Amplitude initialized"));
+            .then(() => logger.log('Amplitude initialized'));
     }
 
     enable() {
@@ -46,7 +46,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
 
         if (id != null) {
             // ensure it's a string
-            this.init.then(() => Amplitude.setUserId("" + id));
+            this.init.then(() => Amplitude.setUserId('' + id));
         }
 
         const reduced = ensureStrings(attributes);
@@ -68,7 +68,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
 
                 [AuditPropertyNames.EventType]: EventType.PageView,
                 // [AuditPropertyNames.View]: screen,
-            }
+            },
         ));
     }
 
@@ -83,7 +83,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
 
                 // [AuditPropertyNames.Event]: event,
                 [AuditPropertyNames.EventType]: EventType.Event,
-            }
+            },
         ));
     }
 
@@ -99,7 +99,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
                 // [AuditPropertyNames.Action]: action,
                 [AuditPropertyNames.View]: screen,
                 [AuditPropertyNames.EventType]: EventType.Action,
-            }
+            },
         ));
     }
 }

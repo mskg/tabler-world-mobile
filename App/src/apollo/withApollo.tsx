@@ -1,5 +1,6 @@
+import { ApolloClient } from 'apollo-client';
 import React from 'react';
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider } from 'react-apollo';
 import { AsyncStorage } from 'react-native';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
@@ -10,12 +11,12 @@ const logger = new Logger(Categories.Api);
 const SCHEMA_VERSION = '1'; // Must be a string.
 const SCHEMA_VERSION_KEY = 'apollo-schema-version';
 
-export function withApollo(App) {
-    return class extends React.PureComponent {
-        state = {
-            client: null,
-        }
+type State = {
+    client?: ApolloClient<any>,
+};
 
+export function withApollo(App) {
+    return class extends React.PureComponent<{}, State> {
         async componentDidMount() {
             const client = await bootstrapApollo(await isDemoModeEnabled());
             const persistor = getPersistor();
@@ -33,35 +34,33 @@ export function withApollo(App) {
                 }
 
                 await persistor.restore();
-            }
-            catch (e) {
-                logger.error(e, "Failed to restore cache");
+            } catch (e) {
+                logger.error(e, 'Failed to restore cache');
 
                 try {
                     persistor.purge();
                     await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
-                }
-                catch { }
+                    // tslint:disable-next-line: no-empty
+                } catch { }
             }
 
             this.setState({ client });
-            logger.log("Loaded Apollo.");
+            logger.log('Loaded Apollo.');
         }
 
         render() {
-            const { client } = this.state;
+            const { client } = this.state || {};
 
             if (client == null) {
-                logger.log("Apollo not loaded yet.");
+                logger.log('Apollo not loaded yet.');
                 return null;
             }
 
             return (
-                //@ts-ignore
                 <ApolloProvider client={client}>
                     <App />
                 </ApolloProvider>
             );
         }
-    }
+    };
 }

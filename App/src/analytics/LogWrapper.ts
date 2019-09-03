@@ -1,5 +1,5 @@
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from "./logger";
+import { logger } from './logger';
 import { Metrics, Params } from './Types';
 
 export class LogWrapper implements IAnalyticsProvider {
@@ -8,7 +8,7 @@ export class LogWrapper implements IAnalyticsProvider {
 
     enable(): void {
         if (__DEV__) {
-            logger.debug("enable");
+            logger.debug('enable');
         }
 
         this.inner.enable();
@@ -16,7 +16,7 @@ export class LogWrapper implements IAnalyticsProvider {
 
     disable(): void {
         if (__DEV__) {
-            logger.debug("disable");
+            logger.debug('disable');
         }
 
         this.inner.disable();
@@ -24,7 +24,7 @@ export class LogWrapper implements IAnalyticsProvider {
 
     updateUser(id: string, attributes?: Params | undefined) {
         if (__DEV__) {
-            logger.debug("updateUser", id, attributes);
+            logger.debug('updateUser', id, attributes);
         }
 
         this.inner.updateUser(id, attributes);
@@ -32,7 +32,7 @@ export class LogWrapper implements IAnalyticsProvider {
 
     trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
         if (__DEV__) {
-            logger.debug("Show Screen", screen, attributes);
+            logger.debug('Show Screen', screen, attributes);
         }
 
         this.inner.trackPageView(screen, attributes, metrics);
@@ -40,7 +40,7 @@ export class LogWrapper implements IAnalyticsProvider {
 
     trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
         if (__DEV__) {
-            logger.debug("Track Event", event);
+            logger.debug('Track Event', event);
         }
 
         this.inner.trackEvent(event, attributes, metrics);
@@ -48,7 +48,7 @@ export class LogWrapper implements IAnalyticsProvider {
 
     trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
         if (__DEV__) {
-            logger.debug("Track Action", screen, action, attributes);
+            logger.debug('Track Action', screen, action, attributes);
         }
 
         this.inner.trackAction(screen, action, attributes, metrics);

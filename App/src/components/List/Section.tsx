@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View } from 'react-native';
 import { Title } from 'react-native-paper';
-import { ITEM_HEIGHT } from "../Member/Dimensions";
+import { ITEM_HEIGHT } from '../Member/Dimensions';
 
 export const SECTION_HEIGHT = ITEM_HEIGHT - 24;
 
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     title: {
         lineHeight: SECTION_HEIGHT,
         marginVertical: 0,
-        width: "100%",
+        width: '100%',
     },
 
     group: {

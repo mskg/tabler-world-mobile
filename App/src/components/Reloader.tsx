@@ -23,10 +23,10 @@ export class ReloaderBase extends React.Component<{showReloadDialog, checkAppSta
                         text: I18N.Loader.accept,
                         onPress: () => {
                             Updates.reloadFromCache();
-                        }
+                        },
                     },
                 ],
-                { cancelable: false }
+                { cancelable: false },
             );
         }
     }
@@ -38,7 +38,7 @@ export class ReloaderBase extends React.Component<{showReloadDialog, checkAppSta
 
 export default connect(
     (state: IAppState) => ({
-        showReloadDialog: state.updateAvailable
+        showReloadDialog: state.updateAvailable,
     }), {
-        checkAppState
+        checkAppState,
     })(ReloaderBase);

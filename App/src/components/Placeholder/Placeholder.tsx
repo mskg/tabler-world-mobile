@@ -1,17 +1,16 @@
 import React from 'react';
-import { Fade } from './Fade';
 
 type Props = {
     ready: boolean,
     previewComponent: React.ReactNode,
     children?: any,
-}
+};
+
+const TEST_PLACHOLDERS = false;
 
 export class Placeholder extends React.PureComponent<Props> {
     render() {
-        if (this.props.ready) return this.props.children || null;
-        return (<Fade>
-            {this.props.previewComponent}
-        </Fade>);
+        if (!TEST_PLACHOLDERS && this.props.ready) return this.props.children || null;
+        return this.props.previewComponent;
     }
 }

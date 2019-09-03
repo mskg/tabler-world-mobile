@@ -1,0 +1,319 @@
+service: tabler-world-auth
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-plugin-aws-alerts
+  - serverless-webpack
+
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  stage: ${opt:stage, self:provider.stage}
+
+  webpack:
+    keepOutputDirectory: true
+    packager: 'yarn'
+    includeModules:
+      forceExclude:
+        - aws-sdk
+
+  SES_FROM_ADDRESS: ${env:SES_FROM_ADDRESS}
+  SES_REPLY_ADDRESS: ${env:SES_REPLY_ADDRESS}
+
+  email: ${env:ALERT_EMAIL}
+
+  alerts:
+    stages:
+      - dev
+      - test
+      - prod
+
+    topics:
+      alarm:
+        topic: ${self:service}-${self:custom.stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${self:custom.email}
+
+    alarms:
+      - functionErrors
+
+
+# individually would result in the same package three times
+package:
+  individually: false
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+
+  runtime: nodejs10.x
+
+  memorySize: 128
+  timeout: 20
+  versionFunctions: false
+
+  environment:
+    ${file(serverless.env.yml):${self:custom.stage}}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:SendEMail
+        - ses:SendRawEmail
+      Resource:
+        - "*"
+      Condition:
+        'ForAllValues:StringLike':
+          'ses:Recipients':
+            - "*.roundtable.world"
+
+    # connect to data service
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        Fn::ImportValue: DataArn-${self:custom.stage}
+
+    # read parameters from SSM
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParameter
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:ssm:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":parameter*/"
+            - ${self:custom.stage}
+            - "/*"
+
+functions:
+  #
+  # Authorizer
+  #
+  authorizer:
+    handler: src/authorizer/lambda.handler
+    tracing: Active
+
+    environment:
+      UserPoolId:
+        Ref: CognitoUserPoolMyUserPool
+
+  #
+  # Auth Challenge
+  #
+  challenge:
+    handler: src/challenge/lambda.handler
+    tracing: Active
+
+    environment:
+      SES_FROM_ADDRESS: ${self:custom.SES_FROM_ADDRESS}
+
+    # global vpc definition
+    events:
+      - cognitoUserPool:
+          pool: MyUserPool
+          trigger: DefineAuthChallenge
+
+      - cognitoUserPool:
+          pool: MyUserPool
+          trigger: CreateAuthChallenge
+
+      - cognitoUserPool:
+          pool: MyUserPool
+          trigger: VerifyAuthChallengeResponse
+
+  #
+  # PreSignUp
+  #
+  pre-sign-up:
+    handler: src/pre-sign-up/lambda.handler
+    tracing: Active
+
+    events:
+      - cognitoUserPool:
+          pool: MyUserPool
+          trigger: PreSignUp
+
+resources:
+  Resources:
+    ChallengeLogGroup:
+      Properties:
+        RetentionInDays: "30"
+
+    PreDashsignDashupLogGroup:
+      Properties:
+        RetentionInDays: "30"
+
+    CognitoUserPoolMyUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        # Generate a name based on the stage
+        UserPoolName: tabler-world-${self:custom.stage}
+        # Set email as an alias
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        # Generate an app client name based on the stage
+        ClientName: tabler-world-client-${self:custom.stage}
+        UserPoolId:
+          Ref: CognitoUserPoolMyUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - CUSTOM_AUTH_FLOW_ONLY
+        RefreshTokenValidity: 3650
+
+
+    # The federated identity for our user pool to auth with
+    CognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        # Generate a name based on the stage
+        IdentityPoolName: TablerWorld IdentityPool ${self:custom.stage}
+        # Don't allow unathenticated users
+        AllowUnauthenticatedIdentities: true
+        # Link to our User Pool
+        CognitoIdentityProviders:
+          - ClientId:
+              Ref: CognitoUserPoolClient
+            ProviderName:
+              Fn::GetAtt:
+                - CognitoUserPoolMyUserPool
+                - ProviderName
+
+    # IAM roles
+    CognitoIdentityPoolRoles:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId:
+          Ref: CognitoIdentityPool
+        Roles:
+          authenticated:
+            Fn::GetAtt:
+              - CognitoAuthRole
+              - Arn
+
+          unauthenticated:
+            Fn::GetAtt:
+              - CognitoPublicRole
+              - Arn
+
+    # IAM role used for authenticated users
+    CognitoPublicRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Federated: 'cognito-identity.amazonaws.com'
+              Action:
+                - 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: CognitoIdentityPool
+                'ForAnyValue:StringLike':
+                  'cognito-identity.amazonaws.com:amr': unauthenticated
+
+        Policies:
+          - PolicyName: CognitoAuthorizedPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - mobileanalytics:PutEvents
+                    - mobiletargeting:PutEvents
+                    - mobiletargeting:UpdateEndpoint
+                  Resource: '*'
+
+
+    CognitoAuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Federated: 'cognito-identity.amazonaws.com'
+              Action:
+                - 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: CognitoIdentityPool
+                'ForAnyValue:StringLike':
+                  'cognito-identity.amazonaws.com:amr': authenticated
+
+        Policies:
+          - PolicyName: CognitoAuthorizedPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - mobileanalytics:PutEvents
+                    - cognito-sync:*
+                    - cognito-identity:*
+                    - mobiletargeting:UpdateEndpoint
+                    - mobiletargeting:PutEvents
+                  Resource: '*'
+
+
+  # Print out the Id of the User Pool and Identity Pool that are created
+  Outputs:
+    AuthorizerArn:
+      Value:
+        Fn::GetAtt:
+          - AuthorizerLambdaFunction
+          - Arn
+      Export:
+        Name: AuthorizerArn-${self:custom.stage}
+
+    UserPoolArn:
+      Value:
+        Fn::GetAtt:
+          - CognitoUserPoolMyUserPool
+          - Arn
+      Export:
+        Name: CognitoUserPoolArn-${self:custom.stage}
+
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPoolMyUserPool
+      Export:
+        Name: CognitoUserPool-${self:custom.stage}
+
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+      Export:
+        Name: CognitoUserPoolClient-${self:custom.stage}
+
+    IdentityPoolId:
+      Value:
+        Ref: CognitoIdentityPool
+      Export:
+        Name: CognitoIdentityPool-${self:custom.stage}
