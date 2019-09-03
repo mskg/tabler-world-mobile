@@ -25,26 +25,26 @@ export default () => {
 
     let baseArgs: string[] = [];
     switch (cmd.toLowerCase()) {
-    case 'deploy':
-        baseArgs = ['deploy', '--force', '--verbose'];
-        break;
+        case 'deploy':
+            baseArgs = ['deploy', '--force', '--verbose'];
+            break;
 
-    case 'package':
-        baseArgs = ['package', '--force', '--verbose'];
-        break;
+        case 'package':
+            baseArgs = ['package', '--force', '--verbose'];
+            break;
 
-    case 'remove':
-        baseArgs = ['remove', '--verbose'];
-        break;
+        case 'remove':
+            baseArgs = ['remove', '--verbose'];
+            break;
 
-    case 'dev':
-        baseArgs = ['offline', 'start', '--verbose', '--noTimeout', '--noAuth'];
-        break;
+        case 'dev':
+            baseArgs = ['offline', 'start', '--verbose', '--noTimeout', '--noAuth'];
+            break;
 
-    default:
-        console.error('Invalid cmd', cmd);
-        process.exit(-1);
-        break;
+        default:
+            console.error('Invalid cmd', cmd);
+            process.exit(-1);
+            break;
     }
 
     // console.debug("running", cmd, args);
