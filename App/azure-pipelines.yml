@@ -10,6 +10,9 @@ variables:
     value: 1.1
   - name: EXPO_RELEASE_CHANNEL
     value: beta
+  - group: 'expo'
+  - group: 'ENV Germany Shared'
+  - group: 'ENV Germany TEST'
 
 steps:
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'

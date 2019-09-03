@@ -3,11 +3,6 @@ parameters:
   APPDIR: $(System.DefaultWorkingDirectory)/App
   SOURCESDIR: $(System.DefaultWorkingDirectory)
 
-variables:
-  - group: 'expo'
-  - group: 'ENV Germany Shared'
-  - group: 'ENV Germany TEST'
-
 steps:
 - script: |
    sudo sysctl fs.inotify.max_user_watches=524288
