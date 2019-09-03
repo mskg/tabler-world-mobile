@@ -19,7 +19,8 @@ variables:
 
 steps:
 - powershell: |
-    $n = ([int]'$($env:PATCH)').tostring('###')
+    Write-Host 'Patch# $(env:PATCH)'
+    $n = ([int]'$(env:PATCH)').tostring('###')
     Write-Host "##vso[build.updatebuildnumber]$(env:VERSION).$n"
 
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
