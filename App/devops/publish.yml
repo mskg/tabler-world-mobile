@@ -12,10 +12,10 @@ steps:
     PathtoPublish: App/app.json
     ArtifactName: ${{ parameters.ARTIFACT }}
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: App/package.json
-    ArtifactName: ${{ parameters.ARTIFACT }}
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: App/package.json
+#     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
@@ -27,10 +27,10 @@ steps:
 #     PathtoPublish: yarn.lock
 #     ArtifactName: ${{ parameters.ARTIFACT }}
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: App/yarn.lock
-    ArtifactName: ${{ parameters.ARTIFACT }}
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: App/yarn.lock
+#     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
