@@ -15,17 +15,17 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: App/package.json
-    ArtifactName: ${{ parameters.ARTIFACT }}/services
+    ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: .yarnrc
     ArtifactName: ${{ parameters.ARTIFACT }}
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: yarn.lock
-    ArtifactName: ${{ parameters.ARTIFACT }}
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: yarn.lock
+#     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
