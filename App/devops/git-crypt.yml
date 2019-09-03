@@ -1,9 +1,6 @@
 parameters:
   WORKINGDIR: ''
 
-variables:
-  - group: 'git-crypt'
-
 steps:
 - script: |
    if command -v brew ; then
