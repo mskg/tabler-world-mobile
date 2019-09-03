@@ -20,6 +20,11 @@ variables:
   - group: 'ENV Germany Shared'
   - group: 'ENV Germany TEST'
 
+pr:
+  branches:
+    exclude:
+      - '*'
+
 trigger:
   branches:
     include:

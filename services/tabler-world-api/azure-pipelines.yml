@@ -9,6 +9,11 @@ variables:
   VERSION: 1.2
   PACKAGE_DIR: 'services/tabler-world-api'
 
+pr:
+  branches:
+    exclude:
+      - '*'
+
 trigger:
   branches:
     include:

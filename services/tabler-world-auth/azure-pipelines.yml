@@ -9,12 +9,17 @@ variables:
   VERSION: 1.2
   PACKAGE_DIR: 'services/tabler-world-auth'
 
+pr:
+  branches:
+    exclude:
+      - '*'
+
 trigger:
   branches:
     include:
-      - development
-      - workspace-layout
-      - releases/*
+    - development
+    - workspace-layout
+    - releases/*
 
   paths:
     include:
