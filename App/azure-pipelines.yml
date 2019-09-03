@@ -19,9 +19,9 @@ variables:
 
 steps:
 - powershell: |
-    Write-Host 'Patch# $($env:PATCH)'
-    $n = ([int]'$($env:PATCH)').tostring('###')
-    Write-Host "##vso[build.updatebuildnumber]$($env:VERSION).$($n)"
+    Write-Host 'Patch# $(PATCH)'
+    $n = ([int]'$(PATCH)').tostring('###')
+    Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
 
   env:
     PATCH: $(PATCH)
