@@ -23,6 +23,10 @@ steps:
     $n = ([int]'$($env:PATCH)').tostring('###')
     Write-Host "##vso[build.updatebuildnumber]$($env:VERSION).$($n)"
 
+  env:
+    PATCH: $(PATCH)
+    VERSION: $(VERSION)
+
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
