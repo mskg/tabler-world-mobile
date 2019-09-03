@@ -13,6 +13,7 @@ variables:
   - name: EXPO_RELEASE_CHANNEL
     value: 'beta'
   - group: 'expo'
+  - group: 'git-crypt'
   - group: 'ENV Germany Shared'
   - group: 'ENV Germany TEST'
 
