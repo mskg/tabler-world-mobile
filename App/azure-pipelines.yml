@@ -3,7 +3,7 @@ name: $(VERSION).$(rev:rrr)
 
 pool:
   name: Default # Hosted Ubuntu 1604
-  demands: npm yarn
+  demands: npm
 
 variables:
   - name: VERSION
