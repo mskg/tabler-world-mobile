@@ -18,6 +18,10 @@ variables:
   - group: 'ENV Germany TEST'
 
 steps:
+- powershell: |
+    $n = ([int]'$($env:PATCH)').tostring('###')
+    Write-Host "##vso[build.updatebuildnumber]$(env:VERSION).$n"
+
 - script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
