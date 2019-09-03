@@ -33,7 +33,10 @@ trigger:
 
   paths:
     include:
-      - App/**
+      - App/**/src/*
+      - App/azure-pipelines.yml
+      - App/devops/*
+      - App/config/*
 
 steps:
 # - powershell: |
