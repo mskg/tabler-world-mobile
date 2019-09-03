@@ -1,9 +1,9 @@
 # build number
-name: $(VERSION).046
+name: $(VERSION).$(rev:r)
 
 pool:
   name: Default # Hosted Ubuntu 1604
-  demands: npm
+  demands: npm yarn
 
 variables:
   - name: VERSION
