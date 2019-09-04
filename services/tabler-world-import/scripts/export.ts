@@ -1,6 +1,6 @@
-import { writeFileSync } from "fs";
-import { downloadChunk } from "../src/schedule/downloadChunk";
-import { fetchParallel } from "../src/schedule/fetchParallel";
+import { writeFileSync } from 'fs';
+import { downloadChunk } from '../src/reader/helper/downloadChunk';
+import { fetchParallel } from '../src/reader/helper/fetchParallel';
 
 let fileName = 0;
 async function handleChunk(data: any[]) {
@@ -8,13 +8,13 @@ async function handleChunk(data: any[]) {
 }
 
 async function test() {
-    const url = "https://api.rti.roundtable.world/v1/admin/levels/clubs/?";
-        const payload = undefined;
+    const url = 'https://api.rti.roundtable.world/v1/admin/levels/clubs/?';
+    const payload = undefined;
     // const payload = null; JSON.stringify({
     //     "operator": "AND",
     //     "last_modified": "2010-01-01",
     // });
-    const method = "GET";
+    const method = 'GET';
 
     const firstChunk = await downloadChunk(url, method, payload);
     if (firstChunk != null) {
@@ -23,8 +23,8 @@ async function test() {
     }
 }
 
-console.log("***************",process.env.STAGE);
+console.log('***************', process.env.STAGE);
 
 test().then(
-    () => console.log("done")
-)
+    () => console.log('done'),
+);

@@ -2,18 +2,18 @@
 name: $(VERSION).$(PATCH)
 
 pool:
-  name: 'Default' # 'Hosted Ubuntu 1604
+  name: 'Default' # 'Hosted Ubuntu 1604'
   demands: npm
 
 variables:
   - name: VERSION
-    value: '1.1'
+    value: '1.3'
   - name: PATCH
     value: $[counter(variables['VERSION'], 47)]
   - name: ANDROID_VERSION
     value: $[counter('ANDROID_VERSION', 11070)]
   - name: EXPO_RELEASE_CHANNEL
-    value: 'beta'
+    value: 'prod'
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'
@@ -28,12 +28,19 @@ pr:
 trigger:
   branches:
     include:
-    - develop
-    - releases/*
+      - develop
 
   paths:
     include:
-      - App/**
+      - apps/tabler-app/tsconfig.json
+      - apps/tabler-app/yarn.lock
+      - apps/tabler-app/azure-pipelines.yml
+      - apps/tabler-app/src/*
+      - apps/tabler-app/devops/*
+      - apps/tabler-app/assets/docs/*
+      - apps/tabler-app/assets/fonts/*
+      - apps/tabler-app/assets/images/*
+      - apps/tabler-app/config/app.json
 
 steps:
 # - powershell: |
@@ -58,12 +65,12 @@ steps:
 # yarn /App
 - template: ./devops/yarn.yml
   parameters:
-    SOURCEDIR: $(System.DefaultWorkingDirectory)/App
+    SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
 
 # Init expo environment
 - template: ./devops/init-expo.yml
   parameters:
-    APPDIR: $(System.DefaultWorkingDirectory)/App
+    APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
     APP_VERSION: $(build.buildNumber)
     SOURCESDIR: $(System.DefaultWorkingDirectory)
 
@@ -72,7 +79,7 @@ steps:
    export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
    npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
    npx expo publish:history --release-channel $CHANNEL -r > deployment.json
-  workingDirectory: '$(System.DefaultWorkingDirectory)/App'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
   displayName: publish
   env:
     SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
