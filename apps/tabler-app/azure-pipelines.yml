@@ -32,10 +32,15 @@ trigger:
 
   paths:
     include:
-      - App/**/src/*
-      - App/azure-pipelines.yml
-      - App/devops/*
-      - App/config/*
+      - apps/tabler-app/tsconfig.json
+      - apps/tabler-app/yarn.lock
+      - apps/tabler-app/azure-pipelines.yml
+      - apps/tabler-app/src/*
+      - apps/tabler-app/devops/*
+      - apps/tabler-app/assets/docs/*
+      - apps/tabler-app/assets/fonts/*
+      - apps/tabler-app/assets/images/*
+      - apps/tabler-app/config/app.json
 
 steps:
 # - powershell: |
