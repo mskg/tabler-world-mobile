@@ -13,10 +13,10 @@ steps:
     PathtoPublish: ${{ parameters.PATH }}/app.json
     ArtifactName: ${{ parameters.ARTIFACT }}
 
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: apps/tabler-app/package.json
-#     ArtifactName: ${{ parameters.ARTIFACT }}
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: apps/tabler-app/package.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
