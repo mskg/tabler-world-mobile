@@ -48,10 +48,10 @@ steps:
     PathtoPublish: ${{ parameters.PATH }}/devops/setvar.ps1
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: apps/tabler-app/assets
-#     ArtifactName: ${{ parameters.ARTIFACT }}/assets
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: apps/tabler-app/assets
+    ArtifactName: ${{ parameters.ARTIFACT }}/assets
 
 # - task: PublishBuildArtifacts@1
 #   inputs:
