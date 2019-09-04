@@ -51,3 +51,8 @@ steps:
   inputs:
     PathtoPublish: App/assets
     ArtifactName: ${{ parameters.ARTIFACT }}/assets
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: packages
+    ArtifactName: packages
