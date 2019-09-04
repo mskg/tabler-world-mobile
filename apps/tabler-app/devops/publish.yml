@@ -47,6 +47,11 @@ steps:
     PathtoPublish: App/devops/setvar.ps1
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: App/devops/app.js
+    ArtifactName: ${{ parameters.ARTIFACT }}/config
+
 # - task: PublishBuildArtifacts@1
 #   inputs:
 #     PathtoPublish: App/assets
