@@ -36,7 +36,7 @@ const patch = [
     { op: "add", path: "/expo/ios/bundleIdentifier", value: process.env.APP_IOS_BUNDLE },
 
     { op: "add", path: "/expo/android/package", value: process.env.APP_ANDROID_PACKAGE },
-    { op: "add", path: "/expo/android/googleServicesFile", value: "../config/google-services.json" },
+    { op: "add", path: "/expo/android/googleServicesFile", value: "../../config/google-services.json" },
 
     {
         op: "add", path: "/expo/hooks", value: {
