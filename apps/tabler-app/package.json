@@ -17,8 +17,8 @@
         "android": "emulator -avd expo -gpu host"
     },
     "workspaces": [
-        "../packages/tabler-world-tslint-rules",
-        "../packages/tabler-world-yarn-tools"
+        "../../packages/tabler-world-tslint-rules",
+        "../../packages/tabler-world-yarn-tools"
     ],
     "dependencies": {
         "@aws-amplify/analytics": "^1.2.16",
