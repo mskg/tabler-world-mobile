@@ -14,7 +14,7 @@ steps:
 
 # - task: PublishBuildArtifacts@1
 #   inputs:
-#     PathtoPublish: App/package.json
+#     PathtoPublish: apps/tabler-app/package.json
 #     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
@@ -34,22 +34,22 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/deployment.json
+    PathtoPublish: apps/tabler-app/deployment.json
     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/devops/deployment.js
+    PathtoPublish: apps/tabler-app/devops/deployment.js
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/devops/setvar.ps1
+    PathtoPublish: apps/tabler-app/devops/setvar.ps1
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
 # - task: PublishBuildArtifacts@1
 #   inputs:
-#     PathtoPublish: App/assets
+#     PathtoPublish: apps/tabler-app/assets
 #     ArtifactName: ${{ parameters.ARTIFACT }}/assets
 
 # - task: PublishBuildArtifacts@1
