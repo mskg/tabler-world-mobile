@@ -17,8 +17,7 @@ pr:
 trigger:
   branches:
     include:
-    - develop
-    - release/**
+      - release/v1.1
 
   paths:
     include:
