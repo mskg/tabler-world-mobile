@@ -60,12 +60,12 @@ steps:
 # yarn /App
 - template: ./devops/yarn.yml
   parameters:
-    SOURCEDIR: $(System.DefaultWorkingDirectory)/App
+    SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
 
 # Init expo environment
 - template: ./devops/init-expo.yml
   parameters:
-    APPDIR: $(System.DefaultWorkingDirectory)/App
+    APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
     APP_VERSION: $(build.buildNumber)
     SOURCESDIR: $(System.DefaultWorkingDirectory)
 
@@ -74,7 +74,7 @@ steps:
    export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
    npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
    npx expo publish:history --release-channel $CHANNEL -r > deployment.json
-  workingDirectory: '$(System.DefaultWorkingDirectory)/App'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
   displayName: publish
   env:
     SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
