@@ -56,7 +56,7 @@ export const MemberResolver = {
     },
 
     Company: {
-        sector:  (root: any, _args: {}, _context: IApolloContext) => {
+        sector: (root: any, _args: {}, _context: IApolloContext) => {
             return root.sector ? root.sector.replace(/-/ig, '') : null;
         },
     },
@@ -125,9 +125,9 @@ export const MemberResolver = {
             if (favorites) {
                 // there could be favorites that no longer exist
                 return favorites.filter((f) => f != null);
-            } 
-                return favorites;
-            
+            }
+
+            return favorites;
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
