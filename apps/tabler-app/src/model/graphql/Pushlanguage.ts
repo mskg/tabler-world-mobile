@@ -5,16 +5,16 @@
 import { SettingInput } from "./globalTypes";
 
 // ====================================================
-// GraphQL mutation operation: PutSetting
+// GraphQL mutation operation: Pushlanguage
 // ====================================================
 
-export interface PutSetting {
+export interface Pushlanguage {
   /**
    * Updates a setting
    */
   putSetting: boolean | null;
 }
 
-export interface PutSettingVariables {
+export interface PushlanguageVariables {
   input: SettingInput;
 }

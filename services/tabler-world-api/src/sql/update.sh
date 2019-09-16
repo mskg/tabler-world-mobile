@@ -1,7 +1,7 @@
 #!/bin/bash
 source ~/.bashrc
-source ../../../config/.env
-source ../../../config/.env.local
+source ../../../../config/.env
+source ../../../../config/.env.local
 
 # STACK="$(aws cloudformation list-exports)"
 # RDSHOST="$(echo $STACK | jq -r -c '.Exports[] | select(.Name == "DatabaseHostId") | .Value')"

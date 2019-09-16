@@ -4,15 +4,15 @@ import gql from 'graphql-tag';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { I18N } from '../../i18n/translation';
 import { SettingName } from '../../model/graphql/globalTypes';
-import { PutSetting, PutSettingVariables } from '../../model/graphql/PutSetting';
+import { Pushlanguage, PushlanguageVariables } from '../../model/graphql/Pushlanguage';
 import * as settingsActions from '../../redux/actions/settings';
 
 export function* pushLanguage(_a: typeof settingsActions.storeLanguage.shape) {
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
 
-    yield client.mutate<PutSetting, PutSettingVariables>({
+    yield client.mutate<Pushlanguage, PushlanguageVariables>({
         mutation: gql`
-mutation PutSetting($input: SettingInput!) {
+mutation Pushlanguage($input: SettingInput!) {
 putSetting (setting: $input)
 }`,
         variables: {

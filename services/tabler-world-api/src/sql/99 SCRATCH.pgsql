@@ -276,3 +276,95 @@ select * from usersettings
 
 update usersettings
 set settings = null
+
+
+select id from profiles
+where lastname = 'Steffen'
+
+select * from tabler
+where id = 8295
+
+
+select * From tabler_roles
+where id in (
+select id from profiles
+where lastname = 'Walter'
+)
+
+select * from tabler
+where id = 8295
+
+update tabler set data = '{"id":8295,"age":36,"email":"seb-walter@gmx.de","uname":"SebastianWalter","gender":"M","address":[{"id":2177237,"city":"Hamburg","country":"DE","street1":"Papenhuder Straße 34","postal_code":"22087","address_type":6}],"companies":[{"id":589199,"name":"BBM Maschinenbau und Vertriebs GmbH","email":"sebastian.walter@bbm-germany.de","phone":"+491708805554","sector":"manufacturing-production","address":[{"id":2177238,"country":"DE"}],"function":"Business Development Manager"}],"last_name":"Walter","last_sync":"2019-07-12T11:23:22.230116Z","relatives":[],"rt_status":"active","sync_guid":"a267b93b-0850-4948-8e4f-c86bde8cd400","birth_date":"1983-06-07","created_on":"2018-06-08T20:30:38.185Z","educations":[],"first_name":"Sebastian","profile_pic":"https://roundtable-prd.s3.eu-central-1.amazonaws.com/106/profile_pic/e2b9d2db-f50f-4975-9fd4-6d2625de4e81.jpg","rt_is_guest":false,"phonenumbers":[{"id":1775193,"type":"home","value":"+49 (0) 1708805554"}],"rt_area_name":"Distrikt 2","rt_club_name":"RT84 HAMBURG-ST. PAULI","social_media":{},"custom_fields":[{"id":110,"name":"Member Info","rows":[],"type":"custom"},{"id":109,"name":"Preferences","rows":[{"id":29,"key":"Receive printed magazine?","value":"Ja"}],"type":"custom"},{"id":5040,"name":"externe_Gäste","rows":[],"type":"custom"}],"last_modified":"2019-06-18T19:40:37.749027Z","rt_club_number":84,"rt_date_joined":"2006-06-06","rt_entrance_age":22,"emails_secondary":[],"permission_level":"can_login","rt_generic_email":"sebastian.walter@84-de.roundtable.world","rt_area_subdomain":"d2-de","rt_club_subdomain":"84-de","rt_temp_member_id":"734539","preferred_language":"en","rt_local_positions":[],"rt_association_name":"RT Germany","rt_global_positions":[{"id":2219510,"end_date":"2019-11-23","start_date":"2018-09-08","combination":{"id":50,"group":18,"function":49,"short_description":"Board / Vice-President"}},{"id":3452484,"start_date":"2006-06-06","combination":{"id":15971,"group":5479,"function":4306,"short_description":"Associations › RT Germany › Areas › Distrikt 2 › Tables › RT84 HAMBURG-ST. PAULI › Members / Member"}}],"rt_privacy_settings":[{"type":"custom-field-category-110","level":"club"}],"rt_terms_approved_on":"2018-06-10T17:07:02.744378Z","rt_done_onboarding_on":"2018-06-10T17:07:02.744378Z","rt_consent_approved_on":"2018-06-10T17:07:02.744378Z","rt_association_subdomain":"de"}	'
+where id = 8295
+
+
+select
+	id
+    ,cast(t->>'start_date' as date) as start_date
+    ,cast(t->>'end_date' as date) as end_date
+    ,case when
+        cast(t->>'start_date' as date) <= now()
+            and (
+				    cast(t->>'end_date' as date) is null
+			    or  cast(t->>'end_date' as date) >= now()
+		    )
+            then TRUE
+        ELSE
+            FALSE
+    END as isvalid
+    ,cast(t->'combination'->>'function' as integer) as function
+    ,rtrim(
+        ltrim(
+            (
+                regexp_matches(
+                    t->'combination'->>'short_description',
+                    '.*[^\s\w\-\.\/\(\)]\s([\s\w\d\.\-\/\(\)]+)[^\s\w\-\.\/\(\)]\s([\s\w\d\.\-\/\(\)]+)\/\s([\s\w\d\.\-\/\(\)]+)$')
+            )[1]
+        )
+    ) as level
+    ,(
+        rtrim(
+            ltrim(
+                (
+                    regexp_matches(
+                        t->'combination'->>'short_description',
+                        '.*[^\s\w\-\.\/\(\)]\s([\s\w\d\.\-\/\(\)]+)[^\s\w\-\.\/\(\)]\s([\s\w\d\.\-\/\(\)]+)\/\s([\s\w\d\.\-\/\(\)]+)$')
+                )[1]
+            )
+        )
+    ) as levelid
+    ,(
+        rtrim(
+            ltrim(
+                (
+                    regexp_matches(
+                        t->'combination'->>'short_description',
+                        '.*[^\s\w\-\.\/\(\)]\s([\s\w\d\.\-\/\(\)]+)[^\s\w\-\.\/\(\)]\s([\s\w\d\.\-\/\(\)]+)\/\s([\s\w\d\.\-\/\(\)]+)$')
+                )[1]
+            )
+        )
+    ) leveltype
+    ,rtrim(
+        ltrim(
+            (
+                regexp_matches(
+                    t->'combination'->>'short_description',
+                    '.*\/\s([\s\w\d\.\-]+)$'
+                )
+            )[1]
+        )
+    ) as name
+    ,rtrim(
+        ltrim(
+            (
+                regexp_matches(
+                    t->'combination'->>'short_description',
+                    '.*[^\s\w\-\.\/\(\)]\s([^\/]+)\s\/\s[^\/]+$'
+                )
+            )[1]
+        )
+    ) as groupname
+from
+    tabler,
+    jsonb_array_elements(tabler.data->'rt_global_positions') t
+where id in (8295, 10472)
