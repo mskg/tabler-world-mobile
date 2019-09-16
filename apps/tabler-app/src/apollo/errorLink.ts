@@ -7,15 +7,15 @@ export const errorLink = onError(({ networkError, graphQLErrors, response, opera
     if (networkError) {
         logger.error(networkError);
 
-    // getReduxStore().dispatch(
-    //   addErrorSnack(networkError)
-    // );
+        // getReduxStore().dispatch(
+        //   addErrorSnack(networkError)
+        // );
     }
 
     if (graphQLErrors) {
         graphQLErrors.forEach((e) => {
-      // addErrorSnack(errorLink);
-          logger.error(e);
-      });
+            // addErrorSnack(errorLink);
+            logger.error(e);
+        });
     }
 });

@@ -22,62 +22,54 @@ if (EXECUTING_OFFLINE) {
     console.log('Pushing TraceRequestExtension');
 
     extensions.push(
-    () => new TraceRequestExtension(),
-  );
+        () => new TraceRequestExtension(),
+    );
 }
 
 if (isXrayEnabled && process.env.XRAY_GRAPHQL_DISABLED !== 'true') {
     console.log('Pushing XRayRequestExtension');
 
     extensions.push(
-    () => new XRayRequestExtension(),
-  );
+        () => new XRayRequestExtension(),
+    );
 }
 
 const server = new ApolloServer({
     schema: makeExecutableSchema({
-      typeDefs: schema,
-      resolvers,
-  }),
+        resolvers,
+        typeDefs: schema,
+    }),
 
     validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
 
-  // cacheControl: {
-  //   // defaultMaxAge: 60*60*24,
-  //   stripFormattedExtensions: false,
-  //   calculateHttpHeaders: false,
-  // },
+    // cacheControl: {
+    //   // defaultMaxAge: 60*60*24,
+    //   stripFormattedExtensions: false,
+    //   calculateHttpHeaders: false,
+    // },
 
     cache: cacheInstance,
 
     persistedQueries: {
-      cache: cacheInstance,
-  },
+        cache: cacheInstance,
+    },
 
     dataSources: dataSources as unknown as () => DataSources<IApolloContext>,
 
     tracing: EXECUTING_OFFLINE,
-  // mockEntireSchema: EXECUTING_OFFLINE,
+    // mockEntireSchema: EXECUTING_OFFLINE,
 
+    // tslint:disable-next-line: object-shorthand-properties-first
     extensions,
     context: constructContext,
 });
 
 const serverHandler = server.createHandler({
     cors: {
-      origin: '*',
-      credentials: true,
-  },
+        origin: '*',
+        credentials: true,
+    },
 });
 
+// tslint:disable-next-line: export-name
 export const handler: ProxyHandler = serverHandler;
-
-// (event, context, callback) => {
-//   warmer(event).then((isWarmer: boolean) => {
-//     if (isWarmer) {
-//       callback(null, { statusCode: 200, body: 'warmed' });
-//     } else {
-//       serverHandler(event, context, callback);
-//     }
-//   });
-// }
