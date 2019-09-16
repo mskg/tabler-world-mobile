@@ -75,6 +75,8 @@ export const Member = gql`
         club
         assoc
         area
+        region
+        rti
     }
 
     type RoleRef {

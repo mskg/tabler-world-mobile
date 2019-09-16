@@ -4,6 +4,7 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { createPersistedQueryLink } from 'apollo-link-persisted-queries';
+import { RetryLink } from 'apollo-link-retry';
 import { getConfigValue } from '../helper/Configuration';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
@@ -39,6 +40,15 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
 
     const links = ApolloLink.from(
         [
+            new RetryLink({
+                attempts: {
+                    retryIf: (error, _operation) => {
+                        // in case of timeout, just retry the operation
+                        return error && error.statusCode === 502;
+                    },
+                },
+            }),
+
             errorLink,
 
             !demoMode

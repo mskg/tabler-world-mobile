@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { MemberDetailsFragment } from './MemberDetailsFragment';
 
 export const GetFavoriteMembersQuery = gql`
-  query OfflineMembers {
+  query FavoriteMembers {
     FavoriteMembers {
         ...MemberDetailsFragment
     }
