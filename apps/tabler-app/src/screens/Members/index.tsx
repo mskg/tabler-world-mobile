@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { first } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Dimensions, StatusBar, StyleSheet, Vibration, View } from 'react-native';
@@ -82,7 +82,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.state = {
             dataSource,
             forceUpdate: false,
-            letter: _.first(dataSource.sections),
+            letter: first(dataSource.sections),
         };
 
         this.state = {
@@ -92,15 +92,6 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        // const forceUpdate = false
-        //     || this.props.data.Me != nextProps.data.Me
-        //     || this.props.showFavorites != nextProps.showFavorites
-        //     || (this.props.showOwntable != nextProps.showOwntable && nextProps.data.Me != null)
-        //     || this.props.areas != nextProps.areas
-        //     || this.props.sortBy != nextProps.sortBy
-        //     || this.props.diplayFirstNameFirst != nextProps.diplayFirstNameFirst
-        //     || this.props.theme != nextProps.theme;
-
         // const forceUpdate = true;
         this.setState({
             ...this.calculateNewState(nextProps),
@@ -141,21 +132,21 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.state.dataSource.groupBy = nextProps.sortBy;
 
         this.state.dataSource.update(
-            _(data).uniqBy(d => d.id).value() as IMemberOverviewFragment[],
+            _(data).uniqBy((d) => d.id).value() as IMemberOverviewFragment[],
         );
 
-        const res = this.state.dataSource.data.filter(s => s.title == this.state.letter);
+        const res = this.state.dataSource.data.filter((s) => s.title === this.state.letter);
 
         return {
+            me,
             letter: res != null && res.length !== 0
                 ? this.state.letter
-                : _.first(this.state.dataSource.sections),
-            me,
+                : first(this.state.dataSource.sections),
         };
     }
 
     _jumptoLetterDirect = (letter: string | undefined): void => {
-        if (letter == null || letter == this.state.letter) return;
+        if (letter == null || letter === this.state.letter) return;
         this.setState({ letter });
 
         if (this._sectionList != null && letter != null) {
@@ -276,9 +267,9 @@ const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard,
                 variables={{
                     areas: areas != null ? _(areas)
                         .keys()
-                        .filter(k => k !== 'length')
-                        .map(a => a.replace(/[^\d]/g, ''))
-                        .map(a => parseInt(a, 10))
+                        .filter((k) => k !== 'length')
+                        .map((a) => a.replace(/[^\d]/g, ''))
+                        .map((a) => parseInt(a, 10))
                         .value()
                         : null,
 
@@ -298,11 +289,14 @@ const MembersQuery = ({ fetchPolicy, areas, showAssociationBoard, showAreaBoard,
                         isLoading = true;
                     }
 
-                    return <ConnectedMembersScreen
-                        loading={isLoading}
-                        data={data}
-                        offlineData={oData}
-                        refresh={() => { refetch(); oRefetch(); }} />;
+                    return (
+                        <ConnectedMembersScreen
+                            loading={isLoading}
+                            data={data}
+                            offlineData={oData}
+                            refresh={() => { refetch(); oRefetch(); }}
+                        />
+                    );
                 }}
             </Query>;
         }}
