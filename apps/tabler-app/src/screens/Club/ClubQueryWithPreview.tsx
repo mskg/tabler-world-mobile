@@ -1,7 +1,7 @@
 import React, { PureComponent, ReactElement } from 'react';
 import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
-import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
+import { isRecordValid } from '../../helper/cache/isRecordValid';
 import { I18N } from '../../i18n/translation';
 import { Club } from '../../model/graphql/Club';
 import { ClubOverviewFragment as ClubOverviewFragmentType } from '../../model/graphql/ClubOverviewFragment';
