@@ -1,6 +1,6 @@
 import Auth from '@aws-amplify/auth';
 import Constants from 'expo-constants';
-import { getConfigValue } from '../helper/Configuration';
+import { getConfigValue } from '../helper/getConfigValue';
 import { logoutUser } from '../redux/actions/user';
 import { getReduxStore } from '../redux/getRedux';
 import { isAuthenticationError } from './isAuthenticationError';

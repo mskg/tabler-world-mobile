@@ -1,5 +1,5 @@
 
-import { getConfigValue } from '../helper/Configuration';
+import { getConfigValue } from '../helper/getConfigValue';
 import { Categories, Logger } from '../helper/Logger';
 import { Audit } from './Audit';
 import { IAnalyticsProvider } from './IAuditor';
@@ -13,9 +13,9 @@ export function bootstrapAnalytics() {
     const amplitudeAnalytics = getConfigValue('amplitudeAnalytics');
 
     logger.log(
-    'region', region,
-    'cognito', cognitoAnalytics,
-    'amplitude', amplitudeAnalytics);
+        'region', region,
+        'cognito', cognitoAnalytics,
+        'amplitude', amplitudeAnalytics);
 
     let provider: IAnalyticsProvider | undefined;
 
@@ -23,19 +23,19 @@ export function bootstrapAnalytics() {
         const analytics = require('./CognitoAnalytics');
 
         provider = new analytics.CognitoAnalytics(
-      region, cognitoAnalytics,
-    );
+            region, cognitoAnalytics,
+        );
     }
 
     if (amplitudeAnalytics != null && amplitudeAnalytics != '') {
         const analytics = require('./AmplitudeAnalytics');
 
         provider = new analytics.AmplitudeAnalytics(
-      amplitudeAnalytics,
-    );
+            amplitudeAnalytics,
+        );
     }
 
-  // allow inspection
+    // allow inspection
     if (__DEV__ && provider != null) {
         provider = new LogWrapper(provider);
     }

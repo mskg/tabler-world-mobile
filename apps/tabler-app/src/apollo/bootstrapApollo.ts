@@ -5,7 +5,7 @@ import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { createPersistedQueryLink } from 'apollo-link-persisted-queries';
 import { RetryLink } from 'apollo-link-retry';
-import { getConfigValue } from '../helper/Configuration';
+import { getConfigValue } from '../helper/getConfigValue';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
 import { fetchAuth, fetchAuthDemo } from './authLink';

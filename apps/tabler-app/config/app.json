@@ -1,105 +1,108 @@
 {
-  "expo": {
-    "name": "TABLER.APP",
-    "privacy": "unlisted",
-    "sdkVersion": "34.0.0",
-    "description": "'One community, one web' has evolved from a dream and a vision to a hard fact solution. Two years ago all associations of RTI came together and gave a core team a great task to produce a solution that would empower all our members to table and connect online. You will be the first to adopt, adapt and improve on a tabling and administration platform by tablers for tablers as we take a giant leap forward – Bringing Tabling into the 21st century!",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "extra": {
-      "region": "",
-      "identityPoolId": "",
-      "userPoolId": "",
-      "userPoolWebClientId": "",
-      "api": "",
-      "apidemo": "",
-      "sentry": "",
-      "cognitoAnalytics": "",
-      "amplitudeAnalytics": "",
-      "profile": "https://rti.roundtable.world/de/members/#id#/",
-      "world": "https://rti.roundtable.world/de/",
-      "join": "https://www.round-table.de/bist-du-wir/",
-      "support": "support@round-table.de",
-      "feedback": "http://feedback.app.roundtable.world/"
-    },
-    "orientation": "portrait",
-    "icon": "./assets/images/logo_iOS.png",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "enabled": true,
-      "checkAutomatically": "ON_ERROR_RECOVERY",
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "assets/**/icon.png",
-      "assets/**/logo.png",
-      "assets/**/splash.png",
-      "assets/**/background.png",
-      "assets/fonts/**/DejaVuSansCondensed.ttf",
-      "assets/fonts/**/DejaVuSansCondensed-Bold.ttf",
-      "assets/fonts/**/DejaVuSans-ExtraLight.ttf",
-      "assets/docs/**/*.md"
-    ],
-    "scheme": "tablerworld",
-    "ios": {
-      "supportsTablet": true,
-      "config": {
-        "usesNonExemptEncryption": false
-      },
-      "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "location"
+    "expo": {
+        "name": "TABLER.APP",
+        "privacy": "unlisted",
+        "sdkVersion": "34.0.0",
+        "description": "'One community, one web' has evolved from a dream and a vision to a hard fact solution. Two years ago all associations of RTI came together and gave a core team a great task to produce a solution that would empower all our members to table and connect online. You will be the first to adopt, adapt and improve on a tabling and administration platform by tablers for tablers as we take a giant leap forward – Bringing Tabling into the 21st century!",
+        "platforms": [
+            "ios",
+            "android"
         ],
-        "LSApplicationQueriesSchemes": [
-          "googlechrome",
-          "googlechromes",
-          "tg",
-          "sgnl",
-          "whatsapp",
-          "ms-outlook",
-          "googlegmail",
-          "http",
-          "https",
-          "tel",
-          "sms",
-          "comgooglemaps"
+        "extra": {
+            "region": "",
+            "identityPoolId": "",
+            "userPoolId": "",
+            "userPoolWebClientId": "",
+            "api": "",
+            "apidemo": "",
+            "sentry": "",
+            "cognitoAnalytics": "",
+            "amplitudeAnalytics": "",
+            "profile": "https://rti.roundtable.world/de/members/#id#/",
+            "world": "https://rti.roundtable.world/de/",
+            "world_whitelist": [
+                "*.roundtable.world"
+            ],
+            "join": "https://www.round-table.de/bist-du-wir/",
+            "support": "support@round-table.de",
+            "feedback": "http://feedback.app.roundtable.world/"
+        },
+        "orientation": "portrait",
+        "icon": "./assets/images/logo_iOS.png",
+        "splash": {
+            "image": "./assets/images/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "enabled": true,
+            "checkAutomatically": "ON_ERROR_RECOVERY",
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "assets/**/icon.png",
+            "assets/**/logo.png",
+            "assets/**/splash.png",
+            "assets/**/background.png",
+            "assets/fonts/**/DejaVuSansCondensed.ttf",
+            "assets/fonts/**/DejaVuSansCondensed-Bold.ttf",
+            "assets/fonts/**/DejaVuSans-ExtraLight.ttf",
+            "assets/docs/**/*.md"
         ],
-        "NSCameraUsageDescription": "TABLER.APP uses the camera to scan barcodes of other members.",
-        "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
-        "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
-        "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
-        "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription" : "TABLER.APP tracks your position to allow other members to get in touch with you."
-      }
-    },
-    "locales": {
-      "de": "./src/i18n/permissions/de.json"
-    },
-    "android": {
-      "permissions": [
-        "READ_CONTACTS",
-        "WRITE_CONTACTS",
-        "READ_CALENDAR",
-        "WRITE_CALENDAR",
-        "VIBRATE",
-        "CAMERA",
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
-      ],
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo_Android.png",
-        "backgroundColor": "#ffffff"
-      },
-      "config":{
-        "googleMaps": {}
-      }
+        "scheme": "tablerworld",
+        "ios": {
+            "supportsTablet": true,
+            "config": {
+                "usesNonExemptEncryption": false
+            },
+            "infoPlist": {
+                "UIBackgroundModes": [
+                    "fetch",
+                    "location"
+                ],
+                "LSApplicationQueriesSchemes": [
+                    "googlechrome",
+                    "googlechromes",
+                    "tg",
+                    "sgnl",
+                    "whatsapp",
+                    "ms-outlook",
+                    "googlegmail",
+                    "http",
+                    "https",
+                    "tel",
+                    "sms",
+                    "comgooglemaps"
+                ],
+                "NSCameraUsageDescription": "TABLER.APP uses the camera to scan barcodes of other members.",
+                "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
+                "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
+                "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
+                "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
+                "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you."
+            }
+        },
+        "locales": {
+            "de": "./src/i18n/permissions/de.json"
+        },
+        "android": {
+            "permissions": [
+                "READ_CONTACTS",
+                "WRITE_CONTACTS",
+                "READ_CALENDAR",
+                "WRITE_CALENDAR",
+                "VIBRATE",
+                "CAMERA",
+                "ACCESS_COARSE_LOCATION",
+                "ACCESS_FINE_LOCATION"
+            ],
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/logo_Android.png",
+                "backgroundColor": "#ffffff"
+            },
+            "config": {
+                "googleMaps": {}
+            }
+        }
     }
-  }
 }

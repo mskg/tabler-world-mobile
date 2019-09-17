@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 type Key =
-    'region'
+    | 'region'
     | 'identityPoolId'
     | 'userPoolId'
     | 'userPoolWebClientId'
@@ -13,18 +13,22 @@ type Key =
     | 'amplitudeAnalytics'
     | 'profile'
     | 'world'
+    | 'world_whitelist'
     | 'feedback'
     | 'join'
     | 'support'
-;
+    ;
 
-export function getConfigValue(key: Key): string {
+type ConfigTypes = string | string[];
+
+export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
     if (key === 'api' && __DEV__ && !Constants.isDevice) {
         if (Platform.OS === 'android') {
             // default redirect to localhost for android emulator
-            return 'http://10.0.2.2:3000';
-        }  if (Platform.OS === 'ios') {
-            return 'http://localhost:3000';
+            // tslint:disable-next-line: no-http-string
+            return 'http://10.0.2.2:3000' as T;
+        } if (Platform.OS === 'ios') {
+            return 'http://localhost:3000' as T;
         }
     }
 
