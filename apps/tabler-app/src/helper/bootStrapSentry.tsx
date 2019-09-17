@@ -1,5 +1,5 @@
 import ExpoSentry from 'sentry-expo';
-import { getConfigValue } from './Configuration';
+import { getConfigValue } from './getConfigValue';
 
 export function bootStrapSentry() {
     const sentry = getConfigValue('sentry');

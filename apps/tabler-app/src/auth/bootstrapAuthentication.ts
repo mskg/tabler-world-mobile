@@ -2,7 +2,7 @@
 // import Amplify from 'aws-amplify';
 import Auth from '@aws-amplify/auth';
 import Amplify from '@aws-amplify/core';
-import { getConfigValue } from '../helper/Configuration';
+import { getConfigValue } from '../helper/getConfigValue';
 import { Categories, Logger } from '../helper/Logger';
 import { SecureStorage } from './SecureStorage';
 

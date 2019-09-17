@@ -17,9 +17,9 @@ import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
 import { Snacks } from './components/Snacks';
 import { withPreCached } from './components/withPreCached';
+import { bootStrapSentry } from './helper/bootStrapSentry';
 import { disableFontScaling } from './helper/disableFontScaling';
 import { Categories, Logger } from './helper/Logger';
-import { bootStrapSentry } from './helper/Sentry';
 import { Features, isFeatureEnabled } from './model/Features';
 import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
@@ -71,31 +71,31 @@ const App = () => {
     dispatch(checkNetwork());
 
     return (
-    <React.Fragment>
-      <StandardStatusBar />
-      <Reloader />
-      <ActionSheetProvider>
-        <Navigation />
-      </ActionSheetProvider>
-      <Snacks />
-      <PushNotifications />
-      <Linking />
-      <Loading />
-    </React.Fragment>
+        <React.Fragment>
+            <StandardStatusBar />
+            <Reloader />
+            <ActionSheetProvider>
+                <Navigation />
+            </ActionSheetProvider>
+            <Snacks />
+            <PushNotifications />
+            <Linking />
+            <Loading />
+        </React.Fragment>
     );
 };
 
 logger.log('Loading...');
 export default withPreCached(
-  withApollo(
-    withStore(
-      withPaperProvider(
-        withSkakeErrorReport(
-          withAuthenticator(
-            withWhoopsErrorBoundary(
-              App)),
+    withApollo(
+        withStore(
+            withPaperProvider(
+                withSkakeErrorReport(
+                    withAuthenticator(
+                        withWhoopsErrorBoundary(
+                            App)),
+                ),
+            ),
         ),
-      ),
     ),
-  ),
 );
