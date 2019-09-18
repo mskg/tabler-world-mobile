@@ -48,7 +48,7 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
                     resizeMode="contain"
                     style={
                         [
-                            styles.imageStyles,
+                            StyleSheet.absoluteFillObject,
                             {
                                 top: size / 7, bottom: size / 7,
                                 left: size / 7, right: size / 7,
@@ -62,12 +62,3 @@ export class ClubAvatarBase extends React.PureComponent<Props> {
 }
 
 export const ClubAvatar = withTheme(ClubAvatarBase);
-
-const styles = StyleSheet.create({
-    imageStyles: {
-        position: 'absolute',
-        top: 0, bottom: 0,
-        left: 0, right: 0,
-        overflow: 'hidden',
-    },
-});
