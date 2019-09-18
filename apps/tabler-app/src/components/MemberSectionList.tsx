@@ -57,12 +57,12 @@ enum ItemType {
 }
 
 const logger = new Logger('MemberSectionList');
-const SCREEN_FACTOR = Dimensions.get('screen').width / 375 /* 6S */;
+const SCREEN_FACTOR = Dimensions.get('window').width / 375 /* 6S */;
 
 export class MemberSectionListBase extends React.Component<Props, State>  {
     dataProvider: DataProvider;
     layoutProvider: LayoutProvider;
-    width = Dimensions.get('screen').width;
+    width = Dimensions.get('window').width;
 
     constructor(props) {
         super(props);
