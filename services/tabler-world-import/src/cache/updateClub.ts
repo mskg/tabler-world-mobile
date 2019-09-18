@@ -1,7 +1,7 @@
-import { xAWS } from "@mskg/tabler-world-aws";
-import { makeCacheKey } from "@mskg/tabler-world-cache";
-import { IDataService } from "@mskg/tabler-world-rds-client";
-import { cacheInstance } from "./cacheInstance";
+import { xAWS } from '@mskg/tabler-world-aws';
+import { makeCacheKey } from '@mskg/tabler-world-cache';
+import { IDataService } from '@mskg/tabler-world-rds-client';
+import { cacheInstance } from './cacheInstance';
 
 // we keep an im memory hash of the last updated clubs
 // the lambda is short lived, with a max degree of three
@@ -13,7 +13,7 @@ const updated: {
 const MINUTES_5 = 5 * 60 /* s */ * 1000 /* ms */;
 
 export async function updateClub(client: IDataService, assoc: string, club: number) {
-    const key = makeCacheKey("Club", [assoc + "_" + club]);
+    const key = makeCacheKey('Club', [assoc + '_' + club]);
 
     if (updated[key] != null && Date.now() - updated[key] < MINUTES_5) {
         return;
@@ -23,12 +23,12 @@ export async function updateClub(client: IDataService, assoc: string, club: numb
         `select * from structure_clubs where association = $1 and club = $2`,
         [assoc, club]);
 
-    const newClub = res.rows.length == 1 ? res.rows[0] : undefined;
+    const newClub = res.rows.length === 1 ? res.rows[0] : undefined;
 
     updated[key] = Date.now();
 
     if (newClub != null) {
-        console.log("Updating", key);
+        console.log('Updating', key);
         cacheInstance.set(key, JSON.stringify(newClub));
 
         const addresses = [
@@ -42,7 +42,7 @@ export async function updateClub(client: IDataService, assoc: string, club: numb
             MessageBody: JSON.stringify(addresses),
         }).promise();
     } else {
-        console.log("Removing", key);
+        console.log('Removing', key);
         cacheInstance.delete(key);
     }
 }
