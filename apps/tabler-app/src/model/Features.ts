@@ -1,5 +1,6 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { getColorScheme } from '../theme/getColorScheme';
 
 export enum Features {
     ContactSync,
@@ -10,6 +11,7 @@ export enum Features {
     ClubMap,
     BackgroundLocation,
     LocationHistory,
+    DarkModeSwitch,
 }
 
 export function isFeatureEnabled(feature: Features) {
@@ -27,6 +29,10 @@ export function isFeatureEnabled(feature: Features) {
 
     if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {
         return true;
+    }
+
+    if (feature === Features.DarkModeSwitch) {
+        return getColorScheme() === 'no-preference';
     }
 
     return false;
