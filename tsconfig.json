@@ -28,6 +28,8 @@
         ]
     },
     "exclude": [
-        "**/*.spec.ts"
+        "node_modules",
+        "**/*.spec.ts",
+        "**/dist/*"
     ]
 }
