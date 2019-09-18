@@ -48,16 +48,17 @@ class MarkerBase extends React.Component<Props> {
 
                 <Callout
                     tooltip={true}
-                    style={[styles.callout, {
-                        backgroundColor: this.props.theme.colors.surface,
-                    }]}
+                    style={[
+                        styles.callout,
+                        { backgroundColor: this.props.theme.colors.surface },
+                    ]}
                     onPress={this._showClub}
                 >
                     <Title numberOfLines={1} style={styles.title}>{this.props.club.name}</Title>
                     <ClubAvatar
                         theme={this.props.theme}
                         source={this.props.club.logo}
-                        label={this.props.club.toString()}
+                        label={this.props.club.club.toString()}
                         size={150}
                         style={{
                             elevation: 0,
@@ -76,8 +77,8 @@ export const ClubMarker = connect(null, {
 
 export const styles = StyleSheet.create({
     title: {
-        paddingHorizontal: 8,
         maxWidth,
+        paddingHorizontal: 8,
     },
 
     callout: {
