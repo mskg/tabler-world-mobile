@@ -86,6 +86,7 @@ const App = () => {
 };
 
 logger.log('Loading...');
+// tslint:disable-next-line: export-name
 export default withPreCached(
     withApollo(
         withStore(

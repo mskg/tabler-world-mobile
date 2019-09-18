@@ -16,6 +16,8 @@
 - Sometimes, two-letter text avatars were hidden in member overview
 - Settings were not saved, when not settings existed at all #71
 - Background jobs could not access JWT tokens #68
+- App does not present downloaded documents from TABLER.WORLD #78
+- RTI roles were not displayed #76
 
 # v1.0.1
 

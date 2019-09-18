@@ -28,23 +28,33 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         const chunks = this.chunkSubstr(data, 350 * 1024);
         if (chunks.length > 1) {
             await this.setMany([
-                this.addTTL({
-                    id,
-                    data: 'chunks:' + chunks.length,
-                }, options),
-                ...chunks.map((c, i) => this.addTTL({
-                    id: `${id}_${i}`,
-                    data: c,
-                }, options)),
+                this.addTTL(
+                    {
+                        id,
+                        data: `chunks:${chunks.length}`,
+                    },
+                    options,
+                ),
+                ...chunks.map(
+                    (c, i) => this.addTTL(
+                        {
+                            id: `${id}_${i}`,
+                            data: c,
+                        },
+                        options,
+                    )),
             ]);
         } else {
             await this.client
                 .put({
                     TableName: this.tableOptions.tableName,
-                    Item: this.addTTL({
-                        id,
-                        data,
-                    }, options),
+                    Item: this.addTTL(
+                        {
+                            id,
+                            data,
+                        },
+                        options,
+                    ),
                 })
                 .promise();
         }
@@ -60,16 +70,18 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                     [this.tableOptions.tableName]:
                         c.map((d) => ({
                             PutRequest: {
-                                Item: this.addTTL({
-                                    id: d.id,
-                                    data: d.data,
-                                }, d.options),
+                                Item: this.addTTL(
+                                    {
+                                        id: d.id,
+                                        data: d.data,
+                                    },
+                                    d.options,
+                                ),
                             },
                         })),
                 },
             }).promise();
 
-            // tslint:disable-next-line: no-constant-condition
             do {
                 if (result.UnprocessedItems && Object.keys(result.UnprocessedItems).length > 0) {
                     console.log('[DynamoDBCache] retrying write operation');
@@ -81,6 +93,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                     break;
                 }
             }
+            // tslint:disable-next-line: no-constant-condition
             while (true);
         }
     }
@@ -129,7 +142,6 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
             reduceResult(chunkResult);
 
-            // tslint:disable-next-line: no-constant-condition
             do {
                 if (chunkResult.UnprocessedKeys && Object.keys(chunkResult.UnprocessedKeys).length > 0) {
                     console.log('[DynamoDBCache] retrying get operation');
@@ -143,6 +155,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                     break;
                 }
             }
+            // tslint:disable-next-line: no-constant-condition
             while (true);
         }
 
@@ -178,14 +191,16 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
                     const result = await this.getMany(
                         // @ts-ignore
+                        // tslint:disable-next-line: variable-name
                         Array.apply(null, { length: count }).map((_v, i) => `${id}_${i}`));
 
                     let finalResult = '';
+                    // tslint:disable-next-line: no-increment-decrement
                     for (let i = 0; i < count; ++i) {
                         finalResult += result[`${id}_${i}`];
                     }
 
-                    return finalResult != '' ? finalResult : undefined;
+                    return finalResult !== '' ? finalResult : undefined;
                 }
 
                 return item.data;
@@ -196,7 +211,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     private addTTL(t: any, options?: ICacheOptions): any {
-        const ttl = options && options.ttl
+        const ttl = options && options.ttl != null
             ? options.ttl
             : (this.tableOptions.ttl || 0);
 
@@ -237,6 +252,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         // tslint:disable-next-line: prefer-array-literal
         const chunks = new Array(numChunks);
 
+        // tslint:disable-next-line: no-increment-decrement
         for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
             chunks[i] = str.substr(o, size);
         }

@@ -25,7 +25,7 @@ class MemberRoleCover extends React.Component<Props> {
         const { style, theme, ...rest } = this.props;
 
         // needs to be squared
-        const maxWidth = (Dimensions.get('screen').width - 16 * 2);
+        const maxWidth = (Dimensions.get('window').width - 16 * 2);
 
         const coverStyle = {
             height: this.props.width || maxWidth,

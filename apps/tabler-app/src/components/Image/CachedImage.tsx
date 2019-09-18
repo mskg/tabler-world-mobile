@@ -36,8 +36,9 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
     };
 
     async load({ uri, options = {}, cacheGroup }: ImageProps, request: number): Promise<void> {
-        if (uri) {
+        if (uri && this.requestId === request && this.mounted) {
             const path = await CacheManager.get(uri, options, cacheGroup).getPath();
+            // if (__DEV__) { logger.debug('Loaded image', path, request); }
 
             if (this.requestId !== request) {
                 if (__DEV__) { logger.debug('Ignoring image request', uri, 'already unloaded'); }
@@ -69,7 +70,11 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
         const { intensity } = this.state;
 
         const request = this.requestId;
+        // if (__DEV__) { logger.debug('Hiding preview', request); }
 
+        // if (Platform.OS === 'android') {
+        //     this.setState({ hidePreview: true });
+        // } else {
         Animated.timing(intensity, {
             duration: transitionDuration || 300,
             toValue: 100,
@@ -79,6 +84,9 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
                 this.setState({ hidePreview: true });
             }
         });
+
+        this.forceUpdate();
+        // }
     }
 
     componentWillUnmount() {
@@ -122,15 +130,10 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-
-        position: 'absolute',
-        top: 0, bottom: 0,
-        left: 0, right: 0,
+        ...StyleSheet.absoluteFillObject,
     },
 
     imageStyles: {
-        position: 'absolute',
-        top: 0, bottom: 0,
-        left: 0, right: 0,
+        ...StyleSheet.absoluteFillObject,
     },
 });

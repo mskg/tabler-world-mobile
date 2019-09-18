@@ -1,39 +1,41 @@
 
 
-import _ from 'lodash';
+import { find } from 'lodash';
 import { normalizeForSearch } from '../../helper/normalizeForSearch';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
 
 export type Predicate = (member: IMemberOverviewFragment) => boolean;
 
+// tslint:disable: function-name
 export class Predicates {
     static readonly all = () => true;
     static readonly none = () => false;
 
     static or(...others: (Predicate | null)[]): Predicate {
-        const reduced = (others || []).filter(f => f != null) as Predicate[];
+        const reduced = (others || []).filter((f) => f != null) as Predicate[];
 
-        return reduced.length == 0
+        return reduced.length === 0
             ? Predicates.all
             : (member: IMemberOverviewFragment) => {
-                return _.find(reduced, o => o(member)) != null;
+                return find(reduced, (o) => o(member)) != null;
             };
     }
 
     static and(...others: (Predicate | null)[]): Predicate {
-        const reduced = (others || []).filter(f => f != null) as Predicate[];
+        const reduced = (others || []).filter((f) => f != null) as Predicate[];
 
-        return reduced.length == 0
+        return reduced.length === 0
             ? Predicates.all
             : (member: IMemberOverviewFragment) => {
-                return _.find(reduced, o => !o(member)) == null;
+                return find(reduced, (o) => !o(member)) == null;
             };
     }
 
     static text(text: string): Predicate {
         return (member: IMemberOverviewFragment) => {
             const search = normalizeForSearch(text);
+            // tslint:disable: prefer-template
             return normalizeForSearch((member.firstname + ' ' + member.lastname)).indexOf(search) >= 0
                 || normalizeForSearch((member.lastname + ' ' + member.firstname)).indexOf(search) >= 0
                 || normalizeForSearch((member.club.name + ' ' + member.area.name + ' ' + member.association.name)).indexOf(search) >= 0;
@@ -48,7 +50,7 @@ export class Predicates {
 
     static sametable(club: number): Predicate {
         return (member: IMemberOverviewFragment) => {
-            return member.club.club == club;
+            return member.club.club === club;
         };
     }
 
@@ -60,28 +62,28 @@ export class Predicates {
 
     static associationBoard(): Predicate {
         return (member) => {
-            return member.roles != null && member.roles.find(r => r.ref.type === 'assoc') != null;
+            return member.roles != null && member.roles.find((r) => r.ref.type === 'assoc') != null;
         };
     }
 
     static areaBoard(): Predicate {
         return (member) => {
-            return member.roles != null && member.roles.find(r => r.ref.type === 'area') != null;
+            return member.roles != null && member.roles.find((r) => r.ref.type === 'area') != null;
         };
     }
 
     static role(roles: HashMap<boolean, string> | null): Predicate {
         return (member: IMemberOverviewFragment) => {
             return roles == null ||
-            (member.roles != null && _.find(member.roles, role => roles[role.name] === true) != null);
+                (member.roles != null && find(member.roles, (role) => roles[role.name] === true) != null);
         };
     }
 
-    static table(tables: HashMap<boolean, string|number>): Predicate {
+    static table(tables: HashMap<boolean, string | number>): Predicate {
         return (member: IMemberOverviewFragment) => {
             return tables == null
-            || tables[member.club.club] === true
-            || tables[member.club.name] === true;
+                || tables[member.club.club] === true
+                || tables[member.club.name] === true;
         };
     }
 }

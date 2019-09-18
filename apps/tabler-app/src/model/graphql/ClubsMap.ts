@@ -6,6 +6,28 @@
 // GraphQL query operation: ClubsMap
 // ====================================================
 
+export interface ClubsMap_Clubs_meetingplace1 {
+  __typename: "Address";
+  street1: string | null;
+  street2: string | null;
+  postal_code: string | null;
+  city: string | null;
+}
+
+export interface ClubsMap_Clubs_meetingplace2 {
+  __typename: "Address";
+  street1: string | null;
+  street2: string | null;
+  postal_code: string | null;
+  city: string | null;
+}
+
+export interface ClubsMap_Clubs_info {
+  __typename: "ClubInfo";
+  first_meeting: string | null;
+  second_meeting: string | null;
+}
+
 export interface ClubsMap_Clubs_location {
   __typename: "GeoPoint";
   longitude: number;
@@ -18,6 +40,9 @@ export interface ClubsMap_Clubs {
   name: string;
   logo: string | null;
   club: number;
+  meetingplace1: ClubsMap_Clubs_meetingplace1 | null;
+  meetingplace2: ClubsMap_Clubs_meetingplace2 | null;
+  info: ClubsMap_Clubs_info | null;
   location: ClubsMap_Clubs_location | null;
 }
 

@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     },
 
     touch: {
-        width: Dimensions.get('screen').width,
+        width: Dimensions.get('window').width,
     },
 
     row: {

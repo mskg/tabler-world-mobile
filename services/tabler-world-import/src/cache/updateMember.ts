@@ -1,11 +1,11 @@
-import { xAWS } from "@mskg/tabler-world-aws";
-import { makeCacheKey } from "@mskg/tabler-world-cache";
-import { IDataService } from "@mskg/tabler-world-rds-client";
-import { cacheInstance } from "./cacheInstance";
-import { updateClub } from "./updateClub";
+import { xAWS } from '@mskg/tabler-world-aws';
+import { makeCacheKey } from '@mskg/tabler-world-cache';
+import { IDataService } from '@mskg/tabler-world-rds-client';
+import { cacheInstance } from './cacheInstance';
+import { updateClub } from './updateClub';
 
 export async function updateMember(client: IDataService, id: number) {
-    const key = makeCacheKey("Member", [id]);
+    const key = makeCacheKey('Member', [id]);
     const staleCacheData = await cacheInstance.get(key);
 
     const res = await client.query(`select * from profiles where id = $1 and removed = FALSE`, [id]);
@@ -15,13 +15,13 @@ export async function updateMember(client: IDataService, id: number) {
         if (staleCacheData != null) {
             // we update the memberlist here
             const oldMember = JSON.parse(staleCacheData);
-            const clubKey = makeCacheKey("Club", [oldMember.association + "_" + oldMember.club]);
+            const clubKey = makeCacheKey('Club', [oldMember.association + '_' + oldMember.club]);
 
-            console.log("Removing", clubKey);
+            console.log('Removing', clubKey);
             cacheInstance.delete(clubKey);
         }
 
-        console.log("Removing", key);
+        console.log('Removing', key);
         cacheInstance.delete(key);
     } else {
         if (staleCacheData != null) {
@@ -32,7 +32,7 @@ export async function updateMember(client: IDataService, id: number) {
             }
         }
 
-        console.log("Updating", key);
+        console.log('Updating', key);
         cacheInstance.set(key, JSON.stringify(newMember));
 
         const addresses = [

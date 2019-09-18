@@ -197,6 +197,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                                 refreshing={this.props.loading}
                                 data={this.state.dataSource.data}
                                 onRefresh={this.props.refresh}
+                                style={styles.sectionList}
                             />
                         </View>
 
@@ -220,7 +221,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
 const styles = StyleSheet.create({
     sectionList: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT - (StatusBar.currentHeight || 0),
+        height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT + (StatusBar.currentHeight || 0),
     },
 });
 

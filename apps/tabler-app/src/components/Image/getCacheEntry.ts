@@ -11,18 +11,18 @@ export const getCacheEntry = async (uri: string, group: CacheGroup): Promise<{
 }> => {
     const filename = uri.substring(uri.lastIndexOf('/'), uri.indexOf('?') === -1 ? uri.length : uri.indexOf('?'));
     const ext = filename.indexOf('.') === -1
-    ? '.jpg'
-    : filename.substring(filename.lastIndexOf('.'));
+        ? '.jpg'
+        : filename.substring(filename.lastIndexOf('.'));
 
     const baseDir = `${BASE_DIR}${group}/`;
     const path = `${baseDir}${SHA1(uri)}${ext}`;
     const tmpPath = `${baseDir}${SHA1(uri)}-${_.uniqueId()}${ext}`;
 
-  // TODO: maybe we don't have to do this every time
+    // TODO: maybe we don't have to do this every time
     try {
         await FileSystem.makeDirectoryAsync(baseDir, { intermediates: true });
     } catch (e) {
-    // do nothing
+        // do nothing
     }
 
     const info = await FileSystem.getInfoAsync(path);

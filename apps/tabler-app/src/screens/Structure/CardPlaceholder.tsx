@@ -17,7 +17,7 @@ export const CardPlaceholder = ({ count = 10 }) => {
                                 <Circle size={50} style={innerStyles.circle} />
                             </View>
                             <View style={[innerStyles.headerContainer, { paddingTop: 8 }]}>
-                                <Line height={30} width={250} />
+                                <Line height={30} width={200} />
                                 <Line height={14} style={innerStyles.subtitle} width={150} />
                             </View>
                         </View>

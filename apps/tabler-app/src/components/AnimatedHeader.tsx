@@ -1,4 +1,4 @@
- import React, { Component } from 'react';
+import React, { Component } from 'react';
 import { Animated, Dimensions, Platform, RefreshControl, StatusBar, StyleSheet, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../helper/Logger';

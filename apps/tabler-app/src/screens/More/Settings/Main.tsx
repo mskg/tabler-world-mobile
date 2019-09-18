@@ -363,22 +363,24 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        <List.Section title={I18N.Settings.sections.colors}>
-                            <Divider />
-                            <Element
-                                theme={this.props.theme}
-                                field={I18N.Settings.fields.dark}
-                                text={
-                                    <Switch
-                                        color={this.props.theme.colors.accent}
-                                        style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.darkMode}
-                                        onValueChange={this._updateMode}
-                                    />
-                                }
-                            />
-                            <Divider />
-                        </List.Section>
+                        {isFeatureEnabled(Features.DarkModeSwitch) &&
+                            <List.Section title={I18N.Settings.sections.colors}>
+                                <Divider />
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Settings.fields.dark}
+                                    text={
+                                        <Switch
+                                            color={this.props.theme.colors.accent}
+                                            style={{ marginTop: -4, marginRight: -4 }}
+                                            value={this.props.settings.darkMode}
+                                            onValueChange={this._updateMode}
+                                        />
+                                    }
+                                />
+                                <Divider />
+                            </List.Section>
+                        }
 
                         <List.Section title={I18N.Settings.sections.apps}>
                             {this.state.callOptions.length > 0 &&

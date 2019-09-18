@@ -28,8 +28,10 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     public async getAllAlbums(): Promise<any[]> {
         const ttls = await TTLs();
 
-        return this.get('albums/', undefined,
-                        {
+        return this.get(
+            'albums/',
+            undefined,
+            {
                 cacheOptions: {
                     ttl: ttls.Albums,
                 },
@@ -39,8 +41,10 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     public async getAllDocuments(): Promise<any[]> {
         const ttls = await TTLs();
 
-        return this.get('folders/', undefined,
-                        {
+        return this.get(
+            'folders/',
+            undefined,
+            {
                 cacheOptions: {
                     ttl: ttls.Documents,
                 },
@@ -50,8 +54,10 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     public async getAllNews(): Promise<any[]> {
         const ttls = await TTLs();
 
-        return this.get('news/', undefined,
-                        {
+        return this.get(
+            'news/',
+            undefined,
+            {
                 cacheOptions: {
                     ttl: ttls.News,
                 },
