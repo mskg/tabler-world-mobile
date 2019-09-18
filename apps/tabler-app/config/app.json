@@ -103,6 +103,10 @@
             "config": {
                 "googleMaps": {}
             }
+        },
+        "notification": {
+            "icon": "./assets/images/logo_Android_notifications.png",
+            "color": "#ffbf35"
         }
     }
 }
