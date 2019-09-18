@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import _, { find } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, TouchableWithoutFeedback, View } from 'react-native';
@@ -14,7 +13,7 @@ import { CachedImage } from '../../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { normalizeForSearch } from '../../../helper/normalizeForSearch';
+import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { Clubs, Clubs_Clubs } from '../../../model/graphql/Clubs';
@@ -48,7 +47,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
         this.state = {
             search: '',
-            filtered: this.filterData(props.data),
+            filtered: this.filterResults(props.data),
         };
     }
 
@@ -58,7 +57,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
             this.setState({
                 search: this.state.search,
-                filtered: this.filterData(nextProps.data, this.state.search),
+                filtered: this.filterResults(nextProps.data, this.state.search),
             });
         }
     }
@@ -107,30 +106,15 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                 <Card.Actions style={styles.action}>
                     <Button color={this.props.theme.colors.accent} onPress={showClubFunc}>{I18N.Structure.details}</Button>
                 </Card.Actions>
-            </Card>);
+            </Card>
+        );
     }
 
     _key = (item: Clubs_Clubs, _index: number) => {
         return item.id;
     }
 
-    _normalizedSearch = (search: string) => (target: string) => {
-        const segments = normalizeForSearch(search).split(' ');
-        const changedTarget = normalizeForSearch(target);
-
-        let found = false;
-        for (const segment of segments) {
-            if (changedTarget.indexOf(segment) < 0) {
-                return false;
-            }
-
-            found = true;
-        }
-
-        return found;
-    }
-
-    makeSearchTexts(c: Clubs_Clubs): string[] {
+    _makeSearchTexts = (c: Clubs_Clubs): string[] => {
         return [
             c.name,
             c.area.name,
@@ -138,36 +122,34 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         ].filter(Boolean);
     }
 
-    filterData(data?: Clubs | null, text?: string): Clubs_Clubs[] {
-        if (data == null) { return []; }
-
-        // @ts-ignore output is compatble
-        return _(data.Clubs)
-            .map((item: Clubs_Clubs) => {
-                const match = find(
-                    this.makeSearchTexts(item),
-                    this._normalizedSearch(text || ''));
-
-                return match ? {
-                    ...item,
-                    match,
-                } : null;
-            })
-            .filter(r => r != null)
-            .orderBy((a) =>
-                (
-                    a != null && data != null && (text === '' || text == null) && data.Me.club.club === a.club)
-                    ? 0
-                    : a ? a.club : -1,
-            )
-            .toArray()
-            .value();
+    _sortResults = (myClub: number) => (c: Clubs_Clubs): any => {
+        // myClub goes on top
+        return myClub === c.club
+            ? 0
+            : c
+                ? c.club
+                : -1;
     }
 
-    _search = (text) => {
+    filterResults(data: Clubs | undefined | null, text?: string) {
+        return filterData(
+            this._makeSearchTexts,
+            data ? data.Clubs : null,
+            text,
+            undefined,
+            data && data.Me
+                ? this._sortResults(data.Me.club.club)
+                : undefined,
+        );
+    }
+
+    _search = (text: string) => {
         this.setState({
             search: text,
-            filtered: this.filterData(this.props.data, text),
+            filtered: this.filterResults(
+                this.props.data,
+                text,
+            ),
         });
     }
 
@@ -222,7 +204,11 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
 const ConnectedClubScreen = connect(null, {
     showClub,
     homeScreen,
-})(withTheme(withNavigation(ClubsScreenBase)));
+})(
+    withTheme(
+        withNavigation(ClubsScreenBase),
+    ),
+);
 
 const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     <Tab>
@@ -231,7 +217,7 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
                 if (error) throw error;
 
                 if (!loading && (data == null || data.Clubs == null)) {
-                    return <CannotLoadWhileOffline />;
+                    return (<CannotLoadWhileOffline />);
                 }
 
                 return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
@@ -240,8 +226,7 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
     </Tab>
 );
 
-// tslint:disable-next-line: export-name
-export const ClubsScreen =
+export const ClubsListScreen =
     withWhoopsErrorBoundary(
         withCacheInvalidation(
             'clubs',

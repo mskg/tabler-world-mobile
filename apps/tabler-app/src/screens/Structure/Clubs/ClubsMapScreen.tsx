@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import _, { find } from 'lodash';
+import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Platform, View } from 'react-native';
@@ -16,18 +16,16 @@ import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { normalizeForSearch } from '../../../helper/normalizeForSearch';
+import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
-import { darkStyles } from './dark';
+import { darkStyles } from './darkStyles';
 import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
-
-// const logger = new Logger(Categories.Screens.Structure);
 
 type State = {
     location?: Location.LocationData,
@@ -36,6 +34,7 @@ type State = {
 
     search: string,
     filtered: ClubsMap_Clubs[],
+    regionChanged: boolean,
 };
 
 type Props = {
@@ -56,7 +55,8 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         this.state = {
             marginBottom: 1,
             search: '',
-            filtered: this.filterData(props.data),
+            regionChanged: false,
+            filtered: this.filterResults(props.data),
         };
     }
 
@@ -66,7 +66,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
             this.setState({
                 search: this.state.search,
-                filtered: this.filterData(nextProps.data, this.state.search),
+                filtered: this.filterResults(nextProps.data, this.state.search),
             });
         }
     }
@@ -90,6 +90,11 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _onMapReady = () => this.setState({ marginBottom: 0 });
+    _onRegionChanged = () => {
+        if (!this.state.regionChanged) {
+            this.setState({ regionChanged: true });
+        }
+    }
 
     componentWillMount() {
         if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -99,62 +104,30 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         }
     }
 
-    _normalizedSearch = (search: string) => (target: string) => {
-        const segments = normalizeForSearch(search).split(' ');
-        const changedTarget = normalizeForSearch(target);
-
-        let found = false;
-        for (const search of segments) {
-            if (changedTarget.indexOf(search) < 0) {
-                return false;
-            }
-
-            found = true;
-        }
-
-        return found;
-    }
-
-    makeSearchTexts(c: ClubsMap_Clubs): string[] {
+    _makeSearchTexts = (c: ClubsMap_Clubs): string[] => {
         return [
             c.name,
         ].filter(Boolean);
     }
 
-    filterData(data?: ClubsMap | null, text?: string): ClubsMap_Clubs[] {
-        if (data == null) { return []; }
-
-        // @ts-ignore null is filtered
-        return _(data.Clubs)
-            .filter((d) => d.location != null)
-            .map((item: ClubsMap_Clubs) => {
-                const match = find(
-                    this.makeSearchTexts(item),
-                    this._normalizedSearch(text || ''));
-
-                return match ? {
-                    ...item,
-                    match,
-                } : null;
-            })
-            .filter(r => r != null)
-            .toArray()
-            .value();
-    }
+    _filterSearch = (c: ClubsMap_Clubs) => c.location != null && c.location.latitude != null;
 
     _showList = () => requestAnimationFrame(() => this.props.navigation.navigate(Routes.List));
 
-    _fitMap = _.debounce(() => {
-        if (this.mapRef) {
-            if (this.state.search === '') {
-                this._getLocationAsync();
-            } else {
-                this.mapRef.fitToSuppliedMarkers(
-                    this.state.filtered.map(d => d.id),
-                );
+    _fitMap = _.debounce(
+        () => {
+            if (this.mapRef) {
+                if (this.state.search === '') {
+                    this._getLocationAsync();
+                } else {
+                    this.mapRef.fitToSuppliedMarkers(
+                        this.state.filtered.map((d) => d.id),
+                    );
+                }
             }
-        }
-    }, 1000);
+        },
+        1000,
+    );
 
     // _fitCluster = (_coordinates,markers) => {
     //     if (this.mapRef) {
@@ -164,12 +137,25 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     //     };
     // };
 
+
+    filterResults(data: ClubsMap | undefined | null, text?: string) {
+        return filterData(
+            this._makeSearchTexts,
+            data ? data.Clubs : null,
+            text,
+            this._filterSearch,
+        );
+    }
+
     _search = (text) => {
-        this.setState({
-            search: text,
-            filtered: this.filterData(this.props.data, text),
-            centerOn: undefined,
-        }, this._fitMap);
+        this.setState(
+            {
+                search: text,
+                filtered: this.filterResults(this.props.data, text),
+                centerOn: undefined,
+            },
+            this._fitMap,
+        );
     }
 
     render() {
@@ -193,7 +179,10 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     showsCompass={false}
 
                     loadingEnabled={true}
+
                     onMapReady={this._onMapReady}
+                    onRegionChangeComplete={this._onRegionChanged}
+
                     customMapStyle={this.props.theme.dark ? darkStyles : undefined}
 
                     // clusterColor={this.props.theme.colors.accent}
@@ -206,7 +195,9 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                         backgroundColor: this.props.theme.colors.surface,
                     }}
                 >
-                    {this.state.filtered.map(c => (<ClubMarker key={c.id.toString()} club={c} />))}
+                    {this.state.regionChanged && // we wait for the map to load
+                        this.state.filtered.map((c) => (<ClubMarker key={c.id.toString()} club={c} />))
+                    }
                 </MapView>
 
                 <View style={styles.search}>
@@ -258,11 +249,21 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
                     return <CannotLoadWhileOffline />;
                 }
 
-                return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
+                return (
+                    <ConnectedClubScreen
+                        loading={loading}
+                        data={data}
+                        refresh={refetch}
+                    />
+                );
             }}
         </Query>
     </Tab>
 );
 
 export const ClubsMapScreen = withWhoopsErrorBoundary(
-    withCacheInvalidation('clubs', ClubsScreenWithQuery));
+    withCacheInvalidation(
+        'clubs',
+        ClubsScreenWithQuery,
+    ),
+);
