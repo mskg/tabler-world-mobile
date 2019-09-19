@@ -1,5 +1,6 @@
 import { gql } from 'apollo-server-core';
 import { Albums } from './Albums';
+import { Auth } from './Auth';
 import { Geo } from './Geo';
 import { Jobs } from './Jobs';
 import { Member } from './Member';
@@ -16,6 +17,7 @@ export const schema = [
     gql`
         scalar Date
     `,
+    Auth,
     Query,
     Member,
     Structure,

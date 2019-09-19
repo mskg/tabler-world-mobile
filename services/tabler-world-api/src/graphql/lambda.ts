@@ -3,6 +3,7 @@ import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
 import { makeExecutableSchema } from 'graphql-tools';
+import { AuthDirective } from './auth/AuthDirective';
 import { cacheInstance } from './cache/cacheInstance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
@@ -38,6 +39,9 @@ const server = new ApolloServer({
     schema: makeExecutableSchema({
         resolvers,
         typeDefs: schema,
+        schemaDirectives: {
+            auth: AuthDirective,
+        },
     }),
 
     validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
