@@ -1,4 +1,5 @@
-import { createAppContainer, createStackNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { AlbumScreen } from '../screens/Album';
 import { ClubScreen } from '../screens/Club';
 import { FilterScreen } from '../screens/Filter';

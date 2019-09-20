@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { ClubsListScreen } from './ClubsListScreen';
 import { ClubsMapScreen } from './ClubsMapScreen';
 import { Routes } from './Routes';

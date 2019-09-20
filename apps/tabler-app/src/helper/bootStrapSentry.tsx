@@ -1,4 +1,4 @@
-import ExpoSentry from 'sentry-expo';
+import * as Sentry from 'sentry-expo';
 import { getConfigValue } from './getConfigValue';
 
 export function bootStrapSentry() {
@@ -6,6 +6,8 @@ export function bootStrapSentry() {
 
     if (sentry !== null && sentry !== '') {
         // ExpoSentry.enableInExpoDevelopment = true;
-        ExpoSentry.config(sentry).install();
+        Sentry.init({
+            dsn: sentry,
+        });
     }
 }

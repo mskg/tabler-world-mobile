@@ -1,6 +1,5 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
-import { useKeepAwake } from 'expo-keep-awake';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
@@ -65,7 +64,7 @@ registerForPushNotificationsAsync();
 fix2940();
 
 const App = () => {
-    if (__DEV__) useKeepAwake();
+    // if (__DEV__) useKeepAwake();
 
     const dispatch = useDispatch();
     dispatch(checkNetwork());
