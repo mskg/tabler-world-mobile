@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { FeedbackScreen } from './Feedback';
 import { JobsHistoryScreen } from './JobHistory';
 import { LocationHistoryScreen } from './LocationHistory';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Animated } from 'react-native';
 import { Text, withTheme } from 'react-native-paper';
-import { createMaterialTopTabNavigator } from 'react-navigation';
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { I18N } from '../i18n/translation';
 import { AreasScreen } from './Structure/Areas';
 import { AssociationsScreen } from './Structure/Associations';
@@ -14,13 +14,14 @@ import { StructureScreen } from './Structure/Screen';
  * We override the numberOfLines here
  */
 const LabelBase =
-    ({ text, theme, color }) =>
+    ({ text, theme, color }) => (
         <Text
             numberOfLines={1}
             style={{ color, fontFamily: theme.fonts.medium }}
         >
             {text.toUpperCase()}
-        </Text>;
+        </Text>
+    );
 
 const Label = Animated.createAnimatedComponent(withTheme(LabelBase));
 
