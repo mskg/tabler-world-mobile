@@ -6,16 +6,15 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "serverless": "^1.49.0",
     "@mskg/tabler-world-yarn-tools": "0.0.1",
-    "typescript": "3.6.2"
+    "serverless": "^1.49.0",
+    "typescript": "3.6.3"
   },
   "scripts": {
     "deploy": "service deploy",
     "package": "service package",
     "remove": "service remove",
     "dev": "service dev",
-
     "start": "ntl"
   }
 }

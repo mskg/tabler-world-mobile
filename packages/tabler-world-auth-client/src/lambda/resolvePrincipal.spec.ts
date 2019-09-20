@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { resolveUser } from './resolveUser';
+import { resolvePrincipal } from './resolvePrincipal';
 
 // @ts-ignore
 // tslint:disable: no-for-in forin
@@ -23,7 +23,7 @@ describe('Authorizer', () => {
         // @ts-ignore
         delete ctx.requestContext.authorizer[id];
 
-        return () => resolveUser(ctx);
+        return () => resolvePrincipal(ctx);
     }
 
     for (const key in baseCtx.requestContext.authorizer) {
@@ -37,7 +37,7 @@ describe('IPrincipal', () => {
     for (const key in baseCtx.requestContext.authorizer) {
         test(key, () => {
             const ctx = JSON.parse(JSON.stringify(baseCtx));
-            const result = resolveUser(ctx);
+            const result = resolvePrincipal(ctx);
 
             // @ts-ignore
             expect(result[key]).toEqual(ctx.requestContext.authorizer[key]);

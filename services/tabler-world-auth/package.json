@@ -32,7 +32,7 @@
     "serverless-sync-s3buckets": "^1.0.1",
     "serverless-webpack": "^5.3.0",
     "ts-loader": "^6.0.1",
-    "typescript": "3.6.2",
+    "typescript": "3.6.3",
     "webpack": "^4.32.1"
   },
   "files": [

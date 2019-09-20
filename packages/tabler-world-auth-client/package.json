@@ -1,0 +1,32 @@
+{
+    "name": "@mskg/tabler-world-auth-client",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "test": "jest"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "devDependencies": {
+        "@types/node": "^12.7.2",
+        "@types/websocket": "^0.0.40",
+        "@types/zen-observable": "^0.8.0",
+        "apollo-server-core": "^2.9.3",
+        "aws-lambda": "^0.1.2",
+        "aws-lambda-graphql": "^0.7.1",
+        "jest": "^24.9.0",
+        "typescript": "3.6.3"
+    },
+    "peerDependencies": {
+        "apollo-server-core": "*",
+        "aws-lambda": "*",
+        "aws-lambda-graphql": "*"
+    },
+    "dependencies": {
+        "@mskg/tabler-world-aws": "0.0.1"
+    }
+}

@@ -1,4 +1,4 @@
-import { isAdmin } from '../auth/isAdmin';
+import { isAdmin } from '@mskg/tabler-world-auth-client';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name

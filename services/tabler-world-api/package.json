@@ -5,6 +5,7 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "@mskg/tabler-world-auth-client": "0.0.1",
         "@mskg/tabler-world-aws": "0.0.1",
         "@mskg/tabler-world-cache": "0.0.1",
         "@mskg/tabler-world-geo": "0.0.1",
@@ -15,10 +16,10 @@
         "apollo-server": "^2.8.1",
         "apollo-server-caching": "^0.5.0",
         "apollo-server-core": "^2.8.2",
-        "apollo-server-lambda": "^2.8.1",
+        "apollo-server-lambda": "^2.9.3",
         "aws-xray-sdk": "^2.3.3",
         "dataloader": "^1.4.0",
-        "date-and-time": "^0.9.0",
+        "date-and-time": "^0.10.0",
         "faker": "^4.1.0",
         "graphql": "^14.4.2",
         "graphql-tools": "^4.0.4",
@@ -48,7 +49,7 @@
         "ts-jest": "^24.0.2",
         "ts-loader": "^6.0.1",
         "ts-node": "^8.0.2",
-        "typescript": "3.6.2",
+        "typescript": "3.6.3",
         "webpack": "^4.32.1"
     },
     "files": [

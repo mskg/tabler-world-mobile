@@ -1,7 +1,7 @@
+import { isAdmin } from '@mskg/tabler-world-auth-client';
 import { SchemaDirectiveVisitor } from 'apollo-server-lambda';
 import { defaultFieldResolver, GraphQLField, GraphQLInterfaceType, GraphQLObjectType } from 'graphql';
 import { IApolloContext } from '../types/IApolloContext';
-import { isAdmin } from './isAdmin';
 
 type Enriched = {
     _requiredAuthRole: any,

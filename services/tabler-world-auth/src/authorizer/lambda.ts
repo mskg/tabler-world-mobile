@@ -8,11 +8,7 @@ import { Token } from './types';
 // tslint:disable: export-name
 // tslint:disable: max-func-body-length
 export const handler: CustomAuthorizerHandler = async (event, context) => {
-    const iss = 'https://cognito-idp.'
-        + process.env.AWS_REGION
-        + '.amazonaws.com/'
-        + process.env.UserPoolId;
-
+    const iss = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.UserPoolId}`;
     const pems = await downloadPems(iss);
 
     const token = event.authorizationToken;
@@ -90,6 +86,7 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
     policy.allowMethod(HttpVerb.OPTIONS, '/graphql');
     policy.allowMethod(HttpVerb.GET, '/graphql');
     policy.allowMethod(HttpVerb.POST, '/graphql');
+    policy.allowWebSocket();
 
     const result = policy.build();
 
@@ -114,7 +111,7 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
         };
 
         // this enforces rate throtteling on the API
-        result.usageIdentifierKey = 'tabler-world-api-lambda-authorizer-' + apiGatewayArnTmp[1]; // stage
+        result.usageIdentifierKey = `tabler-world-api-lambda-authorizer-${apiGatewayArnTmp[1]}`; // stage
 
         return result;
     });

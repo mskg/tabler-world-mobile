@@ -1,12 +1,11 @@
 import { resolvePrincipal } from '@mskg/tabler-world-auth-client';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import { cacheInstance } from './cache/cacheInstance';
-import { Logger } from './logging/Logger';
-import { IApolloContext } from './types/IApolloContext';
+import { IChatContext } from './types/IApolloContext';
+import { Logger } from './utils/Logger';
 
 type Params = { event: APIGatewayProxyEvent, context: Context };
 
-export const constructContext = ({ event, context }: Params): IApolloContext => {
+export const constructContext = ({ event }: Params): IChatContext => {
     const principal = resolvePrincipal(event);
 
     const logger = new Logger(event.requestContext.requestId, principal.id);
@@ -15,12 +14,7 @@ export const constructContext = ({ event, context }: Params): IApolloContext => 
     // datasources is provided by Apollo
     // @ts-ignore
     return ({
-        lambdaEvent: event,
-        lambdaContext: context,
-
-        cache: cacheInstance,
         logger,
-        requestCache: {},
         principal,
     });
 };

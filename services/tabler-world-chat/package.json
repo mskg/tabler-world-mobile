@@ -1,0 +1,51 @@
+{
+    "name": "@mskg/tabler-world-chat",
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "deploy": "service deploy",
+        "package": "service package",
+        "remove": "service remove",
+        "dev": "service dev",
+        "test": "jest",
+        "start": "ntl"
+    },
+    "dependencies": {
+        "@mskg/tabler-world-auth-client": "0.0.1",
+        "@mskg/tabler-world-aws": "0.0.1",
+        "apollo-server-lambda": "^2.9.3",
+        "aws-lambda-graphql": "^0.7.1",
+        "graphql": "^14.4.2",
+        "graphql-subscriptions": "^1.1.0",
+        "uuid": "^3.3.3"
+    },
+    "devDependencies": {
+        "@mskg/tabler-world-yarn-tools": "0.0.1",
+        "@types/aws-lambda": "^8.10.26",
+        "@types/date-and-time": "^0.6.0",
+        "@types/faker": "^4.1.5",
+        "@types/jest": "^24.0.18",
+        "@types/node": "^12.7.3",
+        "@types/pg": "^7.4.13",
+        "@types/uuid": "^3.4.5",
+        "aws-lambda-graphql": "^0.7.1",
+        "aws-sdk": "^2.414.0",
+        "file-loader": "^4.2.0",
+        "jest": "^24.9.0",
+        "ntl": "^4.0.0",
+        "serverless": "^1.49.0",
+        "serverless-domain-manager": "^3.2.6",
+        "serverless-dynamodb-local": "^0.2.38",
+        "serverless-iam-roles-per-function": "^2.0.1",
+        "serverless-offline": "5.11.0",
+        "serverless-plugin-aws-alerts": "^1.2.4",
+        "serverless-webpack": "^5.3.0",
+        "ts-jest": "^24.0.2",
+        "ts-loader": "^6.0.1",
+        "ts-node": "^8.0.2",
+        "typescript": "3.6.3",
+        "webpack": "^4.32.1"
+    }
+}

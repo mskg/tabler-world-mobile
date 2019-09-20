@@ -1,4 +1,4 @@
-import { CustomAuthorizerResult, Statement } from "aws-lambda";
+import { CustomAuthorizerResult, Statement } from 'aws-lambda';
 
 type Options = {
     restApiId?: string,
@@ -6,15 +6,20 @@ type Options = {
     stage?: string,
 };
 
+type Effect =
+    'allow' |
+    'deny';
+
+
 export enum HttpVerb {
-    GET = "GET",
-    POST = "POST",
-    PUT = "PUT",
-    PATCH = "PATCH",
-    HEAD = "HEAD",
-    DELETE = "DELETE",
-    OPTIONS = "OPTIONS",
-    ALL = "*",
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    PATCH = 'PATCH',
+    HEAD = 'HEAD',
+    DELETE = 'DELETE',
+    OPTIONS = 'OPTIONS',
+    ALL = '*',
 };
 
 /**
@@ -39,8 +44,8 @@ export enum HttpVerb {
  */
 export class AuthPolicy {
 
-    private version = "2012-10-17";
-    private pathRegex = new RegExp("^[/.a-zA-Z0-9-\*]+$");
+    private version = '2012-10-17';
+    private pathRegex = new RegExp('^[/.a-zA-Z0-9-\*]+$');
     private allowMethods: any[] = [];
     private denyMethods: any[] = [];
 
@@ -50,21 +55,56 @@ export class AuthPolicy {
 
     constructor(private principalId: string, private awsAccountId: string, apiOptions?: Options) {
         if (!apiOptions || !apiOptions.restApiId) {
-            this.restApiId = "*";
+            this.restApiId = '*';
         } else {
             this.restApiId = apiOptions.restApiId;
         }
 
         if (!apiOptions || !apiOptions.region) {
-            this.region = "*";
+            this.region = '*';
         } else {
             this.region = apiOptions.region;
         }
 
         if (!apiOptions || !apiOptions.stage) {
-            this.stage = "*";
+            this.stage = '*';
         } else {
             this.stage = apiOptions.stage;
+        }
+    }
+
+    public allowWebSocket() {
+        this.addWebSocket('allow', '$connect', null);
+        this.addWebSocket('allow', '$disconnect', null);
+        this.addWebSocket('allow', '$default', null);
+    }
+
+    public addWebSocket(effect: Effect, resource: string, conditions: any) {
+        // https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-lambda-auth.html
+
+        let cleanedResource = resource;
+        if (resource.substring(0, 1) === '/') {
+            cleanedResource = resource.substring(1, resource.length);
+        }
+
+        const resourceArn = 'arn:aws:execute-api:' +
+            this.region + ':' +
+            this.awsAccountId + ':' +
+            this.restApiId + '/' +
+            this.stage + '/' +
+            cleanedResource;
+
+        if (effect === 'allow') {
+            this.allowMethods.push({
+                resourceArn,
+                conditions,
+            });
+
+        } else if (effect === 'deny') {
+            this.denyMethods.push({
+                resourceArn,
+                conditions,
+            });
         }
     }
 
@@ -81,37 +121,37 @@ export class AuthPolicy {
      * @param {Object} The conditions object in the format specified by the AWS docs.
      * @return {void}
      */
-    public addMethod(effect: string, verb: HttpVerb, resource: string, conditions: any) {
-        if (verb != "*" && !HttpVerb.hasOwnProperty(verb)) {
-            throw new Error("Invalid HTTP verb " + verb + ". Allowed verbs in AuthPolicy.HttpVerb");
+    public addMethod(effect: Effect, verb: HttpVerb, resource: string, conditions: any) {
+        if (verb != '*' && !HttpVerb.hasOwnProperty(verb)) {
+            throw new Error('Invalid HTTP verb ' + verb + '. Allowed verbs in AuthPolicy.HttpVerb');
         }
 
         if (!this.pathRegex.test(resource)) {
-            throw new Error("Invalid resource path: " + resource + ". Path should match " + this.pathRegex);
+            throw new Error('Invalid resource path: ' + resource + '. Path should match ' + this.pathRegex);
         }
 
         let cleanedResource = resource;
-        if (resource.substring(0, 1) == "/") {
+        if (resource.substring(0, 1) == '/') {
             cleanedResource = resource.substring(1, resource.length);
         }
-        let resourceArn = "arn:aws:execute-api:" +
-            this.region + ":" +
-            this.awsAccountId + ":" +
-            this.restApiId + "/" +
-            this.stage + "/" +
-            verb + "/" +
+        const resourceArn = 'arn:aws:execute-api:' +
+            this.region + ':' +
+            this.awsAccountId + ':' +
+            this.restApiId + '/' +
+            this.stage + '/' +
+            verb + '/' +
             cleanedResource;
 
-        if (effect.toLowerCase() == "allow") {
+        if (effect.toLowerCase() === 'allow') {
             this.allowMethods.push({
                 resourceArn,
-                conditions
+                conditions,
             });
 
-        } else if (effect.toLowerCase() == "deny") {
+        } else if (effect.toLowerCase() === 'deny') {
             this.denyMethods.push({
                 resourceArn,
-                conditions
+                conditions,
             });
         }
     }
@@ -125,16 +165,14 @@ export class AuthPolicy {
      * @return {Object} An empty statement object with the Action, Effect, and Resource
      *                  properties prepopulated.
      */
-    public getEmptyStatement(effect: string): { Action: string, Effect: string, Resource: string[] } {
-        effect = effect.substring(0, 1).toUpperCase() + effect.substring(1, effect.length).toLowerCase();
+    public getEmptyStatement(effect: Effect): { Action: string, Effect: string, Resource: string[] } {
+        const sEffect = effect.substring(0, 1).toUpperCase() + effect.substring(1, effect.length).toLowerCase();
 
-        let statement = {
-            Action: "execute-api:Invoke",
-            Effect: effect,
+        return {
+            Action: 'execute-api:Invoke',
+            Effect: sEffect,
             Resource: [],
         };
-
-        return statement;
     }
 
     /**
@@ -147,18 +185,18 @@ export class AuthPolicy {
      *                and the conditions for the policy
      * @return {Array} an array of formatted statements for the policy.
      */
-    public getStatementsForEffect(effect: string, methods: any[]): Statement[] {
-        let statements: Statement[] = [];
+    public getStatementsForEffect(effect: Effect, methods: any[]): Statement[] {
+        const statements: Statement[] = [];
 
         if (methods.length > 0) {
-            let statement = this.getEmptyStatement(effect);
+            const statement = this.getEmptyStatement(effect);
 
             for (let i = 0; i < methods.length; i++) {
-                let curMethod = methods[i];
+                const curMethod = methods[i];
                 if (curMethod.conditions === null || curMethod.conditions.length === 0) {
                     statement.Resource.push(curMethod.resourceArn);
                 } else {
-                    let conditionalStatement = this.getEmptyStatement(effect);
+                    const conditionalStatement = this.getEmptyStatement(effect);
                     conditionalStatement.Resource.push(curMethod.resourceArn);
 
                     // @ts-ignore
@@ -181,7 +219,7 @@ export class AuthPolicy {
      * @method allowAllMethods
      */
     public allowAllMethods() {
-        this.addMethod("allow", HttpVerb.ALL, "*", null);
+        this.addMethod('allow', HttpVerb.ALL, '*', null);
     }
 
     /**
@@ -190,7 +228,7 @@ export class AuthPolicy {
      * @method denyAllMethods
      */
     public denyAllMethods() {
-        this.addMethod("deny", HttpVerb.ALL, "*", null);
+        this.addMethod('deny', HttpVerb.ALL, '*', null);
     }
 
     /**
@@ -204,7 +242,7 @@ export class AuthPolicy {
      * @return {void}
      */
     public allowMethod(verb: HttpVerb, resource: string) {
-        this.addMethod("allow", verb, resource, null);
+        this.addMethod('allow', verb, resource, null);
     }
 
     /**
@@ -218,7 +256,7 @@ export class AuthPolicy {
      * @return {void}
      */
     public denyMethod(verb: HttpVerb, resource: string) {
-        this.addMethod("deny", verb, resource, null);
+        this.addMethod('deny', verb, resource, null);
     }
 
     /**
@@ -234,7 +272,7 @@ export class AuthPolicy {
      * @return {void}
      */
     public allowMethodWithConditions(verb: HttpVerb, resource: string, conditions: any) {
-        this.addMethod("allow", verb, resource, conditions);
+        this.addMethod('allow', verb, resource, conditions);
     }
 
     /**
@@ -250,7 +288,7 @@ export class AuthPolicy {
      * @return {void}
      */
     public denyMethodWithConditions(verb: HttpVerb, resource: string, conditions: any) {
-        this.addMethod("deny", verb, resource, conditions);
+        this.addMethod('deny', verb, resource, conditions);
     }
 
     /**
@@ -265,19 +303,19 @@ export class AuthPolicy {
     public build(): CustomAuthorizerResult {
         if ((!this.allowMethods || this.allowMethods.length === 0) &&
             (!this.denyMethods || this.denyMethods.length === 0)) {
-            throw new Error("No statements defined for the policy");
+            throw new Error('No statements defined for the policy');
         }
 
         // @ts-ignore
-        let policy: CustomAuthorizerResult = {};
+        const policy: CustomAuthorizerResult = {};
         policy.principalId = this.principalId;
 
-        let doc: any = {};
+        const doc: any = {};
         doc.Version = this.version;
         doc.Statement = [];
 
-        doc.Statement = doc.Statement.concat(this.getStatementsForEffect("Allow", this.allowMethods));
-        doc.Statement = doc.Statement.concat(this.getStatementsForEffect("Deny", this.denyMethods));
+        doc.Statement = doc.Statement.concat(this.getStatementsForEffect('Allow', this.allowMethods));
+        doc.Statement = doc.Statement.concat(this.getStatementsForEffect('Deny', this.denyMethods));
 
         policy.policyDocument = doc;
 
