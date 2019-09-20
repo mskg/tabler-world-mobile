@@ -3,6 +3,7 @@ import dateEN from 'date-fns/locale/en';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 
+// tslint:disable-next-line: no-var-requires
 const countries = require('./countries/en.json');
 
 const en = {
@@ -166,39 +167,39 @@ const en = {
 
         email: (s) => {
             switch (s) {
-            case 'rt':
-                return 'TABLER.WORLD';
+                case 'rt':
+                    return 'TABLER.WORLD';
 
-            case 'home':
-                return 'Private';
+                case 'home':
+                    return 'Private';
 
-            case 'work':
-                return 'Work';
+                case 'work':
+                    return 'Work';
 
-            case 'other':
-                return 'Other';
+                case 'other':
+                    return 'Other';
 
-            default:
-                return s;
+                default:
+                    return s;
             }
         },
 
         telephone: (s) => {
             switch (s) {
-            case 'home':
-                return 'Home';
+                case 'home':
+                    return 'Home';
 
-            case 'mobile':
-                return 'Mobile';
+                case 'mobile':
+                    return 'Mobile';
 
-            case 'work':
-                return 'Work';
+                case 'work':
+                    return 'Work';
 
-            case 'other':
-                return 'Other';
+                case 'other':
+                    return 'Other';
 
-            default:
-                return s;
+                default:
+                    return s;
             }
         },
 
@@ -335,40 +336,40 @@ const en = {
         apps: {
             mail: (app: MailApps) => {
                 switch (app) {
-                case MailApps.Default:
-                    return Platform.OS == 'ios' ? 'Apple Mail' : 'Google Mail';
+                    case MailApps.Default:
+                        return Platform.OS == 'ios' ? 'Apple Mail' : 'Google Mail';
 
-                case MailApps.GoogleMail:
-                    return 'Google Mail';
+                    case MailApps.GoogleMail:
+                        return 'Google Mail';
 
-                case MailApps.Outlook:
-                    return 'Microsoft Outlook';
+                    case MailApps.Outlook:
+                        return 'Microsoft Outlook';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
 
             web: (app: WebApps) => {
                 switch (app) {
-                case WebApps.Chrome:
-                    return 'Google Chrome';
+                    case WebApps.Chrome:
+                        return 'Google Chrome';
 
-                case WebApps.Default:
-                    return Platform.OS == 'ios' ? 'Safari' : 'Google Chrome';
+                    case WebApps.Default:
+                        return Platform.OS == 'ios' ? 'Safari' : 'Google Chrome';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
 
             call: (app: CallApps) => {
                 switch (app) {
-                case CallApps.Default:
-                    return 'Mobile Phone';
+                    case CallApps.Default:
+                        return 'Mobile Phone';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
 
@@ -380,14 +381,14 @@ const en = {
                     // case MessagingApps.Telegram:
                     //     return "Telegram";
 
-                case MessagingApps.WhatsApp:
-                    return 'WhatsApp';
+                    case MessagingApps.WhatsApp:
+                        return 'WhatsApp';
 
-                case MessagingApps.Default:
-                    return Platform.OS == 'ios' ? 'Apple Messages' : 'Google Messages';
+                    case MessagingApps.Default:
+                        return Platform.OS == 'ios' ? 'Apple Messages' : 'Google Messages';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
         },

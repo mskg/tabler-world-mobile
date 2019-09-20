@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { LegalScreen } from './Legal';
 import { MainSettingsScreen } from './Main';
 import { Routes } from './Routes';

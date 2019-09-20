@@ -1,29 +1,37 @@
 
 import React from 'react';
+import { useColorScheme } from 'react-native-appearance';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../model/IAppState';
 import { dark as darkTheme } from './dark';
-import { getColorScheme } from './getColorScheme';
 import { light as lightTheme } from './light';
 
-class ProviderBase extends React.PureComponent<{ darkMode: boolean }> {
+type Props = {
+    colorScheme: string,
+    darkMode: boolean,
+};
+
+class ProviderBase extends React.PureComponent<Props> {
     subscription;
-    mode = this.props.darkMode;
 
-    _getTheme = () => {
-        let scheme = getColorScheme();
+    constructor(props: Props) {
+        super(props);
+    }
 
-        if (scheme === 'no-preference') {
-            scheme = this.props.darkMode ? 'dark' : 'light';
+    determineScheme() {
+        const { colorScheme } = this.props;
+
+        if (colorScheme === 'no-preference') {
+            return this.props.darkMode ? darkTheme : lightTheme;
         }
 
-        return scheme === 'dark' ? darkTheme : lightTheme;
+        return colorScheme === 'dark' ? darkTheme : lightTheme;
     }
 
     render() {
         return (
-            <PaperProvider theme={this._getTheme()}>
+            <PaperProvider theme={this.determineScheme()}>
                 {this.props.children}
             </PaperProvider>
         );
@@ -39,19 +47,13 @@ const Provider = connect(
 
 
 export function withPaperProvider(WrappedComponent) {
-    let Wrapper = React.Fragment;
+    return () => {
+        const colorScheme = useColorScheme();
 
-    if (getColorScheme() !== 'no-preference') {
-        // tslint:disable-next-line: no-var-requires
-        const provider = require('react-native-appearance');
-        Wrapper = provider.AppearanceProvider;
-    }
-
-    return () => (
-        <Wrapper>
-            <Provider>
+        return (
+            <Provider colorScheme={colorScheme}>
                 <WrappedComponent />
             </Provider>
-        </Wrapper>
-    );
+        );
+    };
 }

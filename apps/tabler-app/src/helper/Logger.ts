@@ -1,4 +1,4 @@
-import { Sentry, SentrySeverity } from 'react-native-sentry';
+import * as Sentry from 'sentry-expo';
 
 // tslint:disable: max-classes-per-file prefer-template
 
@@ -104,12 +104,12 @@ export class Logger {
                 data = args;
             }
 
-            Sentry.captureBreadcrumb({
+            Sentry.addBreadcrumb({
                 message,
                 data,
 
                 category: this.category,
-                level: SentrySeverity.Debug,
+                level: Sentry.Severity.Debug,
             });
         } else {
             // tslint:disable-next-line: no-console
@@ -129,12 +129,12 @@ export class Logger {
                 data = args;
             }
 
-            Sentry.captureBreadcrumb({
+            Sentry.addBreadcrumb({
                 message,
                 data,
 
                 category: this.category,
-                level: SentrySeverity.Info,
+                level: Sentry.Severity.Info,
             });
         } else {
             // tslint:disable-next-line: no-console
@@ -144,12 +144,13 @@ export class Logger {
 
     error(error, ...args: any[]): void {
         if (!__DEV__) {
-            Sentry.captureException(error, {
-                tags: {
-                    category: this.category,
-                },
-                extra: args,
+            Sentry.addBreadcrumb({
+                message: error.toString(),
+                data: args,
+                category: this.category,
             });
+
+            Sentry.captureException(error);
         } else {
             // tslint:disable-next-line: no-console
             console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
