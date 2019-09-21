@@ -16,6 +16,7 @@ export interface MeFragment_area {
   __typename: "Area";
   id: string;
   area: number;
+  name: string;
 }
 
 export interface MeFragment_club {

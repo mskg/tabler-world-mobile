@@ -16,6 +16,7 @@ export interface Me_Me_area {
   __typename: "Area";
   id: string;
   area: number;
+  name: string;
 }
 
 export interface Me_Me_club {

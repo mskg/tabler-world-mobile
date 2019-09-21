@@ -1,4 +1,5 @@
 import { Store } from 'redux';
+import { Persistor } from 'redux-persist';
 import { IAppState } from '../model/IAppState';
 
 let storeRef: any;
@@ -9,8 +10,29 @@ export function setReduxStore(ref) {
     storeRef = ref;
 }
 
-export function setReduxPersistor(ref) {
+let rehydrationComplete: () => void;
+let rehydrationFailed: () => void;
+
+// tslint:disable-next-line: promise-must-complete
+const persistorRehydratedPromise = new Promise((resolve, reject) => {
+    rehydrationComplete = resolve;
+    rehydrationFailed = reject;
+});
+
+export function persistorRehydrated() {
+    return persistorRehydratedPromise;
+}
+
+export function setReduxPersistor(ref: Persistor) {
     persistorRef = ref;
+
+    ref.subscribe(() => {
+        const { bootstrapped } = ref.getState();
+
+        if (bootstrapped) {
+            rehydrationComplete();
+        }
+    });
 }
 
 export function setSagaMiddleware(ref) {

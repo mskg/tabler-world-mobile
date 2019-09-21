@@ -18,6 +18,7 @@ export interface MembersByAreas_Me_area {
   __typename: "Area";
   id: string;
   area: number;
+  name: string;
 }
 
 export interface MembersByAreas_Me_club {

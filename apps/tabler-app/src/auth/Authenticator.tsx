@@ -11,6 +11,7 @@ import Loading from '../components/Loading';
 import Reloader from '../components/Reloader';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
+import { Me } from '../model/graphql/Me';
 import { IAppState } from '../model/IAppState';
 import { GetMeQuery } from '../queries/MeQuery';
 import { INITIAL_STATE } from '../redux/initialState';
@@ -66,7 +67,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
             };
 
             const client = cachedAolloClient();
-            client.query({
+            client.query<Me>({
                 query: GetMeQuery,
                 fetchPolicy: 'cache-first',
             }).then((result) => {
@@ -77,7 +78,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
                 logger.log('Updating user profile');
                 Audit.updateUser(
-                    result.data.Me.id,
+                    result.data.Me.id.toString(),
                     {
                         ...appProps,
                         [AuditPropertyNames.Association]: result.data.Me.association.name,
@@ -86,9 +87,10 @@ class AuthenticatorBase extends PureComponent<Props, State> {
                     },
                 );
 
-                ExpoSentry.setUser({
-                    id: result.data.Me.id,
-                });
+                ExpoSentry.configureScope((scope) => scope.setUser({
+                    id: result.data.Me.id.toString(),
+                }));
+
             }).catch((e) => {
                 Audit.updateUser(undefined, appProps);
                 logger.error(e, 'Could not load me');

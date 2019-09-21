@@ -11,7 +11,7 @@ import { GetAssociationsQuery } from '../../queries/GetAssociationsQuery';
 import { GetClubsQuery } from '../../queries/GetClubsQuery';
 import { GetMembersByAreasQuery } from '../../queries/GetMembersByAreasQuery';
 import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
-import { getReduxStore } from '../../redux/getRedux';
+import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
 import { FETCH_TASKNAME } from '../Constants';
 import { isSignedIn } from '../isSignedIn';
 import { logger } from './logger';
@@ -23,6 +23,7 @@ export async function runBackgroundFetch() {
         return BackgroundFetch.Result.NoData;
     }
 
+    await persistorRehydrated();
     if (!isSignedIn()) {
         logger.debug('Not signed in');
         return BackgroundFetch.Result.NoData;
@@ -41,15 +42,15 @@ export async function runBackgroundFetch() {
         const areaBoard = getReduxStore().getState().filter.member.showAreaBoard;
 
         await updateCache(client, GetMembersByAreasQuery, 'members', {
-            areas: areas != null ? _(areas)
-                .keys()
-                .filter(k => k !== 'length')
-                .map(a => a.replace(/[^\d]/g, ''))
-                .map(a => parseInt(a, 10))
-                .value()
-                : null,
             areaBoard,
             board,
+            areas: areas != null ? _(areas)
+                .keys()
+                .filter((k) => k !== 'length')
+                .map((a) => a.replace(/[^\d]/g, ''))
+                .map((a) => parseInt(a, 10))
+                .value()
+                : null,
         } as MembersByAreasVariables);
 
         await updateCache(client, GetClubsQuery, 'clubs');
