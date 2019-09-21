@@ -14,8 +14,8 @@ export async function updateCache(
     logger.log('Fetching', field);
     await client.query({
         query,
-        fetchPolicy: 'network-only',
         variables,
+        fetchPolicy: 'network-only',
     });
 
     await client.writeData({

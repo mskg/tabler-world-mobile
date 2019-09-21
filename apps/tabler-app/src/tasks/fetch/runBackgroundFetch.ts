@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
 import { GetAreasQuery } from '../../queries/GetAreasQuery';
@@ -35,6 +35,8 @@ export async function runBackgroundFetch() {
         Audit.trackEvent(AuditEventName.BackgroundSync);
 
         const client = await bootstrapApollo();
+        await getPersistor().restore();
+
         await updateCache(client, GetOfflineMembersQuery, 'members');
 
         const areas = getReduxStore().getState().filter.member.area;
