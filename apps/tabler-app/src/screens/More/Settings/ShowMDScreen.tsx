@@ -7,7 +7,7 @@ import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import DocViewer from '../../../components/DocsViewer';
-import { InlineLoading } from '../../../components/Loading';
+import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { Categories, Logger } from '../../../helper/Logger';
 
@@ -34,7 +34,7 @@ class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps
 
             this.setState({ text });
         } catch (e) {
-            logger.error(e, 'Failed to load MD ' + this.props.navigation.getParam('source'));
+            logger.error(e, 'Failed to load MD', this.props.navigation.getParam('source'));
         }
 
         this.audit.submit();
@@ -42,18 +42,21 @@ class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps
 
     render() {
         return (
-            <ScreenWithHeader header={{
-                title: this.props.navigation.getParam('title'),
-                showBack: true,
-            }}>
-                <ScrollView style={{ padding: 10, backgroundColor: this.props.theme.colors.surface }}>
-                    {this.state.text &&
+            <ScreenWithHeader
+                header={{
+                    title: this.props.navigation.getParam('title'),
+                    showBack: true,
+                }}
+            >
+                {!this.state.text &&
+                    <FullScreenLoading />
+                }
+
+                {this.state.text && (
+                    <ScrollView style={{ padding: 10, backgroundColor: this.props.theme.colors.surface }}>
                         <DocViewer text={this.state.text} />
-                    }
-                    {!this.state.text &&
-                        <InlineLoading />
-                    }
-                </ScrollView>
+                    </ScrollView>
+                )}
             </ScreenWithHeader>
         );
     }

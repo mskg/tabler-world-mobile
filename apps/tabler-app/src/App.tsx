@@ -1,6 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
 import React from 'react';
+import { useScreens } from 'react-native-screens';
 import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
@@ -62,6 +63,7 @@ logger.log('Bootstrapping push notifications');
 registerForPushNotificationsAsync();
 
 fix2940();
+useScreens();
 
 const App = () => {
     // if (__DEV__) useKeepAwake();

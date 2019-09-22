@@ -144,13 +144,14 @@ export class Logger {
 
     error(error, ...args: any[]): void {
         if (!__DEV__) {
-            Sentry.addBreadcrumb({
-                message: error.toString(),
-                data: args,
-                category: this.category,
+            Sentry.withScope((scope) => {
+                scope.setLevel(Sentry.Severity.Error);
+                scope.setExtra('args', args);
+                scope.setTag('category', this.category);
+
+                Sentry.captureException(error);
             });
 
-            Sentry.captureException(error);
         } else {
             // tslint:disable-next-line: no-console
             console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);

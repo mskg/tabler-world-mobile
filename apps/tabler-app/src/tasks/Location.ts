@@ -7,6 +7,7 @@ import { logger } from './location/logger';
 import { startLocationTask } from './location/startLocationTask';
 import { stopLocationTaks } from './location/stopLocationTaks';
 
+// tslint:disable-next-line: export-name
 export async function registerLocationTask() {
     try {
         TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {

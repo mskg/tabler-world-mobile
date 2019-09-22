@@ -13,6 +13,7 @@ export const MeFragment = gql`
         area {
             id
             area
+            name
         }
 
         club {

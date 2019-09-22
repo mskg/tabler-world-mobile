@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { WebView } from 'react-native';
 import { Appbar, Theme, withTheme } from 'react-native-paper';
+import { WebView } from 'react-native-webview';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
+import { FullScreenLoading } from './Loading';
 import { ScreenWithHeader } from './Screen';
 
 const logger = new Logger(Categories.UIComponents.WebScreen);
@@ -76,6 +77,7 @@ export class WebScreenBase extends AuditedScreen<Props, State> {
                     ref={r => this.ref = r}
                     startInLoadingState={true}
                     originWhitelist={this.props.whitelist}
+                    renderLoading={() => (<FullScreenLoading />)}
                     source={{
                         uri: this.state.url,
                     }}
