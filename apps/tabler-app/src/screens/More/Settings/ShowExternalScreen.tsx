@@ -1,11 +1,10 @@
 import React from 'react';
-import { WebView } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
-import { ScreenWithHeader } from '../../../components/Screen';
+import { WebScreen } from '../../../components/WebScreen';
 
 class ShowExternalScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps> {
     constructor(props) {
@@ -20,16 +19,11 @@ class ShowExternalScreenBase extends AuditedScreen<{ theme } & NavigationInjecte
 
     render() {
         return (
-            <ScreenWithHeader header={{
-                title: this.props.navigation.getParam('title'),
-                showBack: true,
-            }}>
-                <WebView
-                    startInLoadingState={true}
-                    source={{ uri: this.props.navigation.getParam('source') }}
-                    mixedContentMode={'never'}
-                />
-            </ScreenWithHeader>
+            <WebScreen
+                showBack={true}
+                title={this.props.navigation.getParam('title')}
+                url={this.props.navigation.getParam('source')}
+            />
         );
     }
 }
