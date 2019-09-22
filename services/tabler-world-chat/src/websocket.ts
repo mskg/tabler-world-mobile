@@ -4,8 +4,8 @@ import { APIGatewayWebSocketEvent, WebSocketConnectEvent } from 'aws-lambda-grap
 import { getOperationAST, parse, subscribe, validate } from 'graphql';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import { schema } from './graphql';
-import { Connection } from './models/Connection';
+import { ConnectionManager } from './models/ConnectionManager';
+import { schema } from './schema/schema';
 
 const SUCCESS = { statusCode: 200, body: '' };
 
@@ -14,6 +14,8 @@ enum Routes {
     disconnect = '$disconnect',
     default = '$default',
 }
+
+const connectionManager = new ConnectionManager();
 
 // tslint:disable-next-line: export-name
 export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatewayProxyResult> {
@@ -27,10 +29,10 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
         }
 
         const route = event.requestContext.routeKey;
-        const connection = new Connection(event.requestContext.connectionId);
+        const connectionId = event.requestContext.connectionId;
 
         console.log(
-            'connectionId', connection.connectionId,
+            'connectionId', connectionId,
             'route', route,
         );
 
@@ -38,10 +40,10 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             const principal = resolvePrincipal(event as WebSocketConnectEvent);
             console.log('Constructing new context for principal', principal);
 
-            await connection.connect(principal);
+            await connectionManager.connect(connectionId, principal);
             return SUCCESS;
         } if (route === Routes.disconnect) {
-            await connection.disconnect();
+            await connectionManager.disconnect(connectionId);
             return SUCCESS;
         } {
             if (!event.body) {
@@ -51,7 +53,7 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             const operation = JSON.parse(event.body) as OperationMessage;
 
             if (operation.type === MessageTypes.GQL_CONNECTION_INIT) {
-                await connection.sendMessage({ type: MessageTypes.GQL_CONNECTION_ACK });
+                await connectionManager.sendMessage(connectionId, { type: MessageTypes.GQL_CONNECTION_ACK });
                 return SUCCESS;
             }
 
@@ -59,7 +61,7 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
                 return SUCCESS;
             }
 
-            const details = await connection.get();
+            const details = await connectionManager.get(connectionId);
             if (!details) {
                 throw new Error('Unknown client');
             }
@@ -73,13 +75,13 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             const operationAST = getOperationAST(graphqlDocument, operationName || '');
 
             if (!operationAST || operationAST.operation !== 'subscription') {
-                await connection.sendError({ message: 'Only subscriptions are supported' });
+                await connectionManager.sendError(connectionId, { message: 'Only subscriptions are supported' });
                 return SUCCESS;
             }
 
             const validationErrors = validate(schema, graphqlDocument);
             if (validationErrors.length > 0) {
-                await connection.sendError({ errors: validationErrors });
+                await connectionManager.sendError(connectionId, { errors: validationErrors });
                 return SUCCESS;
             }
 
@@ -92,13 +94,13 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
                     variableValues: variables,
                     contextValue: {
                         connectionId: details.connectionId,
-                        principal: details.details,
+                        principal: details.principal,
                     },
                 });
 
             } catch (err) {
                 console.error(err);
-                await connection.sendError(err);
+                await connectionManager.sendError(connectionId, err);
             }
 
             return SUCCESS;

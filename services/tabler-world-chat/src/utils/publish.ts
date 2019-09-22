@@ -1,7 +1,9 @@
-import { Channel, ChannelMessageRoot } from '../models/Channel';
+import { ChannelManager, ChannelMessageRoot } from '../models/ChannelManager';
+
+const cm = new ChannelManager();
 
 const publish = (channel: string, data: ChannelMessageRoot) => {
-    return new Channel(channel).postMessage(data);
+    return cm.postMessage(channel, data);
 };
 
 export default publish;
