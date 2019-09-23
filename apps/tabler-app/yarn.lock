@@ -1107,6 +1107,11 @@
     hoist-non-react-statics "^2.2.2"
     prop-types "^15.5.10"
 
+"@expo/react-native-action-sheet@^3.0.3":
+  version "3.0.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/react-native-action-sheet/-/react-native-action-sheet-3.0.3.tgz#1d69a2668784961c6d458babe52e9a02893936a2"
+  integrity sha1-HWmiZoeElhxtRYur5S6aAok5NqI=
+
 "@expo/schemer@^1.2.8":
   version "1.2.8"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/schemer/-/schemer-1.2.8.tgz#4e13e125157bc3fc0d53520a7ccb81f7d4598848"
@@ -5867,6 +5872,14 @@ expo-asset@^7.0.0, expo-asset@~7.0.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-av@~7.0.0:
+  version "7.0.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-av/-/expo-av-7.0.0.tgz#0ecc622c98bae6e9d220de8c192074175573118a"
+  integrity sha1-DsxiLJi65unSIN6MGSB0F1VzEYo=
+  dependencies:
+    lodash "^4.17.15"
+    nullthrows "^1.1.0"
+
 expo-background-fetch@^7.0.0:
   version "7.0.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-background-fetch/-/expo-background-fetch-7.0.0.tgz#498e73d39dcb6ec8d456e3f5531a256bd2595455"
@@ -10211,7 +10224,7 @@ mock-require@^3.0.2:
     get-caller-file "^1.0.2"
     normalize-path "^2.1.1"
 
-moment@2.24.0, moment@^2.10.6, moment@^2.22.1, moment@^2.24.0:
+moment@2.24.0, moment@^2.10.6, moment@^2.19.0, moment@^2.22.1, moment@^2.24.0:
   version "2.24.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
@@ -11915,7 +11928,7 @@ prop-types@15.5.8:
   dependencies:
     fbjs "^0.8.9"
 
-prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -12265,6 +12278,11 @@ react-native-branch@~3.0.1:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-branch/-/react-native-branch-3.0.1.tgz#5b07b61cbd290168cd3c3662e017ebe0f356d2ca"
   integrity sha1-Wwe2HL0pAWjNPDZi4Bfr4PNW0so=
 
+react-native-communications@2.2.1:
+  version "2.2.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-communications/-/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"
+  integrity sha1-eIO1ayCgAu63kMET+GFuqGksp5U=
+
 react-native-fit-image@^1.5.2:
   version "1.5.4"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-fit-image/-/react-native-fit-image-1.5.4.tgz#73d2fccc7ad902cf2ffcd008a2a74749ad50134a"
@@ -12281,6 +12299,22 @@ react-native-gesture-handler@~1.3.0:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-gifted-chat@^0.10.1:
+  version "0.10.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-gifted-chat/-/react-native-gifted-chat-0.10.1.tgz#d320381d9c0e60f143a7a3a1de23184824eef3be"
+  integrity sha1-0yA4HZwOYPFDp6Oh3iMYSCTu874=
+  dependencies:
+    "@expo/react-native-action-sheet" "^3.0.3"
+    expo-av "~7.0.0"
+    moment "^2.19.0"
+    prop-types "15.7.2"
+    react-native-communications "2.2.1"
+    react-native-iphone-x-helper "^1.2.0"
+    react-native-lightbox "^0.7.0"
+    react-native-maps "~0.25.0"
+    react-native-parsed-text "https://github.com/EvanBacon/react-native-parsed-text.git"
+    uuid "3.3.3"
+
 "react-native-image-gallery@https://github.com/mskg/react-native-image-gallery/archive/v2.1.5-mskg.tar.gz":
   version "2.1.5"
   resolved "https://github.com/mskg/react-native-image-gallery/archive/v2.1.5-mskg.tar.gz#a8d61007e637dbd0216001c19630f3f25eed1fe9"
@@ -12289,7 +12323,19 @@ react-native-gesture-handler@~1.3.0:
     react-mixin "^3.0.5"
     react-timer-mixin "^0.13.3"
 
-react-native-maps@*, react-native-maps@^0.25.0:
+react-native-iphone-x-helper@^1.2.0:
+  version "1.2.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
+  integrity sha1-ZF4v+7tJ6AhEu0y740oSb9oeZ3I=
+
+react-native-lightbox@^0.7.0:
+  version "0.7.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-lightbox/-/react-native-lightbox-0.7.0.tgz#e52b4d7fcc141f59d7b23f0180de535e35b20ec9"
+  integrity sha1-5StNf8wUH1nXsj8BgN5TXjWyDsk=
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-maps@*, react-native-maps@^0.25.0, react-native-maps@~0.25.0:
   version "0.25.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-maps/-/react-native-maps-0.25.0.tgz#81bc51eb50e33811a9e1c345cc48869413ead67d"
   integrity sha1-gbxR61DjOBGp4cNFzEiGlBPq1n0=
@@ -12316,6 +12362,12 @@ react-native-paper@^2.16.0:
     hoist-non-react-statics "^3.1.0"
     react-lifecycles-compat "^3.0.4"
     react-native-safe-area-view "^0.12.0"
+
+"react-native-parsed-text@git+https://github.com/EvanBacon/react-native-parsed-text.git":
+  version "0.0.22"
+  resolved "git+https://github.com/EvanBacon/react-native-parsed-text.git#24939951b13a8223882c74610d758903eed652ab"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-picker-select@^6.1.0:
   version "6.3.3"
@@ -15185,15 +15237,15 @@ uuid@3.3.2:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha1-G0r0lV6zB3xQHCOHL8ZROBFYcTE=
 
+uuid@3.3.3, uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.3.2:
+  version "3.3.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
+  integrity sha1-RWjwIW54dg7h2/Ok0s9T4iQRKGY=
+
 uuid@^2.0.1:
   version "2.0.3"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
   integrity sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=
-
-uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.3.2:
-  version "3.3.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
-  integrity sha1-RWjwIW54dg7h2/Ok0s9T4iQRKGY=
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"

@@ -25,7 +25,9 @@
         "graphql-tools": "^4.0.4",
         "https": "^1.0.0",
         "lodash": "^4.17.11",
-        "pg": "^7.9.0"
+        "pg": "^7.9.0",
+        "graphql-subscriptions": "^1.1.0",
+        "uuid": "^3.3.3"
     },
     "devDependencies": {
         "@mskg/tabler-world-yarn-tools": "0.0.1",
@@ -43,7 +45,7 @@
         "serverless-domain-manager": "^3.2.6",
         "serverless-dynamodb-local": "^0.2.38",
         "serverless-iam-roles-per-function": "^2.0.1",
-        "serverless-offline": "^5.8.0",
+        "serverless-offline": "5.11.0",
         "serverless-plugin-aws-alerts": "^1.2.4",
         "serverless-webpack": "^5.3.0",
         "ts-jest": "^24.0.2",

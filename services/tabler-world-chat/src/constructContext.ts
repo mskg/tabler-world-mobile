@@ -1,6 +1,6 @@
 import { resolvePrincipal } from '@mskg/tabler-world-auth-client';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import { IChatContext } from './types/IApolloContext';
+import { IChatContext } from './types/IChatContext';
 import { Logger } from './utils/Logger';
 
 type Params = { event: APIGatewayProxyEvent, context: Context };

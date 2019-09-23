@@ -1,13 +1,21 @@
+import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import client from '../aws/dynamodb';
 import { CONNECTIONS_TABLE, FieldNames } from '../utils/tables';
-import { IConnection } from './ConnectionManager';
+import { WebSocketLogger } from '../utils/WebSocketLogger';
+import { IConnection } from "./IConnection";
+import { WebSocketConnectionManager } from './WebsocketConnectionManager';
 
 interface ISubscription {
     connection: IConnection;
     subscriptionId: string;
 }
 
-export class SubscriptionManager {
+const logger = new WebSocketLogger('SubscriptionManager');
+
+export class WebSocketSubscriptionManager {
+    constructor(private connection: WebSocketConnectionManager) {
+    }
+
     public async getAllForPrincipal(memberId: number): Promise<ISubscription[]> {
         const { Items: clients } = await client.query({
             ExpressionAttributeValues: {
@@ -33,7 +41,7 @@ export class SubscriptionManager {
     }
 
     public async subscribe(connectionId: string, subscriptionId: string, payload: any): Promise<void> {
-        console.log('[SubscriptionManager] [subscribe]', connectionId, subscriptionId, payload);
+        logger.log(`[${connectionId}] [${subscriptionId}]`, 'subscribe', payload);
 
         await client.update({
             TableName: CONNECTIONS_TABLE,
@@ -50,7 +58,7 @@ export class SubscriptionManager {
     }
 
     public async unsubscribe(connectionId: string): Promise<void> {
-        console.log('[SubscriptionManager] [unsubscribe]', connectionId);
+        logger.log(`[${connectionId}]`, 'unsubscribe');
 
         await client.update({
             TableName: CONNECTIONS_TABLE,
@@ -60,5 +68,16 @@ export class SubscriptionManager {
 
             UpdateExpression: `REMOVE ${FieldNames.subscriptionId}, ${FieldNames.payload}`,
         }).promise();
+    }
+
+    public async sendData(connectionId: string, subscriptionId: string, payload: any): Promise<void> {
+        await this.connection.sendMessage(
+            connectionId,
+            {
+                payload,
+                id: subscriptionId,
+                type: MessageTypes.GQL_DATA,
+            },
+        );
     }
 }

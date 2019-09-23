@@ -1,11 +1,14 @@
 import { resolvePrincipal } from '@mskg/tabler-world-auth-client';
+import { ILogger } from '@mskg/tabler-world-common';
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { APIGatewayWebSocketEvent, WebSocketConnectEvent } from 'aws-lambda-graphql';
 import { getOperationAST, parse, subscribe, validate } from 'graphql';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import { ConnectionManager } from './models/ConnectionManager';
 import { schema } from './schema/schema';
+import { connectionManager } from './services';
+import { ISubscriptionContext } from './types/ISubscriptionContext';
+import { WebSocketLogger } from './utils/WebSocketLogger';
 
 const SUCCESS = { statusCode: 200, body: '' };
 
@@ -15,30 +18,27 @@ enum Routes {
     default = '$default',
 }
 
-const connectionManager = new ConnectionManager();
-
 // tslint:disable-next-line: export-name
 export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatewayProxyResult> {
+    if (!(event.requestContext && event.requestContext.connectionId)) {
+        console.error(
+            'Invalid event',
+            event,
+        );
+
+        throw new Error('Invalid event. Missing `connectionId` parameter.');
+    }
+
     try {
-        if (!(event.requestContext && event.requestContext.connectionId)) {
-            console.error(
-                event,
-            );
-
-            throw new Error('Invalid event. Missing `connectionId` parameter.');
-        }
-
         const route = event.requestContext.routeKey;
         const connectionId = event.requestContext.connectionId;
 
-        console.log(
-            'connectionId', connectionId,
-            'route', route,
-        );
+        const logger: ILogger = new WebSocketLogger(route, connectionId);
+        logger.log('event');
 
         if (route === Routes.connect) {
             const principal = resolvePrincipal(event as WebSocketConnectEvent);
-            console.log('Constructing new context for principal', principal);
+            logger.log('Constructing new context for principal', principal);
 
             await connectionManager.connect(connectionId, principal);
             return SUCCESS;
@@ -53,7 +53,7 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             const operation = JSON.parse(event.body) as OperationMessage;
 
             if (operation.type === MessageTypes.GQL_CONNECTION_INIT) {
-                await connectionManager.sendMessage(connectionId, { type: MessageTypes.GQL_CONNECTION_ACK });
+                await connectionManager.sendACK(connectionId);
                 return SUCCESS;
             }
 
@@ -67,7 +67,7 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             }
 
             if (!operation.payload || !operation.payload.query) {
-                throw new Error('Protocol error');
+                throw new Error('Protocol error: payload and/or query is null');
             }
 
             const { query, variables, operationName } = operation.payload;
@@ -75,12 +75,14 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             const operationAST = getOperationAST(graphqlDocument, operationName || '');
 
             if (!operationAST || operationAST.operation !== 'subscription') {
+                logger.error('Only subscriptions are supported', operation);
                 await connectionManager.sendError(connectionId, { message: 'Only subscriptions are supported' });
                 return SUCCESS;
             }
 
             const validationErrors = validate(schema, graphqlDocument);
             if (validationErrors.length > 0) {
+                logger.error(validationErrors);
                 await connectionManager.sendError(connectionId, { errors: validationErrors });
                 return SUCCESS;
             }
@@ -95,18 +97,19 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
                     contextValue: {
                         connectionId: details.connectionId,
                         principal: details.principal,
-                    },
+                        logger: new WebSocketLogger(event, connectionId, details.principal.id),
+                    } as ISubscriptionContext,
                 });
 
             } catch (err) {
-                console.error(err);
+                logger.error(err);
                 await connectionManager.sendError(connectionId, err);
             }
 
             return SUCCESS;
         }
     } catch (e) {
-        console.error(event, e);
-        return SUCCESS;
+        console.error('Faild websocket event', e, event);
+        throw e;
     }
 }

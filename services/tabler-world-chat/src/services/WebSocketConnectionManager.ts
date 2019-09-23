@@ -1,23 +1,18 @@
 import { IPrincipal } from '@mskg/tabler-world-auth-client';
-import { OperationMessage, OperationMessagePayload } from 'subscriptions-transport-ws';
+import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import client from '../aws/dynamodb';
 import gatewayClient from '../aws/gatewayClient';
 import { CONNECTIONS_TABLE, FieldNames } from '../utils/tables';
+import { WebSocketLogger } from '../utils/WebSocketLogger';
+import { IConnection } from './IConnection';
 
-export interface IConnection {
-    connectionId: string;
+const logger = new WebSocketLogger('ConnectionManager');
 
-    memberId: number;
-    principal: IPrincipal;
-
-    // subscriptionId?: string,
-    payload?: OperationMessagePayload;
-}
-
-export class ConnectionManager {
-
+export class WebSocketConnectionManager {
     public async get(connectionId: string): Promise<IConnection> {
+        logger.log(`[${connectionId}]`, 'get');
+
         const { Item: details } = await client.get({
             TableName: CONNECTIONS_TABLE,
             Key: {
@@ -29,7 +24,7 @@ export class ConnectionManager {
     }
 
     public async connect(connectionId: string, member: IPrincipal): Promise<void> {
-        console.log('[ConnectionManager] [connect]', connectionId, member);
+        logger.log(`[${connectionId}]`, 'connect', member);
 
         await client.put({
             TableName: CONNECTIONS_TABLE,
@@ -44,7 +39,7 @@ export class ConnectionManager {
     }
 
     public async disconnect(connectionId: string): Promise<void> {
-        console.log('[ConnectionManager] [disconnect]', connectionId);
+        logger.log(`[${connectionId}]`, 'disconnect');
 
         await client.delete({
             TableName: CONNECTIONS_TABLE,
@@ -52,6 +47,10 @@ export class ConnectionManager {
                 [FieldNames.connectionId]: connectionId,
             },
         }).promise();
+    }
+
+    public async sendACK(connectionId: string) {
+        this.sendMessage(connectionId, { type: MessageTypes.GQL_CONNECTION_ACK });
     }
 
     public async sendError(connectionId: string, payload: any): Promise<void> {
@@ -65,7 +64,7 @@ export class ConnectionManager {
     }
 
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {
-        console.log('[ConnectionManager] [send]', connectionId, message);
+        logger.log(`[${connectionId}]`, 'send', message);
 
         await gatewayClient.postToConnection({
             ConnectionId: connectionId,

@@ -1,7 +1,7 @@
 import { ILogger } from '@mskg/tabler-world-common';
 
 export class Logger implements ILogger {
-    constructor(private id: string, private user: any) {}
+    constructor(private id: string, private user: any) { }
 
     public log(...args: any[]) {
         console.log(`[LOG] [${this.id}] [${this.user}]`, ...args);
@@ -11,3 +11,5 @@ export class Logger implements ILogger {
         console.error(`[ERR] [${this.id}] [${this.user}]`, ...args);
     }
 }
+
+

@@ -4,34 +4,35 @@ import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
 import { flatMap } from 'lodash';
-import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import { ChannelManager, ChannelMessage } from './models/ChannelManager';
-import { ConnectionManager } from './models/ConnectionManager';
-import { SubscriptionManager } from './models/SubscriptionManager';
 import { schema } from './schema/schema';
+import { channelManager, connectionManager, subscriptionManager } from './services';
+import { EncodedChannelMessage } from './services/ChannelManager';
+import { ISubscriptionContext } from './types/ISubscriptionContext';
 import { pubsub } from './utils/pubsub';
+import { WebSocketLogger } from './utils/WebSocketLogger';
 
-const connectionManager = new ConnectionManager();
-const subscriptionManager = new SubscriptionManager();
-const channelManager = new ChannelManager();
+const logger = new WebSocketLogger('Publish');
 
 // tslint:disable-next-line: export-name
 export async function handler(event: DynamoDBStreamEvent) {
     for (const subscruptionEvent of event.Records) {
         if (subscruptionEvent.eventName !== 'INSERT' || !subscruptionEvent.dynamodb || !subscruptionEvent.dynamodb.NewImage) {
-            console.error('Invalid event. Wrong dynamodb event type, can publish only `INSERT` events to subscribers.', subscruptionEvent);
+            logger.error('Invalid event. Wrong dynamodb event type, can publish only `INSERT` events to subscribers.', subscruptionEvent);
             continue;
         }
 
         try {
-            const image: ChannelMessage = EXECUTING_OFFLINE
-                ? subscruptionEvent.dynamodb.NewImage as ChannelMessage
-                : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as ChannelMessage;
+            const encodedImage: EncodedChannelMessage = EXECUTING_OFFLINE
+                ? subscruptionEvent.dynamodb.NewImage as EncodedChannelMessage
+                : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedChannelMessage;
+
+            const image = channelManager.unMarshall(encodedImage);
 
             const subscribers = await channelManager.getSubscribers(image.channel);
             if (!subscribers || subscribers.length === 0) {
+                logger.log('Channel', image.channel, 'has no subscribers');
                 // dont' work for nothing
-                return;
+                continue;
             }
 
             // flat list of all connections for all subscribers
@@ -39,9 +40,13 @@ export async function handler(event: DynamoDBStreamEvent) {
                 await Promise.all(
                     subscribers.map((s) => subscriptionManager.getAllForPrincipal(s))));
 
-            const promises = connections.map(async ({ connection: { connectionId, payload }, subscriptionId }) => {
+
+            // all principals without a subscription, we need to send a push message to those
+            // const missingPrincipals = filter(subscribers, (p) => connections.find((c) => c.connection.memberId === p) == null);
+
+            const promises = connections.map(async ({ connection: { connectionId, payload, principal }, subscriptionId }) => {
                 if (!payload || !payload.query) {
-                    console.error('Invalid payload', connectionId, subscriptionId, payload);
+                    logger.error(`[${connectionId}] [${subscriptionId}]`, 'Invalid payload', payload);
                     return;
                 }
 
@@ -53,16 +58,18 @@ export async function handler(event: DynamoDBStreamEvent) {
                     operationName: payload.operationName,
                     variableValues: payload.variables,
                     contextValue: {
-                    },
+                        connectionId,
+                        principal,
+                        logger: new WebSocketLogger('publish', connectionId, principal.id),
+                    } as ISubscriptionContext,
                 });
 
                 if (!isAsyncIterable(iterable)) {
-                    console.error('!isAsyncIterable??', iterable);
-                    // something went wrong, probably there is an error
+                    logger.error(`[${connectionId}] [${subscriptionId}]`, 'result not asyncIterable', iterable);
                     return;
                 }
 
-                console.log('isAsyncIterable');
+                logger.log('isAsyncIterable');
 
                 const iterator = getAsyncIterator(iterable);
                 const nextValue = iterator.next();
@@ -74,17 +81,13 @@ export async function handler(event: DynamoDBStreamEvent) {
                     ExecutionResult
                 > = await nextValue;
 
-                console.log('result', JSON.stringify(result.value));
+                logger.log(`[${connectionId}] [${subscriptionId}]`, 'result', JSON.stringify(result.value));
 
                 if (result.value != null) {
                     try {
-                        await connectionManager.sendMessage(connectionId, {
-                            id: subscriptionId,
-                            payload: result.value,
-                            type: MessageTypes.GQL_DATA,
-                        });
+                        await subscriptionManager.sendData(connectionId, subscriptionId, result.value);
                     } catch (err) {
-                        console.error(err);
+                        logger.error(`[${connectionId}] [${subscriptionId}]`, err);
                         if (err.statusCode === 410) {	// this client has disconnected unsubscribe it
                             connectionManager.disconnect(connectionId);
                         }
@@ -94,7 +97,7 @@ export async function handler(event: DynamoDBStreamEvent) {
 
             await Promise.all(promises);
         } catch (e) {
-            console.error(e);
+            logger.error(e);
         }
     }
 }
