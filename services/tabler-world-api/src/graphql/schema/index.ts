@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-core';
 import { Albums } from './Albums';
 import { Auth } from './Auth';
+import { Chat } from './Chat';
 import { Geo } from './Geo';
 import { Jobs } from './Jobs';
 import { Member } from './Member';
@@ -31,4 +32,5 @@ export const schema = [
     News,
     Geo,
     Parameters,
+    Chat,
 ];

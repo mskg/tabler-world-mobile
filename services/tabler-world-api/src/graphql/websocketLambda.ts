@@ -5,10 +5,10 @@ import { APIGatewayWebSocketEvent, WebSocketConnectEvent } from 'aws-lambda-grap
 import { getOperationAST, parse, subscribe, validate } from 'graphql';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import { schema } from './schema/schema';
-import { connectionManager } from './services';
+import { executableSchema } from './executableSchema';
+import { connectionManager } from './subscriptions/services';
+import { WebSocketLogger } from './subscriptions/utils/WebSocketLogger';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
-import { WebSocketLogger } from './utils/WebSocketLogger';
 
 const SUCCESS = { statusCode: 200, body: '' };
 
@@ -80,7 +80,7 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
                 return SUCCESS;
             }
 
-            const validationErrors = validate(schema, graphqlDocument);
+            const validationErrors = validate(executableSchema, graphqlDocument);
             if (validationErrors.length > 0) {
                 logger.error(validationErrors);
                 await connectionManager.sendError(connectionId, { errors: validationErrors });
@@ -89,8 +89,8 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
 
             try {
                 await subscribe({
-                    schema,
                     operationName,
+                    schema: executableSchema,
                     document: graphqlDocument,
                     rootValue: operation,
                     variableValues: variables,

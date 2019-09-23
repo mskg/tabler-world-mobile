@@ -1,10 +1,10 @@
 import { IPrincipal } from '@mskg/tabler-world-auth-client';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import client from '../aws/dynamodb';
-import gatewayClient from '../aws/gatewayClient';
-import { CONNECTIONS_TABLE, FieldNames } from '../utils/tables';
 import { WebSocketLogger } from '../utils/WebSocketLogger';
+import { awsGatewayClient } from './awsGatewayClient';
+import { CONNECTIONS_TABLE, FieldNames } from './Constants';
+import client from './dynamodb';
 import { IConnection } from './IConnection';
 
 const logger = new WebSocketLogger('ConnectionManager');
@@ -66,7 +66,7 @@ export class WebSocketConnectionManager {
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {
         logger.log(`[${connectionId}]`, 'send', message);
 
-        await gatewayClient.postToConnection({
+        await awsGatewayClient.postToConnection({
             ConnectionId: connectionId,
             Data: JSON.stringify(message),
         }).promise();

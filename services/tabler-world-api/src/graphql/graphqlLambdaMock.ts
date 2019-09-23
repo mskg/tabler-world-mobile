@@ -7,13 +7,13 @@ import { resolvers } from './mock/resolvers';
 import { schema } from './schema';
 
 const executableSchema = makeExecutableSchema({
-    typeDefs: schema,
     resolvers,
+    typeDefs: schema,
 });
 
 addMockFunctionsToSchema({
-    schema: executableSchema,
     mocks,
+    schema: executableSchema,
     preserveResolvers: true,
 });
 
@@ -22,20 +22,20 @@ const server = new ApolloServer({
     validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
 
     extensions: [
-      () => new LogErrorsExtension(),
-  ],
+        () => new LogErrorsExtension(),
+    ],
 
-  // required for extensions
+    // required for extensions
     context: () => ({
-      requestCache: {},
-      logger: console,
-  }),
+        requestCache: {},
+        logger: console,
+    }),
 });
 
 // tslint:disable-next-line: export-name
 export const handler = server.createHandler({
     cors: {
-      origin: '*',
-      credentials: true,
-  },
+        origin: '*',
+        credentials: true,
+    },
 });

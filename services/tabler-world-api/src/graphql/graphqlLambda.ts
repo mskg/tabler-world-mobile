@@ -2,17 +2,14 @@ import { EXECUTING_OFFLINE, isXrayEnabled } from '@mskg/tabler-world-aws';
 import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
-import { makeExecutableSchema } from 'graphql-tools';
-import { AuthDirective } from './auth/AuthDirective';
 import { cacheInstance } from './cache/cacheInstance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
+import { executableSchema } from './executableSchema';
 import { NoIntrospection } from './helper/NoIntrospection';
 import { XRayRequestExtension } from './helper/XRayRequestExtension';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
-import { resolvers } from './resolvers';
-import { schema } from './schema';
 import { IApolloContext } from './types/IApolloContext';
 
 const extensions: any[] = [
@@ -36,13 +33,7 @@ if (isXrayEnabled && process.env.XRAY_GRAPHQL_DISABLED !== 'true') {
 }
 
 const server = new ApolloServer({
-    schema: makeExecutableSchema({
-        resolvers,
-        typeDefs: schema,
-        schemaDirectives: {
-            auth: AuthDirective,
-        },
-    }),
+    schema: executableSchema,
 
     validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
 
@@ -77,3 +68,4 @@ const serverHandler = server.createHandler({
 
 // tslint:disable-next-line: export-name
 export const handler: ProxyHandler = serverHandler;
+

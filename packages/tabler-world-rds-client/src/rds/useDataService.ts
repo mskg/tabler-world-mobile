@@ -9,7 +9,7 @@ class LambdaClient implements IDataService {
     public static lambda: AWS.Lambda = new xAWS.Lambda(
         EXECUTING_OFFLINE
             ? {
-                endpoint: 'http://localhost:3001',
+                endpoint: 'http://localhost:3002',
                 region: 'eu-west-1',
             }
             : undefined,

@@ -1,8 +1,8 @@
-import { channelManager, subscriptionManager } from '../services';
-import { ChannelMessage } from '../services/ChannelManager';
+import { channelManager, subscriptionManager } from '../subscriptions/services';
+import { ChannelMessage } from '../subscriptions/services/ChannelManager';
+import { pubsub } from '../subscriptions/services/pubsub';
 import { IChatContext } from '../types/IChatContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
-import { pubsub } from '../utils/pubsub';
 
 type Args = {
     channel: string;
@@ -39,7 +39,9 @@ function decodeIdentifier(token?: string) {
     return JSON.parse(new Buffer(token, 'base64').toString('ascii'));
 }
 
-export const resolvers = {
+// tslint:disable: export-name
+// tslint:disable-next-line: variable-name
+export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
         channels: async (_root: {}, args: TokenArgs, context: IChatContext) => {

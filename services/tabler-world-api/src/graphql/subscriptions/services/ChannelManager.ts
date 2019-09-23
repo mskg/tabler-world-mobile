@@ -1,10 +1,10 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
 import uuid from 'uuid';
-import client from '../aws/dynamodb';
-import { handler as publish } from '../publish';
-import { CHANNELS_TABLE, EVENTS_TABLE, FieldNames } from '../utils/tables';
+import { handler as publish } from '../../publishMessageLambda';
 import { WebSocketLogger } from '../utils/WebSocketLogger';
+import { CHANNELS_TABLE, EVENTS_TABLE, FieldNames } from './Constants';
+import client from './dynamodb';
 
 export type ChannelMessage = {
     channel: string,

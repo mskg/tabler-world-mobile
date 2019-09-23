@@ -4,12 +4,12 @@ import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
 import { flatMap } from 'lodash';
-import { schema } from './schema/schema';
-import { channelManager, connectionManager, subscriptionManager } from './services';
-import { EncodedChannelMessage } from './services/ChannelManager';
+import { executableSchema } from './executableSchema';
+import { channelManager, connectionManager, subscriptionManager } from './subscriptions/services';
+import { EncodedChannelMessage } from './subscriptions/services/ChannelManager';
+import { pubsub } from './subscriptions/services/pubsub';
+import { WebSocketLogger } from './subscriptions/utils/WebSocketLogger';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
-import { pubsub } from './utils/pubsub';
-import { WebSocketLogger } from './utils/WebSocketLogger';
 
 const logger = new WebSocketLogger('Publish');
 
@@ -53,8 +53,8 @@ export async function handler(event: DynamoDBStreamEvent) {
                 const document = parse(payload.query);
 
                 const iterable = await subscribe({
-                    schema,
                     document,
+                    schema: executableSchema,
                     operationName: payload.operationName,
                     variableValues: payload.variables,
                     contextValue: {

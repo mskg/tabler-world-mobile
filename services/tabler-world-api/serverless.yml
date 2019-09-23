@@ -6,6 +6,7 @@ plugins:
   - serverless-domain-manager
   - serverless-offline
   - serverless-webpack
+  - serverless-dynamodb-local
 
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -26,6 +27,10 @@ custom:
 
   domainname: ${self:custom.stage}-api.app.roundtable.world
   demo_api_key: ${env:DEMO_API_KEY}
+
+  connections_table: chat-connections-${self:custom.stage}
+  channels_table: chat-channels-${self:custom.stage}
+  events_table: chat-events-${self:custom.stage}
 
   # api throtteling
   throttle:
@@ -79,6 +84,17 @@ custom:
     certificateName: '*.app.roundtable.world'
     createRoute53Record: true
     endpointType: 'regional'
+
+  # chat
+  dynamodb:
+    noStart: false
+    stages:
+      - dev
+    start:
+      port: 8004
+      inMemory: true
+      migrate: true
+      convertEmptyValues: true
 
 # we want seperate files to minimize depenencies in files
 package:
@@ -180,7 +196,7 @@ functions:
   # graphql Demo
   #
   graphql-demo:
-    handler: src/graphql/lambda-mock.handler
+    handler: src/graphql/graphqlLambdaMock.handler
     timeout: 15
     memorySize: 128
     tracing: Active
@@ -200,13 +216,21 @@ functions:
   # graphql
   #
   graphql:
-    handler: src/graphql/lambda.handler
+    handler: src/graphql/graphqlLambda.handler
     timeout: 30
     memorySize: 256
     tracing: Active
 
     environment:
       cache_table: ${self:custom.cache_table}
+      PUBLISH_ENDPOINT: !Join
+          - ''
+          - - 'https://'
+            - !Ref WebsocketsApi
+            - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'
+      CONNECTIONS_TABLE: ${self:custom.connections_table}
+      CHANNELS_TABLE: ${self:custom.channels_table}
+      EVENTS_TABLE: ${self:custom.events_table}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -226,6 +250,29 @@ functions:
         # the specific table for the stage
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
+          - !GetAtt [ connectionsTable, Arn ]
+          - !GetAtt [ channelsTable, Arn ]
+          - !GetAtt [ subscriptionEventsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ channelsTable, Arn ]
+              - '/index/reverse'
+          - !Join
+            - ''
+            - - !GetAtt [ connectionsTable, Arn ]
+              - '/index/reverse'
+
+      - Effect: Allow
+        Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:provider.stage}/*'
 
     events:
       - http:
@@ -248,9 +295,230 @@ functions:
               Ref: CustomApiGatewayAuthorizer
           private: true
 
+  #
+  # websocket
+  #
+  websocket:
+    handler: src/graphql/websocketLambda.handler
+    environment:
+      PUBLISH_ENDPOINT: !Join
+          - ''
+          - - 'https://'
+            - !Ref WebsocketsApi
+            - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'
+      CONNECTIONS_TABLE: ${self:custom.connections_table}
+      CHANNELS_TABLE: ${self:custom.channels_table}
+      EVENTS_TABLE: ${self:custom.events_table}
+
+    events:
+      - websocket:
+          route: $connect
+          authorizer:
+            type: CUSTOM
+            authorizerId:
+              Ref: CustomApiGatewayAuthorizer
+          cors: true
+          private: true
+
+      - websocket:
+         route: $disconnect
+
+      - websocket:
+         route: $default
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource:
+          - Fn::ImportValue: CacheTableArn-${self:custom.stage}
+          - !GetAtt [ connectionsTable, Arn ]
+          - !GetAtt [ channelsTable, Arn ]
+          - !GetAtt [ subscriptionEventsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ channelsTable, Arn ]
+              - '/index/reverse'
+          - !Join
+            - ''
+            - - !GetAtt [ connectionsTable, Arn ]
+              - '/index/reverse'
+
+      - Effect: Allow
+        Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:provider.stage}/*'
+
+  #
+  # publish messagees
+  #
+  publish:
+    handler: src/graphql/publishMessageLambda.handler
+    environment:
+      PUBLISH_ENDPOINT: !Join
+          - ''
+          - - 'https://'
+            - !Ref WebsocketsApi
+            - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'
+      CONNECTIONS_TABLE: ${self:custom.connections_table}
+      CHANNELS_TABLE: ${self:custom.channels_table}
+      EVENTS_TABLE: ${self:custom.events_table}
+
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn: !GetAtt
+            - subscriptionEventsTable
+            - StreamArn
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource:
+          - Fn::ImportValue: CacheTableArn-${self:custom.stage}
+          - !GetAtt [ connectionsTable, Arn ]
+          - !GetAtt [ channelsTable, Arn ]
+          - !GetAtt [ subscriptionEventsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ channelsTable, Arn ]
+              - '/index/reverse'
+          - !Join
+            - ''
+            - - !GetAtt [ connectionsTable, Arn ]
+              - '/index/reverse'
+
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeStream
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:ListStreams
+        Resource: !GetAtt [ subscriptionEventsTable, StreamArn ]
+
+      - Effect: Allow
+        Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:provider.stage}/*'
 
 resources:
   Resources:
+    connectionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.connections_table}
+
+        AttributeDefinitions:
+          - AttributeName: memberId
+            AttributeType: N
+          - AttributeName: connectionId
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+
+        GlobalSecondaryIndexes:
+          - IndexName: reverse
+            KeySchema:
+              - AttributeName: memberId
+                KeyType: HASH
+              - AttributeName: connectionId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+    channelsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.channels_table}
+
+        AttributeDefinitions:
+          - AttributeName: channel
+            AttributeType: S
+          - AttributeName: memberId
+            AttributeType: N
+        KeySchema:
+          - AttributeName: channel
+            KeyType: HASH
+          - AttributeName: memberId
+            KeyType: RANGE
+
+        GlobalSecondaryIndexes:
+          - IndexName: reverse
+            KeySchema:
+              - AttributeName: memberId
+                KeyType: HASH
+              - AttributeName: channel
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+    subscriptionEventsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.events_table}
+        AttributeDefinitions:
+          - AttributeName: channel
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: channel
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
     GraphqlDashdemoLogGroup:
       Properties:
         RetentionInDays: "7"
@@ -306,7 +574,7 @@ resources:
 
     ApiGatewayRestApiRootResourceId:
       Value:
-         Fn::GetAtt:
+         !GetAtt
           - ApiGatewayRestApi
           - RootResourceId
       Export:
@@ -314,7 +582,7 @@ resources:
 
     ApiArn:
       Value:
-        Fn::GetAtt:
+        !GetAtt
           # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
           - GraphqlLambdaFunction
           - Arn

@@ -1,13 +1,6 @@
 import { gql } from 'apollo-server-lambda';
 
-export const typeDefs = gql`
-    scalar Date
-    scalar JSON
-
-    type Member {
-        id: ID
-    }
-
+export const Chat = gql`
     enum MessageType {
         text
         join
@@ -41,11 +34,11 @@ export const typeDefs = gql`
         messages(token: String): MessageIterator!
     }
 
-    type Query {
+    extend type Query {
 		channels(token: String): ChannelIterator!
 	}
 
-	type Mutation {
+	extend type Mutation {
         startConversation(member: Int!): Channel
 		sendMessage(channel: ID!, message: String!): Message
 	}

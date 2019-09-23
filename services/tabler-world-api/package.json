@@ -65,6 +65,7 @@
         "remove": "service remove",
         "dev": "service dev",
         "test": "jest",
-        "start": "ntl"
+        "start": "ntl",
+        "dynamodb": "run-env sls dynamodb install"
     }
 }

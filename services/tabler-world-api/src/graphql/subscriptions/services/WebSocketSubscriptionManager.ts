@@ -1,8 +1,8 @@
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import client from '../aws/dynamodb';
-import { CONNECTIONS_TABLE, FieldNames } from '../utils/tables';
 import { WebSocketLogger } from '../utils/WebSocketLogger';
-import { IConnection } from "./IConnection";
+import { CONNECTIONS_TABLE, FieldNames } from './Constants';
+import client from './dynamodb';
+import { IConnection } from './IConnection';
 import { WebSocketConnectionManager } from './WebsocketConnectionManager';
 
 interface ISubscription {
