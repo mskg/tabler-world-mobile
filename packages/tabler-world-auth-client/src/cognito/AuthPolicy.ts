@@ -7,9 +7,8 @@ type Options = {
 };
 
 type Effect =
-    'allow' |
-    'deny';
-
+    | 'allow'
+    | 'deny';
 
 export enum HttpVerb {
     GET = 'GET',
@@ -20,7 +19,7 @@ export enum HttpVerb {
     DELETE = 'DELETE',
     OPTIONS = 'OPTIONS',
     ALL = '*',
-};
+}
 
 /**
  * AuthPolicy receives a set of allowed and denied methods and generates a valid
@@ -165,7 +164,7 @@ export class AuthPolicy {
      * @return {Object} An empty statement object with the Action, Effect, and Resource
      *                  properties prepopulated.
      */
-    public getEmptyStatement(effect: Effect): { Action: string, Effect: string, Resource: string[] } {
+    public getEmptyStatement(effect: string): { Action: string, Effect: string, Resource: string[] } {
         const sEffect = effect.substring(0, 1).toUpperCase() + effect.substring(1, effect.length).toLowerCase();
 
         return {
@@ -185,7 +184,7 @@ export class AuthPolicy {
      *                and the conditions for the policy
      * @return {Array} an array of formatted statements for the policy.
      */
-    public getStatementsForEffect(effect: Effect, methods: any[]): Statement[] {
+    public getStatementsForEffect(effect: string, methods: any[]): Statement[] {
         const statements: Statement[] = [];
 
         if (methods.length > 0) {

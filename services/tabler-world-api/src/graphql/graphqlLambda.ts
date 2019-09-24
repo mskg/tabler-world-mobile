@@ -6,7 +6,6 @@ import { cacheInstance } from './cache/cacheInstance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
 import { executableSchema } from './executableSchema';
-import { NoIntrospection } from './helper/NoIntrospection';
 import { XRayRequestExtension } from './helper/XRayRequestExtension';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
@@ -35,8 +34,6 @@ if (isXrayEnabled && process.env.XRAY_GRAPHQL_DISABLED !== 'true') {
 const server = new ApolloServer({
     schema: executableSchema,
 
-    validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
-
     // cacheControl: {
     //   // defaultMaxAge: 60*60*24,
     //   stripFormattedExtensions: false,
@@ -52,7 +49,7 @@ const server = new ApolloServer({
     dataSources: dataSources as unknown as () => DataSources<IApolloContext>,
 
     tracing: EXECUTING_OFFLINE,
-    // mockEntireSchema: EXECUTING_OFFLINE,
+    introspection: EXECUTING_OFFLINE,
 
     // tslint:disable-next-line: object-shorthand-properties-first
     extensions,

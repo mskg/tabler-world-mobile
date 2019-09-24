@@ -26,11 +26,13 @@ custom:
   email: ${env:ALERT_EMAIL}
 
   domainname: ${self:custom.stage}-api.app.roundtable.world
+  wsdomainname: ${self:custom.stage}-ws-api.app.roundtable.world
+
   demo_api_key: ${env:DEMO_API_KEY}
 
-  connections_table: chat-connections-${self:custom.stage}
-  channels_table: chat-channels-${self:custom.stage}
-  events_table: chat-events-${self:custom.stage}
+  connections_table: tabler-world-chat-connections-${self:custom.stage}
+  channels_table: tabler-world-chat-channels-${self:custom.stage}
+  events_table: tabler-world-chat-events-${self:custom.stage}
 
   # api throtteling
   throttle:
@@ -84,6 +86,11 @@ custom:
     certificateName: '*.app.roundtable.world'
     createRoute53Record: true
     endpointType: 'regional'
+    websockets:
+      domainName: ${self:custom.wsdomainname}
+      certificateName: '*.app.roundtable.world'
+      createRoute53Record: true
+      endpointType: 'regional'
 
   # chat
   dynamodb:
@@ -130,6 +137,7 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
     apiKeySourceType: AUTHORIZER
+    websocketsApiKeySelectionExpression: "$context.authorizer.usageIdentifierKey"
 
   # Limited by API Keys
   usagePlan:
@@ -193,6 +201,23 @@ functions:
       XRAY_DISABLED: true
 
   #
+  # Auth
+  #
+  auth-graphql:
+    handler: src/auth/graphql.handler
+    timeout: 20
+    environment:
+      UserPoolId:
+        Fn::ImportValue: CognitoUserPool-${self:custom.stage}
+
+  auth-websocket:
+    handler: src/auth/websocket.handler
+    timeout: 20
+    environment:
+      UserPoolId:
+        Fn::ImportValue: CognitoUserPool-${self:custom.stage}
+
+  #
   # graphql Demo
   #
   graphql-demo:
@@ -222,15 +247,7 @@ functions:
     tracing: Active
 
     environment:
-      cache_table: ${self:custom.cache_table}
-      PUBLISH_ENDPOINT: !Join
-          - ''
-          - - 'https://'
-            - !Ref WebsocketsApi
-            - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'
-      CONNECTIONS_TABLE: ${self:custom.connections_table}
-      CHANNELS_TABLE: ${self:custom.channels_table}
-      EVENTS_TABLE: ${self:custom.events_table}
+      ${file(serverless.env.yml):api}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -300,25 +317,19 @@ functions:
   #
   websocket:
     handler: src/graphql/websocketLambda.handler
+    tracing: Active
     environment:
-      PUBLISH_ENDPOINT: !Join
-          - ''
-          - - 'https://'
-            - !Ref WebsocketsApi
-            - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'
-      CONNECTIONS_TABLE: ${self:custom.connections_table}
-      CHANNELS_TABLE: ${self:custom.channels_table}
-      EVENTS_TABLE: ${self:custom.events_table}
+      ${file(serverless.env.yml):api}
 
     events:
       - websocket:
           route: $connect
-          authorizer:
-            type: CUSTOM
-            authorizerId:
-              Ref: CustomApiGatewayAuthorizer
           cors: true
           private: true
+          authorizer:
+            name: auth-websocket
+            identitySource:
+              - 'route.request.header.Authorization'
 
       - websocket:
          route: $disconnect
@@ -356,32 +367,14 @@ functions:
             - - !GetAtt [ connectionsTable, Arn ]
               - '/index/reverse'
 
-      - Effect: Allow
-        Action:
-          - 'execute-api:Invoke'
-          - 'execute-api:ManageConnections'
-        Resource: !Join
-          - ''
-          - - 'arn:aws:execute-api:${self:provider.region}:'
-            - !Ref 'AWS::AccountId'
-            - ':'
-            - !Ref WebsocketsApi
-            - '/${self:provider.stage}/*'
-
   #
   # publish messagees
   #
   publish:
     handler: src/graphql/publishMessageLambda.handler
+    tracing: Active
     environment:
-      PUBLISH_ENDPOINT: !Join
-          - ''
-          - - 'https://'
-            - !Ref WebsocketsApi
-            - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'
-      CONNECTIONS_TABLE: ${self:custom.connections_table}
-      CHANNELS_TABLE: ${self:custom.channels_table}
-      EVENTS_TABLE: ${self:custom.events_table}
+      ${file(serverless.env.yml):api}
 
     events:
       - stream:
@@ -527,6 +520,14 @@ resources:
       Properties:
         RetentionInDays: "14"
 
+    AuthDashgraphqlLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    AuthDashwebsocketLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
     DatabaseDashupdateLogGroup:
       Properties:
         RetentionInDays: "7"
@@ -535,14 +536,35 @@ resources:
       Type: AWS::Lambda::Permission
       Properties:
         FunctionName:
-          Fn::ImportValue: AuthorizerArn-${self:custom.stage}
+          Ref: AuthDashgraphqlLambdaFunction
         Action: lambda:InvokeFunction
         Principal: apigateway.amazonaws.com
+
+    # CustomRequestAuthorizer:
+    #   DependsOn:
+    #     - WebsocketsApi
+    #   Type: AWS::ApiGatewayV2::Authorizer
+    #   Properties:
+    #       Name: auth-request-${self:custom.stage}
+    #       IdentitySource: route.request.header.Authorization
+    #       # AuthorizerResultTtlInSeconds: 3600
+    #       ApiId:
+    #         Ref: WebsocketsApi
+    #       AuthorizerType: REQUEST
+    #       AuthorizerUri:
+    #        Fn::Join:
+    #         - ""
+    #         - - "arn:aws:apigateway:"
+    #           - Ref: "AWS::Region"
+    #           - ":lambda:path/2015-03-31/functions/"
+    #           - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
+    #           - "/invocations"
 
     # https://docs.amazonaws.cn/en_us/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html
     CustomApiGatewayAuthorizer:
       DependsOn:
         - ApiGatewayRestApi
+        - AuthDashgraphqlLambdaFunction
       Type: AWS::ApiGateway::Authorizer
       Properties:
         Name: lambda-${self:custom.stage}
@@ -557,7 +579,7 @@ resources:
           - - "arn:aws:apigateway:"
             - Ref: "AWS::Region"
             - ":lambda:path/2015-03-31/functions/"
-            - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
+            - !GetAtt [ AuthDashgraphqlLambdaFunction, Arn ]
             - "/invocations"
 
   Outputs:
@@ -565,6 +587,11 @@ resources:
       Value: ${self:custom.domainname}
       Export:
         Name: ApiUrl-${self:custom.stage}
+
+    WSApiUrl:
+      Value: ${self:custom.wsdomainname}
+      Export:
+        Name: ApiWSUrl-${self:custom.stage}
 
     ApiGatewayRestApiId:
       Value:

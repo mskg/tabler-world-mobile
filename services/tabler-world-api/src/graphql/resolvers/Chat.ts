@@ -1,22 +1,27 @@
 import { channelManager, subscriptionManager } from '../subscriptions/services';
 import { ChannelMessage } from '../subscriptions/services/ChannelManager';
 import { pubsub } from '../subscriptions/services/pubsub';
+import { IApolloContext } from '../types/IApolloContext';
 import { IChatContext } from '../types/IChatContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
 
-type Args = {
-    channel: string;
+type SendMessageArgs = {
+    conversation: string;
     message: any;
 };
 
-type Root = {
+type SubscriptionArgs = {
     id: string;
     type: 'start';
     payload: any;
 };
 
-type TokenArgs = {
+type IteratorArgs = {
     token?: string,
+};
+
+type IdArgs = {
+    id: string | number,
 };
 
 function makeConversationKey(members: number[]) {
@@ -44,7 +49,7 @@ function decodeIdentifier(token?: string) {
 export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
-        channels: async (_root: {}, args: TokenArgs, context: IChatContext) => {
+        Conversations: async (_root: {}, args: IteratorArgs, context: IApolloContext) => {
             const result = await channelManager.getChannels(context.principal.id, decodeIdentifier(args.token));
 
             return {
@@ -52,15 +57,22 @@ export const ChatResolver = {
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
+
+        // tslint:disable-next-line: variable-name
+        Conversation: (_root: {}, args: IdArgs, _context: IApolloContext) => {
+            return {
+                id: args.id,
+            };
+        },
     },
 
-    Channel: {
+    Conversation: {
         id: (root: { id: string }) => {
             return encodeIdentifier(root.id);
         },
 
         // tslint:disable-next-line: variable-name
-        messages: async (root: { id: string }, args: TokenArgs, context: IChatContext) => {
+        messages: async (root: { id: string }, args: IteratorArgs, context: IApolloContext) => {
             if (!checkChannelAccess(root.id, context.principal.id)) {
                 throw new Error('Access denied.');
             }
@@ -74,20 +86,26 @@ export const ChatResolver = {
                     },
                     id: m.id,
                     createdAt: m.payload.createdAt,
-                    sender: {
-                        id: m.payload.sender,
-                    },
+                    sender: m.payload.sender,
                     type: m.payload.type,
-                    payload: m.payload,
+                    payload: m.payload.payload,
                 })),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
     },
 
-    Message: {
+    ChatMessage: {
         createdAt: (root: { createdAt: number }) => {
             return new Date(root.createdAt).toISOString();
+        },
+
+        // could change this to lazy load
+        sender: (root: any, _args: {}, context: IApolloContext) => {
+            // context.dataSources.members.readOne(root.sender.id);
+            return {
+                id: root.sender,
+            };
         },
     },
 
@@ -116,12 +134,12 @@ export const ChatResolver = {
         },
 
         // tslint:disable-next-line: variable-name
-        sendMessage: async (_root: {}, { message, channel }: Args, context: IChatContext) => {
-            if (!checkChannelAccess(channel, context.principal.id)) {
+        sendMessage: async (_root: {}, { message, conversation }: SendMessageArgs, context: IChatContext) => {
+            if (!checkChannelAccess(conversation, context.principal.id)) {
                 throw new Error('Access denied.');
             }
 
-            const channelMessage = await channelManager.postMessage(decodeIdentifier(channel), {
+            const channelMessage = await channelManager.postMessage(decodeIdentifier(conversation), {
                 sender: context.principal.id,
                 payload: message,
                 createdAt: Date.now(),
@@ -137,13 +155,13 @@ export const ChatResolver = {
 
     Subscription: {
         // we don't need to do anything here, publishing is done by DynamoDB streams
-        messages: {
+        ChatMessages: {
             // tslint:disable-next-line: variable-name
             resolve: (message: ChannelMessage, _args: {}, _context: ISubscriptionContext) => {
                 // root value is the payload from sendMessage mutation
                 return {
                     id: message.id,
-                    channel: {
+                    conversation: {
                         id: message.channel,
                     },
                     ...message.payload,
@@ -151,7 +169,7 @@ export const ChatResolver = {
             },
 
             // tslint:disable-next-line: variable-name
-            subscribe: async (root: Root, _args: any, context: ISubscriptionContext, image: any) => {
+            subscribe: async (root: SubscriptionArgs, _args: any, context: ISubscriptionContext, image: any) => {
                 // if we resolve, root is null
                 if (root) {
                     await subscriptionManager.subscribe(

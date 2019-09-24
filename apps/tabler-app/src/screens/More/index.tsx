@@ -1,4 +1,5 @@
 import { createStackNavigator } from 'react-navigation-stack';
+import { ChatScreen } from './Chat/ChatScreen';
 import { FeedbackScreen } from './Feedback';
 import { JobsHistoryScreen } from './JobHistory';
 import { LocationHistoryScreen } from './LocationHistory';
@@ -17,6 +18,7 @@ const Navigator = createStackNavigator(
         [Routes.Feedback]: { screen: FeedbackScreen },
         [Routes.LocationHistory]: { screen: LocationHistoryScreen },
         [Routes.JobHistory]: { screen: JobsHistoryScreen },
+        [Routes.Conversation]: { screen: ChatScreen },
     },
     {
         initialRouteName: Routes.Menu,

@@ -46,28 +46,51 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
             <ScreenWithHeader header={{ title: I18N.Menu.title }}>
                 <ScrollView>
                     <List.Section>
-                        {isFeatureEnabled(Features.BackgroundLocation) &&
+                        {isFeatureEnabled(Features.BackgroundLocation) && (
                             <>
-                                <NavigationItem icon="md-navigate" theme={this.props.theme} text={I18N.NearbyMembers.title} onPress={
-                                    () => this.props.navigation.navigate(Routes.Nearby)} />
+                                <NavigationItem
+                                    icon="md-navigate"
+                                    theme={this.props.theme}
+                                    text={I18N.NearbyMembers.title}
+                                    onPress={() => this.props.navigation.navigate(Routes.Nearby)}
+                                />
 
                                 <Divider inset={true} />
                             </>
-                        }
+                        )}
 
-                        {this.props.showExperiments &&
+                        <>
+                            <NavigationItem
+                                icon="md-chatboxes"
+                                theme={this.props.theme}
+                                text={'Chat'}
+                                onPress={() => this.props.navigation.navigate(Routes.Conversation)}
+                            />
+
+                            <Divider inset={true} />
+                        </>
+
+                        {this.props.showExperiments && (
                             <>
-                                <NavigationItem icon="md-globe" theme={this.props.theme} text={I18N.World.title} onPress={
-                                    () => this.props.navigation.navigate(Routes.World)} />
+                                <NavigationItem
+                                    icon="md-globe"
+                                    theme={this.props.theme}
+                                    text={I18N.World.title}
+                                    onPress={() => this.props.navigation.navigate(Routes.World)}
+                                />
 
                                 <Divider inset={true} />
                             </>
-                        }
+                        )}
                     </List.Section>
 
                     <List.Section>
-                        <NavigationItem icon="md-microphone" theme={this.props.theme} text={I18N.Feedback.title} onPress={
-                            () => this.props.navigation.navigate(Routes.Feedback)} />
+                        <NavigationItem
+                            icon="md-microphone"
+                            theme={this.props.theme}
+                            text={I18N.Feedback.title}
+                            onPress={() => this.props.navigation.navigate(Routes.Feedback)}
+                        />
 
                         <Divider inset={true} />
                     </List.Section>
@@ -78,11 +101,15 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                             fetchPolicy={this.props.fetchPolicy}
                         >
                             {({ data }) => {
-                                if (data && data.MyRoles && data.MyRoles.find(i => i == UserRole.jobs)) {
+                                if (data && data.MyRoles && data.MyRoles.find((i) => i === UserRole.jobs)) {
                                     return (
                                         <>
-                                            <NavigationItem icon="md-alarm" theme={this.props.theme} text={'Job History'} onPress={
-                                                () => this.props.navigation.navigate(Routes.JobHistory)} />
+                                            <NavigationItem
+                                                icon="md-alarm"
+                                                theme={this.props.theme}
+                                                text={'Job History'}
+                                                onPress={() => this.props.navigation.navigate(Routes.JobHistory)}
+                                            />
 
                                             <Divider inset={true} />
                                         </>
@@ -92,9 +119,12 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                                 return null;
                             }}
                         </Query>
-
-                        <NavigationItem icon="md-settings" theme={this.props.theme} text={I18N.Settings.title} onPress={
-                            () => this.props.navigation.navigate(Routes.Settings)} />
+                        <NavigationItem
+                            icon="md-settings"
+                            theme={this.props.theme}
+                            text={I18N.Settings.title}
+                            onPress={() => this.props.navigation.navigate(Routes.Settings)}
+                        />
 
                         <Divider inset={true} />
                     </List.Section>

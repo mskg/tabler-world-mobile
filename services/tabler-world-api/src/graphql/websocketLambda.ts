@@ -53,6 +53,9 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             const operation = JSON.parse(event.body) as OperationMessage;
 
             if (operation.type === MessageTypes.GQL_CONNECTION_INIT) {
+                // const payload = operation.payload || {};
+                // checkAuthorization()
+
                 await connectionManager.sendACK(connectionId);
                 return SUCCESS;
             }

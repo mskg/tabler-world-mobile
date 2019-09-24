@@ -7,43 +7,44 @@ export const Chat = gql`
         leave
     }
 
-    type Message {
+    type ChatMessage {
         id: ID!
-        channel: Channel!
+        conversation: Conversation!
         createdAt: Date!
         sender: Member!
         type: MessageType!
         payload: JSON
     }
 
-    type MessageIterator {
-        nodes: [Message!]
+    type ChatMessageIterator {
+        nodes: [ChatMessage!]
         nextToken: String
     }
 
-    type ChannelIterator {
-        nodes: [Channel!]
+    type ConversationIterator {
+        nodes: [Conversation!]
         nextToken: String
     }
 
-    type Channel {
+    type Conversation {
         id: ID!
         # owners: [Member!]!
         # members: [Member!]!
 
-        messages(token: String): MessageIterator!
+        messages(token: String): ChatMessageIterator!
     }
 
     extend type Query {
-		channels(token: String): ChannelIterator!
+		Conversations(token: String): ConversationIterator!
+        Conversation(id: ID!): Conversation
 	}
 
 	extend type Mutation {
-        startConversation(member: Int!): Channel
-		sendMessage(channel: ID!, message: String!): Message
+        startConversation(member: Int!): Conversation
+		sendMessage(conversation: ID!, message: String!): ChatMessage
 	}
 
 	type Subscription {
-		messages: Message
+		ChatMessages: ChatMessage
 	}
 `;

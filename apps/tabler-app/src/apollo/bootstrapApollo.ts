@@ -5,12 +5,15 @@ import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { createPersistedQueryLink } from 'apollo-link-persisted-queries';
 import { RetryLink } from 'apollo-link-retry';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities';
 import { getConfigValue } from '../helper/getConfigValue';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
 import { fetchAuth, fetchAuthDemo } from './authLink';
 import { cache } from './cache';
 import { errorLink } from './errorLink';
+import { getCurrentIdentity } from './getCurrentIdentity';
 import { Resolvers } from './resolver';
 
 let client: ApolloClient<NormalizedCacheObject>;
@@ -37,6 +40,23 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
     });
 
     const api = getConfigValue('api');
+    const httpLink = createHttpLink({
+        uri: api + (demoMode ? '/graphql-demo' : '/graphql'),
+        fetch: !demoMode ? fetchAuth : fetchAuthDemo,
+    });
+
+    const wsApi = getConfigValue('ws-api');
+    const wsLink = new WebSocketLink({
+        uri: wsApi,
+        options: {
+            reconnect: true,
+            lazy: true,
+
+            connectionParams: async () => ({
+                Authorization: await getCurrentIdentity(),
+            }),
+        },
+    });
 
     const links = ApolloLink.from(
         [
@@ -57,12 +77,18 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 })
                 : undefined,
 
-            createHttpLink({
-                uri: api + (demoMode ? '/graphql-demo' : '/graphql'),
-                fetch: !demoMode ? fetchAuth : fetchAuthDemo,
-            }),
+            ApolloLink.split(
+                // split based on operation type
+                ({ query }) => {
+                    const node = getMainDefinition(query);
+                    return node.kind === 'OperationDefinition' && node.operation === 'subscription';
+                },
+                wsLink,
+                httpLink,
+            ),
         ].filter((f) => f != null) as ApolloLink[],
     );
+
 
     client = new ApolloClient({
         cache,

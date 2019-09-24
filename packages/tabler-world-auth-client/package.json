@@ -27,6 +27,7 @@
         "aws-lambda-graphql": "*"
     },
     "dependencies": {
-        "@mskg/tabler-world-aws": "0.0.1"
+        "@mskg/tabler-world-aws": "0.0.1",
+        "jwk-to-pem": "^2.0.1"
     }
 }

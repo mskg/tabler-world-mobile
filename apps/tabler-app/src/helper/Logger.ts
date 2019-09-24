@@ -62,6 +62,7 @@ export class Categories {
         static readonly Club = Categories._UI + '/Club';
         static readonly Scan = Categories._UI + '/Scan';
         static readonly NearBy = Categories._UI + '/NearBy';
+        static readonly Conversation = Categories._UI + '/Chat';
     };
 
     static Helpers = class {

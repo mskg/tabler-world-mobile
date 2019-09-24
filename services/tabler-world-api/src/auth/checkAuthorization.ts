@@ -1,17 +1,21 @@
+import { AuthPolicy, downloadPems, HttpVerb, Token } from '@mskg/tabler-world-auth-client';
 import { withClient } from '@mskg/tabler-world-rds-client';
-import { CustomAuthorizerHandler } from 'aws-lambda';
+import { Context } from 'aws-lambda';
 import jwt from 'jsonwebtoken';
-import { AuthPolicy, HttpVerb } from './AuthPolicy';
-import { downloadPems } from './downloadPems';
-import { Token } from './types';
 
 // tslint:disable: export-name
 // tslint:disable: max-func-body-length
-export const handler: CustomAuthorizerHandler = async (event, context) => {
-    const iss = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.UserPoolId}`;
+export async function checkAuthorization(
+    context: Context,
+    region: string,
+    poolId: string,
+    lambdaArn: string,
+    token?: string,
+    keyPrefix?: string,
+) {
+    const iss = `https://cognito-idp.${region}.amazonaws.com/${poolId}`;
     const pems = await downloadPems(iss);
 
-    const token = event.authorizationToken;
     if (!token) {
         console.log('No token provided');
         throw new Error('Unauthorized (token)');
@@ -19,13 +23,14 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
 
     // Get AWS AccountId and API Options
     const apiOptions: any = {};
-    const tmp = event.methodArn.split(':');
+    const tmp = lambdaArn.split(':');
     const apiGatewayArnTmp = tmp[5].split('/');
     const awsAccountId = tmp[4];
+    const stage = apiGatewayArnTmp[1];
 
     apiOptions.region = tmp[3];
     apiOptions.restApiId = apiGatewayArnTmp[0];
-    apiOptions.stage = apiGatewayArnTmp[1];
+    apiOptions.stage = stage;
 
     if (token.startsWith('DEMO ')) {
         const demoPolicy = new AuthPolicy('demo', awsAccountId, apiOptions);
@@ -111,8 +116,7 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
         };
 
         // this enforces rate throtteling on the API
-        result.usageIdentifierKey = `tabler-world-api-lambda-authorizer-${apiGatewayArnTmp[1]}`; // stage
-
+        result.usageIdentifierKey = `${keyPrefix || 'tabler-world-api-lambda-authorizer'}-${stage}`;
         return result;
     });
-};
+}

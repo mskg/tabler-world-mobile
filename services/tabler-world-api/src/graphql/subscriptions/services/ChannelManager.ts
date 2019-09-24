@@ -1,6 +1,6 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
-import uuid from 'uuid';
+import { monotonicFactory } from 'ulid';
 import { handler as publish } from '../../publishMessageLambda';
 import { WebSocketLogger } from '../utils/WebSocketLogger';
 import { CHANNELS_TABLE, EVENTS_TABLE, FieldNames } from './Constants';
@@ -33,6 +33,7 @@ type PaggedResponse<T> = {
 };
 
 const EMPTY_RESULT = { result: [] };
+const ulid = monotonicFactory();
 
 export class ChannelManager {
     public async getMessages(channel: string, key?: DocumentClient.Key): Promise<PaggedResponse<ChannelMessage>> {
@@ -41,14 +42,14 @@ export class ChannelManager {
         const { Items: messages, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
             TableName: EVENTS_TABLE,
             ExclusiveStartKey: key,
-            Limit: 50,
+            Limit: 10,
 
             KeyConditionExpression: `${FieldNames.channel} = :channel`,
             ExpressionAttributeValues: {
                 ':channel': channel,
             },
             // new message go on top,
-            ScanIndexForward: true,
+            ScanIndexForward: false,
         }).promise();
 
         logger.log(`[${channel}]`, 'messages', ConsumedCapacity);
@@ -64,7 +65,7 @@ export class ChannelManager {
         const { Items: channels, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
             TableName: CHANNELS_TABLE,
             ExclusiveStartKey: key,
-            Limit: 50,
+            Limit: 10,
 
             KeyConditionExpression: `${FieldNames.member} = :member`,
             ExpressionAttributeValues: {
@@ -156,7 +157,7 @@ export class ChannelManager {
         const channelMessage = {
             channel,
             payload,
-            id: uuid.v4(),
+            id: ulid(),
         };
 
         const message = this.marshall(channelMessage);

@@ -1,6 +1,6 @@
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ApolloServer } from 'apollo-server-lambda';
 import { addMockFunctionsToSchema, makeExecutableSchema } from 'graphql-tools';
-import { NoIntrospection } from './helper/NoIntrospection';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { mocks } from './mock/mocks';
 import { resolvers } from './mock/resolvers';
@@ -19,11 +19,12 @@ addMockFunctionsToSchema({
 
 const server = new ApolloServer({
     schema: executableSchema,
-    validationRules: process.env.IS_OFFLINE === 'true' ? undefined : [NoIntrospection],
 
     extensions: [
         () => new LogErrorsExtension(),
     ],
+
+    introspection: EXECUTING_OFFLINE,
 
     // required for extensions
     context: () => ({
