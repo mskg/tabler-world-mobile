@@ -4,6 +4,7 @@ import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { awsGatewayClient } from '../aws/awsGatewayClient';
 import { dynamodb as client } from '../aws/dynamodb';
 import { IConnection } from '../types/IConnection';
+import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { WebsocketLogger } from '../utils/WebsocketLogger';
 import { CONNECTIONS_TABLE, FieldNames } from './Constants';
 
@@ -26,12 +27,14 @@ export class WebsocketConnectionManager {
     public async connect(connectionId: string): Promise<void> {
         logger.log(`[${connectionId}]`, 'connect');
 
+        const params = await getWebsocketParams();
         await client.put({
             TableName: CONNECTIONS_TABLE,
 
             Item: {
                 [FieldNames.connectionId]: connectionId,
-            } as IConnection,
+                ttl: Math.floor(Date.now() / 1000) + params.ttlConnection,
+            },
 
         }).promise();
     }

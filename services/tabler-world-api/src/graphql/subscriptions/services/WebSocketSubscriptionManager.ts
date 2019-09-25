@@ -2,6 +2,7 @@ import { IPrincipal } from '@mskg/tabler-world-auth-client';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { dynamodb as client } from '../aws/dynamodb';
 import { IConnection } from '../types/IConnection';
+import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { WebsocketLogger } from '../utils/WebsocketLogger';
 import { FieldNames, SUBSCRIPTIONS_TABLE } from './Constants';
 import { WebsocketConnectionManager } from './WebsocketConnectionManager';
@@ -55,6 +56,7 @@ export class WebsocketSubscriptionManager {
     public async subscribe(connectionId: string, subscriptionId: string, triggers: string[], principal: IPrincipal, payload: any): Promise<void> {
         logger.log(`[${connectionId}] [${subscriptionId}]`, 'subscribe', triggers, payload);
 
+        const params = await getWebsocketParams();
         await client.batchWrite({
             RequestItems: {
                 [SUBSCRIPTIONS_TABLE]: triggers.map((trigger) => ({
@@ -69,6 +71,8 @@ export class WebsocketSubscriptionManager {
 
                             // GraphQL subscritption
                             [FieldNames.payload]: payload,
+
+                            ttl: Math.floor(Date.now() / 1000) + params.ttlSubscription,
                         },
                     },
                 })),

@@ -330,6 +330,18 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:provider.stage}/*'
+
+      - Effect: Allow
+        Action:
           - dynamodb:DescribeTable
           - dynamodb:Query
           - dynamodb:Scan
@@ -470,6 +482,10 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
 
     subscriptionsTable:
       Type: AWS::DynamoDB::Table

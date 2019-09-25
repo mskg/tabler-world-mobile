@@ -1,7 +1,7 @@
 import { conversationManager, eventManager, subscriptionManager } from '../subscriptions';
-import { getChatParams } from '../subscriptions/services/getChatParams';
 import { pubsub } from '../subscriptions/services/pubsub';
 import { WebsocketEvent } from '../subscriptions/services/WebsocketEventManager';
+import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
 import { IChatContext } from '../types/IChatContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';

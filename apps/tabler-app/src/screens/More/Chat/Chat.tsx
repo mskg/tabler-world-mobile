@@ -1,13 +1,24 @@
+import emojiRegexCreator from 'emoji-regex';
 import 'moment';
 import 'moment/locale/de';
 import React from 'react';
-import { Bubble, GiftedChat, IMessage, LoadEarlier } from 'react-native-gifted-chat';
+import { Platform } from 'react-native';
+import { Bubble, GiftedChat, IMessage, LoadEarlier, Message } from 'react-native-gifted-chat';
 import { Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../../../helper/Logger';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../../theme/colors';
 import { BOTTOM_HEIGHT } from '../../../theme/dimensions';
 
 const logger = new Logger(Categories.Screens.Conversation);
+
+const emojiRegex = emojiRegexCreator();
+function isPureEmojiString(text) {
+    if (!text || !text.trim()) {
+        return false;
+    }
+
+    return text.replace(emojiRegex, '').trim() === '';
+};
 
 type Props = {
     theme: Theme,
@@ -40,8 +51,6 @@ class ChatBase extends React.Component<Props> {
     _renderBubble = (props: any) => {
         return (
             <Bubble
-                {...props}
-
                 // @ts-ignore
                 wrapperStyle={{
                     left: {
@@ -50,13 +59,6 @@ class ChatBase extends React.Component<Props> {
 
                     right: {
                         backgroundColor: this.props.theme.colors.accent,
-                    },
-                }}
-
-                // @ts-ignore
-                textProps={{
-                    style: {
-                        fontFamily: this.props.theme.fonts.regular,
                     },
                 }}
 
@@ -69,14 +71,32 @@ class ChatBase extends React.Component<Props> {
                     },
                 }}
 
-                textStyle={{
-                    left: {
+                {...props}
+            />
+        );
+    }
+
+    _renderMessage = (props) => {
+        const { currentMessage: { text: currText } } = props;
+        let messageTextStyle = {};
+
+        // Make "pure emoji" messages much bigger than plain text.
+        if (isPureEmojiString(currText)) {
+            messageTextStyle = {
+                fontSize: 48,
+                lineHeight: Platform.OS === 'android' ? 60 : 54,
+                fontFamily: undefined,
+            };
+        }
+
+        return (
+            <Message
+                {...props}
+                textProps={{
+                    style: {
+                        fontFamily: this.props.theme.fonts.regular,
                         color: this.props.theme.colors.text,
-                        fontSize: 13,
-                    },
-                    right: {
-                        color: this.props.theme.colors.text,
-                        fontSize: 13,
+                        ...messageTextStyle,
                     },
                 }}
             />
@@ -88,12 +108,14 @@ class ChatBase extends React.Component<Props> {
             <GiftedChat
                 user={{ _id: 10430 }}
                 bottomOffset={BOTTOM_HEIGHT}
+                isAnimated={true}
 
                 locale="en"
 
                 extraData={this.props.extraData}
                 renderAvatar={null}
                 onSend={this.props.sendMessage}
+                renderMessage={this._renderMessage}
 
                 showUserAvatar={false}
                 showAvatarForEveryMessage={false}
@@ -106,6 +128,9 @@ class ChatBase extends React.Component<Props> {
                 messages={this.props.messages || []}
 
                 renderBubble={this._renderBubble}
+
+                maxInputLength={10 * 1024}
+                disableKeyboardHandling={true}
             />
         );
     }
