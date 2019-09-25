@@ -47,13 +47,13 @@ function checkChannelAccess(channel: string, member: number) {
 
 function encodeIdentifier(token?: any) {
     if (token == null) { return undefined; }
-    return new Buffer(JSON.stringify(token)).toString('base64');
+    return Buffer.from(JSON.stringify(token)).toString('base64');
 }
 
 function decodeIdentifier(token?: string) {
     // tslint:disable-next-line: possible-timing-attack
     if (token == null || token === '') { return undefined; }
-    return JSON.parse(new Buffer(token, 'base64').toString('ascii'));
+    return JSON.parse(Buffer.from(token, 'base64').toString('ascii'));
 }
 
 // tslint:disable: export-name
