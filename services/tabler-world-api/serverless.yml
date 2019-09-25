@@ -31,7 +31,8 @@ custom:
   demo_api_key: ${env:DEMO_API_KEY}
 
   connections_table: tabler-world-chat-connections-${self:custom.stage}
-  channels_table: tabler-world-chat-channels-${self:custom.stage}
+  subscriptions_table: tabler-world-chat-subscriptions-${self:custom.stage}
+  conversations_table: tabler-world-chat-conversations-${self:custom.stage}
   events_table: tabler-world-chat-events-${self:custom.stage}
 
   # api throtteling
@@ -137,7 +138,7 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
     apiKeySourceType: AUTHORIZER
-    websocketsApiKeySelectionExpression: "$context.authorizer.usageIdentifierKey"
+#    websocketsApiKeySelectionExpression: "$context.authorizer.usageIdentifierKey"
 
   # Limited by API Keys
   usagePlan:
@@ -199,23 +200,6 @@ functions:
     environment:
       db_role: tw_read_${self:custom.stage}
       XRAY_DISABLED: true
-
-  #
-  # Auth
-  #
-  auth-graphql:
-    handler: src/auth/graphql.handler
-    timeout: 20
-    environment:
-      UserPoolId:
-        Fn::ImportValue: CognitoUserPool-${self:custom.stage}
-
-  auth-websocket:
-    handler: src/auth/websocket.handler
-    timeout: 20
-    environment:
-      UserPoolId:
-        Fn::ImportValue: CognitoUserPool-${self:custom.stage}
 
   #
   # graphql Demo
@@ -325,11 +309,6 @@ functions:
       - websocket:
           route: $connect
           cors: true
-          private: true
-          authorizer:
-            name: auth-websocket
-            identitySource:
-              - 'route.request.header.Authorization'
 
       - websocket:
          route: $disconnect
@@ -463,19 +442,60 @@ resources:
             Projection:
               ProjectionType: ALL
 
+    subscriptionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.subscriptions_table}
+
+        AttributeDefinitions:
+          - AttributeName: eventName
+            AttributeType: S
+          - AttributeName: subscription
+            AttributeType: S
+          - AttributeName: connectionId
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: subscription
+            KeyType: HASH
+
+        GlobalSecondaryIndexes:
+          - IndexName: connection
+            KeySchema:
+              - AttributeName: connectionId
+                KeyType: HASH
+              - AttributeName: subscription
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+
+          - IndexName: reverse
+            KeySchema:
+              - AttributeName: eventName
+                KeyType: HASH
+              - AttributeName: subscription
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
     channelsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.channels_table}
+        TableName: ${self:custom.conversations_table}
 
         AttributeDefinitions:
-          - AttributeName: channel
+          - AttributeName: conversation
             AttributeType: S
           - AttributeName: memberId
             AttributeType: N
         KeySchema:
-          - AttributeName: channel
+          - AttributeName: conversation
             KeyType: HASH
           - AttributeName: memberId
             KeyType: RANGE
@@ -485,7 +505,7 @@ resources:
             KeySchema:
               - AttributeName: memberId
                 KeyType: HASH
-              - AttributeName: channel
+              - AttributeName: conversation
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
@@ -496,12 +516,12 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.events_table}
         AttributeDefinitions:
-          - AttributeName: channel
+          - AttributeName: eventName
             AttributeType: S
           - AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: channel
+          - AttributeName: eventName
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
@@ -540,26 +560,6 @@ resources:
         Action: lambda:InvokeFunction
         Principal: apigateway.amazonaws.com
 
-    # CustomRequestAuthorizer:
-    #   DependsOn:
-    #     - WebsocketsApi
-    #   Type: AWS::ApiGatewayV2::Authorizer
-    #   Properties:
-    #       Name: auth-request-${self:custom.stage}
-    #       IdentitySource: route.request.header.Authorization
-    #       # AuthorizerResultTtlInSeconds: 3600
-    #       ApiId:
-    #         Ref: WebsocketsApi
-    #       AuthorizerType: REQUEST
-    #       AuthorizerUri:
-    #        Fn::Join:
-    #         - ""
-    #         - - "arn:aws:apigateway:"
-    #           - Ref: "AWS::Region"
-    #           - ":lambda:path/2015-03-31/functions/"
-    #           - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
-    #           - "/invocations"
-
     # https://docs.amazonaws.cn/en_us/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html
     CustomApiGatewayAuthorizer:
       DependsOn:
@@ -579,7 +579,7 @@ resources:
           - - "arn:aws:apigateway:"
             - Ref: "AWS::Region"
             - ":lambda:path/2015-03-31/functions/"
-            - !GetAtt [ AuthDashgraphqlLambdaFunction, Arn ]
+            - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
             - "/invocations"
 
   Outputs:

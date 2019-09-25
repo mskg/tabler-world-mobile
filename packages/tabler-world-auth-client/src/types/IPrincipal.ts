@@ -1,4 +1,6 @@
 export interface IPrincipal {
+    principalId?: string; // cognito id
+
     id: number;
     email: string;
 

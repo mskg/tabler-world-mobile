@@ -16,10 +16,15 @@
         "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql",
         "android": "emulator -avd expo -gpu host"
     },
-    "workspaces": [
-        "../../packages/tabler-world-tslint-rules",
-        "../../packages/tabler-world-yarn-tools"
-    ],
+    "workspaces": {
+        "packages": [
+            "../../packages/tabler-world-tslint-rules",
+            "../../packages/tabler-world-yarn-tools"
+        ],
+        "nohoist": [
+            "../../packages/subscriptions-transport-ws"
+        ]
+    },
     "dependencies": {
         "@aws-amplify/analytics": "^1.2.16",
         "@aws-amplify/auth": "^1.2.24",
@@ -97,7 +102,7 @@
         "redux-persist": "^5.10.0",
         "redux-saga": "^1.0.5",
         "sentry-expo": "~2.0.0",
-        "subscriptions-transport-ws": "^0.9.16",
+        "subscriptions-transport-ws": "0.9.16",
         "tslib": "^1.9.3",
         "uuid4": "^1.1.4"
     },

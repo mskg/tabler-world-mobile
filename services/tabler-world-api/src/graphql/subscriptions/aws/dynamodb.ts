@@ -1,6 +1,6 @@
 import { DocumentClient, EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 
-const dynamodb = new DocumentClient({
+export const dynamodb = new DocumentClient({
     region: process.env.AWS_REGION,
 
     endpoint:
@@ -8,6 +8,3 @@ const dynamodb = new DocumentClient({
             ? 'http://localhost:8004'
             : undefined,
 });
-
-export default dynamodb;
-

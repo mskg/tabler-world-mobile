@@ -1,7 +1,8 @@
 
 export const CONNECTIONS_TABLE = process.env.CONNECTIONS_TABLE as string;
-export const CHANNELS_TABLE = process.env.CHANNELS_TABLE as string;
+export const CONVERSATIONS_TABLE = process.env.CONVERSATIONS_TABLE as string;
 export const EVENTS_TABLE = process.env.EVENTS_TABLE as string;
+export const SUBSCRIPTIONS_TABLE = process.env.SUBSCRIPTIONS_TABLE as string;
 
 export enum FieldNames {
     member = 'memberId',
@@ -9,6 +10,8 @@ export enum FieldNames {
     payload = 'payload',
     subscriptionId = 'subscriptionId',
     members = 'members',
-    channel = 'channel',
+    conversation = 'conversation',
     principal = 'principal',
+    trigger = 'eventName',
+    subscription = 'subscription',
 }

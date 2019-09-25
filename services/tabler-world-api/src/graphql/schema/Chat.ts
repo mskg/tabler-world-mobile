@@ -9,15 +9,18 @@ export const Chat = gql`
 
     type ChatMessage {
         id: ID!
-        conversation: Conversation!
+        conversationId: ID!
         createdAt: Date!
+
+        senderId: Int
         sender: Member!
+
         type: MessageType!
         payload: JSON
     }
 
     type ChatMessageIterator {
-        nodes: [ChatMessage!]
+        nodes: [ChatMessage!]!
         nextToken: String
     }
 
@@ -45,6 +48,6 @@ export const Chat = gql`
 	}
 
 	type Subscription {
-		ChatMessages: ChatMessage
+		newChatMessage(conversation: ID!): ChatMessage
 	}
 `;

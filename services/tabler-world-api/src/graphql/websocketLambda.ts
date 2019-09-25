@@ -1,13 +1,14 @@
-import { resolvePrincipal } from '@mskg/tabler-world-auth-client';
+import { lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
 import { ILogger } from '@mskg/tabler-world-common';
-import { APIGatewayProxyResult } from 'aws-lambda';
-import { APIGatewayWebSocketEvent, WebSocketConnectEvent } from 'aws-lambda-graphql';
+import { withClient } from '@mskg/tabler-world-rds-client';
+import { APIGatewayProxyResult, Context } from 'aws-lambda';
+import { APIGatewayWebSocketEvent } from 'aws-lambda-graphql';
 import { getOperationAST, parse, subscribe, validate } from 'graphql';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { executableSchema } from './executableSchema';
-import { connectionManager } from './subscriptions/services';
-import { WebSocketLogger } from './subscriptions/utils/WebSocketLogger';
+import { connectionManager, subscriptionManager } from './subscriptions';
+import { WebsocketLogger } from './subscriptions/utils/WebsocketLogger';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
 
 const SUCCESS = { statusCode: 200, body: '' };
@@ -18,8 +19,9 @@ enum Routes {
     default = '$default',
 }
 
-// tslint:disable-next-line: export-name
-export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatewayProxyResult> {
+// tslint:disable: export-name
+// tslint:disable: max-func-body-length
+export async function handler(event: APIGatewayWebSocketEvent, context: Context): Promise<APIGatewayProxyResult> {
     if (!(event.requestContext && event.requestContext.connectionId)) {
         console.error(
             'Invalid event',
@@ -33,16 +35,14 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
         const route = event.requestContext.routeKey;
         const connectionId = event.requestContext.connectionId;
 
-        const logger: ILogger = new WebSocketLogger(route, connectionId);
+        const logger: ILogger = new WebsocketLogger(route, connectionId);
         logger.log('event');
 
         if (route === Routes.connect) {
-            const principal = resolvePrincipal(event as WebSocketConnectEvent);
-            logger.log('Constructing new context for principal', principal);
-
-            await connectionManager.connect(connectionId, principal);
+            await connectionManager.connect(connectionId);
             return SUCCESS;
         } if (route === Routes.disconnect) {
+            await subscriptionManager.unsubscribeAll(connectionId);
             await connectionManager.disconnect(connectionId);
             return SUCCESS;
         } {
@@ -51,22 +51,65 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
             }
 
             const operation = JSON.parse(event.body) as OperationMessage;
+            logger.log(operation.type);
 
             if (operation.type === MessageTypes.GQL_CONNECTION_INIT) {
-                // const payload = operation.payload || {};
-                // checkAuthorization()
+                const { Authorization: token } = operation.payload || {};
 
-                await connectionManager.sendACK(connectionId);
+                try {
+                    logger.log('Validating Authorization', token);
+
+                    if (!token) {
+                        console.log('No token provided');
+                        throw new Error('Unauthorized (token)');
+                    }
+
+                    const { email } = await validateToken(
+                        process.env.AWS_REGION as string,
+                        process.env.UserPoolId as string,
+                        token);
+
+                    logger.log('Found', email);
+
+                    const principal = await withClient(context, (client) => lookupPrincipal(client, email));
+                    logger.log('resolved', principal);
+                    await connectionManager.authorize(connectionId, principal);
+
+                    logger.log('authorized');
+                    await connectionManager.sendACK(connectionId);
+                } catch (e) {
+                    logger.error('Failed to authenticate connection', e);
+
+                    connectionManager.sendError(
+                        connectionId,
+                        { message: e.message },
+                        MessageTypes.GQL_CONNECTION_ERROR,
+                    );
+
+                    connectionManager.forceDisconnect(connectionId);
+                }
+
                 return SUCCESS;
             }
 
             if (operation.type === MessageTypes.GQL_STOP) {
+                logger.log(operation);
+                await subscriptionManager.unsubscribe(connectionId, operation.id as string);
                 return SUCCESS;
             }
 
             const details = await connectionManager.get(connectionId);
-            if (!details) {
-                throw new Error('Unknown client');
+            if (!details || !details.principal) {
+                logger.error('Unkown client', connectionId);
+
+                connectionManager.sendError(
+                    connectionId,
+                    { message: 'Unknown client' },
+                    MessageTypes.GQL_CONNECTION_ERROR,
+                );
+
+                // connectionManager.forceDisconnect(connectionId);
+                return SUCCESS;
             }
 
             if (!operation.payload || !operation.payload.query) {
@@ -100,7 +143,7 @@ export async function handler(event: APIGatewayWebSocketEvent): Promise<APIGatew
                     contextValue: {
                         connectionId: details.connectionId,
                         principal: details.principal,
-                        logger: new WebSocketLogger(event, connectionId, details.principal.id),
+                        logger: new WebsocketLogger(event, connectionId, details.principal.id),
                     } as ISubscriptionContext,
                 });
 

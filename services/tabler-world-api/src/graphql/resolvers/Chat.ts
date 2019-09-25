@@ -1,6 +1,7 @@
-import { channelManager, subscriptionManager } from '../subscriptions/services';
-import { ChannelMessage } from '../subscriptions/services/ChannelManager';
+import { conversationManager, eventManager, subscriptionManager } from '../subscriptions';
+import { getChatParams } from '../subscriptions/services/getChatParams';
 import { pubsub } from '../subscriptions/services/pubsub';
+import { WebsocketEvent } from '../subscriptions/services/WebsocketEventManager';
 import { IApolloContext } from '../types/IApolloContext';
 import { IChatContext } from '../types/IChatContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
@@ -8,6 +9,10 @@ import { ISubscriptionContext } from '../types/ISubscriptionContext';
 type SendMessageArgs = {
     conversation: string;
     message: any;
+};
+
+type ChatMessageSubscriptionArgs = {
+    conversation: string;
 };
 
 type SubscriptionArgs = {
@@ -22,6 +27,13 @@ type IteratorArgs = {
 
 type IdArgs = {
     id: string | number,
+};
+
+type ChatMessageEvent = {
+    senderId: number,
+    payload: any,
+    createdAt: number,
+    type: string,
 };
 
 function makeConversationKey(members: number[]) {
@@ -50,7 +62,7 @@ export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
         Conversations: async (_root: {}, args: IteratorArgs, context: IApolloContext) => {
-            const result = await channelManager.getChannels(context.principal.id, decodeIdentifier(args.token));
+            const result = await conversationManager.getConversations(context.principal.id, decodeIdentifier(args.token));
 
             return {
                 nodes: result.result.map((c) => ({ id: encodeIdentifier(c) })),
@@ -78,15 +90,15 @@ export const ChatResolver = {
             }
 
             const channel = decodeIdentifier(root.id);
-            const result = await channelManager.getMessages(channel, decodeIdentifier(args.token));
+            const params = await getChatParams();
+            const result = await eventManager.events<ChatMessageEvent>(channel, decodeIdentifier(args.token), params.eventsPageSize);
+
             return {
                 nodes: result.result.map((m) => ({
-                    channel: {
-                        id: channel,
-                    },
+                    conversationId: channel,
                     id: m.id,
                     createdAt: m.payload.createdAt,
-                    sender: m.payload.sender,
+                    senderId: m.payload.senderId,
                     type: m.payload.type,
                     payload: m.payload.payload,
                 })),
@@ -101,11 +113,9 @@ export const ChatResolver = {
         },
 
         // could change this to lazy load
+        // tslint:disable-next-line: variable-name
         sender: (root: any, _args: {}, context: IApolloContext) => {
-            // context.dataSources.members.readOne(root.sender.id);
-            return {
-                id: root.sender,
-            };
+            return context.dataSources.members.readOne(root.senderId);
         },
     },
 
@@ -124,7 +134,7 @@ export const ChatResolver = {
 
             // make id stable
             const id = makeConversationKey([context.principal.id, args.member]);
-            await channelManager.subscribe(id, [context.principal.id, args.member]);
+            await conversationManager.subscribe(id, [context.principal.id, args.member]);
 
             return {
                 id,
@@ -139,47 +149,55 @@ export const ChatResolver = {
                 throw new Error('Access denied.');
             }
 
-            const channelMessage = await channelManager.postMessage(decodeIdentifier(conversation), {
-                sender: context.principal.id,
-                payload: message,
-                createdAt: Date.now(),
-                type: 'text',
-            });
+            const params = await getChatParams();
+            const channelMessage = await eventManager.post<ChatMessageEvent>(
+                decodeIdentifier(conversation),
+                {
+                    senderId: context.principal.id,
+                    payload: message,
+                    createdAt: Date.now(),
+                    type: 'text',
+                },
+                params.ttl,
+            );
 
             return {
                 id: channelMessage.id,
+                conversationId: channelMessage.trigger,
                 ...channelMessage.payload,
             };
         },
     },
 
     Subscription: {
-        // we don't need to do anything here, publishing is done by DynamoDB streams
-        ChatMessages: {
+        newChatMessage: {
             // tslint:disable-next-line: variable-name
-            resolve: (message: ChannelMessage, _args: {}, _context: ISubscriptionContext) => {
-                // root value is the payload from sendMessage mutation
+            resolve: (channelMessage: WebsocketEvent<ChatMessageEvent>, _args: {}, _context: ISubscriptionContext) => {
                 return {
-                    id: message.id,
-                    conversation: {
-                        id: message.channel,
-                    },
-                    ...message.payload,
+                    id: channelMessage.id,
+                    conversationId: channelMessage.trigger,
+                    ...channelMessage.payload,
                 };
             },
 
             // tslint:disable-next-line: variable-name
-            subscribe: async (root: SubscriptionArgs, _args: any, context: ISubscriptionContext, image: any) => {
+            subscribe: async (root: SubscriptionArgs, args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
                 // if we resolve, root is null
                 if (root) {
+                    if (!checkChannelAccess(args.conversation, context.principal.id)) {
+                        throw new Error('Access denied.');
+                    }
+
                     await subscriptionManager.subscribe(
                         context.connectionId,
                         root.id,
+                        [decodeIdentifier(args.conversation)],
+                        context.principal,
                         image.rootValue.payload,
                     );
                 }
 
-                return pubsub.asyncIterator('NEW_MESSAGE');
+                return pubsub.asyncIterator(decodeIdentifier(args.conversation));
             },
         },
     },

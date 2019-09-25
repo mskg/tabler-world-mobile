@@ -99,7 +99,7 @@ export const StructureResolver = {
         // },
 
         clubs: async (root: any, _args: any, context: IApolloContext) => {
-            console.log(root);
+            // console.log(root);
 
             if (root.clubs) {
                 return Promise.all(

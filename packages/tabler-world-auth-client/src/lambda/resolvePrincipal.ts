@@ -1,55 +1,39 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { AuthenticationError } from 'apollo-server-core';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { WebSocketConnectEvent } from 'aws-lambda-graphql';
 import { IPrincipal } from '../types/IPrincipal';
 
-export function resolvePrincipal(event: APIGatewayProxyEvent | WebSocketConnectEvent): IPrincipal {
-    let resolvedPrincipal: IPrincipal = {
-        email: '',
-        club: 0,
-        area: 0,
-        association: '',
-        id: 0,
-    };
+export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
+    const authorizer = event.requestContext.authorizer;
+    if (authorizer == null) {
+        throw new AuthenticationError('Authorizer missing');
+    }
 
-    // Socket Support
-    if (EXECUTING_OFFLINE && event.requestContext.eventType === 'CONNECT') {
+    let resolvedPrincipal: IPrincipal;
+
+    if (EXECUTING_OFFLINE && authorizer.principalId === 'offlineContext_authorizer_principalId') {
         console.warn('********* AUTHENTICATION DEBUG MODE *********');
 
         // single quotes are not allowed in JSON, but encoding in ENV is easier
         const user = (process.env.API_DEBUG_USER || '').replace(/'/g, '"');
         resolvedPrincipal = JSON.parse(user) as IPrincipal;
     } else {
-        const authorizer = event.requestContext.authorizer;
-        if (authorizer == null) {
-            throw new AuthenticationError('Authorizer missing');
-        }
+        const { area, club, association, id, email } = authorizer;
 
-        if (EXECUTING_OFFLINE && authorizer.principalId === 'offlineContext_authorizer_principalId') {
-            console.warn('********* AUTHENTICATION DEBUG MODE *********');
+        // tslint:disable: triple-equals
+        if (area == null || area == '') { throw new AuthenticationError('Authorizer missing (area)'); }
+        if (club == null || club == '') { throw new AuthenticationError('Authorizer missing (club)'); }
+        if (association == null || association == '') { throw new AuthenticationError('Authorizer missing (association)'); }
+        if (id == null || id == '') { throw new AuthenticationError('Authorizer missing (id)'); }
+        if (email == null || email == '') { throw new AuthenticationError('Authorizer missing (email)'); }
 
-            // single quotes are not allowed in JSON, but encoding in ENV is easier
-            const user = (process.env.API_DEBUG_USER || '').replace(/'/g, '"');
-            resolvedPrincipal = JSON.parse(user) as IPrincipal;
-        } else {
-            const { area, club, association, id, email } = authorizer;
-
-            // tslint:disable: triple-equals
-            if (area == null || area == '') { throw new AuthenticationError('Authorizer missing (area)'); }
-            if (club == null || club == '') { throw new AuthenticationError('Authorizer missing (club)'); }
-            if (association == null || association == '') { throw new AuthenticationError('Authorizer missing (association)'); }
-            if (id == null || id == '') { throw new AuthenticationError('Authorizer missing (id)'); }
-            if (email == null || email == '') { throw new AuthenticationError('Authorizer missing (email)'); }
-
-            resolvedPrincipal.email = email;
-            resolvedPrincipal.association = association;
-            // values are transfered as strings only
-            resolvedPrincipal.club = parseInt(club, 10);
-            resolvedPrincipal.area = parseInt(area, 10);
-            resolvedPrincipal.id = parseInt(id, 10);
-        }
-
+        resolvedPrincipal = {
+            email,
+            association,
+            area: parseInt(area, 10),
+            club: parseInt(club, 10),
+            id: parseInt(id, 10),
+        };
     }
 
     if (

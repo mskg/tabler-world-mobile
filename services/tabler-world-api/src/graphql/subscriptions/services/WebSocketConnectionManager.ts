@@ -1,15 +1,15 @@
 import { IPrincipal } from '@mskg/tabler-world-auth-client';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
-import { WebSocketLogger } from '../utils/WebSocketLogger';
-import { awsGatewayClient } from './awsGatewayClient';
+import { awsGatewayClient } from '../aws/awsGatewayClient';
+import { dynamodb as client } from '../aws/dynamodb';
+import { IConnection } from '../types/IConnection';
+import { WebsocketLogger } from '../utils/WebsocketLogger';
 import { CONNECTIONS_TABLE, FieldNames } from './Constants';
-import client from './dynamodb';
-import { IConnection } from './IConnection';
 
-const logger = new WebSocketLogger('ConnectionManager');
+const logger = new WebsocketLogger('Connection');
 
-export class WebSocketConnectionManager {
+export class WebsocketConnectionManager {
     public async get(connectionId: string): Promise<IConnection> {
         logger.log(`[${connectionId}]`, 'get');
 
@@ -23,8 +23,21 @@ export class WebSocketConnectionManager {
         return details as IConnection;
     }
 
-    public async connect(connectionId: string, member: IPrincipal): Promise<void> {
-        logger.log(`[${connectionId}]`, 'connect', member);
+    public async connect(connectionId: string): Promise<void> {
+        logger.log(`[${connectionId}]`, 'connect');
+
+        await client.put({
+            TableName: CONNECTIONS_TABLE,
+
+            Item: {
+                [FieldNames.connectionId]: connectionId,
+            } as IConnection,
+
+        }).promise();
+    }
+
+    public async authorize(connectionId: string, member: IPrincipal): Promise<void> {
+        logger.log(`[${connectionId}]`, 'authorize', member);
 
         await client.put({
             TableName: CONNECTIONS_TABLE,
@@ -53,18 +66,26 @@ export class WebSocketConnectionManager {
         this.sendMessage(connectionId, { type: MessageTypes.GQL_CONNECTION_ACK });
     }
 
-    public async sendError(connectionId: string, payload: any): Promise<void> {
+    public async sendError(connectionId: string, payload: any, type: string = MessageTypes.GQL_ERROR): Promise<void> {
         await this.sendMessage(
             connectionId,
             {
                 payload,
-                type: MessageTypes.GQL_ERROR,
+                type,
             },
         );
     }
 
+    public async forceDisconnect(connectionId: string): Promise<void> {
+        logger.log(`[${connectionId}]`, 'forceDisconnect');
+
+        await awsGatewayClient.deleteConnection({
+            ConnectionId: connectionId,
+        }).promise();
+    }
+
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {
-        logger.log(`[${connectionId}]`, 'send', message);
+        logger.log(`[${connectionId}]`, 'send', JSON.stringify(message));
 
         await awsGatewayClient.postToConnection({
             ConnectionId: connectionId,

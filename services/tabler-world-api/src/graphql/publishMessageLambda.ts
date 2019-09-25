@@ -3,15 +3,14 @@ import { DynamoDBStreamEvent } from 'aws-lambda';
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
-import { flatMap } from 'lodash';
 import { executableSchema } from './executableSchema';
-import { channelManager, connectionManager, subscriptionManager } from './subscriptions/services';
-import { EncodedChannelMessage } from './subscriptions/services/ChannelManager';
+import { connectionManager, eventManager, subscriptionManager } from './subscriptions';
 import { pubsub } from './subscriptions/services/pubsub';
-import { WebSocketLogger } from './subscriptions/utils/WebSocketLogger';
+import { EncodedWebsocketEvent } from './subscriptions/services/WebsocketEventManager';
+import { WebsocketLogger } from './subscriptions/utils/WebsocketLogger';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
 
-const logger = new WebSocketLogger('Publish');
+const logger = new WebsocketLogger('Publish');
 
 // tslint:disable-next-line: export-name
 export async function handler(event: DynamoDBStreamEvent) {
@@ -22,24 +21,21 @@ export async function handler(event: DynamoDBStreamEvent) {
         }
 
         try {
-            const encodedImage: EncodedChannelMessage = EXECUTING_OFFLINE
-                ? subscruptionEvent.dynamodb.NewImage as EncodedChannelMessage
-                : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedChannelMessage;
+            const encodedImage: EncodedWebsocketEvent = EXECUTING_OFFLINE
+                ? subscruptionEvent.dynamodb.NewImage as EncodedWebsocketEvent
+                : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
 
-            const image = channelManager.unMarshall(encodedImage);
+            const image = eventManager.unMarshall(encodedImage);
+            logger.log(image);
 
-            const subscribers = await channelManager.getSubscribers(image.channel);
-            if (!subscribers || subscribers.length === 0) {
-                logger.log('Channel', image.channel, 'has no subscribers');
-                // dont' work for nothing
-                continue;
-            }
+            // const subscribers = await conversationManager.getSubscribers(image.trigger);
+            // if (!subscribers || subscribers.length === 0) {
+            //     logger.log('Channel', image.trigger, 'has no subscribers');
+            //     // dont' work for nothing
+            //     continue;
+            // }
 
-            // flat list of all connections for all subscribers
-            const connections = flatMap(
-                await Promise.all(
-                    subscribers.map((s) => subscriptionManager.getAllForPrincipal(s))));
-
+            const connections = await subscriptionManager.getSubscriptions(image.trigger);
 
             // all principals without a subscription, we need to send a push message to those
             // const missingPrincipals = filter(subscribers, (p) => connections.find((c) => c.connection.memberId === p) == null);
@@ -60,7 +56,7 @@ export async function handler(event: DynamoDBStreamEvent) {
                     contextValue: {
                         connectionId,
                         principal,
-                        logger: new WebSocketLogger('publish', connectionId, principal.id),
+                        logger: new WebsocketLogger('publish', connectionId, principal.id),
                     } as ISubscriptionContext,
                 });
 
@@ -75,7 +71,7 @@ export async function handler(event: DynamoDBStreamEvent) {
                 const nextValue = iterator.next();
 
                 // we use pubsub in memory to distribute the messages
-                pubsub.publish('NEW_MESSAGE', image);
+                pubsub.publish(image.trigger, image);
 
                 const result: IteratorResult<
                     ExecutionResult
