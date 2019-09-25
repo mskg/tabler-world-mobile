@@ -95,7 +95,7 @@ export class WebsocketEventManager {
 
         if (ttl) {
             // @ts-ignore
-            message.ttl = ttl;
+            message.ttl = Math.floor(Date.now() / 1000) + ttl;
         }
 
         await client.put({

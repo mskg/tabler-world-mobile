@@ -30,10 +30,10 @@ custom:
 
   demo_api_key: ${env:DEMO_API_KEY}
 
-  connections_table: tabler-world-chat-connections-${self:custom.stage}
-  subscriptions_table: tabler-world-chat-subscriptions-${self:custom.stage}
+  connections_table: tabler-world-ws-connections-${self:custom.stage}
+  subscriptions_table: tabler-world-ws-subscriptions-${self:custom.stage}
   conversations_table: tabler-world-chat-conversations-${self:custom.stage}
-  events_table: tabler-world-chat-events-${self:custom.stage}
+  events_table: tabler-world-ws-events-${self:custom.stage}
 
   # api throtteling
   throttle:
@@ -92,6 +92,7 @@ custom:
       certificateName: '*.app.roundtable.world'
       createRoute53Record: true
       endpointType: 'regional'
+      stage: '${self:custom.stage}'
 
   # chat
   dynamodb:
@@ -252,16 +253,25 @@ functions:
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
           - !GetAtt [ connectionsTable, Arn ]
-          - !GetAtt [ channelsTable, Arn ]
-          - !GetAtt [ subscriptionEventsTable, Arn ]
-          - !Join
-            - ''
-            - - !GetAtt [ channelsTable, Arn ]
-              - '/index/reverse'
           - !Join
             - ''
             - - !GetAtt [ connectionsTable, Arn ]
               - '/index/reverse'
+          - !GetAtt [ subscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/reverse'
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/connection'
+          - !GetAtt [ channelsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ channelsTable, Arn ]
+              - '/index/reverse'
+          - !GetAtt [ subscriptionEventsTable, Arn ]
 
       - Effect: Allow
         Action:
@@ -335,16 +345,25 @@ functions:
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
           - !GetAtt [ connectionsTable, Arn ]
-          - !GetAtt [ channelsTable, Arn ]
-          - !GetAtt [ subscriptionEventsTable, Arn ]
-          - !Join
-            - ''
-            - - !GetAtt [ channelsTable, Arn ]
-              - '/index/reverse'
           - !Join
             - ''
             - - !GetAtt [ connectionsTable, Arn ]
               - '/index/reverse'
+          - !GetAtt [ subscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/reverse'
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/connection'
+          - !GetAtt [ channelsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ channelsTable, Arn ]
+              - '/index/reverse'
+          - !GetAtt [ subscriptionEventsTable, Arn ]
 
   #
   # publish messagees
@@ -383,16 +402,25 @@ functions:
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
           - !GetAtt [ connectionsTable, Arn ]
-          - !GetAtt [ channelsTable, Arn ]
-          - !GetAtt [ subscriptionEventsTable, Arn ]
-          - !Join
-            - ''
-            - - !GetAtt [ channelsTable, Arn ]
-              - '/index/reverse'
           - !Join
             - ''
             - - !GetAtt [ connectionsTable, Arn ]
               - '/index/reverse'
+          - !GetAtt [ subscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/reverse'
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/connection'
+          - !GetAtt [ channelsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ channelsTable, Arn ]
+              - '/index/reverse'
+          - !GetAtt [ subscriptionEventsTable, Arn ]
 
       - Effect: Allow
         Action:
@@ -418,6 +446,7 @@ resources:
   Resources:
     connectionsTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.connections_table}
@@ -444,6 +473,7 @@ resources:
 
     subscriptionsTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.subscriptions_table}
@@ -485,6 +515,7 @@ resources:
 
     channelsTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.conversations_table}
@@ -512,6 +543,7 @@ resources:
 
     subscriptionEventsTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.events_table}
@@ -540,14 +572,6 @@ resources:
       Properties:
         RetentionInDays: "14"
 
-    AuthDashgraphqlLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
-    AuthDashwebsocketLogGroup:
-      Properties:
-        RetentionInDays: "7"
-
     DatabaseDashupdateLogGroup:
       Properties:
         RetentionInDays: "7"
@@ -556,7 +580,7 @@ resources:
       Type: AWS::Lambda::Permission
       Properties:
         FunctionName:
-          Ref: AuthDashgraphqlLambdaFunction
+          Fn::ImportValue: AuthorizerArn-${self:custom.stage}
         Action: lambda:InvokeFunction
         Principal: apigateway.amazonaws.com
 
@@ -564,7 +588,6 @@ resources:
     CustomApiGatewayAuthorizer:
       DependsOn:
         - ApiGatewayRestApi
-        - AuthDashgraphqlLambdaFunction
       Type: AWS::ApiGateway::Authorizer
       Properties:
         Name: lambda-${self:custom.stage}
