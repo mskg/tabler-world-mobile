@@ -3,7 +3,6 @@ import 'moment';
 import 'moment/locale/de';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
 import { IMessage } from 'react-native-gifted-chat';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -58,122 +57,114 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                     showBack: true,
                 }}
             >
-                <View style={[styles.container, { backgroundColor: this.props.theme.colors.surface }]}>
-                    <Query<Conversation, ConversationVariables>
-                        query={GetConversationQuery}
-                        variables={{
-                            token: undefined,
-                        }}
-                        fetchPolicy="network-only"
-                    >
-                        {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
-                            let messages;
-                            if (data && data.Conversation && data.Conversation.messages) {
-                                messages = data.Conversation.messages;
-                            }
 
-                            return (
-                                <Chat
-                                    extraData={this.state.redraw}
-                                    subscribe={
-                                        () => subscribeToMore<newChatMessage, any>({
-                                            document: newChatMessageSubscription,
-                                            updateQuery: (prev, { subscriptionData }) => {
-                                                if (!subscriptionData.data) return prev;
-                                                const newFeedItem = subscriptionData.data.newChatMessage;
+                {/* <View style={[styles.container, { backgroundColor: this.props.theme.colors.surface }]}> */}
+                <Query<Conversation, ConversationVariables>
+                    query={GetConversationQuery}
+                    variables={{
+                        token: undefined,
+                    }}
+                    fetchPolicy="network-only"
+                >
+                    {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
+                        let messages;
+                        if (data && data.Conversation && data.Conversation.messages) {
+                            messages = data.Conversation.messages;
+                        }
 
+                        return (
+                            <Chat
+                                extraData={this.state.redraw}
+                                subscribe={
+                                    () => subscribeToMore<newChatMessage, any>({
+                                        document: newChatMessageSubscription,
+                                        updateQuery: (prev, { subscriptionData }) => {
+                                            if (!subscriptionData.data) return prev;
+                                            const newFeedItem = subscriptionData.data.newChatMessage;
+
+                                            return {
+                                                ...prev,
+                                                Conversation: {
+                                                    ...prev.Conversation,
+                                                    messages: {
+                                                        ...prev.Conversation!.messages,
+                                                        nodes: [newFeedItem, ...prev.Conversation!.messages.nodes],
+                                                    },
+                                                },
+                                            } as Conversation;
+                                        },
+                                    })
+                                }
+
+                                sendMessage={this._sendMessage}
+
+                                isLoadingEarlier={this.state.loadingEarlier}
+                                loadEarlier={!this.state.eof}
+
+                                onLoadEarlier={() => {
+                                    this.setState({ loadingEarlier: true }, () => {
+                                        if (messages && messages.nextToken == null) {
+                                            setTimeout(() => this.setState({ loadingEarlier: false, eof: true, redraw: {} }));
+                                            return;
+                                        }
+
+                                        fetchMore({
+                                            variables: {
+                                                token: messages.nextToken,
+                                            },
+
+                                            updateQuery: (previousResult, options) => {
+                                                // TOOD: check why this is not typed
+                                                const fetchMoreResult = options.fetchMoreResult as Conversation;
+                                                const prev = previousResult as Conversation;
+
+                                                // Don't do anything if there weren't any new items
+                                                if (!fetchMoreResult || !fetchMoreResult.Conversation || fetchMoreResult.Conversation.messages.nodes.length === 0) {
+                                                    logger.log('no new data');
+                                                    setTimeout(() => this.setState({ loadingEarlier: false, eof: true, redraw: {} }));
+                                                    return previousResult;
+                                                }
+
+                                                logger.log('appending', fetchMoreResult.Conversation.messages.nodes.length);
+
+                                                setTimeout(() => this.setState({ loadingEarlier: false, eof: false, redraw: {} }));
                                                 return {
-                                                    ...prev,
+                                                    // There are bugs that the calls are excuted twice
+                                                    // a lot of notes on the internet
                                                     Conversation: {
-                                                        ...prev.Conversation,
+                                                        ...fetchMoreResult.Conversation,
                                                         messages: {
-                                                            ...prev.Conversation!.messages,
-                                                            nodes: [newFeedItem, ...prev.Conversation!.messages.nodes],
+                                                            ...fetchMoreResult.Conversation.messages,
+                                                            nodes:
+                                                                _([...prev.Conversation!.messages.nodes, ...fetchMoreResult.Conversation.messages.nodes])
+                                                                    .uniqBy((f) => f.id)
+                                                                    .toArray()
+                                                                    .value(),
                                                         },
                                                     },
-                                                } as Conversation;
+                                                };
                                             },
-                                        })
-                                    }
-
-                                    sendMessage={this._sendMessage}
-
-                                    isLoadingEarlier={this.state.loadingEarlier}
-                                    loadEarlier={!this.state.eof}
-
-                                    onLoadEarlier={() => {
-                                        this.setState({ loadingEarlier: true }, () => {
-                                            if (messages && messages.nextToken == null) {
-                                                setTimeout(() => this.setState({ loadingEarlier: false, eof: true, redraw: {} }));
-                                                return;
-                                            }
-
-                                            fetchMore({
-                                                variables: {
-                                                    token: messages.nextToken,
-                                                },
-
-                                                updateQuery: (previousResult, options) => {
-                                                    // TOOD: check why this is not typed
-                                                    const fetchMoreResult = options.fetchMoreResult as Conversation;
-                                                    const prev = previousResult as Conversation;
-
-                                                    // Don't do anything if there weren't any new items
-                                                    if (!fetchMoreResult || !fetchMoreResult.Conversation || fetchMoreResult.Conversation.messages.nodes.length === 0) {
-                                                        logger.log('no new data');
-                                                        setTimeout(() => this.setState({ loadingEarlier: false, eof: true, redraw: {} }));
-                                                        return previousResult;
-                                                    }
-
-                                                    logger.log('appending', fetchMoreResult.Conversation.messages.nodes.length);
-
-                                                    setTimeout(() => this.setState({ loadingEarlier: false, eof: false, redraw: {} }));
-                                                    return {
-                                                        // There are bugs that the calls are excuted twice
-                                                        // a lot of notes on the internet
-                                                        Conversation: {
-                                                            ...fetchMoreResult.Conversation,
-                                                            messages: {
-                                                                ...fetchMoreResult.Conversation.messages,
-                                                                nodes:
-                                                                    _([...prev.Conversation!.messages.nodes, ...fetchMoreResult.Conversation.messages.nodes])
-                                                                        .uniqBy((f) => f.id)
-                                                                        .toArray()
-                                                                        .value(),
-                                                            },
-                                                        },
-                                                    };
-                                                },
-                                            });
                                         });
-                                    }}
+                                    });
+                                }}
 
-                                    messages={
-                                        (messages || { nodes: [] }).nodes.map((m: any) => ({
-                                            _id: m.id,
-                                            createdAt: new Date(m.createdAt),
-                                            user: {
-                                                _id: m.senderId,
-                                            },
-                                            text: m.payload,
-                                        }))
-                                    }
-                                />
-                            );
-                        }}
-                    </Query>
-                </View>
+                                messages={
+                                    (messages || { nodes: [] }).nodes.map((m: any) => ({
+                                        _id: m.id,
+                                        createdAt: new Date(m.createdAt),
+                                        user: {
+                                            _id: m.senderId,
+                                        },
+                                        text: m.payload,
+                                    }))
+                                }
+                            />
+                        );
+                    }}
+                </Query>
             </ScreenWithHeader >
         );
     }
 }
 
-const empty = { Conversation: { messages: { nodes: [] } } };
-
 export const ChatScreen = withTheme(withNavigation(ChatScreenBase));
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});
