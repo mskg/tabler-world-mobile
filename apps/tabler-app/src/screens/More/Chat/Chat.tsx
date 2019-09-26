@@ -2,12 +2,12 @@ import emojiRegexCreator from 'emoji-regex';
 import 'moment';
 import 'moment/locale/de';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import { Bubble, GiftedChat, IMessage, LoadEarlier, Message } from 'react-native-gifted-chat';
 import { Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../../../helper/Logger';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../../theme/colors';
-import { BOTTOM_HEIGHT } from '../../../theme/dimensions';
+import { BOTTOM_HEIGHT, TOTAL_HEADER_HEIGHT } from '../../../theme/dimensions';
 
 const logger = new Logger(Categories.Screens.Conversation);
 
@@ -34,12 +34,6 @@ type Props = {
 };
 
 class ChatBase extends React.Component<Props> {
-    ref: any;
-
-    componentWillMount() {
-        this.props.subscribe();
-    }
-
     _renderLoadEarlier = (props: any) => {
         logger.log('loadEarlier', this.props.loadEarlier, 'isLoadingEarlier', this.props.isLoadingEarlier);
 
@@ -103,11 +97,17 @@ class ChatBase extends React.Component<Props> {
         );
     }
 
+    componentWillMount() {
+        this.props.subscribe();
+    }
+
     render() {
         return (
             <GiftedChat
                 user={{ _id: 10430 }}
                 bottomOffset={BOTTOM_HEIGHT}
+
+                style={{ height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT }}
                 isAnimated={true}
 
                 locale="en"
@@ -128,9 +128,7 @@ class ChatBase extends React.Component<Props> {
                 messages={this.props.messages || []}
 
                 renderBubble={this._renderBubble}
-
                 maxInputLength={10 * 1024}
-                disableKeyboardHandling={true}
             />
         );
     }

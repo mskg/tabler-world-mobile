@@ -57,7 +57,6 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                     showBack: true,
                 }}
             >
-
                 {/* <View style={[styles.container, { backgroundColor: this.props.theme.colors.surface }]}> */}
                 <Query<Conversation, ConversationVariables>
                     query={GetConversationQuery}

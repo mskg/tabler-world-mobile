@@ -4,22 +4,25 @@ import { Theme, withTheme } from 'react-native-paper';
 import { TOTAL_HEADER_HEIGHT } from '../theme/dimensions';
 import { Props, StandardHeader } from './Header';
 
-export class ScreenBase extends React.Component<{theme: Theme}> {
+export class ScreenBase extends React.Component<{ theme: Theme }> {
     render() {
         return (
-            <View style={{
-                flexGrow: 1,
-                paddingTop: TOTAL_HEADER_HEIGHT,
-                backgroundColor: this.props.theme.colors.background,
-            }}>
+            <View
+                style={{
+                    flexGrow: 1,
+                    paddingTop: TOTAL_HEADER_HEIGHT,
+                    backgroundColor: this.props.theme.colors.background,
+                }}
+            >
                 {this.props.children}
-            </View>);
+            </View>
+        );
     }
 }
 
 export const Screen = withTheme(ScreenBase);
 
-export const ScreenWithHeader = ({ children, header }: { children: any, header?: Props}) => (
+export const ScreenWithHeader = ({ children, header }: { children: any, header?: Props }) => (
     <Screen>
         {children}
         <StandardHeader {...{ ...header }} />
