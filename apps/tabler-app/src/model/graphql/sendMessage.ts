@@ -3,26 +3,24 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: sendMessage
+// GraphQL mutation operation: SendMessage
 // ====================================================
 
-export interface sendMessage_startConversation {
-  __typename: "Conversation";
-  id: string;
-}
-
-export interface sendMessage_sendMessage {
+export interface SendMessage_sendMessage {
   __typename: "ChatMessage";
   id: string;
+  eventId: string;
   payload: any | null;
-  createdAt: any;
+  senderId: number | null;
+  receivedAt: any;
+  sent: boolean | null;
 }
 
-export interface sendMessage {
-  startConversation: sendMessage_startConversation | null;
-  sendMessage: sendMessage_sendMessage | null;
+export interface SendMessage {
+  sendMessage: SendMessage_sendMessage;
 }
 
-export interface sendMessageVariables {
+export interface SendMessageVariables {
+  id: string;
   message: string;
 }

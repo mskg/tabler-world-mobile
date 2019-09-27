@@ -1,31 +1,28 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { ConsoleLogger } from '@mskg/tabler-world-common';
+import { PushNotificationBase } from '@mskg/tabler-world-push-client';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { monotonicFactory } from 'ulid';
 import { handler as publish } from '../../publishMessageLambda';
 import { dynamodb as client } from '../aws/dynamodb';
-import { WebsocketLogger } from '../utils/WebsocketLogger';
+import { EncodedWebsocketEvent } from '../types/EncodedWebsocketEvent';
+import { WebsocketEvent } from '../types/WebsocketEvent';
 import { EVENTS_TABLE, FieldNames } from './Constants';
-
-export type WebsocketEvent<T> = {
-    trigger: string,
-    id: string,
-    payload: T,
-};
-
-export type EncodedWebsocketEvent = {
-    eventName: string,
-    id: string,
-    payload: string,
-};
 
 type PaggedResponse<T> = {
     result: T[]
     nextKey?: DocumentClient.Key,
 };
 
+type QueryOptions = {
+    forward: boolean,
+    pageSize: number,
+    token?: DocumentClient.Key,
+};
+
 const EMPTY_RESULT = { result: [] };
 
-const logger = new WebsocketLogger('Event');
+const logger = new ConsoleLogger('Event');
 const ulid = monotonicFactory();
 
 export class WebsocketEventManager {
@@ -33,7 +30,9 @@ export class WebsocketEventManager {
         return {
             id: message.id,
             eventName: message.trigger,
+            sender: message.sender,
             payload: JSON.stringify(message.payload),
+            pushNotification: message.pushNotification ? JSON.stringify(message.pushNotification) : undefined,
         };
     }
 
@@ -41,24 +40,26 @@ export class WebsocketEventManager {
         return {
             id: message.id,
             trigger: message.eventName,
+            sender: message.sender,
             payload: JSON.parse(message.payload),
+            pushNotification: message.pushNotification ? JSON.parse(message.pushNotification) : undefined,
         };
     }
 
-    public async events<T = any>(trigger: string, key?: DocumentClient.Key, pageSize: number = 10): Promise<PaggedResponse<WebsocketEvent<T>>> {
+    public async events<T = any>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
         logger.log('event', trigger);
 
         const { Items: messages, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
             TableName: EVENTS_TABLE,
-            ExclusiveStartKey: key,
-            Limit: pageSize,
+            ExclusiveStartKey: options.token,
+            Limit: options.pageSize,
 
             KeyConditionExpression: `${FieldNames.trigger} = :trigger`,
             ExpressionAttributeValues: {
                 ':trigger': trigger,
             },
             // new message go on top,
-            ScanIndexForward: false,
+            ScanIndexForward: options.forward,
         }).promise();
 
         logger.log('event', trigger, 'consumed', ConsumedCapacity);
@@ -69,13 +70,15 @@ export class WebsocketEventManager {
     }
 
 
-    public async post<T = any>(trigger: string, payload: T, ttl?: number): Promise<WebsocketEvent<T>> {
+    public async post<T = any>(trigger: string, payload: T, push?: { sender?: number, message: PushNotificationBase<T> }, ttl?: number): Promise<WebsocketEvent<T>> {
         logger.log('postMessage', trigger, payload);
 
         const rawMessage = {
             trigger,
             payload,
             id: ulid(),
+            pushNotification: push ? push.message : undefined,
+            sender: push ? push.sender : undefined,
         } as WebsocketEvent<T>;
 
         const message = this.marshall<T>(rawMessage);

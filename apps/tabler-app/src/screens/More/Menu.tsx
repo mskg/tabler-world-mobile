@@ -13,6 +13,7 @@ import { Features, isFeatureEnabled } from '../../model/Features';
 import { GetMyRoles } from '../../model/graphql/GetMyRoles';
 import { UserRole } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
+import { HomeRoutes } from '../../navigation/Routes';
 import { GetMyRolesQuery } from '../../queries/GetMyRoles';
 import { Routes } from './Routes';
 import { NavigationItem } from './Settings/Action';
@@ -64,7 +65,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                                 icon="md-chatboxes"
                                 theme={this.props.theme}
                                 text={'Chat'}
-                                onPress={() => this.props.navigation.navigate(Routes.Conversation)}
+                                onPress={() => this.props.navigation.navigate(HomeRoutes.Conversation)}
                             />
 
                             <Divider inset={true} />

@@ -119,6 +119,7 @@
         "@types/react-navigation": "^3.0.4",
         "@types/react-redux": "^7.0.2",
         "apollo": "^2.15.0",
+        "babel-plugin-import-graphql": "^2.7.0",
         "babel-preset-expo": "^5.0.0",
         "expo-cli": "^3.1.2",
         "fast-json-patch": "^2.1.0",

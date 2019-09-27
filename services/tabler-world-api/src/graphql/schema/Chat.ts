@@ -9,14 +9,19 @@ export const Chat = gql`
 
     type ChatMessage {
         id: ID!
+        eventId: ID!
+
         conversationId: ID!
-        createdAt: Date!
+        receivedAt: Date!
 
         senderId: Int
         sender: Member!
 
         type: MessageType!
         payload: JSON
+
+        # message was sent
+        sent: Boolean
     }
 
     type ChatMessageIterator {
@@ -37,6 +42,12 @@ export const Chat = gql`
         messages(token: String): ChatMessageIterator!
     }
 
+    input SendMessageInput {
+        conversationId: ID!
+        id: ID!
+        payload: String!
+    }
+
     extend type Query {
 		Conversations(token: String): ConversationIterator!
         Conversation(id: ID!): Conversation
@@ -44,7 +55,7 @@ export const Chat = gql`
 
 	extend type Mutation {
         startConversation(member: Int!): Conversation
-		sendMessage(conversation: ID!, message: String!): ChatMessage
+		sendMessage(message: SendMessageInput!): ChatMessage!
 	}
 
 	type Subscription {

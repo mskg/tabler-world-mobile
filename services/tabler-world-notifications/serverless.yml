@@ -16,8 +16,9 @@ custom:
     includeModules:
       forceExclude:
         - aws-sdk
-  
+
   email: ${env:ALERT_EMAIL}
+  sqs_push: ${self:service}-push-${self:custom.stage}
 
   bundle:
     dev: false
@@ -85,7 +86,7 @@ provider:
       - Fn::ImportValue: DatabaseSubnetAId
       - Fn::ImportValue: DatabaseSubnetBId
       - Fn::ImportValue: DatabaseSubnetCId
-  
+
   # global role definition
   iamRoleStatements:
     # read parameters from SSM
@@ -103,7 +104,16 @@ provider:
             - ":parameter*/"
             - ${self:custom.stage}
             - "/*"
-          
+
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:SendMessageBatch
+      Resource:
+        Fn::GetAtt:
+          - PushQueue
+          - Arn
+
     # tracing AWSXrayWriteOnlyAccess
     - Effect: Allow
       Action:
@@ -118,28 +128,38 @@ provider:
 
 functions:
   #
-  # Send push notifications
+  # Query birthdays
   #
-  send:
-    handler: src/send.handler
+  birthdays:
+    handler: src/birthdays.handler
     timeout: 600
 
     environment:
       XRAY_DISABLED: true
 
     events:
-      # - http:
-      #     path: send-notifications
-      #     method: get
-      #     cors: true
       - schedule:
-          name: ${self:service}-send-${self:custom.stage}
+          name: ${self:service}-birthdays-${self:custom.stage}
           description: Sends push notifications from TABLER.WORLD
 
           ## 07 UTC => 9 GMT+2
           rate: cron(0 07 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
+  #
+  # Send push notificationos
+  #
+  push:
+    handler: src/push.handler
+    timeout: 60
+    memorySize: 128
+
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - PushQueue
+              - Arn
   #
   # Check push notifications
   #
@@ -164,10 +184,44 @@ functions:
 
 resources:
   Resources:
-    SendLogGroup:
+    BirthdaysLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    PushLogGroup:
       Properties:
         RetentionInDays: "7"
 
     CheckLogGroup:
       Properties:
         RetentionInDays: "7"
+
+    PushQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs_push}
+        MessageRetentionPeriod: 1209600
+        # 6 times lambda timeout
+        VisibilityTimeout: 4320
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - PushQueueDeadLetters
+              - Arn
+          maxReceiveCount: 5
+
+    PushQueueDeadLetters:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs_push}-dead
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 0
+
+  Outputs:
+    PushQueueArn:
+      Value:
+        Fn::GetAtt:
+          - PushQueue
+          - Arn
+      Export:
+        Name: PushQueueArn-${self:custom.stage}

@@ -1,9 +1,10 @@
-import { IDataService } from "@mskg/tabler-world-rds-client";
+import { IDataService } from '@mskg/tabler-world-rds-client';
 
 export async function removeTokenWithId(client: IDataService, id: number, token: string) {
-    console.log("Removing token", token);
+    console.log('Removing token', token);
 
-    return await client.query(`
+    return await client.query(
+        `
 UPDATE usersettings
 SET tokens =
 (
@@ -13,5 +14,6 @@ SET tokens =
 )
 WHERE id = $1`,
         // @ts-ignore
-        [id, token]);
+        [id, token],
+    );
 }

@@ -1,10 +1,9 @@
+import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
 import { dynamodb as client } from '../aws/dynamodb';
-import { WebsocketLogger } from '../utils/WebsocketLogger';
 import { CONVERSATIONS_TABLE, FieldNames } from './Constants';
 
-
-const logger = new WebsocketLogger('Conversation');
+const logger = new ConsoleLogger('Conversation');
 
 type PaggedResponse<T> = {
     result: T[]

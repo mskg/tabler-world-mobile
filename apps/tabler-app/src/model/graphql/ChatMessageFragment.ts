@@ -3,10 +3,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL subscription operation: newChatMessage
+// GraphQL fragment: ChatMessageFragment
 // ====================================================
 
-export interface newChatMessage_newChatMessage {
+export interface ChatMessageFragment {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
@@ -14,8 +14,4 @@ export interface newChatMessage_newChatMessage {
   senderId: number | null;
   receivedAt: any;
   sent: boolean | null;
-}
-
-export interface newChatMessage {
-  newChatMessage: newChatMessage_newChatMessage | null;
 }

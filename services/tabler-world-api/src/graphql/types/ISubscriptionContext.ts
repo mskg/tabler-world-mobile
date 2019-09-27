@@ -1,8 +1,5 @@
-import { IPrincipal } from '@mskg/tabler-world-auth-client';
-import { ILogger } from '@mskg/tabler-world-common';
+import { IApolloContext } from './IApolloContext';
 
-export interface ISubscriptionContext {
+export interface ISubscriptionContext extends IApolloContext {
     connectionId: string;
-    principal: IPrincipal;
-    logger: ILogger;
 }

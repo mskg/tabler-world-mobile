@@ -50,7 +50,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
         uri: wsApi,
         options: {
             reconnect: true,
-            // lazy: true,
+            lazy: true,
 
             connectionParams: async () => ({
                 Authorization: await getCurrentIdentity(),
@@ -99,8 +99,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
 
         defaultOptions: {
             mutate: {
-                errorPolicy: 'none',
-                fetchPolicy: 'no-cache',
+                errorPolicy: 'all',
             },
 
             query: {
@@ -109,7 +108,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
             },
 
             watchQuery: {
-                errorPolicy: 'none',
+                errorPolicy: 'all',
             },
         },
     });

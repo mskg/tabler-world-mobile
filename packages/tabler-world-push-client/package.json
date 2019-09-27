@@ -1,0 +1,21 @@
+{
+    "name": "@mskg/tabler-world-push-client",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "dependencies": {},
+    "peerDependencies": {
+        "@mskg/tabler-world-aws": "0.0.1"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.31",
+        "typescript": "3.6.3"
+    }
+}

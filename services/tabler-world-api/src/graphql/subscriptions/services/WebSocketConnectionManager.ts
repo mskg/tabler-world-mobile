@@ -1,14 +1,14 @@
 import { IPrincipal } from '@mskg/tabler-world-auth-client';
+import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { awsGatewayClient } from '../aws/awsGatewayClient';
 import { dynamodb as client } from '../aws/dynamodb';
 import { IConnection } from '../types/IConnection';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
-import { WebsocketLogger } from '../utils/WebsocketLogger';
 import { CONNECTIONS_TABLE, FieldNames } from './Constants';
 
-const logger = new WebsocketLogger('Connection');
+const logger = new ConsoleLogger('Connection');
 
 export class WebsocketConnectionManager {
     public async get(connectionId: string): Promise<IConnection> {

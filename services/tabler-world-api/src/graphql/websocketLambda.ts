@@ -1,14 +1,15 @@
 import { lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
-import { ILogger } from '@mskg/tabler-world-common';
+import { ConsoleLogger, ILogger } from '@mskg/tabler-world-common';
 import { withClient } from '@mskg/tabler-world-rds-client';
 import { APIGatewayProxyResult, Context } from 'aws-lambda';
 import { APIGatewayWebSocketEvent } from 'aws-lambda-graphql';
 import { getOperationAST, parse, subscribe, validate } from 'graphql';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
+import { cacheInstance } from './cache/cacheInstance';
+import { dataSources } from './dataSources';
 import { executableSchema } from './executableSchema';
 import { connectionManager, subscriptionManager } from './subscriptions';
-import { WebsocketLogger } from './subscriptions/utils/WebsocketLogger';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
 
 const SUCCESS = { statusCode: 200, body: '' };
@@ -35,7 +36,7 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
         const route = event.requestContext.routeKey;
         const connectionId = event.requestContext.connectionId;
 
-        const logger: ILogger = new WebsocketLogger(route, connectionId);
+        const logger: ILogger = new ConsoleLogger(route, connectionId);
         logger.log('event');
 
         if (route === Routes.connect) {
@@ -141,9 +142,12 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
                     rootValue: operation,
                     variableValues: variables,
                     contextValue: {
+                        cache: cacheInstance,
+                        dataSources: dataSources(),
+                        requestCache: {},
                         connectionId: details.connectionId,
                         principal: details.principal,
-                        logger: new WebsocketLogger(event, connectionId, details.principal.id),
+                        logger: new ConsoleLogger(event, connectionId, details.principal.id),
                     } as ISubscriptionContext,
                 });
 

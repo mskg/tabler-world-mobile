@@ -12,7 +12,7 @@ export class SendErrorsToSentryExtension extends GraphQLExtension<IApolloContext
 
         if (graphqlResponse.errors) {
             graphqlResponse.errors.forEach((err) =>
-                captureException(context.lambdaEvent, context.lambdaContext, err));
+                captureException(context.lambdaEvent!, context.lambdaContext!, err));
         }
 
         return o;

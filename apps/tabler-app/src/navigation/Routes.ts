@@ -9,6 +9,7 @@ export enum HomeRoutes {
     Picture = 'picture',
     NewsArticle = 'newsarticle',
     Pair = 'pair',
+    Conversation = 'conversation',
 }
 
 export enum MainRoutes {

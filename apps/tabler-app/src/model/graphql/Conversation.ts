@@ -9,9 +9,11 @@
 export interface Conversation_Conversation_messages_nodes {
   __typename: "ChatMessage";
   id: string;
+  eventId: string;
   payload: any | null;
   senderId: number | null;
-  createdAt: any;
+  receivedAt: any;
+  sent: boolean | null;
 }
 
 export interface Conversation_Conversation_messages {

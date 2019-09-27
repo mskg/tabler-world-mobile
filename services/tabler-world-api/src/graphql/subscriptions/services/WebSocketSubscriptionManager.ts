@@ -1,18 +1,13 @@
 import { IPrincipal } from '@mskg/tabler-world-auth-client';
+import { ConsoleLogger } from '@mskg/tabler-world-common';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { dynamodb as client } from '../aws/dynamodb';
-import { IConnection } from '../types/IConnection';
+import { ISubscription } from '../types/ISubscription';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
-import { WebsocketLogger } from '../utils/WebsocketLogger';
 import { FieldNames, SUBSCRIPTIONS_TABLE } from './Constants';
 import { WebsocketConnectionManager } from './WebsocketConnectionManager';
 
-interface ISubscription {
-    connection: IConnection;
-    subscriptionId: string;
-}
-
-const logger = new WebsocketLogger('Subscription');
+const logger = new ConsoleLogger('Subscription');
 
 function makeKey(connectionId: string, subscriptionId: string, trigger: string) {
     return `${connectionId}:${subscriptionId}:${trigger}`;

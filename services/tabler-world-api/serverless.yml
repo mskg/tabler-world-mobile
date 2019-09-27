@@ -454,6 +454,13 @@ functions:
             - !Ref WebsocketsApi
             - '/${self:provider.stage}/*'
 
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::ImportValue: PushQueueArn-${self:custom.stage}
+
 resources:
   Resources:
     connectionsTable:

@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import { uuid4 } from '@sentry/utils';
+import { DataProxy } from 'apollo-cache';
+import ApolloClient from 'apollo-client';
+import _, { filter, sortBy, uniqBy } from 'lodash';
 import 'moment';
 import 'moment/locale/de';
 import React from 'react';
@@ -6,13 +9,14 @@ import { Query } from 'react-apollo';
 import { IMessage } from 'react-native-gifted-chat';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { AuditedScreen } from '../../../analytics/AuditedScreen';
-import { AuditScreenName } from '../../../analytics/AuditScreenName';
-import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
-import { ScreenWithHeader } from '../../../components/Screen';
-import { Categories, Logger } from '../../../helper/Logger';
-import { Conversation, ConversationVariables } from '../../../model/graphql/Conversation';
-import { newChatMessage } from '../../../model/graphql/newChatMessage';
+import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../analytics/AuditScreenName';
+import { FullScreenLoading } from '../../components/Loading';
+import { ScreenWithHeader } from '../../components/Screen';
+import { Categories, Logger } from '../../helper/Logger';
+import { Conversation, ConversationVariables, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
+import { newChatMessage } from '../../model/graphql/newChatMessage';
+import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
 import { Chat } from './Chat';
 import { GetConversationQuery } from './GetConversationQuery';
 import { newChatMessageSubscription } from './newChatMessageSubscription';
@@ -31,7 +35,7 @@ type State = {
 };
 
 // tslint:disable: max-func-body-length
-class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>, State> {
+class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>, State> {
     ref: any;
 
     constructor(props) {
@@ -40,20 +44,81 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
         this.state = { loadingEarlier: false, eof: false };
     }
 
-    _sendMessage = async (messages: IMessage[]) => {
-        await cachedAolloClient().mutate({
+    _update = (client: DataProxy, { data: { sendMessage } }: any) => {
+        logger.debug('******* Update', sendMessage);
+
+        // Read the data from our cache for this query.
+        const data = client.readQuery<Conversation, ConversationVariables>({
+            query: GetConversationQuery,
+            variables: {
+                token: undefined,
+            },
+        });
+
+        if (data == null) {
+            return;
+        }
+
+        data.Conversation!.messages.nodes = sortBy(
+            uniqBy(
+                [
+                    sendMessage,
+                    ...filter(
+                        data.Conversation!.messages.nodes,
+                        (f) => f.id !== sendMessage.id,
+                    ),
+                ],
+                (s) => s!.id,
+            ),
+        );
+
+        // tslint:disable-next-line: object-shorthand-properties-first
+        client.writeQuery({
+            query: GetConversationQuery,
+            data: _.cloneDeep(data),
+            variables: {
+                token: undefined,
+            },
+        });
+    }
+
+    _sendMessage = (client: ApolloClient<any>) => async (messages: IMessage[]) => {
+        const id = uuid4();
+
+        this._update(
+            client,
+            {
+                data: {
+                    sendMessage: {
+                        id,
+                        __typename: 'ChatMessage',
+                        receivedAt: new Date().toISOString(),
+                        senderId: 10430,
+                        payload: messages[0].text,
+                        eventId: '_sent',
+                        sent: false,
+                    },
+                },
+            },
+        );
+
+        const result = await client.mutate<SendMessage, SendMessageVariables>({
             mutation: SendMessageMutation,
             variables: {
+                id,
                 message: messages[0].text,
             },
         });
+
+        this._update(client, result);
+
     }
 
     render() {
         return (
             <ScreenWithHeader
                 header={{
-                    title: 'Chat',
+                    title: 'Max und Moritz',
                     showBack: true,
                 }}
             >
@@ -63,9 +128,13 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                     variables={{
                         token: undefined,
                     }}
-                    fetchPolicy="network-only"
+                    fetchPolicy="cache-and-network"
                 >
-                    {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
+                    {({ client, loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
+                        if (loading && (!data || !data.Conversation)) {
+                            return <FullScreenLoading />;
+                        }
+
                         let messages;
                         if (data && data.Conversation && data.Conversation.messages) {
                             messages = data.Conversation.messages;
@@ -79,7 +148,9 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                                         document: newChatMessageSubscription,
                                         updateQuery: (prev, { subscriptionData }) => {
                                             if (!subscriptionData.data) return prev;
+
                                             const newFeedItem = subscriptionData.data.newChatMessage;
+                                            logger.debug('received', newFeedItem);
 
                                             return {
                                                 ...prev,
@@ -87,7 +158,16 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                                                     ...prev.Conversation,
                                                     messages: {
                                                         ...prev.Conversation!.messages,
-                                                        nodes: [newFeedItem, ...prev.Conversation!.messages.nodes],
+                                                        nodes: sortBy(
+                                                            uniqBy(
+                                                                [
+                                                                    newFeedItem,
+                                                                    ...prev.Conversation!.messages.nodes,
+                                                                ],
+                                                                (i) => i!.id,
+                                                            ),
+                                                            (s) => s!.eventId,
+                                                        ),
                                                     },
                                                 },
                                             } as Conversation;
@@ -95,7 +175,7 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                                     })
                                 }
 
-                                sendMessage={this._sendMessage}
+                                sendMessage={this._sendMessage(client)}
 
                                 isLoadingEarlier={this.state.loadingEarlier}
                                 loadEarlier={!this.state.eof}
@@ -134,11 +214,13 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                                                         ...fetchMoreResult.Conversation,
                                                         messages: {
                                                             ...fetchMoreResult.Conversation.messages,
-                                                            nodes:
-                                                                _([...prev.Conversation!.messages.nodes, ...fetchMoreResult.Conversation.messages.nodes])
-                                                                    .uniqBy((f) => f.id)
-                                                                    .toArray()
-                                                                    .value(),
+                                                            nodes: uniqBy(
+                                                                [
+                                                                    ...prev.Conversation!.messages.nodes,
+                                                                    ...fetchMoreResult.Conversation.messages.nodes,
+                                                                ],
+                                                                (f) => f.id,
+                                                            ),
                                                         },
                                                     },
                                                 };
@@ -148,13 +230,21 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
                                 }}
 
                                 messages={
-                                    (messages || { nodes: [] }).nodes.map((m: any) => ({
+                                    (messages || { nodes: [] }).nodes.map((m: Conversation_Conversation_messages_nodes) => ({
                                         _id: m.id,
-                                        createdAt: new Date(m.createdAt),
+                                        createdAt: new Date(m.receivedAt),
                                         user: {
                                             _id: m.senderId,
                                         },
                                         text: m.payload,
+
+                                        pending: m.eventId === '_sent' ? true : false,
+                                        sent: m.sent ? true : false,
+
+                                        // pending: m.eventId === '_sent' ? true : undefined,
+                                        // sent: m.eventId !== '_sent'
+                                        //     ? m.sent ? true : false
+                                        //     : undefined,
                                     }))
                                 }
                             />
@@ -166,4 +256,4 @@ class ChatScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>,
     }
 }
 
-export const ChatScreen = withTheme(withNavigation(ChatScreenBase));
+export const ConversationScreen = withTheme(withNavigation(ConversationScreenBase));

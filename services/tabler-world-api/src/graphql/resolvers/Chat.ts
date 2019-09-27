@@ -1,14 +1,16 @@
 import { conversationManager, eventManager, subscriptionManager } from '../subscriptions';
 import { pubsub } from '../subscriptions/services/pubsub';
-import { WebsocketEvent } from '../subscriptions/services/WebsocketEventManager';
+import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
-import { IChatContext } from '../types/IChatContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
 
 type SendMessageArgs = {
-    conversation: string;
-    message: any;
+    message: {
+        id: string,
+        conversationId: string,
+        payload: string,
+    };
 };
 
 type ChatMessageSubscriptionArgs = {
@@ -29,12 +31,23 @@ type IdArgs = {
     id: string | number,
 };
 
-type ChatMessageEvent = {
+enum MessageType {
+    text = 'text',
+}
+
+type ChatMessage = {
+    id: string,
     senderId: number,
     payload: any,
-    createdAt: number,
-    type: string,
+    receivedAt: number,
+    type: MessageType,
 };
+
+type ChatMessageWithTransport = {
+    eventId: string,
+    sent?: boolean | null,
+    received?: boolean,
+} & ChatMessage;
 
 function makeConversationKey(members: number[]) {
     return `CONV(${members.sort().map((m) => `:${m}:`).join(',')})`;
@@ -62,7 +75,10 @@ export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
         Conversations: async (_root: {}, args: IteratorArgs, context: IApolloContext) => {
-            const result = await conversationManager.getConversations(context.principal.id, decodeIdentifier(args.token));
+            const result = await conversationManager.getConversations(
+                context.principal.id,
+                decodeIdentifier(args.token),
+            );
 
             return {
                 nodes: result.result.map((c) => ({ id: encodeIdentifier(c) })),
@@ -91,25 +107,33 @@ export const ChatResolver = {
 
             const channel = decodeIdentifier(root.id);
             const params = await getChatParams();
-            const result = await eventManager.events<ChatMessageEvent>(channel, decodeIdentifier(args.token), params.eventsPageSize);
+            const result = await eventManager.events<ChatMessage>(
+                channel,
+                {
+                    token: decodeIdentifier(args.token),
+                    pageSize: params.eventsPageSize,
+                    forward: false,
+                },
+            );
 
             return {
                 nodes: result.result.map((m) => ({
+                    // transport informationo
                     conversationId: channel,
-                    id: m.id,
-                    createdAt: m.payload.createdAt,
-                    senderId: m.payload.senderId,
-                    type: m.payload.type,
-                    payload: m.payload.payload,
-                })),
+                    eventId: m.id,
+
+                    // payload
+                    ...m.payload,
+                    sent: null,
+                } as ChatMessageWithTransport)),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
     },
 
     ChatMessage: {
-        createdAt: (root: { createdAt: number }) => {
-            return new Date(root.createdAt).toISOString();
+        receivedAt: (root: { receivedAt: number }) => {
+            return new Date(root.receivedAt).toISOString();
         },
 
         // could change this to lazy load
@@ -126,7 +150,7 @@ export const ChatResolver = {
             args: {
                 member: number;
             },
-            context: IChatContext,
+            context: IApolloContext,
         ) => {
             if (context.principal.id === args.member) {
                 throw new Error('You cannot chat with yourself.');
@@ -144,40 +168,52 @@ export const ChatResolver = {
         },
 
         // tslint:disable-next-line: variable-name
-        sendMessage: async (_root: {}, { message, conversation }: SendMessageArgs, context: IChatContext) => {
-            if (!checkChannelAccess(conversation, context.principal.id)) {
+        sendMessage: async (_root: {}, { message }: SendMessageArgs, context: IApolloContext) => {
+            if (!checkChannelAccess(message.conversationId, context.principal.id)) {
                 throw new Error('Access denied.');
             }
 
+            const member = await context.dataSources.members.readOne(context.principal.id);
+
             const params = await getChatParams();
-            const channelMessage = await eventManager.post<ChatMessageEvent>(
-                decodeIdentifier(conversation),
+            const channelMessage = await eventManager.post<ChatMessage>(
+                decodeIdentifier(message.conversationId),
                 {
+                    id: message.id,
                     senderId: context.principal.id,
-                    payload: message,
-                    createdAt: Date.now(),
-                    type: 'text',
+                    payload: message.payload,
+                    receivedAt: Date.now(),
+                    type: MessageType.text,
+                } as ChatMessage,
+                {
+                    message: {
+                        title: `${member.firstname} ${member.lastname}`,
+                        body: message.payload.length > 199 ? `${message.payload.substr(0, 197)}...` : message.payload,
+                        reason: 'chatmessage',
+                    },
+                    sender: context.principal.id,
                 },
                 params.ttl,
             );
 
             return {
-                id: channelMessage.id,
-                conversationId: channelMessage.trigger,
                 ...channelMessage.payload,
-            };
+                eventId: channelMessage.id,
+                conversationId: channelMessage.trigger,
+                sent: true,
+            } as ChatMessageWithTransport;
         },
     },
 
     Subscription: {
         newChatMessage: {
             // tslint:disable-next-line: variable-name
-            resolve: (channelMessage: WebsocketEvent<ChatMessageEvent>, _args: {}, _context: ISubscriptionContext) => {
+            resolve: (channelMessage: WebsocketEvent<ChatMessageWithTransport>, _args: {}, _context: ISubscriptionContext) => {
                 return {
-                    id: channelMessage.id,
+                    eventId: channelMessage.id,
                     conversationId: channelMessage.trigger,
                     ...channelMessage.payload,
-                };
+                } as ChatMessageWithTransport;
             },
 
             // tslint:disable-next-line: variable-name
