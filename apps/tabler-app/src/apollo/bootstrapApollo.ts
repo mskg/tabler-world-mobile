@@ -97,6 +97,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
 
         resolvers: Resolvers,
 
+        /*
         defaultOptions: {
             mutate: {
                 errorPolicy: 'all',
@@ -111,6 +112,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 errorPolicy: 'all',
             },
         },
+        */
     });
 
     return client;

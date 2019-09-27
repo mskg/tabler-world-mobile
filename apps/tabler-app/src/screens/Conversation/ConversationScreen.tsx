@@ -1,7 +1,6 @@
 import { uuid4 } from '@sentry/utils';
 import { DataProxy } from 'apollo-cache';
-import ApolloClient from 'apollo-client';
-import _, { filter, sortBy, uniqBy } from 'lodash';
+import { filter, uniqBy } from 'lodash';
 import 'moment';
 import 'moment/locale/de';
 import React from 'react';
@@ -11,6 +10,7 @@ import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
@@ -44,11 +44,11 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         this.state = { loadingEarlier: false, eof: false };
     }
 
-    _update = (client: DataProxy, { data: { sendMessage } }: any) => {
+    _update = (cache: DataProxy, { data: { sendMessage } }: any) => {
         logger.debug('******* Update', sendMessage);
 
         // Read the data from our cache for this query.
-        const data = client.readQuery<Conversation, ConversationVariables>({
+        const data = cache.readQuery<Conversation, ConversationVariables>({
             query: GetConversationQuery,
             variables: {
                 token: undefined,
@@ -59,59 +59,54 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
             return;
         }
 
-        data.Conversation!.messages.nodes = sortBy(
+        data.Conversation!.messages.nodes =
             uniqBy(
                 [
-                    sendMessage,
+                    { ...sendMessage },
                     ...filter(
                         data.Conversation!.messages.nodes,
                         (f) => f.id !== sendMessage.id,
                     ),
                 ],
                 (s) => s!.id,
-            ),
-        );
+            );
 
-        // tslint:disable-next-line: object-shorthand-properties-first
-        client.writeQuery({
+        cache.writeQuery({
             query: GetConversationQuery,
-            data: _.cloneDeep(data),
+            data,
             variables: {
                 token: undefined,
             },
         });
     }
 
-    _sendMessage = (client: ApolloClient<any>) => async (messages: IMessage[]) => {
+    _sendMessage = async (messages: IMessage[]) => {
+        const client = cachedAolloClient();
         const id = uuid4();
 
-        this._update(
-            client,
-            {
-                data: {
-                    sendMessage: {
-                        id,
-                        __typename: 'ChatMessage',
-                        receivedAt: new Date().toISOString(),
-                        senderId: 10430,
-                        payload: messages[0].text,
-                        eventId: '_sent',
-                        sent: false,
-                    },
-                },
-            },
-        );
-
-        const result = await client.mutate<SendMessage, SendMessageVariables>({
+        await client.mutate<SendMessage, SendMessageVariables>({
             mutation: SendMessageMutation,
             variables: {
                 id,
                 message: messages[0].text,
             },
+
+            optimisticResponse: {
+                sendMessage: {
+                    id,
+                    __typename: 'ChatMessage',
+                    receivedAt: new Date().toISOString(),
+                    senderId: 10430,
+                    payload: messages[0].text,
+                    eventId: '_sent',
+                    sent: false,
+                },
+            },
+
+            update: this._update,
         });
 
-        this._update(client, result);
-
+        this.setState({ redraw: {} });
     }
 
     render() {
@@ -158,7 +153,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                                     ...prev.Conversation,
                                                     messages: {
                                                         ...prev.Conversation!.messages,
-                                                        nodes: sortBy(
+                                                        nodes:
                                                             uniqBy(
                                                                 [
                                                                     newFeedItem,
@@ -166,8 +161,6 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                                                 ],
                                                                 (i) => i!.id,
                                                             ),
-                                                            (s) => s!.eventId,
-                                                        ),
                                                     },
                                                 },
                                             } as Conversation;
@@ -175,7 +168,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                     })
                                 }
 
-                                sendMessage={this._sendMessage(client)}
+                                sendMessage={this._sendMessage}
 
                                 isLoadingEarlier={this.state.loadingEarlier}
                                 loadEarlier={!this.state.eof}
@@ -237,7 +230,6 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                             _id: m.senderId,
                                         },
                                         text: m.payload,
-
                                         pending: m.eventId === '_sent' ? true : false,
                                         sent: m.sent ? true : false,
 

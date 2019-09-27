@@ -5,7 +5,7 @@ import 'moment/locale/de';
 import React from 'react';
 import { Platform, View } from 'react-native';
 import { Bubble, Composer, GiftedChat, IMessage, LoadEarlier, Message, Send } from 'react-native-gifted-chat';
-import { Theme, withTheme } from 'react-native-paper';
+import { Text, Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../../helper/Logger';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 
@@ -166,6 +166,30 @@ class ChatBase extends React.Component<Props> {
         );
     }
 
+    _renderTicks = (currentMessage) => {
+        // const { _id, sent, received } = currentMessage;
+        // logger.debug('render', _id, sent, received);
+
+        if (
+            currentMessage &&
+            (currentMessage.sent || currentMessage.received || currentMessage.pending)
+        ) {
+            return (
+                <View>
+                    {!!currentMessage.sent && (
+                        <Text>✓</Text>
+                    )}
+                    {!!currentMessage.received && (
+                        <Text>✓</Text>
+                    )}
+                    {!!currentMessage.pending && (
+                        <Text>🕓</Text>
+                    )}
+                </View>
+            );
+        }
+        return null;
+    }
 
 
     componentWillMount() {
@@ -217,6 +241,9 @@ class ChatBase extends React.Component<Props> {
                     // renderComposer={this._renderComposer}
                     renderSend={this._renderSend}
                     renderComposer={this._renderComposer}
+
+                    renderTicks={this._renderTicks}
+                    // shouldUpdateMessage={() => true}
                 />
             </View>
 
