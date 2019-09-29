@@ -4,6 +4,7 @@ import { ChatMessageFragment } from './ChatMessageFragment';
 export const GetConversationQuery = gql`
     query Conversation($token: String) {
       Conversation(id: "IkNPTlYoOjE6LDoxMDQzMDopIg") {
+        id
         messages (token: $token) @connection(key: "messages") {
           nodes {
             ...ChatMessageFragment
