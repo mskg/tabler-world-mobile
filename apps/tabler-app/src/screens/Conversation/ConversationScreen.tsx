@@ -1,11 +1,10 @@
-import { uuid4 } from '@sentry/utils';
 import { DataProxy } from 'apollo-cache';
 import { filter, uniqBy } from 'lodash';
 import 'moment';
 import 'moment/locale/de';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { IMessage } from 'react-native-gifted-chat';
+import { IChatMessage } from 'react-native-gifted-chat';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
@@ -44,67 +43,83 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         this.state = { loadingEarlier: false, eof: false };
     }
 
-    _update = (cache: DataProxy, { data: { sendMessage } }: any) => {
+    _addMessage = (cache: DataProxy, { data: { sendMessage } }: any) => {
         logger.debug('******* Update', sendMessage);
+
+        // we always add to the end
+        const variables = {
+            token: undefined,
+        };
 
         // Read the data from our cache for this query.
         const data = cache.readQuery<Conversation, ConversationVariables>({
             query: GetConversationQuery,
-            variables: {
-                token: undefined,
-            },
+            variables,
         });
 
         if (data == null) {
             return;
         }
 
-        data.Conversation!.messages.nodes =
-            uniqBy(
-                [
-                    { ...sendMessage },
-                    ...filter(
-                        data.Conversation!.messages.nodes,
-                        (f) => f.id !== sendMessage.id,
-                    ),
-                ],
-                (s) => s!.id,
-            );
+        // cache has change detection, we only modify what we need
+        data.Conversation!.messages.nodes = [
+            sendMessage,
+            ...filter(
+                data.Conversation!.messages.nodes,
+                (f) => f!.id !== sendMessage.id,
+            ),
+        ];
 
         cache.writeQuery({
             query: GetConversationQuery,
             data,
-            variables: {
-                token: undefined,
-            },
+            variables,
         });
     }
 
-    _sendMessage = async (messages: IMessage[]) => {
+    _sendMessage = async (messages: IChatMessage[]) => {
         const client = cachedAolloClient();
-        const id = uuid4();
 
-        await client.mutate<SendMessage, SendMessageVariables>({
-            mutation: SendMessageMutation,
-            variables: {
-                id,
-                message: messages[0].text,
-            },
+        const optimisticMessage = {
+            __typename: 'ChatMessage',
+            id: messages[0]._id,
+            receivedAt: messages[0].createdAt || new Date(),
+            senderId: messages[0].user._id,
+            payload: messages[0].text,
+            eventId: '_sent',
+            sent: false,
+        };
 
-            optimisticResponse: {
-                sendMessage: {
-                    id,
-                    __typename: 'ChatMessage',
-                    receivedAt: new Date().toISOString(),
-                    senderId: 10430,
-                    payload: messages[0].text,
-                    eventId: '_sent',
-                    sent: false,
+        try {
+            // we don't use the optimistic UI here
+            // because we want to keep the message if it fails
+            this._addMessage(client, {
+                data: {
+                    sendMessage: optimisticMessage,
                 },
-            },
+            });
 
-            update: this._update,
-        });
+            await client.mutate<SendMessage, SendMessageVariables>({
+                mutation: SendMessageMutation,
+                variables: {
+                    id: optimisticMessage.id,
+                    message: optimisticMessage.payload,
+                },
+
+                update: this._addMessage,
+            });
+        } catch (e) {
+            // we don't use the optimistic UI here
+            // because we want to keep the message if it fails
+            this._addMessage(client, {
+                data: {
+                    sendMessage: {
+                        ...optimisticMessage,
+                        eventId: '_failed',
+                    },
+                },
+            });
+        }
 
         this.setState({ redraw: {} });
     }
@@ -123,7 +138,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     variables={{
                         token: undefined,
                     }}
-                    fetchPolicy="cache-and-network"
+                    fetchPolicy="cache-first"
                 >
                     {({ client, loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
                         if (loading && (!data || !data.Conversation)) {
@@ -139,10 +154,13 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                             <Chat
                                 extraData={this.state.redraw}
                                 subscribe={
+                                    // we need to create a function that is executed once
                                     () => subscribeToMore<newChatMessage, any>({
                                         document: newChatMessageSubscription,
                                         updateQuery: (prev, { subscriptionData }) => {
                                             if (!subscriptionData.data) return prev;
+
+                                            return prev;
 
                                             const newFeedItem = subscriptionData.data.newChatMessage;
                                             logger.debug('received', newFeedItem);
@@ -225,19 +243,18 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                 messages={
                                     (messages || { nodes: [] }).nodes.map((m: Conversation_Conversation_messages_nodes) => ({
                                         _id: m.id,
-                                        createdAt: new Date(m.receivedAt),
+                                        createdAt: m.eventId === '_failed' ? undefined : new Date(m.receivedAt),
+
                                         user: {
                                             _id: m.senderId,
                                         },
-                                        text: m.payload,
-                                        pending: m.eventId === '_sent' ? true : false,
-                                        sent: m.sent ? true : false,
 
-                                        // pending: m.eventId === '_sent' ? true : undefined,
-                                        // sent: m.eventId !== '_sent'
-                                        //     ? m.sent ? true : false
-                                        //     : undefined,
-                                    }))
+                                        text: m.payload,
+
+                                        sent: m.sent ? true : false,
+                                        pending: m.eventId === '_sent' ? true : false,
+                                        failedSend: m.eventId === '_failed' ? true : false,
+                                    } as IChatMessage))
                                 }
                             />
                         );
