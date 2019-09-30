@@ -17,7 +17,7 @@ export const handler: SQSHandler = async (event, context) => {
                 const payload = JSON.parse(message.body) as PushNotification<any>[];
 
                 const allTokens = await client.query(
-                    'select id, tokens from user_settings where id = ANY($1)',
+                    'select id, tokens from usersettings where id = ANY($1)',
                     [payload.map((m) => m.member)],
                 );
 
@@ -53,6 +53,5 @@ export const handler: SQSHandler = async (event, context) => {
         } catch { }
 
         console.error(e);
-        throw e;
     }
 };

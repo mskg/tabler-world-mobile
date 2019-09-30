@@ -225,3 +225,9 @@ resources:
           - Arn
       Export:
         Name: PushQueueArn-${self:custom.stage}
+
+    PushQueueUrl:
+      Value:
+        Ref: PushQueue
+      Export:
+        Name: PushQueueUrl-${self:custom.stage}
