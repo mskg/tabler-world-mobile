@@ -299,9 +299,9 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                                         text: m.payload,
 
-                                        sent: m.accepted ? true : false,
+                                        sent: m.accepted || m.delivered ? true : false,
                                         received: m.delivered ? true : false,
-                                        pending: !m.accepted,
+                                        pending: !(m.accepted || m.delivered),
 
                                         failedSend: m.eventId === FAILED ? true : false,
                                     } as IChatMessage))

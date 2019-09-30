@@ -198,6 +198,9 @@ create table userlocations_backup as
 select * from userlocations
 
 
+update
+
+
 
 
 select * from userlocations_history
