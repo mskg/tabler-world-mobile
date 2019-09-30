@@ -1,5 +1,6 @@
 import { differenceInYears, format } from 'date-fns';
 import dateEN from 'date-fns/locale/en';
+import 'moment';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 
@@ -539,6 +540,10 @@ const en = {
 
     Feedback: {
         title: 'Feedback',
+    },
+
+    Conversations: {
+        title: 'Chats',
     },
 };
 

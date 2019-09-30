@@ -1,4 +1,6 @@
+import { DynamoDB } from 'aws-sdk';
 import { conversationManager, eventManager, subscriptionManager } from '../subscriptions';
+import { FieldNames } from '../subscriptions/services/Constants';
 import { pubsub } from '../subscriptions/services/pubsub';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
@@ -45,8 +47,9 @@ type ChatMessage = {
 
 type ChatMessageWithTransport = {
     eventId: string,
-    sent?: boolean | null,
-    received?: boolean,
+
+    accepted?: boolean | null,
+    delivered?: boolean | null,
 } & ChatMessage;
 
 function makeConversationKey(members: number[]) {
@@ -66,6 +69,8 @@ function encodeIdentifier(token?: any) {
 function decodeIdentifier(token?: string) {
     // tslint:disable-next-line: possible-timing-attack
     if (token == null || token === '') { return undefined; }
+    if (token.startsWith('CONV')) { return token; }
+
     return JSON.parse(Buffer.from(token, 'base64').toString('ascii'));
 }
 
@@ -81,15 +86,20 @@ export const ChatResolver = {
             );
 
             return {
-                nodes: result.result.map((c) => ({ id: encodeIdentifier(c) })),
+                nodes: result.result.map((c) => ({ id: c })),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
 
         // tslint:disable-next-line: variable-name
-        Conversation: (_root: {}, args: IdArgs, _context: IApolloContext) => {
+        Conversation: (_root: {}, args: IdArgs, context: IApolloContext) => {
+            if (!checkChannelAccess(args.id as string, context.principal.id)) {
+                throw new Error(`Access denied (${args.id}, ${context.principal.id})`);
+            }
+
+
             return {
-                id: args.id,
+                id: decodeIdentifier(args.id as string),
             };
         },
     },
@@ -102,7 +112,7 @@ export const ChatResolver = {
         // tslint:disable-next-line: variable-name
         messages: async (root: { id: string }, args: IteratorArgs, context: IApolloContext) => {
             if (!checkChannelAccess(root.id, context.principal.id)) {
-                throw new Error('Access denied.');
+                throw new Error(`Access denied (${root.id}, ${context.principal.id})`);
             }
 
             const channel = decodeIdentifier(root.id);
@@ -124,10 +134,37 @@ export const ChatResolver = {
 
                     // payload
                     ...m.payload,
-                    sent: null,
+
+                    accepted: true,
+                    delivered: m.delivered,
                 } as ChatMessageWithTransport)),
+
                 nextToken: encodeIdentifier(result.nextKey),
             };
+        },
+
+        // tslint:disable-next-line: variable-name
+        lastMessage: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+            const result = await conversationManager.conversation(channel);
+
+            context.logger.log(result);
+            return result[FieldNames.lastMessage];
+        },
+
+        // tslint:disable-next-line: variable-name
+        members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+            const result = await conversationManager.conversation(channel);
+
+            context.logger.log(result);
+
+            const members = result[FieldNames.members] as DynamoDB.DocumentClient.NumberSet;
+            if (!members || members.values.length === 0) return [];
+
+            const values = members.values.filter((v) => v !== context.principal.id);
+
+            return context.dataSources.members.readMany(values);
         },
     },
 
@@ -175,9 +212,10 @@ export const ChatResolver = {
 
             const member = await context.dataSources.members.readOne(context.principal.id);
 
+            const trigger = decodeIdentifier(message.conversationId);
             const params = await getChatParams();
             const channelMessage = await eventManager.post<ChatMessage>(
-                decodeIdentifier(message.conversationId),
+                trigger,
                 {
                     id: message.id,
                     senderId: context.principal.id,
@@ -196,11 +234,14 @@ export const ChatResolver = {
                 params.ttl,
             );
 
+            await conversationManager.update(trigger, channelMessage.id);
+
             return {
                 ...channelMessage.payload,
                 eventId: channelMessage.id,
-                conversationId: channelMessage.trigger,
-                sent: true,
+                conversationId: channelMessage.eventName,
+                accepted: true,
+                delivered: false,
             } as ChatMessageWithTransport;
         },
     },
@@ -211,7 +252,9 @@ export const ChatResolver = {
             resolve: (channelMessage: WebsocketEvent<ChatMessageWithTransport>, _args: {}, _context: ISubscriptionContext) => {
                 return {
                     eventId: channelMessage.id,
-                    conversationId: channelMessage.trigger,
+                    conversationId: channelMessage.eventName,
+                    delivered: channelMessage.delivered,
+                    accepted: true,
                     ...channelMessage.payload,
                 } as ChatMessageWithTransport;
             },

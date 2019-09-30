@@ -77,4 +77,5 @@ export interface SearchMemberVariables {
   roles?: string[] | null;
   clubs?: string[] | null;
   sectors?: CompanySector[] | null;
+  availableForChat?: boolean | null;
 }

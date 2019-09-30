@@ -14,7 +14,7 @@ const logger = new ConsoleLogger('publish');
 export async function handler(event: DynamoDBStreamEvent) {
     for (const subscruptionEvent of event.Records) {
         if (subscruptionEvent.eventName !== 'INSERT' || !subscruptionEvent.dynamodb || !subscruptionEvent.dynamodb.NewImage) {
-            logger.error('Invalid event. Wrong dynamodb event type, can publish only `INSERT` events to subscribers.', subscruptionEvent);
+            logger.error('Ignoring event', subscruptionEvent.eventName);
             continue;
         }
 
@@ -26,7 +26,7 @@ export async function handler(event: DynamoDBStreamEvent) {
             const image = eventManager.unMarshall(encodedImage);
             logger.log(image);
 
-            const subscriptions = await subscriptionManager.getSubscriptions(image.trigger) || [];
+            const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];
 
             // if (connections.length === 0 && subscribers.length === 0) {
             //     logger.log('Channel', image.trigger, 'has no subscribers');
@@ -34,19 +34,23 @@ export async function handler(event: DynamoDBStreamEvent) {
             //     continue;
             // }
 
+            let failedDeliveries: number[] = [];
             if (subscriptions.length > 0) {
-                await publishToActiveSubscriptions(subscriptions, image);
+                failedDeliveries = await publishToActiveSubscriptions(subscriptions, image);
             }
 
             if (image.pushNotification) {
-                const subscribers = await conversationManager.getSubscribers(image.trigger) || [];
+                const subscribers = await conversationManager.getSubscribers(image.eventName) || [];
 
                 // all principals without a subscription, we need to send a push message to those
                 const missingPrincipals = filter(
                     subscribers,
                     (p) => true
                         && image.sender !== p // not sender
-                        && subscriptions.find((c) => c.connection.memberId === p) == null, // not already sent via socket
+                        && (
+                            subscriptions.find((c) => c.connection.memberId === p) == null // not already sent via socket
+                            || failedDeliveries.find((c) => c === p) != null // delivery failed
+                        ),
                 );
 
                 if (missingPrincipals.length > 0) {
@@ -54,6 +58,7 @@ export async function handler(event: DynamoDBStreamEvent) {
                 }
             }
 
+            await eventManager.markDelivered(image);
         } catch (e) {
             logger.error(e);
         }

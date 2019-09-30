@@ -1,8 +1,6 @@
-export type EncodedWebsocketEvent = {
-    eventName: string;
-    id: string;
-    sender?: number,
+import { WebsocketEventBase } from './WebsocketEvent';
 
+export type EncodedWebsocketEvent = {
     pushNotification?: string;
     payload: string;
-};
+} & WebsocketEventBase;

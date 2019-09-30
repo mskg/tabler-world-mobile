@@ -1,4 +1,5 @@
 import { IPrincipal } from '@mskg/tabler-world-auth-client';
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
@@ -82,9 +83,11 @@ export class WebsocketConnectionManager {
     public async forceDisconnect(connectionId: string): Promise<void> {
         logger.log(`[${connectionId}]`, 'forceDisconnect');
 
-        await awsGatewayClient.deleteConnection({
-            ConnectionId: connectionId,
-        }).promise();
+        if (!EXECUTING_OFFLINE) {
+            await awsGatewayClient.deleteConnection({
+                ConnectionId: connectionId,
+            }).promise();
+        }
     }
 
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {

@@ -13,9 +13,20 @@ export interface newChatMessage_newChatMessage {
   payload: any | null;
   senderId: number | null;
   receivedAt: any;
-  sent: boolean | null;
+  /**
+   * Message was delivered to the recipients
+   */
+  delivered: boolean | null;
+  /**
+   * Message was received by the server
+   */
+  accepted: boolean | null;
 }
 
 export interface newChatMessage {
   newChatMessage: newChatMessage_newChatMessage | null;
+}
+
+export interface newChatMessageVariables {
+  conversation: string;
 }

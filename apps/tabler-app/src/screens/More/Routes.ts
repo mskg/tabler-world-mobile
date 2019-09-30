@@ -6,4 +6,5 @@ export enum Routes {
     Feedback = 'feedback',
     LocationHistory = 'locationhistory',
     JobHistory = 'JobHistory',
+    Conversations = 'conversations',
 }

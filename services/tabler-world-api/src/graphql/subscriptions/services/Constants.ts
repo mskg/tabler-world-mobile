@@ -5,6 +5,7 @@ export const EVENTS_TABLE = process.env.EVENTS_TABLE as string;
 export const SUBSCRIPTIONS_TABLE = process.env.SUBSCRIPTIONS_TABLE as string;
 
 export enum FieldNames {
+    id = 'id',
     member = 'memberId',
     connectionId = 'connectionId',
     payload = 'payload',
@@ -14,4 +15,5 @@ export enum FieldNames {
     principal = 'principal',
     trigger = 'eventName',
     subscription = 'subscription',
+    lastMessage = 'lastMessage',
 }

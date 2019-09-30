@@ -11,6 +11,8 @@ import { PictureScreen } from '../screens/Picture';
 import { SearchScreen } from '../screens/Search';
 import { ExperimentsNavigator } from './ExperimentsNavigator';
 import { HomeRoutes } from './Routes';
+import { SearchChatPartnerScreen } from '../screens/Search/SearchChatPartnerScreen';
+import { NewConversationScreen } from '../screens/Conversation/NewConversationScreen';
 
 const Navigator = createAppContainer(createStackNavigator(
     {
@@ -24,6 +26,8 @@ const Navigator = createAppContainer(createStackNavigator(
         [HomeRoutes.NewsArticle]: { screen: NewsArticleScreen },
         [HomeRoutes.Pair]: { screen: PairScreen },
         [HomeRoutes.Conversation]: { screen: ConversationScreen },
+        [HomeRoutes.StartConversation]: { screen: SearchChatPartnerScreen },
+        [HomeRoutes.NewConversation]: { screen: NewConversationScreen },
     },
     {
         initialRouteName: HomeRoutes.Home,

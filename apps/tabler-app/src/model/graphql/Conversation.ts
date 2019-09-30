@@ -13,7 +13,14 @@ export interface Conversation_Conversation_messages_nodes {
   payload: any | null;
   senderId: number | null;
   receivedAt: any;
-  sent: boolean | null;
+  /**
+   * Message was delivered to the recipients
+   */
+  delivered: boolean | null;
+  /**
+   * Message was received by the server
+   */
+  accepted: boolean | null;
 }
 
 export interface Conversation_Conversation_messages {
@@ -24,6 +31,7 @@ export interface Conversation_Conversation_messages {
 
 export interface Conversation_Conversation {
   __typename: "Conversation";
+  id: string;
   messages: Conversation_Conversation_messages;
 }
 
@@ -32,5 +40,6 @@ export interface Conversation {
 }
 
 export interface ConversationVariables {
+  id: string;
   token?: string | null;
 }

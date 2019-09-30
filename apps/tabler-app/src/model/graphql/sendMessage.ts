@@ -13,7 +13,14 @@ export interface SendMessage_sendMessage {
   payload: any | null;
   senderId: number | null;
   receivedAt: any;
-  sent: boolean | null;
+  /**
+   * Message was delivered to the recipients
+   */
+  delivered: boolean | null;
+  /**
+   * Message was received by the server
+   */
+  accepted: boolean | null;
 }
 
 export interface SendMessage {
@@ -23,4 +30,5 @@ export interface SendMessage {
 export interface SendMessageVariables {
   id: string;
   message: string;
+  conversation: string;
 }

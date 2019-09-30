@@ -29,20 +29,22 @@ export class WebsocketEventManager {
     public marshall<T>(message: WebsocketEvent<T>): EncodedWebsocketEvent {
         return {
             id: message.id,
-            eventName: message.trigger,
+            eventName: message.eventName,
             sender: message.sender,
             payload: JSON.stringify(message.payload),
             pushNotification: message.pushNotification ? JSON.stringify(message.pushNotification) : undefined,
+            delivered: message.delivered,
         };
     }
 
     public unMarshall<T>(message: EncodedWebsocketEvent): WebsocketEvent<T> {
         return {
             id: message.id,
-            trigger: message.eventName,
+            eventName: message.eventName,
             sender: message.sender,
             payload: JSON.parse(message.payload),
             pushNotification: message.pushNotification ? JSON.parse(message.pushNotification) : undefined,
+            delivered: message.delivered,
         };
     }
 
@@ -69,31 +71,52 @@ export class WebsocketEventManager {
             : EMPTY_RESULT;
     }
 
+    public async markDelivered({ eventName, id }: WebsocketEvent<any>) {
+        logger.log('markDelivered', id);
+
+        await client.update({
+            TableName: EVENTS_TABLE,
+
+            Key: {
+                [FieldNames.trigger]: eventName,
+                [FieldNames.id]: id,
+            },
+
+            UpdateExpression: 'set delivered = :s',
+            ExpressionAttributeValues: {
+                ':s': true,
+            },
+        }).promise();
+    }
 
     public async post<T = any>(trigger: string, payload: T, push?: { sender?: number, message: PushNotificationBase<T> }, ttl?: number): Promise<WebsocketEvent<T>> {
         logger.log('postMessage', trigger, payload);
 
         const rawMessage = {
-            trigger,
             payload,
+            eventName: trigger,
             id: ulid(),
             pushNotification: push ? push.message : undefined,
             sender: push ? push.sender : undefined,
+            delivered: false,
         } as WebsocketEvent<T>;
 
         const message = this.marshall<T>(rawMessage);
 
         // dynamodb streams are not working offline so invoke lambda directly
         if (EXECUTING_OFFLINE) {
-            await publish({
-                Records: [{
-                    eventName: 'INSERT' as 'INSERT',
-                    // @ts-ignore
-                    dynamodb: {
-                        NewImage: message,
-                    },
-                }],
-            });
+            setTimeout(
+                () => publish({
+                    Records: [{
+                        eventName: 'INSERT' as 'INSERT',
+                        // @ts-ignore
+                        dynamodb: {
+                            NewImage: message,
+                        },
+                    }],
+                }),
+                500,
+            );
         }
 
         if (ttl) {

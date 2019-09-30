@@ -1,12 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import emojiRegexCreator from 'emoji-regex';
-import 'moment';
-import 'moment/locale/de';
 import React from 'react';
-import { Clipboard, Platform, View } from 'react-native';
+import { Clipboard, Platform, StyleSheet, View } from 'react-native';
 import { Bubble, Composer, LoadEarlier, Message, Send } from 'react-native-gifted-chat';
-import { Text, Theme, withTheme } from 'react-native-paper';
+import { Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../../helper/Logger';
+import { I18N } from '../../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
@@ -75,6 +74,9 @@ class ChatBase extends React.Component<Props> {
         );
     }
 
+    /**
+     * Make pure emojis bigger
+     */
     _renderMessage = (props) => {
         const { currentMessage: { text: currText } } = props;
         let messageTextStyle = {};
@@ -102,63 +104,21 @@ class ChatBase extends React.Component<Props> {
         );
     }
 
-    // _renderComposer = (props) => {
-
-    //     return (
-    //         <View style={{ flexDirection: 'row' }}>
-    //             <Composer {...props} />
-    //             {/* <CustomImageButton />
-    //             <CustomAttachButton /> */}
-    //         </View>
-    //     );
-    // }
-
     _renderSend = (props) => {
         return (
             <Send {...props}>
                 <Ionicons
-                    style={{
-                        marginBottom: 12,
-                        marginLeft: 10,
-                        marginRight: 10,
-                    }}
+                    style={styles.sendIcon}
                     size={20}
                     name="md-send"
                     color={this.props.theme.colors.accent}
                 />
             </Send>
-            // <View
-            //     style={{
-            //         height: 44,
-            //         justifyContent: 'flex-end',
-            //     }}
-            // >
-            //     <IconButton
-            //         icon="send"
-            //         color={this.props.theme.colors.accent}
-            //         onPress={() => {
-            //             if (text && onSend) {
-            //                 onSend({ text: text.trim() }, true);
-            //             }
-            //         }}
-            //     />
-            // </View>
         );
     }
 
     _renderComposer = (props) => {
         return (
-            // <View
-            //     style={{
-            //         flex: 1,
-            //         borderWidth: 1,
-            //         borderRadius: 16,
-            //         marginRight: 10,
-
-            //         paddingVertical: 8,
-            //         height: props.composerHeight + 16,
-            //     }}
-            // >
             <Composer
                 {...props}
                 textInputStyle={{
@@ -229,23 +189,21 @@ class ChatBase extends React.Component<Props> {
     }
 
     _renderTicks = (currentMessage: IChatMessage) => {
-        // const { _id, sent, received } = currentMessage;
-        // logger.debug('render', _id, sent, received);
-
         if (
-            currentMessage &&
-            (currentMessage.sent || currentMessage.received || currentMessage.pending)
+            currentMessage
+            && (currentMessage.sent || currentMessage.received || currentMessage.pending)
+            && !currentMessage.failedSend
         ) {
             return (
-                <View>
+                <View style={styles.tickView}>
                     {!!currentMessage.sent && (
-                        <Text>✓</Text>
+                        <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
                     )}
                     {!!currentMessage.received && (
-                        <Text>✓</Text>
+                        <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
                     )}
                     {!!currentMessage.pending && (
-                        <Text>🕓</Text>
+                        <Ionicons name="md-time" color={this.props.theme.colors.disabled} size={10} />
                     )}
                 </View>
             );
@@ -260,19 +218,10 @@ class ChatBase extends React.Component<Props> {
     }
 
     render() {
-        logger.debug('rendering');
-
         return (
             <View style={{ backgroundColor: this.props.theme.colors.background, flex: 1 }}>
                 <View
-                    style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: 33,
-                        backgroundColor: this.props.theme.colors.primary,
-                    }}
+                    style={[styles.footer, { backgroundColor: this.props.theme.colors.primary }]}
                 />
 
                 <FixedChat
@@ -281,9 +230,12 @@ class ChatBase extends React.Component<Props> {
 
                     // style={{ height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT }}
                     isAnimated={true}
-                    locale="en"
+                    locale={I18N.id}
 
                     onLongPress={this._onLongPress}
+
+                    dateFormat={'ddd D. MMM'}
+                    timeFormat={'hh:HH'}
 
                     extraData={this.props.extraData}
                     renderAvatar={null}
@@ -315,5 +267,27 @@ class ChatBase extends React.Component<Props> {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    sendIcon: {
+        marginBottom: 12,
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 33,
+    },
+    tick: {
+        fontSize: 10,
+    },
+    tickView: {
+        flexDirection: 'row',
+        marginRight: 10,
+    },
+});
 
 export const Chat = withTheme(ChatBase);

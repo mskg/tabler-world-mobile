@@ -1,5 +1,5 @@
 import { DataProxy } from 'apollo-cache';
-import { filter, uniqBy } from 'lodash';
+import { reverse, sortBy, uniqBy } from 'lodash';
 import 'moment';
 import 'moment/locale/de';
 import React from 'react';
@@ -14,8 +14,9 @@ import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
-import { newChatMessage } from '../../model/graphql/newChatMessage';
+import { newChatMessage, newChatMessageVariables } from '../../model/graphql/newChatMessage';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
+import { IConversationParams } from '../../redux/actions/navigation';
 import { Chat } from './Chat';
 import { GetConversationQuery } from './GetConversationQuery';
 import { newChatMessageSubscription } from './newChatMessageSubscription';
@@ -33,8 +34,11 @@ type State = {
     eof: boolean,
 };
 
+const PENDING = '_pending';
+const FAILED = '_failed';
+
 // tslint:disable: max-func-body-length
-class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<any>, State> {
+class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IConversationParams>, State> {
     ref: any;
 
     constructor(props) {
@@ -44,11 +48,10 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     _addMessage = (cache: DataProxy, { data: { sendMessage } }: any) => {
-        logger.debug('******* Update', sendMessage);
-
         // we always add to the end
         const variables = {
             token: undefined,
+            id: this.getConversationId(),
         };
 
         // Read the data from our cache for this query.
@@ -61,36 +64,42 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
             return;
         }
 
-        // cache has change detection, we only modify what we need
-        data.Conversation!.messages.nodes = [
-            sendMessage,
-            ...filter(
-                data.Conversation!.messages.nodes,
-                (f) => f!.id !== sendMessage.id,
-            ),
-        ];
+        const newArray = this.merge(
+            [sendMessage],
+            // we don't add the message if it is already there
+            data.Conversation!.messages.nodes,
+            true,
+        );
 
-        cache.writeQuery({
-            query: GetConversationQuery,
-            data,
-            variables,
-        });
+        if (newArray !== data.Conversation!.messages.nodes) {
+            // cache has change detection, we only modify what we need
+            data.Conversation!.messages.nodes = newArray;
+
+            cache.writeQuery({
+                query: GetConversationQuery,
+                data,
+                variables,
+            });
+        } else {
+            logger.log('Skipping update');
+        }
     }
 
-    _sendMessage = async (messages: IChatMessage[]) => {
+    _sendMessage = (messages: IChatMessage[]) => {
         const client = cachedAolloClient();
 
         const optimisticMessage = {
             __typename: 'ChatMessage',
+            eventId: PENDING,
             id: messages[0]._id,
             receivedAt: messages[0].createdAt || new Date(),
             senderId: messages[0].user._id,
             payload: messages[0].text,
-            eventId: '_sent',
-            sent: false,
+            delivered: false,
+            accepted: false,
         };
 
-        try {
+        requestAnimationFrame(async () => {
             // we don't use the optimistic UI here
             // because we want to keep the message if it fails
             this._addMessage(client, {
@@ -99,36 +108,85 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                 },
             });
 
-            await client.mutate<SendMessage, SendMessageVariables>({
-                mutation: SendMessageMutation,
-                variables: {
-                    id: optimisticMessage.id,
-                    message: optimisticMessage.payload,
-                },
+            this.setState({ redraw: {} });
 
-                update: this._addMessage,
+            requestAnimationFrame(async () => {
+                try {
+                    await client.mutate<SendMessage, SendMessageVariables>({
+                        mutation: SendMessageMutation,
+                        variables: {
+                            id: optimisticMessage.id,
+                            message: optimisticMessage.payload,
+                            conversation: this.getConversationId(),
+                        },
+
+                        update: this._addMessage,
+                    });
+                } catch (e) {
+                    logger.error(e, 'Failed to send message');
+
+                    // we don't use the optimistic UI here
+                    // because we want to keep the message if it fails
+                    this._addMessage(client, {
+                        data: {
+                            sendMessage: {
+                                ...optimisticMessage,
+                                eventId: FAILED,
+                            },
+                        },
+                    });
+                }
+
+                this.setState({ redraw: {} });
             });
-        } catch (e) {
-            // we don't use the optimistic UI here
-            // because we want to keep the message if it fails
-            this._addMessage(client, {
-                data: {
-                    sendMessage: {
-                        ...optimisticMessage,
-                        eventId: '_failed',
-                    },
-                },
-            });
+        });
+    }
+
+    merge<T extends { eventId: string, id: string }>(items: T[], list: T[], skipAdd = false): T[] {
+        if (skipAdd) {
+            const element = (list || []).find(
+                (f) => f.id === items[0].id
+                    && f.eventId !== FAILED
+                    && f.eventId !== PENDING,
+            );
+
+            if (element != null) {
+                logger.debug('skipping add', element);
+                return list;
+            }
         }
 
-        this.setState({ redraw: {} });
+        logger.debug('merging', items);
+
+        return reverse(
+            sortBy(
+                // unique keeps the first occurence
+                uniqBy(
+                    [
+                        ...(items || []),
+                        ...(list || []),
+                    ],
+                    (i) => i.id,
+                ),
+                // allows sorting
+                (i) => i.eventId,
+            ),
+        );
+    }
+
+    getConversationId() {
+        return (this.props.navigation.state.params as IConversationParams).id as string;
+    }
+
+    getTitle() {
+        return (this.props.navigation.state.params as IConversationParams).title as string;
     }
 
     render() {
         return (
             <ScreenWithHeader
                 header={{
-                    title: 'Max und Moritz',
+                    title: this.getTitle(),
                     showBack: true,
                 }}
             >
@@ -136,11 +194,12 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                 <Query<Conversation, ConversationVariables>
                     query={GetConversationQuery}
                     variables={{
+                        id: this.getConversationId(),
                         token: undefined,
                     }}
-                    fetchPolicy="cache-first"
+                    fetchPolicy="network-only"
                 >
-                    {({ client, loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
+                    {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
                         if (loading && (!data || !data.Conversation)) {
                             return <FullScreenLoading />;
                         }
@@ -155,30 +214,24 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                 extraData={this.state.redraw}
                                 subscribe={
                                     // we need to create a function that is executed once
-                                    () => subscribeToMore<newChatMessage, any>({
+                                    () => subscribeToMore<newChatMessage, newChatMessageVariables>({
                                         document: newChatMessageSubscription,
+                                        variables: {
+                                            conversation: this.getConversationId(),
+                                        },
                                         updateQuery: (prev, { subscriptionData }) => {
-                                            if (!subscriptionData.data) return prev;
-
-                                            return prev;
+                                            if (!subscriptionData.data || !subscriptionData.data.newChatMessage) { return prev; }
 
                                             const newFeedItem = subscriptionData.data.newChatMessage;
                                             logger.debug('received', newFeedItem);
 
+                                            requestAnimationFrame(() => this.setState({ redraw: {} }));
                                             return {
-                                                ...prev,
                                                 Conversation: {
                                                     ...prev.Conversation,
                                                     messages: {
                                                         ...prev.Conversation!.messages,
-                                                        nodes:
-                                                            uniqBy(
-                                                                [
-                                                                    newFeedItem,
-                                                                    ...prev.Conversation!.messages.nodes,
-                                                                ],
-                                                                (i) => i!.id,
-                                                            ),
+                                                        nodes: this.merge([newFeedItem], prev.Conversation!.messages.nodes),
                                                     },
                                                 },
                                             } as Conversation;
@@ -201,6 +254,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                         fetchMore({
                                             variables: {
                                                 token: messages.nextToken,
+                                                id: this.getConversationId(),
                                             },
 
                                             updateQuery: (previousResult, options) => {
@@ -217,7 +271,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                                                 logger.log('appending', fetchMoreResult.Conversation.messages.nodes.length);
 
-                                                setTimeout(() => this.setState({ loadingEarlier: false, eof: false, redraw: {} }));
+                                                requestAnimationFrame(() => this.setState({ loadingEarlier: false, eof: false, redraw: {} }));
                                                 return {
                                                     // There are bugs that the calls are excuted twice
                                                     // a lot of notes on the internet
@@ -225,13 +279,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                                         ...fetchMoreResult.Conversation,
                                                         messages: {
                                                             ...fetchMoreResult.Conversation.messages,
-                                                            nodes: uniqBy(
-                                                                [
-                                                                    ...prev.Conversation!.messages.nodes,
-                                                                    ...fetchMoreResult.Conversation.messages.nodes,
-                                                                ],
-                                                                (f) => f.id,
-                                                            ),
+                                                            nodes: this.merge(prev.Conversation!.messages.nodes, fetchMoreResult.Conversation.messages.nodes),
                                                         },
                                                     },
                                                 };
@@ -243,7 +291,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                 messages={
                                     (messages || { nodes: [] }).nodes.map((m: Conversation_Conversation_messages_nodes) => ({
                                         _id: m.id,
-                                        createdAt: m.eventId === '_failed' ? undefined : new Date(m.receivedAt),
+                                        createdAt: m.eventId === FAILED ? undefined : new Date(m.receivedAt),
 
                                         user: {
                                             _id: m.senderId,
@@ -251,9 +299,11 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                                         text: m.payload,
 
-                                        sent: m.sent ? true : false,
-                                        pending: m.eventId === '_sent' ? true : false,
-                                        failedSend: m.eventId === '_failed' ? true : false,
+                                        sent: m.accepted ? true : false,
+                                        received: m.delivered ? true : false,
+                                        pending: !m.accepted,
+
+                                        failedSend: m.eventId === FAILED ? true : false,
                                     } as IChatMessage))
                                 }
                             />

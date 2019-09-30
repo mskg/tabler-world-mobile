@@ -39,11 +39,79 @@ export class ConversationManager {
             : EMPTY_RESULT;
     }
 
+    public async conversation(conversation: string): Promise<any> {
+        logger.log(`[${conversation}]`, 'get');
 
-    public async subscribe(conversation: string, member: number[]) {
+        const { Item } = await client.get({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: 0,
+            },
+        }).promise();
+
+        return Item;
+    }
+
+    public async update(conversation: string, lastKey: string): Promise<void> {
+        logger.log(`[${conversation}]`, 'update', lastKey);
+
+        await client.update({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: 0,
+            },
+
+            UpdateExpression: `set ${FieldNames.lastMessage} = :s`,
+            ExpressionAttributeValues: {
+                ':s': lastKey,
+            },
+        }).promise();
+    }
+
+    public async removeMembers(conversation: string, member: number[]): Promise<void> {
+        logger.log(`[${conversation}]`, 'removeMembers', member);
+
+        await client.update({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: 0,
+            },
+
+            UpdateExpression: `DELETE ${FieldNames.members} :m`,
+            ExpressionAttributeValues: {
+                ':m': client.createSet(member),
+            },
+        }).promise();
+    }
+
+    public async addMembers(conversation: string, s: number[]): Promise<void> {
+        logger.log(`[${conversation}]`, 'addMembers', s);
+
+        await client.update({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: 0,
+            },
+
+            UpdateExpression: `ADD ${FieldNames.members} :m`,
+            ExpressionAttributeValues: {
+                ':m': client.createSet(s),
+            },
+        }).promise();
+    }
+
+    public async subscribe(conversation: string, member: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'subscribe', conversation, member);
 
-        return client.batchWrite({
+        await client.batchWrite({
             RequestItems: {
                 [CONVERSATIONS_TABLE]: member.map((m) => ({
                     PutRequest: {
@@ -55,12 +123,14 @@ export class ConversationManager {
                 })),
             },
         }).promise();
+
+        await this.addMembers(conversation, member);
     }
 
-    public async unsubscribe(conversation: string, member: number[]) {
+    public async unsubscribe(conversation: string, member: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'unsubscribe', member);
 
-        return client.batchWrite({
+        await client.batchWrite({
             RequestItems: {
                 [CONVERSATIONS_TABLE]: member.map((m) => ({
                     DeleteRequest: {
@@ -72,6 +142,8 @@ export class ConversationManager {
                 })),
             },
         }).promise();
+
+        await this.removeMembers(conversation, member);
     }
 
     public async getSubscribers(conversation: string): Promise<number[] | undefined> {
@@ -88,6 +160,8 @@ export class ConversationManager {
         }).promise();
 
         logger.log(`[${conversation}]`, 'getSubscribers', ConsumedCapacity);
-        return members ? members.map((m) => m[FieldNames.member] as number) : [];
+        return members
+            ? members.map((m) => m[FieldNames.member] as number).filter((m) => m !== 0)
+            : [];
     }
 }

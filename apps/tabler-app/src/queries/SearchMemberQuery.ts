@@ -9,6 +9,7 @@ export const SearchMemberQuery = gql`
             $roles: [String!],
             $clubs: [String!],
             $sectors: [CompanySector!]
+            $availableForChat: Boolean,
         ) {
         SearchMember(query: {
             text: $text,
@@ -16,6 +17,7 @@ export const SearchMemberQuery = gql`
             roles: $roles,
             clubs: $clubs,
             sectors: $sectors
+            availableForChat: $availableForChat
         }, after: $after) @connection(key: "SearchMember") {
             nodes {
                 ...MemberOverviewFragment

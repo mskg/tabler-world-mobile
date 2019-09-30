@@ -7,6 +7,7 @@ type SearchInput = {
     after: string,
     query: {
         text: string,
+        availableForChat: boolean,
 
         roles: string[],
         areas: string[],
@@ -55,7 +56,7 @@ export const SearchMemberResolver = {
             const terms = (args.query.text || '')
                 .split(' ')
                 .map((r) => r.trim())
-                .filter((r) => r != '')
+                .filter((r) => r !== '')
                 .map((r) => `%${r}%`);
 
             context.logger.log('Terms', terms, 'Args', args);
@@ -117,19 +118,25 @@ where
 )`);
             }
 
+            if (args.query.availableForChat) {
+                parameters.push(context.principal.id);
+                filters.push(`id in (select id from usersettings where array_length(tokens, 1) > 0 and id <> $${parameters.length})`);
+            }
+
             // context.logger.log("Query is", filters.join(' AND '));
 
             return useDataService(
                 context,
                 async (client) => {
-                    const res = await client.query(`
-select  ${cols.join(',')}
+                    const res = await client.query(
+                        `select  ${cols.join(',')}
 from profiles
 where
         ${filters.join(' AND ')}
 order by cursor_lastfirst
 limit $1`,
-                                                   parameters);
+                        parameters,
+                    );
 
                     const end = Math.min(PAGE_SIZE, res.rows.length);
                     context.logger.log('Size', end);

@@ -256,12 +256,12 @@ functions:
           - !Join
             - ''
             - - !GetAtt [ connectionsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !GetAtt [ subscriptionsTable, Arn ]
           - !Join
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !Join
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
@@ -270,7 +270,7 @@ functions:
           - !Join
             - ''
             - - !GetAtt [ channelsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !GetAtt [ subscriptionEventsTable, Arn ]
 
       - Effect: Allow
@@ -360,12 +360,12 @@ functions:
           - !Join
             - ''
             - - !GetAtt [ connectionsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !GetAtt [ subscriptionsTable, Arn ]
           - !Join
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !Join
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
@@ -374,7 +374,7 @@ functions:
           - !Join
             - ''
             - - !GetAtt [ channelsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !GetAtt [ subscriptionEventsTable, Arn ]
 
   #
@@ -417,21 +417,21 @@ functions:
           - !Join
             - ''
             - - !GetAtt [ connectionsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !GetAtt [ subscriptionsTable, Arn ]
           - !Join
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !Join
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/connection'
+              - '/index/*'
           - !GetAtt [ channelsTable, Arn ]
           - !Join
             - ''
             - - !GetAtt [ channelsTable, Arn ]
-              - '/index/reverse'
+              - '/index/*'
           - !GetAtt [ subscriptionEventsTable, Arn ]
 
       - Effect: Allow

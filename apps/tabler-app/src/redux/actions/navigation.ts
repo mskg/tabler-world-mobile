@@ -25,6 +25,12 @@ export interface IPictureParams {
     picture: string;
 }
 
+export interface IConversationParams {
+    id?: string;
+    title?: string;
+    member?: number;
+}
+
 export const showProfile = (tablerId: number) => NavigationActions.navigate({
     routeName: HomeRoutes.Member,
     key: 'tabler:' + tablerId.toString(),
@@ -87,4 +93,26 @@ export const showNewsArticle = (id: number) => NavigationActions.navigate({
     params: {
         id,
     } as INewsArticleParams,
+});
+
+export const startConversation = () => NavigationActions.navigate({
+    routeName: HomeRoutes.StartConversation,
+});
+
+export const newConversation = (member: number, title: string) => NavigationActions.navigate({
+    routeName: HomeRoutes.NewConversation,
+    key: `createconversation:${member}`,
+    params: {
+        member,
+        title,
+    } as IConversationParams,
+});
+
+export const showConversation = (id: string, title?: string) => NavigationActions.navigate({
+    routeName: HomeRoutes.Conversation,
+    key: `conversation:${id}`,
+    params: {
+        id,
+        title,
+    } as IConversationParams,
 });

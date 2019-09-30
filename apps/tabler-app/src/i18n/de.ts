@@ -1,5 +1,7 @@
 import { differenceInYears, format } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
+import 'moment';
+import 'moment/locale/de';
 import en, { I18NType } from './en';
 
 // tslint:disable-next-line: no-var-requires

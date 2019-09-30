@@ -8,6 +8,7 @@ export const handler: Handler<IDataQuery, any> = (event, _context, callback) => 
         if (isWarmer) {
             callback(null, { statusCode: 200, body: 'warmed' });
         } else {
+            console.log(event);
             useDatabase(
                 { logger: console },
                 (client) => client.query(event.text, event.parameters),

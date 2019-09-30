@@ -50,7 +50,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
         uri: wsApi,
         options: {
             reconnect: true,
-            lazy: true,
+            lazy: !__DEV__,
 
             connectionParams: async () => ({
                 Authorization: await getCurrentIdentity(),

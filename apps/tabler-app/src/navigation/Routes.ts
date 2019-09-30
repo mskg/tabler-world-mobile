@@ -10,6 +10,8 @@ export enum HomeRoutes {
     NewsArticle = 'newsarticle',
     Pair = 'pair',
     Conversation = 'conversation',
+    StartConversation = 'start_conversation',
+    NewConversation = 'new_conversation',
 }
 
 export enum MainRoutes {

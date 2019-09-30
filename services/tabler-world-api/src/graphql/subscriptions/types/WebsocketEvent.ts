@@ -1,9 +1,13 @@
 import { PushNotificationBase } from '@mskg/tabler-world-push-client';
 
-export type WebsocketEvent<T> = {
-    trigger: string;
+export type WebsocketEventBase = {
+    eventName: string;
     id: string;
     sender?: number,
+    delivered?: boolean,
+};
+
+export type WebsocketEvent<T> = {
     pushNotification?: PushNotificationBase<T>,
     payload: T;
-};
+} & WebsocketEventBase;

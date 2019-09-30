@@ -12,7 +12,9 @@ import { WebsocketEvent } from './types/WebsocketEvent';
 
 export const logger = new ConsoleLogger('publish/ws');
 
-export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>) {
+export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>): Promise<number[]> {
+    const failedDeliveries: number[] = [];
+
     const promises = subscriptions.map(async ({ connection: { connectionId, payload, principal }, subscriptionId }) => {
         try {
             logger.log(`[${connectionId}] [${subscriptionId}]`, 'working');
@@ -49,7 +51,10 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
 
             // we use pubsub in memory to distribute the messages
             // publiush message
-            pubsub.publish(event.trigger, event);
+            pubsub.publish(event.eventName, {
+                ...event,
+                delivered: true,
+            } as WebsocketEvent<any>);
 
             // run resolver
             const result: IteratorResult<ExecutionResult> = await nextValue;
@@ -63,6 +68,8 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                     if (err.statusCode === 410) { // this client has disconnected unsubscribe it
                         connectionManager.disconnect(connectionId);
                     }
+
+                    failedDeliveries.push(principal.id);
                 }
             }
         } catch (err) {
@@ -71,4 +78,5 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
     });
 
     await Promise.all(promises);
+    return failedDeliveries;
 }

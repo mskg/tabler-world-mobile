@@ -6,6 +6,8 @@ export const ChatMessageFragment = gql`
         payload
         senderId
         receivedAt
-        sent
+
+        delivered
+        accepted
     }
 `;

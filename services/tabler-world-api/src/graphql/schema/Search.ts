@@ -4,6 +4,7 @@ import { gql } from 'apollo-server-lambda';
 export const SearchMember = gql`
     input MemberQueryInput {
         text: String
+        availableForChat: Boolean
 
         sectors: [CompanySector!]
         roles: [String!]

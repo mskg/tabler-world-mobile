@@ -268,18 +268,29 @@ select id from userlocations
 where address is not null
 
 
+select * from usersettings
+
 update usersettings
 set settings = jsonb_set('{}', '{nearbymembers}', 'true')
 
 
 select * from usersettings
 
-update usersettings
+insert into usersettings
+
+
+
+insert into  usersettings(id, tokens)
+values (11024, ARRAY['ExponentPushToken[YsRXioICHlXL-1TELjEdHX]'])
+
 set settings = null
+
+select id from usersettings where tokens is not null
 
 
 select id from profiles
 where lastname = 'Steffen'
+and firstname = 'Daniel'
 
 select * from tabler
 where id = 8295
