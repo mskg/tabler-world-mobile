@@ -2,7 +2,7 @@ import { writeJobLog } from '@mskg/tabler-world-jobs';
 import { PushNotification } from '@mskg/tabler-world-push-client';
 import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { SQSHandler } from 'aws-lambda';
-import { flatMap, uniq } from 'lodash';
+import { filter, find, flatMap, map, uniq } from 'lodash';
 import { ExpoPushNotificationManager } from './services/ExpoPushNotificationManager';
 
 // we have a batchsize of 1, and max parallelism of 1
@@ -24,13 +24,20 @@ export const handler: SQSHandler = async (event, context) => {
                 return flatMap(payload.map((p) => {
                     const tokens = uniq(
                         flatMap(
-                            allTokens.rows
-                                .find((r) => r.id === p.member)
-                                .map((r: any) => r.tokens),
+                            map(
+                                find(allTokens.rows, (r) => r.id === p.member),
+                                (r: any) => r.tokens,
+                            ),
                         ),
                     ) as string[];
 
-                    return tokens.map((t: string) => mgr.convert(p, t));
+                    return map(
+                        filter(
+                            tokens,
+                            (t: string) => t != null && t !== '',
+                        ),
+                        (t: string) => mgr.convert(p, t),
+                    );
                 }));
             }));
 

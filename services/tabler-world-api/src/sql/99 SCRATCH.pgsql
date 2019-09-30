@@ -382,3 +382,6 @@ from
     tabler,
     jsonb_array_elements(tabler.data->'rt_global_positions') t
 where id in (8295, 10472)
+
+
+select id, tokens from usersettings where id = ANY(ARRAY[10430])
