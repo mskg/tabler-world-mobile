@@ -41,7 +41,7 @@ export const Chat = gql`
         id: ID!
         # owners: [Member!]!
 
-        lastMessage: String
+        hasUnreadMessages: Boolean!
         members: [Member!]!
         messages(token: String): ChatMessageIterator!
     }

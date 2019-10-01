@@ -1,8 +1,6 @@
-import { DynamoDB } from 'aws-sdk';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
-import { FieldNames } from '../subscriptions/services/Constants';
 import { pubsub } from '../subscriptions/services/pubsub';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
@@ -114,6 +112,17 @@ export const ChatResolver = {
                 },
             );
 
+            if (result.result.length > 0) {
+                conversationManager.updateLastSeen(
+                    channel,
+                    context.principal.id,
+                    encodeIdentifier(
+                        // highest message
+                        result.result[result.result.length - 1].id,
+                    ) as string,
+                );
+            }
+
             return {
                 nodes: result.result.map((m) => ({
                     // transport informationo
@@ -132,26 +141,31 @@ export const ChatResolver = {
         },
 
         // tslint:disable-next-line: variable-name
-        lastMessage: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+        hasUnreadMessages: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
-            const result = await conversationManager.getConversation(channel);
 
-            context.logger.log(result);
-            return result[FieldNames.lastMessage];
+            const user = await context.dataSources.conversations.readUserConversation(channel, context.principal.id);
+            const global = await context.dataSources.conversations.readConversation(channel);
+
+            context.logger.log(user, global);
+
+            if (user == null || global == null) { return true; }
+            if (!user.lastSeen && global.lastMessage) { return true; }
+            if (!global.lastMessage) { return false; }
+
+            // @ts-ignore
+            return user.lastSeen < global.lastMessage;
         },
 
         // tslint:disable-next-line: variable-name
         members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
-            const result = await conversationManager.getConversation(channel);
+            const result = await context.dataSources.conversations.readConversation(channel);
 
-            context.logger.log(result);
-
-            const members = result[FieldNames.members] as DynamoDB.DocumentClient.NumberSet;
-            if (!members || members.values.length === 0) return [];
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return []; }
 
             const values = members.values.filter((v) => v !== context.principal.id);
-
             return context.dataSources.members.readMany(values);
         },
     },
@@ -243,7 +257,9 @@ export const ChatResolver = {
                 params.ttl,
             );
 
+            // TOOD: cloud be combined into onewrite
             await conversationManager.update(trigger, channelMessage);
+            await conversationManager.updateLastSeen(trigger, context.principal.id, channelMessage.id);
 
             return {
                 ...channelMessage.payload,

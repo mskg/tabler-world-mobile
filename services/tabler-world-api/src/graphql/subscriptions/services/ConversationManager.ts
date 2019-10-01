@@ -1,5 +1,5 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
+import DynamoDB, { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
 import { dynamodb as client } from '../aws/dynamodb';
 import { WebsocketEvent } from '../types/WebsocketEvent';
 import { CONVERSATIONS_TABLE, FieldNames } from './Constants';
@@ -13,7 +13,14 @@ type PaggedResponse<T> = {
 
 const EMPTY_RESULT = { result: [] };
 
+export type UserConversation = {
+    lastSeen?: string,
+};
 
+export type Conversation = {
+    lastMessage?: string,
+    members?: DynamoDB.DocumentClient.NumberSet,
+};
 
 export class ConversationManager {
     public async getConversations(member: number, key?: Key): Promise<PaggedResponse<string>> {
@@ -51,7 +58,7 @@ export class ConversationManager {
             : EMPTY_RESULT;
     }
 
-    public async getConversation(conversation: string): Promise<any> {
+    public async getConversation(conversation: string): Promise<Conversation> {
         logger.log(`[${conversation}]`, 'get');
 
         const { Item } = await client.get({
@@ -63,9 +70,55 @@ export class ConversationManager {
             },
         }).promise();
 
-        return Item;
+        return Item as Conversation;
     }
 
+    public async getUserConversation(conversation: string, member: number): Promise<UserConversation> {
+        logger.log(`[${conversation}]`, 'getUserConversation', member);
+
+        const { Item } = await client.get({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: member,
+            },
+        }).promise();
+
+        return Item as UserConversation;
+    }
+
+    /**
+     * Updates the lastseen timestamp for a given conversation and memmber.
+     *
+     * @param conversation
+     * @param member
+     * @param lastSeen
+     */
+    public async updateLastSeen(conversation: string, member: number, lastSeen: string) {
+        logger.log(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
+
+        await client.update({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: member,
+            },
+
+            UpdateExpression: `SET ${FieldNames.lastSeen} = :l`,
+            ExpressionAttributeValues: {
+                ':l': lastSeen,
+            },
+        }).promise();
+    }
+
+    /**
+     * Updates conversation information with latest update
+     *
+     * @param conversation
+     * @param param1
+     */
     public async update(conversation: string, { id: eventId }: WebsocketEvent<any>): Promise<void> {
         logger.log(`[${conversation}]`, 'update', eventId);
 
@@ -90,19 +143,22 @@ export class ConversationManager {
             return;
         }
 
-        await client.batchWrite({
-            RequestItems: {
-                [CONVERSATIONS_TABLE]: result[FieldNames.members].values.map((member: number) => ({
-                    PutRequest: {
-                        Item: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: member,
-                            [FieldNames.lastConversation]: `${eventId}_${conversation}`,
+        const members = result[FieldNames.members].values;
+        if (members.length !== 0) {
+            await client.batchWrite({
+                RequestItems: {
+                    [CONVERSATIONS_TABLE]: members.map((member: number) => ({
+                        PutRequest: {
+                            Item: {
+                                [FieldNames.conversation]: conversation,
+                                [FieldNames.member]: member,
+                                [FieldNames.lastConversation]: `${eventId}_${conversation}`,
+                            },
                         },
-                    },
-                })),
-            },
-        }).promise();
+                    })),
+                },
+            });
+        }
     }
 
     public async removeMembers(conversation: string, members: number[]): Promise<void> {

@@ -39,6 +39,6 @@ subscriptionClient.onDisconnected(() => {
     logger.debug('disconnected');
 });
 
-subscriptionClient.onError((...err) => {
-    logger.error(err);
+subscriptionClient.onError((errors: any[]) => {
+    (errors || []).forEach((e) => logger.error(e.data));
 });

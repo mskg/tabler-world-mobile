@@ -18,4 +18,5 @@ export enum FieldNames {
     subscription = 'subscription',
     lastMessage = 'lastMessage',
     lastConversation = 'last_conversation',
+    lastSeen = 'lastSeen',
 }

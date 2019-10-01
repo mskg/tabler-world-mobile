@@ -5,7 +5,7 @@ export const GetConversationsQuery = gql`
     query GetConversations {
         Conversations {
             nodes {
-              lastMessage
+              hasUnreadMessages
               members {
                 ...MemberOverviewFragment
               }

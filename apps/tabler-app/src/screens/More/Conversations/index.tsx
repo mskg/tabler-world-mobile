@@ -1,7 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { StyleSheet } from 'react-native';
-import { Appbar, Theme, withTheme } from 'react-native-paper';
+import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../../components/Loading';
@@ -58,14 +59,29 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
                         return (
                             <ScrollView contentContainerStyle={styles.content}>
                                 {data.Conversations.nodes.map((l) => (
-                                    <MemberListItem
-                                        theme={this.props.theme}
-                                        key={l.id}
-                                        member={l.members[0]}
-                                        margin={0}
-                                        right={() => null}
-                                        onPress={() => this.props.showConversation(l.id, `${l.members[0].firstname} ${l.members[0].lastname}`)}
-                                    />
+                                    <React.Fragment key={l.id}>
+                                        <MemberListItem
+                                            theme={this.props.theme}
+
+                                            member={l.members[0]}
+                                            right={({ size }) => {
+                                                if (l.hasUnreadMessages) {
+                                                    return (
+                                                        <Ionicons
+                                                            name="md-chatbubbles"
+                                                            size={size}
+                                                            style={{ marginRight: 30 }}
+                                                            color={this.props.theme.colors.accent}
+                                                        />
+                                                    );
+                                                }
+
+                                                return null;
+                                            }}
+                                            onPress={() => this.props.showConversation(l.id, `${l.members[0].firstname} ${l.members[0].lastname}`)}
+                                        />
+                                        <Divider inset={true} />
+                                    </React.Fragment>
                                 ))}
                             </ScrollView>
                         );

@@ -56,7 +56,7 @@ export interface GetConversations_Conversations_nodes_members {
 
 export interface GetConversations_Conversations_nodes {
   __typename: "Conversation";
-  lastMessage: string | null;
+  hasUnreadMessages: boolean;
   members: GetConversations_Conversations_nodes_members[];
   id: string;
 }
