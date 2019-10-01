@@ -2,7 +2,7 @@ import { writeJobLog } from '@mskg/tabler-world-jobs';
 import { PushNotification } from '@mskg/tabler-world-push-client';
 import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { SQSHandler } from 'aws-lambda';
-import { filter, find, flatMap, map, uniq } from 'lodash';
+import { filter, flatMap, map, uniq } from 'lodash';
 import { ExpoPushNotificationManager } from './services/ExpoPushNotificationManager';
 
 // we have a batchsize of 1, and max parallelism of 1
@@ -21,15 +21,17 @@ export const handler: SQSHandler = async (event, context) => {
                     [payload.map((m) => m.member)],
                 );
 
+                const normalizedTokens: { [key: number]: string[] } = {};
+
+                for (const row of allTokens.rows) {
+                    // for whatever reason the id is a string?
+                    normalizedTokens[parseInt(row.id, 10)] = row.tokens;
+                }
+
+                console.log(normalizedTokens);
+
                 return flatMap(payload.map((p) => {
-                    const tokens = uniq(
-                        flatMap(
-                            map(
-                                find(allTokens.rows, (r) => r.id === p.member),
-                                (r: any) => r.tokens,
-                            ),
-                        ),
-                    ) as string[];
+                    const tokens = uniq(normalizedTokens[p.member] || []);
 
                     return map(
                         filter(
@@ -41,7 +43,10 @@ export const handler: SQSHandler = async (event, context) => {
                 }));
             }));
 
-            const sendResult = await mgr.send(flatMap(msgs));
+            const pushMessages = flatMap(msgs);
+            console.log(pushMessages);
+
+            const sendResult = await mgr.send(pushMessages);
 
             await writeJobLog(client, 'push::send', true, {
                 errors: sendResult.errors,

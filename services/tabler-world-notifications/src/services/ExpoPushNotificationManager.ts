@@ -1,8 +1,8 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { PushNotificationBase } from '@mskg/tabler-world-push-client';
-import { IDataService, useDataService } from '@mskg/tabler-world-rds-client';
+import { IDataService, useDatabase } from '@mskg/tabler-world-rds-client';
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
-import { putReceipts } from '../helper/putReceipts';
+import { putReceipts } from './putReceipts';
 import { removeToken } from './removeToken';
 
 const logger = new ConsoleLogger('PushNotificationManager');
@@ -73,7 +73,7 @@ export class ExpoPushNotificationManager {
         let errors = 0;
         let hardFails = 0;
 
-        return await useDataService({ logger }, async (client) => {
+        return await useDatabase({ logger }, async (client) => {
             // Send the chunks to the Expo push notification service.
             const chunks = this.expo.chunkPushNotifications(messages);
             for (const chunk of chunks) {
@@ -103,7 +103,7 @@ export class ExpoPushNotificationManager {
 
                             if (ticket.details.error === 'DeviceNotRegistered') {
                                 const pushToken = chunk[i].to;
-                                this.removeToken(client, pushToken);
+                                await this.removeToken(client, pushToken);
                             }
                         }
                     }

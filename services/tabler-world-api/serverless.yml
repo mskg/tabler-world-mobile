@@ -33,6 +33,7 @@ custom:
   connections_table: tabler-world-ws-connections-${self:custom.stage}
   subscriptions_table: tabler-world-ws-subscriptions-${self:custom.stage}
   conversations_table: tabler-world-chat-conversations-${self:custom.stage}
+  pushsubscriptions_table: tabler-world-push-subscriptions-${self:custom.stage}
   events_table: tabler-world-ws-events-${self:custom.stage}
 
   # api throtteling
@@ -266,12 +267,17 @@ functions:
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
               - '/index/connection'
-          - !GetAtt [ channelsTable, Arn ]
+          - !GetAtt [ conversationsTable, Arn ]
           - !Join
             - ''
-            - - !GetAtt [ channelsTable, Arn ]
+            - - !GetAtt [ conversationsTable, Arn ]
               - '/index/*'
-          - !GetAtt [ subscriptionEventsTable, Arn ]
+          - !GetAtt [ eventsTable, Arn ]
+          - !GetAtt [ pushSubscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ pushSubscriptionsTable, Arn ]
+              - '/index/*'
 
       - Effect: Allow
         Action:
@@ -370,12 +376,17 @@ functions:
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
               - '/index/connection'
-          - !GetAtt [ channelsTable, Arn ]
+          - !GetAtt [ conversationsTable, Arn ]
           - !Join
             - ''
-            - - !GetAtt [ channelsTable, Arn ]
+            - - !GetAtt [ conversationsTable, Arn ]
               - '/index/*'
-          - !GetAtt [ subscriptionEventsTable, Arn ]
+          - !GetAtt [ eventsTable, Arn ]
+          - !GetAtt [ pushSubscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ pushSubscriptionsTable, Arn ]
+              - '/index/*'
 
   #
   # publish messagees
@@ -392,7 +403,7 @@ functions:
           batchSize: 1
           startingPosition: LATEST
           arn: !GetAtt
-            - subscriptionEventsTable
+            - eventsTable
             - StreamArn
 
     iamRoleStatementsInherit: true
@@ -427,12 +438,17 @@ functions:
             - ''
             - - !GetAtt [ subscriptionsTable, Arn ]
               - '/index/*'
-          - !GetAtt [ channelsTable, Arn ]
+          - !GetAtt [ conversationsTable, Arn ]
           - !Join
             - ''
-            - - !GetAtt [ channelsTable, Arn ]
+            - - !GetAtt [ conversationsTable, Arn ]
               - '/index/*'
-          - !GetAtt [ subscriptionEventsTable, Arn ]
+          - !GetAtt [ eventsTable, Arn ]
+          - !GetAtt [ pushSubscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ pushSubscriptionsTable, Arn ]
+              - '/index/*'
 
       - Effect: Allow
         Action:
@@ -440,7 +456,7 @@ functions:
           - dynamodb:GetRecords
           - dynamodb:GetShardIterator
           - dynamodb:ListStreams
-        Resource: !GetAtt [ subscriptionEventsTable, StreamArn ]
+        Resource: !GetAtt [ eventsTable, StreamArn ]
 
       - Effect: Allow
         Action:
@@ -536,12 +552,12 @@ resources:
           AttributeName: ttl
           Enabled: true
 
-    channelsTable:
+    pushSubscriptionsTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Delete
       Properties:
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.conversations_table}
+        TableName: ${self:custom.pushsubscriptions_table}
 
         AttributeDefinitions:
           - AttributeName: conversation
@@ -562,9 +578,50 @@ resources:
               - AttributeName: conversation
                 KeyType: RANGE
             Projection:
-              ProjectionType: ALL
+              ProjectionType: KEYS_ONLY
 
-    subscriptionEventsTable:
+    conversationsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.conversations_table}
+
+        AttributeDefinitions:
+          - AttributeName: conversation
+            AttributeType: S
+          - AttributeName: memberId
+            AttributeType: N
+          - AttributeName: last_conversation
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: conversation
+            KeyType: HASH
+          - AttributeName: memberId
+            KeyType: RANGE
+
+        GlobalSecondaryIndexes:
+          # - IndexName: reverse
+          #   KeySchema:
+          #     - AttributeName: memberId
+          #       KeyType: HASH
+          #     - AttributeName: conversation
+          #       KeyType: RANGE
+          #   Projection:
+          #     ProjectionType: KEYS_ONLY
+
+          - IndexName: last_conversation
+            KeySchema:
+              - AttributeName: memberId
+                KeyType: HASH
+              - AttributeName: last_conversation
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+
+
+    eventsTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Delete
       Properties:

@@ -301,7 +301,7 @@ where id = 8295
 
 select * From tabler_roles
 where id in (
-select id from profiles
+select id, firstname from profiles
 where lastname = 'Walter'
 )
 
@@ -385,3 +385,23 @@ where id in (8295, 10472)
 
 
 select id, tokens from usersettings where id = ANY(ARRAY[10430])
+
+select * from usersettings
+
+update usersettings
+set tokens = ARRAY[
+    'ExponentPushToken[INjGqeNkm3SMBYSuCBz-Jq]'
+]
+
+
+UPDATE usersettings
+SET tokens =
+(
+    select array_agg(elem)
+    from unnest(tokens) elem
+    where elem <> 'ExponentPushToken[uCume-GY7Ftt-jfvaUy94M]' and elem is not null
+)
+
+WHERE tokens @> ARRAY['ExponentPushToken[uCume-GY7Ftt-jfvaUy94M]']
+
+select * from notification_receipts

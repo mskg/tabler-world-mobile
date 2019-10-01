@@ -543,7 +543,7 @@ const en = {
     },
 
     Conversations: {
-        title: 'Chats',
+        title: 'Conversations',
     },
 };
 

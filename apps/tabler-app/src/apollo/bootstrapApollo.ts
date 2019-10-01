@@ -13,8 +13,8 @@ import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedF
 import { fetchAuth, fetchAuthDemo } from './authLink';
 import { cache } from './cache';
 import { errorLink } from './errorLink';
-import { getCurrentIdentity } from './getCurrentIdentity';
 import { Resolvers } from './resolver';
+import { subscriptionClient } from './subscriptionClient';
 
 let client: ApolloClient<NormalizedCacheObject>;
 let persistor: CachePersistor<NormalizedCacheObject>;
@@ -27,6 +27,7 @@ export function cachedAolloClient() {
     return client;
 }
 
+// tslint:disable-next-line: max-func-body-length
 export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<NormalizedCacheObject>> {
     if (client != null && demoMode == null) return client;
 
@@ -45,18 +46,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
         fetch: !demoMode ? fetchAuth : fetchAuthDemo,
     });
 
-    const wsApi = getConfigValue('ws-api');
-    const wsLink = new WebSocketLink({
-        uri: wsApi,
-        options: {
-            reconnect: true,
-            lazy: !__DEV__,
-
-            connectionParams: async () => ({
-                Authorization: await getCurrentIdentity(),
-            }),
-        },
-    });
+    const wsLink = new WebSocketLink(subscriptionClient);
 
     const links = ApolloLink.from(
         [
@@ -97,7 +87,6 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
 
         resolvers: Resolvers,
 
-        /*
         defaultOptions: {
             mutate: {
                 errorPolicy: 'all',
@@ -112,7 +101,6 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 errorPolicy: 'all',
             },
         },
-        */
     });
 
     return client;

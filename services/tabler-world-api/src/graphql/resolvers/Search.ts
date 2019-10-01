@@ -1,3 +1,4 @@
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
 import { SECTOR_MAPPING } from '../helper/Sectors';
@@ -118,7 +119,8 @@ where
 )`);
             }
 
-            if (args.query.availableForChat) {
+            // we need some chat partners
+            if (args.query.availableForChat && !EXECUTING_OFFLINE) {
                 parameters.push(context.principal.id);
                 filters.push(`id in (select id from usersettings where array_length(tokens, 1) > 0 and id <> $${parameters.length})`);
             }

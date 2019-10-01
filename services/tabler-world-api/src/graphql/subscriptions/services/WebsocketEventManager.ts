@@ -2,7 +2,7 @@ import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { PushNotificationBase } from '@mskg/tabler-world-push-client';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { monotonicFactory } from 'ulid';
+import { ulid } from 'ulid';
 import { handler as publish } from '../../publishMessageLambda';
 import { dynamodb as client } from '../aws/dynamodb';
 import { EncodedWebsocketEvent } from '../types/EncodedWebsocketEvent';
@@ -23,7 +23,7 @@ type QueryOptions = {
 const EMPTY_RESULT = { result: [] };
 
 const logger = new ConsoleLogger('Event');
-const ulid = monotonicFactory();
+// const ulid = monotonicFactory();
 
 export class WebsocketEventManager {
     public marshall<T>(message: WebsocketEvent<T>): EncodedWebsocketEvent {

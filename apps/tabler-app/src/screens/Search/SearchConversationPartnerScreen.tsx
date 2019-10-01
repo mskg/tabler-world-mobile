@@ -2,6 +2,7 @@ import { debounce } from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
 import { Searchbar, Theme, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps, StackActions, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -13,8 +14,9 @@ import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { IAppState } from '../../model/IAppState';
+import { HomeRoutes } from '../../navigation/Routes';
 import { addTablerSearch } from '../../redux/actions/history';
-import { newConversation } from '../../redux/actions/navigation';
+import { IConversationParams } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
 import { logger } from './logger';
 import { OnlineSearchQuery } from './OnlineSearch';
@@ -40,12 +42,11 @@ type StateProps = {
 
 type DispatchPros = {
     addTablerSearch: typeof addTablerSearch;
-    newConversation: typeof newConversation;
 };
 
-type Props = OwnProps & StateProps & DispatchPros;
+type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
-class SearchChatPartnerScreenBase extends AuditedScreen<Props, State> {
+class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
     mounted = true;
 
     state: State = {
@@ -123,9 +124,21 @@ class SearchChatPartnerScreenBase extends AuditedScreen<Props, State> {
 
     _itemSelected = (item) => {
         this.props.addTablerSearch(this.state.query);
-        this.props.newConversation(
-            item.id,
-            `${item.firstname} ${item.lastname}`);
+
+        this.props.navigation.dispatch(
+            StackActions.replace({
+                routeName: HomeRoutes.StartConversation,
+                newKey: HomeRoutes.StartConversation,
+                params: {
+                    title: `${item.firstname} ${item.lastname}`,
+                    member: item.id,
+                } as IConversationParams,
+            }),
+        );
+
+        // this.props.newConversation(
+        //     item.id,
+        //     );
     }
 
     render() {
@@ -170,20 +183,21 @@ class SearchChatPartnerScreenBase extends AuditedScreen<Props, State> {
 }
 
 // tslint:disable-next-line: export-name
-export const SearchChatPartnerScreen = connect(
+export const SearchConversationPartnerScreen = connect(
     (state: IAppState) => ({
         sortBy: state.settings.sortByLastName ? 'lastname' : 'firstname',
         offline: state.connection.offline,
     }),
     {
         addTablerSearch,
-        newConversation,
     },
 )(
     withWhoopsErrorBoundary(
         withCacheInvalidation(
             'utility',
-            withTheme(SearchChatPartnerScreenBase),
+            withTheme(
+                withNavigation(SearchConversationPartnerScreenBase),
+            ),
         ),
     ),
 );

@@ -1,13 +1,27 @@
-type Reasons = 'birthday';
+type Reasons = 'birthday' | 'chatmessage';
 
-export interface INotificationPayload<T = void> {
+export interface INotificationWithPayload<T = void> {
     title?: string;
     body: string;
     reason: Reasons;
     payload: T;
 }
 
-export type BirthdayNotification = INotificationPayload<{
+export type BirthdayNotification = INotificationWithPayload<{
     date: Date,
     id: number,
+}>;
+
+enum MessageType {
+    text = 'text',
+}
+
+export type ChatMessageNotification = INotificationWithPayload<{
+    id: string,
+    senderId: number,
+    payload: any,
+    receivedAt: number,
+    type: MessageType,
+    eventId: string,
+    conversationId: string,
 }>;

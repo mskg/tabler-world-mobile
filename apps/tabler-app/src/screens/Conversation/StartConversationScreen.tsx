@@ -2,7 +2,7 @@ import 'moment';
 import 'moment/locale/de';
 import React from 'react';
 import { Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { NavigationInjectedProps, StackActions, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -11,7 +11,9 @@ import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
 import { StartConversation, StartConversationVariables } from '../../model/graphql/StartConversation';
+import { HomeRoutes } from '../../navigation/Routes';
 import { IConversationParams, showConversation } from '../../redux/actions/navigation';
+import { GetConversationsQuery } from '../More/Conversations/GetConversationsQuery';
 import { StartConversationMutation } from './StartConversationMutation';
 
 const logger = new Logger(Categories.Screens.Conversation);
@@ -22,7 +24,7 @@ type Props = {
 };
 
 // tslint:disable: max-func-body-length
-class NewConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IConversationParams>> {
+class StartConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IConversationParams>> {
     ref: any;
 
     constructor(props) {
@@ -41,10 +43,27 @@ class NewConversationScreenBase extends AuditedScreen<Props & NavigationInjected
             variables: {
                 member: member as number,
             },
+
+            refetchQueries: [{
+                query: GetConversationsQuery,
+            }],
         });
 
         logger.debug('New conversation', result);
-        this.props.showConversation(result.data!.startConversation.id, title);
+
+        this.props.navigation.dispatch(
+            StackActions.replace({
+                routeName: HomeRoutes.Conversation,
+
+                // key: HomeRoutes.SearchConversationPartner,
+                newKey: `${HomeRoutes.Conversation}:${result.data!.startConversation.id}`,
+
+                params: {
+                    title,
+                    id: result.data!.startConversation.id,
+                } as IConversationParams,
+            }),
+        );
     }
 
     render() {
@@ -64,11 +83,11 @@ class NewConversationScreenBase extends AuditedScreen<Props & NavigationInjected
 }
 
 // tslint:disable-next-line: export-name
-export const NewConversationScreen = connect(
+export const StartConversationScreen = connect(
     null,
     { showConversation },
 )(
     withTheme(
-        withNavigation(NewConversationScreenBase),
+        withNavigation(StartConversationScreenBase),
     ),
 );

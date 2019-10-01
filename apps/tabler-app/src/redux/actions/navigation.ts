@@ -33,7 +33,7 @@ export interface IConversationParams {
 
 export const showProfile = (tablerId: number) => NavigationActions.navigate({
     routeName: HomeRoutes.Member,
-    key: 'tabler:' + tablerId.toString(),
+    key: `${HomeRoutes.Member}:${tablerId}`,
     params: {
         tabler: tablerId,
     } as IProfileParams,
@@ -73,7 +73,7 @@ export const showLocationHistory = () => NavigationActions.navigate({
 
 export const showClub = (id: string) => NavigationActions.navigate({
     routeName: HomeRoutes.Club,
-    key: 'club:' + id,
+    key: `${HomeRoutes.Club}:${id}`,
     params: {
         club: id,
     } as IClubParams,
@@ -81,7 +81,7 @@ export const showClub = (id: string) => NavigationActions.navigate({
 
 export const showAlbum = (id: number) => NavigationActions.navigate({
     routeName: HomeRoutes.Album,
-    key: 'album:' + id,
+    key: `${HomeRoutes.Album}:${id}`,
     params: {
         album: id,
     } as IAlbumParams,
@@ -89,28 +89,20 @@ export const showAlbum = (id: number) => NavigationActions.navigate({
 
 export const showNewsArticle = (id: number) => NavigationActions.navigate({
     routeName: HomeRoutes.NewsArticle,
-    key: 'newsarticle:' + id,
+    key: `${HomeRoutes.NewsArticle}:${id}`,
     params: {
         id,
     } as INewsArticleParams,
 });
 
-export const startConversation = () => NavigationActions.navigate({
-    routeName: HomeRoutes.StartConversation,
-});
-
-export const newConversation = (member: number, title: string) => NavigationActions.navigate({
-    routeName: HomeRoutes.NewConversation,
-    key: `createconversation:${member}`,
-    params: {
-        member,
-        title,
-    } as IConversationParams,
+export const searchConversationPartner = () => NavigationActions.navigate({
+    key: HomeRoutes.SearchConversationPartner,
+    routeName: HomeRoutes.SearchConversationPartner,
 });
 
 export const showConversation = (id: string, title?: string) => NavigationActions.navigate({
     routeName: HomeRoutes.Conversation,
-    key: `conversation:${id}`,
+    key: `${HomeRoutes.Conversation}:${id}`,
     params: {
         id,
         title,

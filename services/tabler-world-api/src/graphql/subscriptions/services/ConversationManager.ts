@@ -1,6 +1,7 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
 import { dynamodb as client } from '../aws/dynamodb';
+import { WebsocketEvent } from '../types/WebsocketEvent';
 import { CONVERSATIONS_TABLE, FieldNames } from './Constants';
 
 const logger = new ConsoleLogger('Conversation');
@@ -11,6 +12,8 @@ type PaggedResponse<T> = {
 };
 
 const EMPTY_RESULT = { result: [] };
+
+
 
 export class ConversationManager {
     public async getConversations(member: number, key?: Key): Promise<PaggedResponse<string>> {
@@ -25,21 +28,30 @@ export class ConversationManager {
             ExpressionAttributeValues: {
                 ':member': member,
             },
-            IndexName: 'reverse',
+            IndexName: 'last_conversation',
 
-            ProjectionExpression: `${FieldNames.conversation}`,
+            ProjectionExpression: `${FieldNames.lastConversation}`,
+
             // newest channels on top
-            ScanIndexForward: true,
+            ScanIndexForward: false,
         }).promise();
 
-        logger.log('getChannels', member, ConsumedCapacity);
+        logger.log('getConversations', member, ConsumedCapacity);
 
         return channels
-            ? { nextKey, result: channels.map((m) => m[FieldNames.conversation]) as string[] }
+            ? {
+                nextKey,
+                result: channels.map((m) => {
+                    const combinedKey = m[FieldNames.lastConversation] as string;
+                    const [, conversation] = combinedKey.split('_');
+
+                    return conversation;
+                }) as string[],
+            }
             : EMPTY_RESULT;
     }
 
-    public async conversation(conversation: string): Promise<any> {
+    public async getConversation(conversation: string): Promise<any> {
         logger.log(`[${conversation}]`, 'get');
 
         const { Item } = await client.get({
@@ -54,10 +66,10 @@ export class ConversationManager {
         return Item;
     }
 
-    public async update(conversation: string, lastKey: string): Promise<void> {
-        logger.log(`[${conversation}]`, 'update', lastKey);
+    public async update(conversation: string, { id: eventId }: WebsocketEvent<any>): Promise<void> {
+        logger.log(`[${conversation}]`, 'update', eventId);
 
-        await client.update({
+        const { Attributes: result } = await client.update({
             TableName: CONVERSATIONS_TABLE,
 
             Key: {
@@ -67,13 +79,47 @@ export class ConversationManager {
 
             UpdateExpression: `set ${FieldNames.lastMessage} = :s`,
             ExpressionAttributeValues: {
-                ':s': lastKey,
+                ':s': eventId,
+            },
+
+            ReturnValues: 'ALL_NEW',
+        }).promise();
+
+        if (!result) {
+            logger.error('No result?');
+            return;
+        }
+
+        await client.batchWrite({
+            RequestItems: {
+                [CONVERSATIONS_TABLE]: result[FieldNames.members].values.map((member: number) => ({
+                    PutRequest: {
+                        Item: {
+                            [FieldNames.conversation]: conversation,
+                            [FieldNames.member]: member,
+                            [FieldNames.lastConversation]: `${eventId}_${conversation}`,
+                        },
+                    },
+                })),
             },
         }).promise();
     }
 
-    public async removeMembers(conversation: string, member: number[]): Promise<void> {
-        logger.log(`[${conversation}]`, 'removeMembers', member);
+    public async removeMembers(conversation: string, members: number[]): Promise<void> {
+        logger.log(`[${conversation}]`, 'removeMembers', members);
+
+        await client.batchWrite({
+            RequestItems: {
+                [CONVERSATIONS_TABLE]: members.map((member) => ({
+                    DeleteRequest: {
+                        Key: {
+                            [FieldNames.conversation]: conversation,
+                            [FieldNames.member]: member,
+                        },
+                    },
+                })),
+            },
+        }).promise();
 
         await client.update({
             TableName: CONVERSATIONS_TABLE,
@@ -85,13 +131,27 @@ export class ConversationManager {
 
             UpdateExpression: `DELETE ${FieldNames.members} :m`,
             ExpressionAttributeValues: {
-                ':m': client.createSet(member),
+                ':m': client.createSet(members),
             },
         }).promise();
     }
 
-    public async addMembers(conversation: string, s: number[]): Promise<void> {
-        logger.log(`[${conversation}]`, 'addMembers', s);
+    public async addMembers(conversation: string, members: number[]): Promise<void> {
+        logger.log(`[${conversation}]`, 'addMembers', members);
+
+        await client.batchWrite({
+            RequestItems: {
+                [CONVERSATIONS_TABLE]: members.map((member) => ({
+                    PutRequest: {
+                        Item: {
+                            [FieldNames.conversation]: conversation,
+                            [FieldNames.member]: member,
+                            [FieldNames.lastConversation]: `0_${conversation}`,
+                        },
+                    },
+                })),
+            },
+        }).promise();
 
         await client.update({
             TableName: CONVERSATIONS_TABLE,
@@ -103,65 +163,8 @@ export class ConversationManager {
 
             UpdateExpression: `ADD ${FieldNames.members} :m`,
             ExpressionAttributeValues: {
-                ':m': client.createSet(s),
+                ':m': client.createSet(members),
             },
         }).promise();
-    }
-
-    public async subscribe(conversation: string, member: number[]): Promise<void> {
-        logger.log(`[${conversation}]`, 'subscribe', conversation, member);
-
-        await client.batchWrite({
-            RequestItems: {
-                [CONVERSATIONS_TABLE]: member.map((m) => ({
-                    PutRequest: {
-                        Item: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: m,
-                        },
-                    },
-                })),
-            },
-        }).promise();
-
-        await this.addMembers(conversation, member);
-    }
-
-    public async unsubscribe(conversation: string, member: number[]): Promise<void> {
-        logger.log(`[${conversation}]`, 'unsubscribe', member);
-
-        await client.batchWrite({
-            RequestItems: {
-                [CONVERSATIONS_TABLE]: member.map((m) => ({
-                    DeleteRequest: {
-                        Key: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: m,
-                        },
-                    },
-                })),
-            },
-        }).promise();
-
-        await this.removeMembers(conversation, member);
-    }
-
-    public async getSubscribers(conversation: string): Promise<number[] | undefined> {
-        logger.log(`[${conversation}]`, 'getSubscribers');
-
-        const { Items: members, ConsumedCapacity } = await client.query({
-            TableName: CONVERSATIONS_TABLE,
-
-            ExpressionAttributeValues: {
-                ':conversation': conversation,
-            },
-            KeyConditionExpression: `${FieldNames.conversation} = :conversation`,
-            ProjectionExpression: `${FieldNames.member}`,
-        }).promise();
-
-        logger.log(`[${conversation}]`, 'getSubscribers', ConsumedCapacity);
-        return members
-            ? members.map((m) => m[FieldNames.member] as number).filter((m) => m !== 0)
-            : [];
     }
 }

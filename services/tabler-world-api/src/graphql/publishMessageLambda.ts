@@ -3,7 +3,8 @@ import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { DynamoDBStreamEvent } from 'aws-lambda';
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { filter } from 'lodash';
-import { conversationManager, eventManager, subscriptionManager } from './subscriptions';
+import { eventManager, pushSubscriptionManager, subscriptionManager } from './subscriptions';
+import { encodeIdentifier } from './subscriptions/encodeIdentifier';
 import { publishToActiveSubscriptions } from './subscriptions/publishToActiveSubscriptions';
 import { publishToPassiveSubscriptions } from './subscriptions/publishToPassiveSubscriptions';
 import { EncodedWebsocketEvent } from './subscriptions/types/EncodedWebsocketEvent';
@@ -28,19 +29,13 @@ export async function handler(event: DynamoDBStreamEvent) {
 
             const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];
 
-            // if (connections.length === 0 && subscribers.length === 0) {
-            //     logger.log('Channel', image.trigger, 'has no subscribers');
-            //     // dont' work for nothing
-            //     continue;
-            // }
-
             let failedDeliveries: number[] = [];
             if (subscriptions.length > 0) {
                 failedDeliveries = await publishToActiveSubscriptions(subscriptions, image);
             }
 
             if (image.pushNotification) {
-                const subscribers = await conversationManager.getSubscribers(image.eventName) || [];
+                const subscribers = await pushSubscriptionManager.getSubscribers(image.eventName) || [];
 
                 // all principals without a subscription, we need to send a push message to those
                 const missingPrincipals = filter(
@@ -54,7 +49,18 @@ export async function handler(event: DynamoDBStreamEvent) {
                 );
 
                 if (missingPrincipals.length > 0) {
-                    await publishToPassiveSubscriptions(missingPrincipals, image.pushNotification, image.payload);
+                    await publishToPassiveSubscriptions(
+                        missingPrincipals,
+                        image.pushNotification,
+                        {
+                            ...image.payload,
+
+                            // this is really bad. Needs a better place to
+                            // be independent of the transporting here
+                            eventId: image.id,
+                            conversationId: encodeIdentifier(image.eventName),
+                        },
+                    );
                 }
             }
 

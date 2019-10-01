@@ -1,5 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
-import { conversationManager, eventManager, subscriptionManager } from '../subscriptions';
+import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
+import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
+import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
 import { FieldNames } from '../subscriptions/services/Constants';
 import { pubsub } from '../subscriptions/services/pubsub';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
@@ -61,19 +63,6 @@ function checkChannelAccess(channel: string, member: number) {
     return decodeIdentifier(channel).match(new RegExp(`:${member}:`, 'g'));
 }
 
-function encodeIdentifier(token?: any) {
-    if (token == null) { return undefined; }
-    return Buffer.from(JSON.stringify(token)).toString('base64');
-}
-
-function decodeIdentifier(token?: string) {
-    // tslint:disable-next-line: possible-timing-attack
-    if (token == null || token === '') { return undefined; }
-    if (token.startsWith('CONV')) { return token; }
-
-    return JSON.parse(Buffer.from(token, 'base64').toString('ascii'));
-}
-
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
 export const ChatResolver = {
@@ -96,7 +85,6 @@ export const ChatResolver = {
             if (!checkChannelAccess(args.id as string, context.principal.id)) {
                 throw new Error(`Access denied (${args.id}, ${context.principal.id})`);
             }
-
 
             return {
                 id: decodeIdentifier(args.id as string),
@@ -146,7 +134,7 @@ export const ChatResolver = {
         // tslint:disable-next-line: variable-name
         lastMessage: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
-            const result = await conversationManager.conversation(channel);
+            const result = await conversationManager.getConversation(channel);
 
             context.logger.log(result);
             return result[FieldNames.lastMessage];
@@ -155,7 +143,7 @@ export const ChatResolver = {
         // tslint:disable-next-line: variable-name
         members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
-            const result = await conversationManager.conversation(channel);
+            const result = await conversationManager.getConversation(channel);
 
             context.logger.log(result);
 
@@ -181,6 +169,18 @@ export const ChatResolver = {
     },
 
     Mutation: {
+        // tslint:disable-next-line: variable-name
+        leaveConversation: async (_root: {}, { id }: IdArgs, context: IApolloContext) => {
+            if (!checkChannelAccess(id as string, context.principal.id)) {
+                throw new Error('Access denied.');
+            }
+
+            await conversationManager.removeMembers(id as string, [context.principal.id]);
+            await pushSubscriptionManager.unsubscribe(id as string, [context.principal.id]);
+
+            return true;
+        },
+
         startConversation: async (
             // tslint:disable-next-line: variable-name
             _root: {},
@@ -195,7 +195,9 @@ export const ChatResolver = {
 
             // make id stable
             const id = makeConversationKey([context.principal.id, args.member]);
-            await conversationManager.subscribe(id, [context.principal.id, args.member]);
+
+            await conversationManager.addMembers(id, [context.principal.id, args.member]);
+            await pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]);
 
             return {
                 id,
@@ -228,13 +230,20 @@ export const ChatResolver = {
                         title: `${member.firstname} ${member.lastname}`,
                         body: message.payload.length > 199 ? `${message.payload.substr(0, 197)}...` : message.payload,
                         reason: 'chatmessage',
+
+                        options: {
+                            sound: 'default',
+                            ttl: 60 * 60 * 24, // 24 hours in seconds
+                            priority: 'high',
+                        },
                     },
+
                     sender: context.principal.id,
                 },
                 params.ttl,
             );
 
-            await conversationManager.update(trigger, channelMessage.id);
+            await conversationManager.update(trigger, channelMessage);
 
             return {
                 ...channelMessage.payload,

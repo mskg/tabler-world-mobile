@@ -59,6 +59,8 @@ export const Chat = gql`
 
 	extend type Mutation {
         startConversation(member: Int!): Conversation!
+        leaveConversation(id: ID!): Boolean
+
 		sendMessage(message: SendMessageInput!): ChatMessage!
 	}
 

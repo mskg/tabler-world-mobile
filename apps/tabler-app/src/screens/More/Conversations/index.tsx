@@ -9,7 +9,7 @@ import { MemberListItem } from '../../../components/Member/MemberListItem';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { I18N } from '../../../i18n/translation';
 import { GetConversations } from '../../../model/graphql/GetConversations';
-import { showConversation, startConversation } from '../../../redux/actions/navigation';
+import { searchConversationPartner, showConversation } from '../../../redux/actions/navigation';
 import { GetConversationsQuery } from './GetConversationsQuery';
 
 type State = {
@@ -23,7 +23,7 @@ type StateProps = {
 };
 
 type DispatchPros = {
-    startConversation: typeof startConversation,
+    startConversation: typeof searchConversationPartner,
     showConversation: typeof showConversation,
 };
 
@@ -36,9 +36,8 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
             <ScreenWithHeader
                 header={{
                     showBack: true,
-                    title: I18N.Conversations.title,
                     content: [
-                        <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Members.title} />,
+                        <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Conversations.title} />,
                         <Appbar.Action key="new" icon="add" onPress={() => this.props.startConversation()} />,
                     ],
                 }}
@@ -79,7 +78,7 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
 
 export const ConversationsScreen = withTheme(connect(null, {
     showConversation,
-    startConversation,
+    startConversation: searchConversationPartner,
 })(ConversationsScreenBase));
 
 const styles = StyleSheet.create({
