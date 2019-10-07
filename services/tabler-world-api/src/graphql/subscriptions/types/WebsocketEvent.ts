@@ -10,4 +10,5 @@ export type WebsocketEventBase = {
 export type WebsocketEvent<T> = {
     pushNotification?: PushNotificationBase<T>,
     payload: T;
+    trackDelivery: boolean,
 } & WebsocketEventBase;

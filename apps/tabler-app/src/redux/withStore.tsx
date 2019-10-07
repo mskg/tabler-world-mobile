@@ -7,15 +7,17 @@ import { getReduxPersistor, getReduxStore, getSagaMiddleware } from './getRedux'
 export function withStore(WrappedComponent) {
     return class extends React.PureComponent {
         _runSagas = () => {
-          getSagaMiddleware().run(rootSaga);
-      }
+            getSagaMiddleware().run(rootSaga);
+        }
 
         render() {
-          return (<Provider store={getReduxStore()}>
-        <PersistGate persistor={getReduxPersistor()} onBeforeLift={this._runSagas}>
-          <WrappedComponent />
-        </PersistGate>
-      </Provider>);
-      }
+            return (
+                <Provider store={getReduxStore()}>
+                    <PersistGate persistor={getReduxPersistor()} onBeforeLift={this._runSagas}>
+                        <WrappedComponent />
+                    </PersistGate>
+                </Provider>
+            );
+        }
     };
 }

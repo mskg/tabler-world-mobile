@@ -65,6 +65,7 @@ export const Chat = gql`
 	}
 
 	type Subscription {
-		newChatMessage(conversation: ID!): ChatMessage
+		newChatMessage(conversation: ID!): ChatMessage!
+        conversationUpdate: Conversation!
 	}
 `;

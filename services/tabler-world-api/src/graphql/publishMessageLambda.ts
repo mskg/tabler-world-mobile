@@ -64,7 +64,9 @@ export async function handler(event: DynamoDBStreamEvent) {
                 }
             }
 
-            await eventManager.markDelivered(image);
+            if (image.trackDelivery) {
+                await eventManager.markDelivered(image);
+            }
         } catch (e) {
             logger.error(e);
         }

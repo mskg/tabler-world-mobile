@@ -34,6 +34,7 @@ export class WebsocketEventManager {
             payload: JSON.stringify(message.payload),
             pushNotification: message.pushNotification ? JSON.stringify(message.pushNotification) : undefined,
             delivered: message.delivered,
+            trackDelivery: message.trackDelivery,
         };
     }
 
@@ -45,6 +46,7 @@ export class WebsocketEventManager {
             payload: JSON.parse(message.payload),
             pushNotification: message.pushNotification ? JSON.parse(message.pushNotification) : undefined,
             delivered: message.delivered,
+            trackDelivery: message.trackDelivery,
         };
     }
 
@@ -89,15 +91,25 @@ export class WebsocketEventManager {
         }).promise();
     }
 
-    public async post<T = any>(trigger: string, payload: T, push?: { sender?: number, message: PushNotificationBase<T> }, ttl?: number): Promise<WebsocketEvent<T>> {
+    public async post<T = any>({ trigger, payload, pushNotification, ttl, trackDelivery = true }: {
+        trigger: string;
+        payload: T;
+        pushNotification?: {
+            sender?: number;
+            message: PushNotificationBase<T>;
+        };
+        trackDelivery?: boolean,
+        ttl?: number;
+    }): Promise<WebsocketEvent<T>> {
         logger.log('postMessage', trigger, payload);
 
         const rawMessage = {
+            trackDelivery,
             payload,
             eventName: trigger,
             id: ulid(),
-            pushNotification: push ? push.message : undefined,
-            sender: push ? push.sender : undefined,
+            pushNotification: pushNotification ? pushNotification.message : undefined,
+            sender: pushNotification ? pushNotification.sender : undefined,
             delivered: false,
         } as WebsocketEvent<T>;
 

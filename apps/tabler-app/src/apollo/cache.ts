@@ -52,8 +52,12 @@ export const cache = new InMemoryCache({
             Member: (_, args, { getCacheKey }) =>
                 getCacheKey({ __typename: 'Member', id: args.id }),
 
+            Conversation: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Conversation', id: args.id }),
+
             Members: (_, args, { getCacheKey }) =>
-                args.ids.map(id =>
+                args.ids.map((id) =>
+                    // tslint:disable-next-line: object-shorthand-properties-first
                     getCacheKey({ __typename: 'Member', id })),
         },
     },

@@ -9,7 +9,7 @@ const wsApi = getConfigValue('ws-api');
 export const subscriptionClient = new SubscriptionClient(
     wsApi,
     {
-        lazy: true,
+        lazy: !__DEV__,
         reconnect: true,
         reconnectionAttempts: Infinity,
 
@@ -19,26 +19,37 @@ export const subscriptionClient = new SubscriptionClient(
     },
 );
 
+subscriptionClient.use([{
+    applyMiddleware: (options, next) => {
+        logger.log('[WS] subscribe', options.operationName);
+        return next();
+    },
+}]);
+
 subscriptionClient.onConnecting(() => {
-    logger.debug('connecting');
+    logger.debug('[WS] connecting');
 });
 
 subscriptionClient.onConnected(() => {
-    logger.debug('connected');
+    logger.debug('[WS] connected');
 });
 
 subscriptionClient.onReconnecting(() => {
-    logger.debug('reconnecting');
+    logger.debug('[WS] econnecting');
 });
 
 subscriptionClient.onReconnected(() => {
-    logger.debug('reconnected');
+    logger.debug('r[WS] econnected');
 });
 
 subscriptionClient.onDisconnected(() => {
-    logger.debug('disconnected');
+    logger.debug('[WS] disconnected');
 });
 
-subscriptionClient.onError((errors: any[]) => {
-    (errors || []).forEach((e) => logger.error(e.data));
+subscriptionClient.onError((error: any) => {
+    logger.log('[WS] onError', error);
 });
+
+// if (__DEV__) {
+//     subscriptionClient.close(false, true);
+// }

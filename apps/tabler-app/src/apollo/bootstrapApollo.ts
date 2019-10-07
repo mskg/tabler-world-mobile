@@ -79,7 +79,6 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
         ].filter((f) => f != null) as ApolloLink[],
     );
 
-
     client = new ApolloClient({
         cache,
         link: links,

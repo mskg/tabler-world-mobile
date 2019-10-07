@@ -143,8 +143,8 @@ export class ConversationManager {
             return;
         }
 
-        const members = result[FieldNames.members].values;
-        if (members.length !== 0) {
+        const members = (result[FieldNames.members] || { values: null }).values;
+        if (members && members.length !== 0) {
             await client.batchWrite({
                 RequestItems: {
                     [CONVERSATIONS_TABLE]: members.map((member: number) => ({

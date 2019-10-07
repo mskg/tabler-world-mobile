@@ -5,7 +5,7 @@ import { checkNetwork, updateNetwork } from '../redux/actions/state';
 import { logger } from './state/logger';
 
 function networkState() {
-    return eventChannel(emit => {
+    return eventChannel((emit) => {
         logger.log('Waiting for app state changes');
 
         const handler = (connectionInfo: ConnectionInfo | ConnectionType) => {
@@ -30,6 +30,7 @@ function* init() {
     yield put(updateNetwork(ci));
 }
 
+// tslint:disable-next-line: export-name
 export function* networkSaga() {
     yield all([
         yield init(),

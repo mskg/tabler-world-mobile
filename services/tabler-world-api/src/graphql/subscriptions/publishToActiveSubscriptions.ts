@@ -1,6 +1,8 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
+import { DataSource } from 'apollo-datasource';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
+import { keys } from 'lodash';
 import { cacheInstance } from '../cache/cacheInstance';
 import { dataSources } from '../dataSources';
 import { executableSchema } from '../executableSchema';
@@ -14,6 +16,7 @@ export const logger = new ConsoleLogger('publish/ws');
 
 export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>): Promise<number[]> {
     const failedDeliveries: number[] = [];
+    const ds = dataSources();
 
     const promises = subscriptions.map(async ({ connection: { connectionId, payload, principal }, subscriptionId }) => {
         try {
@@ -25,19 +28,29 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
             }
 
             const document = parse(payload.query);
+            const context = {
+                connectionId,
+                principal,
+                dataSources: ds,
+                logger: new ConsoleLogger('publish', connectionId, principal.id),
+                cache: cacheInstance,
+                requestCache: {},
+            } as ISubscriptionContext;
+
+            keys(ds).forEach((k) => {
+                // @ts-ignore
+                (ds[k] as DataSource<any>).initialize({
+                    context,
+                    cache: cacheInstance,
+                });
+            });
+
             const iterable = await subscribe({
                 document,
                 schema: executableSchema,
                 operationName: payload.operationName,
                 variableValues: payload.variables,
-                contextValue: {
-                    connectionId,
-                    principal,
-                    dataSources: dataSources(),
-                    logger: new ConsoleLogger('publish', connectionId, principal.id),
-                    cache: cacheInstance,
-                    requestCache: {},
-                } as ISubscriptionContext,
+                contextValue: context,
             });
 
             if (!isAsyncIterable(iterable)) {
@@ -71,6 +84,8 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
 
                     failedDeliveries.push(principal.id);
                 }
+            } else {
+                logger.log('value is null');
             }
         } catch (err) {
             logger.error(`[${connectionId}] [${subscriptionId}]`, err);

@@ -4,6 +4,7 @@ import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
 import { pubsub } from '../subscriptions/services/pubsub';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
+import { withFilter } from '../subscriptions/utils/withFilter';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
 
@@ -52,14 +53,16 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
-function makeConversationKey(members: number[]) {
+function makeConversationKey(members: number[]): string {
     return `CONV(${members.sort().map((m) => `:${m}:`).join(',')})`;
 }
 
 // this is a very simple security check that is now sufficient in the 1:1 test
-function checkChannelAccess(channel: string, member: number) {
+function checkChannelAccess(channel: string, member: number): boolean {
     return decodeIdentifier(channel).match(new RegExp(`:${member}:`, 'g'));
 }
+
+const ALL_CONVERSATIONS_TOPIC = 'CONV:ALL';
 
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
@@ -230,36 +233,45 @@ export const ChatResolver = {
 
             const trigger = decodeIdentifier(message.conversationId);
             const params = await getChatParams();
-            const channelMessage = await eventManager.post<ChatMessage>(
+            const channelMessage = await eventManager.post<ChatMessage>({
                 trigger,
-                {
+                payload: ({
                     id: message.id,
                     senderId: context.principal.id,
                     payload: message.payload,
                     receivedAt: Date.now(),
                     type: MessageType.text,
-                } as ChatMessage,
-                {
+                } as ChatMessage),
+                pushNotification: {
                     message: {
                         title: `${member.firstname} ${member.lastname}`,
                         body: message.payload.length > 199 ? `${message.payload.substr(0, 197)}...` : message.payload,
                         reason: 'chatmessage',
-
                         options: {
                             sound: 'default',
-                            ttl: 60 * 60 * 24, // 24 hours in seconds
+                            ttl: 60 * 60 * 24,
                             priority: 'high',
                         },
                     },
-
                     sender: context.principal.id,
                 },
-                params.ttl,
-            );
+                ttl: params.ttl,
+                trackDelivery: true,
+            });
 
             // TOOD: cloud be combined into onewrite
             await conversationManager.update(trigger, channelMessage);
             await conversationManager.updateLastSeen(trigger, context.principal.id, channelMessage.id);
+
+            // Conversation did update
+            await eventManager.post<string>({
+                trigger: ALL_CONVERSATIONS_TOPIC,
+                // payload is the trigger
+                payload: trigger,
+                pushNotification: undefined,
+                ttl: params.ttl,
+                trackDelivery: false,
+            });
 
             return {
                 ...channelMessage.payload,
@@ -272,6 +284,40 @@ export const ChatResolver = {
     },
 
     Subscription: {
+        conversationUpdate: {
+            // tslint:disable-next-line: variable-name
+            subscribe: async (root: SubscriptionArgs, args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
+                // if we resolve, root is null
+                if (root) {
+                    await subscriptionManager.subscribe(
+                        context.connectionId,
+                        root.id,
+                        [ALL_CONVERSATIONS_TOPIC],
+                        context.principal,
+                        image.rootValue.payload,
+                    );
+                }
+
+                // this will be very very expensive
+                return withFilter(
+                    () => pubsub.asyncIterator(ALL_CONVERSATIONS_TOPIC),
+                    (event: WebsocketEvent<string>): boolean => {
+                        return checkChannelAccess(event.payload, context.principal.id);
+                        //     const channel = await conversationManager.getConversation(payload.eventName);
+                        //     return channel.members != null && (channel.members.values.find((m) => m === context.principal.id) != null);
+                    },
+                )(root, args, context, image);
+            },
+
+            // tslint:disable-next-line: variable-name
+            resolve: (channelMessage: WebsocketEvent<string>, _args: {}, _context: ISubscriptionContext) => {
+                return {
+                    // eventId: channelMessage.id,
+                    id: channelMessage.payload,
+                };
+            },
+        },
+
         newChatMessage: {
             // tslint:disable-next-line: variable-name
             resolve: (channelMessage: WebsocketEvent<ChatMessageWithTransport>, _args: {}, _context: ISubscriptionContext) => {

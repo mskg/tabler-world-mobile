@@ -109,7 +109,7 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
                     MessageTypes.GQL_CONNECTION_ERROR,
                 );
 
-                // connectionManager.forceDisconnect(connectionId);
+                connectionManager.forceDisconnect(connectionId);
                 return SUCCESS;
             }
 

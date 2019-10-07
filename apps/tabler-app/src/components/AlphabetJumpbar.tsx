@@ -154,11 +154,13 @@ export class AlphabeticScrollBar extends Component<AlphabeticScrollBarProps, Sta
                     </View>
 
                     {this.state.activeLetter && this.state.activeLetterViewTop
-                        ? <AlphabetSrollBarPointer
-                            letter={this.state.activeLetter}
-                            top={this.state.activeLetterViewTop}
-                            style={{ backgroundColor: this.props.fontColor }}
-                        />
+                        ? (
+                            <AlphabetSrollBarPointer
+                                letter={this.state.activeLetter}
+                                top={this.state.activeLetterViewTop}
+                                style={{ backgroundColor: this.props.fontColor }}
+                            />
+                        )
                         : null
                     }
                 </View>

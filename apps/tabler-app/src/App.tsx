@@ -25,6 +25,7 @@ import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
+import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
 import { registerFetchTask } from './tasks/Fetch';
 import { registerLocationTask } from './tasks/Location';
 import { registerForPushNotificationsAsync } from './tasks/Push';
@@ -80,6 +81,7 @@ const App = () => {
             </ActionSheetProvider>
             <Snacks />
             <PushNotifications />
+            <SubscribeToConversationUpdates />
             <Linking />
             <Loading />
         </React.Fragment>

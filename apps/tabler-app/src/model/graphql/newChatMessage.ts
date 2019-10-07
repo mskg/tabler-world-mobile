@@ -24,7 +24,7 @@ export interface newChatMessage_newChatMessage {
 }
 
 export interface newChatMessage {
-  newChatMessage: newChatMessage_newChatMessage | null;
+  newChatMessage: newChatMessage_newChatMessage;
 }
 
 export interface newChatMessageVariables {
