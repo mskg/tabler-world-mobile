@@ -227,6 +227,7 @@ const de: I18NType = {
             favadd: 'Zu Favoriten hinzufügen',
             remfav: 'Aus den Favoriten entfernen',
             contact: 'Ins Telefonbuch übertragen',
+            chat: 'Nachricht schicken',
 
             linkedin: 'Linkedin',
             facebook: 'Facebook',
@@ -486,6 +487,10 @@ const de: I18NType = {
 
     Feedback: {
         title: 'Feedback',
+    },
+
+    Conversations: {
+        title: 'Nachrichten',
     },
 };
 
