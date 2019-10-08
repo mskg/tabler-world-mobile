@@ -17,13 +17,9 @@
         "android": "emulator -avd expo -gpu host"
     },
     "workspaces": {
-        "nohoist": [
-            "expo",
-            "expo/**",
-            "react",
-            "react/**",
-            "react-native",
-            "react-native/**"
+        "packages": [
+            "../../packages/tabler-world-tslint-rules",
+            "../../packages/tabler-world-yarn-tools"
         ]
     },
     "dependencies": {
@@ -53,6 +49,7 @@
         "expo": "^35.0.0",
         "expo-analytics-amplitude": "^7.0.0",
         "expo-asset": "^7.0.0",
+        "expo-av": "^7.0.1",
         "expo-background-fetch": "^7.0.0",
         "expo-barcode-scanner": "^7.0.0",
         "expo-constants": "^7.0.0",
@@ -104,7 +101,7 @@
         "redux-persist": "^5.10.0",
         "redux-saga": "^1.0.5",
         "sentry-expo": "~2.0.0",
-        "subscriptions-transport-ws": "0.9.16",
+        "subscriptions-transport-ws": "file:../../packages/subscriptions-transport-ws",
         "tslib": "^1.9.3",
         "uuid4": "^1.1.4"
     },

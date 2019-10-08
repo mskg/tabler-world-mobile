@@ -65,7 +65,7 @@
         "deploy": "service deploy",
         "package": "service package",
         "remove": "service remove",
-        "dev": "service dev",
+        "dev": "yarn run dynamodb && service dev",
         "test": "jest",
         "start": "ntl",
         "dynamodb": "run-env sls dynamodb install"
