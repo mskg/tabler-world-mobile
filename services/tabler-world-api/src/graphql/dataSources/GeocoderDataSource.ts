@@ -4,8 +4,8 @@ import DataLoader from 'dataloader';
 import { IApolloContext } from '../types/IApolloContext';
 
 export class GeocoderDataSource extends DataSource<IApolloContext> {
-    public context!: IApolloContext;
-    public data!: DataLoader<string, any>;
+    private context!: IApolloContext;
+    private data!: DataLoader<string, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -18,7 +18,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
                     ST_X (point::geometry) AS longitude,
                     ST_Y (point::geometry) AS latitude
                 from geocodes where hash = ANY($1)`,
-                                               [ids]);
+                    [ids]);
 
                 // this.context.logger.log(ids, res.rows);
                 return ids.map((id) => res.rows.find((r) => r.hash == id));

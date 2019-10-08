@@ -108,3 +108,12 @@ export const showConversation = (id: string, title?: string) => NavigationAction
         title,
     } as IConversationParams,
 });
+
+export const startConversation = (id: number, title: string) => NavigationActions.navigate({
+    routeName: HomeRoutes.StartConversation,
+    key: HomeRoutes.StartConversation,
+    params: {
+        title,
+        member: id,
+    } as IConversationParams,
+});

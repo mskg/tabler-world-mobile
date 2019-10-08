@@ -1,3 +1,4 @@
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
@@ -93,6 +94,16 @@ export const ChatResolver = {
         },
     },
 
+    Member: {
+        availableForChat: (root: { id: number }, _args: {}, context: IApolloContext) => {
+            if (EXECUTING_OFFLINE) { return true; }
+
+            return root.id !== context.principal.id
+                ? context.dataSources.conversations.isMemberAvailableForChat(root.id)
+                : false;
+        },
+    },
+
     Conversation: {
         id: (root: { id: string }) => {
             return encodeIdentifier(root.id);
@@ -124,6 +135,16 @@ export const ChatResolver = {
                         result.result[result.result.length - 1].id,
                     ) as string,
                 );
+
+                // Conversation did update
+                await eventManager.post<string>({
+                    trigger: ALL_CONVERSATIONS_TOPIC,
+                    // payload is the trigger
+                    payload: channel,
+                    pushNotification: undefined,
+                    ttl: params.ttl,
+                    trackDelivery: false,
+                });
             }
 
             return {

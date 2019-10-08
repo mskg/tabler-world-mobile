@@ -1,5 +1,4 @@
 import { cachedDataLoader, makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
-import { ILogger } from '@mskg/tabler-world-common';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
@@ -65,16 +64,14 @@ type AssocKey = {
 };
 
 export class StructureDataSource extends DataSource<IApolloContext> {
-    public context!: IApolloContext;
-    public logger!: ILogger;
+    private context!: IApolloContext;
 
-    public associationLoader!: DataLoader<string, any>;
-    public clubLoader!: DataLoader<AssocKey, any>;
-    public areaLoader!: DataLoader<AssocKey, any>;
+    private associationLoader!: DataLoader<string, any>;
+    private clubLoader!: DataLoader<AssocKey, any>;
+    private areaLoader!: DataLoader<AssocKey, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
-        this.logger = config.context.logger;
 
         this.associationLoader = new DataLoader<string, any>(
             cachedDataLoader<string>(
@@ -91,7 +88,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     from structure_associations
     where
         association = ANY($1)
-    `,                                                 [ids]);
+    `, [ids]);
 
                         return res.rows;
                     },
@@ -119,7 +116,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     where
         association = $1
     and area = ANY($2)
-    `,                                                 [ids[0].association, ids.map(i => i.id)]);
+    `, [ids[0].association, ids.map(i => i.id)]);
 
                         return res.rows;
                     },
@@ -148,7 +145,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     where
         association = $1
     and club = ANY($2)
-    `,                                                 [ids[0].association, ids.map(i => i.id)]);
+    `, [ids[0].association, ids.map(i => i.id)]);
 
                         return res.rows;
                     },
@@ -175,7 +172,7 @@ select *
 from structure_clubs
 where
     association = $1
-`,                                                 [this.context.principal.association]);
+`, [this.context.principal.association]);
 
                     return res.rows;
                 },
@@ -198,7 +195,7 @@ select *
 from structure_areas
 where
     association = $1
-`,                                                 [assoc || this.context.principal.association]);
+`, [assoc || this.context.principal.association]);
 
                     return res.rows;
                 },

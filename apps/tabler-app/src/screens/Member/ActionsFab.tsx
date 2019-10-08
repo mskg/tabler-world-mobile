@@ -17,6 +17,7 @@ import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
+import { startConversation } from '../../redux/actions/navigation';
 
 type Props = {
     top?: number,
@@ -25,6 +26,7 @@ type Props = {
     theme: Theme,
 
     toggleFavorite: typeof toggleFavorite,
+    startConversation: typeof startConversation,
     favorites: HashMap<boolean>,
 };
 
@@ -50,6 +52,11 @@ class ActionsFabBase extends React.Component<Props> {
         );
     }
 
+    _chat = async () => {
+        const { member } = this.props;
+        this.props.startConversation(member.id, `${member.firstname} ${member.lastname}`);
+    }
+
     _contact = async () => {
         const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
@@ -64,13 +71,14 @@ class ActionsFabBase extends React.Component<Props> {
                     shouldShowLinkedContacts: true,
                     allowsEditing: true,
                     allowsActions: true,
-                }
+                },
             );
         }
     }
 
     render() {
         const isFav = testIsFavorite(this.props.member, this.props.favorites);
+        const canChat = this.props.member.availableForChat;
 
         return (
             // <Portal>
@@ -105,6 +113,14 @@ class ActionsFabBase extends React.Component<Props> {
                             onPress: this._handleWeb,
                         }
                         : undefined,
+
+                    canChat
+                        ? {
+                            icon: 'chat',
+                            label: I18N.Member.Actions.chat,
+                            onPress: this._chat,
+                        }
+                        : undefined,
                 ].filter(Boolean) as Action[]}
                 onStateChange={({ open }) => this.setState({ open })}
             />
@@ -117,5 +133,6 @@ export const ActionsFab = connect(
     (state: IAppState) => ({ favorites: state.filter.member.favorites }),
     {
         toggleFavorite,
+        startConversation,
     },
 )(withTheme(ActionsFabBase));

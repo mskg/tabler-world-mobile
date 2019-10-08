@@ -4,31 +4,36 @@ import 'moment';
 import 'moment/locale/de';
 import React from 'react';
 import { Query } from 'react-apollo';
+import { Platform, View } from 'react-native';
 import { IChatMessage } from 'react-native-gifted-chat';
-import { Theme, withTheme } from 'react-native-paper';
+import { Appbar, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { FullScreenLoading } from '../../components/Loading';
+import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
-import { Conversation, ConversationVariables, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
+import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
 import { newChatMessage, newChatMessageVariables } from '../../model/graphql/newChatMessage';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
 import { GetConversationQuery } from '../../queries/GetConversationQuery';
 import { newChatMessageSubscription } from '../../queries/newChatMessageSubscription';
 import { SendMessageMutation } from '../../queries/SendMessageMutation';
-import { IConversationParams } from '../../redux/actions/navigation';
+import { IConversationParams, showProfile } from '../../redux/actions/navigation';
 import { Chat } from './Chat';
 
 const logger = new Logger(Categories.Screens.Conversation);
 
 type Props = {
     theme: Theme,
+    showProfile: typeof showProfile,
 };
 
 type State = {
+    icon?: React.ReactElement,
     redraw?: any,
     loadingEarlier: boolean,
     eof: boolean,
@@ -182,12 +187,42 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         return (this.props.navigation.state.params as IConversationParams).title as string;
     }
 
+    showProfile() {
+        const client = cachedAolloClient();
+        const result = client.readQuery<Conversation, ConversationVariables>({
+            query: GetConversationQuery,
+            variables: {
+                id: this.getConversationId(),
+            },
+        });
+
+        if (result) {
+            this.props.showProfile(result.Conversation!.members[0].id);
+        }
+    }
+
+    assignIcon(member: Conversation_Conversation_members) {
+        if (this.state.icon != null || !member.pic) { return; }
+
+        this.setState({
+            icon: (
+                <View key="icon" style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <MemberAvatar member={member} />
+                    <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.medium, fontSize: Platform.OS === 'ios' ? 17 : 20 }}>{this.getTitle()}</Text>
+                </View>
+            ),
+        });
+    }
+
     render() {
         return (
             <ScreenWithHeader
                 header={{
-                    title: this.getTitle(),
                     showBack: true,
+                    content: [
+                        this.state.icon || <Appbar.Content key="cnt" style={{ paddingLeft: this.state.icon ? 0 : 12 }} titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={this.getTitle()} />,
+                        <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
+                    ],
                 }}
             >
                 {/* <View style={[styles.container, { backgroundColor: this.props.theme.colors.surface }]}> */}
@@ -207,6 +242,9 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                         let messages;
                         if (data && data.Conversation && data.Conversation.messages) {
                             messages = data.Conversation.messages;
+
+                            const member = data.Conversation.members[0];
+                            setTimeout(() => this.assignIcon(member));
                         }
 
                         return (
@@ -315,4 +353,6 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 }
 
-export const ConversationScreen = withTheme(withNavigation(ConversationScreenBase));
+export const ConversationScreen = connect(
+    null, { showProfile },
+)(withTheme(withNavigation(ConversationScreenBase)));

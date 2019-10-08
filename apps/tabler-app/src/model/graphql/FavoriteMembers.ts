@@ -119,6 +119,7 @@ export interface FavoriteMembers_FavoriteMembers {
   roles: FavoriteMembers_FavoriteMembers_roles[] | null;
   birthdate: any | null;
   partner: string | null;
+  availableForChat: boolean | null;
   emails: FavoriteMembers_FavoriteMembers_emails[] | null;
   phonenumbers: FavoriteMembers_FavoriteMembers_phonenumbers[] | null;
   rtemail: string | null;

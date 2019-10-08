@@ -27,8 +27,8 @@ const cols = [
 ];
 
 export class MembersDataSource extends DataSource<IApolloContext> {
-    public context!: IApolloContext;
-    public memberLoader!: DataLoader<number, any>;
+    private context!: IApolloContext;
+    private memberLoader!: DataLoader<number, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;

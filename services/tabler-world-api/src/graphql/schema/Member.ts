@@ -159,6 +159,8 @@ export const Member = gql`
         socialmedia: SocialMedia
         educations: [Education!]
         companies: [Company!]
+
+        availableForChat: Boolean
     }
 
     input MemberFilterInput {

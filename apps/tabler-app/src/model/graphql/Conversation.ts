@@ -6,6 +6,14 @@
 // GraphQL query operation: Conversation
 // ====================================================
 
+export interface Conversation_Conversation_members {
+  __typename: "Member";
+  id: number;
+  lastname: string | null;
+  firstname: string | null;
+  pic: string | null;
+}
+
 export interface Conversation_Conversation_messages_nodes {
   __typename: "ChatMessage";
   id: string;
@@ -32,6 +40,7 @@ export interface Conversation_Conversation_messages {
 export interface Conversation_Conversation {
   __typename: "Conversation";
   id: string;
+  members: Conversation_Conversation_members[];
   messages: Conversation_Conversation_messages;
 }
 

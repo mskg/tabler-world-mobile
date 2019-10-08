@@ -9,6 +9,7 @@ export const MemberDetailsFragment = gql`
 
         birthdate
         partner
+        availableForChat
 
         emails {
             type

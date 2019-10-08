@@ -119,6 +119,7 @@ export interface MemberDetailsFragment {
   roles: MemberDetailsFragment_roles[] | null;
   birthdate: any | null;
   partner: string | null;
+  availableForChat: boolean | null;
   emails: MemberDetailsFragment_emails[] | null;
   phonenumbers: MemberDetailsFragment_phonenumbers[] | null;
   rtemail: string | null;

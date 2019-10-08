@@ -1,3 +1,4 @@
+import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { conversationManager } from '../subscriptions';
@@ -5,9 +6,12 @@ import { Conversation, UserConversation } from '../subscriptions/services/Conver
 import { IApolloContext } from '../types/IApolloContext';
 
 export class ConversationsDataSource extends DataSource<IApolloContext> {
-    public context!: IApolloContext;
-    public conversations!: DataLoader<string, any>;
-    public userConversations!: DataLoader<{ id: string, member: number }, any>;
+    private context!: IApolloContext;
+
+    private conversations!: DataLoader<string, any>;
+    private userConversations!: DataLoader<{ id: string, member: number }, any>;
+    private userProperties!: DataLoader<number, any>;
+
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -25,6 +29,25 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
                 cacheKeyFn: (k: { id: string, member: number }) => `${k.id}:${k.member}`,
             },
         );
+
+        this.userProperties = new DataLoader<number, any>(
+            (ids: number[]) => useDataService(this.context, async (client) => {
+                const res = await client.query(
+                    `select id from usersettings where id = ANY($1) and array_length(tokens, 1) > 0`,
+                    [ids],
+                );
+
+                return ids.map((id) => res.rows.find((r) => r.id === id) != null);
+            }),
+            {
+                cacheKeyFn: (k: number) => k,
+            },
+        );
+    }
+
+    public async isMemberAvailableForChat(id: number): Promise<boolean> {
+        this.context.logger.log('isMemberAvailableForChat', id);
+        return this.userProperties.load(id);
     }
 
     public async readConversation(id: string): Promise<Conversation | null> {

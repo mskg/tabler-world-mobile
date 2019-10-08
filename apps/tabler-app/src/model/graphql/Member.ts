@@ -119,6 +119,7 @@ export interface Member_Member {
   roles: Member_Member_roles[] | null;
   birthdate: any | null;
   partner: string | null;
+  availableForChat: boolean | null;
   emails: Member_Member_emails[] | null;
   phonenumbers: Member_Member_phonenumbers[] | null;
   rtemail: string | null;

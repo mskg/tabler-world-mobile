@@ -225,6 +225,7 @@ const en = {
             favadd: 'Add to Favorites',
             remfav: 'Remove from Favorites',
             contact: 'Update Phonebook',
+            chat: 'Send Message',
 
             linkedin: 'linkedin',
             facebook: 'facebook',
@@ -543,7 +544,7 @@ const en = {
     },
 
     Conversations: {
-        title: 'Conversations',
+        title: 'Messages',
     },
 };
 
