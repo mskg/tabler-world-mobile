@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { MemberOverviewFragment } from '../../../queries/MemberOverviewFragment';
+import { MemberOverviewFragment } from './MemberOverviewFragment';
 
 export const GetConversationsQuery = gql`
     query GetConversations {

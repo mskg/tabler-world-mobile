@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+
 export const ChatMessageFragment = gql`
     fragment ChatMessageFragment on ChatMessage {
         id

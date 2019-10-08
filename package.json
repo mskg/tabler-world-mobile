@@ -9,10 +9,13 @@
         "build-cache": "yarn workspace @mskg/tabler-world-cache run build",
         "dev-backend": "concurrently --kill-others -n SQL,DYO,API 'yarn workspace @mskg/tabler-world-data-service dev' 'yarn workspace @mskg/tabler-world-import dynamodb' 'yarn workspace @mskg/tabler-world-api dev'"
     },
-    "workspaces": [
-        "packages/*",
-        "services/*"
-    ],
+    "workspaces": {
+        "packages": [
+            "apps/*",
+            "packages/*",
+            "services/*"
+        ]
+    },
     "devDependencies": {
         "concurrently": "^4.1.2"
     },

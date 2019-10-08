@@ -16,11 +16,11 @@ import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
 import { newChatMessage, newChatMessageVariables } from '../../model/graphql/newChatMessage';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
+import { GetConversationQuery } from '../../queries/GetConversationQuery';
+import { newChatMessageSubscription } from '../../queries/newChatMessageSubscription';
+import { SendMessageMutation } from '../../queries/SendMessageMutation';
 import { IConversationParams } from '../../redux/actions/navigation';
 import { Chat } from './Chat';
-import { GetConversationQuery } from './GetConversationQuery';
-import { newChatMessageSubscription } from './newChatMessageSubscription';
-import { SendMessageMutation } from './SendMessageMutation';
 
 const logger = new Logger(Categories.Screens.Conversation);
 

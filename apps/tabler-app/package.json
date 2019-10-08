@@ -17,12 +17,13 @@
         "android": "emulator -avd expo -gpu host"
     },
     "workspaces": {
-        "packages": [
-            "../../packages/tabler-world-tslint-rules",
-            "../../packages/tabler-world-yarn-tools"
-        ],
         "nohoist": [
-            "../../packages/subscriptions-transport-ws"
+            "expo",
+            "expo/**",
+            "react",
+            "react/**",
+            "react-native",
+            "react-native/**",
         ]
     },
     "dependencies": {

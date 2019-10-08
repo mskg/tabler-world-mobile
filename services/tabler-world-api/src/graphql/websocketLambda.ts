@@ -106,7 +106,7 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
                 connectionManager.sendError(
                     connectionId,
                     { message: 'Unknown client' },
-                    MessageTypes.GQL_CONNECTION_ERROR,
+                    MessageTypes.GQL_ERROR, // GQL_CONNECTION_ERROR ?
                 );
 
                 connectionManager.forceDisconnect(connectionId);

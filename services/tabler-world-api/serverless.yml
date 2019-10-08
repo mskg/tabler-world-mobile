@@ -32,9 +32,9 @@ custom:
 
   connections_table: tabler-world-ws-connections-${self:custom.stage}
   subscriptions_table: tabler-world-ws-subscriptions-${self:custom.stage}
+  events_table: tabler-world-ws-events-${self:custom.stage}
   conversations_table: tabler-world-chat-conversations-${self:custom.stage}
   pushsubscriptions_table: tabler-world-push-subscriptions-${self:custom.stage}
-  events_table: tabler-world-ws-events-${self:custom.stage}
 
   # api throtteling
   throttle:
@@ -102,7 +102,7 @@ custom:
       - dev
     start:
       port: 8004
-      inMemory: true
+      inMemory: false
       migrate: true
       convertEmptyValues: true
 
@@ -619,7 +619,6 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: KEYS_ONLY
-
 
     eventsTable:
       Type: AWS::DynamoDB::Table

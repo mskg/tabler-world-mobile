@@ -10,8 +10,8 @@ import { MemberListItem } from '../../../components/Member/MemberListItem';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { I18N } from '../../../i18n/translation';
 import { GetConversations } from '../../../model/graphql/GetConversations';
+import { GetConversationsQuery } from '../../../queries/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../../redux/actions/navigation';
-import { GetConversationsQuery } from './GetConversationsQuery';
 
 type State = {
 };

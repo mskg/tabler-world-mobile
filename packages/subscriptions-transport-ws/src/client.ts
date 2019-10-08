@@ -649,7 +649,7 @@ export class SubscriptionClient {
                 break;
 
             default:
-                throw new Error('Invalid message type!');
+                throw new Error(`Invalid message type ${parsedMessage.type}!`);
         }
     }
 
