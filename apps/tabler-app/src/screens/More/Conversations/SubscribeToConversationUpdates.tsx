@@ -27,20 +27,28 @@ export class SubscribeToConversationUpdates extends React.PureComponent {
             });
 
         this.subscription = observable.subscribe({
-            next(next) {
+            async next(next) {
                 logger.log('Received', next);
                 const data = next.data as conversationUpdate;
 
-                const conversations = client.readQuery<GetConversations>({
+                let conversations = client.readQuery<GetConversations>({
                     query: GetConversationsQuery,
                 });
+
+                if (conversations == null) {
+                    const temp = await client.query<GetConversations>({
+                        query: GetConversationsQuery,
+                    });
+
+                    conversations = temp.data;
+                }
 
                 const nodes = conversations ? conversations.Conversations.nodes : [];
                 client.writeQuery<GetConversations>({
                     query: GetConversationsQuery,
                     data: {
                         Conversations: {
-                            __typename: 'ConversationIterator',
+                            ...conversations.Conversations,
                             nodes: [
                                 data.conversationUpdate,
                                 ...nodes.filter((c) => c.id !== data.conversationUpdate.id),
@@ -48,19 +56,8 @@ export class SubscribeToConversationUpdates extends React.PureComponent {
                         },
                     },
                 });
-
-                // client.writeQuery<ConversationStatus, ConversationStatusVariables>({
-                //     query: GetConversationStatusQuery,
-                //     variables: {
-                //         id: data.conversationUpdate.id,
-                //     },
-                //     data: {
-                //         Conversation: {
-                //             ...data.conversationUpdate,
-                //         },
-                //     },
-                // });
             },
+
             error(err) { logger.error(err); },
         });
     }

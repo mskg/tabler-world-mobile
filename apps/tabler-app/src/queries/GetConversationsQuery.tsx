@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { MemberOverviewFragment } from './MemberOverviewFragment';
 
 export const GetConversationsQuery = gql`
-    query GetConversations {
-        Conversations {
+    query GetConversations($token: String) {
+        Conversations (token: $token) @connection(key: "Conversations") {
             nodes {
               hasUnreadMessages
               members {
@@ -11,6 +11,7 @@ export const GetConversationsQuery = gql`
               }
               id
             }
+            nextToken
         }
     }
 

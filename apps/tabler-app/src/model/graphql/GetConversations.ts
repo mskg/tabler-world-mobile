@@ -64,8 +64,13 @@ export interface GetConversations_Conversations_nodes {
 export interface GetConversations_Conversations {
   __typename: "ConversationIterator";
   nodes: GetConversations_Conversations_nodes[];
+  nextToken: string | null;
 }
 
 export interface GetConversations {
   Conversations: GetConversations_Conversations;
+}
+
+export interface GetConversationsVariables {
+  token?: string | null;
 }

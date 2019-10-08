@@ -197,7 +197,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                         id: this.getConversationId(),
                         token: undefined,
                     }}
-                    fetchPolicy="network-only"
+                    fetchPolicy="cache-and-network"
                 >
                     {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
                         if (loading && (!data || !data.Conversation)) {

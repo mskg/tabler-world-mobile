@@ -1,17 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
+import { uniqBy } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, ScrollView } from 'react-navigation';
+import { FlatList, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
-import { FullScreenLoading } from '../../../components/Loading';
+import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
 import { MemberListItem } from '../../../components/Member/MemberListItem';
+import { EmptyComponent } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
+import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
-import { GetConversations } from '../../../model/graphql/GetConversations';
+import { GetConversations, GetConversationsVariables, GetConversations_Conversations_nodes } from '../../../model/graphql/GetConversations';
 import { GetConversationsQuery } from '../../../queries/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../../redux/actions/navigation';
+
+const logger = new Logger(Categories.UIComponents.Chat);
 
 type State = {
 };
@@ -32,6 +37,44 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 // tslint:disable-next-line: export-name
 export class ConversationsScreenBase extends React.Component<Props, State> {
+    _renderItem = ({ item: l }): React.ReactElement | null => {
+        return (
+            <>
+                <MemberListItem
+                    theme={this.props.theme}
+
+                    member={l.members[0]}
+                    right={({ size }) => {
+                        if (l.hasUnreadMessages) {
+                            return (
+                                <Ionicons
+                                    name="md-chatbubbles"
+                                    size={size}
+                                    style={{ marginRight: 30 }}
+                                    color={this.props.theme.colors.accent}
+                                />
+                            );
+                        }
+
+                        return null;
+                    }}
+                    onPress={() => this.props.showConversation(l.id, `${l.members[0].firstname} ${l.members[0].lastname}`)}
+                />
+                <Divider inset={true} />
+            </>
+        );
+    }
+
+    _extractKey = (item: GetConversations_Conversations_nodes) => item.id;
+
+    _getItemLayout = (_data, index) => {
+        return {
+            index,
+            length: ITEM_HEIGHT + StyleSheet.hairlineWidth,
+            offset: (ITEM_HEIGHT + StyleSheet.hairlineWidth) * index,
+        };
+    }
+
     render() {
         return (
             <ScreenWithHeader
@@ -43,47 +86,64 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
                     ],
                 }}
             >
-                <Query<GetConversations>
+                <Query<GetConversations, GetConversationsVariables>
                     query={GetConversationsQuery}
                     fetchPolicy="cache-and-network"
                 >
-                    {({ data, error }) => {
+                    {({ data, error, loading, refetch, fetchMore }) => {
                         if (error) return null;
 
-                        if (data == null || data.Conversations == null) {
-                            return (
-                                <FullScreenLoading />
-                            );
-                        }
-
                         return (
-                            <ScrollView contentContainerStyle={styles.content}>
-                                {data.Conversations.nodes.map((l) => (
-                                    <React.Fragment key={l.id}>
-                                        <MemberListItem
-                                            theme={this.props.theme}
+                            <FlatList
+                                scrollEventThrottle={16}
+                                removeClippedSubviews={Platform.OS !== 'ios'}
+                                contentContainerStyle={styles.container}
 
-                                            member={l.members[0]}
-                                            right={({ size }) => {
-                                                if (l.hasUnreadMessages) {
-                                                    return (
-                                                        <Ionicons
-                                                            name="md-chatbubbles"
-                                                            size={size}
-                                                            style={{ marginRight: 30 }}
-                                                            color={this.props.theme.colors.accent}
-                                                        />
-                                                    );
-                                                }
+                                keyExtractor={this._extractKey}
+                                renderItem={this._renderItem}
+                                getItemLayout={this._getItemLayout}
 
-                                                return null;
-                                            }}
-                                            onPress={() => this.props.showConversation(l.id, `${l.members[0].firstname} ${l.members[0].lastname}`)}
-                                        />
-                                        <Divider inset={true} />
-                                    </React.Fragment>
-                                ))}
-                            </ScrollView>
+                                ListEmptyComponent={loading ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
+
+                                data={data && data.Conversations ? data.Conversations.nodes : []}
+
+                                refreshing={loading}
+                                onRefresh={() => refetch()}
+
+                                onEndReached={() => {
+                                    if (!data) { return; }
+
+                                    fetchMore({
+                                        variables: {
+                                            token: data.Conversations.nextToken,
+                                        },
+
+                                        updateQuery: (previousResult, { fetchMoreResult }) => {
+                                            // Don't do anything if there weren't any new items
+                                            if (!fetchMoreResult || fetchMoreResult.Conversations.nodes.length === 0) {
+
+                                                logger.log('no new data');
+                                                return previousResult;
+                                            }
+
+                                            logger.log('appending', fetchMoreResult.Conversations.nodes.length);
+
+                                            return {
+                                                // There are bugs that the calls are excuted twice
+                                                // a lot of notes on the internet
+                                                Conversations: {
+                                                    ...fetchMoreResult.Conversations,
+                                                    nodes: uniqBy(
+                                                        [...previousResult.Conversations.nodes, ...fetchMoreResult.Conversations.nodes],
+                                                        (f) => f.id,
+                                                    ),
+                                                },
+                                            };
+                                        },
+                                    });
+                                }}
+                                onEndReachedThreshold={0.5}
+                            />
                         );
                     }}
                 </Query>
