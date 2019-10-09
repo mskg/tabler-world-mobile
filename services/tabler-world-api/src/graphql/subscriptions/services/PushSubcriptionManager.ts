@@ -45,11 +45,7 @@ export class PushSubcriptionManager {
         // this is a one:one conversation
         if (conversation.startsWith('CONV(')) {
             const [a, b] = conversation
-                .replace('CONV(', '')
-                .replace(')', '')
-                // :1:,:2:
-                .replace(':', '')
-                // 1,2
+                .replace(/CONV\(|\)|:/ig, '')
                 .split(',');
 
             return [parseInt(a, 10), parseInt(b, 10)];
