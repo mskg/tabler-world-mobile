@@ -28,21 +28,18 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         const chunks = this.chunkSubstr(data, 350 * 1024);
         if (chunks.length > 1) {
             await this.setMany([
-                this.addTTL(
-                    {
-                        id,
-                        data: `chunks:${chunks.length}`,
-                    },
+                {
+                    id,
                     options,
-                ),
+                    data: `chunks:${chunks.length}`,
+                },
                 ...chunks.map(
-                    (c, i) => this.addTTL(
-                        {
-                            id: `${id}_${i}`,
-                            data: c,
-                        },
+                    (c, i) => ({
                         options,
-                    )),
+                        id: `${id}_${i}`,
+                        data: c,
+                    }),
+                ),
             ]);
         } else {
             await this.client
