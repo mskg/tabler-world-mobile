@@ -119,19 +119,22 @@ export const MemberResolver = {
 
         FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
             const favorites = await context.dataSources.members.readFavorites();
+
             if (favorites) {
                 // there could be favorites that no longer exist
                 return favorites.filter((f) => f != null);
             }
 
-            return favorites;
+            return favorites || [];
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            return context.dataSources.members.readClub(context.principal.association, context.principal.club);
+            const members = await context.dataSources.members.readClub(context.principal.association, context.principal.club);
+            return members || [];
         },
 
         Members: (_root: any, args: IdsArgs, context: IApolloContext) => {
+            if (args.ids == null || args.ids.length === 0) { return []; }
             return context.dataSources.members.readMany(args.ids);
         },
 
