@@ -202,7 +202,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     assignIcon(member: Conversation_Conversation_members) {
-        if (this.state.icon != null && member.pic !== '' || !member.pic) { return; }
+        if (this.state.icon != null && member != null && member.pic !== '' && member.pic !== null) { return; }
 
         this.setState({
             icon: (
