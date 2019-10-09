@@ -66,15 +66,15 @@ export const MemberResolver = {
             const result = [];
 
             // the optional filters only make sense if we don't retrieve all
-            if (args.filter != null && args.filter.areas != null) {
-                if (args.filter != null && args.filter.areas != null) {
+            if (args.filter != null && (args.filter.areas != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
+                if (args.filter.areas != null && args.filter.areas.length > 0) {
                     context.logger.log('areas', args.filter.areas);
                     const areaMembers = await context.dataSources.members.readAreas(args.filter.areas);
                     result.push(... (areaMembers || []));
                 }
 
                 // we make this sync
-                if (args.filter != null && args.filter.areaBoard === true) {
+                if (args.filter.areaBoard === true) {
                     context.logger.log('areaBoard', args.filter);
                     const areas = await context.dataSources.structure.allAreas();
 
@@ -90,7 +90,7 @@ export const MemberResolver = {
                     }
                 }
 
-                if (args.filter != null && args.filter.nationalBoard === true) {
+                if (args.filter.nationalBoard === true) {
                     context.logger.log('nationalBoard', args.filter);
                     const associations = await context.dataSources.structure.allAssociations();
 
@@ -111,10 +111,7 @@ export const MemberResolver = {
                     }
                 }
 
-                if (result.length > 0) {
-                    context.logger.log('result', result.length, 'entries');
-                    return _.uniqBy(result, (m) => m.id);
-                }
+                return result.length > 0 ? _.uniqBy(result, (m) => m.id) : [];
             }
 
             return context.dataSources.members.readAll();
