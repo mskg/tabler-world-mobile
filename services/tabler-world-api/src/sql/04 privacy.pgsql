@@ -6,6 +6,7 @@ DROP FUNCTION if EXISTS get_privacylevel cascade;
 CREATE OR REPLACE FUNCTION get_privacylevel(privacy jsonb, field text)
   RETURNS text AS
 $func$
+    -- share with all associations (public) is the default
     select COALESCE((
         select value->>'level'
         from jsonb_array_elements(privacy) t
@@ -47,6 +48,12 @@ BEGIN
         return false;
     end if;
 
+    -- all families
+    if level = 'all' then
+        return true;
+    end if;
+
+    -- same famnily, we currently cannot check that
     if level = 'public' then
         return true;
     end if;
