@@ -126,7 +126,8 @@ export const ChatResolver = {
                 },
             );
 
-            if (result.result.length > 0) {
+            // only if the token is null we have seen the last values
+            if (args.token == null && result.result.length > 0) {
                 conversationManager.updateLastSeen(
                     channel,
                     context.principal.id,
