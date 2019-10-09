@@ -24,6 +24,7 @@ export const subscriptionClient = new SubscriptionClient(
 subscriptionClient.use([{
     applyMiddleware: (options, next) => {
         logger.log('[WS] subscribe', options.operationName);
+        getReduxStore().dispatch(updateWebsocket(true));
         return next();
     },
 }]);
@@ -57,18 +58,4 @@ subscriptionClient.onError((error: any) => {
     if (error instanceof Error) {
         logger.log('[WS] onError', error);
     }
-
-    // let cache: any = [];
-    // const res = JSON.stringify(error, (_key, value) => {
-    //     if (typeof value === 'object' && value !== null) {
-    //         if (cache.indexOf(value) !== -1) {
-    //             // Duplicate reference found, discard key
-    //             return;
-    //         }
-    //         // Store value in our collection
-    //         cache.push(value);
-    //     }
-    //     return value;
-    // });
-    // cache = null; // Enable garbage collection
 });
