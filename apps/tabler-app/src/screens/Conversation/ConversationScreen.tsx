@@ -4,7 +4,7 @@ import 'moment';
 import 'moment/locale/de';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Platform, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { IChatMessage } from 'react-native-gifted-chat';
 import { Appbar, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -16,9 +16,11 @@ import { FullScreenLoading } from '../../components/Loading';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
+import { I18N } from '../../i18n/translation';
 import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
 import { newChatMessage, newChatMessageVariables } from '../../model/graphql/newChatMessage';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
+import { IAppState } from '../../model/IAppState';
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { newChatMessageSubscription } from '../../queries/Conversations/newChatMessageSubscription';
 import { SendMessageMutation } from '../../queries/Conversations/SendMessageMutation';
@@ -30,6 +32,7 @@ const logger = new Logger(Categories.Screens.Conversation);
 type Props = {
     theme: Theme,
     showProfile: typeof showProfile,
+    websocket: boolean,
 };
 
 type State = {
@@ -44,11 +47,10 @@ const FAILED = '_failed';
 
 // tslint:disable: max-func-body-length
 class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IConversationParams>, State> {
-    ref: any;
+    refetch: any;
 
     constructor(props) {
         super(props, AuditScreenName.Conversation);
-
         this.state = { loadingEarlier: false, eof: false };
     }
 
@@ -202,7 +204,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     assignIcon(member: Conversation_Conversation_members) {
-        if (this.state.icon != null && member != null && member.pic !== '' && member.pic !== null) { return; }
+        if (this.state.icon != null || member == null || member.pic !== '' || member.pic == null) { return; }
 
         this.setState({
             icon: (
@@ -214,13 +216,41 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         });
     }
 
+    defaultIcon() {
+        return (
+            <Appbar.Content
+                key="cnt"
+                style={{ paddingLeft: this.state.icon ? 0 : 12 }}
+                titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
+                title={this.getTitle()}
+            />
+        );
+    }
+
+    waitingForNetwork() {
+        return (
+            <View key="icon" style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator />
+                <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.regular, fontSize: Platform.OS === 'ios' ? 14 : 17 }}>{I18N.Conversations.network}</Text>
+            </View>
+        );
+    }
+
+    componentDidUpdate(prev) {
+        if (prev.websocket !== this.props.websocket && this.props.websocket) {
+            if (this.refetch) {
+                this.refetch();
+            }
+        }
+    }
+
     render() {
         return (
             <ScreenWithHeader
                 header={{
                     showBack: true,
                     content: [
-                        this.state.icon || <Appbar.Content key="cnt" style={{ paddingLeft: this.state.icon ? 0 : 12 }} titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={this.getTitle()} />,
+                        !this.props.websocket ? this.waitingForNetwork() : (this.state.icon || this.defaultIcon()),
                         <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
                     ],
                 }}
@@ -234,7 +264,9 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     }}
                     fetchPolicy="cache-and-network"
                 >
-                    {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore }) => {
+                    {({ loading, data, fetchMore /*error, refetch*/, subscribeToMore, refetch }) => {
+                        this.refetch = refetch;
+
                         if (loading && (!data || !data.Conversation)) {
                             return <FullScreenLoading />;
                         }
@@ -252,29 +284,32 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                                 extraData={this.state.redraw}
                                 subscribe={
                                     // we need to create a function that is executed once
-                                    () => subscribeToMore<newChatMessage, newChatMessageVariables>({
-                                        document: newChatMessageSubscription,
-                                        variables: {
-                                            conversation: this.getConversationId(),
-                                        },
-                                        updateQuery: (prev, { subscriptionData }) => {
-                                            if (!subscriptionData.data || !subscriptionData.data.newChatMessage) { return prev; }
+                                    () => {
+                                        subscribeToMore<newChatMessage, newChatMessageVariables>({
+                                            document: newChatMessageSubscription,
+                                            variables: {
+                                                conversation: this.getConversationId(),
+                                            },
 
-                                            const newFeedItem = subscriptionData.data.newChatMessage;
-                                            logger.debug('received', newFeedItem);
+                                            updateQuery: (prev, { subscriptionData }) => {
+                                                if (!subscriptionData.data || !subscriptionData.data.newChatMessage) { return prev; }
 
-                                            requestAnimationFrame(() => this.setState({ redraw: {} }));
-                                            return {
-                                                Conversation: {
-                                                    ...prev.Conversation,
-                                                    messages: {
-                                                        ...prev.Conversation!.messages,
-                                                        nodes: this.merge([newFeedItem], prev.Conversation!.messages.nodes),
+                                                const newFeedItem = subscriptionData.data.newChatMessage;
+                                                logger.debug('received', newFeedItem);
+
+                                                requestAnimationFrame(() => this.setState({ redraw: {} }));
+                                                return {
+                                                    Conversation: {
+                                                        ...prev.Conversation,
+                                                        messages: {
+                                                            ...prev.Conversation!.messages,
+                                                            nodes: this.merge([newFeedItem], prev.Conversation!.messages.nodes),
+                                                        },
                                                     },
-                                                },
-                                            } as Conversation;
-                                        },
-                                    })
+                                                } as Conversation;
+                                            },
+                                        });
+                                    }
                                 }
 
                                 sendMessage={this._sendMessage}
@@ -354,5 +389,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 }
 
 export const ConversationScreen = connect(
-    null, { showProfile },
+    (state: IAppState) => ({
+        websocket: state.connection.websocket,
+    }),
+    { showProfile },
 )(withTheme(withNavigation(ConversationScreenBase)));

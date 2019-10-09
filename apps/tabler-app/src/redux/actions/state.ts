@@ -5,17 +5,21 @@ import { createAction } from './action';
  * Enable or disable a district global filter
  */
 export const updateAvailable = createAction<'@@state/updateAvailable', string>(
-  '@@state/updateAvailable',
+    '@@state/updateAvailable',
 );
 
 export const checkAppState = createAction<'@@state/check', string>(
-  '@@state/check',
+    '@@state/check',
 );
 
 export const checkNetwork = createAction<'@@network/check', string>(
-  '@@network/check',
+    '@@network/check',
 );
 
 export const updateNetwork = createAction<'@@network/update', ConnectionInfo>(
-  '@@network/update',
+    '@@network/update',
+);
+
+export const updateWebsocket = createAction<'@@network/websocket', boolean>(
+    '@@network/websocket',
 );

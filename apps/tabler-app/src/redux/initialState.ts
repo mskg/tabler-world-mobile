@@ -7,6 +7,7 @@ export const INITIAL_STATE: IAppState = {
         effectiveType: 'unknown',
         type: 'unknown',
         offline: true,
+        websocket: false,
     },
 
     updateAvailable: false,

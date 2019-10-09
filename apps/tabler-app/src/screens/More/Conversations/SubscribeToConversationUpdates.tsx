@@ -58,7 +58,7 @@ export class SubscribeToConversationUpdates extends React.PureComponent {
                 });
             },
 
-            error(err) { logger.error(err); },
+            error(err) { logger.error(err, 'Failed to subscribe to conversationUpdate'); },
         });
     }
 
