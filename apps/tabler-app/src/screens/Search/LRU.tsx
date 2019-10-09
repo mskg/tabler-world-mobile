@@ -34,6 +34,10 @@ const widthMax = Dimensions.get('window').width / 2 - 32 - 18;
 
 class LRUBase extends React.Component<Props> {
     render() {
+        if (this.props.lru == null || this.props.lru.length === 0) {
+            return null;
+        }
+
         return (
             <Query<LRUMembers>
                 query={GetLRUMembersQuery}
@@ -43,26 +47,26 @@ class LRUBase extends React.Component<Props> {
                 fetchPolicy={this.props.fetchPolicy}
             >
                 {({ data }) => {
-                    // logger.log(this.props.lru, data, loading);
-
                     if (data && data.Members != null && data.Members.length > 0) {
-                        return (<List.Section title={I18N.Search.lru}>
-                            <View style={{ backgroundColor: this.props.theme.colors.surface }}>
-                                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginLeft: 16, paddingTop: 8 }}>
-                                    {
-                                        data.Members.map((r) => (
-                                            <View style={{ marginRight: 16, marginTop: 4, marginBottom: 12 }} key={r.id}>
-                                                <RoleAvatar
-                                                    member={r}
-                                                    role={r.club.name}
-                                                    width={widthMax}
-                                                />
-                                            </View>
-                                        ))
-                                    }
-                                </ScrollView>
-                            </View>
-                        </List.Section>);
+                        return (
+                            <List.Section title={I18N.Search.lru}>
+                                <View style={{ backgroundColor: this.props.theme.colors.surface }}>
+                                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginLeft: 16, paddingTop: 8 }}>
+                                        {
+                                            data.Members.map((r) => (
+                                                <View style={{ marginRight: 16, marginTop: 4, marginBottom: 12 }} key={r.id}>
+                                                    <RoleAvatar
+                                                        member={r}
+                                                        role={r.club.name}
+                                                        width={widthMax}
+                                                    />
+                                                </View>
+                                            ))
+                                        }
+                                    </ScrollView>
+                                </View>
+                            </List.Section>
+                        );
                     }
 
                     return null;
