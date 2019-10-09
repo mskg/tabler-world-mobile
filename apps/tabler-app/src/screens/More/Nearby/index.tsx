@@ -19,7 +19,7 @@ import { distance } from '../../../helper/distance';
 import { disableNearbyTablers } from '../../../helper/geo/disable';
 import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { GeoParameters } from '../../../helper/parameters/Geo';
-import { getParameterValue } from '../../../helper/parameters/getParameter';
+import { getParameterValue } from '../../../helper/parameters/getParameterValue';
 import { timespan } from '../../../helper/timespan';
 import { I18N } from '../../../i18n/translation';
 import { ParameterName } from '../../../model/graphql/globalTypes';

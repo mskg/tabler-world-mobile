@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Action, FABGroup } from '../../components/FABGroup';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
-import { getParameterValue } from '../../helper/parameters/getParameter';
+import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';

@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import { GeoParameters } from '../../helper/parameters/Geo';
-import { getParameterValue } from '../../helper/parameters/getParameter';
+import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { LOCATION_TASK_NAME } from '../Constants';
 import { handleLocationUpdate } from './handleLocation';

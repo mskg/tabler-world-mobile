@@ -1,7 +1,7 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { FetchParameters } from '../helper/parameters/Fetch';
-import { getParameterValue } from '../helper/parameters/getParameter';
+import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { FETCH_TASKNAME } from './Constants';
 import { logger } from './fetch/logger';

@@ -4,7 +4,7 @@ import { ParameterName } from '../../model/graphql/globalTypes';
 import { Member_Member } from '../../model/graphql/Member';
 import { collectEMails, collectPhones } from '../collect';
 import { makeMemberLink } from '../linking/member';
-import { getParameterValue } from '../parameters/getParameter';
+import { getParameterValue } from '../parameters/getParameterValue';
 import { UrlParameters } from '../parameters/Urls';
 import { downloadPic } from './downloadPic';
 import { logger } from './logger';

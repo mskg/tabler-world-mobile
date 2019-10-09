@@ -1,5 +1,5 @@
 import { ParameterName } from '../../model/graphql/globalTypes';
-import { getParameterValue } from '../parameters/getParameter';
+import { getParameterValue } from '../parameters/getParameterValue';
 import { TimeoutDefaults, TimeoutParameters } from '../parameters/Timeouts';
 
 export let MaxTTL = TimeoutDefaults;

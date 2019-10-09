@@ -11,7 +11,7 @@ import { AuditScreenName } from '../analytics/AuditScreenName';
 import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
-import { getParameterValue } from '../helper/parameters/getParameter';
+import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';

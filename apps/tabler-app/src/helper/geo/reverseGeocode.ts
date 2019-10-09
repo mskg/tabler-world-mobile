@@ -6,7 +6,7 @@ import deCountries from '../../i18n/countries/de.json';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Categories, Logger } from '../Logger';
 import { GeoParameters } from '../parameters/Geo';
-import { getParameterValue } from '../parameters/getParameter';
+import { getParameterValue } from '../parameters/getParameterValue';
 import { timeout } from './timeout';
 
 export const logger = new Logger(Categories.Helpers.Geo);

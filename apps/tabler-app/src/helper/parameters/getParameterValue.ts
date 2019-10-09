@@ -20,7 +20,7 @@ type AllParameterTypes =
     ;
 
 export async function getParameterValue<T extends AllParameterTypes>(name: ParameterName): Promise<T> {
-    const param = await AsyncStorage.getItem(`Parameter_` + name);
+    const param = await AsyncStorage.getItem(`Parameter_${name}`);
 
     // if we add new values, we need them
     return param != null
