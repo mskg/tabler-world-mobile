@@ -80,6 +80,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     async componentDidMount() {
+        this.mounted = true;
+
         this.listeners = [
             this.props.navigation.addListener('didFocus', this._focus),
             this.props.navigation.addListener('didBlur', this._blur),
@@ -89,6 +91,9 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
         const setting = await getParameterValue<GeoParameters>(ParameterName.geo);
         this.setState({ interval: setting.pollInterval });
+
+        AppState.addEventListener('change', this.handleAppStateChange);
+        this.didFocus();
     }
 
     _focus = () => { if (this.mounted) { this.setState({ visible: true }); } };
@@ -134,14 +139,6 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         }
 
         this.setState({ message: undefined });
-
-    }
-
-    componentWillMount() {
-        this.mounted = true;
-        this.didFocus();
-
-        AppState.addEventListener('change', this.handleAppStateChange);
     }
 
     componentWillUnmount() {

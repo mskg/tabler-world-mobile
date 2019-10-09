@@ -166,10 +166,10 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.extraData != this.props.extraData) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.extraData !== this.props.extraData) {
             logger.log('Update!');
-            this.updateFrom(nextProps);
+            this.updateFrom(this.props);
         }
     }
 

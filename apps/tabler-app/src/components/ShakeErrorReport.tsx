@@ -80,15 +80,13 @@ class ErrorReportBase extends React.Component<Props, State> {
         this.state = {
             open: false,
         };
+
+        this.mounted = true;
+        ShakeEvent.addListener(this._open);
     }
 
     mounted = false;
     audit = Audit.screen(AuditScreenName.ErrorReport);
-
-    componentWillMount() {
-        this.mounted = true;
-        ShakeEvent.addListener(this._open);
-    }
 
     componentWillUnmount() {
         this.mounted = false;

@@ -51,13 +51,13 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         };
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        if (nextProps.data !== this.props.data) {
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.data !== this.props.data) {
             // logger.debug("Received", JSON.stringify(nextProps.data));
 
             this.setState({
                 search: this.state.search,
-                filtered: this.filterResults(nextProps.data, this.state.search),
+                filtered: this.filterResults(this.props.data, this.state.search),
             });
         }
     }

@@ -75,11 +75,11 @@ class ProfileBase extends React.Component<Props, State> {
         };
     }
 
-    componentWillUpdate(nextProps: Props) {
-        if (this.props.member !== nextProps.member) {
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.member !== prevProps.member) {
             this.setState({
-                numbers: collectPhones(nextProps.member).map((n) => n.value),
-                emails: collectEMails(nextProps.member).map((n) => n.value),
+                numbers: collectPhones(this.props.member).map((n) => n.value),
+                emails: collectEMails(this.props.member).map((n) => n.value),
             });
         }
     }

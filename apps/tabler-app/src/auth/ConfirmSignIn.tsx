@@ -79,8 +79,15 @@ class ConfirmBase extends AuditedScreen<Props, State> {
         Linking.removeEventListener('url', this._handleOpenURL);
     }
 
-    componentWillReceiveProps() {
-        this.setState({ code: '', working: false, noretry: false, tries: 3, error: null });
+    // tslint:disable-next-line: function-name
+    static getDerivedStateFromProps(props: any, state: any) {
+        return {
+            code: '',
+            working: false,
+            noretry: false,
+            tries: 3,
+            error: null,
+        };
     }
 
     _confirm = async () => {

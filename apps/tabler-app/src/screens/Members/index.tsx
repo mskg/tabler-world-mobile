@@ -91,17 +91,21 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         };
     }
 
-    componentWillReceiveProps(nextProps: Props) {
+    componentDidUpdate(prevProps) {
+        if (prevProps === this.props) {
+            return;
+        }
+
         // const forceUpdate = true;
         this.setState({
-            ...this.calculateNewState(nextProps),
+            ...this.calculateNewState(this.props),
             forceUpdate: !this.state.forceUpdate,
         });
     }
 
     calculateNewState(nextProps: Props) {
         logger.debug(
-            'componentWillReceiveProps',
+            'calculateNewState',
             'fav?', nextProps.showFavorites,
             'own?', nextProps.showOwntable,
             'areas', nextProps.areas);

@@ -98,9 +98,9 @@ class AuthenticatorBase extends PureComponent<Props, State> {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.authState === 'singedIn') {
-            this.configureContext(nextProps);
+    componentDidUpdate() {
+        if (this.props.authState === 'singedIn') {
+            this.configureContext(this.props);
         }
     }
 
@@ -124,8 +124,8 @@ class AuthenticatorBase extends PureComponent<Props, State> {
                 </PaperProvider>
             );
         }
-        return this.props.app;
 
+        return this.props.app;
     }
 }
 

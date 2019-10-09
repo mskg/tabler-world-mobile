@@ -22,7 +22,7 @@ class CacheInvalidationBase extends React.PureComponent<CacheInvalidationProps> 
     /**
      * Update timeouts from parameters
      */
-    componentWillMount() {
+    componentDidMount() {
         updateTimeouts();
     }
 

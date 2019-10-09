@@ -211,7 +211,7 @@ class ChatBase extends React.Component<Props> {
         return null;
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.subscribe) {
             this.props.subscribe();
         }

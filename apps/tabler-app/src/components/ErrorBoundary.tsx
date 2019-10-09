@@ -31,7 +31,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
         this.resetError();
     }
 
-    componentWillMount() {
+    componentDidMount() {
         AppState.addEventListener('change', this.handleAppStateChange);
     }
 
