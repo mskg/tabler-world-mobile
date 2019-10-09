@@ -1,7 +1,9 @@
+import { EncodedValue } from '../services/EncryptionManager';
 import { WebsocketEventBase } from './WebsocketEvent';
 
 export type EncodedWebsocketEvent = {
-    pushNotification?: string;
-    payload: string;
+    pushNotification?: EncodedValue;
+    payload: EncodedValue;
+
     trackDelivery: boolean,
 } & WebsocketEventBase;

@@ -2,7 +2,7 @@ import ApolloClient from 'apollo-client';
 import { AsyncStorage } from 'react-native';
 import { bootstrapApollo } from '../../apollo/bootstrapApollo';
 import { DisableLocationServices } from '../../model/graphql/DisableLocationServices';
-import { DisableLocationServicesMutation } from '../../queries/DisableLocationServices';
+import { DisableLocationServicesMutation } from '../../queries/Location/DisableLocationServices';
 import { setLocation } from '../../redux/actions/location';
 import { updateSetting } from '../../redux/actions/settings';
 import { getReduxStore } from '../../redux/getRedux';

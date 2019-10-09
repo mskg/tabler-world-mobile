@@ -19,9 +19,9 @@ import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
 import { newChatMessage, newChatMessageVariables } from '../../model/graphql/newChatMessage';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
-import { GetConversationQuery } from '../../queries/GetConversationQuery';
-import { newChatMessageSubscription } from '../../queries/newChatMessageSubscription';
-import { SendMessageMutation } from '../../queries/SendMessageMutation';
+import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
+import { newChatMessageSubscription } from '../../queries/Conversations/newChatMessageSubscription';
+import { SendMessageMutation } from '../../queries/Conversations/SendMessageMutation';
 import { IConversationParams, showProfile } from '../../redux/actions/navigation';
 import { Chat } from './Chat';
 

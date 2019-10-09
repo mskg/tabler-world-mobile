@@ -19,7 +19,7 @@ import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidati
 import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
-import { GetClubsMapQuery } from '../../../queries/GetClubsMapQuery';
+import { GetClubsMapQuery } from '../../../queries/Structure/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
 import { darkStyles } from './darkStyles';

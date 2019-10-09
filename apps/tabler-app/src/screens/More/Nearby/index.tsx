@@ -10,24 +10,20 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
-import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
-import { MemberTitle } from '../../../components/Member/MemberTitle';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { ScreenWithHeader } from '../../../components/Screen';
-import { distance } from '../../../helper/distance';
 import { disableNearbyTablers } from '../../../helper/geo/disable';
 import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { GeoParameters } from '../../../helper/parameters/Geo';
 import { getParameterValue } from '../../../helper/parameters/getParameterValue';
-import { timespan } from '../../../helper/timespan';
 import { I18N } from '../../../i18n/translation';
 import { ParameterName } from '../../../model/graphql/globalTypes';
 import { NearbyMembers, NearbyMembersVariables } from '../../../model/graphql/NearbyMembers';
 import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../../model/graphql/UpdateLocationAddress';
 import { IAppState } from '../../../model/IAppState';
-import { GetNearbyMembersQuery } from '../../../queries/GetNearbyMembers';
-import { UpdateLocationAddressMutation } from '../../../queries/UpdateLocationAddress';
+import { GetNearbyMembersQuery } from '../../../queries/Location/GetNearbyMembersQuery';
+import { UpdateLocationAddressMutation } from '../../../queries/Location/UpdateLocationAddressMutation';
 import { showLocationHistory, showProfile, showSettings } from '../../../redux/actions/navigation';
 import { updateSetting } from '../../../redux/actions/settings';
 import { geocodeMissing } from './geocodeMissing';
@@ -36,6 +32,7 @@ import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
 import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { Message } from './Message';
+import { NearbyMemberItem } from './NearbyMemberItem';
 
 type State = {
     message?: string,
@@ -73,6 +70,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
     constructor(props) {
         super(props, AuditScreenName.NearbyMembers);
+
         this.state = {
             visible: true,
             interval: 10 * 1000,
@@ -96,17 +94,17 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         this.didFocus();
     }
 
-    _focus = () => { if (this.mounted) { this.setState({ visible: true }); } };
-    _blur = () => { if (this.mounted) { this.setState({ visible: false }); } };
+    // this way, the background updates are stopped
+    _focus = () => { if (this.mounted && !this.state.visible) { this.setState({ visible: true }); } };
+    _blur = () => { if (this.mounted && this.state.visible) { this.setState({ visible: false }); } };
 
     handleAppStateChange = (nextAppState: string) => {
         if (nextAppState !== 'active') {
-            this._blur();
+            // this._blur();
             return;
         }
+
         this._focus();
-
-
         this.didFocus();
     }
 
@@ -123,22 +121,27 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
 
         const result = await Permissions.askAsync(Permissions.LOCATION);
 
-        if (result.status != 'granted') {
+        if (result.status !== 'granted') {
             this.setState({
                 message: I18N.NearbyMembers.permissions,
-                canSet: Platform.OS == 'ios',
+                canSet: Platform.OS === 'ios',
             });
-            return;
-        }
-        if (Platform.OS == 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
-            this.setState({
-                message: I18N.NearbyMembers.always,
-                canSet: Platform.OS == 'ios',
-            });
+
             return;
         }
 
-        this.setState({ message: undefined });
+        if (Platform.OS === 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
+            this.setState({
+                message: I18N.NearbyMembers.always,
+                canSet: Platform.OS === 'ios',
+            });
+
+            return;
+        }
+
+        if (this.state.message) {
+            this.setState({ message: undefined });
+        }
     }
 
     componentWillUnmount() {
@@ -167,7 +170,9 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         try {
             await enableNearbyTablers();
         } catch {
+            // tslint:disable-next-line: no-empty
             try { disableNearbyTablers(); } catch { }
+
             Alert.alert(I18N.Settings.locationfailed);
         }
 
@@ -180,15 +185,18 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
         logger.debug('_planUpdate', this.job, this.state.interval, this.mounted);
 
         if (this.state.interval && this.mounted) {
-            this.job = setTimeout(() => {
-                if (this.mounted && this.state.visible) {
-                    logger.log('Refetching');
+            this.job = setTimeout(
+                () => {
+                    if (this.mounted && this.state.visible) {
+                        logger.log('Refetching');
 
-                    refetch().finally(() => {
-                        this._planUpdate(refetch);
-                    });
-                }
-            }, this.state.interval);
+                        refetch().finally(() => {
+                            this._planUpdate(refetch);
+                        });
+                    }
+                },
+                this.state.interval,
+            );
         }
     }
 
@@ -217,7 +225,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                 logger.debug('update with locations');
                 if (this.props.location) {
                     // Read the data from our cache for this query.
-                    const data = client.readQuery<NearbyMembers>({
+                    const cachedData = client.readQuery<NearbyMembers>({
                         query: GetNearbyMembersQuery,
                         variables: {
                             location: {
@@ -228,13 +236,14 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                         },
                     });
 
-                    if (data && data.nearbyMembers) {
+                    if (cachedData && cachedData.nearbyMembers) {
                         // Write our data back to the cache with the new comment in it
                         client.writeQuery({
                             query: GetNearbyMembersQuery, data: {
-                                nearbyMembers: data.nearbyMembers.map(n => {
+                                nearbyMembers: cachedData.nearbyMembers.map((n) => {
                                     if (n.address.city == null && n.address.country == null && n.address.location != null) {
-                                        const updated = result.find(r => r.member == n.member.id);
+                                        const updated = result.find((r) => r.member === n.member.id);
+
                                         if (updated) {
                                             logger.debug('Updating UI for', n.member.id, 'with', updated.address);
                                             n.address = {
@@ -259,8 +268,8 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
     }
 
     makeTitle(location, country) {
-        if (this.props.address && I18N.Countries.translate(country) != I18N.Countries.translate(this.props.address.country)) {
-            return I18N.NearbyMembers.near(location + ', ' + I18N.Countries.translate(country));
+        if (this.props.address && I18N.Countries.translate(country) !== I18N.Countries.translate(this.props.address.country)) {
+            return I18N.NearbyMembers.near(`${location}, ${I18N.Countries.translate(country)}`);
         }
 
         return I18N.NearbyMembers.near(location);
@@ -287,24 +296,25 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                     <MemberListPlaceholder />
                 }
 
-                {this.state.visible && !this.state.enabling && !this.props.nearbyMembers && !this.props.offline &&
+                {this.state.visible && !this.state.enabling && !this.props.nearbyMembers && !this.props.offline && (
                     <Message
                         theme={this.props.theme}
                         text={I18N.NearbyMembers.off}
                         button={I18N.NearbyMembers.on}
-                        onPress={this._enable} />
-                }
+                        onPress={this._enable}
+                    />
+                )}
 
-                {this.state.visible && !this.state.enabling && this.props.nearbyMembers && !this.props.offline && this.state.message &&
+                {this.state.visible && !this.state.enabling && this.props.nearbyMembers && !this.props.offline && this.state.message && (
                     <Message
                         theme={this.props.theme}
                         text={this.state.message}
                         button={this.state.canSet ? I18N.NearbyMembers.setlocation : undefined}
                         onPress={this._tryopen}
                     />
-                }
+                )}
 
-                {this.state.visible && this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location &&
+                {this.state.visible && this.props.nearbyMembers && !this.props.offline && !this.state.message && this.props.location && (
                     <ScrollView>
                         <Query<NearbyMembers, NearbyMembersVariables>
                             query={GetNearbyMembersQuery}
@@ -326,50 +336,38 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                     this._checkCode(data, client, refetch);
                                 }
 
-                                return <Placeholder previewComponent={<MemberListPlaceholder />} ready={data != null && data.nearbyMembers != null}>
-                                    <MeLocation now={Date.now()} />
+                                return (
+                                    <Placeholder previewComponent={<MemberListPlaceholder />} ready={data != null && data.nearbyMembers != null}>
+                                        <MeLocation now={Date.now()} />
 
-                                    {data && data.nearbyMembers && data.nearbyMembers.length == 0 &&
-                                        <List.Section title={I18N.NearbyMembers.title}>
-                                            <Text style={{ marginHorizontal: 16 }}>{I18N.Members.noresults}</Text>
-                                        </List.Section>
-                                    }
+                                        {data && data.nearbyMembers && data.nearbyMembers.length === 0 && (
+                                            <List.Section title={I18N.NearbyMembers.title}>
+                                                <Text style={{ marginHorizontal: 16 }}>{I18N.Members.noresults}</Text>
+                                            </List.Section>
+                                        )}
 
-                                    {data && data.nearbyMembers && data.nearbyMembers.length != 0 &&
-                                        makeGroups(data.nearbyMembers).map((s, i) =>
-                                            <List.Section title={this.makeTitle(s.title, s.country)} key={i.toString()}>
-                                                {
-                                                    s.members.map(m =>
-                                                        (
-                                                            <React.Fragment key={m.member.id}>
-                                                                <InternalMemberListItem
-                                                                    theme={this.props.theme}
-                                                                    member={m.member}
-                                                                    onPress={() => this.props.showProfile(m.member.id)}
-
-                                                                    title={<MemberTitle member={m.member} />}
-                                                                    subtitle={
-                                                                        // tslint:disable-next-line: prefer-template
-                                                                        distance(m.distance) + ', ' + I18N.NearbyMembers.ago(
-                                                                            timespan(
-                                                                                Date.now(),
-                                                                                new Date(m.lastseen).getTime(),
-                                                                            ))
-                                                                    }
-                                                                />
-                                                                <Divider inset={true} />
-                                                            </React.Fragment>
-                                                        ),
-                                                    )
-                                                }
-                                            </List.Section>,
-                                        )
-                                    }
-                                </Placeholder>;
+                                        {data && data.nearbyMembers && data.nearbyMembers.length !== 0 &&
+                                            makeGroups(data.nearbyMembers).map((s, i) => (
+                                                <List.Section title={this.makeTitle(s.title, s.country)} key={i.toString()}>
+                                                    {
+                                                        s.members.map((m) =>
+                                                            (
+                                                                <React.Fragment key={m.member.id}>
+                                                                    <NearbyMemberItem member={m.member} lastseen={m.lastseen} distance={m.distance} />
+                                                                    <Divider inset={true} />
+                                                                </React.Fragment>
+                                                            ),
+                                                        )
+                                                    }
+                                                </List.Section>
+                                            ))
+                                        }
+                                    </Placeholder>
+                                );
                             }}
                         </Query>
                     </ScrollView>
-                }
+                )}
             </ScreenWithHeader>
         );
     }

@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
-import { AddressFragment } from './AddressFragment';
+import { AddressFragment } from '../Member/AddressFragment';
+import { MemberFragment } from '../Member/MemberFragment';
+import { RolesFragment } from '../Member/RolesFragment';
 import { ClubOverviewFragment } from './ClubOverviewFragment';
-import { MemberFragment } from './MemberFragment';
-import { RolesFragment } from './RolesFragment';
 
 export const GetClubQuery = gql`
   query Club($id: String!) {

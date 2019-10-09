@@ -5,6 +5,7 @@ import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
 
+// tslint:disable-next-line: export-name
 export class FeedbackScreen extends React.Component {
     state = {
         url: '',
@@ -18,10 +19,12 @@ export class FeedbackScreen extends React.Component {
     render() {
         if (this.state.url === '') return null;
 
-        return <WebScreen
-            showBack={true}
-            url={this.state.url}
-            title={I18N.Feedback.title}
-        />;
+        return (
+            <WebScreen
+                showBack={true}
+                url={this.state.url}
+                title={I18N.Feedback.title}
+            />
+        );
     }
 }

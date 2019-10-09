@@ -3,8 +3,8 @@ import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { Categories, Logger } from '../../../helper/Logger';
 import { conversationUpdate } from '../../../model/graphql/conversationUpdate';
 import { GetConversations } from '../../../model/graphql/GetConversations';
-import { conversationUpdateSubscription } from '../../../queries/conversationUpdateSubscription';
-import { GetConversationsQuery } from '../../../queries/GetConversationsQuery';
+import { conversationUpdateSubscription } from '../../../queries/Conversations/conversationUpdateSubscription';
+import { GetConversationsQuery } from '../../../queries/Conversations/GetConversationsQuery';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 

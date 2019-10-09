@@ -7,7 +7,7 @@ import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
 import { GetParameters, GetParametersVariables } from '../../model/graphql/GetParameters';
 import { ParameterName, ParameterPlatform } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
-import { GetParametersQuery } from '../../queries/GetParameters';
+import { GetParametersQuery } from '../../queries/GetParametersQuery';
 import * as settingsActions from '../../redux/actions/settings';
 import { singedIn } from '../../redux/actions/user';
 import { logger } from './logger';

@@ -102,7 +102,7 @@ custom:
       - dev
     start:
       port: 8004
-      inMemory: false
+      inMemory: true
       migrate: true
       convertEmptyValues: true
 

@@ -71,7 +71,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
             <SwipableItem
                 ref={(o) => { this.ref = o; }}
 
-                leftButtons={
+                leftButtons={(
                     <SwipeButtonsContainer
                         style={{
                             alignItems: 'center',
@@ -102,7 +102,8 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
                                 color={this.props.theme.colors.placeholder}
                             />
                         </TouchableRipple>
-                    </SwipeButtonsContainer>}
+                    </SwipeButtonsContainer>
+                )}
 
             // rightButtons={
             //     <SwipeButtonsContainer style={{

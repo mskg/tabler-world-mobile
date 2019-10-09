@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { uniqBy } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
@@ -7,14 +6,14 @@ import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { FlatList, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
-import { MemberListItem } from '../../../components/Member/MemberListItem';
 import { EmptyComponent } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
 import { GetConversations, GetConversationsVariables, GetConversations_Conversations_nodes } from '../../../model/graphql/GetConversations';
-import { GetConversationsQuery } from '../../../queries/GetConversationsQuery';
+import { GetConversationsQuery } from '../../../queries/Conversations/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../../redux/actions/navigation';
+import { ConversationListItem } from './ConversationListItem';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -40,26 +39,7 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
     _renderItem = ({ item: l }): React.ReactElement | null => {
         return (
             <>
-                <MemberListItem
-                    theme={this.props.theme}
-
-                    member={l.members[0]}
-                    right={({ size }) => {
-                        if (l.hasUnreadMessages) {
-                            return (
-                                <Ionicons
-                                    name="md-chatbubbles"
-                                    size={size}
-                                    style={{ marginRight: 30 }}
-                                    color={this.props.theme.colors.accent}
-                                />
-                            );
-                        }
-
-                        return null;
-                    }}
-                    onPress={() => this.props.showConversation(l.id, `${l.members[0].firstname} ${l.members[0].lastname}`)}
-                />
+                <ConversationListItem conversation={l} />
                 <Divider inset={true} />
             </>
         );

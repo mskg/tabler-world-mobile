@@ -46,6 +46,11 @@ export const Chat = gql`
         messages(token: String): ChatMessageIterator!
     }
 
+    # type ConversationAndKey {
+    #     key: String!
+    #     conversation: Conversation!
+    # }
+
     input SendMessageInput {
         conversationId: ID!
         id: ID!

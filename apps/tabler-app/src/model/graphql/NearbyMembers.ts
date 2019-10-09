@@ -52,6 +52,7 @@ export interface NearbyMembers_nearbyMembers_member {
   area: NearbyMembers_nearbyMembers_member_area;
   association: NearbyMembers_nearbyMembers_member_association;
   roles: NearbyMembers_nearbyMembers_member_roles[] | null;
+  availableForChat: boolean | null;
 }
 
 export interface NearbyMembers_nearbyMembers_address_location {

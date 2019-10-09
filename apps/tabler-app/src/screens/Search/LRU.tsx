@@ -9,7 +9,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { I18N } from '../../i18n/translation';
 import { LRUMembers } from '../../model/graphql/LRUMembers';
 import { IAppState } from '../../model/IAppState';
-import { GetLRUMembersQuery } from '../../queries/GetLRUMembersQuery';
+import { GetLRUMembersQuery } from '../../queries/Search/GetLRUMembersQuery';
 import { showProfile } from '../../redux/actions/navigation';
 
 // const logger = new Logger(Categories.Screens.Search);

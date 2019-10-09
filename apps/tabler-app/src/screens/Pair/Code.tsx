@@ -9,7 +9,7 @@ import Assets from '../../Assets';
 import { InlineLoading } from '../../components/Loading';
 import { makeMemberLink } from '../../helper/linking/member';
 import { Me } from '../../model/graphql/Me';
-import { GetMeQuery } from '../../queries/MeQuery';
+import { GetMeQuery } from '../../queries/Member/GetMeQuery';
 
 class CodeScreenBase extends AuditedScreen<{ theme }> {
 

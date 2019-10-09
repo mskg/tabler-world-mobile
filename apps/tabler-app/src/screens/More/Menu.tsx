@@ -13,7 +13,7 @@ import { Features, isFeatureEnabled } from '../../model/Features';
 import { GetMyRoles } from '../../model/graphql/GetMyRoles';
 import { UserRole } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
-import { GetMyRolesQuery } from '../../queries/GetMyRoles';
+import { GetMyRolesQuery } from '../../queries/Admin/GetMyRolesQuery';
 import { Routes } from './Routes';
 import { NavigationItem } from './Settings/Action';
 
@@ -69,20 +69,20 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
 
                             <Divider inset={true} />
                         </>
-
-                        {this.props.showExperiments && (
-                            <>
-                                <NavigationItem
-                                    icon="md-globe"
-                                    theme={this.props.theme}
-                                    text={I18N.World.title}
-                                    onPress={() => this.props.navigation.navigate(Routes.World)}
-                                />
-
-                                <Divider inset={true} />
-                            </>
-                        )}
                     </List.Section>
+
+                    {this.props.showExperiments && (
+                        <List.Section>
+                            <NavigationItem
+                                icon="md-globe"
+                                theme={this.props.theme}
+                                text={I18N.World.title}
+                                onPress={() => this.props.navigation.navigate(Routes.World)}
+                            />
+
+                            <Divider inset={true} />
+                        </List.Section>
+                    )}
 
                     <List.Section>
                         <NavigationItem

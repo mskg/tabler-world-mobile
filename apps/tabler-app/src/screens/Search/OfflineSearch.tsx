@@ -7,7 +7,7 @@ import { FilterTag } from '../../components/FilterSection';
 import { MemberList } from '../../components/MemberList';
 import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
-import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
+import { GetOfflineMembersQuery } from '../../queries/Member/GetOfflineMembersQuery';
 import { Predicates } from '../Members/Predicates';
 import { logger } from './logger';
 

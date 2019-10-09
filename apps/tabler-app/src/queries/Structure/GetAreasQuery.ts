@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { MemberFragment } from './MemberFragment';
+import { MemberFragment } from '../Member/MemberFragment';
 
 export const GetAreasQuery = gql`
   query Areas {

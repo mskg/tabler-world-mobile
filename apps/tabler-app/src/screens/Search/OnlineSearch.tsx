@@ -7,7 +7,7 @@ import { MemberList } from '../../components/MemberList';
 import { I18N } from '../../i18n/translation';
 import { CompanySector } from '../../model/graphql/globalTypes';
 import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
-import { SearchMemberQuery } from '../../queries/SearchMemberQuery';
+import { SearchMemberQuery } from '../../queries/Search/SearchMemberQuery';
 import { logger } from './logger';
 
 type State = {

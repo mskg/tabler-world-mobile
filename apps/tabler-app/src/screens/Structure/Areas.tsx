@@ -11,7 +11,7 @@ import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Areas, Areas_Areas } from '../../model/graphql/Areas';
-import { GetAreasQuery } from '../../queries/GetAreasQuery';
+import { GetAreasQuery } from '../../queries/Structure/GetAreasQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';

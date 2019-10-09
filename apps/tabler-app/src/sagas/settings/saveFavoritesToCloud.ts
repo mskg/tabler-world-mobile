@@ -10,7 +10,7 @@ import { SettingName } from '../../model/graphql/globalTypes';
 import { SaveFavorites, SaveFavoritesVariables } from '../../model/graphql/SaveFavorites';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
-import { GetFavoriteMembersQuery } from '../../queries/GetFavoriteMembersQuery';
+import { GetFavoriteMembersQuery } from '../../queries/Member/GetFavoriteMembersQuery';
 import * as filterActions from '../../redux/actions/filter';
 import { logger } from './logger';
 

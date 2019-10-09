@@ -13,7 +13,7 @@ import { I18N } from '../../i18n/translation';
 import { AreasFilter } from '../../model/graphql/AreasFilter';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
-import { GetAreasFilterQuery } from '../../queries/GetAreasFilterQuery';
+import { GetAreasFilterQuery } from '../../queries/Search/GetAreasFilterQuery';
 import { toggleAll, toggleAreaBoard, toggleAssociationBoard, toggleDistrict, toggleFavorites, toggleOwnTable } from '../../redux/actions/filter';
 import { HeaderStyles } from '../../theme/dimensions';
 import { Element } from './Element';
@@ -184,13 +184,13 @@ export const FilterScreen = connect(
         showAreaBoard: state.filter.member.showAreaBoard,
 
     }), {
-        toggleAll,
-        toggleFavorites,
-        toggleDistrict,
-        toggleOwnTable,
-        toggleAreaBoard,
-        toggleAssociationBoard,
-    })(
-        withWhoopsErrorBoundary(
-            withCacheInvalidation('areas', withTheme(FilterScreenBase))),
-    );
+    toggleAll,
+    toggleFavorites,
+    toggleDistrict,
+    toggleOwnTable,
+    toggleAreaBoard,
+    toggleAssociationBoard,
+})(
+    withWhoopsErrorBoundary(
+        withCacheInvalidation('areas', withTheme(FilterScreenBase))),
+);

@@ -19,4 +19,5 @@ export enum FieldNames {
     lastMessage = 'lastMessage',
     lastConversation = 'last_conversation',
     lastSeen = 'lastSeen',
+    channelKey = 'channelKey',
 }

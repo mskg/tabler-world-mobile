@@ -14,7 +14,7 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { AlbumsOverview, AlbumsOverview_Albums } from '../../model/graphql/AlbumsOverview';
-import { GetAlbumsOverviewQuery } from '../../queries/GetAlbumsQuery';
+import { GetAlbumsOverviewQuery } from '../../queries/Album/GetAlbumsQuery';
 import { showAlbum } from '../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';

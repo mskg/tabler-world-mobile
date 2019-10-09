@@ -18,7 +18,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { I18N } from '../../i18n/translation';
 import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
 import { IAppState } from '../../model/IAppState';
-import { GetFiltersQuery } from '../../queries/GetFiltersQuery';
+import { GetFiltersQuery } from '../../queries/Search/GetFiltersQuery';
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';

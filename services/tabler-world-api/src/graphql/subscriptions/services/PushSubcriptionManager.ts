@@ -42,6 +42,19 @@ export class PushSubcriptionManager {
     public async getSubscribers(conversation: string): Promise<number[] | undefined> {
         logger.log(`[${conversation}]`, 'getSubscribers');
 
+        // this is a one:one conversation
+        if (conversation.startsWith('CONV(')) {
+            const [a, b] = conversation
+                .replace('CONV(', '')
+                .replace(')', '')
+                // :1:,:2:
+                .replace(':', '')
+                // 1,2
+                .split(',');
+
+            return [parseInt(a, 10), parseInt(b, 10)];
+        }
+
         const { Items: members, ConsumedCapacity } = await client.query({
             TableName: PUSH_SUBSCRIPTIONS_TABLE,
 

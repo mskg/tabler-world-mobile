@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { AddressFragment } from './AddressFragment';
+import { AddressFragment } from '../Member/AddressFragment';
 
 export const GetClubsMapQuery = gql`
   query ClubsMap {

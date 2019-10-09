@@ -30,7 +30,12 @@
     },
     "include": [
         "App.ts",
-        "src/**/*.ts?"
+        "src/**/*.ts?",
+        "src/queries/GetLastSyncQuery.ts",
+        "src/queries/Conversations/StartConversationMutation.ts",
+        "src/queries/Conversations/SendMessageMutation.ts",
+        "src/queries/Conversations/conversationUpdateSubscription.ts",
+        "src/queries/Conversations/ChatMessageFragment.ts"
     ],
     "exclude": [
         "node_modules"

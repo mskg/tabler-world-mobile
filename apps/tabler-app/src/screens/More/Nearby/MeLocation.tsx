@@ -11,7 +11,7 @@ import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { Me } from '../../../model/graphql/Me';
 import { IAppState } from '../../../model/IAppState';
-import { GetMeQuery } from '../../../queries/MeQuery';
+import { GetMeQuery } from '../../../queries/Member/GetMeQuery';
 import { showLocationHistory } from '../../../redux/actions/navigation';
 import { handleLocationUpdate } from '../../../tasks/location/handleLocation';
 
@@ -92,7 +92,7 @@ export const MeLocation = connect(
     }),
     {
         showLocationHistory,
-    }
+    },
 )(
     withNavigation(withTheme(
         MeLocationBase)));

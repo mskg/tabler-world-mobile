@@ -13,7 +13,7 @@ import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { Me } from '../model/graphql/Me';
 import { IAppState } from '../model/IAppState';
-import { GetMeQuery } from '../queries/MeQuery';
+import { GetMeQuery } from '../queries/Member/GetMeQuery';
 import { INITIAL_STATE } from '../redux/initialState';
 import { light as lightTheme } from '../theme/light';
 import ConfirmSignIn from './ConfirmSignIn';

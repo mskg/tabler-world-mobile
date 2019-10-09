@@ -24,7 +24,7 @@ export async function handler(event: DynamoDBStreamEvent) {
                 ? subscruptionEvent.dynamodb.NewImage as EncodedWebsocketEvent
                 : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
 
-            const image = eventManager.unMarshall(encodedImage);
+            const image = await eventManager.unMarshall<any>(encodedImage);
             logger.log(image);
 
             const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];

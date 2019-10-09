@@ -14,7 +14,7 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { TopNews, TopNews_TopNews } from '../../model/graphql/TopNews';
-import { GetNewsQuery } from '../../queries/GetNewsQuery';
+import { GetNewsQuery } from '../../queries/News/GetNewsQuery';
 import { showAlbum, showNewsArticle } from '../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';

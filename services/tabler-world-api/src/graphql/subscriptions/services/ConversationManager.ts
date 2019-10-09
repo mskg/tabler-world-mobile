@@ -20,6 +20,7 @@ export type UserConversation = {
 export type Conversation = {
     lastMessage?: string,
     members?: DynamoDB.DocumentClient.NumberSet,
+    channelKey?: string,
 };
 
 export class ConversationManager {

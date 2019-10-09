@@ -17,7 +17,7 @@ import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { Clubs, Clubs_Clubs } from '../../../model/graphql/Clubs';
-import { GetClubsQuery } from '../../../queries/GetClubsQuery';
+import { GetClubsQuery } from '../../../queries/Structure/GetClubsQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { CardPlaceholder } from '../CardPlaceholder';
 import { CardTitle } from '../CardTitle';

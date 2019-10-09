@@ -8,9 +8,8 @@ export type MemberItemBaseProps = {
 
     onPress?: (member: IMemberOverviewFragment) => void;
 
-    right?: (props: {
-        size: number;
-    }) => React.ReactNode;
+    right?: (props: { size: number; }) => React.ReactNode;
+    bottom?: (member: IMemberOverviewFragment) => React.ReactNode;
 
     height?: number,
 };

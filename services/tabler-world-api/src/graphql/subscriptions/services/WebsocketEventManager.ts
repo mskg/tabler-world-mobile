@@ -8,6 +8,7 @@ import { dynamodb as client } from '../aws/dynamodb';
 import { EncodedWebsocketEvent } from '../types/EncodedWebsocketEvent';
 import { WebsocketEvent } from '../types/WebsocketEvent';
 import { EVENTS_TABLE, FieldNames } from './Constants';
+import { EncryptionManager } from './EncryptionManager';
 
 type PaggedResponse<T> = {
     result: T[]
@@ -26,32 +27,33 @@ const logger = new ConsoleLogger('Event');
 // const ulid = monotonicFactory();
 
 export class WebsocketEventManager {
-    public marshall<T>(message: WebsocketEvent<T>): EncodedWebsocketEvent {
+    public async marshall<T>(message: WebsocketEvent<T>): Promise<EncodedWebsocketEvent> {
+        const em = new EncryptionManager(message.eventName);
+
         return {
             id: message.id,
             eventName: message.eventName,
+
             sender: message.sender,
-            payload: JSON.stringify(message.payload),
-            pushNotification: message.pushNotification ? JSON.stringify(message.pushNotification) : undefined,
+
+            payload: await em.encrypt(message.payload),
+            pushNotification: message.pushNotification
+                ? await em.encrypt(message.pushNotification)
+                : undefined,
+
             delivered: message.delivered,
             trackDelivery: message.trackDelivery,
         };
     }
 
-    public unMarshall<T>(message: EncodedWebsocketEvent): WebsocketEvent<T> {
-        return {
-            id: message.id,
-            eventName: message.eventName,
-            sender: message.sender,
-            payload: JSON.parse(message.payload),
-            pushNotification: message.pushNotification ? JSON.parse(message.pushNotification) : undefined,
-            delivered: message.delivered,
-            trackDelivery: message.trackDelivery,
-        };
+    public async unMarshall<T>(message: EncodedWebsocketEvent): Promise<WebsocketEvent<T>> {
+        const em = new EncryptionManager(message.eventName);
+        return this.unMarshallWithEncryptionManager<T>(em, message);
     }
 
     public async events<T = any>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
         logger.log('event', trigger);
+        const em = new EncryptionManager(trigger);
 
         const { Items: messages, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
             TableName: EVENTS_TABLE,
@@ -69,7 +71,7 @@ export class WebsocketEventManager {
         logger.log('event', trigger, 'consumed', ConsumedCapacity);
 
         return messages
-            ? { nextKey, result: messages.map((m) => this.unMarshall(m as EncodedWebsocketEvent)) }
+            ? { nextKey, result: await Promise.all(messages.map((m) => this.unMarshallWithEncryptionManager(em, m as EncodedWebsocketEvent))) }
             : EMPTY_RESULT;
     }
 
@@ -113,7 +115,7 @@ export class WebsocketEventManager {
             delivered: false,
         } as WebsocketEvent<T>;
 
-        const message = this.marshall<T>(rawMessage);
+        const message = await this.marshall<T>(rawMessage);
 
         // dynamodb streams are not working offline so invoke lambda directly
         if (EXECUTING_OFFLINE) {
@@ -144,5 +146,21 @@ export class WebsocketEventManager {
         }).promise();
 
         return rawMessage;
+    }
+
+    private async unMarshallWithEncryptionManager<T>(em: EncryptionManager, message: EncodedWebsocketEvent): Promise<WebsocketEvent<T>> {
+        return {
+            id: message.id,
+            eventName: message.eventName,
+            sender: message.sender,
+
+            payload: await em.decrypt<T>(message.payload),
+            pushNotification: message.pushNotification
+                ? await em.decrypt(message.pushNotification)
+                : undefined,
+
+            delivered: message.delivered,
+            trackDelivery: message.trackDelivery,
+        };
     }
 }

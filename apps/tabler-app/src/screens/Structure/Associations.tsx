@@ -15,7 +15,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { I18N } from '../../i18n/translation';
 import { Associations, Associations_Associations } from '../../model/graphql/Associations';
 import { RoleNames } from '../../model/IRole';
-import { GetAssociationsQuery } from '../../queries/GetAssociationsQuery';
+import { GetAssociationsQuery } from '../../queries/Structure/GetAssociationsQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
 

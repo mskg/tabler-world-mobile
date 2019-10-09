@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
-import { MemberOverviewFragment } from './MemberOverviewFragment';
+import { MemberOverviewFragment } from '../Member/MemberOverviewFragment';
 
 export const GetNearbyMembersQuery = gql`
     query NearbyMembers($location: MyCurrentLocationInput!) {
         nearbyMembers(location: $location) @connection(key: "nearbyMembers") {
             member {
                 ...MemberOverviewFragment
+                availableForChat
             }
 
             lastseen

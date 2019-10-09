@@ -12,8 +12,8 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
 import { StartConversation, StartConversationVariables } from '../../model/graphql/StartConversation';
 import { HomeRoutes } from '../../navigation/Routes';
-import { GetConversationsQuery } from '../../queries/GetConversationsQuery';
-import { StartConversationMutation } from '../../queries/StartConversationMutation';
+import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
+import { StartConversationMutation } from '../../queries/Conversations/StartConversationMutation';
 import { IConversationParams, showConversation } from '../../redux/actions/navigation';
 
 const logger = new Logger(Categories.Screens.Conversation);

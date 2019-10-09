@@ -19,7 +19,7 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { Album, AlbumVariables, Album_Album_pictures } from '../../model/graphql/Album';
-import { GetAlbumQuery } from '../../queries/GetAlbumQuery';
+import { GetAlbumQuery } from '../../queries/Album/GetAlbumQuery';
 import { IAlbumParams } from '../../redux/actions/navigation';
 import { HEADER_MARGIN_TOP } from '../../theme/dimensions';
 import { logger } from './logger';

@@ -11,7 +11,8 @@ export class MemberListItem extends React.PureComponent<{ margin?; } & MemberIte
             member={this.props.member}
             style={{ marginRight: this.props.margin }}
             size={size}
-        />)
+        />
+    )
 
     render() {
         return (
@@ -23,6 +24,7 @@ export class MemberListItem extends React.PureComponent<{ margin?; } & MemberIte
                 title={<MemberTitle member={this.props.member} />}
                 subtitle={this.props.member.club.name}
                 right={this.props.right || this._right}
+                bottom={this.props.bottom}
             />
         );
     }

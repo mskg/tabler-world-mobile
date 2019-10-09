@@ -36,4 +36,5 @@ export type Param_TTLS = {
 export type Param_Chat = {
     ttl: number,
     eventsPageSize: number,
+    masterKey: string,
 };

@@ -209,12 +209,16 @@ export const ChatResolver = {
     Mutation: {
         // tslint:disable-next-line: variable-name
         leaveConversation: async (_root: {}, { id }: IdArgs, context: IApolloContext) => {
+            context.logger.log('leaveConverstaion', id);
+
             if (!checkChannelAccess(id as string, context.principal.id)) {
                 throw new Error('Access denied.');
             }
 
-            await conversationManager.removeMembers(id as string, [context.principal.id]);
-            await pushSubscriptionManager.unsubscribe(id as string, [context.principal.id]);
+            await conversationManager.removeMembers(decodeIdentifier(id as string), [context.principal.id]);
+
+            // we make this generic and always leave, even if that does not exist for a 1:1
+            await pushSubscriptionManager.unsubscribe(decodeIdentifier(id as string), [context.principal.id]);
 
             return true;
         },
@@ -227,25 +231,34 @@ export const ChatResolver = {
             },
             context: IApolloContext,
         ) => {
+            context.logger.log('startConversation', args.member);
+
             if (context.principal.id === args.member) {
                 throw new Error('You cannot chat with yourself.');
             }
 
-            // make id stable
             const id = makeConversationKey([context.principal.id, args.member]);
 
+            // make id stable
             await conversationManager.addMembers(id, [context.principal.id, args.member]);
-            await pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]);
+            // const key = await conversationManager.getEncryptionKey(id);
 
+            // we don't join for a 1:1 conversation, always there
+            // await pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]);
             return {
+                // key,
+                // conversation: {
                 id,
                 owners: [args.member],
                 members: [args.member],
+                // },
             };
         },
 
         // tslint:disable-next-line: variable-name
         sendMessage: async (_root: {}, { message }: SendMessageArgs, context: IApolloContext) => {
+            context.logger.log('sendMessage', message);
+
             if (!checkChannelAccess(message.conversationId, context.principal.id)) {
                 throw new Error('Access denied.');
             }
@@ -256,6 +269,7 @@ export const ChatResolver = {
             const params = await getChatParams();
             const channelMessage = await eventManager.post<ChatMessage>({
                 trigger,
+
                 payload: ({
                     id: message.id,
                     senderId: context.principal.id,
@@ -263,6 +277,7 @@ export const ChatResolver = {
                     receivedAt: Date.now(),
                     type: MessageType.text,
                 } as ChatMessage),
+
                 pushNotification: {
                     message: {
                         title: `${member.firstname} ${member.lastname}`,
@@ -274,6 +289,7 @@ export const ChatResolver = {
                             priority: 'high',
                         },
                     },
+
                     sender: context.principal.id,
                 },
                 ttl: params.ttl,
@@ -310,6 +326,8 @@ export const ChatResolver = {
             subscribe: async (root: SubscriptionArgs, args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
                 // if we resolve, root is null
                 if (root) {
+                    context.logger.log('subscribe', root.id, ALL_CONVERSATIONS_TOPIC);
+
                     await subscriptionManager.subscribe(
                         context.connectionId,
                         root.id,
@@ -355,6 +373,8 @@ export const ChatResolver = {
             subscribe: async (root: SubscriptionArgs, args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
                 // if we resolve, root is null
                 if (root) {
+                    context.logger.log('subscribe', root.id, args.conversation);
+
                     if (!checkChannelAccess(args.conversation, context.principal.id)) {
                         throw new Error('Access denied.');
                     }
