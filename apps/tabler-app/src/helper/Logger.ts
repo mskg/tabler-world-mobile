@@ -24,6 +24,7 @@ export class Categories {
         static readonly ErrorReport = Categories._Component + '/ErrorReport';
         static readonly Linking = Categories._Component + '/Linking';
         static readonly Chat = Categories._Component + '/Chat';
+        static readonly ErrorBoundary = Categories._Component + '/ErrorBoundary';
     };
 
     static Sagas = class {
@@ -75,7 +76,7 @@ export class Categories {
     };
 }
 
-let FILTER: RegExp | undefined = /Chat|API/ig;
+let FILTER: RegExp | undefined = undefined; // /Chat|API/ig;
 const MAX = 24;
 
 // safety
