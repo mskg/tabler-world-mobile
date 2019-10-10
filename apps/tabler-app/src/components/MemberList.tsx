@@ -8,8 +8,7 @@ import { IMemberOverviewFragment } from '../model/IMemberOverviewFragment';
 import { IWhoAmI } from '../model/IWhoAmI';
 import { showProfile } from '../redux/actions/navigation';
 import { extractKey, renderDivider, renderItem } from './ListRenderer';
-import { MeListItem, ME_ITEM_HEIGHT } from './MeListItem';
-import { ITEM_HEIGHT } from './Member/Dimensions';
+import { MeListItem } from './MeListItem';
 import { EmptyComponent } from './NoResults';
 
 type OwnProps = {
@@ -57,15 +56,15 @@ export class MemberListBase extends React.Component<Props> {
             : renderItem(item, this.props.theme, this._onPress);
     }
 
-    _getItemLayout = (_data, index) => {
-        const firstHeight = this.props.me != null ? ME_ITEM_HEIGHT : ITEM_HEIGHT;
+    // _getItemLayout = (_data, index) => {
+    //     const firstHeight = this.props.me != null ? ME_ITEM_HEIGHT : ITEM_HEIGHT;
 
-        return {
-            index,
-            length: index === 0 ? firstHeight : ITEM_HEIGHT,
-            offset: ITEM_HEIGHT * index + (index > 0 ? firstHeight - ITEM_HEIGHT : 0),
-        };
-    }
+    //     return {
+    //         index,
+    //         length: index === 0 ? firstHeight : ITEM_HEIGHT,
+    //         offset: (ITEM_HEIGHT + StyleSheet.hairlineWidth) * index + (index > 0 ? firstHeight - ITEM_HEIGHT : 0),
+    //     };
+    // }
 
     _renderHeader = () => {
         const { me } = this.props;
@@ -89,7 +88,7 @@ export class MemberListBase extends React.Component<Props> {
 
                 ListHeaderComponent={this._renderHeader}
                 renderItem={this._renderItem}
-                getItemLayout={this._getItemLayout}
+                // getItemLayout={this._getItemLayout}
                 ListEmptyComponent={this.props.refreshing ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
                 contentContainerStyle={{ flexGrow: 1, paddingBottom: 56 + 10 }}
 
