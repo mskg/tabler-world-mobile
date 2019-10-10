@@ -1,3 +1,9 @@
+# v1.2
+
+## Improvements
+
+- Member chat
+
 # v1.1
 
 ## Improvements
