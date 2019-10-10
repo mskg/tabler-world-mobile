@@ -51,6 +51,7 @@
         ],
         "scheme": "tablerworld",
         "ios": {
+            "userInterfaceStyle": "automatic",
             "supportsTablet": true,
             "config": {
                 "usesNonExemptEncryption": false

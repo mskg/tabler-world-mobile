@@ -29,6 +29,7 @@ import { SubscribeToConversationUpdates } from './screens/More/Conversations/Sub
 import { registerFetchTask } from './tasks/Fetch';
 import { registerLocationTask } from './tasks/Location';
 import { registerForPushNotificationsAsync } from './tasks/Push';
+import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
 
 const logger = new Logger(Categories.App);
@@ -90,14 +91,16 @@ const App = () => {
 
 logger.log('Loading...');
 // tslint:disable-next-line: export-name
-export default withPreCached(
-    withApollo(
-        withStore(
-            withPaperProvider(
-                withSkakeErrorReport(
-                    withAuthenticator(
-                        withWhoopsErrorBoundary(
-                            App)),
+export default withAppearanceProvider(
+    withPreCached(
+        withApollo(
+            withStore(
+                withPaperProvider(
+                    withSkakeErrorReport(
+                        withAuthenticator(
+                            withWhoopsErrorBoundary(
+                                App)),
+                    ),
                 ),
             ),
         ),

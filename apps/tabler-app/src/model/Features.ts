@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import { getColorScheme } from '../theme/getColorScheme';
+import { Appearance } from 'react-native-appearance';
 
 export enum Features {
     ContactSync,
@@ -32,7 +32,7 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.DarkModeSwitch) {
-        return getColorScheme() === 'no-preference';
+        return Appearance.getColorScheme() === 'no-preference';
     }
 
     return false;
