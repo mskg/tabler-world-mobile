@@ -7,7 +7,7 @@ import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { ClubAvatar } from '../../components/ClubAvatar';
-import { GoHomeErrorBoundary, withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { withWhoopsErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { AvatarPopup } from '../../components/Profile/AvatarPopup';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
@@ -89,7 +89,8 @@ class ClubBase extends AuditedScreen<Props> {
                 minHeight={MEMBER_HEADER_HEIGHT - MEMBER_HEADER_SCROLL_HEIGHT}
                 height={MEMBER_HEADER_HEIGHT}
                 renderContent={this._renderContent}
-                renderHeader={this._renderHeader} />
+                renderHeader={this._renderHeader}
+            />
         );
     }
 }
@@ -103,15 +104,13 @@ export class ClubScreenBase extends React.Component<NavigationInjectedProps<IClu
         const { club } = this.props.navigation.state.params as IClubParams;
 
         return (
-            <GoHomeErrorBoundary>
-                <ClubQueryWithPreviewAndInvalidation id={club}>
-                    <Club id={club} />
-                </ClubQueryWithPreviewAndInvalidation>
-            </GoHomeErrorBoundary>
+            <ClubQueryWithPreviewAndInvalidation id={club}>
+                <Club id={club} />
+            </ClubQueryWithPreviewAndInvalidation>
         );
     }
 }
 
-export const ClubScreen = withWhoopsErrorBoundary(
+export const ClubScreen = withGoHomeErrorBoundary(
     withNavigation(ClubScreenBase));
 

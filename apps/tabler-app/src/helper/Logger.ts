@@ -23,6 +23,7 @@ export class Categories {
         static readonly Notifications = Categories._Component + '/PushNotifications';
         static readonly ErrorReport = Categories._Component + '/ErrorReport';
         static readonly Linking = Categories._Component + '/Linking';
+        static readonly ErrorBoundary = Categories._Component + '/ErrorBoundary';
     };
 
     static Sagas = class {
@@ -73,7 +74,7 @@ export class Categories {
     };
 }
 
-let FILTER; // /Location|Redux|Nearby/ig; // /NearBy/ig; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
+let FILTER: RegExp | undefined = undefined; // /Chat|API/ig;
 const MAX = 24;
 
 // safety

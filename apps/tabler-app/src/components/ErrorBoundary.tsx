@@ -1,8 +1,10 @@
 // @flow
+import { Logger } from '@aws-amplify/core';
 import React, { ErrorInfo } from 'react';
 import { AppState } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import { Categories } from '../helper/Logger';
 import { homeScreen } from '../redux/actions/navigation';
 import { Whoops } from './Whoops';
 
@@ -14,6 +16,8 @@ type Props = {
 };
 
 type State = { error: Error | null, hasError: boolean };
+
+const logger = new Logger(Categories.UIComponents.ErrorBoundary);
 
 export class ErrorBoundary extends React.Component<Props, State> {
     state = { error: null, hasError: false };
@@ -41,19 +45,17 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
 
     componentDidCatch(error: Error, _info: ErrorInfo) {
-        // if (typeof this.props.onError === 'function') {
-        //     this.props.onError(this.state.error);
-        // } else {
-        this.setState({ hasError: true, error });
-        // }
-    }
+        logger.error(error);
 
-    resetError: Function = () => {
         if (typeof this.props.onError === 'function') {
             this.props.onError(this.state.error);
         } else {
-            this.setState({ error: null, hasError: false });
+            this.setState({ hasError: true, error });
         }
+    }
+
+    resetError = () => {
+        this.setState({ error: null, hasError: false });
     }
 
     render() {
@@ -82,7 +84,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
 class GoHomeErrorBoundaryBase extends React.Component<{ homeScreen, children, navigation }> {
     render() {
         return (
-            <ErrorBoundary onError={() => this.props.homeScreen()} FallbackComponent={Whoops}>
+            <ErrorBoundary onError={(e) => { this.props.homeScreen() }} FallbackComponent={Whoops}>
                 {this.props.children}
             </ErrorBoundary>
         );
