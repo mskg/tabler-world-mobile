@@ -14,7 +14,8 @@
         "config:app": "run-env node config/create.js",
         "dev": "yarn expo start",
         "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql",
-        "android": "emulator -avd expo -gpu host"
+        "android": "emulator -avd expo -gpu host",
+        "publish": "expo publish --release-channel dev"
     },
     "workspaces": {
         "packages": [

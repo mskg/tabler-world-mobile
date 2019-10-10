@@ -23,8 +23,6 @@ async function test() {
     }
 }
 
-console.log('***************', process.env.STAGE);
-
 test().then(
     () => console.log('done'),
 );
