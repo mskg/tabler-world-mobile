@@ -13,12 +13,12 @@ variables:
   - name: ANDROID_VERSION
     value: $[counter('ANDROID_VERSION', 11070)]
   - name: EXPO_RELEASE_CHANNEL
-    value: 'prod'
+    value: 'v1.2-test' # was $(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
-  - group: 'ENV Germany PROD'
+  - group: 'ENV Germany TEST'
 
 pr:
   branches:
@@ -76,7 +76,7 @@ steps:
 
 # Publish expo
 - script: |
-   export CHANNEL="$(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)"
+   export CHANNEL="$(EXPO_RELEASE_CHANNEL)"
    npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
    npx expo publish:history --release-channel $CHANNEL -r > deployment.json
   workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
