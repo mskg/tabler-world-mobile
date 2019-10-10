@@ -13,7 +13,7 @@ variables:
   - name: ANDROID_VERSION
     value: $[counter('ANDROID_VERSION', 11070)]
   - name: EXPO_RELEASE_CHANNEL
-    value: 'v1.2-test' # was $(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)
+    value: '1.2-test' # was $(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'
