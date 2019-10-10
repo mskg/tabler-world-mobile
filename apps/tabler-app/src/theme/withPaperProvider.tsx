@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useColorScheme } from 'react-native-appearance';
+import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../model/IAppState';
@@ -49,6 +49,12 @@ const Provider = connect(
 export function withPaperProvider(WrappedComponent) {
     return () => {
         const colorScheme = useColorScheme();
+        console.log(
+            '*******************************',
+            colorScheme,
+            '*******************************',
+            Appearance.getColorScheme(),
+        );
 
         return (
             <Provider colorScheme={colorScheme}>

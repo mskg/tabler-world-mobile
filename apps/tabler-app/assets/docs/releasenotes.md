@@ -9,6 +9,7 @@
 - Expandable sections on club page now only prompt for expansion with enough elements
 - Favorites now need swipe-right to toggle value
 - A scanned member is automatically added to the favorites now
+- App now follows iOS 13's appearance. Happy dark mode!
 
 ## Fixes
 
