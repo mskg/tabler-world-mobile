@@ -191,7 +191,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     render() {
         return (
             <Screen>
-                {this.state.filterTags.length > 0 &&
+                {this.state.filterTags.length > 0 && (
                     <TouchableWithoutFeedback onPress={this._showFilterDialog}>
                         <>
                             <View style={[styles.chips, { backgroundColor: this.props.theme.colors.primary }]}>
@@ -199,7 +199,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                     sortBy(this.state.filterTags, ['type', 'value']).map((f: FilterTag) => (
                                         <Chip
                                             style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                                            key={f.type + ':' + f.value}
+                                            key={`${f.type}:${f.value}`}
                                             selected={true}
                                             onPress={() => this._onToggleTag(f.type, f.value)}
                                         >
@@ -211,32 +211,32 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </>
                     </TouchableWithoutFeedback>
-                }
+                )}
 
-                {!this.state.searching &&
+                {!this.state.searching && (
                     <>
                         <LRU />
                         <SearchHistory
                             applyFilter={this.searchFilterFunction}
                         />
                     </>
-                }
+                )}
 
-                {this.state.searching && this.props.offline &&
+                {this.state.searching && this.props.offline && (
                     <OfflineSearchQuery
                         query={this.state.debouncedQuery}
                         filterTags={this.state.filterTags}
                         itemSelected={this._itemSelected}
                     />
-                }
+                )}
 
-                {this.state.searching && !this.props.offline &&
+                {this.state.searching && !this.props.offline && (
                     <OnlineSearchQuery
                         query={this.state.debouncedQuery}
                         filterTags={this.state.filterTags}
                         itemSelected={this._itemSelected}
                     />
-                }
+                )}
 
                 <Modal
                     visible={this.state.showFilter}
@@ -245,10 +245,12 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                     animationType="fade"
                 >
                     <TouchableWithoutFeedback onPress={() => this.setState({ showFilter: false })}>
-                        <View style={{
-                            ...styles.overlay,
-                            backgroundColor: this.props.theme.colors.backdrop,
-                        }} />
+                        <View
+                            style={{
+                                ...styles.overlay,
+                                backgroundColor: this.props.theme.colors.backdrop,
+                            }}
+                        />
                     </TouchableWithoutFeedback>
 
                     <View
@@ -259,11 +261,13 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                         }}
                     >
                         <List.Section>
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginRight: 4,
-                            }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginRight: 4,
+                                }}
+                            >
                                 <ListSubheader>{I18N.Search.filter}</ListSubheader>
                                 <Appbar.Action color={this.props.theme.colors.accent} icon={'clear'} onPress={this._clearSearch} />
                             </View>
@@ -356,7 +360,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                     autoCorrect={false}
 
                                     value={this.state.query}
-                                    onChangeText={text => this.searchFilterFunction(text)}
+                                    onChangeText={(text) => this.searchFilterFunction(text)}
                                 />
                             </View>
                             <Appbar.Action
