@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { ChatMessageFragment } from './ChatMessageFragment';
 
 export const SendMessageMutation = gql`
-	mutation SendMessage($id: ID!, $message: String!, $conversation: ID!) {
-		sendMessage(message: {payload: $message, conversationId: $conversation, id: $id}) {
+	mutation SendMessage($id: ID!, $text: String, $image: String, $conversation: ID!) {
+		sendMessage(message: { text: $text, image: $image, conversationId: $conversation, id: $id }) {
             ...ChatMessageFragment
 		}
 	}

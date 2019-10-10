@@ -6184,6 +6184,16 @@ expo-font@^7.0.0, expo-font@~7.0.0:
   dependencies:
     fontfaceobserver "^2.1.0"
 
+expo-image-manipulator@^7.0.0:
+  version "7.0.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-image-manipulator/-/expo-image-manipulator-7.0.0.tgz#2306213b30e306e87ddb02f15e35c4f1f4d36a12"
+  integrity sha1-IwYhOzDjBuh92wLxXjXE8fTTahI=
+
+expo-image-picker@^7.0.0:
+  version "7.0.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-image-picker/-/expo-image-picker-7.0.0.tgz#e4a5a52bd6f9655f75ecf3cc866aa9bb0c99e24b"
+  integrity sha1-5KWlK9b5ZV917PPMhmqpuwyZ4ks=
+
 expo-keep-awake@~7.0.0:
   version "7.0.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-keep-awake/-/expo-keep-awake-7.0.0.tgz#131f56bc1ed8dd66e64a159afd7eaef26939d929"

@@ -6,11 +6,17 @@
 // GraphQL fragment: ChatMessageFragment
 // ====================================================
 
+export interface ChatMessageFragment_payload {
+  __typename: "ChatMessagePayload";
+  text: string | null;
+  image: string | null;
+}
+
 export interface ChatMessageFragment {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
-  payload: any | null;
+  payload: ChatMessageFragment_payload;
   senderId: number | null;
   receivedAt: any;
   /**

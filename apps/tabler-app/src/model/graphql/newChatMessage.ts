@@ -6,11 +6,17 @@
 // GraphQL subscription operation: newChatMessage
 // ====================================================
 
+export interface newChatMessage_newChatMessage_payload {
+  __typename: "ChatMessagePayload";
+  text: string | null;
+  image: string | null;
+}
+
 export interface newChatMessage_newChatMessage {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
-  payload: any | null;
+  payload: newChatMessage_newChatMessage_payload;
   senderId: number | null;
   receivedAt: any;
   /**

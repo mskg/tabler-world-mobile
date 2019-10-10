@@ -1,17 +1,16 @@
 import gql from 'graphql-tag';
-import { MemberOverviewFragment } from '../Member/MemberOverviewFragment';
+import { MemberAvatarFragment } from './MemberAvatarFragment';
 
 export const conversationUpdateSubscription = gql`
 	subscription conversationUpdate {
 		conversationUpdate {
           hasUnreadMessages
             members {
-              ...MemberOverviewFragment
-              id
+              ...MemberAvatarFragment
             }
             id
           }
     }
 
-    ${MemberOverviewFragment}
+    ${MemberAvatarFragment}
 `;

@@ -1,16 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
 import emojiRegexCreator from 'emoji-regex';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, Platform, StyleSheet, View } from 'react-native';
+import { Clipboard, Image, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, LoadEarlier, Message, Send } from 'react-native-gifted-chat';
-import { Theme, withTheme } from 'react-native-paper';
+import { IconButton, Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
+import { resize } from './resize';
 
 const logger = new Logger(Categories.Screens.Conversation);
+const TEMP_TEXT_IMAGE = '#__#';
 
 const emojiRegex = emojiRegexCreator();
 function isPureEmojiString(text) {
@@ -34,7 +40,17 @@ type Props = {
     subscribe?: () => void,
 };
 
-class ChatBase extends React.Component<Props> {
+type State = {
+    pickedImage?: {
+        uri: string,
+        width: number,
+        height: number,
+    },
+};
+
+class ChatBase extends React.Component<Props, State> {
+    state: State = {};
+
     _renderLoadEarlier = (props: any) => {
         logger.log('loadEarlier', this.props.loadEarlier, 'isLoadingEarlier', this.props.isLoadingEarlier);
 
@@ -106,7 +122,7 @@ class ChatBase extends React.Component<Props> {
 
     _renderSend = (props) => {
         return (
-            <Send {...props}>
+            <Send {...props} text={props.text || (this.state.pickedImage ? TEMP_TEXT_IMAGE : undefined)}>
                 <Ionicons
                     style={styles.sendIcon}
                     size={20}
@@ -127,16 +143,57 @@ class ChatBase extends React.Component<Props> {
                     lineHeight: 20,
                 }}
             />
-            // </View>
         );
     }
 
+    _onSend = (messages: IChatMessage[]) => {
+        if (this.state.pickedImage) {
+            this.props.sendMessage([{
+                ...messages[0],
+                image: this.state.pickedImage.uri,
+                // @ts-ignore
+                text: messages[0].text !== TEMP_TEXT_IMAGE ? messages[0].text : null,
+            }]);
+        } else {
+            this.props.sendMessage(messages);
+        }
+
+        this.setState({ pickedImage: undefined });
+    }
+
+    export(source) {
+        requestAnimationFrame(() => {
+            FileSystem.downloadAsync(
+                source,
+                `${FileSystem.cacheDirectory}share.jpeg`,
+            )
+                .then(({ uri }) => {
+                    if (Platform.OS === 'android') {
+                        Sharing.shareAsync(
+                            uri,
+                            {
+                                mimeType: 'image/jpeg',
+                                UTI: 'image/jpeg',
+                            },
+                        );
+                    } else {
+                        ShareNative.share({
+                            url: uri,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    logger.error(error);
+                });
+        });
+    }
+
     _onLongPress = (context: any, currentMessage: IChatMessage) => {
-        if (currentMessage && currentMessage.text) {
-            const options = ['Copy Text'];
+        if (currentMessage) {
+            const options = [I18N.Conversations.copy];
 
             if (currentMessage.failedSend) {
-                options.push('Retry');
+                options.push(I18N.Conversations.retry);
             }
 
             options.push('Cancel');
@@ -150,7 +207,13 @@ class ChatBase extends React.Component<Props> {
                 (buttonIndex) => {
                     switch (buttonIndex) {
                         case 0:
-                            Clipboard.setString(currentMessage.text);
+                            if (currentMessage.text) {
+                                Clipboard.setString(currentMessage.text);
+                            }
+
+                            if (currentMessage.image) {
+                                this.export(currentMessage.image);
+                            }
                             break;
                         case 1:
                             if (options.length === 3) {
@@ -211,6 +274,80 @@ class ChatBase extends React.Component<Props> {
         return null;
     }
 
+    getPermissionAsync = async () => {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+        }
+    }
+
+    _renderFooter = () => {
+        if (this.state.pickedImage) {
+            const resized = resize(this.state.pickedImage, 100, 100);
+
+            return (
+                <View style={[styles.reply_to_footer, { backgroundColor: this.props.theme.colors.backdrop }]}>
+                    <View style={[styles.reply_to_border, { backgroundColor: this.props.theme.colors.accent }]} />
+                    <View style={styles.reply_to_container}>
+                        <Image style={{ ...resized }} source={{ uri: this.state.pickedImage.uri }} />
+                    </View>
+                    <View style={styles.close_button_container}>
+                        <IconButton
+                            onPress={() => this.setState({ pickedImage: undefined })}
+                            icon={({ size }) => <Ionicons name="md-close" size={size} color={this.props.theme.colors.accent} />}
+                        />
+                    </View>
+                </View>
+            );
+        }
+
+        return null;
+    }
+
+    _openImagePicker = async () => {
+        await this.getPermissionAsync();
+
+        const pickedImage = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
+            allowsMultipleSelection: false,
+            exif: false,
+            base64: false,
+        });
+
+        if (pickedImage.cancelled) {
+            this.setState({ pickedImage: undefined });
+        } else {
+            this.setState({
+                pickedImage: {
+                    uri: pickedImage.uri,
+                    height: pickedImage.height,
+                    width: pickedImage.width,
+                },
+            });
+        }
+    }
+
+    _renderActions = (props) => {
+        if (props.text || this.state.pickedImage) { return null; }
+
+        return (
+            <View style={styles.customActionsContainer}>
+                {/* <TouchableOpacity onPress={this.openFilePicker}>
+                    <View style={styles.buttonContainer}>
+                        <Ionicons name="md-attach" size={23} color={this.props.theme.colors.accent} />
+                    </View>
+                </TouchableOpacity> */}
+
+                <TouchableOpacity onPress={this._openImagePicker}>
+                    <View style={styles.buttonContainer}>
+                        <Ionicons name="md-image" size={23} color={this.props.theme.colors.accent} />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     componentDidMount() {
         if (this.props.subscribe) {
             this.props.subscribe();
@@ -239,7 +376,7 @@ class ChatBase extends React.Component<Props> {
 
                     extraData={this.props.extraData}
                     renderAvatar={null}
-                    onSend={this.props.sendMessage}
+                    onSend={this._onSend}
                     renderMessage={this._renderMessage}
 
                     showUserAvatar={false}
@@ -255,12 +392,13 @@ class ChatBase extends React.Component<Props> {
                     renderBubble={this._renderBubble}
                     maxInputLength={10 * 1024}
 
-                    // renderComposer={this._renderComposer}
                     renderSend={this._renderSend}
-                    renderComposer={this._renderComposer}
-
                     renderTicks={this._renderTicks}
-                // shouldUpdateMessage={() => true}
+
+                    // we flip actions and composer
+                    renderComposer={this._renderActions}
+                    renderActions={this._renderComposer}
+                    renderChatFooter={this._renderFooter}
                 />
             </View>
 
@@ -287,6 +425,37 @@ const styles = StyleSheet.create({
     tickView: {
         flexDirection: 'row',
         marginRight: 10,
+    },
+    customActionsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    buttonContainer: {
+        padding: 10,
+    },
+    composer: {
+        flex: 1,
+    },
+
+    reply_to_footer: {
+        height: 100,
+        flexDirection: 'row',
+    },
+
+    reply_to_border: {
+        height: 100,
+        width: 5,
+    },
+
+    reply_to_container: {
+        flexDirection: 'column',
+    },
+
+    close_button_container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        paddingRight: -5,
     },
 });
 

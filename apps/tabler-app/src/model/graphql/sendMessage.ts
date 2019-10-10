@@ -6,11 +6,17 @@
 // GraphQL mutation operation: SendMessage
 // ====================================================
 
+export interface SendMessage_sendMessage_payload {
+  __typename: "ChatMessagePayload";
+  text: string | null;
+  image: string | null;
+}
+
 export interface SendMessage_sendMessage {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
-  payload: any | null;
+  payload: SendMessage_sendMessage_payload;
   senderId: number | null;
   receivedAt: any;
   /**
@@ -29,6 +35,7 @@ export interface SendMessage {
 
 export interface SendMessageVariables {
   id: string;
-  message: string;
+  text?: string | null;
+  image?: string | null;
   conversation: string;
 }

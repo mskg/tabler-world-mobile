@@ -1,10 +1,17 @@
 import { gql } from 'apollo-server-lambda';
 
 export const Chat = gql`
-    enum MessageType {
+    enum PayloadType {
+        image
         text
         join
         leave
+    }
+
+    type ChatMessagePayload {
+        type: PayloadType!
+        text: String
+        image: String
     }
 
     type ChatMessage {
@@ -17,8 +24,7 @@ export const Chat = gql`
         senderId: Int
         sender: Member!
 
-        type: MessageType!
-        payload: JSON
+        payload: ChatMessagePayload!
 
         "Message was received by the server"
         accepted: Boolean
@@ -54,7 +60,9 @@ export const Chat = gql`
     input SendMessageInput {
         conversationId: ID!
         id: ID!
-        payload: String!
+
+        text: String
+        image: String
     }
 
     extend type Query {
@@ -62,7 +70,14 @@ export const Chat = gql`
         Conversation(id: ID!): Conversation
 	}
 
+    scalar Dictionary
+    type S3PresignedPost {
+        url: String!
+        fields: Dictionary!
+    }
+
 	extend type Mutation {
+        prepareFileUpload(conversationId: ID!): S3PresignedPost!
         startConversation(member: Int!): Conversation!
         leaveConversation(id: ID!): Boolean
 

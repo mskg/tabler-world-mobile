@@ -1,19 +1,19 @@
 import gql from 'graphql-tag';
-import { MemberOverviewFragment } from '../Member/MemberOverviewFragment';
+import { MemberAvatarFragment } from './MemberAvatarFragment';
 
 export const GetConversationsQuery = gql`
     query GetConversations($token: String) {
         Conversations (token: $token) @connection(key: "Conversations") {
             nodes {
+              id
               hasUnreadMessages
               members {
-                ...MemberOverviewFragment
+                ...MemberAvatarFragment
               }
-              id
             }
             nextToken
         }
     }
 
-    ${MemberOverviewFragment}
+    ${MemberAvatarFragment}
 `;

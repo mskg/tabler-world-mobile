@@ -546,6 +546,8 @@ const en = {
     Conversations: {
         title: 'Messages',
         network: 'Waiting for network...',
+        retry: 'Retry',
+        copy: 'Copy',
     },
 };
 

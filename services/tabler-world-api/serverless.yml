@@ -7,6 +7,7 @@ plugins:
   - serverless-offline
   - serverless-webpack
   - serverless-dynamodb-local
+  - serverless-s3-local
 
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -30,6 +31,7 @@ custom:
 
   demo_api_key: ${env:DEMO_API_KEY}
 
+  bucket: tabler-world-chat-attachments-${self:custom.stage}
   connections_table: tabler-world-ws-connections-${self:custom.stage}
   subscriptions_table: tabler-world-ws-subscriptions-${self:custom.stage}
   events_table: tabler-world-ws-events-${self:custom.stage}
@@ -105,6 +107,22 @@ custom:
       inMemory: true
       migrate: true
       convertEmptyValues: true
+
+  s3:
+    # Uncomment the following line only if you want to specify host address of S3 service.
+    # adress: 0.0.0.0
+    # Uncomment the following line only if you want to specify S3 server address.
+    # Ordinary, this value is localhost. But you can modify this value to use other S3 server.
+    # host: 0.0.0.0
+    port: 8005
+    directory: /tmp  # this directory must be already created.
+    # Uncomment the first line only if you want to use cors with specified policy
+    # Uncomment the second line only if you don't want to use cors
+    # Not uncomment the these lines only if your wanto use cors with default policy
+    # cors: relative/path/to/your/cors.xml
+    # website: relative/path/to/your/website.xml
+    # Uncomment only if you already have a S3 server running locally
+    # noStart: true
 
 # we want seperate files to minimize depenencies in files
 package:
@@ -290,6 +308,15 @@ functions:
             - ':'
             - !Ref WebsocketsApi
             - '/${self:provider.stage}/*'
+
+      - Effect: "Allow"
+        Action:
+         - "s3:*"
+        Resource: !Join
+          - ''
+          - - 'arn:aws:s3:::'
+            - !Ref bucketAttachments
+            - '/*'
 
     events:
       - http:
@@ -479,6 +506,21 @@ functions:
 
 resources:
   Resources:
+    bucketAttachments:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}
+        ObjectLockEnabled: false
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        LifecycleConfiguration:
+          Rules:
+            - Id: removal-${self:custom.bucket}
+              Status: Enabled
+              ExpirationInDays: '5'
+
     connectionsTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Delete

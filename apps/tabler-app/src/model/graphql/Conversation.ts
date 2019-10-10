@@ -6,19 +6,46 @@
 // GraphQL query operation: Conversation
 // ====================================================
 
+export interface Conversation_Conversation_members_club {
+  __typename: "Club";
+  id: string;
+  name: string;
+}
+
+export interface Conversation_Conversation_members_area {
+  __typename: "Area";
+  id: string;
+  name: string;
+}
+
+export interface Conversation_Conversation_members_association {
+  __typename: "Association";
+  association: string;
+  name: string;
+}
+
 export interface Conversation_Conversation_members {
   __typename: "Member";
   id: number;
-  lastname: string | null;
   firstname: string | null;
+  lastname: string | null;
   pic: string | null;
+  club: Conversation_Conversation_members_club;
+  area: Conversation_Conversation_members_area;
+  association: Conversation_Conversation_members_association;
+}
+
+export interface Conversation_Conversation_messages_nodes_payload {
+  __typename: "ChatMessagePayload";
+  text: string | null;
+  image: string | null;
 }
 
 export interface Conversation_Conversation_messages_nodes {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
-  payload: any | null;
+  payload: Conversation_Conversation_messages_nodes_payload;
   senderId: number | null;
   receivedAt: any;
   /**

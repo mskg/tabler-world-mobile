@@ -2,8 +2,6 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { RoleType } from "./globalTypes";
-
 // ====================================================
 // GraphQL query operation: GetConversations
 // ====================================================
@@ -12,7 +10,6 @@ export interface GetConversations_Conversations_nodes_members_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
 }
 
 export interface GetConversations_Conversations_nodes_members_area {
@@ -27,31 +24,15 @@ export interface GetConversations_Conversations_nodes_members_association {
   name: string;
 }
 
-export interface GetConversations_Conversations_nodes_members_roles_ref {
-  __typename: "RoleRef";
-  id: string;
-  name: string;
-  type: RoleType;
-}
-
-export interface GetConversations_Conversations_nodes_members_roles {
-  __typename: "Role";
-  name: string;
-  level: string;
-  group: string;
-  ref: GetConversations_Conversations_nodes_members_roles_ref;
-}
-
 export interface GetConversations_Conversations_nodes_members {
   __typename: "Member";
   id: number;
-  pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  pic: string | null;
   club: GetConversations_Conversations_nodes_members_club;
   area: GetConversations_Conversations_nodes_members_area;
   association: GetConversations_Conversations_nodes_members_association;
-  roles: GetConversations_Conversations_nodes_members_roles[] | null;
 }
 
 export interface GetConversations_Conversations_nodes {

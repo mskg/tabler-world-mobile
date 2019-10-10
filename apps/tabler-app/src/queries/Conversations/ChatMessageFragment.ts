@@ -4,7 +4,12 @@ export const ChatMessageFragment = gql`
     fragment ChatMessageFragment on ChatMessage {
         id
         eventId
-        payload
+
+        payload {
+            text
+            image
+        }
+
         senderId
         receivedAt
 

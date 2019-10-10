@@ -52,6 +52,7 @@
         "serverless-iam-roles-per-function": "^2.0.1",
         "serverless-offline": "5.11.0",
         "serverless-plugin-aws-alerts": "^1.2.4",
+        "serverless-s3-local": "^0.5.0",
         "serverless-webpack": "^5.3.0",
         "ts-jest": "^24.0.2",
         "ts-loader": "^6.0.1",

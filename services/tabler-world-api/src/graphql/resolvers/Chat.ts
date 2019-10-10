@@ -1,4 +1,6 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import * as crypto from 'crypto';
+import { S3, UPLOAD_BUCKET } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
@@ -13,7 +15,8 @@ type SendMessageArgs = {
     message: {
         id: string,
         conversationId: string,
-        payload: string,
+        text?: string,
+        image?: string,
     };
 };
 
@@ -37,14 +40,16 @@ type IdArgs = {
 
 enum MessageType {
     text = 'text',
+    image = 'image',
 }
 
 type ChatMessage = {
     id: string,
     senderId: number,
-    payload: any,
+    payload:
+    | { type: MessageType.text, text: string }
+    | { type: MessageType.image, image: string, text?: string },
     receivedAt: number,
-    type: MessageType,
 };
 
 type ChatMessageWithTransport = {
@@ -209,6 +214,31 @@ export const ChatResolver = {
 
     Mutation: {
         // tslint:disable-next-line: variable-name
+        prepareFileUpload: async (_root: {}, args: { conversationId: string }, context: IApolloContext) => {
+            if (!checkChannelAccess(args.conversationId, context.principal.id)) {
+                throw new Error('Access denied.');
+            }
+
+            const filename = crypto.randomBytes(24).toString('hex');
+
+            const result = S3.createPresignedPost({
+                Bucket: UPLOAD_BUCKET,
+                Conditions: [
+                    ['content-length-range', 100, 3 * 1000 * 1000],
+                    ['eq', '$Content-Type', 'image/jpeg'],
+                ],
+                Expires: 600, // 10 minutes
+                Fields: {
+                    key: `${args.conversationId}/${filename}.jpg`,
+                    // key: `${filename}`,
+                },
+            });
+
+            context.logger.log(result);
+            return result;
+        },
+
+        // tslint:disable-next-line: variable-name
         leaveConversation: async (_root: {}, { id }: IdArgs, context: IApolloContext) => {
             context.logger.log('leaveConverstaion', id);
 
@@ -268,21 +298,41 @@ export const ChatResolver = {
 
             const trigger = decodeIdentifier(message.conversationId);
             const params = await getChatParams();
+
+            const text = message.text || 'New message';
+            let image;
+
+            if (message.image) {
+                // some basic level of security here
+                if (!message.image.startsWith(message.conversationId)) {
+                    throw new Error('Access denied.');
+                }
+
+                image = S3.getSignedUrl('getObject', {
+                    Bucket: UPLOAD_BUCKET,
+                    Key: message.image,
+                    Expires: params.ttl,
+                });
+            }
+
             const channelMessage = await eventManager.post<ChatMessage>({
                 trigger,
 
                 payload: ({
                     id: message.id,
                     senderId: context.principal.id,
-                    payload: message.payload,
+                    payload: {
+                        image,
+                        type: message.image ? MessageType.image : MessageType.text,
+                        text: message.text,
+                    },
                     receivedAt: Date.now(),
-                    type: MessageType.text,
                 } as ChatMessage),
 
                 pushNotification: {
                     message: {
                         title: `${member.firstname} ${member.lastname}`,
-                        body: message.payload.length > 199 ? `${message.payload.substr(0, 197)}...` : message.payload,
+                        body: text.length > 199 ? `${text.substr(0, 197)}...` : text,
                         reason: 'chatmessage',
                         options: {
                             sound: 'default',
