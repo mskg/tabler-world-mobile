@@ -9,7 +9,7 @@ variables:
   - name: VERSION
     value: '1.2'
   - name: PATCH
-    value: $[counter(variables['VERSION'], 47)]
+    value: $[counter(variables['VERSION'], 0)]
   - name: ANDROID_VERSION
     value: $[counter('ANDROID_VERSION', 11070)]
   - name: EXPO_RELEASE_CHANNEL
