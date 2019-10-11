@@ -22,17 +22,17 @@
     "@babel/highlight" "^7.0.0"
 
 "@babel/core@^7.1.0":
-  version "7.6.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/core/-/core-7.6.2.tgz#069a776e8d5e9eefff76236bc8845566bd31dd91"
-  integrity sha1-Bpp3bo1enu//diNryIRVZr0x3ZE=
+  version "7.6.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/core/-/core-7.6.4.tgz#6ebd9fe00925f6c3e177bb726a188b5f578088ff"
+  integrity sha1-br2f4Akl9sPhd7tyahiLX1eAiP8=
   dependencies:
     "@babel/code-frame" "^7.5.5"
-    "@babel/generator" "^7.6.2"
+    "@babel/generator" "^7.6.4"
     "@babel/helpers" "^7.6.2"
-    "@babel/parser" "^7.6.2"
+    "@babel/parser" "^7.6.4"
     "@babel/template" "^7.6.0"
-    "@babel/traverse" "^7.6.2"
-    "@babel/types" "^7.6.0"
+    "@babel/traverse" "^7.6.3"
+    "@babel/types" "^7.6.3"
     convert-source-map "^1.1.0"
     debug "^4.1.0"
     json5 "^2.1.0"
@@ -41,12 +41,12 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/generator@^7.4.0", "@babel/generator@^7.6.2":
-  version "7.6.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/generator/-/generator-7.6.2.tgz#dac8a3c2df118334c2a29ff3446da1636a8f8c03"
-  integrity sha1-2sijwt8RgzTCop/zRG2hY2qPjAM=
+"@babel/generator@^7.4.0", "@babel/generator@^7.6.3", "@babel/generator@^7.6.4":
+  version "7.6.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/generator/-/generator-7.6.4.tgz#a4f8437287bf9671b07f483b76e3bb731bc97671"
+  integrity sha1-pPhDcoe/lnGwf0g7duO7cxvJdnE=
   dependencies:
-    "@babel/types" "^7.6.0"
+    "@babel/types" "^7.6.3"
     jsesc "^2.5.1"
     lodash "^4.17.13"
     source-map "^0.5.0"
@@ -97,10 +97,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.4.3", "@babel/parser@^7.6.0", "@babel/parser@^7.6.2":
-  version "7.6.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/parser/-/parser-7.6.2.tgz#205e9c95e16ba3b8b96090677a67c9d6075b70a1"
-  integrity sha1-IF6cleFro7i5YJBnemfJ1gdbcKE=
+"@babel/parser@^7.1.0", "@babel/parser@^7.4.3", "@babel/parser@^7.6.0", "@babel/parser@^7.6.3", "@babel/parser@^7.6.4":
+  version "7.6.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/parser/-/parser-7.6.4.tgz#cb9b36a7482110282d5cb6dd424ec9262b473d81"
+  integrity sha1-y5s2p0ghECgtXLbdQk7JJitHPYE=
 
 "@babel/plugin-syntax-object-rest-spread@^7.0.0":
   version "7.2.0"
@@ -118,25 +118,25 @@
     "@babel/parser" "^7.6.0"
     "@babel/types" "^7.6.0"
 
-"@babel/traverse@^7.1.0", "@babel/traverse@^7.4.3", "@babel/traverse@^7.6.2":
-  version "7.6.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/traverse/-/traverse-7.6.2.tgz#b0e2bfd401d339ce0e6c05690206d1e11502ce2c"
-  integrity sha1-sOK/1AHTOc4ObAVpAgbR4RUCziw=
+"@babel/traverse@^7.1.0", "@babel/traverse@^7.4.3", "@babel/traverse@^7.6.2", "@babel/traverse@^7.6.3":
+  version "7.6.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/traverse/-/traverse-7.6.3.tgz#66d7dba146b086703c0fb10dd588b7364cec47f9"
+  integrity sha1-ZtfboUawhnA8D7EN1Yi3NkzsR/k=
   dependencies:
     "@babel/code-frame" "^7.5.5"
-    "@babel/generator" "^7.6.2"
+    "@babel/generator" "^7.6.3"
     "@babel/helper-function-name" "^7.1.0"
     "@babel/helper-split-export-declaration" "^7.4.4"
-    "@babel/parser" "^7.6.2"
-    "@babel/types" "^7.6.0"
+    "@babel/parser" "^7.6.3"
+    "@babel/types" "^7.6.3"
     debug "^4.1.0"
     globals "^11.1.0"
     lodash "^4.17.13"
 
-"@babel/types@^7.0.0", "@babel/types@^7.3.0", "@babel/types@^7.4.0", "@babel/types@^7.4.4", "@babel/types@^7.6.0":
-  version "7.6.1"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/types/-/types-7.6.1.tgz#53abf3308add3ac2a2884d539151c57c4b3ac648"
-  integrity sha1-U6vzMIrdOsKiiE1TkVHFfEs6xkg=
+"@babel/types@^7.0.0", "@babel/types@^7.3.0", "@babel/types@^7.4.0", "@babel/types@^7.4.4", "@babel/types@^7.6.0", "@babel/types@^7.6.3":
+  version "7.6.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@babel/types/-/types-7.6.3.tgz#3f07d96f854f98e2fbd45c64b0cb942d11e8ba09"
+  integrity sha1-PwfZb4VPmOL71FxksMuULRHougk=
   dependencies:
     esutils "^2.0.2"
     lodash "^4.17.13"
@@ -815,14 +815,14 @@
     lodash "^4.17.11"
 
 "@serverless/platform-sdk@^2.0.3":
-  version "2.1.1"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@serverless/platform-sdk/-/platform-sdk-2.1.1.tgz#da2dc1c806831d66261b9234294f7cb328aeb474"
-  integrity sha1-2i3ByAaDHWYmG5I0KU98syiutHQ=
+  version "2.1.2"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@serverless/platform-sdk/-/platform-sdk-2.1.2.tgz#69a5cd36107d19a35e62423111f229c18cc939e1"
+  integrity sha1-aaXNNhB9GaNeYkIxEfIpwYzJOeE=
   dependencies:
     body-parser "^1.19.0"
     chalk "^2.4.1"
     express "^4.16.3"
-    https-proxy-agent "^2.2.2"
+    https-proxy-agent "^3.0.0"
     is-docker "^1.1.0"
     isomorphic-fetch "^2.2.1"
     jwt-decode "^2.2.0"
@@ -1147,9 +1147,9 @@
   integrity sha1-kyfiDUm5X8K/mD/C8EWyxu/8gLk=
 
 "@types/lodash@^4.14.109", "@types/lodash@^4.14.123":
-  version "4.14.142"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/lodash/-/lodash-4.14.142.tgz#52d5daff878e36e72e299bb9c5871fd6aee55829"
-  integrity sha1-UtXa/4eONucuKZu5xYcf1q7lWCk=
+  version "4.14.144"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/lodash/-/lodash-4.14.144.tgz#12e57fc99064bce45e5ab3c8bc4783feb75eab8e"
+  integrity sha1-EuV/yZBkvOReWrPIvEeD/rdeq44=
 
 "@types/long@^4.0.0":
   version "4.0.0"
@@ -1173,20 +1173,15 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^12.0.0":
-  version "12.7.11"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/node/-/node-12.7.11.tgz#be879b52031cfb5d295b047f5462d8ef1a716446"
-  integrity sha1-voebUgMc+10pWwR/VGLY7xpxZEY=
-
-"@types/node@^10.1.0":
-  version "10.14.20"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/node/-/node-10.14.20.tgz#c4378d9d6a62faa5c9aafffc3d726b5a1e7367c6"
-  integrity sha1-xDeNnWpi+qXJqv/8PXJrWh5zZ8Y=
-
-"@types/node@^12.7.12":
+"@types/node@*", "@types/node@^12.0.0", "@types/node@^12.7.12":
   version "12.7.12"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/node/-/node-12.7.12.tgz#7c6c571cc2f3f3ac4a59a5f2bd48f5bdbc8653cc"
   integrity sha1-fGxXHMLz86xKWaXyvUj1vbyGU8w=
+
+"@types/node@^10.1.0":
+  version "10.14.21"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/node/-/node-10.14.21.tgz#4a9db7ef1d1671c0015e632c5fa3d46c86c58c1e"
+  integrity sha1-Sp237x0WccABXmMsX6PUbIbFjB4=
 
 "@types/node@^8.0.8":
   version "8.10.54"
@@ -1292,9 +1287,9 @@
     source-map "^0.6.1"
 
 "@types/webpack@*":
-  version "4.39.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/webpack/-/webpack-4.39.2.tgz#fcaa85607a9bdd0e8f86a350f239ff08aede8584"
-  integrity sha1-/KqFYHqb3Q6PhqNQ8jn/CK7ehYQ=
+  version "4.39.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@types/webpack/-/webpack-4.39.3.tgz#1d55f8fce117a325368bf7612950552ee4ed4467"
+  integrity sha1-HVX4/OEXoyU2i/dhKVBVLuTtRGc=
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
@@ -2206,37 +2201,7 @@ aws-sdk-mock@^1.7.0:
     sinon "^1.17.3"
     traverse "^0.6.6"
 
-aws-sdk@^*, aws-sdk@^2.3.0, aws-sdk@^2.304.0, aws-sdk@^2.490.0, aws-sdk@^2.7.0, aws-sdk@^2.96.0:
-  version "2.544.0"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/aws-sdk/-/aws-sdk-2.544.0.tgz#d99eeada8237ee67699ce6644f8070eeb84996e7"
-  integrity sha1-2Z7q2oI37mdpnOZkT4Bw7rhJluc=
-  dependencies:
-    buffer "4.9.1"
-    events "1.1.1"
-    ieee754 "1.1.13"
-    jmespath "0.15.0"
-    querystring "0.2.0"
-    sax "1.2.1"
-    url "0.10.3"
-    uuid "3.3.2"
-    xml2js "0.4.19"
-
-aws-sdk@^2.266.1:
-  version "2.546.0"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/aws-sdk/-/aws-sdk-2.546.0.tgz#48bf5fa56ce880973467452427024e77336d6098"
-  integrity sha1-SL9fpWzogJc0Z0UkJwJOdzNtYJg=
-  dependencies:
-    buffer "4.9.1"
-    events "1.1.1"
-    ieee754 "1.1.13"
-    jmespath "0.15.0"
-    querystring "0.2.0"
-    sax "1.2.1"
-    url "0.10.3"
-    uuid "3.3.2"
-    xml2js "0.4.19"
-
-aws-sdk@^2.545.0, aws-sdk@^2.547.0:
+aws-sdk@^*, aws-sdk@^2.266.1, aws-sdk@^2.3.0, aws-sdk@^2.304.0, aws-sdk@^2.490.0, aws-sdk@^2.545.0, aws-sdk@^2.547.0, aws-sdk@^2.7.0, aws-sdk@^2.96.0:
   version "2.547.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/aws-sdk/-/aws-sdk-2.547.0.tgz#2511cb5c6471467b2f9ab59d10227640e0c75a0f"
   integrity sha1-JRHLXGRxRnsvmrWdECJ2QODHWg8=
@@ -3235,9 +3200,9 @@ commander@2.20.0:
   integrity sha1-1YuytcHuj4ew00ACfp6U4iLFpCI=
 
 commander@^2.12.1, commander@^2.19.0, commander@^2.20.0, commander@^2.5.0, commander@^2.9.0:
-  version "2.20.1"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/commander/-/commander-2.20.1.tgz#3863ce3ca92d0831dcf2a102f5fb4b5926afd0f9"
-  integrity sha1-OGPOPKktCDHc8qEC9ftLWSav0Pk=
+  version "2.20.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
+  integrity sha1-/UhehMA+tIgcIHIrpIA16FMa6zM=
 
 commander@^3.0.0:
   version "3.0.2"
@@ -4117,12 +4082,12 @@ enhanced-resolve@^3.4.0:
     tapable "^0.2.7"
 
 enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.0:
-  version "4.1.0"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/enhanced-resolve/-/enhanced-resolve-4.1.0.tgz#41c7e0bfdfe74ac1ffe1e57ad6a5c6c9f3742a7f"
-  integrity sha1-Qcfgv9/nSsH/4eV61qXGyfN0Kn8=
+  version "4.1.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/enhanced-resolve/-/enhanced-resolve-4.1.1.tgz#2937e2b8066cd0fe7ce0990a98f0d71a35189f66"
+  integrity sha1-KTfiuAZs0P584JkKmPDXGjUYn2Y=
   dependencies:
     graceful-fs "^4.1.2"
-    memory-fs "^0.4.0"
+    memory-fs "^0.5.0"
     tapable "^1.0.0"
 
 env-variable@0.0.x:
@@ -5268,13 +5233,13 @@ graphql-tools@^4.0.0, graphql-tools@^4.0.4:
     uuid "^3.1.0"
 
 graphql-upload@^8.0.2:
-  version "8.0.7"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/graphql-upload/-/graphql-upload-8.0.7.tgz#8644264e241529552ea4b3797e7ee15809cf01a3"
-  integrity sha1-hkQmTiQVKVUupLN5fn7hWAnPAaM=
+  version "8.1.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/graphql-upload/-/graphql-upload-8.1.0.tgz#6d0ab662db5677a68bfb1f2c870ab2544c14939a"
+  integrity sha1-bQq2YttWd6aL+x8shwqyVEwUk5o=
   dependencies:
     busboy "^0.3.1"
     fs-capacitor "^2.0.4"
-    http-errors "^1.7.2"
+    http-errors "^1.7.3"
     object-path "^0.11.4"
 
 graphql@*, graphql@^14.0.2, graphql@^14.4.2, graphql@^14.5.3:
@@ -5295,9 +5260,9 @@ growly@^1.3.0:
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
 handlebars@^4.0.1, handlebars@^4.0.3, handlebars@^4.1.2:
-  version "4.4.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/handlebars/-/handlebars-4.4.2.tgz#8810a9821a9d6d52cb2f57d326d6ce7c3dfe741d"
-  integrity sha1-iBCpghqdbVLLL1fTJtbOfD3+dB0=
+  version "4.4.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/handlebars/-/handlebars-4.4.3.tgz#180bae52c1d0e9ec0c15d7e82a4362d662762f6e"
+  integrity sha1-GAuuUsHQ6ewMFdfoKkNi1mJ2L24=
   dependencies:
     neo-async "^2.6.0"
     optimist "^0.6.1"
@@ -5458,6 +5423,13 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
+hoist-non-react-statics@^3.3.0:
+  version "3.3.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
+  integrity sha1-sJF48BIhhPuVrPUl2q7LTY9FlYs=
+  dependencies:
+    react-is "^16.7.0"
+
 homedir-polyfill@^1.0.1:
   version "1.0.3"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/homedir-polyfill/-/homedir-polyfill-1.0.3.tgz#743298cef4e5af3e194161fbadcc2151d3a058e8"
@@ -5501,7 +5473,7 @@ http-errors@1.7.2:
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
 
-http-errors@^1.3.1, http-errors@^1.6.3, http-errors@^1.7.2, http-errors@~1.7.0, http-errors@~1.7.2:
+http-errors@^1.3.1, http-errors@^1.6.3, http-errors@^1.7.3, http-errors@~1.7.0, http-errors@~1.7.2:
   version "1.7.3"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/http-errors/-/http-errors-1.7.3.tgz#6c619e4f9c60308c38519498c14fbb10aacebb06"
   integrity sha1-bGGeT5xgMIw4UZSYwU+7EKrOuwY=
@@ -5570,9 +5542,9 @@ iferr@^0.1.5:
   integrity sha1-xg7taebY/bazEEofy8ocGS3FtQE=
 
 ignore-walk@^3.0.1:
-  version "3.0.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/ignore-walk/-/ignore-walk-3.0.2.tgz#99d83a246c196ea5c93ef9315ad7b0819c35069b"
-  integrity sha1-mdg6JGwZbqXJPvkxWtewgZw1Bps=
+  version "3.0.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/ignore-walk/-/ignore-walk-3.0.3.tgz#017e2447184bfeade7c238e4aefdd1e8f95b1e37"
+  integrity sha1-AX4kRxhL/q3nwjjkrv3R6PlbHjc=
   dependencies:
     minimatch "^3.0.4"
 
@@ -7437,6 +7409,14 @@ memory-fs@^0.4.0, memory-fs@^0.4.1, memory-fs@~0.4.1:
     errno "^0.1.3"
     readable-stream "^2.0.1"
 
+memory-fs@^0.5.0:
+  version "0.5.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/memory-fs/-/memory-fs-0.5.0.tgz#324c01288b88652966d161db77838720845a8e3c"
+  integrity sha1-MkwBKIuIZSlm0WHbd4OHIIRajjw=
+  dependencies:
+    errno "^0.1.3"
+    readable-stream "^2.0.1"
+
 merge-descriptors@1.0.1:
   version "1.0.1"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
@@ -7717,9 +7697,9 @@ nan@^2.12.1:
   integrity sha1-eBj3IgJ7JFmobwKV1DTR/CM2xSw=
 
 nanoid@^2.1.0:
-  version "2.1.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/nanoid/-/nanoid-2.1.2.tgz#5c63a913f4fbf4afff2004c7bb42dee8e627baf4"
-  integrity sha1-XGOpE/T79K//IATHu0Le6OYnuvQ=
+  version "2.1.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/nanoid/-/nanoid-2.1.3.tgz#5130db537fca20d2676515fe7b8ecf8e22192914"
+  integrity sha1-UTDbU3/KINJnZRX+e47PjiIZKRQ=
 
 nanomatch@^1.2.13, nanomatch@^1.2.9:
   version "1.2.13"
@@ -7982,9 +7962,9 @@ npm-conf@^1.1.0:
     pify "^3.0.0"
 
 npm-packlist@^1.1.6:
-  version "1.4.4"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/npm-packlist/-/npm-packlist-1.4.4.tgz#866224233850ac534b63d1a6e76050092b5d2f44"
-  integrity sha1-hmIkIzhQrFNLY9Gm52BQCStdL0Q=
+  version "1.4.6"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/npm-packlist/-/npm-packlist-1.4.6.tgz#53ba3ed11f8523079f1457376dd379ee4ea42ff4"
+  integrity sha1-U7o+0R+FIwefFFc3bdN57k6kL/Q=
   dependencies:
     ignore-walk "^3.0.1"
     npm-bundled "^1.0.1"
@@ -8971,7 +8951,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-is@^16.8.4:
+react-is@^16.7.0, react-is@^16.8.4:
   version "16.10.2"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-is/-/react-is-16.10.2.tgz#984120fd4d16800e9a738208ab1fba422d23b5ab"
   integrity sha1-mEEg/U0WgA6ac4IIqx+6Qi0jtas=
@@ -10872,7 +10852,7 @@ typescript-tslint-plugin@^0.5.4:
     mock-require "^3.0.2"
     vscode-languageserver "^5.1.0"
 
-typescript@3.6.4:
+typescript@3.6.4, typescript@^3.4.5:
   version "3.6.4"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/typescript/-/typescript-3.6.4.tgz#b18752bb3792bc1a0281335f7f6ebf1bbfc5b91d"
   integrity sha1-sYdSuzeSvBoCgTNff26/G7/FuR0=
@@ -10881,11 +10861,6 @@ typescript@^2.9.1:
   version "2.9.2"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
   integrity sha1-HL9h0F1rliaSROtqO85L2RTg8Aw=
-
-typescript@^3.4.5:
-  version "3.6.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
-  integrity sha1-/qlC+rsg9+HKcWT/Ym8anz9wtNo=
 
 uglify-js@^2.8.29:
   version "2.8.29"
