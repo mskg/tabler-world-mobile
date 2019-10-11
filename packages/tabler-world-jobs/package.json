@@ -15,6 +15,6 @@
     "@mskg/tabler-world-rds-client": "0.0.1"
   },
   "devDependencies": {
-    "typescript": "3.6.3"
+    "typescript": "3.6.4"
   }
 }

@@ -1,47 +1,47 @@
 {
-  "name": "@mskg/tabler-world-notifications",
-  "author": "Markus Kling",
-  "license": "Copyright 2019-present Markus Kling",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "@mskg/tabler-world-aws": "0.0.1",
-    "@mskg/tabler-world-common": "0.0.1",
-    "@mskg/tabler-world-jobs": "0.0.1",
-    "@mskg/tabler-world-push-client": "0.0.1",
-    "@mskg/tabler-world-rds-client": "0.0.1",
-    "aws-xray-sdk": "^2.3.3",
-    "date-and-time": "^0.10.0",
-    "expo-server-sdk": "^3.3.0",
-    "https": "^1.0.0",
-    "lodash": "^4.17.11",
-    "pg": "^7.9.0"
-  },
-  "devDependencies": {
-    "@mskg/tabler-world-yarn-tools": "0.0.1",
-    "@types/aws-lambda": "^8.10.26",
-    "@types/node": "^12.7.3",
-    "@types/pg": "^7.4.13",
-    "aws-sdk": "^2.414.0",
-    "file-loader": "^4.2.0",
-    "ntl": "^4.0.0",
-    "serverless": "^1.49.0",
-    "serverless-offline": "^5.8.0",
-    "serverless-plugin-aws-alerts": "^1.2.4",
-    "serverless-webpack": "^5.3.0",
-    "ts-loader": "^6.0.1",
-    "ts-node": "^8.0.2",
-    "typescript": "3.6.3",
-    "webpack": "^4.32.1"
-  },
-  "files": [
-    "dist/"
-  ],
-  "scripts": {
-    "deploy": "service deploy",
-    "package": "service package",
-    "remove": "service remove",
-    "dev": "service dev",
-    "start": "ntl"
-  }
+    "name": "@mskg/tabler-world-notifications",
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "@mskg/tabler-world-aws": "0.0.1",
+        "@mskg/tabler-world-common": "0.0.1",
+        "@mskg/tabler-world-jobs": "0.0.1",
+        "@mskg/tabler-world-push-client": "0.0.1",
+        "@mskg/tabler-world-rds-client": "0.0.1",
+        "aws-xray-sdk": "^2.4.0",
+        "date-and-time": "^0.10.0",
+        "expo-server-sdk": "^3.3.0",
+        "https": "^1.0.0",
+        "lodash": "^4.17.11",
+        "pg": "^7.9.0"
+    },
+    "devDependencies": {
+        "@mskg/tabler-world-yarn-tools": "0.0.1",
+        "@types/aws-lambda": "^8.10.26",
+        "@types/node": "^12.7.12",
+        "@types/pg": "^7.4.13",
+        "aws-sdk": "^2.547.0",
+        "file-loader": "^4.2.0",
+        "ntl": "^4.0.0",
+        "serverless": "^1.54.0",
+        "serverless-offline": "^5.8.0",
+        "serverless-plugin-aws-alerts": "^1.2.4",
+        "serverless-webpack": "^5.3.0",
+        "ts-loader": "^6.0.1",
+        "ts-node": "^8.0.2",
+        "typescript": "3.6.4",
+        "webpack": "^4.32.1"
+    },
+    "files": [
+        "dist/"
+    ],
+    "scripts": {
+        "deploy": "service deploy",
+        "package": "service package",
+        "remove": "service remove",
+        "dev": "service dev",
+        "start": "ntl"
+    }
 }

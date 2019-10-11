@@ -12,7 +12,7 @@
   "license": "Copyright 2019-present Markus Kling",
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^12.7.2",
-    "typescript": "3.6.3"
+    "@types/node": "^12.7.12",
+    "typescript": "3.6.4"
   }
 }

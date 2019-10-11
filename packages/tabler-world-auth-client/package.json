@@ -12,14 +12,14 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "devDependencies": {
-        "@types/node": "^12.7.2",
+        "@types/node": "^12.7.12",
         "@types/websocket": "^0.0.40",
         "@types/zen-observable": "^0.8.0",
-        "apollo-server-core": "^2.9.3",
+        "apollo-server-core": "^2.9.6",
         "aws-lambda": "^0.1.2",
-        "aws-lambda-graphql": "^0.7.1",
+        "aws-lambda-graphql": "^0.8.1",
         "jest": "^24.9.0",
-        "typescript": "3.6.3"
+        "typescript": "3.6.4"
     },
     "peerDependencies": {
         "apollo-server-core": "*",

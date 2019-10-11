@@ -69,6 +69,9 @@ provider:
 
   runtime: nodejs10.x
 
+  deploymentBucket:
+    blockPublicAccess: true
+
   memorySize: 128
   versionFunctions: false
 
