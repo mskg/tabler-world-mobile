@@ -42,10 +42,7 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
             return 'ws://localhost:3001' as T;
         }
     } else if (key === 'ws-api') {
-        const wssAPi = Constants.manifest.extra.api.replace('https', 'wss').replace('api', 'ws-api');
-        console.log(wssAPi);
-
-        return wssAPi;
+        return Constants.manifest.extra.api.replace('https', 'wss').replace('api', 'ws-api');
     }
 
 
