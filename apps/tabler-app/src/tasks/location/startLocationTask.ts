@@ -27,7 +27,9 @@ export async function startLocationTask(): Promise<boolean> {
             delete settings.reverseGeocodeTimeout;
             logger.debug('settings', settings);
 
-            const location = await Location.getCurrentPositionAsync();
+            const location = await Location.getCurrentPositionAsync({
+                mayShowUserSettingsDialog: true,
+            });
             const result = await handleLocationUpdate([location], true);
 
             await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);

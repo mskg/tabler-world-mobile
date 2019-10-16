@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import { Feature, FeatureCollection } from 'geojson';
 import _ from 'lodash';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import deCountries from '../../i18n/countries/de.json';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Categories, Logger } from '../Logger';
@@ -23,12 +23,16 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
     try {
         // geocoding not allowed in background state
         // https://developer.apple.com/documentation/corelocation/clgeocoder
-        if (AppState.currentState === 'active') {
+        if (AppState.currentState !== 'background' || Platform.OS === 'android') {
             try {
                 const params = await getParameterValue<GeoParameters>(ParameterName.geo);
 
                 // might fail if no key on android
-                const coded = await timeout(params.reverseGeocodeTimeout, Location.reverseGeocodeAsync(location));
+                const coded = await timeout(
+                    params.reverseGeocodeTimeout,
+                    Location.reverseGeocodeAsync(location),
+                );
+
                 address = coded && coded.length > 0 ? coded[0] : undefined;
 
                 if (address && address.city == null) {
