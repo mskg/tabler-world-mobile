@@ -78,6 +78,7 @@ export class Categories {
 
 let FILTER: RegExp | undefined = undefined; // /Chat|API/ig;
 const MAX = 24;
+const PRESERVE_CONSOLE = false;
 
 // safety
 if (!__DEV__) {
@@ -98,7 +99,7 @@ export class Logger {
     debug(...args: any[]): void {
         if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
 
-        if (!__DEV__) {
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
             const message = args != null ? args[0] : null;
 
             let data: any = null;
@@ -123,7 +124,7 @@ export class Logger {
     log(...args: any[]): void {
         if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
 
-        if (!__DEV__) {
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
             const message = args != null ? args[0] : null;
 
             let data: any = null;
@@ -146,7 +147,7 @@ export class Logger {
     }
 
     error(error, ...args: any[]): void {
-        if (!__DEV__) {
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
             Sentry.withScope((scope) => {
                 scope.setLevel(Sentry.Severity.Error);
                 scope.setExtra('args', args);

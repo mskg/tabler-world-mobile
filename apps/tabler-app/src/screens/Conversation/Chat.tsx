@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, Image, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, Image, KeyboardAvoidingView, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, LoadEarlier, Message, Send } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
 import { Categories, Logger } from '../../helper/Logger';
@@ -400,6 +400,8 @@ class ChatBase extends React.Component<Props, State> {
                     renderActions={this._renderComposer}
                     renderChatFooter={this._renderFooter}
                 />
+
+                {Platform.OS === 'android' && <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={80} />}
             </View>
 
         );
