@@ -79,7 +79,7 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                 } catch (err) {
                     logger.error(`[${connectionId}] [${subscriptionId}]`, err);
                     if (err.statusCode === 410) { // this client has disconnected unsubscribe it
-                        connectionManager.disconnect(connectionId);
+                        await connectionManager.disconnect(connectionId);
                     }
 
                     failedDeliveries.push(principal.id);

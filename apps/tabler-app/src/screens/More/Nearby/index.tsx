@@ -24,7 +24,7 @@ import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../../
 import { IAppState } from '../../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../../queries/Location/GetNearbyMembersQuery';
 import { UpdateLocationAddressMutation } from '../../../queries/Location/UpdateLocationAddressMutation';
-import { showLocationHistory, showProfile, showSettings } from '../../../redux/actions/navigation';
+import { showLocationHistory, showNearbySettings, showProfile } from '../../../redux/actions/navigation';
 import { updateSetting } from '../../../redux/actions/settings';
 import { geocodeMissing } from './geocodeMissing';
 import { logger } from './logger';
@@ -52,12 +52,13 @@ type StateProps = {
     timestamp?: number,
     nearbyMembers?: boolean,
     offline: boolean,
+    hideOwnTable?: boolean,
 };
 
 type DispatchPros = {
     showProfile: typeof showProfile,
     updateSetting: typeof updateSetting;
-    showSettings: typeof showSettings;
+    showNearbySettings: typeof showNearbySettings;
     showLocationHistory: typeof showLocationHistory;
 };
 
@@ -284,7 +285,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                     content: [
                         <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.NearbyMembers.title} />,
                         // <Appbar.Action key="filter" icon="filter-list" onPress={() => {}} />,
-                        <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showSettings()} />,
+                        <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showNearbySettings()} />,
                     ],
                 }}
             >
@@ -324,6 +325,7 @@ class NearbyScreenBase extends AuditedScreen<Props, State> {
                                         longitude: this.props.location.coords.longitude,
                                         latitude: this.props.location.coords.latitude,
                                     },
+                                    hideOwnTable: this.props.hideOwnTable || false,
                                 }
                             }
                             // pollInterval={this.state.visible ? this.state.interval : undefined}
@@ -381,11 +383,12 @@ export const NearbyScreen = connect<StateProps, DispatchPros, OwnProps, IAppStat
         timestamp: state.location.timestamp,
         nearbyMembers: state.settings.nearbyMembers,
         offline: state.connection.offline,
+        hideOwnTable: state.settings.hideOwnClubWhenNearby,
     }),
     {
         showProfile,
         updateSetting,
-        showSettings,
+        showNearbySettings,
         showLocationHistory,
     },
 )(

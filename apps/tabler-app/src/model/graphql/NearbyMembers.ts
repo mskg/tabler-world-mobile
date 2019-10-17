@@ -85,4 +85,5 @@ export interface NearbyMembers {
 
 export interface NearbyMembersVariables {
   location: MyCurrentLocationInput;
+  hideOwnTable: boolean;
 }

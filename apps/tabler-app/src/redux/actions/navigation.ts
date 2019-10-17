@@ -65,10 +65,17 @@ export const showPair = () => NavigationActions.navigate({
 
 export const showSettings = () => NavigationActions.navigate({
     routeName: Routes.Main,
+    key: Routes.Main,
+});
+
+export const showNearbySettings = () => NavigationActions.navigate({
+    routeName: Routes.NearBy,
+    key: Routes.NearBy,
 });
 
 export const showLocationHistory = () => NavigationActions.navigate({
     routeName: MoreRoutes.LocationHistory,
+    key: MoreRoutes.LocationHistory,
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({

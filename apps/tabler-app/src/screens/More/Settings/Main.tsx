@@ -3,8 +3,8 @@ import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, ScrollView, StyleSheet, Text as NativeText, View } from 'react-native';
-import { Banner, Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
+import { Alert, ScrollView, Text as NativeText, View } from 'react-native';
+import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../../analytics/ActionNames';
@@ -14,11 +14,8 @@ import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../../../apollo/bootstrapApollo';
 import Assets from '../../../Assets';
 import CacheManager from '../../../components/Image/CacheManager';
-import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { isDemoModeEnabled } from '../../../helper/demoMode';
-import { disableNearbyTablers } from '../../../helper/geo/disable';
-import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { LinkingHelper } from '../../../helper/LinkingHelper';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
@@ -42,8 +39,6 @@ type State = {
     emailOptions: any[],
     showExperiments: boolean,
     demoMode: boolean,
-
-    wait?: boolean,
 };
 
 type OwnProps = {
@@ -69,7 +64,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         emailOptions: [{ label: '', value: '' }],
         showExperiments: false,
         demoMode: false,
-        wait: false,
     };
 
     constructor(props) {
@@ -170,34 +164,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
     _updateMode = async () => {
         this.updateSetting({ name: 'darkMode', value: !this.props.settings.darkMode });
-    }
-
-    _toggleLocationServices = async () => {
-        const { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-        if (status !== 'granted') {
-            Alert.alert(I18N.Settings.locationpermission);
-            this.updateSetting({ name: 'nearbyMembers', value: false });
-        } else {
-            this.setState({ wait: true }, async () => {
-                try {
-                    // switch is flipped
-                    if (!this.props.settings.nearbyMembers) {
-                        await enableNearbyTablers();
-                    } else {
-                        await disableNearbyTablers();
-                    }
-                } catch {
-                    if (!this.props.settings.nearbyMembers) {
-                        try { disableNearbyTablers(); } catch { }
-                    }
-
-                    Alert.alert(I18N.Settings.locationfailed);
-                }
-
-                this.setState({ wait: false });
-            });
-        }
     }
 
     _updateExperimentAlbums = async () => {
@@ -529,25 +495,18 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
-                        {isFeatureEnabled(Features.BackgroundLocation) &&
-                            <List.Section title={I18N.Settings.sections.nearby}>
-                                <Text style={styles.text}>{I18N.Settings.texts.nearby}</Text>
+                        {isFeatureEnabled(Features.BackgroundLocation) && (
+                            <List.Section title={I18N.Settings.sections.locationservices}>
                                 <Divider />
-                                <Element
+                                <NextScreen
                                     theme={this.props.theme}
-                                    field={I18N.Settings.fields.nearby}
-                                    text={
-                                        <Switch
-                                            color={this.props.theme.colors.accent}
-                                            style={{ marginTop: -4, marginRight: -4 }}
-                                            value={this.props.settings.nearbyMembers}
-                                            onValueChange={this._toggleLocationServices}
-                                        />
-                                    }
+                                    text={I18N.Settings.fields.nearby}
+                                    onPress={
+                                        () => this.props.navigation.navigate(Routes.NearBy)}
                                 />
                                 <Divider />
                             </List.Section>
-                        }
+                        )}
 
                         {this.state.showExperiments &&
                             <List.Section title={I18N.Settings.sections.experiments}>
@@ -582,13 +541,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         <View style={{ height: 50 }} />
                     </ScrollView>
                 </ScreenWithHeader>
-                {this.state.wait && <Portal>
-                    <>
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: this.props.theme.colors.backdrop, opacity: 0.8 }]} />
-                        <FullScreenLoading />
-                    </>
-                </Portal>
-                }
             </>
         );
     }

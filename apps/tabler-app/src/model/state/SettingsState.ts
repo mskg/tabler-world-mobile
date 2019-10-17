@@ -14,4 +14,5 @@ export type SettingsState = {
     optOutAnalytics: boolean;
 
     nearbyMembers?: boolean;
+    hideOwnClubWhenNearby?: boolean;
 };

@@ -406,13 +406,12 @@ const en = {
             contacts: 'Members',
             colors: 'Colors',
             experiments: 'Experiments',
-            nearby: 'Nearby Members',
+            locationservices: 'Location Services',
         },
 
         texts: {
             contacts: 'Members can be synchronized to your phone\'s default Contacts\' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.',
             experiments: 'These are experimental and unsupported features of the TABLER.APP and may dissapear at any time.',
-            nearby: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
         },
 
         contactpermissions: 'Location permissions are required in order to use this feature. Please grant permission through the phone\'s settings area.',
@@ -439,7 +438,7 @@ const en = {
             sortOrder: 'Sort Order',
             displayOrder: 'Display Order',
             experiments: 'Albums & News',
-            nearby: 'Share my location',
+            nearby: 'Nearby Members',
         },
 
         ReleaseNotes: 'Release Notes',
@@ -537,6 +536,18 @@ const en = {
         on: 'Turn on',
 
         off: 'Nearby Members is off. If you turn it on, other members can see in which city you are. We don\'t store your location history, only your last known location.',
+
+        Settings: {
+            title: 'Nearby Members',
+            on: {
+                text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
+                field: 'Share Your Location',
+            },
+            filter: {
+                title: 'Filter',
+                field: 'Hide Your own Club',
+            },
+        },
     },
 
     Feedback: {
