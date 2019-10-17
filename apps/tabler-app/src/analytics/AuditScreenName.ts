@@ -30,6 +30,7 @@ export enum AuditScreenName {
     Legal           = 'Settings/Legal',
     ShowMD          = 'Settings/Show MD',
     ShowExternal    = 'Settings/Show External',
+    NearbySettings  = 'Settings/Nearby',
 
     ErrorReport     = 'ErrorReport',
     Menu            = 'Menu',
