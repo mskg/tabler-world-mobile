@@ -63,8 +63,8 @@ export const showSettings = () => NavigationActions.navigate({
 });
 
 export const showNearbySettings = () => NavigationActions.navigate({
-    routeName: Routes.NearBy,
-    key: Routes.NearBy,
+    routeName: MoreRoutes.NearbySettings,
+    key: MoreRoutes.NearbySettings,
 });
 
 export const showLocationHistory = () => NavigationActions.navigate({

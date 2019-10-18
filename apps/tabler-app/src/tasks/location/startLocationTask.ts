@@ -1,4 +1,5 @@
 import * as Location from 'expo-location';
+import { AsyncStorage } from 'react-native';
 import { GeoParameters } from '../../helper/parameters/Geo';
 import { getParameterValue } from '../../helper/parameters/getParameter';
 import { ParameterName } from '../../model/graphql/globalTypes';
@@ -30,6 +31,8 @@ export async function startLocationTask(): Promise<boolean> {
             const result = await updateLocation(true, true);
 
             await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
+            await AsyncStorage.setItem(LOCATION_TASK_NAME, true.toString());
+
             return result;
         } catch (e) {
             logger.error(e, `Start of ${LOCATION_TASK_NAME} failed`);

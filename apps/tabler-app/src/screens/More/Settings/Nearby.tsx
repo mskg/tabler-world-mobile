@@ -94,6 +94,11 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                     // switch is flipped
                     if (!this.props.settings.nearbyMembers) {
                         await enableNearbyTablers();
+
+                        this.audit.trackAction(ActionNames.ChangeSetting, {
+                            [AuditPropertyNames.Setting]: 'nearbyMembers',
+                            [AuditPropertyNames.SettingValue]: true.toString(),
+                        });
                     } else {
                         await disableNearbyTablers();
                     }

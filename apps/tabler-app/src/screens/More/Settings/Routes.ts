@@ -3,5 +3,4 @@ export enum Routes {
     Legal = 'settings/legal',
     MD = 'settings/md',
     External = 'settings/external',
-    NearBy = 'settings/nearby',
 }

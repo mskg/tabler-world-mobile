@@ -10,7 +10,7 @@ import { EnableLocationServicesMutation, PutLocationMutation } from '../../queri
 import { setLocation } from '../../redux/actions/location';
 import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
 import { LOCATION_TASK_NAME } from '../Constants';
-import { isSignedIn } from '../isSignedIn';
+import { isSignedIn } from '../helper/isSignedIn';
 import { logger } from './logger';
 
 // tslint:disable-next-line: export-name

@@ -25,9 +25,10 @@ import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
-import { registerFetchTask } from './tasks/Fetch';
-import { registerLocationTask } from './tasks/Location';
-import { registerForPushNotificationsAsync } from './tasks/Push';
+import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
+import { registerFetchTask } from './tasks/registerFetchTask';
+import { registerLocationTask } from './tasks/registerLocationTask';
+import { registerForPushNotifications } from './tasks/registerForPushNotifications';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
 
@@ -61,7 +62,7 @@ if (isFeatureEnabled(Features.BackgroundLocation)) {
 }
 
 logger.log('Bootstrapping push notifications');
-registerForPushNotificationsAsync();
+registerForPushNotifications();
 
 fix2940();
 useScreens();

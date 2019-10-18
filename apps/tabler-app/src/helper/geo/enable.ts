@@ -1,11 +1,10 @@
 import * as Location from 'expo-location';
-import { AsyncStorage } from 'react-native';
 import { updateSetting } from '../../redux/actions/settings';
 import { getReduxStore } from '../../redux/getRedux';
-import { LOCATION_TASK_NAME } from '../../tasks/Constants';
 import { startLocationTask } from '../../tasks/location/startLocationTask';
 import { logger } from './logger';
 
+// tslint:disable-next-line: export-name
 export async function enableNearbyTablers() {
     logger.log('enableNearbyTablers');
 
@@ -18,7 +17,7 @@ export async function enableNearbyTablers() {
     await Location.requestPermissionsAsync();
 
     if (await startLocationTask()) {
-        await AsyncStorage.setItem(LOCATION_TASK_NAME, true.toString());
+        // await AsyncStorage.setItem(LOCATION_TASK_NAME, true.toString());
 
         getReduxStore().dispatch(
             updateSetting({ name: 'nearbyMembers', value: true }),

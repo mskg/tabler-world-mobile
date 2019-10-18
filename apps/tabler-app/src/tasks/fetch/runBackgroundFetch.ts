@@ -1,6 +1,5 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import _ from 'lodash';
-import { AsyncStorage } from 'react-native';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
@@ -14,8 +13,9 @@ import { GetClubsQuery } from '../../queries/GetClubsQuery';
 import { GetMembersByAreasQuery } from '../../queries/GetMembersByAreasQuery';
 import { GetOfflineMembersQuery } from '../../queries/GetOfflineMembersQuery';
 import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
-import { FETCH_TASKNAME, LOCATION_TASK_NAME } from '../Constants';
-import { isSignedIn } from '../isSignedIn';
+import { FETCH_TASKNAME } from '../Constants';
+import { isLocationTaskEnabled } from '../location/isLocationTaskEnabled';
+import { isSignedIn } from '../helper/isSignedIn';
 import { updateLocation } from '../location/updateLocation';
 import { logger } from './logger';
 import { updateCache } from './updateCache';
@@ -44,7 +44,7 @@ export async function runBackgroundFetch() {
         const offlineMembersPromise = updateCache(client, GetOfflineMembersQuery, 'members');
 
         let locationPromise = Promise.resolve(true);
-        if ((await AsyncStorage.getItem(LOCATION_TASK_NAME)) === 'true') {
+        if (await isLocationTaskEnabled()) {
             // we send a live sign here
             locationPromise = updateLocation(false, true);
         }

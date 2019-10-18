@@ -8,7 +8,7 @@ import { TOKEN_KEY } from './Constants';
 
 const logger = new Logger(Categories.Sagas.Push);
 
-export async function registerForPushNotificationsAsync() {
+export async function registerForPushNotifications() {
     // TODO: dupliacte code with checkPersmissions
     try {
         const { status: existingStatus } = await Permissions.getAsync(

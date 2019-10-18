@@ -1,8 +1,8 @@
 import { LocationData } from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { AsyncStorage } from 'react-native';
 import { LOCATION_TASK_NAME } from './Constants';
-import { handleLocationUpdate } from './location/handleLocation';
+import { isLocationTaskEnabled } from './location/isLocationTaskEnabled';
+import { handleLocationUpdate } from './location/handleLocationUpdate';
 import { logger } from './location/logger';
 import { startLocationTask } from './location/startLocationTask';
 import { stopLocationTaks } from './location/stopLocationTaks';
@@ -23,7 +23,7 @@ export async function registerLocationTask() {
             }
         });
 
-        if ((await AsyncStorage.getItem(LOCATION_TASK_NAME)) === 'true') {
+        if (await isLocationTaskEnabled()) {
             await startLocationTask();
         } else {
             await stopLocationTaks();

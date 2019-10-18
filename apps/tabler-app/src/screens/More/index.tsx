@@ -6,12 +6,14 @@ import { MenuScreen } from './Menu';
 import { NearbyScreen } from './Nearby';
 import { Routes } from './Routes';
 import MainSettingsScreen from './Settings';
+import { NearbySettingsScreen } from './Settings/Nearby';
 import { WorldScreen } from './World';
 
 const Navigator = createStackNavigator(
     {
         [Routes.Menu]: { screen: MenuScreen },
         [Routes.Nearby]: { screen: NearbyScreen },
+        [Routes.NearbySettings]: { screen: NearbySettingsScreen },
         [Routes.Settings]: { screen: MainSettingsScreen },
         [Routes.World]: { screen: WorldScreen },
         [Routes.Feedback]: { screen: FeedbackScreen },
