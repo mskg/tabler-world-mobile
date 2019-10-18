@@ -3,8 +3,8 @@ import { GeoParameters } from '../../helper/parameters/Geo';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { LOCATION_TASK_NAME } from '../Constants';
-import { handleLocationUpdate } from './handleLocation';
 import { logger } from './logger';
+import { updateLocation } from './updateLocation';
 
 export async function startLocationTask(): Promise<boolean> {
     const enabled = await Location.hasServicesEnabledAsync();
@@ -27,10 +27,7 @@ export async function startLocationTask(): Promise<boolean> {
             delete settings.reverseGeocodeTimeout;
             logger.debug('settings', settings);
 
-            const location = await Location.getCurrentPositionAsync({
-                mayShowUserSettingsDialog: true,
-            });
-            const result = await handleLocationUpdate([location], true);
+            const result = await updateLocation(true, true);
 
             await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
             return result;

@@ -15,7 +15,7 @@ import { isSignedIn } from '../isSignedIn';
 import { logger } from './logger';
 
 // tslint:disable-next-line: export-name
-export async function handleLocationUpdate(locations: Location.LocationData[], enable = false): Promise<boolean> {
+export async function handleLocationUpdate(locations: Location.LocationData[], enable = false, force = false): Promise<boolean> {
     try {
         logger.debug('handleLocationUpdate', locations);
 
@@ -42,7 +42,8 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
         if (existing
             && existing.coords
             && existing.coords.longitude === location.coords.longitude
-            && existing.coords.latitude === location.coords.latitude) {
+            && existing.coords.latitude === location.coords.latitude
+            && !force) {
             logger.debug('Ignoring coordinates');
             return true;
         }
