@@ -1,7 +1,6 @@
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import ApolloClient, { OperationVariables } from 'apollo-client';
 import { DocumentNode } from 'graphql';
-import { getPersistor } from '../../apollo/bootstrapApollo';
 import { TimeoutDefaults } from '../../helper/parameters/Timeouts';
 import { logger } from './logger';
 
@@ -18,7 +17,7 @@ export async function updateCache(
         fetchPolicy: 'network-only',
     });
 
-    await client.writeData({
+    client.writeData({
         data: {
             LastSync: {
                 __typename: 'LastSync',
@@ -27,5 +26,5 @@ export async function updateCache(
         },
     });
 
-    await getPersistor().persist();
+    // await getPersistor().persist();
 }
