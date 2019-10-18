@@ -7,7 +7,6 @@ import { FETCH_TASKNAME } from './Constants';
 import { logger } from './fetch/logger';
 import { runBackgroundFetch } from './fetch/runBackgroundFetch';
 
-// tslint:disable-next-line: export-name
 export async function registerFetchTask() {
     try {
         TaskManager.defineTask(FETCH_TASKNAME, runBackgroundFetch);

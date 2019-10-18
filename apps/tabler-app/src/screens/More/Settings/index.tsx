@@ -12,7 +12,6 @@ const Navigator = createStackNavigator(
         [Routes.Legal]: { screen: LegalScreen },
         [Routes.MD]: { screen: ShowMDScreen },
         [Routes.External]: { screen: ShowExternalScreen },
-        [Routes.NearBy]: { screen: NearbySettingsScreen },
     },
     {
         initialRouteName: Routes.Main,

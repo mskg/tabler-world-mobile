@@ -22,6 +22,7 @@ import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { showNearbySettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
 import { Action, NextScreen } from './Action';
@@ -52,6 +53,7 @@ type StateProps = {
 type DispatchPros = {
     logoutUser: typeof logoutUser;
     updateSetting: typeof updateSetting;
+    showNearbySettings: typeof showNearbySettings;
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
@@ -502,7 +504,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     theme={this.props.theme}
                                     text={I18N.Settings.fields.nearby}
                                     onPress={
-                                        () => this.props.navigation.navigate(Routes.NearBy)}
+                                        () => this.props.showNearbySettings()}
                                 />
                                 <Divider />
                             </List.Section>
@@ -553,4 +555,5 @@ export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IA
     {
         logoutUser,
         updateSetting,
+        showNearbySettings,
     })(withNavigation(withTheme(MainSettingsScreenBase)));

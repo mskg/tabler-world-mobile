@@ -1,5 +1,4 @@
 import ApolloClient from 'apollo-client';
-import { AsyncStorage } from 'react-native';
 import { bootstrapApollo } from '../../apollo/bootstrapApollo';
 import { DisableLocationServices } from '../../model/graphql/DisableLocationServices';
 import { DisableLocationServicesMutation } from '../../queries/Location/DisableLocationServices';
@@ -10,6 +9,7 @@ import { LOCATION_TASK_NAME } from '../../tasks/Constants';
 import { stopLocationTaks } from '../../tasks/location/stopLocationTaks';
 import { logger } from './logger';
 
+// tslint:disable-next-line: export-name
 export async function disableNearbyTablers() {
     logger.log('disableNearbyTablers');
 
@@ -27,7 +27,7 @@ export async function disableNearbyTablers() {
 
     logger.log('Disabling location services', LOCATION_TASK_NAME);
 
-    await AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
+    // await AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
     getReduxStore().dispatch(
         updateSetting({ name: 'nearbyMembers', value: false }),
     );

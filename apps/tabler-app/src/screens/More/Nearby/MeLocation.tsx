@@ -13,7 +13,7 @@ import { Me } from '../../../model/graphql/Me';
 import { IAppState } from '../../../model/IAppState';
 import { GetMeQuery } from '../../../queries/Member/GetMeQuery';
 import { showLocationHistory } from '../../../redux/actions/navigation';
-import { handleLocationUpdate } from '../../../tasks/location/handleLocation';
+import { handleLocationUpdate } from '../../../tasks/location/handleLocationUpdate';
 
 type State = {
     message?: string,
