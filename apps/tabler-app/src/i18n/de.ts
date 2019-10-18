@@ -349,13 +349,12 @@ const de: I18NType = {
             contacts: 'Mitglieder',
             colors: 'Farben',
             experiments: 'Experimente',
-            nearby: 'Mitglieder in der Nähe',
+            locationservices: 'Ortungsdienste',
         },
 
         texts: {
             contacts: 'Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.',
             experiments: 'Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden.',
-            nearby: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
         },
 
         contactpermissions: 'Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
@@ -384,7 +383,7 @@ const de: I18NType = {
             displayOrder: 'Anzeige',
 
             experiments: 'Alben und Neuigkeiten',
-            nearby: 'Meinen Standort teilen',
+            nearby: 'Mitglieder in der Nähe',
         },
 
         ReleaseNotes: 'Versionshinweise (Englisch)',
@@ -480,6 +479,20 @@ const de: I18NType = {
         on: 'Einschalten',
 
         off: '\'Mitglieder in der Nähe\' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt in der du dich befindest. Wir speichern keine Standorthistorie.',
+
+
+        Settings: {
+            title: 'Mitglieder in der Nähe',
+            on: {
+                title: 'Mitglieder in der Nähe',
+                text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
+                field: 'Teile Deinen Standort',
+            },
+            filter: {
+                title: 'Filter',
+                field: 'Verstecke Mitglieder des eigenen Clubs',
+            },
+        },
     },
 
     Feedback: {
