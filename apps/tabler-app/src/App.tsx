@@ -25,10 +25,9 @@ import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
-import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
 import { registerFetchTask } from './tasks/registerFetchTask';
-import { registerLocationTask } from './tasks/registerLocationTask';
 import { registerForPushNotifications } from './tasks/registerForPushNotifications';
+import { registerLocationTask } from './tasks/registerLocationTask';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
 
