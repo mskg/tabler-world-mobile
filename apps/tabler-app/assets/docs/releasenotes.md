@@ -10,6 +10,7 @@
 - Favorites now need swipe-right to toggle value
 - A scanned member is automatically added to the favorites now
 - App now follows iOS 13's appearance. Happy dark mode!
+- Possibility to exclude own club members from nearby members view
 
 ## Fixes
 
