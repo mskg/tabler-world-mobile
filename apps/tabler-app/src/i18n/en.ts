@@ -225,7 +225,6 @@ const en = {
             favadd: 'Add to Favorites',
             remfav: 'Remove from Favorites',
             contact: 'Update Phonebook',
-            chat: 'Send Message',
 
             linkedin: 'linkedin',
             facebook: 'facebook',
@@ -540,6 +539,7 @@ const en = {
         Settings: {
             title: 'Nearby Members',
             on: {
+                title: 'Nearby Members',
                 text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
                 field: 'Share Your Location',
             },
@@ -552,13 +552,6 @@ const en = {
 
     Feedback: {
         title: 'Feedback',
-    },
-
-    Conversations: {
-        title: 'Messages',
-        network: 'Waiting for network...',
-        retry: 'Retry',
-        copy: 'Copy',
     },
 };
 

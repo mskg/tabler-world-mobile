@@ -227,7 +227,6 @@ const de: I18NType = {
             favadd: 'Zu Favoriten hinzufügen',
             remfav: 'Aus den Favoriten entfernen',
             contact: 'Ins Telefonbuch übertragen',
-            chat: 'Nachricht schicken',
 
             linkedin: 'Linkedin',
             facebook: 'Facebook',
@@ -353,13 +352,11 @@ const de: I18NType = {
             colors: 'Farben',
             experiments: 'Experimente',
             locationservices: 'Ortungsdienste',
-            // nearby: 'Mitglieder in der Nähe',
         },
 
         texts: {
             contacts: 'Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.',
             experiments: 'Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden.',
-            // nearby: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
         },
 
         contactpermissions: 'Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
@@ -388,7 +385,7 @@ const de: I18NType = {
             displayOrder: 'Anzeige',
 
             experiments: 'Alben und Neuigkeiten',
-            nearby: 'Meinen Standort teilen',
+            nearby: 'Mitglieder in der Nähe',
         },
 
         ReleaseNotes: 'Versionshinweise (Englisch)',
@@ -485,28 +482,23 @@ const de: I18NType = {
 
         off: '\'Mitglieder in der Nähe\' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt in der du dich befindest. Wir speichern keine Standorthistorie.',
 
+
         Settings: {
             title: 'Mitglieder in der Nähe',
             on: {
+                title: 'Mitglieder in der Nähe',
                 text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
                 field: 'Teile Deinen Standort',
             },
             filter: {
                 title: 'Filter',
-                field: 'Verstecke Mitglieder Deines Clubs',
+                field: 'Verstecke Mitglieder des eigenen Clubs',
             },
         },
     },
 
     Feedback: {
         title: 'Feedback',
-    },
-
-    Conversations: {
-        title: 'Nachrichten',
-        network: 'Warte auf das Netzwerk...',
-        retry: 'Erneut versuchen',
-        copy: 'Kopieren',
     },
 };
 

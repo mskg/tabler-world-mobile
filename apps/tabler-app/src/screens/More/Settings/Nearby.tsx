@@ -138,7 +138,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                             </Banner>
                         } */}
 
-                        <List.Section title={I18N.NearbyMembers.Settings.on.field}>
+                        <List.Section title={I18N.NearbyMembers.Settings.on.title}>
                             <Text style={styles.text}>{I18N.NearbyMembers.Settings.on.text}</Text>
                             <Divider />
                             <Element
