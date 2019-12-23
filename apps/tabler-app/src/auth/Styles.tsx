@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 
+// tslint:disable-next-line: export-name
 export const styles = StyleSheet.create({
 
     heading: {

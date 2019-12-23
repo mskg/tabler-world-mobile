@@ -70,6 +70,7 @@ export class WebsocketEventManager {
 
         logger.log('event', trigger, 'consumed', ConsumedCapacity);
 
+        //@ts-ignore
         return messages
             ? { nextKey, result: await Promise.all(messages.map((m) => this.unMarshallWithEncryptionManager(em, m as EncodedWebsocketEvent))) }
             : EMPTY_RESULT;

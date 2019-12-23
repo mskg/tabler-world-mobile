@@ -17,21 +17,21 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
         this.context = config.context;
 
         this.conversations = new DataLoader<string, any>(
-            (keys: string[]) => Promise.all(keys.map((k) => conversationManager.getConversation(k))),
+            (keys: ReadonlyArray<string>) => Promise.all(keys.map((k) => conversationManager.getConversation(k))),
             {
                 cacheKeyFn: (k: string) => k,
             },
         );
 
-        this.userConversations = new DataLoader<{ id: string, member: number }, any>(
-            (keys: { id: string, member: number }[]) => Promise.all(keys.map((k) => conversationManager.getUserConversation(k.id, k.member))),
+        this.userConversations = new DataLoader<{ id: string, member: number }, any, string>(
+            (keys: ReadonlyArray<{ id: string, member: number }>) => Promise.all(keys.map((k) => conversationManager.getUserConversation(k.id, k.member))),
             {
                 cacheKeyFn: (k: { id: string, member: number }) => `${k.id}:${k.member}`,
             },
         );
 
         this.userProperties = new DataLoader<number, any>(
-            (ids: number[]) => useDataService(this.context, async (client) => {
+            (ids: ReadonlyArray<number>) => useDataService(this.context, async (client) => {
                 const res = await client.query(
                     `select id from usersettings where id = ANY($1) and array_length(tokens, 1) > 0`,
                     [ids],

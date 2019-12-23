@@ -100,7 +100,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
             },
         );
 
-        this.areaLoader = new DataLoader<AssocKey, any>(
+        this.areaLoader = new DataLoader<AssocKey, any, string>(
             cachedDataLoader<AssocKey>(
                 this.context,
                 (k) => makeCacheKey('Area', [k.association, k.id]),
@@ -128,7 +128,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
             },
         );
 
-        this.clubLoader = new DataLoader<AssocKey, any>(
+        this.clubLoader = new DataLoader<AssocKey, any, string>(
             cachedDataLoader<AssocKey>(
                 this.context,
                 // we use the same format for the key that can be extracted during read

@@ -1,6 +1,6 @@
+import NetInfo from '@react-native-community/netinfo';
 import * as Location from 'expo-location';
 import _ from 'lodash';
-import { NetInfo } from 'react-native';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { bootstrapApollo } from '../../apollo/bootstrapApollo';
@@ -48,8 +48,8 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             return true;
         }
 
-        const ci = await NetInfo.getConnectionInfo();
-        const offline = ci.type === 'none' || ci.type === 'NONE';
+        const ci = await NetInfo.fetch();
+        const offline = ci.type === 'none' || ci.type === 'unknown';
 
         if (offline) {
             logger.log('Network seems to be offline', ci);

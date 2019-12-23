@@ -23,7 +23,7 @@ class LinkingBase extends React.Component<Props> {
         logger.debug('path', path, 'params', queryParams);
 
         Audit.trackEvent(AuditEventName.Linking, {
-            Url: path,
+            Url: path || '',
         });
 
         const memberLink = parseMemberLink(path, queryParams);

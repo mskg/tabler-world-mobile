@@ -1,4 +1,4 @@
-import { differenceInYears, format } from 'date-fns';
+import { differenceInYears, format, parseISO } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
 import 'moment';
 import 'moment/locale/de';
@@ -164,7 +164,7 @@ const de: I18NType = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, 'D. MMMM YYYY', { locale: dateDE })} (${differenceInYears(Date.now(), date)})`;
+                return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateDE })} (${differenceInYears(Date.now(), parseISO(date))})`;
             },
         },
 
@@ -499,6 +499,10 @@ const de: I18NType = {
 
     Feedback: {
         title: 'Feedback',
+    },
+
+    Conversations: {
+        title: 'Unterhaltungen',
     },
 };
 

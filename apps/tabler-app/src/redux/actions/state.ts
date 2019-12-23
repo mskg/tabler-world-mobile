@@ -1,5 +1,5 @@
-import { ConnectionInfo } from 'react-native';
 import { createAction } from './action';
+import { NetInfoState } from '@react-native-community/netinfo';
 
 /**
  * Enable or disable a district global filter
@@ -16,7 +16,7 @@ export const checkNetwork = createAction<'@@network/check', string>(
     '@@network/check',
 );
 
-export const updateNetwork = createAction<'@@network/update', ConnectionInfo>(
+export const updateNetwork = createAction<'@@network/update', NetInfoState>(
     '@@network/update',
 );
 

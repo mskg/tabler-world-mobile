@@ -20,15 +20,15 @@
         "@types/node": "^12.7.12",
         "@types/pg": "^7.4.13",
         "aws-sdk": "^2.547.0",
-        "file-loader": "^4.2.0",
-        "ntl": "^4.0.0",
+        "file-loader": "^5.0.2",
+        "ntl": "^5.0.0",
         "serverless": "^1.54.0",
         "serverless-iam-roles-per-function": "^2.0.1",
         "serverless-plugin-aws-alerts": "^1.2.4",
         "serverless-sync-s3buckets": "^1.0.1",
         "serverless-webpack": "^5.3.0",
         "ts-loader": "^6.0.1",
-        "typescript": "3.6.4",
+        "typescript": "3.7.4",
         "webpack": "^4.32.1"
     },
     "files": [

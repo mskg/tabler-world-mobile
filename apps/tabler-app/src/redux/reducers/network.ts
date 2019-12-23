@@ -16,7 +16,7 @@ export function networkReducer(
             return {
                 ...state,
                 ...action.payload,
-                offline: action.payload.type === 'none' || action.payload.type === 'NONE',
+                offline: action.payload.type === 'none' || action.payload.type === 'unknown',
             };
 
 

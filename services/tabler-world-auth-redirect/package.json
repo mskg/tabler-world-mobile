@@ -9,7 +9,7 @@
         "@mskg/tabler-world-yarn-tools": "0.0.1",
         "serverless": "^1.54.0",
         "serverless-sync-s3buckets": "^1.0.1",
-        "typescript": "3.6.4"
+        "typescript": "3.7.4"
     },
     "scripts": {
         "deploy": "service deploy",

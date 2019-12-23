@@ -161,7 +161,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                     keyboardType="numeric"
                                     onChangeText={text => this.setState({ code: text })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
-                                    style={{ borderBottomColor: this.props.theme.colors.accent }} />
+                                    style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }} />
                             </View>
 
 

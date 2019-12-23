@@ -43,8 +43,8 @@ const Navigator = createMaterialTopTabNavigator(
     {
         tabBarComponent: PairScreen,
         initialRouteName: Routes.Scan,
-        lazy: true,
-        removeClippedSubviews: true,
+        // lazy: true,
+        // removeClippedSubviews: true,
         swipeEnabled: true,
         tabBarPosition: 'top',
     },

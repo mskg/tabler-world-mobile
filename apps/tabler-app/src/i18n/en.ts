@@ -1,5 +1,5 @@
-import { differenceInYears, format } from 'date-fns';
-import dateEN from 'date-fns/locale/en';
+import { differenceInYears, format, parseISO } from 'date-fns';
+import dateEN from 'date-fns/locale/en-US';
 import 'moment';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
@@ -162,7 +162,7 @@ const en = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, 'D. MMMM YYYY', { locale: dateEN })} (${differenceInYears(Date.now(), date)})`;
+                return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateEN })} (${differenceInYears(Date.now(), parseISO(date))})`;
             },
         },
 
@@ -553,6 +553,10 @@ const en = {
     Feedback: {
         title: 'Feedback',
     },
+
+    Conversations: {
+        title: 'Conversations',
+    }
 };
 
 export type I18NType = typeof en;

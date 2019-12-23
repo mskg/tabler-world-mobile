@@ -24,7 +24,7 @@ class CodeScreenBase extends AuditedScreen<{ theme }> {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    // backgroundColor: this.props.theme.colors.surface,
+                    backgroundColor: this.props.theme.colors.surface,
                 }}
             >
                 <Query<Me> query={GetMeQuery}>
@@ -32,13 +32,15 @@ class CodeScreenBase extends AuditedScreen<{ theme }> {
                         if (error) throw (error);
                         if (!data || !data.Me) return <InlineLoading />;
 
-                        return (<QRCode
-                            value={makeMemberLink(data.Me.id)}
-                            logo={Assets.images.icon}
-                            logoSize={60}
-                            logoBackgroundColor="transparent"
-                            size={250}
-                        />);
+                        return (
+                            <QRCode
+                                value={makeMemberLink(data.Me.id)}
+                                logo={Assets.images.icon}
+                                logoSize={60}
+                                backgroundColor={this.props.theme.colors.surface}
+                                size={250}
+                            />
+                        );
                     }}
                 </Query>
             </View>

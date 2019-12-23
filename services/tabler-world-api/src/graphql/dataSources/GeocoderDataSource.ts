@@ -11,7 +11,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
         this.context = config.context;
 
         this.data = new DataLoader<string, any>(
-            (ids: string[]) => useDataService(this.context, async (client) => {
+            (ids: ReadonlyArray<string>) => useDataService(this.context, async (client) => {
                 const res = await client.query(`
                 select
                     hash,
@@ -24,7 +24,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
                 return ids.map((id) => res.rows.find((r) => r.hash == id));
             }),
             {
-                cacheKeyFn: (k: number) => k,
+                cacheKeyFn: (k: string) => k,
             },
         );
     }
