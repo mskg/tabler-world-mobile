@@ -15,13 +15,13 @@ steps:
   displayName: 'PowerShell Script'
 
 - task: Cache@2
-  inputs:
-  key: 'yarn | "$(Agent.OS)" | yarn.lock'
-  restoreKeys: |
-    yarn | "$(Agent.OS)"
-    yarn
-  path: ${{ parameters.YARN_CACHE_FOLDER }}
   displayName: Cache Yarn packages
+  inputs:
+    key: 'yarn | "$(Agent.OS)" | yarn.lock'
+    restoreKeys: |
+      yarn | "$(Agent.OS)"
+      yarn
+    path: ${{ parameters.YARN_CACHE_FOLDER }}
 
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
   displayName: install
