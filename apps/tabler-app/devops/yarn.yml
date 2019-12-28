@@ -1,5 +1,6 @@
 parameters:
   SOURCEDIR: $(System.DefaultWorkingDirectory)
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
 steps:
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
@@ -12,6 +13,15 @@ steps:
    Add-Content ~/.npmrc "always-auth=true`r`n//tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/:_authToken=$(System.AccessToken)"
    Get-Content  ~/.npmrc
   displayName: 'PowerShell Script'
+
+- task: Cache@2
+  inputs:
+  key: 'yarn | "$(Agent.OS)" | yarn.lock'
+  restoreKeys: |
+    yarn | "$(Agent.OS)"
+    yarn
+  path: ${{ parameters.YARN_CACHE_FOLDER }}
+  displayName: Cache Yarn packages
 
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
   displayName: install
