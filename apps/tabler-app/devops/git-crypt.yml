@@ -18,9 +18,9 @@ steps:
 
 - script: |
    if command -v git-crypt ; then
-     git-crypt unlock <(echo $(GITCRYPT_SYMETRIC_KEY) | base64 --decode)
+     git-crypt unlock <(echo $GITCRYPT_SYMETRIC_KEY | base64 --decode)
    else
-     ./git-crypt unlock <(echo $(GITCRYPT_SYMETRIC_KEY) | base64 --decode)
+     ./git-crypt unlock <(echo $GITCRYPT_SYMETRIC_KEY | base64 --decode)
    fi
 
   workingDirectory: ${{ parameters.WORKINGDIR }}

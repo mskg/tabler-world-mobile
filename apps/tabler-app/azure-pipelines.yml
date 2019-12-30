@@ -53,9 +53,11 @@ steps:
 
 #   displayName: Define build#
 
-- script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
+- script: 'echo "$MSG" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: Save commit message
+  env:
+    MSG: $(Build.SourceVersionMessage)
 
 # prepare node environment
 - template: ./devops/node.yml
@@ -79,9 +81,9 @@ steps:
 
 # Publish expo
 - script: |
-    echo "Release is $(CHANNEL)"
-    npx expo publish --non-interactive --max-workers 1 --release-channel $(CHANNEL)
-    npx expo publish:history --release-channel $(CHANNEL) -r > deployment.json
+    echo "Release is $CHANNEL"
+    npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
+    npx expo publish:history --release-channel $CHANNEL -r > deployment.json
   workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
   displayName: publish
   env:
