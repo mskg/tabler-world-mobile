@@ -310,7 +310,7 @@ functions:
             - !Ref 'AWS::AccountId'
             - ':'
             - !Ref WebsocketsApi
-            - '/${self:provider.stage}/*'
+            - '/${self:custom.stage}/*'
 
       - Effect: "Allow"
         Action:
@@ -374,7 +374,7 @@ functions:
             - !Ref 'AWS::AccountId'
             - ':'
             - !Ref WebsocketsApi
-            - '/${self:provider.stage}/*'
+            - '/${self:custom.stage}/*'
 
       - Effect: Allow
         Action:
@@ -498,7 +498,7 @@ functions:
             - !Ref 'AWS::AccountId'
             - ':'
             - !Ref WebsocketsApi
-            - '/${self:provider.stage}/*'
+            - '/${self:custom.stage}/*'
 
       - Effect: Allow
         Action:
