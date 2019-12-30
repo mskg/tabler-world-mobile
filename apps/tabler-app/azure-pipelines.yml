@@ -22,6 +22,8 @@ variables:
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
   - group: 'ENV Germany TEST'
+  - name: YARN_CACHE_FOLDER
+    value: $(Pipeline.Workspace)/.yarn
 
 pr:
   branches:
@@ -53,11 +55,9 @@ steps:
 
 #   displayName: Define build#
 
-- script: 'echo "$MSG" > commit.txt'
+- script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: Save commit message
-  env:
-    MSG: $(Build.SourceVersionMessage)
 
 # prepare node environment
 - template: ./devops/node.yml
@@ -66,6 +66,7 @@ steps:
 - template: ./devops/yarn.yml
   parameters:
     SOURCEDIR: $(System.DefaultWorkingDirectory)
+    YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
 # yarn /App
 - template: ./devops/yarn.yml
