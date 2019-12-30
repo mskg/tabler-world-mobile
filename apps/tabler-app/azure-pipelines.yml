@@ -77,9 +77,9 @@ steps:
 
 # Publish expo
 - script: |
-   export CHANNEL="$(EXPO_RELEASE_CHANNEL)"
-   npx expo publish --non-interactive --max-workers 1 --release-channel $CHANNEL
-   npx expo publish:history --release-channel $CHANNEL -r > deployment.json
+    echo "Release is $(EXPO_RELEASE_CHANNEL)"
+    npx expo publish --non-interactive --max-workers 1 --release-channel $(EXPO_RELEASE_CHANNEL)
+    npx expo publish:history --release-channel $(EXPO_RELEASE_CHANNEL) -r > deployment.json
   workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
   displayName: publish
   env:

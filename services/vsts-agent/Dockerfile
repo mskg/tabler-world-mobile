@@ -30,6 +30,9 @@ RUN apt-get update \
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
 RUN apt-get install -y nodejs
 
+# We need python
+RUN RUN apt-get install -y python3-pip
+
 WORKDIR /azp
 
 COPY ./start.sh .
