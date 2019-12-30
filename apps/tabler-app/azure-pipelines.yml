@@ -2,7 +2,8 @@
 name: $(VERSION).$(PATCH)
 
 pool:
-  name: 'Hosted Ubuntu 1604'
+  # name: 'Hosted Ubuntu 1604'
+  name: 'Default'
   demands: npm
 
 variables:
