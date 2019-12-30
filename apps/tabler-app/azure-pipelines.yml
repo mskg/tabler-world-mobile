@@ -5,6 +5,8 @@ pool:
   # name: 'Hosted Ubuntu 1604'
   name: 'Default'
   demands: npm
+  workspace:
+    clean: all
 
 variables:
   - name: VERSION
