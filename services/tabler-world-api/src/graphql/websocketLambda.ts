@@ -171,5 +171,7 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
         if (!(e instanceof ClientLostError)) {
             throw e;
         }
+
+        return SUCCESS;
     }
 }
