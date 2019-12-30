@@ -503,6 +503,7 @@ const de: I18NType = {
 
     Conversations: {
         title: 'Unterhaltungen',
+        network: 'Auf Netzwerk warten...',
     },
 };
 

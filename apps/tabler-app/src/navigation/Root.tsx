@@ -32,6 +32,7 @@ const Navigator = createAppContainer(createStackNavigator(
     {
         initialRouteName: HomeRoutes.Home,
         headerMode: 'none',
+        disableKeyboardHandling: true,
     },
 ));
 

@@ -8,7 +8,8 @@ export const ExperimentsNavigator = createSwitchNavigator(
         Loading: LoadingScreen,
         Normal: MainBottomNavigation,
         Experiments: ExperimentsNavigation,
-    }, {
+    },
+    {
         initialRouteName: 'Loading',
     },
 );

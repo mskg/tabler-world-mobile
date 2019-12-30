@@ -3,6 +3,7 @@
 ## Improvements
 
 - Member chat
+- Member screen how shows member count
 
 # v1.1
 

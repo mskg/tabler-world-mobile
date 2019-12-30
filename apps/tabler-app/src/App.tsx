@@ -1,7 +1,6 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
 import React from 'react';
-import { useScreens } from 'react-native-screens';
 import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
@@ -27,8 +26,8 @@ import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
 import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
 import { registerFetchTask } from './tasks/registerFetchTask';
-import { registerLocationTask } from './tasks/registerLocationTask';
 import { registerForPushNotifications } from './tasks/registerForPushNotifications';
+import { registerLocationTask } from './tasks/registerLocationTask';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
 
@@ -65,7 +64,7 @@ logger.log('Bootstrapping push notifications');
 registerForPushNotifications();
 
 fix2940();
-useScreens();
+// useScreens();
 
 const App = () => {
     // if (__DEV__) useKeepAwake();

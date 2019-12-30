@@ -221,6 +221,7 @@ const en = {
             mail: 'mail',
             web: 'tabler.world',
 
+            chat: 'Start Conversation',
             openweb: 'Show on TABLER.WORLD',
             favadd: 'Add to Favorites',
             remfav: 'Remove from Favorites',
@@ -556,7 +557,8 @@ const en = {
 
     Conversations: {
         title: 'Conversations',
-    }
+        network: 'Waiting for network...',
+    },
 };
 
 export type I18NType = typeof en;

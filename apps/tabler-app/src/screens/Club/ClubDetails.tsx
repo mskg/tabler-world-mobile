@@ -153,7 +153,7 @@ class ClubDetailsBase extends React.Component<Props> {
                 </Placeholder>
 
                 <Placeholder ready={!this.props.loading} previewComponent={<SectionSquarePlaceholder />}>
-                    {(international_godparent || national_godparent || charter_date) &&
+                    {(international_godparent || national_godparent || charter_date || !members.isEmpty()) &&
                         <Section theme={this.props.theme} icon={'md-school'}>
                             <Element
                                 field={I18N.Club.international}
@@ -166,6 +166,8 @@ class ClubDetailsBase extends React.Component<Props> {
                             />
 
                             <Element field={I18N.Club.charter} text={I18N.Member.Formats.date(charter_date)} />
+
+                            <Element field={I18N.Club.members} text={members.isEmpty() ? null : members.size().toString()} />
                         </Section>
                     }
                 </Placeholder>
@@ -205,7 +207,7 @@ class ClubDetailsBase extends React.Component<Props> {
                         <>
                             <Section theme={this.props.theme} icon={'md-contacts'} disableRipple={true}>
                                 <ExpandableElement
-                                    field={I18N.Club.members}
+                                    field={`${I18N.Club.members} (${members.size()})`}
                                     text={
                                         <RoleScrollView
                                             roles={members.map((m) => ({
