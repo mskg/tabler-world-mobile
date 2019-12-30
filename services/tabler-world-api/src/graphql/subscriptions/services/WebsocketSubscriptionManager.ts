@@ -135,13 +135,22 @@ export class WebsocketSubscriptionManager {
     }
 
     public async sendData(connectionId: string, subscriptionId: string, payload: any): Promise<void> {
-        await this.connection.sendMessage(
-            connectionId,
-            {
-                payload,
-                id: subscriptionId,
-                type: MessageTypes.GQL_DATA,
-            },
-        );
+        try {
+            await this.connection.sendMessage(
+                connectionId,
+                {
+                    payload,
+                    id: subscriptionId,
+                    type: MessageTypes.GQL_DATA,
+                },
+            );
+        } catch (err) {
+            // connection does no longeer exist
+            if (err instanceof ClientLostError) {
+                await this.unsubscribeAll(connectionId);
+            }
+
+            throw err;
+        }
     }
 }

@@ -43,8 +43,11 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
             await connectionManager.connect(connectionId);
             return SUCCESS;
         } if (route === Routes.disconnect) {
-            await subscriptionManager.unsubscribeAll(connectionId);
-            await connectionManager.disconnect(connectionId);
+            await Promise.all([
+                subscriptionManager.unsubscribeAll(connectionId),
+                connectionManager.disconnect(connectionId),
+            ]);
+
             return SUCCESS;
         } {
             if (!event.body) {
@@ -81,13 +84,15 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
                 } catch (e) {
                     logger.error('Failed to authenticate connection', e);
 
-                    connectionManager.sendError(
-                        connectionId,
-                        { message: e.message },
-                        MessageTypes.GQL_CONNECTION_ERROR,
-                    );
+                    if (!(e instanceof ClientLostError)) {
+                        await connectionManager.sendError(
+                            connectionId,
+                            { message: e.message },
+                            MessageTypes.GQL_CONNECTION_ERROR,
+                        );
 
-                    connectionManager.forceDisconnect(connectionId);
+                        await connectionManager.forceDisconnect(connectionId);
+                    }
                 }
 
                 return SUCCESS;
@@ -103,13 +108,13 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
             if (!details || !details.principal) {
                 logger.error('Unkown client', connectionId);
 
-                connectionManager.sendError(
+                await connectionManager.sendError(
                     connectionId,
                     { message: 'Unknown client' },
                     MessageTypes.GQL_ERROR, // GQL_CONNECTION_ERROR ?
                 );
 
-                connectionManager.forceDisconnect(connectionId);
+                await connectionManager.forceDisconnect(connectionId);
                 return SUCCESS;
             }
 
@@ -152,14 +157,19 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
                 });
 
             } catch (err) {
-                logger.error(err);
-                await connectionManager.sendError(connectionId, err);
+                if (!(err instanceof ClientLostError)) {
+                    logger.error(err);
+                    await connectionManager.sendError(connectionId, err);
+                }
             }
 
             return SUCCESS;
         }
     } catch (e) {
         console.error('Faild websocket event', e, event);
-        throw e;
+
+        if (!(e instanceof ClientLostError)) {
+            throw e;
+        }
     }
 }

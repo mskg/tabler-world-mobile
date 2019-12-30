@@ -7,7 +7,7 @@ import { cacheInstance } from '../cache/cacheInstance';
 import { dataSources } from '../dataSources';
 import { executableSchema } from '../executableSchema';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
-import { connectionManager, subscriptionManager } from './services';
+import { subscriptionManager } from './services';
 import { pubsub } from './services/pubsub';
 import { ISubscription } from './types/ISubscription';
 import { WebsocketEvent } from './types/WebsocketEvent';
@@ -78,10 +78,6 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                     await subscriptionManager.sendData(connectionId, subscriptionId, result.value);
                 } catch (err) {
                     logger.error(`[${connectionId}] [${subscriptionId}]`, err);
-                    if (err.statusCode === 410) { // this client has disconnected unsubscribe it
-                        await connectionManager.disconnect(connectionId);
-                    }
-
                     failedDeliveries.push(principal.id);
                 }
             } else {

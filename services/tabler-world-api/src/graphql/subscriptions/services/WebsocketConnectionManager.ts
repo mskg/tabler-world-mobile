@@ -93,9 +93,21 @@ export class WebsocketConnectionManager {
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {
         logger.log(`[${connectionId}]`, 'send', JSON.stringify(message));
 
-        await awsGatewayClient.postToConnection({
-            ConnectionId: connectionId,
-            Data: JSON.stringify(message),
-        }).promise();
+        try {
+            await awsGatewayClient.postToConnection({
+                ConnectionId: connectionId,
+                Data: JSON.stringify(message),
+            }).promise();
+        } catch (err) {
+            logger.error(`[${connectionId}]`, err);
+
+            // connection does no longeer exist
+            if (err.statusCode === 410) {
+                await this.disconnect(connectionId);
+                throw new ClientLostError(connectionId);
+            }
+
+            throw err;
+        }
     }
 }
