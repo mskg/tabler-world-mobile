@@ -7,7 +7,7 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import Assets from '../../Assets';
 import { InlineLoading } from '../../components/Loading';
-import { makeMemberLink } from '../../helper/linking/member';
+import { makeMemberLink } from '../../helper/linking/makeMemberLink';
 import { Me } from '../../model/graphql/Me';
 import { GetMeQuery } from '../../queries/Member/GetMeQuery';
 

@@ -8,7 +8,7 @@ import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
-import { parseCodeLink } from '../helper/linking/code';
+import { parseCodeLink } from '../helper/linking/parseCodeLink';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
@@ -17,6 +17,7 @@ import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
 import { styles } from './Styles';
+import { parseLink } from '../helper/linking/parseLink';
 
 type Props = {
     theme: Theme,
@@ -51,7 +52,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 
     _handleOpenURL = (event) => {
-        const { path, queryParams } = Linking.parse(event.url);
+        const { path, queryParams } = parseLink(event.url);
         logger.debug(path, queryParams);
 
         const result = parseCodeLink(path, queryParams);
@@ -180,11 +181,11 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                     onPress={() => this.props.signin()}>{I18N.SignIn.cancel}</Button>
                             </View>
 
-                            {this.state.error &&
+                            {this.state.error && (
                                 <View style={[styles.errorMessage]}>
                                     <Text>{this.state.error}</Text>
                                 </View>
-                            }
+                            )}
                         </KeyboardAvoidingView>
                     </View>
                 </TouchableWithoutFeedback>

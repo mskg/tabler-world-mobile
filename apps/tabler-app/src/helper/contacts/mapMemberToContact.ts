@@ -3,7 +3,7 @@ import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Member_Member } from '../../model/graphql/Member';
 import { collectEMails, collectPhones } from '../collect';
-import { makeMemberLink } from '../linking/member';
+import { makeMemberLink } from '../linking/makeMemberLink';
 import { getParameterValue } from '../parameters/getParameterValue';
 import { UrlParameters } from '../parameters/Urls';
 import { downloadPic } from './downloadPic';

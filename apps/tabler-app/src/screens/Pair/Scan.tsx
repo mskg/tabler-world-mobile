@@ -1,4 +1,3 @@
-import { Linking } from 'expo';
 import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
@@ -10,6 +9,7 @@ import { ActionNames } from '../../analytics/ActionNames';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import { parseLink } from '../../helper/linking/parseLink';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { addFavorite, removeFavorite } from '../../redux/actions/filter';
@@ -105,10 +105,10 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
     handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
         logger.log('Scanned', type, data);
 
-        const { path, queryParams } = Linking.parse(data);
+        const { path, queryParams } = parseLink(data);
         logger.debug('path', path, 'params', queryParams);
 
-        if (path.endsWith('member') && queryParams.id != null) {
+        if (queryParams && path && path.endsWith('member') && queryParams.id != null) {
             logger.log('Member', queryParams.id);
 
             this.audit.trackAction(ActionNames.ReadQRCode, {
@@ -121,7 +121,7 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                 message: I18N.Pair.remove,
                 action: {
                     label: I18N.Pair.undo,
-                    onPress: () => this.props.removeFavorite({ id: parseInt(queryParams.id, 10) }),
+                    onPress: () => this.props.removeFavorite({ id: parseInt(queryParams.id || '0', 10) }),
                 },
             });
         }
