@@ -32,6 +32,7 @@ RUN apt-get install -y nodejs
 
 # We need python
 RUN apt-get install -y python3-pip
+RUN apt-get install -y sudo
 
 WORKDIR /azp
 

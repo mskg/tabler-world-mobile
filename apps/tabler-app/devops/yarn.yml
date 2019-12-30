@@ -8,17 +8,21 @@ steps:
   inputs:
     versionSpec: 1.17.3
     checkLatest: true
+  condition: ne(variables.CACHE_RESTORED, 'true')
 
 - powershell: |
    Add-Content ~/.npmrc "always-auth=true`r`n//tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/:_authToken=$(System.AccessToken)"
    Get-Content  ~/.npmrc
   displayName: 'PowerShell Script'
+  condition: ne(variables.CACHE_RESTORED, 'true')
 
 - task: Cache@2
   displayName: Cache Yarn packages
   inputs:
     key: 'app | $(Agent.OS) | ${{ parameters.SOURCEDIR }}/yarn.lock'
     path: ${{ parameters.YARN_CACHE_FOLDER }}
+    cacheHitVar: CACHE_RESTORED
+  condition: ne(variables.CACHE_RESTORED, 'true')
 
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
   displayName: install

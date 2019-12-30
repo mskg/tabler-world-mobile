@@ -2,8 +2,8 @@
 name: $(VERSION).$(PATCH)
 
 pool:
-  # name: 'Hosted Ubuntu 1604'
-  name: 'Default'
+  name: 'Hosted Ubuntu 1604'
+  # name: 'Default'
   demands: npm
   workspace:
     clean: all
@@ -55,7 +55,7 @@ steps:
 
 #   displayName: Define build#
 
-- script: 'echo "$(Build.SourceVersionMessage)" > commit.txt'
+- script: 'echo "$(git log -1 --pretty=%B)" > commit.txt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: Save commit message
 
@@ -72,6 +72,7 @@ steps:
 - template: ./devops/yarn.yml
   parameters:
     SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
+    YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
 # Init expo environment
 - template: ./devops/init-expo.yml
