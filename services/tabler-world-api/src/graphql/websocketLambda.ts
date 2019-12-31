@@ -10,6 +10,7 @@ import { cacheInstance } from './cache/cacheInstance';
 import { dataSources } from './dataSources';
 import { executableSchema } from './executableSchema';
 import { connectionManager, subscriptionManager } from './subscriptions';
+import { ClientLostError } from './subscriptions/services/ClientLostError';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
 
 const SUCCESS = { statusCode: 200, body: '' };

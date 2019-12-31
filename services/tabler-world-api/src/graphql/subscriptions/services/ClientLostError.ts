@@ -1,5 +1,5 @@
 
-class ClientLostError extends Error {
+export class ClientLostError extends Error {
     public get connectionId() {
         return this.cId;
     }

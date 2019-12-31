@@ -7,6 +7,7 @@ import { awsGatewayClient } from '../aws/awsGatewayClient';
 import { dynamodb as client } from '../aws/dynamodb';
 import { IConnection } from '../types/IConnection';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
+import { ClientLostError } from './ClientLostError';
 import { CONNECTIONS_TABLE, FieldNames } from './Constants';
 
 const logger = new ConsoleLogger('Connection');
