@@ -9,7 +9,8 @@ export type ProtocolFunc = (context: ProtocolContext) => Promise<void>;
 // tslint:disable-next-line: export-name
 export { ProtocolContext } from './ProtocolContext';
 
-export const protocol = {
+// tslint:disable-next-line: variable-name
+export const SubscriptionsTransportWSProtocol = {
     [Routes.connect]: onConnect as ProtocolFunc,
     [Routes.disconnect]: onDisconnect as ProtocolFunc,
     [Routes.default]: onDefault as ProtocolFunc,

@@ -693,6 +693,14 @@ resources:
           AttributeName: ttl
           Enabled: true
 
+    PublishLogGroup:
+      Properties:
+        RetentionInDays: "14"
+
+    WebsocketLogGroup:
+      Properties:
+        RetentionInDays: "14"
+
     GraphqlDashdemoLogGroup:
       Properties:
         RetentionInDays: "7"
