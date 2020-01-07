@@ -5,9 +5,9 @@ import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { awsGatewayClient } from '../aws/awsGatewayClient';
 import { dynamodb as client } from '../aws/dynamodb';
+import { ClientLostError } from '../types/ClientLostError';
 import { IConnection } from '../types/IConnection';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
-import { ClientLostError } from './ClientLostError';
 import { CONNECTIONS_TABLE, FieldNames } from './Constants';
 
 const logger = new ConsoleLogger('Connection');
@@ -29,13 +29,13 @@ export class WebsocketConnectionManager {
     public async connect(connectionId: string): Promise<void> {
         logger.log(`[${connectionId}]`, 'connect');
 
-        const params = await getWebsocketParams();
+        const params = getWebsocketParams();
         await client.put({
             TableName: CONNECTIONS_TABLE,
 
             Item: {
                 [FieldNames.connectionId]: connectionId,
-                ttl: Math.floor(Date.now() / 1000) + params.ttlConnection,
+                ttl: Math.floor(Date.now() / 1000) + (await params).ttlConnection,
             },
 
         }).promise();
@@ -44,6 +44,7 @@ export class WebsocketConnectionManager {
     public async authorize(connectionId: string, member: IPrincipal): Promise<void> {
         logger.log(`[${connectionId}]`, 'authorize', member);
 
+        const params = getWebsocketParams();
         await client.put({
             TableName: CONNECTIONS_TABLE,
 
@@ -51,6 +52,7 @@ export class WebsocketConnectionManager {
                 [FieldNames.connectionId]: connectionId,
                 [FieldNames.member]: member.id,
                 [FieldNames.principal]: member,
+                ttl: Math.floor(Date.now() / 1000) + (await params).ttlConnection,
             } as IConnection,
 
         }).promise();

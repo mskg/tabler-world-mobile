@@ -2,9 +2,9 @@ import { IPrincipal } from '@mskg/tabler-world-auth-client';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { dynamodb as client } from '../aws/dynamodb';
+import { ClientLostError } from '../types/ClientLostError';
 import { ISubscription } from '../types/ISubscription';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
-import { ClientLostError } from './ClientLostError';
 import { FieldNames, SUBSCRIPTIONS_TABLE } from './Constants';
 import { WebsocketConnectionManager } from './WebsocketConnectionManager';
 
