@@ -13,7 +13,7 @@ export async function handler(event: APIGatewayWebSocketEvent, context: Context)
             console.log('handler catched "ClientLostError", ignored.');
         } else {
             console.error('Faild websocket event', e, event);
-            throw e;
+            return e;
         }
     }
 

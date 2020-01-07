@@ -70,7 +70,10 @@ export class WebsocketConnectionManager {
     }
 
     public async sendACK(connectionId: string) {
-        this.sendMessage(connectionId, { type: MessageTypes.GQL_CONNECTION_ACK });
+        await this.sendMessage(
+            connectionId,
+            { type: MessageTypes.GQL_CONNECTION_ACK },
+        );
     }
 
     public async sendError(connectionId: string, payload: any, type: string = MessageTypes.GQL_ERROR): Promise<void> {
