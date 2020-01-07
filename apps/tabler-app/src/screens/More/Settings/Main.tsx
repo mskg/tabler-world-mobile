@@ -3,7 +3,7 @@ import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, ScrollView, Text as NativeText, View } from 'react-native';
+import { Alert, AsyncStorage, ScrollView, Text as NativeText, View } from 'react-native';
 import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -25,6 +25,7 @@ import { SettingsState } from '../../../model/state/SettingsState';
 import { showNearbySettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
+import { TOKEN_KEY } from '../../../tasks/Constants';
 import { Action, NextScreen } from './Action';
 import { Element } from './Element';
 import { Routes } from './Routes';
@@ -40,6 +41,7 @@ type State = {
     emailOptions: any[],
     showExperiments: boolean,
     demoMode: boolean,
+    token?: string | null,
 };
 
 type OwnProps = {
@@ -59,7 +61,7 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class MainSettingsScreenBase extends AuditedScreen<Props, State> {
-    state = {
+    state: State = {
         smsOptions: [{ label: '', value: '' }],
         browserOptions: [{ label: '', value: '' }],
         callOptions: [{ label: '', value: '' }],
@@ -72,7 +74,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         super(props, AuditScreenName.Settings);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.buildSMSOptions();
         this.buildMail();
         this.buildWebOptions();
@@ -80,6 +82,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.checkDemoMode();
 
         this.audit.submit();
+        this.setState({
+            token: await AsyncStorage.getItem(TOKEN_KEY),
+        });
     }
 
     _clearSyncFlags = () => {
@@ -311,6 +316,16 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 field={I18N.Settings.fields.channel}
                                 text={Constants.manifest.releaseChannel || 'dev'} />
                             <Divider />
+
+                            {isFeatureEnabled(Features.InternalInformation) && (
+                                <>
+                                    <Element
+                                        theme={this.props.theme}
+                                        field={I18N.Settings.fields.pushtoken}
+                                        text={this.state.token || '-'} />
+                                    <Divider />
+                                </>
+                            )}
 
                             <NextScreen
                                 theme={this.props.theme}

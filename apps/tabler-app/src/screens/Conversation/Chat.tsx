@@ -363,7 +363,7 @@ class ChatBase extends React.Component<Props, State> {
 
                 <FixedChat
                     user={{ _id: 10430 }}
-                    // bottomOffset={BOTTOM_HEIGHT}
+                    bottomOffset={0}
 
                     // style={{ height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT }}
                     isAnimated={true}

@@ -12,6 +12,7 @@ export enum Features {
     BackgroundLocation,
     LocationHistory,
     DarkModeSwitch,
+    InternalInformation,
 }
 
 export function isFeatureEnabled(feature: Features) {
@@ -24,7 +25,11 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.LocationHistory) {
-        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-beta');
+        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test');
+    }
+
+    if (feature === Features.InternalInformation) {
+        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test');
     }
 
     if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {

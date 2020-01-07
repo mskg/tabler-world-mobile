@@ -371,7 +371,6 @@ const de: I18NType = {
             web: 'Browser',
             sms: 'Kurznachrichten',
             phone: 'Anrufe',
-
             dark: 'Nachtmodus',
             logout: 'Abmelden und alle Einstellungen zurücksetzen',
             clear: 'Alle Inhalte löschen',
@@ -379,11 +378,11 @@ const de: I18NType = {
             version: 'Version',
             lastSync: 'Letzte Synchronisierung',
             channel: 'Kanal',
+            pushtoken: 'Push Token',
             syncFavorites: 'Favoriten synchronisieren',
             syncOwnTable: 'Tischmitglieder synchronisieren',
             sortOrder: 'Sortierung',
             displayOrder: 'Anzeige',
-
             experiments: 'Alben und Neuigkeiten',
             nearby: 'Mitglieder in der Nähe',
         },
