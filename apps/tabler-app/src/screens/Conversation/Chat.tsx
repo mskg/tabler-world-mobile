@@ -14,6 +14,7 @@ import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
 import { resize } from './resize';
+import { isIphoneX } from '../../helper/isIphoneX';
 
 const logger = new Logger(Categories.Screens.Conversation);
 const TEMP_TEXT_IMAGE = '#__#';
@@ -137,6 +138,7 @@ class ChatBase extends React.Component<Props, State> {
         return (
             <Composer
                 {...props}
+                placeholder={I18N.Conversations.placeholder}
                 textInputStyle={{
                     fontFamily: this.props.theme.fonts.regular,
                     marginVertical: 10,
@@ -363,7 +365,7 @@ class ChatBase extends React.Component<Props, State> {
 
                 <FixedChat
                     user={{ _id: 10430 }}
-                    bottomOffset={0}
+                    bottomOffset={isIphoneX() ? 34 : 0}
 
                     // style={{ height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT }}
                     isAnimated={true}
@@ -381,6 +383,8 @@ class ChatBase extends React.Component<Props, State> {
 
                     showUserAvatar={false}
                     showAvatarForEveryMessage={false}
+
+                    label={I18N.Conversations.loadEarlier}
 
                     loadEarlier={this.props.loadEarlier}
                     isLoadingEarlier={this.props.isLoadingEarlier}

@@ -223,6 +223,7 @@ const de: I18NType = {
             mail: 'E-Mail',
             web: 'TABLER.world',
 
+            chat: 'Nachricht schreiben',
             openweb: 'Auf TABLER.WORLD anzeigen',
             favadd: 'Zu Favoriten hinzufügen',
             remfav: 'Aus den Favoriten entfernen',
@@ -503,6 +504,11 @@ const de: I18NType = {
     Conversations: {
         title: 'Unterhaltungen',
         network: 'Auf Netzwerk warten...',
+
+        copy: 'Kopieren',
+        retry: 'Wiederholen',
+        placeholder: 'Nachricht schreiben...',
+        loadEarlier: 'Alte Nachrichten laden',
     },
 };
 

@@ -559,6 +559,10 @@ const en = {
     Conversations: {
         title: 'Conversations',
         network: 'Waiting for network...',
+        copy: 'Copy',
+        retry: 'Retry',
+        placeholder: 'Type a message...',
+        loadEarlier: 'Load earlier messages',
     },
 };
 
