@@ -86,16 +86,29 @@ export class WebsocketConnectionManager {
         );
     }
 
+    /**
+     * Forcibly closes the given connections
+     * @param connectionId
+     */
     public async forceDisconnect(connectionId: string): Promise<void> {
         logger.log(`[${connectionId}]`, 'forceDisconnect');
 
+        const promises: Promise<any>[] = [];
         if (!EXECUTING_OFFLINE) {
-            await awsGatewayClient.deleteConnection({
+            promises.push(awsGatewayClient.deleteConnection({
                 ConnectionId: connectionId,
-            }).promise();
+            }).promise());
         }
+
+        promises.push(this.disconnect(connectionId));
+        await Promise.all(promises);
     }
 
+    /**
+     * Sends a message to the given connection
+     * @param connectionId
+     * @param message
+     */
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {
         logger.log(`[${connectionId}]`, 'send', JSON.stringify(message));
 

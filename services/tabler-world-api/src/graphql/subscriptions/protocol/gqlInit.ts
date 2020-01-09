@@ -30,6 +30,7 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
     } catch (e) {
         context.logger.error('Failed to authenticate connection', e);
 
+        // if we haven't lost the client, we drop it
         if (!(e instanceof ClientLostError)) {
             await connectionManager.sendError(context.connectionId, { message: e.message }, MessageTypes.GQL_CONNECTION_ERROR);
             await connectionManager.forceDisconnect(context.connectionId);
