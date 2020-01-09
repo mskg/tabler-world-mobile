@@ -123,7 +123,7 @@
         "apollo": "^2.21.2",
         "babel-plugin-import-graphql": "^2.7.0",
         "babel-preset-expo": "^8.0.0",
-        "expo-cli": "3.11.3",
+        "expo-cli": "^3.11.5",
         "fast-json-patch": "^3.0.0-1",
         "jest-expo": "^36.0.0",
         "license-checker": "^25.0.1",

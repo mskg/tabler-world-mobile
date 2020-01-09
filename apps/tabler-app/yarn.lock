@@ -1691,12 +1691,12 @@
     mv "~2"
     safe-json-stringify "~1"
 
-"@expo/config@^2.5.3":
-  version "2.5.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/config/-/config-2.5.3.tgz#18e04de7715cd0b5faaf4eba4156b4f4e11bfed1"
-  integrity sha1-GOBN53Fc0LX6r066QVa09OEb/tE=
+"@expo/config@^2.5.5":
+  version "2.5.5"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/config/-/config-2.5.5.tgz#f383032e365afb7c0c1551f7a7ce62c6e4260502"
+  integrity sha1-84MDLjZa+3wMFVH3p85ixuQmBQI=
   dependencies:
-    "@expo/json-file" "^8.2.3"
+    "@expo/json-file" "^8.2.4"
     "@types/invariant" "^2.2.30"
     find-yarn-workspace-root "^1.2.1"
     fs-extra "^7.0.1"
@@ -1704,12 +1704,12 @@
     resolve-from "^5.0.0"
     slugify "^1.3.4"
 
-"@expo/dev-tools@^0.9.4":
-  version "0.9.4"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/dev-tools/-/dev-tools-0.9.4.tgz#d9511c48e225a1d92f3e76367df603c7a32c0933"
-  integrity sha1-2VEcSOIlodkvPnY2ffYDx6MsCTM=
+"@expo/dev-tools@^0.9.6":
+  version "0.9.6"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/dev-tools/-/dev-tools-0.9.6.tgz#67b796c5a0db956a9800e9bb9faa67ad00e34580"
+  integrity sha1-Z7eWxaDblWqYAOm7n6pnrQDjRYA=
   dependencies:
-    "@expo/config" "^2.5.3"
+    "@expo/config" "^2.5.5"
     base64url "3.0.1"
     express "4.16.4"
     freeport-async "2.0.0"
@@ -1719,18 +1719,18 @@
     lodash "^4.17.15"
     subscriptions-transport-ws "0.9.8"
 
-"@expo/image-utils@^0.2.10":
-  version "0.2.10"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/image-utils/-/image-utils-0.2.10.tgz#2ad9ac3f26bbe9924bc5025804351fbfea5945ce"
-  integrity sha1-KtmsPya76ZJLxQJYBDUfv+pZRc4=
+"@expo/image-utils@^0.2.11":
+  version "0.2.11"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/image-utils/-/image-utils-0.2.11.tgz#3e60cd3a2cb89bb8e5621d0e78af3634abe40123"
+  integrity sha1-PmDNOiy4m7jlYh0OeK82NKvkASM=
   dependencies:
     "@expo/spawn-async" "1.5.0"
     semver "6.1.1"
 
-"@expo/json-file@^8.2.3":
-  version "8.2.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/json-file/-/json-file-8.2.3.tgz#176d8db091e70ce4ff7fea0381ea5ee919e8260b"
-  integrity sha1-F22NsJHnDOT/f+oDgepe6RnoJgs=
+"@expo/json-file@^8.2.4":
+  version "8.2.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/json-file/-/json-file-8.2.4.tgz#c1384b243ce1ebe9ea4af6fc9201e7d50f65a7aa"
+  integrity sha1-wThLJDzh6+nqSvb8kgHn1Q9lp6o=
   dependencies:
     "@babel/code-frame" "^7.0.0-beta.44"
     fs-extra "^8.0.1"
@@ -1823,18 +1823,18 @@
     request "^2.81.0"
     uuid "^3.0.0"
 
-"@expo/osascript@^2.0.8":
-  version "2.0.8"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/osascript/-/osascript-2.0.8.tgz#761453f1e5ff7ebf580a698a7c0c53baf7acda8e"
-  integrity sha1-dhRT8eX/fr9YCmmKfAxTuves2o4=
+"@expo/osascript@^2.0.9":
+  version "2.0.9"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/osascript/-/osascript-2.0.9.tgz#5e12a24fb63ec3de8aaead1e1f270cc658bbe0ca"
+  integrity sha1-XhKiT7Y+w96Krq0eHycMxli74Mo=
   dependencies:
     "@expo/spawn-async" "^1.5.0"
     exec-async "^2.2.0"
 
-"@expo/package-manager@^0.0.2":
-  version "0.0.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/package-manager/-/package-manager-0.0.2.tgz#81547c70e2df0c19975b2497c0343a76140f0842"
-  integrity sha1-gVR8cOLfDBmXWySXwDQ6dhQPCEI=
+"@expo/package-manager@^0.0.3":
+  version "0.0.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/package-manager/-/package-manager-0.0.3.tgz#11745d44adb6da31fd69607d718b961d65151a53"
+  integrity sha1-EXRdRK222jH9aWB9cYuWHWUVGlM=
   dependencies:
     "@expo/spawn-async" "^1.5.0"
     ansi-regex "^5.0.0"
@@ -1854,10 +1854,10 @@
     "@types/hoist-non-react-statics" "^3.3.1"
     hoist-non-react-statics "^3.3.0"
 
-"@expo/schemer@^1.3.2":
-  version "1.3.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/schemer/-/schemer-1.3.2.tgz#8ba548669fc1a35e584f45b7d6cb29e7dc69cda3"
-  integrity sha1-i6VIZp/Bo15YT0W31ssp59xpzaM=
+"@expo/schemer@^1.3.3":
+  version "1.3.3"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/schemer/-/schemer-1.3.3.tgz#7a57269e717c7a123a0eaccccf0d74f4cb0ea9ab"
+  integrity sha1-elcmnnF8ehI6DqzMzw109MsOqas=
   dependencies:
     ajv "^5.2.2"
     es6-error "^4.0.2"
@@ -1903,15 +1903,15 @@
   dependencies:
     lodash "^4.17.4"
 
-"@expo/webpack-config@^0.10.7":
-  version "0.10.7"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/webpack-config/-/webpack-config-0.10.7.tgz#aa911ed1b23fa37b045f36c655678ea322b6e2b5"
-  integrity sha1-qpEe0bI/o3sEXzbGVWeOoyK24rU=
+"@expo/webpack-config@^0.10.9":
+  version "0.10.9"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/webpack-config/-/webpack-config-0.10.9.tgz#507e87e92e90467db1cb5cdf0cde9c01701f3507"
+  integrity sha1-UH6H6S6QRn2xy1zfDN6cAXAfNQc=
   dependencies:
     "@babel/core" "^7.4.5"
     "@babel/runtime" "^7.3.4"
-    "@expo/config" "^2.5.3"
-    "@expo/webpack-pwa-manifest-plugin" "^1.2.15"
+    "@expo/config" "^2.5.5"
+    "@expo/webpack-pwa-manifest-plugin" "^1.2.17"
     babel-loader "8.0.6"
     babel-preset-expo "^7.0.0"
     brotli-webpack-plugin "^1.1.0"
@@ -1942,13 +1942,13 @@
     workbox-webpack-plugin "^3.6.3"
     yup "^0.27.0"
 
-"@expo/webpack-pwa-manifest-plugin@^1.2.15":
-  version "1.2.15"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/webpack-pwa-manifest-plugin/-/webpack-pwa-manifest-plugin-1.2.15.tgz#d2e866b687fb7d84df82c0b3f221bc17c6f52806"
-  integrity sha1-0uhmtof7fYTfgsCz8iG8F8b1KAY=
+"@expo/webpack-pwa-manifest-plugin@^1.2.17":
+  version "1.2.17"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/webpack-pwa-manifest-plugin/-/webpack-pwa-manifest-plugin-1.2.17.tgz#949ed7927db2ef1a0bf5ade27e5adbc326c2f3ec"
+  integrity sha1-lJ7Xkn2y7xoL9a3iflrbwybC8+w=
   dependencies:
-    "@expo/config" "^2.5.3"
-    "@expo/image-utils" "^0.2.10"
+    "@expo/config" "^2.5.5"
+    "@expo/image-utils" "^0.2.11"
     is-color "^1.0.2"
     jimp "^0.9.3"
     mime "^2.4.0"
@@ -1966,19 +1966,19 @@
     pouchdb-collections "^1.0.1"
     tiny-queue "^0.2.1"
 
-"@expo/xdl@^57.4.2":
-  version "57.4.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/xdl/-/xdl-57.4.2.tgz#ae025c10ccd388229111f080c0c9803a4380f0e9"
-  integrity sha1-rgJcEMzTiCKREfCAwMmAOkOA8Ok=
+"@expo/xdl@^57.4.4":
+  version "57.4.4"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/@expo/xdl/-/xdl-57.4.4.tgz#49834a1ca1fc72817be43c957fe06b58f5a16fcf"
+  integrity sha1-SYNKHKH8coF75DyVf+BrWPWhb88=
   dependencies:
     "@expo/bunyan" "3.0.2"
-    "@expo/config" "^2.5.3"
-    "@expo/json-file" "^8.2.3"
+    "@expo/config" "^2.5.5"
+    "@expo/json-file" "^8.2.4"
     "@expo/ngrok" "2.4.3"
-    "@expo/osascript" "^2.0.8"
-    "@expo/schemer" "^1.3.2"
+    "@expo/osascript" "^2.0.9"
+    "@expo/schemer" "^1.3.3"
     "@expo/spawn-async" "1.5.0"
-    "@expo/webpack-config" "^0.10.7"
+    "@expo/webpack-config" "^0.10.9"
     analytics-node "3.3.0"
     axios "0.19.0"
     boxen "4.1.0"
@@ -2038,6 +2038,7 @@
     validator "11.0.0"
     webpack "4.39.0"
     webpack-dev-server "3.2.0"
+    xcode "^2.1.0"
     xmldom "0.1.27"
 
 "@fimbul/bifrost@^0.21.0":
@@ -7566,20 +7567,20 @@ expo-barcode-scanner@~8.0.0:
     lodash "^4.6.0"
     prop-types "^15.6.0"
 
-expo-cli@3.11.3:
-  version "3.11.3"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-cli/-/expo-cli-3.11.3.tgz#8338bc6c5f7537c58b098a634c8182557455ccc0"
-  integrity sha1-gzi8bF91N8WLCYpjTIGCVXRVzMA=
+expo-cli@^3.11.5:
+  version "3.11.5"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-cli/-/expo-cli-3.11.5.tgz#428576a5dbacbb94dda18927184bb3ba37a584f6"
+  integrity sha1-QoV2pdusu5TdoYknGEuzujelhPY=
   dependencies:
     "@expo/build-tools" "0.1.3"
     "@expo/bunyan" "3.0.2"
-    "@expo/config" "^2.5.3"
-    "@expo/dev-tools" "^0.9.4"
-    "@expo/json-file" "^8.2.3"
-    "@expo/package-manager" "^0.0.2"
+    "@expo/config" "^2.5.5"
+    "@expo/dev-tools" "^0.9.6"
+    "@expo/json-file" "^8.2.4"
+    "@expo/package-manager" "^0.0.3"
     "@expo/simple-spinner" "1.0.2"
     "@expo/spawn-async" "1.5.0"
-    "@expo/xdl" "^57.4.2"
+    "@expo/xdl" "^57.4.4"
     "@types/cli-table" "^0.3.0"
     "@types/untildify" "^3.0.0"
     ansi-regex "^4.1.0"
@@ -7597,7 +7598,7 @@ expo-cli@3.11.3:
     enquirer "^2.3.2"
     envinfo "5.10.0"
     es6-error "3.2.0"
-    expo-optimize "^0.0.4"
+    expo-optimize "^0.0.6"
     fs-extra "6.0.1"
     getenv "0.7.0"
     glob "7.1.2"
@@ -7709,10 +7710,10 @@ expo-mail-composer@~8.0.0:
   dependencies:
     query-string "^6.2.0"
 
-expo-optimize@^0.0.4:
-  version "0.0.4"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-optimize/-/expo-optimize-0.0.4.tgz#18cadc10348c0705a918bb9efd730ede0b0fdb0a"
-  integrity sha1-GMrcEDSMBwWpGLue/XMO3gsP2wo=
+expo-optimize@^0.0.6:
+  version "0.0.6"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-optimize/-/expo-optimize-0.0.6.tgz#016632de5a282208ec8c1aaf986ee13611271667"
+  integrity sha1-AWYy3looIgjsjBqvmG7hNhEnFmc=
 
 expo-permissions@~8.0.0:
   version "8.0.0"
@@ -18027,6 +18028,14 @@ xcode@2.0.0, xcode@^2.0.0:
   version "2.0.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/xcode/-/xcode-2.0.0.tgz#134f1f94c26fbfe8a9aaa9724bfb2772419da1a2"
   integrity sha1-E08flMJvv+ipqqlyS/snckGdoaI=
+  dependencies:
+    simple-plist "^1.0.0"
+    uuid "^3.3.2"
+
+xcode@^2.1.0:
+  version "2.1.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/xcode/-/xcode-2.1.0.tgz#bab64a7e954bb50ca8d19da7e09531c65a43ecfe"
+  integrity sha1-urZKfpVLtQyo0Z2n4JUxxlpD7P4=
   dependencies:
     simple-plist "^1.0.0"
     uuid "^3.3.2"
