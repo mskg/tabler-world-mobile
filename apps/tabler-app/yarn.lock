@@ -7756,7 +7756,7 @@ expo-web-browser@~8.0.0:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-web-browser/-/expo-web-browser-8.0.0.tgz#8a4451c744c115569a4c810dac8851f219a21c72"
   integrity sha1-ikRRx0TBFVaaTIENrIhR8hmiHHI=
 
-expo@*, expo@^36.0.0:
+expo@*, expo@^36.0.2:
   version "36.0.2"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo/-/expo-36.0.2.tgz#17e5470c056f8615ebdd6819087af6a1032cf1ad"
   integrity sha1-F+VHDAVvhhXr3WgZCHr2oQMs8a0=
