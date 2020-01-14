@@ -8,13 +8,13 @@ import React from 'react';
 import { Clipboard, Image, KeyboardAvoidingView, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, LoadEarlier, Message, Send } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
+import { isIphoneX } from '../../helper/isIphoneX';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
 import { resize } from './resize';
-import { isIphoneX } from '../../helper/isIphoneX';
 
 const logger = new Logger(Categories.Screens.Conversation);
 const TEMP_TEXT_IMAGE = '#__#';
@@ -66,12 +66,18 @@ class ChatBase extends React.Component<Props, State> {
                 // @ts-ignore
                 wrapperStyle={{
                     left: {
-                        backgroundColor: this.props.theme.colors.background,
+                        backgroundColor: this.props.theme.colors.surface,
                     },
 
                     right: {
                         backgroundColor: this.props.theme.colors.accent,
                     },
+                }}
+
+                textStyle={{
+                    left: {
+                        color: this.props.theme.colors.text,
+                    }
                 }}
 
                 timeTextStyle={{
@@ -364,7 +370,7 @@ class ChatBase extends React.Component<Props, State> {
                 />
 
                 <FixedChat
-                    user={{ _id: 10430 }}
+                    user={{ _id: 14225 }}
                     bottomOffset={isIphoneX() ? 34 : 0}
 
                     // style={{ height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT }}

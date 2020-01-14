@@ -1,15 +1,21 @@
-import { withClient } from "@mskg/tabler-world-rds-client";
-import { CognitoUserPoolTriggerHandler } from "aws-lambda";
+import { withClient } from '@mskg/tabler-world-rds-client';
+import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 
 // tslint:disable-next-line: export-name
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
+    const allowed = process.env.allowed_countries?.split(',') || [];
+    const found = allowed.find((ext) => event.request.userAttributes.email.endsWith(`-${ext}.roundtable.world`));
+    if (!found) {
+        throw new Error('You need to be a tabler and you can only sign-in with a \'roundtable.world\' e-mail address.');
+    }
+
     await withClient(context, async (client) => {
         const res = await client.query(
-            "select * from profiles where rtemail = $1 and removed = FALSE",
+            'select * from profiles where rtemail = $1 and removed = FALSE',
             [event.request.userAttributes.email]);
 
         if (res.rowCount !== 1) {
-            throw new Error("You need to be a tabler and you can only sign-in with a 'roundtable.world' e-mail address.");
+            throw new Error('You need to be a tabler and you can only sign-in with a \'roundtable.world\' e-mail address.');
         }
     });
 

@@ -81,7 +81,7 @@ export const SearchMemberResolver = {
 
             if (args.query.roles != null && args.query.roles.length > 0) {
                 parameters.push(args.query.roles);
-                filters.push(`id in (select id from structure_tabler_roles where name = ANY ($${parameters.length}))`);
+                filters.push(`id in (select id from structure_tabler_roles where functionname = ANY ($${parameters.length}))`);
             }
 
             if (args.query.sectors != null && args.query.sectors.length > 0) {

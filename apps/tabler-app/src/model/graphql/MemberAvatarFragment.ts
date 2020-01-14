@@ -20,10 +20,7 @@ export interface MemberAvatarFragment_area {
 
 export interface MemberAvatarFragment_association {
   __typename: "Association";
-  /**
-   * Deprecated, don't use
-   */
-  association: string;
+  id: string;
   name: string;
 }
 

@@ -1,33 +1,40 @@
-import { xAWS } from "@mskg/tabler-world-aws";
-import { withClient } from "@mskg/tabler-world-rds-client";
-import { CognitoUserPoolTriggerHandler } from "aws-lambda";
-import { randomDigits } from "crypto-secure-random-digit";
-import { sendEmail } from "./sendEmail";
+import { xAWS } from '@mskg/tabler-world-aws';
+import { withClient } from '@mskg/tabler-world-rds-client';
+import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
+import { randomDigits } from 'crypto-secure-random-digit';
+import { sendEmail } from './sendEmail';
 
 export const ses = new xAWS.SES();
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
-    let secretLoginCode: string = "";
+    let secretLoginCode: string = '';
 
     if (!event.request.session || !event.request.session.length) {
+        const allowed = process.env.allowed_countries?.split(',') || [];
+        const found = allowed.find((ext) => event.request.userAttributes.email.endsWith(`-${ext}.roundtable.world`));
+        if (!found) {
+            console.error('[CREATE]', event.request.userAttributes.email, 'unkown country');
+            throw new Error('Sorry, country is locked.');
+        }
+
         await withClient(context, async (client) => {
             const res = await client.query(
-                "select * from profiles where rtemail = $1 and removed = FALSE",
+                'select * from profiles where rtemail = $1 and removed = FALSE',
                 [event.request.userAttributes.email]);
 
             if (res.rowCount !== 1) {
-                console.error("[CREATE]", event.request.userAttributes.email, "not found");
-                throw new Error("Sorry, we don't know you.");
+                console.error('[CREATE]', event.request.userAttributes.email, 'not found');
+                throw new Error('Sorry, we don\'t know you.');
             }
 
-            console.debug("[CREATE]", event.request.userAttributes.email, "found");
+            console.debug('[CREATE]', event.request.userAttributes.email, 'found');
 
             // This is a new auth session
             // Generate a new secret login code and mail it to the user
-            secretLoginCode = randomDigits(6).join("");
+            secretLoginCode = randomDigits(6).join('');
             await sendEmail(event.request.userAttributes.email, secretLoginCode);
         });
     } else {
-        console.debug("[CREATE]", event.request.userAttributes.email, "re-use session");
+        console.debug('[CREATE]', event.request.userAttributes.email, 're-use session');
 
         // There's an existing session. Don't generate new digits but
         // re-use the code from the current session. This allows the user to
@@ -37,7 +44,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
         secretLoginCode = previousChallenge.challengeMetadata!.match(/CODE-(\d*)/)![1];
     }
 
-    console.log("[CREATE]", event.request.userAttributes.email, "code", secretLoginCode);
+    console.log('[CREATE]', event.request.userAttributes.email, 'code', secretLoginCode);
 
     // This is sent back to the client app
     event.response.publicChallengeParameters = { email: event.request.userAttributes.email };

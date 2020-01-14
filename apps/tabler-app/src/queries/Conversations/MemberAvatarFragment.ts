@@ -18,7 +18,7 @@ export const MemberAvatarFragment = gql`
         }
 
         association {
-            association
+            id
             name
         }
     }

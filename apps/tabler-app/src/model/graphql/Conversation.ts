@@ -20,10 +20,7 @@ export interface Conversation_Conversation_members_area {
 
 export interface Conversation_Conversation_members_association {
   __typename: "Association";
-  /**
-   * Deprecated, don't use
-   */
-  association: string;
+  id: string;
   name: string;
 }
 
