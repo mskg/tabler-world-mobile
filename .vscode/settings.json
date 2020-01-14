@@ -31,4 +31,7 @@
         "**/.tmp/**": true
     },
     "typescript.tsdk": "node_modules/typescript/lib",
+    "[yaml]": {
+        "editor.tabSize": 2
+    }
 }

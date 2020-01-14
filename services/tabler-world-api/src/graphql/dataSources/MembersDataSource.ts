@@ -6,7 +6,8 @@ import { flatMap } from 'lodash';
 import { filter } from '../privacy/filter';
 import { IApolloContext } from '../types/IApolloContext';
 
-const cols = [
+// tslint:disable-next-line: variable-name
+export const DefaultMemberColumns = [
     'id',
 
     'pic',
@@ -15,13 +16,17 @@ const cols = [
     'lastname',
 
     'association',
+    'associationshortname',
     'associationname',
 
     'area',
     'areaname',
+    'areashortname',
 
     'club',
+    'clubnumber',
     'clubname',
+    'clubshortname',
 
     'roles',
 ];
@@ -92,7 +97,7 @@ where id = $1`,
         );
     }
 
-    public async readAreas(areas: number[]): Promise<any[] | null> {
+    public async readAreas(areas: string[]): Promise<any[] | null> {
         this.context.logger.log('readAll');
 
         const results = await Promise.all(areas.map((a) =>
@@ -106,13 +111,12 @@ where id = $1`,
 
                         const res = await client.query(
                             `
-select ${cols.join(',')}
+select ${DefaultMemberColumns.join(',')}
 from profiles
 where
-        association = $1
-    and area = ANY ($2::int[])
+        area = ANY ($1)
     and removed = FALSE`,
-                            [this.context.principal.association, areas],
+                            [areas],
                         );
 
                         return res.rows;
@@ -125,7 +129,7 @@ where
         return flatMap(results);
     }
 
-    public async readAll(): Promise<any[] | null> {
+    public async readAll(association: string): Promise<any[] | null> {
         this.context.logger.log('readAll');
 
         return await writeThrough(
@@ -138,12 +142,12 @@ where
 
                     const res = await client.query(
                         `
-select ${cols.join(',')}
+select ${DefaultMemberColumns.join(',')}
 from profiles
 where
     association = $1
 and removed = FALSE`,
-                        [this.context.principal.association],
+                        [association],
                     );
 
                     return res.rows;
@@ -154,9 +158,9 @@ and removed = FALSE`,
         );
     }
 
-    public async readClub(association: string, club: number): Promise<any[] | null> {
-        this.context.logger.log('readClub', association, club);
-        const clubDetails = await this.context.dataSources.structure.getClub(`${association}_${club}`);
+    public async readClub(club: string): Promise<any[] | null> {
+        this.context.logger.log('readClub', club);
+        const clubDetails = await this.context.dataSources.structure.getClub(club);
 
         return this.readMany(clubDetails.members);
     }

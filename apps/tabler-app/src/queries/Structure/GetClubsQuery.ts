@@ -12,7 +12,7 @@ export const GetClubsQuery = gql`
         club {
             id
             name
-            club
+            clubnumber
         }
     }
   }

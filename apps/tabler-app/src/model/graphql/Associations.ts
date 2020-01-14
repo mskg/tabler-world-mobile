@@ -36,7 +36,7 @@ export interface Associations_Associations_boardassistants {
 
 export interface Associations_Associations {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
   board: Associations_Associations_board[];
   boardassistants: Associations_Associations_boardassistants[];
@@ -44,7 +44,7 @@ export interface Associations_Associations {
 
 export interface Associations_Me_association {
   __typename: "Association";
-  association: string;
+  id: string;
 }
 
 export interface Associations_Me {

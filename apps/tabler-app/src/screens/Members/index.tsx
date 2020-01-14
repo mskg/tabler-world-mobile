@@ -127,7 +127,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
 
         this.state.dataSource.filter = Predicates.or(
             nextProps.showFavorites ? Predicates.favorite(this.props.favorites) : null,
-            nextProps.showOwntable && me != null && me.club != null ? Predicates.sametable(me.club.club) : null,
+            nextProps.showOwntable && me != null && me.club != null ? Predicates.sametable(me.club.id) : null,
             nextProps.areas != null ? Predicates.area(nextProps.areas) : Predicates.all,
             nextProps.showAreaBoard ? Predicates.areaBoard() : null,
             nextProps.showAssociationBoard ? Predicates.associationBoard() : null,

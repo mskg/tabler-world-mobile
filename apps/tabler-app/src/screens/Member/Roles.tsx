@@ -33,7 +33,7 @@ class RolesBase extends React.PureComponent<Props> {
                         key={i}
                         onPress={this.getOnPress(r)}
                     >
-                        {r.ref.name} <Text style={{ fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
+                        {r.ref.shortname} <Text style={{ fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
                     </Chip>
                 )).value()
             }

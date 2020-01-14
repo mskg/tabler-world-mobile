@@ -5,6 +5,6 @@ export interface IPrincipal {
     email: string;
 
     association: string;
-    area: number;
-    club: number;
+    area: string;
+    club: string;
 }

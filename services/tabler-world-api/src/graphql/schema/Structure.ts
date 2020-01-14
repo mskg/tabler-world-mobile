@@ -9,8 +9,10 @@ export const Structure = gql`
     }
 
     type Association {
-        association: String!
+        id: ID!
+
         name: String!
+        shortname: String!
 
         areas: [Area!]!
         board: [AssociationRole!]!
@@ -18,11 +20,11 @@ export const Structure = gql`
     }
 
     type Area {
-        id: String!
-
+        id: ID!
         association: Association!
-        area: Int!
+
         name: String!
+        shortname: String!
 
         clubs: [Club!]!
         board: [AssociationRole!]!
@@ -45,14 +47,17 @@ export const Structure = gql`
     }
 
     type Club {
-        id: String!
+        id: ID!
+
         association: Association!
         area: Area!
 
         account: BankAccount
 
-        club: Int!
+        clubnumber: Int!
         name: String!
+        shortname: String!
+
         logo: String
 
         meetingplace1: Address

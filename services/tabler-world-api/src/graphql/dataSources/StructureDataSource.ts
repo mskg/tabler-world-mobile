@@ -58,17 +58,12 @@ import { IApolloContext } from '../types/IApolloContext';
 //     return sorted;
 // }
 
-type AssocKey = {
-    association: string,
-    id: number,
-};
-
 export class StructureDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
 
     private associationLoader!: DataLoader<string, any>;
-    private clubLoader!: DataLoader<AssocKey, any>;
-    private areaLoader!: DataLoader<AssocKey, any>;
+    private clubLoader!: DataLoader<string, any>;
+    private areaLoader!: DataLoader<string, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -77,7 +72,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
             cachedDataLoader<string>(
                 this.context,
                 (k) => makeCacheKey('Association', [k]),
-                (r) => makeCacheKey('Association', [r.association]),
+                (r) => makeCacheKey('Association', [r.id]),
                 (ids) => useDataService(
                     this.context,
                     async (client) => {
@@ -87,7 +82,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     select *
     from structure_associations
     where
-        association = ANY($1)
+        id = ANY($1)
     `, [ids]);
 
                         return res.rows;
@@ -100,11 +95,11 @@ export class StructureDataSource extends DataSource<IApolloContext> {
             },
         );
 
-        this.areaLoader = new DataLoader<AssocKey, any, string>(
-            cachedDataLoader<AssocKey>(
+        this.areaLoader = new DataLoader<string, any>(
+            cachedDataLoader<string>(
                 this.context,
-                (k) => makeCacheKey('Area', [k.association, k.id]),
-                (r) => makeCacheKey('Area', [r.association, r.area]),
+                (k) => makeCacheKey('Area', [k]),
+                (r) => makeCacheKey('Area', [r.id]),
                 (ids) => useDataService(
                     this.context,
                     async (client) => {
@@ -114,9 +109,8 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     select *
     from structure_areas
     where
-        association = $1
-    and area = ANY($2)
-    `, [ids[0].association, ids.map(i => i.id)]);
+        id = ANY($1)
+    `, [ids]);
 
                         return res.rows;
                     },
@@ -124,15 +118,15 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 'Structure',
             ),
             {
-                cacheKeyFn: (k: AssocKey) => k.association + '_' + k.id,
+                cacheKeyFn: (k: string) => k,
             },
         );
 
-        this.clubLoader = new DataLoader<AssocKey, any, string>(
-            cachedDataLoader<AssocKey>(
+        this.clubLoader = new DataLoader<string, any>(
+            cachedDataLoader<string>(
                 this.context,
                 // we use the same format for the key that can be extracted during read
-                (k) => makeCacheKey('Club', [k.association + '_' + k.id]),
+                (k) => makeCacheKey('Club', [k]),
                 (r) => makeCacheKey('Club', [r.id]),
                 (ids) => useDataService(
                     this.context,
@@ -143,9 +137,8 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     select *
     from structure_clubs
     where
-        association = $1
-    and club = ANY($2)
-    `, [ids[0].association, ids.map(i => i.id)]);
+        id = ANY($1)
+    `, [ids]);
 
                         return res.rows;
                     },
@@ -153,15 +146,15 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 'Structure',
             ),
             {
-                cacheKeyFn: (k: AssocKey) => k.association + '_' + k.id,
+                cacheKeyFn: (k: string) => k,
             },
         );
     }
 
-    public async allClubs() {
+    public async allClubs(association: string) {
         return await writeThrough(
             this.context,
-            makeCacheKey('Structure', [this.context.principal.association, 'clubs', 'all']),
+            makeCacheKey('Structure', [association, 'clubs', 'all']),
             async () => await useDataService(
                 this.context,
                 async (client) => {
@@ -172,7 +165,7 @@ select *
 from structure_clubs
 where
     association = $1
-`, [this.context.principal.association]);
+`, [association]);
 
                     return res.rows;
                 },
@@ -181,10 +174,10 @@ where
         );
     }
 
-    public async allAreas(assoc?: string) {
+    public async allAreas(assoc: string) {
         return await writeThrough(
             this.context,
-            makeCacheKey('Structure', [assoc || this.context.principal.association, 'areas', 'all']),
+            makeCacheKey('Structure', [assoc, 'areas', 'all']),
             async () => await useDataService(
                 this.context,
                 async (client) => {
@@ -195,7 +188,7 @@ select *
 from structure_areas
 where
     association = $1
-`, [assoc || this.context.principal.association]);
+`, [assoc]);
 
                     return res.rows;
                 },
@@ -211,16 +204,15 @@ where
         return [await this.getAssociation(this.context.principal.association)];
     }
 
-    public async getAssociation(assoc: any) {
+    public async getAssociation(assoc: string) {
         return this.associationLoader.load(assoc);
     }
 
-    public async getArea(assoc: string, id: any) {
-        return this.areaLoader.load({ association: assoc, id });
+    public async getArea(id: string) {
+        return this.areaLoader.load(id);
     }
 
     public async getClub(id: string) {
-        const ids = id.split('_');
-        return this.clubLoader.load({ association: ids[0], id: parseInt(ids[1], 10) });
+        return this.clubLoader.load(id);
     }
 }

@@ -8,21 +8,21 @@
 
 export interface MeFragment_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface MeFragment_area {
   __typename: "Area";
   id: string;
-  area: number;
+  shortname: string;
   name: string;
 }
 
 export interface MeFragment_club {
   __typename: "Club";
   id: string;
-  club: number;
+  clubnumber: number;
   name: string;
 }
 

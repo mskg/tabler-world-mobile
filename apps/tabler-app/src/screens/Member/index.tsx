@@ -82,7 +82,7 @@ class MemberBase extends AuditedScreen<Props> {
 
                 title={member ? member.firstname + ' ' + member.lastname : undefined}
                 line1={member ? member.club.name : undefined}
-                line2={member ? member.area.name + ' ' + member.association.name : undefined}
+                line2={member ? member.area.name + ', ' + member.association.name : undefined}
 
                 fab={
                     member

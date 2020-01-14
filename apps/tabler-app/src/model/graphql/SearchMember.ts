@@ -12,7 +12,7 @@ export interface SearchMember_SearchMember_nodes_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface SearchMember_SearchMember_nodes_area {
@@ -23,14 +23,14 @@ export interface SearchMember_SearchMember_nodes_area {
 
 export interface SearchMember_SearchMember_nodes_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface SearchMember_SearchMember_nodes_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 

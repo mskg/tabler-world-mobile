@@ -4,13 +4,13 @@ export const ClubOverviewFragment = gql`
     fragment ClubOverviewFragment on Club {
         id
         name
-        club
+        clubnumber
         logo
 
         area {
             id
             name
-            area
+            shortname
         }
 
         association {

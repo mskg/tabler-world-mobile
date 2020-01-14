@@ -20,6 +20,9 @@ export interface GetConversations_Conversations_nodes_members_area {
 
 export interface GetConversations_Conversations_nodes_members_association {
   __typename: "Association";
+  /**
+   * Deprecated, don't use
+   */
   association: string;
   name: string;
 }

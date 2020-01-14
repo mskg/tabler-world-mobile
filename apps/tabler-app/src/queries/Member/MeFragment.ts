@@ -6,19 +6,19 @@ export const MeFragment = gql`
         pic
 
         association {
-            association
+            id
             name
         }
 
         area {
             id
-            area
+            shortname
             name
         }
 
         club {
             id
-            club
+            clubnumber
             name
         }
 

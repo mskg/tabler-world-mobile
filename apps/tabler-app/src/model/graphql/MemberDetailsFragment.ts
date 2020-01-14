@@ -12,7 +12,7 @@ export interface MemberDetailsFragment_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface MemberDetailsFragment_area {
@@ -23,14 +23,14 @@ export interface MemberDetailsFragment_area {
 
 export interface MemberDetailsFragment_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface MemberDetailsFragment_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 

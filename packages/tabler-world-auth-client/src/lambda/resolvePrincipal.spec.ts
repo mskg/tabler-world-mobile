@@ -8,8 +8,8 @@ import { resolvePrincipal } from './resolvePrincipal';
 const baseCtx = {
     requestContext: {
         authorizer: {
-            area: 1,
-            club: 2,
+            area: 'aree',
+            club: 'club',
             association: 'association',
             id: 3,
             email: 'email',

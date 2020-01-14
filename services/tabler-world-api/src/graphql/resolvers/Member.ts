@@ -17,6 +17,7 @@ type IdsArgs = {
 
 type MemberFilter = {
     filter: {
+        // deprectated
         areas?: number[],
 
         nationalBoard?: boolean,
@@ -30,18 +31,21 @@ export const MemberResolver = {
     Member: {
         area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
-                id: root.association + '_' + root.area,
+                id: root.area,
                 association: root.association,
-                area: root.area,
                 name: root.areaname,
+                shortname: root.areashortname,
             };
         },
 
         club: (root: any, _args: {}, _context: IApolloContext) => {
             return {
-                id: root.association + '_' + root.club,
-                club: root.club, // needs to be added to allow subsent resolvers to work
+                id: root.club,
+                // -- DEPRECATED --
+                club: root.clubnumber,
+                clubnumber: root.clubnumber,
                 name: root.clubname,
+                shortname: root.clubshortname,
                 association: root.association,
                 area: root.area,
             };
@@ -50,7 +54,8 @@ export const MemberResolver = {
         association: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 name: root.associationname,
-                association: root.association,
+                id: root.association,
+                shortname: root.associationshortname,
             };
         },
     },
@@ -69,14 +74,14 @@ export const MemberResolver = {
             if (args.filter != null && (args.filter.areas != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
                 if (args.filter.areas != null && args.filter.areas.length > 0) {
                     context.logger.log('areas', args.filter.areas);
-                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas);
+                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `de_d${a}`));
                     result.push(... (areaMembers || []));
                 }
 
                 // we make this sync
                 if (args.filter.areaBoard === true) {
                     context.logger.log('areaBoard', args.filter);
-                    const areas = await context.dataSources.structure.allAreas();
+                    const areas = await context.dataSources.structure.allAreas(context.principal.association);
 
                     for (const area of areas) {
                         if (area.board) {
@@ -114,7 +119,7 @@ export const MemberResolver = {
                 return result.length > 0 ? _.uniqBy(result, (m) => m.id) : [];
             }
 
-            return context.dataSources.members.readAll();
+            return context.dataSources.members.readAll(context.principal.association);
         },
 
         FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
@@ -129,7 +134,7 @@ export const MemberResolver = {
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            const members = await context.dataSources.members.readClub(context.principal.association, context.principal.club);
+            const members = await context.dataSources.members.readClub(context.principal.club);
             return members || [];
         },
 

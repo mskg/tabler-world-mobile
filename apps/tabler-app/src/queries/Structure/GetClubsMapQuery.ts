@@ -7,7 +7,7 @@ export const GetClubsMapQuery = gql`
             id
             name
             logo
-            club
+            clubnumber
 
             meetingplace1 {
                 ...AddressFragment

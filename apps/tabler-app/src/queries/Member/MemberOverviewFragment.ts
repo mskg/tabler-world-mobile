@@ -11,7 +11,7 @@ export const MemberOverviewFragment = gql`
         club {
            id
            name
-           club
+           clubnumber
        }
 
        area {
@@ -20,7 +20,7 @@ export const MemberOverviewFragment = gql`
        }
 
        association {
-            association
+            id
             name
        }
 
@@ -31,7 +31,7 @@ export const MemberOverviewFragment = gql`
 
             ref {
                 id
-                name
+                shortname
                 type
             }
         }

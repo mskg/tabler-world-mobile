@@ -68,7 +68,6 @@ class CardTitleBase extends React.Component<Props> {
 
                 <View style={[styles.titles]}>
                     {typeof (title) == 'string' ? (
-
                         <Title
                             style={[
                                 styles.title,
@@ -79,22 +78,28 @@ class CardTitleBase extends React.Component<Props> {
                         >
                             {title}
                         </Title>
-                    ) : <Text style={[
-                        styles.title,
-                        { marginBottom: subtitle ? 0 : 2 },
-                        titleStyle,
-                    ]} numberOfLines={1}>{title}</Text>}
+                    ) : (
+                            <Text
+                                style={[
+                                    styles.title,
+                                    { marginBottom: subtitle ? 0 : 2 },
+                                    titleStyle,
+                                ]}
+                                numberOfLines={1}
+                            >
+                                {title}
+                            </Text>
+                        )}
 
-                    {typeof (subtitle) === 'string' ? (
-                        <Caption style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
-                            {subtitle}
-                        </Caption>
-                    ) : <Text
-                        style={[styles.subtitle, subtitleStyle]}
-                        numberOfLines={1}
-                        >
-                            {subtitle}
-                        </Text>
+                    {typeof (subtitle) === 'string'
+                        ? (
+                            <Caption style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
+                                {subtitle}
+                            </Caption>
+                        )
+                        : React.cloneElement(subtitle, {
+                            style: [styles.subtitle, subtitleStyle],
+                        })
                     }
                 </View>
 
@@ -103,6 +108,14 @@ class CardTitleBase extends React.Component<Props> {
         );
     }
 }
+
+/* <Text
+                        style={[styles.subtitle, subtitleStyle]}
+                        numberOfLines={1}
+                        >
+                            {subtitle}
+                        </Text>
+                    } */
 
 const styles = StyleSheet.create({
     container: {

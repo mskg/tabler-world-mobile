@@ -32,10 +32,10 @@ select
 CREATE OR REPLACE FUNCTION get_profile_access(
         level text
         ,recordid integer
-        ,recordclub integer
+        ,recordclub text
         ,recordassoc text
         ,userid integer
-        ,userclub integer
+        ,userclub text
         ,userassoc text
 )
   RETURNS boolean AS $$
@@ -76,6 +76,7 @@ drop materialized view if exists profiles_privacysettings cascade;
 create materialized view profiles_privacysettings as
 select
     id
+    ,get_privacylevel(privacysettings::jsonb, 'gender') as gender
     ,get_privacylevel(privacysettings::jsonb, 'education') as education
     ,get_privacylevel(privacysettings::jsonb, 'custom-field-category-110') as partner
     ,get_privacylevel(privacysettings::jsonb, 'company-position') as company

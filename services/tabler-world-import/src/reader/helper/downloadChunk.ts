@@ -1,7 +1,7 @@
-import { getParameters, Param_Api } from "@mskg/tabler-world-config";
-import { parse } from "url";
-import { HttpClient } from "../../shared/HttpClient";
-import { TablerWorldApiChunk } from "../types/TablerWorldApiChunk";
+import { getParameters, Param_Api } from '@mskg/tabler-world-config';
+import { parse } from 'url';
+import { HttpClient } from '../../shared/HttpClient';
+import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
 
 /**
  * Download a TablerWorldApiChunk from the given url.
@@ -11,8 +11,8 @@ import { TablerWorldApiChunk } from "../types/TablerWorldApiChunk";
  * @param postdata
  */
 export async function downloadChunk(url: string, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
-    const params = await getParameters("tw-api");
-    const api = JSON.parse(params["tw-api"]) as Param_Api;
+    const params = await getParameters('tw-api');
+    const api = JSON.parse(params['tw-api']) as Param_Api;
 
     const client = new HttpClient(api.host);
 
@@ -21,7 +21,7 @@ export async function downloadChunk(url: string, method?: string, postdata?: str
     };
 
     const json = await client.callApi<any>(
-        url + `&limit=${api.read_batch}`, method, postdata);
+        `${url}&limit=${api.read_batch}`, method, postdata);
 
     const results = [];
     results.push(... (json.results || json));
@@ -31,7 +31,7 @@ export async function downloadChunk(url: string, method?: string, postdata?: str
         data: results,
         next: json.next,
         offset: (parsed.query
-            ? parseInt(parsed.query.offset as string || "-1", 10)
+            ? parseInt(parsed.query.offset as string || '-1', 10)
             : -1) || -1,
         total: json.count || -1,
     };

@@ -76,7 +76,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 <CardTitle
                     title={name}
                     subtitle={`${item.area.name}, ${item.association.name}`}
-                    avatar={item.club}
+                    avatar={item.clubnumber}
                 />
 
                 {item.logo &&
@@ -118,16 +118,16 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         return [
             c.name,
             c.area.name,
-            `D${c.area.area}`,
+            c.area.shortname,
         ].filter(Boolean);
     }
 
     _sortResults = (myClub: number) => (c: Clubs_Clubs): any => {
         // myClub goes on top
-        return myClub === c.club
+        return myClub === c.clubnumber
             ? 0
             : c
-                ? c.club
+                ? c.clubnumber
                 : -1;
     }
 
@@ -138,7 +138,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
             text,
             undefined,
             data && data.Me
-                ? this._sortResults(data.Me.club.club)
+                ? this._sortResults(data.Me.club.clubnumber)
                 : undefined,
         );
     }

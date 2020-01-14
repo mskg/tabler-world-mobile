@@ -30,8 +30,8 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
         resolvedPrincipal = {
             email,
             association,
-            area: parseInt(area, 10),
-            club: parseInt(club, 10),
+            area,
+            club,
             id: parseInt(id, 10),
         };
     }
@@ -39,12 +39,12 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
     if (
         typeof (resolvedPrincipal.association) != 'string'
         || typeof (resolvedPrincipal.email) != 'string'
-        || typeof (resolvedPrincipal.area) != 'number'
-        || typeof (resolvedPrincipal.club) != 'number'
+        || typeof (resolvedPrincipal.area) != 'string'
+        || typeof (resolvedPrincipal.club) != 'string'
         || typeof (resolvedPrincipal.id) != 'number'
         || resolvedPrincipal.id <= 0
-        || resolvedPrincipal.club <= 0
-        || resolvedPrincipal.area <= 0) {
+        || resolvedPrincipal.area === ''
+        || resolvedPrincipal.club === '') {
         throw new AuthenticationError('Context not complete');
     }
 

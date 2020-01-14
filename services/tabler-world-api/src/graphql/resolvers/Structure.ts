@@ -17,12 +17,12 @@ export const StructureResolver = {
 
         Clubs: (_root: any, _args: any, context: IApolloContext) => {
             context.logger.log('Clubs');
-            return context.dataSources.structure.allClubs();
+            return context.dataSources.structure.allClubs(context.principal.association);
         },
 
         Areas: (_root: any, _args: any, context: IApolloContext) => {
             context.logger.log('Areas');
-            return context.dataSources.structure.allAreas();
+            return context.dataSources.structure.allAreas(context.principal.association);
         },
 
         Club: (_root: any, args: ById, context: IApolloContext) => {
@@ -32,12 +32,22 @@ export const StructureResolver = {
     },
 
     Association: {
+        // deprecated fixture, replaced by id
+        association: (root: any, _args: any, _context: IApolloContext) => {
+            return root.id;
+        },
+
         areas: async (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.structure.allAreas(root.association);
         },
     },
 
     Club: {
+        // -- DEPRECATED --
+        club: (root: any, _args: any, _context: IApolloContext) => {
+            return root.clubnumber;
+        },
+
         location: async (root: any, _args: any, context: IApolloContext) => {
             const hash = addressHash(root.meetingplace1);
             context.logger.log(root, hash);
@@ -58,19 +68,20 @@ export const StructureResolver = {
         area: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Area Loading", root);
             return context.dataSources.structure.getArea(
-                root.association, root.area,
+                root.area,
             );
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
             // context.logger.log("C.Association Loading", root);
             return context.dataSources.structure.getAssociation(
-                root.association);
+                root.association,
+            );
         },
 
         members: (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.members.readClub(
-                root.association, root.club,
+                root.club || root.id,
             );
         },
     },
@@ -94,9 +105,10 @@ export const StructureResolver = {
     },
 
     Area: {
-        // id: (root: any, _args: any, _context: IApolloContext) => {
-        //     return root.association + "_" + root.area;
-        // },
+        // -- DEPRECATED --
+        area: (_root: any, _args: any, _context: IApolloContext) => {
+            return 0;
+        },
 
         clubs: async (root: any, _args: any, context: IApolloContext) => {
             // console.log(root);
@@ -109,7 +121,7 @@ export const StructureResolver = {
             }
 
             // we're coming from member!
-            const area = await context.dataSources.structure.getArea(root.association, root.area);
+            const area = await context.dataSources.structure.getArea(root.area);
             return area.clubs.map((r: any) => context.dataSources.structure.getClub(r));
         },
 

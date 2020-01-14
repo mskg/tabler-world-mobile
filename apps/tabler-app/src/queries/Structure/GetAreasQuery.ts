@@ -6,11 +6,11 @@ export const GetAreasQuery = gql`
     Areas {
         association {
             name
-            association
+            id
         }
 
         name
-        area
+        shortname
         id
 
         board {
@@ -23,14 +23,14 @@ export const GetAreasQuery = gql`
         clubs {
             id
             name
-            club
+            clubnumber
         }
     }
 
     Me {
         area {
             id
-            area
+            shortname
         }
 
         id

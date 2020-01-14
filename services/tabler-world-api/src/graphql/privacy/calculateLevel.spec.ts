@@ -8,8 +8,8 @@ import { FilterLevel } from './FilterLevel';
 
 
 const principal = {
-    area: 1,
-    club: 2,
+    area: 'area',
+    club: 'club',
     association: 'de',
     email: 'email',
     id: 3,

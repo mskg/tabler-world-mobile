@@ -39,7 +39,7 @@ export interface ClubsMap_Clubs {
   id: string;
   name: string;
   logo: string | null;
-  club: number;
+  clubnumber: number;
   meetingplace1: ClubsMap_Clubs_meetingplace1 | null;
   meetingplace2: ClubsMap_Clubs_meetingplace2 | null;
   info: ClubsMap_Clubs_info | null;

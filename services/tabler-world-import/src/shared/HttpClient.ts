@@ -1,4 +1,4 @@
-import { xHttps } from "@mskg/tabler-world-aws";
+import { xHttps } from '@mskg/tabler-world-aws';
 
 export class HttpClient {
     private _maxTries = 3;
@@ -22,7 +22,7 @@ export class HttpClient {
 
     public callApi<T>(
         url: string,
-        method: string = "GET",
+        method: string = 'GET',
         postdata?: string,
     ): Promise<T> {
         return this.run<T>(url, method, postdata);
@@ -33,7 +33,7 @@ export class HttpClient {
             port: this.port,
             method,
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
                 ...this._headers,
             },
         };
@@ -53,7 +53,7 @@ export class HttpClient {
     ): Promise<T> {
         try {
             const options = this.configureOptions(url, method);
-            console.debug("[API] Downloading from", this.host, method, options.path);
+            console.debug('[API] Downloading from', options.host, options.port, options.path, options.method, postdata);
 
             const maxTries = this._maxTries;
             const waitTime = this._waitTime;
@@ -65,7 +65,7 @@ export class HttpClient {
                         if (res.statusCode === 429 && tryCount < maxTries - 1) {
                             const newTry = tryCount + 1;
 
-                            console.log("[API] Got 429, sleeping ", newTry, "s");
+                            console.log('[API] Got 429, sleeping ', newTry, 's');
                             // tslint:disable-next-line: no-string-based-set-timeout
                             await new Promise((r) => setTimeout(r, newTry * waitTime));
                             return run(url, method, postdata, newTry);
@@ -75,25 +75,27 @@ export class HttpClient {
                             return reject(new Error(`${res.statusCode} ${res.statusMessage}`));
                         }
 
-                        let data = "";
-                        res.setEncoding("utf8");
-                        res.on("data", (chunk) => {
+                        let data = '';
+                        res.setEncoding('utf8');
+                        res.on('data', (chunk) => {
                             data += chunk;
                         });
 
-                        res.on("end", async () => {
+                        res.on('end', async () => {
                             try {
+                                // console.debug('Received', data);
+
                                 const json = JSON.parse(data);
                                 return resolve(json as T);
                             } catch (eEnd) {
-                                console.error("[API] on end", eEnd);
+                                console.error('[API] on end', eEnd);
                                 return reject(eEnd);
                             }
                         });
                     });
 
-                    req.on("error", (requestFail) => {
-                        console.error("[API] on error", requestFail);
+                    req.on('error', (requestFail) => {
+                        console.error('[API] on error', requestFail);
                         return reject(requestFail);
                     });
 
@@ -103,12 +105,12 @@ export class HttpClient {
 
                     req.end();
                 } catch (getFail) {
-                    console.error("[API] get fail", getFail);
+                    console.error('[API] get fail', getFail);
                     return reject(getFail);
                 }
             });
         } catch (outerFail) {
-            console.error("[API] outer fail", outerFail);
+            console.error('[API] outer fail', outerFail);
             return Promise.reject(outerFail);
         }
     }

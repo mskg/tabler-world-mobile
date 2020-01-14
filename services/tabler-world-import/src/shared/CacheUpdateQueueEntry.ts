@@ -1,11 +1,23 @@
+import { RecordType } from './RecordType';
 
 export type CacheUpdateQueueEntry =
     | {
-        type: "member",
+        type: RecordType.member,
         id: number,
     }
     | {
-        type: "club",
+        type: RecordType.club,
         id: string,
     }
-;
+    | {
+        type: RecordType.area,
+        id: string,
+    }
+    | {
+        type: RecordType.association,
+        id: string,
+    }
+    | {
+        type: RecordType.family,
+        id: string,
+    };

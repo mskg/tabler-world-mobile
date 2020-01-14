@@ -22,7 +22,7 @@ describe('isAdmin', () => {
     test('true', () => {
 
         // @ts-ignore
-        const result = isAdmin({ id: 10430 });
+        const result = isAdmin({ id: 14225 });
         expect(result).toEqual(true);
     });
 });

@@ -8,13 +8,16 @@ async function handleChunk(data: any[]) {
 }
 
 async function test() {
-    const url = 'https://api.rti.roundtable.world/v1/admin/levels/clubs/?';
+    const url = 'https://api.roundtable.world/v1/admin/groups/?';
+
     const payload = undefined;
-    // const payload = null; JSON.stringify({
-    //     "operator": "AND",
-    //     "last_modified": "2010-01-01",
+    // JSON.stringify({
+    //     operator: 'AND',
+    //     last_modified: '2020-01-01',
     // });
+
     const method = 'GET';
+    // const method = 'POST';
 
     const firstChunk = await downloadChunk(url, method, payload);
     if (firstChunk != null) {

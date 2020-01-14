@@ -16,7 +16,7 @@ export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     };
 
     const result: typeof group[] = [];
-    const withRoles = data.map(m => {
+    const withRoles = data.map((m) => {
         const r = {
             ...m,
             member: {
@@ -32,7 +32,7 @@ export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
             ref: {
                 __typename: 'RoleRef',
                 type: RoleType.club,
-                name: 'RT' + m.member.club.club,
+                shortname: `RT${m.member.club.clubnumber}`,
                 id: m.member.club.id,
             },
         }];
@@ -42,7 +42,7 @@ export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
 
     for (const member of withRoles) {
         const title = makeDisplayString(member);
-        if (title != group.title) {
+        if (title !== group.title) {
             result.push(group);
             group = {
                 title: title as string,

@@ -80,6 +80,7 @@
         "react-lifecycles-compat": "^3.0.4",
         "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.1.tar.gz",
         "react-native-appearance": "~0.3.1",
+        "react-native-flags": "^1.0.0",
         "react-native-gesture-handler": "~1.5.0",
         "react-native-gifted-chat": "^0.13.0",
         "react-native-image-gallery": "https://github.com/mskg/react-native-image-gallery/archive/v2.1.5-mskg.tar.gz",

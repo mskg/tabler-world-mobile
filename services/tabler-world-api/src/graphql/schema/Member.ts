@@ -73,15 +73,21 @@ export const Member = gql`
 
     enum RoleType {
         club
-        assoc
         area
+        assoc
+        family
+
+        "not yet existing"
         region
+
+        "deprecated"
         rti
     }
 
     type RoleRef {
         id: String!
         name: String!
+        shortname: String!
         type: RoleType!
     }
 
@@ -164,6 +170,7 @@ export const Member = gql`
     }
 
     input MemberFilterInput {
+        # deprecated
         areas: [Int!]
 
         nationalBoard: Boolean

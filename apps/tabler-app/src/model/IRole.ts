@@ -51,7 +51,7 @@ export type IRole = {
 
     ref: {
         id: string,
-        name: string,
+        shortname: string,
         type: RoleType,
     };
 };

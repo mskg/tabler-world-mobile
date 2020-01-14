@@ -14086,6 +14086,11 @@ react-native-fit-image@^1.5.2:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-flags@^1.0.0:
+  version "1.0.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-flags/-/react-native-flags-1.0.0.tgz#8bf99b58e125ca6057d7923549132b3579754ed3"
+  integrity sha1-i/mbWOElymBX15I1SRMrNXl1TtM=
+
 react-native-gesture-handler@~1.5.0:
   version "1.5.2"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-native-gesture-handler/-/react-native-gesture-handler-1.5.2.tgz#281111550bf1eee10b7feba5278d142169892731"

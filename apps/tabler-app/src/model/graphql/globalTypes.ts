@@ -69,6 +69,7 @@ export enum RoleType {
   area = "area",
   assoc = "assoc",
   club = "club",
+  family = "family",
   region = "region",
   rti = "rti",
 }

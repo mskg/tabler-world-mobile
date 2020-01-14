@@ -44,9 +44,9 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                     avatar={
 
                         // there can only be one :)
-                        item.area === 9 && item.association.association === 'de'
+                        item.id === 'de_d9'
                             ? 'DIX'
-                            : `D${item.area}`
+                            : item.shortname
                     }
                 />
 
@@ -81,7 +81,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                                 data={
                                     _(data != null ? data.Areas : [])
                                         // my own area goes on top
-                                        .orderBy((a) => (data != null && data.Me.area.area === a.area) ? 0 : a.area)
+                                        .orderBy((a) => (data != null && data.Me.area.id === a.id) ? 'a' : a.shortname)
                                         .toArray()
                                         .value()
                                 }

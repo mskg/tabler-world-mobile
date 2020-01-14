@@ -1,6 +1,7 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
+import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -33,24 +34,7 @@ export const SearchMemberResolver = {
             const PAGE_SIZE = 20;
 
             const cols = [
-                'id',
-
-                'pic',
-
-                'firstname',
-                'lastname',
-
-                'association',
-                'associationname',
-
-                'area',
-                'areaname',
-
-                'club',
-                'clubname',
-
-                'roles',
-
+                ...DefaultMemberColumns,
                 'cursor_lastfirst',
             ];
 
@@ -65,9 +49,11 @@ export const SearchMemberResolver = {
             const parameters: any[] = [
                 PAGE_SIZE + 1,
                 parseInt(args.after || '0', 10),
+                // context.principal.association,
             ];
 
             const filters = [
+                // 'association = $3',
                 'removed = FALSE',
                 'cursor_lastfirst > $2',
             ];
@@ -77,7 +63,8 @@ export const SearchMemberResolver = {
                 filters.push(`
 (
         f_unaccent(lastname || ' ' || firstname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
-    or  f_unaccent(clubname || ', ' || areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
+        or  f_unaccent(areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
+        or  f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
 )`,
                 );
             }

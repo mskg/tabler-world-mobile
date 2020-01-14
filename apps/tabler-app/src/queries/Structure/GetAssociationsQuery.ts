@@ -4,7 +4,7 @@ import { MemberFragment } from '../Member/MemberFragment';
 export const GetAssociationsQuery = gql`
   query Associations {
     Associations {
-        association
+        id
         name
 
         board {
@@ -24,7 +24,7 @@ export const GetAssociationsQuery = gql`
 
     Me {
         association {
-            association
+            id
         }
 
         id

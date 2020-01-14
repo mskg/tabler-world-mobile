@@ -15,7 +15,7 @@ export async function updateMember(client: IDataService, id: number) {
         if (staleCacheData != null) {
             // we update the memberlist here
             const oldMember = JSON.parse(staleCacheData);
-            const clubKey = makeCacheKey('Club', [oldMember.association + '_' + oldMember.club]);
+            const clubKey = makeCacheKey('Club', [oldMember.club]);
 
             console.log('Removing', clubKey);
             cacheInstance.delete(clubKey);
@@ -28,7 +28,7 @@ export async function updateMember(client: IDataService, id: number) {
             // we update the memberlist here
             const oldMember = JSON.parse(staleCacheData);
             if (oldMember.club !== newMember.club) {
-                await updateClub(client, oldMember.association, oldMember.club);
+                await updateClub(client, oldMember.club);
             }
         }
 
@@ -45,13 +45,16 @@ export async function updateMember(client: IDataService, id: number) {
             }
         }
 
-        const sqs = new xAWS.SQS();
-        await sqs.sendMessage({
-            QueueUrl: process.env.geocode_queue as string,
-            MessageBody: JSON.stringify(addresses),
-        }).promise();
+        const nonEmptyAdresses = addresses.filter((a) => a != null && a !== '');
+        if (nonEmptyAdresses.length > 0) {
+            const sqs = new xAWS.SQS();
+            await sqs.sendMessage({
+                QueueUrl: process.env.geocode_queue as string,
+                MessageBody: JSON.stringify(addresses),
+            }).promise();
+        }
 
         // member list could have changed
-        await updateClub(client, newMember.association, newMember.club);
+        await updateClub(client, newMember.club);
     }
 }

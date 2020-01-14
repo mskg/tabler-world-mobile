@@ -1,4 +1,4 @@
-import { RecordType } from "./RecordType";
+import { RecordType } from '../../shared/RecordType';
 
 export type ChangePointer = {
     id: string | number;

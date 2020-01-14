@@ -39,7 +39,7 @@ class AssociationsScreenBase extends AuditedScreen<Props, State> {
         const item: Associations_Associations = params.item;
 
         return (
-            <Card key={item.association} style={styles.card}>
+            <Card key={item.id} style={styles.card}>
 
                 <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                     <CachedImage
@@ -91,7 +91,7 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
     }
 
     _key = (item: Associations_Associations, _index: number) => {
-        return item.association;
+        return item.id;
     }
 
     render() {
@@ -113,9 +113,9 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                                 contentContainerStyle={styles.container}
                                 data={
                                     _(data != null ? data.Associations : [])
-                                        .orderBy((a) => (data != null && data.Me.association.association === a.association)
+                                        .orderBy((a) => (data != null && data.Me.association.id === a.id)
                                             ? 'aa'
-                                            : a.association)
+                                            : a.name)
                                         .toArray()
                                         .value()
                                 }

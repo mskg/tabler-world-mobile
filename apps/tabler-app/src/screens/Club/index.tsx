@@ -55,14 +55,14 @@ class ClubBase extends AuditedScreen<Props> {
 
         return (
             <ProfileHeader
-                avatar={club ?
+                avatar={club ? (
                     <AvatarPopup title={I18N.Image.Club} pic={club.logo}>
                         <AnimatedAvatar
-                            label={club.club}
+                            label={club.clubnumber}
                             source={club.logo}
                         />
                     </AvatarPopup>
-                    : undefined
+                ) : undefined
                 }
 
                 loading={club == null}

@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-core';
 import { Albums } from './Albums';
 import { Auth } from './Auth';
 import { Chat } from './Chat';
+import { Deprecated } from './Deprecated';
 import { Geo } from './Geo';
 import { Jobs } from './Jobs';
 import { Member } from './Member';
@@ -33,4 +34,5 @@ export const schema = [
     Geo,
     Parameters,
     Chat,
+    Deprecated,
 ];

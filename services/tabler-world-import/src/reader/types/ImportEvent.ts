@@ -1,7 +1,13 @@
-import { AnyOperationMode } from "./AnyOperationMode";
-import { AnyRecordType } from "./AnyRecordType";
+import { AnyJobType } from './AnyJobType';
+import { AnyOperationMode } from './AnyOperationMode';
 
 export type ImportEvent = {
-    type: AnyRecordType;
+    type: AnyJobType;
     mode: AnyOperationMode;
+
+    maxRecords?: number;
+    offset?: number;
+
+    noRefreshViews?: boolean;
+    noUpdateCache?: boolean;
 };

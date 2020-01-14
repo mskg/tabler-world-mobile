@@ -48,9 +48,9 @@ export class Predicates {
         };
     }
 
-    static sametable(club: number): Predicate {
+    static sametable(club: string): Predicate {
         return (member: IMemberOverviewFragment) => {
-            return member.club.club === club;
+            return member.club.id === club;
         };
     }
 

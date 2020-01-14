@@ -39,7 +39,7 @@ class MarkerBase extends React.Component<Props> {
             >
                 <Pin
                     color={this.props.theme.dark ? this.props.theme.colors.accent : ___DONT_USE_ME_DIRECTLY___COLOR_PIN}
-                    text={this.props.club.club.toString()}
+                    text={this.props.club.clubnumber.toString()}
                 />
 
                 {customCallout &&
@@ -56,7 +56,7 @@ class MarkerBase extends React.Component<Props> {
                         <ClubAvatar
                             theme={this.props.theme}
                             source={this.props.club.logo}
-                            label={this.props.club.club.toString()}
+                            label={this.props.club.clubnumber.toString()}
                             size={150}
                             style={{
                                 elevation: 0,

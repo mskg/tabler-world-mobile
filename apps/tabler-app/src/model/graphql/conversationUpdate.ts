@@ -20,6 +20,9 @@ export interface conversationUpdate_conversationUpdate_members_area {
 
 export interface conversationUpdate_conversationUpdate_members_association {
   __typename: "Association";
+  /**
+   * Deprecated, don't use
+   */
   association: string;
   name: string;
 }

@@ -12,7 +12,7 @@ export interface OfflineMembers_OwnTable_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface OfflineMembers_OwnTable_area {
@@ -23,14 +23,14 @@ export interface OfflineMembers_OwnTable_area {
 
 export interface OfflineMembers_OwnTable_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface OfflineMembers_OwnTable_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 
@@ -133,7 +133,7 @@ export interface OfflineMembers_FavoriteMembers_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface OfflineMembers_FavoriteMembers_area {
@@ -144,14 +144,14 @@ export interface OfflineMembers_FavoriteMembers_area {
 
 export interface OfflineMembers_FavoriteMembers_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface OfflineMembers_FavoriteMembers_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 

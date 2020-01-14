@@ -9,7 +9,7 @@
 export interface AreasFilter_Areas {
   __typename: "Area";
   id: string;
-  area: number;
+  shortname: string;
   name: string;
 }
 
