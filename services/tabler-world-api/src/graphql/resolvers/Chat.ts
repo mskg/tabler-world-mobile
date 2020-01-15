@@ -291,7 +291,7 @@ export const ChatResolver = {
         // tslint:disable-next-line: variable-name
         sendMessage: async (_root: {}, { message }: SendMessageArgs, context: IApolloContext) => {
             context.logger.log('sendMessage', message);
-            const principalId = 14648 || context.principal.id;
+            const principalId = context.principal.id;
 
             if (!checkChannelAccess(message.conversationId, principalId)) {
                 throw new Error('Access denied.');
