@@ -156,6 +156,7 @@ functions:
     handler: src/push.handler
     timeout: 60
     memorySize: 128
+    reservedConcurrency: 1
 
     events:
       - sqs:
