@@ -16,6 +16,10 @@ export const GetConversationQuery = gql`
           nextToken
         }
       }
+
+      Me {
+          id
+      }
     }
 
     ${ChatMessageFragment}

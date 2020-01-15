@@ -363,6 +363,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                         return (
                             <Chat
+                                userId={data && data.Me ? data.Me.id : -1}
+
                                 extraData={this.state.redraw}
                                 subscribe={
                                     // we need to create a function that is executed once

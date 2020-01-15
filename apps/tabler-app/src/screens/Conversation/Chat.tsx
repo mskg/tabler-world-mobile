@@ -29,6 +29,7 @@ function isPureEmojiString(text) {
 }
 
 type Props = {
+    userId: number,
     theme: Theme,
 
     extraData?: any,
@@ -77,7 +78,7 @@ class ChatBase extends React.Component<Props, State> {
                 textStyle={{
                     left: {
                         color: this.props.theme.colors.text,
-                    }
+                    },
                 }}
 
                 timeTextStyle={{
@@ -370,7 +371,7 @@ class ChatBase extends React.Component<Props, State> {
                 />
 
                 <FixedChat
-                    user={{ _id: 14225 }}
+                    user={{ _id: this.props.userId }}
                     bottomOffset={isIphoneX() ? 34 : 0}
 
                     // style={{ height: Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT }}

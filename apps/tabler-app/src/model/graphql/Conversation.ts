@@ -71,8 +71,14 @@ export interface Conversation_Conversation {
   messages: Conversation_Conversation_messages;
 }
 
+export interface Conversation_Me {
+  __typename: "Member";
+  id: number;
+}
+
 export interface Conversation {
   Conversation: Conversation_Conversation | null;
+  Me: Conversation_Me;
 }
 
 export interface ConversationVariables {
