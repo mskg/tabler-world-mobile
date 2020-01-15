@@ -267,11 +267,22 @@ select * from structure_clubs;
 
 select * from struc
 
-
+BEGIN;
 REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups;
 REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
 REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
 REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings;
 REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs;
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
 REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
+COMMIT;
+
+
+
+select lastname, u.*
+from usersettings u,
+profiles p
+where u.id = p.id
+
+
+select * from notification_receipts
