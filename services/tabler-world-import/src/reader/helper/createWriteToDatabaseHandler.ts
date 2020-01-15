@@ -17,10 +17,9 @@ import { JobType } from '../types/JobType';
 export const createWriteToDatabaseHandler = (client: IDataService, type: JobType): DataHandler => {
     return async (records: any[]): Promise<ChangePointer[]> => {
         console.log('Writing chunk of', records.length, type, 'records');
+        const changes: ChangePointer[] = [];
 
-        const inserts = await Promise.all(records.map(async (record) => {
-            // });
-
+        for (const record of records) {
             // for (const record of records) {
             let recordType: RecordType;
 
@@ -60,12 +59,10 @@ DO UPDATE
 
             if (result.rowCount === 1) {
                 console.log(id, 'modified');
-                return { id, type: recordType } as ChangePointer;
+                changes.push({ id, type: recordType });
             }
+        }
 
-            return null;
-        }));
-
-        return inserts.filter((i) => i != null) as ChangePointer[];
+        return changes;
     };
 };
