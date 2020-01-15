@@ -228,3 +228,50 @@ select distinct name
 from structure_associations
 
 @129
+
+
+select * from jobhistory
+order by runon desc
+
+
+select * from tabler
+where data->>'last_name'= 'Kling'
+
+select count(*) from tabler;
+
+select count(*) from groups;
+select count(*) from families;
+select count(*) from areas;
+select count(*) from associations;
+select count(*) from clubs;
+
+
+create table profile_backup
+as
+select
+    id,
+    rtemail
+from
+    profiles
+WHERE
+    rtemail is not null
+
+select board, boardAssistants
+from structure_clubs
+
+select * from profiles
+where lastname = 'Kling'
+
+
+select * from structure_clubs;
+
+select * from struc
+
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
