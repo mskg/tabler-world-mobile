@@ -1,10 +1,10 @@
-import { AuthPolicy, HttpVerb, lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
+import { AuthPolicy, HttpVerb, IPrincipal, lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
 import { withClient } from '@mskg/tabler-world-rds-client';
-import { CustomAuthorizerHandler } from 'aws-lambda';
+import { CustomAuthorizerEvent, CustomAuthorizerResult, Handler } from 'aws-lambda';
 import { isDemoKey } from './isDemoKey';
 
 // tslint:disable-next-line: export-name
-export const handler: CustomAuthorizerHandler = async (event, context) => {
+export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'Unauthorized'> = async (event, context) => {
     const token = event.authorizationToken;
     if (!token) {
         console.log('No token provided');
@@ -39,14 +39,23 @@ export const handler: CustomAuthorizerHandler = async (event, context) => {
         token);
 
     return await withClient(context, async (client) => {
+        let principal: IPrincipal;
+        try {
+            principal = await lookupPrincipal(client, email);
+        } catch (e) {
+            console.error(e);
+            return 'Unauthorized'; // should result in 401
+        }
+
         const policy = new AuthPolicy(principalId, awsAccountId, apiOptions);
+
         policy.allowMethod(HttpVerb.OPTIONS, '/graphql');
         policy.allowMethod(HttpVerb.GET, '/graphql');
         policy.allowMethod(HttpVerb.POST, '/graphql');
 
         const result = policy.build();
         result.context = {
-            ... await lookupPrincipal(client, email),
+            ...principal,
             principalId,
         };
 
