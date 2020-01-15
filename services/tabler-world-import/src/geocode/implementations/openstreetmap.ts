@@ -48,7 +48,7 @@ export async function openstreetmap(address: IAddress): Promise<NodeGeocoder.Ent
     }
 
     const result = await geocoder.geocode(thisops);
-    if (!result || result.length == 0) { return null; }
+    if (!result || result.length === 0) { return null; }
 
     return result[0];
 }

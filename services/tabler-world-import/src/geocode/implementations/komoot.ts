@@ -65,17 +65,17 @@ export async function komoot(address: IAddress): Promise<NodeGeocoder.Entry | nu
     api.maxTries = 1;
     api.waitTime = 5000;
 
-    const result: FeatureCollection = await api.callApi('/api/?' + querystring.encode(thisops));
+    const result: FeatureCollection = await api.callApi(`/api/?${querystring.encode(thisops)}`);
     console.log(JSON.stringify(result));
 
-    if (result == null || result.features == null || result.features.length == 0) {
+    if (result == null || result.features == null || result.features.length === 0) {
         return null;
     }
 
     const feature: Feature = result.features[0];
     const props = feature.properties || {};
 
-    if (feature.geometry.type == 'Point') {
+    if (feature.geometry.type === 'Point') {
         const geo = feature.geometry as Point;
 
         return {

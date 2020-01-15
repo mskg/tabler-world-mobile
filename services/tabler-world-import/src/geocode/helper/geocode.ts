@@ -1,10 +1,9 @@
-import { AsyncThrottle } from '@mskg/tabler-world-common';
 import { addressHash, addressToString, IAddress } from '@mskg/tabler-world-geo';
 import { IDataService } from '@mskg/tabler-world-rds-client';
-import { komoot } from '../implementations/komoot';
+import { getGeocoder } from '../implementations/getGeocoder';
 import { Result } from '../types/Result';
 
-const throtteledGeoImplementation = AsyncThrottle(komoot, 1500, 1);
+const geocoder = getGeocoder();
 
 export async function geocode(client: IDataService, address: IAddress): Promise<Result | undefined> {
     const md5 = addressHash(address);
@@ -26,7 +25,7 @@ from geocodes where hash = $1`,
 
     if (res.rows.length !== 1) {
         const hash = addressToString(address);
-        let encoded = await throtteledGeoImplementation(address);
+        let encoded = await geocoder(address);
         console.debug(md5, 'Result is', encoded);
 
         if (encoded == null && address.street2 != null) {
@@ -34,7 +33,7 @@ from geocodes where hash = $1`,
 
             // we try again with only line2
             delete address.street1;
-            encoded = await throtteledGeoImplementation(address);
+            encoded = await geocoder(address);
 
             console.debug(md5, 'Result is', encoded);
         }
@@ -57,7 +56,7 @@ from geocodes where hash = $1`,
                 latitude: encoded.latitude as number,
             };
     }
+
     console.debug(md5, 'Found cached result');
     return res.rows[0] as Result;
-
 }
