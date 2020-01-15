@@ -16,7 +16,7 @@ export async function importWorkflow(
     let processedRecords = 0;
     const modifications: ChangePointer[] = [];
 
-    const databaseWriter = createWriteToDatabaseHandler(client, type as JobType);
+    const databaseWriter = createWriteToDatabaseHandler(client, type);
 
     // tracks modifications and maintains global array of changed records
     const modificationTracker = async (data: any[]) => {

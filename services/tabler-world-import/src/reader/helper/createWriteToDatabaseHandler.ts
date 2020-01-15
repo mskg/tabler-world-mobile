@@ -1,11 +1,11 @@
 import { removeEmptySlots } from '@mskg/tabler-world-common';
 import { IDataService } from '@mskg/tabler-world-rds-client';
-import { RecordType } from '../../shared/RecordType';
 import { recordTypeToPrimaryKey } from '../database/recordTypeToPrimaryKey';
 import { typeToTable } from '../database/typeToTable';
 import { ChangePointer } from '../types/ChangePointer';
 import { DataHandler } from '../types/DataHandler';
 import { JobType } from '../types/JobType';
+import { determineRecordType } from './determineRecordType';
 
 /**
  * Returns a DataHandler that persists the given RecordType in our database.
@@ -17,28 +17,9 @@ import { JobType } from '../types/JobType';
 export const createWriteToDatabaseHandler = (client: IDataService, type: JobType): DataHandler => {
     return async (records: any[]): Promise<ChangePointer[]> => {
         console.log('Writing chunk of', records.length, type, 'records');
-        const changes: ChangePointer[] = [];
 
-        for (const record of records) {
-            // for (const record of records) {
-            let recordType: RecordType;
-
-            if (type === JobType.clubs) {
-                if (record.level === 2) {
-                    recordType = RecordType.area;
-                } else if (record.level === 3) {
-                    recordType = RecordType.association;
-                } else if (record.level === 4) {
-                    recordType = RecordType.family;
-                } else {
-                    recordType = RecordType.club;
-                }
-            } if (type === JobType.groups) {
-                recordType = RecordType.group;
-            } else {
-                recordType = RecordType.member;
-            }
-
+        const inserts = await Promise.all(records.map(async (record) => {
+            const recordType = determineRecordType(type, record);
             const pkFunction = recordTypeToPrimaryKey(recordType);
             const id = pkFunction(record);
             const table = typeToTable(recordType);
@@ -59,10 +40,12 @@ DO UPDATE
 
             if (result.rowCount === 1) {
                 console.log(id, 'modified');
-                changes.push({ id, type: recordType });
+                return { id, type: recordType } as ChangePointer;
             }
-        }
 
-        return changes;
+            return null;
+        }));
+
+        return inserts.filter((i) => i != null) as ChangePointer[];
     };
 };
