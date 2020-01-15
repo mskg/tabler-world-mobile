@@ -285,4 +285,47 @@ profiles p
 where u.id = p.id
 
 
+select * from usersettings
+
+
+update usersettings
+set tokens = ARRAY['ExponentPushToken[q_Bi7-BALwj6161xKUaY_Y]']
+where id = 14225
+
+
+select * from jobhistory
+order by runon desc
+
 select * from notification_receipts
+
+
+
+
+select * from structure_clubs
+where id = 'de_47'
+
+
+select id, removed, lastname, roles
+from profiles
+where id in (
+    9592, 9580, 9583, 9587, 9581, 9584
+)
+
+select
+    data->>'last_name' as lastname,
+    data->>'first_name' as firstname,
+    data->>'rt_club_name' as club,
+    data->>'rt_status'
+
+from tabler
+where data->>'permission_level' = 'limit_access'
+and id in (
+    select id
+    from structure_tabler_roles tr
+    where
+        tr.id = tabler.id
+    and (
+    			function in (4306) -- member, honorary
+    	)
+)
+order by 3, 1

@@ -95,10 +95,12 @@ select
         select array_to_json(array_agg(r))
         from
         (
-            select id as member, functionname as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    reftype = 'club'
+                    profiles.id = structure_tabler_roles.id
+                and removed = false
+                and reftype = 'club'
                 and refid = clubs.id
                 and groupname = 'Board'
         ) r
@@ -107,10 +109,12 @@ select
         select array_to_json(array_agg(r))
         from
         (
-            select id as member, functionname as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    reftype = 'club'
+                    profiles.id = structure_tabler_roles.id
+                and removed = false
+                and reftype = 'club'
                 and refid = clubs.id
                 and groupname = 'Board Assistants'
         ) r
@@ -121,10 +125,12 @@ select
         where
             removed = false
             and id in (
-                select id
-                from structure_tabler_roles
+                select structure_tabler_roles.id
+                from structure_tabler_roles, profiles
                 where
-                    reftype = 'club'
+                    profiles.id = structure_tabler_roles.id
+                and removed = false
+                and reftype = 'club'
                 and refid = clubs.id
                 and groupname = 'Members'
                 and functionname = 'Member'
@@ -156,10 +162,12 @@ select
         select array_to_json(array_agg(r))
         from
         (
-            select id as member, functionname as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    reftype = 'area'
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'area'
                 and refid = areas.id
                 and groupname = 'Board'
         ) r
@@ -191,10 +199,12 @@ select
         select array_to_json(array_agg(r))
         from
         (
-            select id as member, functionname as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    reftype = 'assoc'
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'assoc'
                 and refid = associations.id
                 and groupname = 'Board'
         ) r
@@ -203,10 +213,12 @@ select
         select array_to_json(array_agg(r))
         from
         (
-            select id as member, functionname as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    reftype = 'assoc'
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'assoc'
                 and refid = associations.id
                 and groupname = 'Board Assistants'
         ) r
