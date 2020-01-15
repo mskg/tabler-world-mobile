@@ -40,6 +40,14 @@ export const StructureResolver = {
         areas: async (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.structure.allAreas(root.association);
         },
+
+        board: (root: any, _args: any, _context: IApolloContext) => {
+            return root.board || [];
+        },
+
+        boardassistants: (root: any, _args: any, _context: IApolloContext) => {
+            return root.boardassistants || [];
+        },
     },
 
     Club: {
@@ -84,6 +92,10 @@ export const StructureResolver = {
                 root.club || root.id,
             );
         },
+
+        board: (root: any, _args: any, _context: IApolloContext) => {
+            return root.board || [];
+        },
     },
 
     ClubInfo: {
@@ -127,6 +139,10 @@ export const StructureResolver = {
 
         association: (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.structure.getAssociation(root.association);
+        },
+
+        board: (root: any, _args: any, _context: IApolloContext) => {
+            return root.board || [];
         },
     },
 };
