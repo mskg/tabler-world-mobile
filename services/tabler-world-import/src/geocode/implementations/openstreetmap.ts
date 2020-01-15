@@ -2,7 +2,7 @@ import { IAddress } from '@mskg/tabler-world-geo';
 import NodeGeocoder from 'node-geocoder';
 
 // tslint:disable-next-line: no-var-requires
-const version = require('../../package.json');
+const version = require('../../../package.json');
 // tslint:disable-next-line: no-var-requires
 const HttpsAdapter = require('node-geocoder/lib/httpadapter/httpsadapter');
 
