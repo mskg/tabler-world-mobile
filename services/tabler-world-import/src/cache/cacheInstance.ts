@@ -7,4 +7,5 @@ export const cacheInstance = new DynamoDBCache(
     {
         tableName: process.env.cache_table as string,
     },
+    process.env.cache_version,
 );

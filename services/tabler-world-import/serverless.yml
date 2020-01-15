@@ -21,6 +21,7 @@ custom:
 
   email: ${env:ALERT_EMAIL}
   cache_table: tabler-world-cache-${self:custom.stage}
+  cache_version: '1.3#v1'
   sqs: ${self:service}-cacheupdates-${self:custom.stage}
   sqs_geo: ${self:service}-geocode-${self:custom.stage}
 
@@ -404,6 +405,13 @@ resources:
           - Arn
       Export:
         Name: CacheTableArn-${self:custom.stage}
+
+    CacheVersion:
+      Value:
+        ${self:custom.cache_version}
+
+      Export:
+        Name: CacheVersion-${self:custom.stage}
 
     CacheTableName:
       Value:

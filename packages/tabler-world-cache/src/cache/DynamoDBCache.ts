@@ -14,6 +14,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             tableName: AWS.DynamoDB.TableName,
             ttl?: number,
         },
+        private version?: string,
     ) {
         this.client = new DocumentClient(serviceConfigOptions);
     }
@@ -45,7 +46,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             await this.client
                 .put({
                     TableName: this.tableOptions.tableName,
-                    Item: this.addTTL(
+                    Item: this.addTTLAndVersion(
                         {
                             id,
                             data,
@@ -67,7 +68,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                     [this.tableOptions.tableName]:
                         c.map((d) => ({
                             PutRequest: {
-                                Item: this.addTTL(
+                                Item: this.addTTLAndVersion(
                                     {
                                         id: d.id,
                                         data: d.data,
@@ -115,7 +116,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             if (chunkResult.Responses && chunkResult.Responses[this.tableOptions.tableName]) {
                 chunkResult.Responses[this.tableOptions.tableName].reduce(
                     (p, c) => {
-                        if (this.checkTTL(c as any)) {
+                        if (this.checkTTLAndVersion(c as any)) {
                             p[c.id] = c.data;
                         }
 
@@ -181,7 +182,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             reply.Items[0]
         ) {
             const item = reply.Items[0];
-            if (this.checkTTL(item as any)) {
+            if (this.checkTTLAndVersion(item as any)) {
                 if ((item.data as string).startsWith('chunks:')) {
                     const count = parseInt(item.data.substr('chunks:'.length), 10);
                     console.log('[DynamoDBCache] found chunk', id, item.data, count);
@@ -207,7 +208,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         return undefined;
     }
 
-    private addTTL(t: any, options?: ICacheOptions): any {
+    private addTTLAndVersion(t: any, options?: ICacheOptions): any {
         const ttl = options && options.ttl != null
             ? options.ttl
             : (this.tableOptions.ttl || 0);
@@ -216,15 +217,24 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             console.log(
                 '[DynamoDBCache] item', t.id, 'valid for',
                 Math.round(ttl / 60 / 60 * 100) / 100,
-                'h');
+                'h', 'version', this.version);
 
             t.ttl = Math.floor(Date.now() / 1000) + ttl;
+        }
+
+        if (this.version != null) {
+            t.version = this.version;
         }
 
         return t;
     }
 
-    private checkTTL({ ttl, id }: { id: string, ttl?: number }): boolean {
+    private checkTTLAndVersion({ ttl, id, version }: { id: string, ttl?: number, version?: string }): boolean {
+        if (this.version && this.version !== version) {
+            console.log('[DynamoDBCache] item', id, 'version different');
+            return false;
+        }
+
         // never expires
         if (ttl === 0 || ttl == null) {
             console.log('[DynamoDBCache] item', id, 'never expires.');
@@ -235,6 +245,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             console.log('[DynamoDBCache] item', id, 'was expired.');
             return false;
         }
+
         console.log(
             '[DynamoDBCache] item', id, 'valid for',
             Math.round((ttl - Math.floor(Date.now() / 1000)) / 60 / 60 * 100) / 100,
