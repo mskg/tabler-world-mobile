@@ -4,20 +4,21 @@ import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { Context } from 'aws-lambda';
 import { CONFIGURATIONS } from './Configurations';
 import { continueExecution } from './helper/continueExecution';
+import { gunzipAsync } from './helper/gzip';
 import { importWorkflow } from './helper/importWorkflow';
 import { pushCacheUpdates } from './helper/pushCacheUpdates';
 import { refreshViews } from './helper/refreshViews';
 import { validateImportEvent } from './helper/validateImportEvent';
 import { AnyOperationMode } from './types/AnyOperationMode';
 import { ChangePointer } from './types/ChangePointer';
-import { ContinueEvent } from './types/ContinueEvent';
+import { CompressedContinueEvent, ContinueEvent } from './types/ContinueEvent';
 import { ImportEvent } from './types/ImportEvent';
 import { JobType } from './types/JobType';
 import { OperationMode } from './types/OperationMode';
 
 // tslint:disable: max-func-body-length
 // tslint:disable: export-name
-export async function handler(rawEvent: ImportEvent | ContinueEvent, context: Context, callback: (error: any, success?: any) => void) {
+export async function handler(rawEvent: ImportEvent | ContinueEvent | CompressedContinueEvent, context: Context, callback: (error: any, success?: any) => void) {
     let importEvent: ImportEvent;
 
     const allModifications: ChangePointer[] = [];
@@ -25,14 +26,21 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent, context: Co
     let totalTime = 0;
     let totalRecursion = 0;
 
-    if (rawEvent.type === 'continue') {
-        // we initialize from existing time
-        importEvent = rawEvent.event;
+    if (rawEvent.type === 'continue' || rawEvent.type === 'c') {
+        let continueEvent: ContinueEvent = rawEvent as ContinueEvent;
 
-        allModifications.push(...rawEvent.changes);
-        totalProcessedRecords += rawEvent.log.records;
-        totalTime = rawEvent.log.elapsedTime;
-        totalRecursion = rawEvent.log.calls;
+        if (rawEvent.type === 'c') {
+            const data = await gunzipAsync(Buffer.from(rawEvent.d));
+            continueEvent = JSON.parse(data.toString('utf-8'));
+        }
+
+        // we initialize from existing time
+        importEvent = continueEvent.event;
+
+        allModifications.push(...continueEvent.changes);
+        totalProcessedRecords += continueEvent.log.records;
+        totalTime = continueEvent.log.elapsedTime;
+        totalRecursion = continueEvent.log.calls;
     } else {
         importEvent = rawEvent;
     }

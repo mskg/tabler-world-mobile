@@ -214,9 +214,10 @@ functions:
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
-              mode: full
-              type: clubs
-              offset: 0
+            mode: full
+            type: clubs
+            offset: 0
+            maxRecords: 5000
 
       - schedule:
           name: ${self:service}-groups-${self:custom.stage}
