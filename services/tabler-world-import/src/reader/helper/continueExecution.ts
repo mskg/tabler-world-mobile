@@ -27,7 +27,7 @@ export async function continueExecution(val: ContinueEvent): Promise<void> {
                 : process.env.readerservice_arn as string,
 
         InvocationType: 'Event',
-        Payload: JSON.stringify({ type: 'c', d: data.toString('utf-8') }),
+        Payload: JSON.stringify({ type: 'c', d: data.toString('binary') }),
     };
 
     // const result =

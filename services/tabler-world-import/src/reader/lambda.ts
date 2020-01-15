@@ -30,8 +30,8 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
         let continueEvent: ContinueEvent = rawEvent as ContinueEvent;
 
         if (rawEvent.type === 'c') {
-            const data = await gunzipAsync(Buffer.from(rawEvent.d));
-            continueEvent = JSON.parse(data.toString('utf-8'));
+            const data = await gunzipAsync(Buffer.from(rawEvent.d, 'binary'));
+            continueEvent = JSON.parse(data.toString());
         }
 
         // we initialize from existing time
