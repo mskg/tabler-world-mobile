@@ -201,7 +201,26 @@ where
      * Currently this limits the result to only the current organization of the user
      */
     public async allAssociations() {
-        return [await this.getAssociation(this.context.principal.association)];
+        return await writeThrough(
+            this.context,
+            makeCacheKey('Structure', ['associations', 'all']),
+            async () => await useDataService(
+                this.context,
+                async (client) => {
+                    this.context.logger.log('DB reading allAssociations');
+
+                    const res = await client.query(`
+select *
+from structure_associations
+`);
+
+                    return res.rows;
+                },
+            ),
+            'StructureOverview',
+        );
+
+        // return [await this.getAssociation(this.context.principal.association)];
     }
 
     public async getAssociation(assoc: string) {

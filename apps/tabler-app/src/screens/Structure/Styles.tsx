@@ -85,6 +85,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 16,
         overflow: 'hidden',
         borderRadius: 8,
+        marginTop: 8,
     },
 
     accordeon: {

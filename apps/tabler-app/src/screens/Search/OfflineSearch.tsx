@@ -61,9 +61,10 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                 if (data && data.OwnTable) { finalResult.push(...data.OwnTable); }
                 if (data && data.FavoriteMembers) { finalResult.push(...data.FavoriteMembers); }
 
-                const roles = this.props.filterTags.filter(r => r.type === 'role').reduce((p, v) => { p[v.value] = true; return p; }, {});
-                const tables = this.props.filterTags.filter(r => r.type === 'table').reduce((p, v) => { p[v.value] = true; return p; }, {});
-                const areas = this.props.filterTags.filter(r => r.type === 'area').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const roles = this.props.filterTags.filter((r) => r.type === 'role').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const tables = this.props.filterTags.filter((r) => r.type === 'table').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const areas = this.props.filterTags.filter((r) => r.type === 'area').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const associations = this.props.filterTags.filter((r) => r.type === 'association').reduce((p, v) => { p[v.value] = true; return p; }, {});
 
                 // const newData = result
                 const predicate = Predicates.and(
@@ -71,6 +72,7 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                     Object.keys(roles).length > 0 ? Predicates.role(roles) : null,
                     Object.keys(tables).length > 0 ? Predicates.table(tables) : null,
                     Object.keys(areas).length > 0 ? Predicates.area(areas) : null,
+                    Object.keys(associations).length > 0 ? Predicates.association(associations) : null,
                 );
 
                 return _(finalResult)

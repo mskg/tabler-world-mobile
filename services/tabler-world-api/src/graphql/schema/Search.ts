@@ -8,6 +8,8 @@ export const SearchMember = gql`
 
         sectors: [CompanySector!]
         roles: [String!]
+
+        associations: [String!]
         areas: [String!]
         clubs: [String!]
     }

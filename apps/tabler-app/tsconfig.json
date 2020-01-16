@@ -26,7 +26,8 @@
                 "name": "typescript-tslint-plugin",
                 "configFile": "./tslint.json"
             }
-        ]
+        ],
+        "strict": true,
     },
     "include": [
         "App.ts",

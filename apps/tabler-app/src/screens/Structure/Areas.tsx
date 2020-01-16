@@ -27,6 +27,20 @@ type Props = {
     fetchPolicy?: any,
 };
 
+/**
+ * Normally the districts are numbered from 1...
+ * If this is the case, we sort by that value.
+ * @param shortname 
+ */
+function getSortKey(shortname: string) {
+    const nbrs = shortname.replace(/[^0-9]/ig, '');
+    if (nbrs != null) {
+        return parseInt(nbrs, 10);
+    }
+
+    return shortname;
+}
+
 class AreasScreenBase extends AuditedScreen<Props, State> {
 
     constructor(props) {
@@ -81,7 +95,7 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
                                 data={
                                     _(data != null ? data.Areas : [])
                                         // my own area goes on top
-                                        .orderBy((a) => (data != null && data.Me.area.id === a.id) ? 'a' : a.shortname)
+                                        .orderBy((a) => (data != null && data.Me.area.id === a.id) ? -1 : getSortKey(a.shortname))
                                         .toArray()
                                         .value()
                                 }

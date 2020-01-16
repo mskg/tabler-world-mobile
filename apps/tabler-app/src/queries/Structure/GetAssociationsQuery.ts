@@ -6,6 +6,7 @@ export const GetAssociationsQuery = gql`
     Associations {
         id
         name
+        logo
 
         board {
             role

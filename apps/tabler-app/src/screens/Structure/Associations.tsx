@@ -35,27 +35,28 @@ class AssociationsScreenBase extends AuditedScreen<Props, State> {
         super(props, AuditScreenName.Associations);
     }
 
-    _renderItem = (params) => {
-        const item: Associations_Associations = params.item;
-
+    _renderItem = ({ item, index }: { item: Associations_Associations, index: number }) => {
         return (
             <Card key={item.id} style={styles.card}>
 
-                <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
-                    <CachedImage
-                        style={styles.image}
-                        cacheGroup="club"
-                        uri="https://www.round-table.de/theme/public/assets/frontend/img/logo.png"
-                    />
-                </View>
+                {item.logo && (
+                    <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
+                        <CachedImage
+                            style={styles.image}
+                            cacheGroup="club"
+                            uri={item.logo}
+                        />
+                    </View>
+                )}
 
                 <Card.Title
                     title={item.name}
                 />
 
-                <Card.Content>
-                    <Paragraph>
-                        {`LEBENSFREUNDE
+                {item.id === 'de' && (
+                    <Card.Content>
+                        <Paragraph>
+                            {`LEBENSFREUNDE
 
 Tabler sind Freunde des Lebens. Sie leben gern und sind sich bewusst, dass es vielen nicht so gut geht. Sie möchten ihre Lebensfreude teilen mit jenen, die nicht so viel Glück hatten oder haben.
 
@@ -64,26 +65,27 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
 #weilwirdasmachen
 #lebensfreunde
 #tableraufreisen`}
-                    </Paragraph>
-                </Card.Content>
+                        </Paragraph>
+                    </Card.Content>
+                )}
 
-                {item.board.length > 0 &&
-                    <Accordion style={styles.accordeon} title={I18N.Structure.president} expanded={true}>
-                        <RoleAvatarGrid roles={item.board.filter(r => r.role == RoleNames.President)} items={1} />
+                {item.board.length > 0 && (
+                    <Accordion style={styles.accordeon} title={I18N.Structure.president} expanded={index === 0}>
+                        <RoleAvatarGrid roles={item.board.filter((r) => r.role === RoleNames.President)} items={1} />
                     </Accordion>
-                }
+                )}
 
-                {item.board.length > 0 &&
+                {item.board.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Structure.board} expanded={false}>
-                        <RoleAvatarGrid roles={item.board.filter(r => r.role !== RoleNames.President)} items={2} />
+                        <RoleAvatarGrid roles={item.board.filter((r) => r.role !== RoleNames.President)} items={2} />
                     </Accordion>
-                }
+                )}
 
-                {item.boardassistants.length > 0 &&
+                {item.boardassistants.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Structure.assist} expanded={false}>
                         <RoleAvatarGrid roles={item.boardassistants} items={2} />
                     </Accordion>
-                }
+                )}
 
                 <View style={styles.bottom} />
             </Card>
@@ -113,9 +115,12 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                                 contentContainerStyle={styles.container}
                                 data={
                                     _(data != null ? data.Associations : [])
-                                        .orderBy((a) => (data != null && data.Me.association.id === a.id)
-                                            ? 'aa'
-                                            : a.name)
+                                        .sortBy(
+                                            (a) => (data != null && data.Me.association.id === a.id)
+                                                ? '0'
+                                                : a.name,
+                                        )
+                                        .take(1)
                                         .toArray()
                                         .value()
                                 }

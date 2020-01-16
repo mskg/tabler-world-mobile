@@ -194,6 +194,10 @@ select
     id
     ,data->>'parent_subdomain' as family
     ,data->>'name' as name
+    ,case
+        when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
+        else data->>'logo'
+     end as logo
     ,make_short_reference('assoc', id) as shortname
    ,(
         select array_to_json(array_agg(r))

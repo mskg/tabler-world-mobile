@@ -43,6 +43,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                     text: this.props.query,
                     availableForChat: this.props.availableForChat,
                     after: null,
+                    associations: this.props.filterTags.filter((f: FilterTag) => f.type === 'association').map((f: FilterTag) => f.value),
                     areas: this.props.filterTags.filter((f: FilterTag) => f.type === 'area').map((f: FilterTag) => f.value),
                     clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
                     roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),
@@ -72,6 +73,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                     variables: {
                                         text: this.props.query,
                                         after: result ? result.pageInfo.endCursor : null,
+                                        associations: this.props.filterTags.filter((f: FilterTag) => f.type === 'association').map((f: FilterTag) => f.value),
                                         areas: this.props.filterTags.filter((f: FilterTag) => f.type === 'area').map((f: FilterTag) => f.value),
                                         clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
                                         roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),

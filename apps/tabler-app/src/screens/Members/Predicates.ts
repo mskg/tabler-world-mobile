@@ -60,6 +60,12 @@ export class Predicates {
         };
     }
 
+    static association(associations: HashMap<boolean, string> | null): Predicate {
+        return (member) => {
+            return associations == null || associations[member.association.name] === true;
+        };
+    }
+
     static associationBoard(): Predicate {
         return (member) => {
             return member.roles != null && member.roles.find((r) => r.ref.type === 'assoc') != null;

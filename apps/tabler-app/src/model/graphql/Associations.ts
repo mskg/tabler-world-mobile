@@ -38,6 +38,7 @@ export interface Associations_Associations {
   __typename: "Association";
   id: string;
   name: string;
+  logo: string | null;
   board: Associations_Associations_board[];
   boardassistants: Associations_Associations_boardassistants[];
 }

@@ -1,10 +1,25 @@
 import { addressHash } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
+import { sortBy } from 'lodash';
 import { IApolloContext } from '../types/IApolloContext';
 
 type ById = {
     id: string,
 };
+
+type ByAssociation = {
+    association: string,
+};
+
+function getSortKey(shortname: string) {
+    const nbrs = shortname.replace(/[^0-9]/ig, '');
+    if (nbrs != null) {
+        return parseInt(nbrs, 10);
+    }
+
+    return shortname;
+}
+
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
@@ -15,14 +30,15 @@ export const StructureResolver = {
             return context.dataSources.structure.allAssociations();
         },
 
-        Clubs: (_root: any, _args: any, context: IApolloContext) => {
+        Clubs: (_root: any, args: ByAssociation, context: IApolloContext) => {
             context.logger.log('Clubs');
-            return context.dataSources.structure.allClubs(context.principal.association);
+            return context.dataSources.structure.allClubs(args.association || context.principal.association);
         },
 
-        Areas: (_root: any, _args: any, context: IApolloContext) => {
+        Areas: async (_root: any, args: ByAssociation, context: IApolloContext) => {
             context.logger.log('Areas');
-            return context.dataSources.structure.allAreas(context.principal.association);
+            const areas = await context.dataSources.structure.allAreas(args.association || context.principal.association);
+            return sortBy(areas, (a) => getSortKey(a.shortname));
         },
 
         Club: (_root: any, args: ById, context: IApolloContext) => {

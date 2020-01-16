@@ -5,6 +5,7 @@ export const SearchMemberQuery = gql`
     query SearchMember (
             $text: String!,
             $after: String,
+            $associations: [String!],
             $areas: [String!],
             $roles: [String!],
             $clubs: [String!],
@@ -13,6 +14,7 @@ export const SearchMemberQuery = gql`
         ) {
         SearchMember(query: {
             text: $text,
+            associations: $associations,
             areas: $areas,
             roles: $roles,
             clubs: $clubs,

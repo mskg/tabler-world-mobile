@@ -11,6 +11,7 @@ type SearchInput = {
         text: string,
         availableForChat: boolean,
 
+        associations: string[],
         roles: string[],
         areas: string[],
         clubs: string[],
@@ -67,6 +68,11 @@ export const SearchMemberResolver = {
         or  f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
 )`,
                 );
+            }
+
+            if (args.query.associations != null && args.query.associations.length > 0) {
+                parameters.push(args.query.associations);
+                filters.push(`associationname = ANY ($${parameters.length})`);
             }
 
             if (args.query.areas != null && args.query.areas.length > 0) {

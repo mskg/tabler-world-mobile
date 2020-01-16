@@ -39,7 +39,7 @@ class PinBase extends React.PureComponent<Props> {
                 />
                 <Text
                     fontSize="157px"
-                    fontFamily={this.props.theme.fonts.medium}
+                    // fontFamily={this.props.theme.fonts.medium}
                     fill={this.props.textColor || this.props.theme.colors.surface}
                     transform={
                         this.props.text.length === 1

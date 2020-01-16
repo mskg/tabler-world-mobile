@@ -32,9 +32,9 @@ export const cache = new InMemoryCache({
                 if (object.name == null) return defaultDataIdFromObject(object);
                 return `${object.__typename}:${object.name}`;
 
-            case 'Association':
-                if (object.association == null) return defaultDataIdFromObject(object);
-                return `${object.__typename}:${object.association}`;
+            // case 'Association':
+            //     if (object.association == null) return defaultDataIdFromObject(object);
+            //     return `${object.__typename}:${object.association}`;
 
             default:
                 return defaultDataIdFromObject(object); // fall back to default handling

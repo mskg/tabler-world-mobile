@@ -322,7 +322,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     <Element
                                         theme={this.props.theme}
                                         field={I18N.Settings.fields.pushtoken}
-                                        text={this.state.token || '-'} />
+                                        text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
+                                    />
                                     <Divider />
                                 </>
                             )}

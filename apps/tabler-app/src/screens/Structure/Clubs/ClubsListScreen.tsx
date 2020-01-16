@@ -122,9 +122,9 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         ].filter(Boolean);
     }
 
-    _sortResults = (myClub: number) => (c: Clubs_Clubs): any => {
+    _sortResults = (id: string) => (c: Clubs_Clubs): any => {
         // myClub goes on top
-        return myClub === c.clubnumber
+        return id === c.id
             ? 0
             : c
                 ? c.clubnumber
@@ -138,7 +138,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
             text,
             undefined,
             data && data.Me
-                ? this._sortResults(data.Me.club.clubnumber)
+                ? this._sortResults(data.Me.club.id)
                 : undefined,
         );
     }

@@ -299,7 +299,11 @@ order by runon desc
 select * from notification_receipts
 
 
+select * from associations
+where data->>'name' ilike '%germany%'
 
+
+select * from areas
 
 select * from structure_clubs
 where id = 'de_47'

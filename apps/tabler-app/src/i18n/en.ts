@@ -246,6 +246,7 @@ const en = {
 
         results: (r) => r > 0 ? `Search results (${r})` : 'Search results',
 
+        associations: (r) => r > 0 ? `Associations (${r})` : 'Associations',
         roles: (r) => r > 0 ? `Roles (${r})` : 'Roles',
         areas: (r) => r > 0 ? `Areas (${r})` : 'Areas',
         tables: (r) => r > 0 ? `Tables (${r})` : 'Tables',

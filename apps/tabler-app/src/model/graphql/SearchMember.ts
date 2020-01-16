@@ -73,6 +73,7 @@ export interface SearchMember {
 export interface SearchMemberVariables {
   text: string;
   after?: string | null;
+  associations?: string[] | null;
   areas?: string[] | null;
   roles?: string[] | null;
   clubs?: string[] | null;

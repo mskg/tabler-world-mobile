@@ -1,4 +1,4 @@
-import { debounce, orderBy, remove, sortBy, values } from 'lodash';
+import { debounce, remove, sortBy, values } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Modal, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { MetricNames } from '../../analytics/MetricNames';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { FilterSection, FilterTag, FilterTagType } from '../../components/FilterSection';
 import { StandardHeader } from '../../components/Header';
@@ -16,12 +17,15 @@ import { MemberListItem } from '../../components/Member/MemberListItem';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
+import { AssociationsAndRolesFilters } from '../../model/graphql/AssociationsAndRolesFilters';
+import { Me } from '../../model/graphql/Me';
 import { IAppState } from '../../model/IAppState';
-import { GetFiltersQuery } from '../../queries/Search/GetFiltersQuery';
+import { GetMeQuery } from '../../queries/Member/GetMeQuery';
+import { GetAssociationsAndRolesFiltersQuery } from '../../queries/Search/GetAssociationsAndRolesFiltersQuery';
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
+import { AssociationFilters } from './AssociationFilters';
 import { logger } from './logger';
 import { LRU } from './LRU';
 import { OfflineSearchQuery } from './OfflineSearch';
@@ -86,6 +90,23 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                 }
             });
         }
+
+        try {
+            const client = cachedAolloClient();
+            const me = client.readQuery<Me>({
+                query: GetMeQuery,
+            });
+
+            if (me?.Me.association.name != null) {
+                this.state.filterTags.push({
+                    type: 'association',
+                    value: me?.Me.association.name,
+                    id: me?.Me.association.id,
+                });
+            }
+            // tslint:disable-next-line: no-empty
+        } catch { }
+
 
         logger.debug('Logged');
         this.audit.submit();
@@ -162,7 +183,19 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         // );
     }
 
-    _onToggleTag = (type: FilterTagType, value: string) => {
+    _onToggleAsssociation = (type: FilterTagType, value: string, id?: string) => {
+        const tags = this._onToggleTag(type, value, id, false);
+
+        const association = tags.filter((t) => t.type === 'association');
+
+        if (association.length > 0 || association.length === 0) {
+            remove(tags, (f: FilterTag) => f.type === 'area' || f.type === 'table');
+        }
+
+        this._adjustSearch(this.state.query, tags);
+    }
+
+    _onToggleTag = (type: FilterTagType, value: string, id?: string, refresh = true): FilterTag[] => {
         logger.debug('toggle', type, value);
 
         // @ts-ignore range is supported
@@ -174,10 +207,15 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             tags.push({
                 type,
                 value,
+                id,
             });
         }
 
-        this._adjustSearch(this.state.query, tags);
+        if (refresh) {
+            this._adjustSearch(this.state.query, tags);
+        }
+
+        return tags;
     }
 
     _showFilterDialog = () => {
@@ -273,20 +311,35 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                             </View>
                             <ScrollView style={{ minHeight: '100%' }}>
                                 <Divider />
-                                <Query<Filters> query={GetFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
+                                <Query<AssociationsAndRolesFilters> query={GetAssociationsAndRolesFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
                                     {({ data, error }) => {
                                         // ok for now
                                         if (error) return null;
 
                                         if (data == null
+                                            || data.Associations == null
                                             || data.Roles == null
-                                            || data.Areas == null
-                                            || data.Clubs == null) {
+                                        ) {
                                             return (<View style={{ marginHorizontal: 16 }}><InlineLoading /></View>);
                                         }
 
                                         return (
                                             <>
+                                                <FilterSection
+                                                    title={I18N.Search.associations(data.Associations.length)}
+                                                    type="association"
+                                                    filter={this.state.filterTags}
+                                                    data={data.Associations}
+                                                    onToggle={this._onToggleAsssociation}
+                                                    theme={this.props.theme}
+                                                />
+                                                <Divider />
+
+                                                <AssociationFilters
+                                                    filterTags={this.state.filterTags}
+                                                    toggleTag={this._onToggleTag}
+                                                />
+
                                                 <FilterSection
                                                     title={I18N.Search.roles(data.Roles.length)}
                                                     type="role"
@@ -295,31 +348,8 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
                                                 />
-
                                                 <Divider />
-                                                <FilterSection
-                                                    title={I18N.Search.areas(data.Areas.length)}
-                                                    type="area"
-                                                    filter={this.state.filterTags}
-                                                    data={data.Areas.map(a => a.name)}
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
 
-                                                <Divider />
-                                                <FilterSection
-                                                    title={I18N.Search.tables(data.Clubs.length)}
-                                                    type="table"
-                                                    filter={this.state.filterTags}
-                                                    data={
-                                                        orderBy(data.Clubs, (a: Filters_Clubs) => a.name.substring(a.name.indexOf(' ')))
-                                                            .map((a) => a.name)
-                                                    }
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-
-                                                <Divider />
                                                 <FilterSection
                                                     title={I18N.Search.sectors(Object.keys(I18N.Search.sectorNames).length)}
                                                     type="sector"
@@ -328,12 +358,11 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                                     onToggle={this._onToggleTag}
                                                     theme={this.props.theme}
                                                 />
+                                                <Divider />
                                             </>
                                         );
                                     }}
                                 </Query>
-
-                                <Divider />
                             </ScrollView>
                         </List.Section>
                     </View>
