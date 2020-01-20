@@ -25,24 +25,29 @@ function getSortKey(shortname: string) {
 // tslint:disable: variable-name
 export const StructureResolver = {
     Query: {
-        Associations: (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log('Associations');
+        Associations: async (_root: any, args: ById, context: IApolloContext) => {
+            context.logger.log('Associations', args);
+
+            if (args != null && args.id != null) {
+                return [await context.dataSources.structure.getAssociation(args.id)];
+            }
+
             return context.dataSources.structure.allAssociations();
         },
 
         Clubs: (_root: any, args: ByAssociation, context: IApolloContext) => {
-            context.logger.log('Clubs');
+            context.logger.log('Clubs', args);
             return context.dataSources.structure.allClubs(args.association || context.principal.association);
         },
 
         Areas: async (_root: any, args: ByAssociation, context: IApolloContext) => {
-            context.logger.log('Areas');
+            context.logger.log('Areas', args);
             const areas = await context.dataSources.structure.allAreas(args.association || context.principal.association);
             return sortBy(areas, (a) => getSortKey(a.shortname));
         },
 
         Club: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Club', args.id);
+            context.logger.log('Club', args);
             return context.dataSources.structure.getClub(args.id);
         },
     },

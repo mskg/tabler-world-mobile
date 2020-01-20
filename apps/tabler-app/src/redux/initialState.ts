@@ -41,6 +41,9 @@ export const INITIAL_STATE: IAppState = {
 
         darkMode: false,
         optOutAnalytics: false,
+
+        notificationsBirthdays: true,
+        notificationsOneToOneChat: true,
     },
 
     filter: {

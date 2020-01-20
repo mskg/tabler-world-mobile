@@ -85,7 +85,7 @@ const de: I18NType = {
     },
 
     Structure: {
-        title: 'Verzeichnis',
+        title: 'Meine Assoziation',
         associations: 'Assoziatio...',
         clubs: 'Tische',
         areas: 'Distrikte',
@@ -248,6 +248,7 @@ const de: I18NType = {
 
         results: (r) => r > 0 ? `Ergebnisse (${r})` : 'Ergebnisse',
 
+        associations: (r) => r > 0 ? `Assoziationen (${r})` : 'Assoziationen',
         roles: (r) => r > 0 ? `Rollen (${r})` : 'Rollen',
         areas: (r) => r > 0 ? `Distrikte (${r})` : 'Distrikte',
         tables: (r) => r > 0 ? `Tische (${r})` : 'Tische',
@@ -386,6 +387,7 @@ const de: I18NType = {
             displayOrder: 'Anzeige',
             experiments: 'Alben und Neuigkeiten',
             nearby: 'Mitglieder in der Nähe',
+            notifications: 'Benachrichtigungen',
         },
 
         ReleaseNotes: 'Versionshinweise (Englisch)',
@@ -440,6 +442,26 @@ const de: I18NType = {
         birthday: {
             title: 'Geburtstagszeit...',
             text: (n) => `Gratuliere ${n}, damit es ein großartiger Tag wird.`,
+        },
+
+        chatDisabled: {
+            text: 'Du hast die Benachrichtigungen für Unterhaltungen deaktiviert. Du bist nicht für andere Mitglieder sichtbar und kannst auch keine neuen Nachrichten senden oder empfangen',
+            button: 'Ändern',
+        },
+
+        Settings: {
+            title: 'Benachrichtigungen',
+
+            birthday: {
+                title: 'Geburtstage',
+                field: 'For own club members and favorites',
+            },
+
+            onetoone: {
+                title: 'Unterhaltungen',
+                text: 'Wenn Du diese Benachrichtigungsfunktion deaktivierst, dann kannst Du die Chatfunktion nicht nutzen.',
+                field: '1 zu 1 Unterhaltung',
+            },
         },
     },
 

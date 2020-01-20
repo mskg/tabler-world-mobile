@@ -78,6 +78,7 @@ export enum SettingName {
   favorites = "favorites",
   language = "language",
   nearbymembers = "nearbymembers",
+  notifications = "notifications",
 }
 
 export enum UserRole {

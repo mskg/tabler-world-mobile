@@ -3,13 +3,14 @@ import { View } from 'react-native';
 import { Chip, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
-import { showClub } from '../../redux/actions/navigation';
+import { showAssociation, showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
 
 type Props = {
     member: IMemberOverviewFragment,
     theme: Theme,
     showClub: typeof showClub,
+    showAssociation: typeof showAssociation,
 };
 
 class OrganizationBase extends React.PureComponent<Props> {
@@ -25,7 +26,10 @@ class OrganizationBase extends React.PureComponent<Props> {
                 <Chip style={[styles.chip, { backgroundColor: this.props.theme.colors.primary }]}>
                     {this.props.member.area.name}
                 </Chip>
-                <Chip style={[styles.chip, { backgroundColor: this.props.theme.colors.primary }]}>
+                <Chip
+                    style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
+                    onPress={() => this.props.showAssociation(this.props.member.association.id, this.props.member.association.name)}
+                >
                     {this.props.member.association.name}
                 </Chip>
             </View>
@@ -35,6 +39,6 @@ class OrganizationBase extends React.PureComponent<Props> {
 
 export const Organization = connect(
     undefined,
-    { showClub },
+    { showClub, showAssociation },
 )(
     withTheme(OrganizationBase));

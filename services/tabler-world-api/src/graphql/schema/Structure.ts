@@ -81,10 +81,10 @@ export const Structure = gql`
     }
 
     extend type Query {
-        Associations: [Association!]
+        Associations (id: ID): [Association!]
 
-        Clubs (association: String): [Club!]
-        Areas (association: String): [Area!]
+        Clubs (association: ID): [Club!]
+        Areas (association: ID): [Area!]
         Roles: [String!]
 
         Club (id: String!): Club

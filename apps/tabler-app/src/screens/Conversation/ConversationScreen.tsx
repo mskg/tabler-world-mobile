@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { FullScreenLoading } from '../../components/Loading';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
@@ -35,6 +36,7 @@ type Props = {
     theme: Theme,
     showProfile: typeof showProfile,
     websocket: boolean,
+    chatEnabled: boolean,
 };
 
 type State = {
@@ -200,7 +202,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                         // need to check fail here
                     }
 
-                    const result = await client.mutate<SendMessage, SendMessageVariables>({
+                    await client.mutate<SendMessage, SendMessageVariables>({
                         mutation: SendMessageMutation,
                         variables: {
                             image,
@@ -337,6 +339,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     ],
                 }}
             >
+                <ChatDisabledBanner />
+
                 {/* <View style={[styles.container, { backgroundColor: this.props.theme.colors.surface }]}> */}
                 <Query<Conversation, ConversationVariables>
                     query={GetConversationQuery}
@@ -364,6 +368,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                         return (
                             <Chat
                                 userId={data && data.Me ? data.Me.id : -1}
+                                sendDisabled={!this.props.websocket || !this.props.chatEnabled}
 
                                 extraData={this.state.redraw}
                                 subscribe={
@@ -383,6 +388,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                                                 requestAnimationFrame(() => this.setState({ redraw: {} }));
                                                 return {
+                                                    ...prev,
                                                     Conversation: {
                                                         ...prev.Conversation,
                                                         messages: {
@@ -430,6 +436,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                                                 requestAnimationFrame(() => this.setState({ loadingEarlier: false, eof: false, redraw: {} }));
                                                 return {
+                                                    ...prev,
+
                                                     // There are bugs that the calls are excuted twice
                                                     // a lot of notes on the internet
                                                     Conversation: {
@@ -476,6 +484,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 export const ConversationScreen = connect(
     (state: IAppState) => ({
         websocket: state.connection.websocket,
+        chatEnabled: state.settings.notificationsOneToOneChat == null ?
+            true : state.settings.notificationsOneToOneChat,
     }),
     { showProfile },
 )(withTheme(withNavigation(ConversationScreenBase)));

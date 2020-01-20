@@ -3,4 +3,5 @@ export enum Routes {
     Legal = 'settings/legal',
     MD = 'settings/md',
     External = 'settings/external',
+    Notifications = 'settings/notifications',
 }

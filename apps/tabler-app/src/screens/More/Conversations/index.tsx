@@ -5,12 +5,14 @@ import { Platform, StyleSheet } from 'react-native';
 import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { FlatList, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
+import { ChatDisabledBanner } from '../../../components/ChatDisabledBanner';
 import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
 import { EmptyComponent } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
 import { GetConversations, GetConversationsVariables, GetConversations_Conversations_nodes } from '../../../model/graphql/GetConversations';
+import { IAppState } from '../../../model/IAppState';
 import { GetConversationsQuery } from '../../../queries/Conversations/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../../redux/actions/navigation';
 import { ConversationListItem } from './ConversationListItem';
@@ -25,6 +27,7 @@ type OwnProps = {
 };
 
 type StateProps = {
+    chatEnabled: boolean,
 };
 
 type DispatchPros = {
@@ -62,10 +65,12 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
                     showBack: true,
                     content: [
                         <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Conversations.title} />,
-                        <Appbar.Action key="new" icon="add" onPress={() => this.props.startConversation()} />,
+                        <Appbar.Action key="new" icon="add" disabled={!this.props.chatEnabled} onPress={() => this.props.startConversation()} />,
                     ],
                 }}
             >
+                <ChatDisabledBanner />
+
                 <Query<GetConversations, GetConversationsVariables>
                     query={GetConversationsQuery}
                     fetchPolicy="cache-and-network"
@@ -132,10 +137,12 @@ export class ConversationsScreenBase extends React.Component<Props, State> {
     }
 }
 
-export const ConversationsScreen = withTheme(connect(null, {
-    showConversation,
-    startConversation: searchConversationPartner,
-})(ConversationsScreenBase));
+export const ConversationsScreen = withTheme(connect(
+    (state: IAppState) => ({ chatEnabled: state.settings.notificationsOneToOneChat || state.settings.notificationsOneToOneChat == null }),
+    {
+        showConversation,
+        startConversation: searchConversationPartner,
+    })(ConversationsScreenBase));
 
 const styles = StyleSheet.create({
     container: {

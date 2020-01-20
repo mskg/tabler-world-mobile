@@ -3,6 +3,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Card, Paragraph, Theme, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Accordion } from '../../components/Accordion';
@@ -17,6 +18,7 @@ import { Associations, Associations_Associations } from '../../model/graphql/Ass
 import { RoleNames } from '../../model/IRole';
 import { GetAssociationsQuery } from '../../queries/Structure/GetAssociationsQuery';
 import { CardPlaceholder } from './CardPlaceholder';
+import { ScreenProps, StructureParams } from './StructureParams';
 import { styles } from './Styles';
 
 // const logger = new Logger(Categories.Screens.Structure);
@@ -29,7 +31,7 @@ type Props = {
     fetchPolicy: any,
 };
 
-class AssociationsScreenBase extends AuditedScreen<Props, State> {
+class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInjectedProps<StructureParams>, State> {
 
     constructor(props) {
         super(props, AuditScreenName.Associations);
@@ -98,7 +100,13 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
 
     render() {
         return (
-            <Query<Associations> query={GetAssociationsQuery} fetchPolicy={this.props.fetchPolicy}>
+            <Query<Associations>
+                query={GetAssociationsQuery}
+                fetchPolicy={this.props.fetchPolicy}
+                variables={{
+                    id: this.props.screenProps?.association,
+                }}
+            >
                 {({ loading, error, data, refetch }) => {
                     if (error) throw error;
 
@@ -116,7 +124,7 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                                 data={
                                     _(data != null ? data.Associations : [])
                                         .sortBy(
-                                            (a) => (data != null && data.Me.association.id === a.id)
+                                            (a) => (data != null && a.id === (this.props.screenProps?.association || data?.Me?.association.id))
                                                 ? '0'
                                                 : a.name,
                                         )
@@ -144,4 +152,6 @@ export const AssociationsScreen =
     withWhoopsErrorBoundary(
         withCacheInvalidation(
             'associations',
-            withTheme(AssociationsScreenBase)));
+            withTheme(AssociationsScreenBase),
+        ),
+    );

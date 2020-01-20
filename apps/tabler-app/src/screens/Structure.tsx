@@ -1,61 +1,31 @@
 import React from 'react';
-import { Animated } from 'react-native';
-import { Text, withTheme } from 'react-native-paper';
-import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
-import { I18N } from '../i18n/translation';
-import { AreasScreen } from './Structure/Areas';
-import { AssociationsScreen } from './Structure/Associations';
-import ClubsScreen from './Structure/Clubs';
-import { Routes } from './Structure/Routes';
-import { StructureScreen } from './Structure/Screen';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { AssociationTabs } from './Structure/AssociationTabs';
+import { StructureParams } from './Structure/StructureParams';
 
-/**
- * MaterialTopTabBar does not allov customization of label container.
- * We override the numberOfLines here
- */
-const LabelBase =
-    ({ text, theme, color }) => (
-        <Text
-            numberOfLines={1}
-            style={{ color, fontFamily: theme.fonts.medium }}
-        >
-            {text.toUpperCase()}
-        </Text>
-    );
+class StructureByAssociationBase extends React.Component<NavigationInjectedProps<StructureParams>> {
+    static router = AssociationTabs.router;
 
-const Label = Animated.createAnimatedComponent(withTheme(LabelBase));
+    constructor(props) {
+        super(props);
+    }
 
-const Navigator = createMaterialTopTabNavigator(
-    {
-        [Routes.Associations]: {
-            screen: AssociationsScreen,
-            navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.associations} />,
-            },
-        },
-        [Routes.Areas]: {
-            screen: AreasScreen,
-            navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.areas} />,
-            },
-        },
+    // tslint:disable-next-line: no-empty
+    componentDidMount() {
+    }
 
-        [Routes.Clubs]: {
-            screen: ClubsScreen,
-            navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.clubs} />,
-            },
-        },
-    },
-    {
-        tabBarComponent: StructureScreen,
-        initialRouteName: Routes.Associations,
-        lazy: true,
-        swipeEnabled: true,
-        // animationEnabled: true,
-        tabBarPosition: 'top',
-        // optimizationsEnabled: true,
-    },
-);
+    render() {
+        return (
+            <AssociationTabs
+                navigation={this.props.navigation}
+                screenProps={{
+                    association: this.props.navigation.getParam('association'),
+                    associationName: this.props.navigation.getParam('associationName'),
+                }}
+            />
+        );
+    }
+}
 
-export default Navigator;
+// tslint:disable-next-line: export-name
+export default withNavigation(StructureByAssociationBase);

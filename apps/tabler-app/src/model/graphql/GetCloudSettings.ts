@@ -3,9 +3,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetFavoritesSetting
+// GraphQL query operation: GetCloudSettings
 // ====================================================
 
-export interface GetFavoritesSetting {
-  Setting: any | null;
+export interface GetCloudSettings {
+  favorites: any | null;
+  notifications: any | null;
 }

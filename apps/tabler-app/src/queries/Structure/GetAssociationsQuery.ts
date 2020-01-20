@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { MemberFragment } from '../Member/MemberFragment';
 
 export const GetAssociationsQuery = gql`
-  query Associations {
-    Associations {
+  query Associations ($id: ID) {
+    Associations (id: $id) {
         id
         name
         logo

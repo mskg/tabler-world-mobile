@@ -1,6 +1,6 @@
 import { NavigationActions } from 'react-navigation';
 import { I18N } from '../../i18n/translation';
-import { HomeRoutes } from '../../navigation/Routes';
+import { HomeRoutes, MainRoutes } from '../../navigation/Routes';
 import { Routes as MoreRoutes } from '../../screens/More/Routes';
 import { Routes } from '../../screens/More/Settings/Routes';
 
@@ -73,6 +73,11 @@ export const showNearbySettings = () => NavigationActions.navigate({
     key: MoreRoutes.NearbySettings,
 });
 
+export const showNotificationSettings = () => NavigationActions.navigate({
+    routeName: Routes.Notifications,
+    key: Routes.Notifications,
+});
+
 export const showLocationHistory = () => NavigationActions.navigate({
     routeName: MoreRoutes.LocationHistory,
     key: MoreRoutes.LocationHistory,
@@ -123,4 +128,13 @@ export const startConversation = (id: number, title: string) => NavigationAction
         title,
         member: id,
     } as IConversationParams,
+});
+
+export const showAssociation = (id?: string, name?: string) => NavigationActions.navigate({
+    routeName: MainRoutes.Structure,
+    // key: `${MainRoutes.Structure}:${id}`,
+    params: {
+        association: id,
+        associationName: name,
+    },
 });

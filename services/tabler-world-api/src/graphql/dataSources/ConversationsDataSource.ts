@@ -10,7 +10,7 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
 
     private conversations!: DataLoader<string, any>;
     private userConversations!: DataLoader<{ id: string, member: number }, any>;
-    private userProperties!: DataLoader<number, any>;
+    private chatProperties!: DataLoader<number, any>;
 
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
@@ -30,10 +30,22 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
             },
         );
 
-        this.userProperties = new DataLoader<number, any>(
+        this.chatProperties = new DataLoader<number, any>(
             (ids: ReadonlyArray<number>) => useDataService(this.context, async (client) => {
                 const res = await client.query(
-                    `select id from usersettings where id = ANY($1) and array_length(tokens, 1) > 0`,
+                    `
+ select
+    id
+ from
+    usersettings
+ where
+        id = ANY($1)
+    and (
+            settings->'notifications'->>'personalChat' is null
+        or  settings->'notifications'->>'personalChat' = 'true'
+    )
+    and array_length(tokens, 1) > 0
+ `,
                     [ids],
                 );
 
@@ -47,7 +59,7 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
 
     public async isMemberAvailableForChat(id: number): Promise<boolean> {
         this.context.logger.log('isMemberAvailableForChat', id);
-        return this.userProperties.load(id);
+        return this.chatProperties.load(id);
     }
 
     public async readConversation(id: string): Promise<Conversation | null> {

@@ -15,6 +15,9 @@ export type SettingsType =
     | { name: 'experiments', value: boolean }
     | { name: 'nearbyMembers', value: boolean }
     | { name: 'hideOwnClubWhenNearby', value: boolean }
+
+    | { name: 'notificationsBirthdays', value: boolean }
+    | { name: 'notificationsOneToOneChat', value: boolean }
     ;
 
 /**

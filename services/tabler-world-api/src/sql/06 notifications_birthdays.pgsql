@@ -57,6 +57,11 @@ where
     )
 
     and (
+           a.settings->'notifications'->>'birthdays' is null
+        or a.settings->'notifications'->>'birthdays' = 'true'
+    )
+
+    and (
         -- must have a valid push token
         array_length(a.tokens, 1) > 0
     )

@@ -22,7 +22,7 @@ import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
-import { showNearbySettings } from '../../../redux/actions/navigation';
+import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
 import { TOKEN_KEY } from '../../../tasks/Constants';
@@ -56,6 +56,7 @@ type DispatchPros = {
     logoutUser: typeof logoutUser;
     updateSetting: typeof updateSetting;
     showNearbySettings: typeof showNearbySettings;
+    showNotificationSettings: typeof showNotificationSettings;
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
@@ -513,6 +514,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
+                        <List.Section title={I18N.Notifications.Settings.title}>
+                            <Divider />
+                            <NextScreen
+                                theme={this.props.theme}
+                                text={I18N.Settings.fields.notifications}
+                                onPress={
+                                    () => this.props.showNotificationSettings()}
+                            />
+                            <Divider />
+                        </List.Section>
+
                         {isFeatureEnabled(Features.BackgroundLocation) && (
                             <List.Section title={I18N.Settings.sections.locationservices}>
                                 <Divider />
@@ -572,4 +584,5 @@ export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IA
         logoutUser,
         updateSetting,
         showNearbySettings,
+        showNotificationSettings,
     })(withNavigation(withTheme(MainSettingsScreenBase)));

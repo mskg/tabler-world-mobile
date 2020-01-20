@@ -333,3 +333,23 @@ and id in (
     	)
 )
 order by 3, 1
+
+
+select *
+from usersettings
+where
+settings->'notifications'->>'birthdays' is null
+or settings->'notifications'->>'birthdays' = 'true'
+
+
+
+ select
+    id, settings, tokens
+ from
+    usersettings
+ where
+    (
+        settings->'notifications'->>'personalChat' is null
+        or settings->'notifications'->>'personalChat' = 'true'
+    )
+    and array_length(tokens, 1) > 0

@@ -6,7 +6,7 @@ import * as Permissions from 'expo-permissions';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { Clipboard, Image, KeyboardAvoidingView, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Bubble, Composer, LoadEarlier, Message, Send } from 'react-native-gifted-chat';
+import { Bubble, Composer, Message, Send } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
 import { isIphoneX } from '../../helper/isIphoneX';
 import { Categories, Logger } from '../../helper/Logger';
@@ -40,6 +40,8 @@ type Props = {
     messages?: IChatMessage[],
     sendMessage: (messages: IChatMessage[]) => void,
     subscribe?: () => void,
+
+    sendDisabled: boolean,
 };
 
 type State = {
@@ -53,13 +55,11 @@ type State = {
 class ChatBase extends React.Component<Props, State> {
     state: State = {};
 
-    _renderLoadEarlier = (props: any) => {
-        logger.log('loadEarlier', this.props.loadEarlier, 'isLoadingEarlier', this.props.isLoadingEarlier);
-
-        return (
-            <LoadEarlier {...props} />
-        );
-    }
+    // _renderLoadEarlier = (props: any) => {
+    //     return (
+    //         <LoadEarlier {...props} />
+    //     );
+    // }
 
     _renderBubble = (props: any) => {
         return (
@@ -130,12 +130,16 @@ class ChatBase extends React.Component<Props, State> {
 
     _renderSend = (props) => {
         return (
-            <Send {...props} text={props.text || (this.state.pickedImage ? TEMP_TEXT_IMAGE : undefined)}>
+            <Send
+                {...props}
+                text={props.text || (this.state.pickedImage ? TEMP_TEXT_IMAGE : undefined)}
+                disabled={this.props.sendDisabled}
+            >
                 <Ionicons
                     style={styles.sendIcon}
                     size={20}
                     name="md-send"
-                    color={this.props.theme.colors.accent}
+                    color={this.props.sendDisabled ? this.props.theme.colors.disabled : this.props.theme.colors.accent}
                 />
             </Send>
         );
@@ -151,6 +155,7 @@ class ChatBase extends React.Component<Props, State> {
                     marginVertical: 10,
                     lineHeight: 20,
                 }}
+            // disableComposer={this.props.sendDisabled}
             />
         );
     }
@@ -338,7 +343,7 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _renderActions = (props) => {
-        if (props.text || this.state.pickedImage) { return null; }
+        if (props.text || this.state.pickedImage || this.props.sendDisabled) { return null; }
 
         return (
             <View style={styles.customActionsContainer}>
@@ -396,7 +401,7 @@ class ChatBase extends React.Component<Props, State> {
                     loadEarlier={this.props.loadEarlier}
                     isLoadingEarlier={this.props.isLoadingEarlier}
                     onLoadEarlier={this.props.onLoadEarlier}
-                    renderLoadEarlier={this._renderLoadEarlier}
+                    // renderLoadEarlier={this._renderLoadEarlier}
 
                     messages={this.props.messages || []}
 

@@ -59,3 +59,7 @@ export interface Areas {
   Areas: Areas_Areas[] | null;
   Me: Areas_Me;
 }
+
+export interface AreasVariables {
+  association?: string | null;
+}

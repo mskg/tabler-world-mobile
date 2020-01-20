@@ -230,8 +230,8 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     private checkTTLAndVersion({ ttl, id, version }: { id: string, ttl?: number, version?: string }): boolean {
-        if (this.version && this.version !== version) {
-            console.log('[DynamoDBCache] item', id, 'version different');
+        if (this.version != null && this.version !== version) {
+            console.log('[DynamoDBCache] item', id, 'version different', 'Old:', version, 'New:', this.version);
             return false;
         }
 

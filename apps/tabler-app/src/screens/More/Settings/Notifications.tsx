@@ -1,8 +1,7 @@
-import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../../analytics/ActionNames';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
@@ -10,8 +9,6 @@ import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
-import { disableNearbyTablers } from '../../../helper/geo/disable';
-import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
 import { IAppState } from '../../../model/IAppState';
@@ -40,13 +37,13 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
-class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
+class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
     state = {
         wait: false,
     };
 
     constructor(props) {
-        super(props, AuditScreenName.NearbySettings);
+        super(props, AuditScreenName.NotificationSettings);
     }
 
     // componentDidMount() {
@@ -75,98 +72,54 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
         this.props.updateSetting(type);
     }
 
-    _toggleOwnClub = async () => {
+    _toggleBirthdayNotifications = async () => {
         this.updateSetting({
-            name: 'hideOwnClubWhenNearby',
-            value: !this.props.settings.hideOwnClubWhenNearby,
+            name: 'notificationsBirthdays',
+            value: !this.props.settings.notificationsBirthdays,
         });
     }
 
-    _toggleLocationServices = async () => {
-        const { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-        if (status !== 'granted') {
-            Alert.alert(I18N.Settings.locationpermission);
-            this.updateSetting({ name: 'nearbyMembers', value: false });
-        } else {
-            this.setState({ wait: true }, async () => {
-                try {
-                    // switch is flipped
-                    if (!this.props.settings.nearbyMembers) {
-                        await enableNearbyTablers();
-
-                        this.audit.trackAction(ActionNames.ChangeSetting, {
-                            [AuditPropertyNames.Setting]: 'nearbyMembers',
-                            [AuditPropertyNames.SettingValue]: true.toString(),
-                        });
-                    } else {
-                        await disableNearbyTablers();
-                    }
-                } catch {
-                    if (!this.props.settings.nearbyMembers) {
-                        try { disableNearbyTablers(); } catch { }
-                    }
-
-                    Alert.alert(I18N.Settings.locationfailed);
-                }
-
-                this.setState({ wait: false });
-            });
-        }
+    _toggleOneToOne = async () => {
+        this.updateSetting({
+            name: 'notificationsOneToOneChat',
+            value: !this.props.settings.notificationsOneToOneChat,
+        });
     }
 
     render() {
         return (
             <>
-                <ScreenWithHeader header={{ title: I18N.NearbyMembers.Settings.title, showBack: true }}>
+                <ScreenWithHeader header={{ title: I18N.Notifications.Settings.title, showBack: true }}>
                     <ScrollView>
-                        {/* {this.state.demoMode &&
-                            <Banner
-                                visible={true}
-                                actions={[
-                                    {
-                                        // @ts-ignore We provide a Text to color it
-                                        label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Settings.logout.button}</NativeText>,
-                                        onPress: this._confirmUnload,
-                                    },
-                                ]}
-                                image={({ size }) =>
-                                    <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
-                                }
-                            >
-                                {I18N.Settings.logout.demo}
-                            </Banner>
-                        } */}
-
-                        <List.Section title={I18N.NearbyMembers.Settings.on.title}>
-                            <Text style={styles.text}>{I18N.NearbyMembers.Settings.on.text}</Text>
+                        <List.Section title={I18N.Notifications.Settings.birthday.title}>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.NearbyMembers.Settings.on.field}
+                                field={I18N.Notifications.Settings.birthday.field}
                                 text={(
                                     <Switch
                                         color={this.props.theme.colors.accent}
                                         style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.nearbyMembers}
-                                        onValueChange={this._toggleLocationServices}
+                                        value={this.props.settings.notificationsBirthdays}
+                                        onValueChange={this._toggleBirthdayNotifications}
                                     />
                                 )}
                             />
                             <Divider />
                         </List.Section>
 
-                        <List.Section title={I18N.NearbyMembers.Settings.filter.title}>
+                        <List.Section title={I18N.Notifications.Settings.onetoone.title}>
+                            <Text style={styles.text}>{I18N.Notifications.Settings.onetoone.text}</Text>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.NearbyMembers.Settings.filter.field}
+                                field={I18N.Notifications.Settings.onetoone.field}
                                 text={(
                                     <Switch
                                         color={this.props.theme.colors.accent}
                                         style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.hideOwnClubWhenNearby}
-                                        onValueChange={this._toggleOwnClub}
+                                        value={this.props.settings.notificationsOneToOneChat}
+                                        onValueChange={this._toggleOneToOne}
                                     />
                                 )}
                             />
@@ -189,10 +142,10 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
 }
 
 // tslint:disable-next-line: export-name
-export const NearbySettingsScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
+export const NotificationsSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
         settings: state.settings,
     }),
     {
         updateSetting,
-    })(withNavigation(withTheme(NearbySettingsScreenBase)));
+    })(withTheme(NotificationsSettingsScreenBase));

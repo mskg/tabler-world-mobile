@@ -84,7 +84,7 @@ const en = {
     },
 
     Structure: {
-        title: 'Directory',
+        title: 'My Asssociation',
         associations: 'Association',
         clubs: 'Clubs',
         areas: 'Areas',
@@ -441,6 +441,7 @@ const en = {
             displayOrder: 'Display Order',
             experiments: 'Albums & News',
             nearby: 'Nearby Members',
+            notifications: 'Notifications',
         },
 
         ReleaseNotes: 'Release Notes',
@@ -498,6 +499,26 @@ const en = {
             title: 'Birthday time',
             text: (n) => `Help ${n} to have a great day!`,
         },
+
+        chatDisabled: {
+            text: 'You disabled notifications for chat conversations. You will not be visible for other members and you will not not able to send and receive messages.',
+            button: 'Change',
+        },
+
+        Settings: {
+            title: 'Notifications',
+
+            birthday: {
+                title: 'Birthdays',
+                field: 'For own club members and favorites',
+            },
+
+            onetoone: {
+                title: 'Conversations',
+                text: 'If you disable this setting, you opt-out the chat functionality.',
+                field: 'One to one chat',
+            },
+        },
     },
 
     Timespan: {
@@ -552,6 +573,7 @@ const en = {
             },
         },
     },
+
 
     Feedback: {
         title: 'Feedback',

@@ -10,11 +10,12 @@ import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
-import { Areas, Areas_Areas } from '../../model/graphql/Areas';
+import { Areas, AreasVariables, Areas_Areas } from '../../model/graphql/Areas';
 import { GetAreasQuery } from '../../queries/Structure/GetAreasQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
+import { ScreenProps } from './StructureParams';
 import { styles } from './Styles';
 
 // const logger = new Logger(Categories.Screens.Structure);
@@ -30,7 +31,7 @@ type Props = {
 /**
  * Normally the districts are numbered from 1...
  * If this is the case, we sort by that value.
- * @param shortname 
+ * @param shortname
  */
 function getSortKey(shortname: string) {
     const nbrs = shortname.replace(/[^0-9]/ig, '');
@@ -41,7 +42,7 @@ function getSortKey(shortname: string) {
     return shortname;
 }
 
-class AreasScreenBase extends AuditedScreen<Props, State> {
+class AreasScreenBase extends AuditedScreen<Props & ScreenProps, State> {
 
     constructor(props) {
         super(props, AuditScreenName.Areas);
@@ -78,7 +79,13 @@ class AreasScreenBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <Query<Areas> query={GetAreasQuery} fetchPolicy={this.props.fetchPolicy}>
+            <Query<Areas, AreasVariables>
+                query={GetAreasQuery}
+                fetchPolicy={this.props.fetchPolicy}
+                variables={{
+                    association: this.props.screenProps?.association,
+                }}
+            >
                 {({ loading, error, data, refetch }) => {
                     if (error) throw error;
 

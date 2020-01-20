@@ -7,6 +7,7 @@ export const Settings = gql`
         favorites
         nearbymembers
         language
+        notifications
     }
 
     input SettingInput {

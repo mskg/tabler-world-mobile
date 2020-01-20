@@ -58,3 +58,7 @@ export interface Associations {
   Associations: Associations_Associations[] | null;
   Me: Associations_Me;
 }
+
+export interface AssociationsVariables {
+  id?: string | null;
+}

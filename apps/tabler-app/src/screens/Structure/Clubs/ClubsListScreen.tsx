@@ -16,11 +16,12 @@ import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidati
 import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
-import { Clubs, Clubs_Clubs } from '../../../model/graphql/Clubs';
+import { Clubs, ClubsVariables, Clubs_Clubs } from '../../../model/graphql/Clubs';
 import { GetClubsQuery } from '../../../queries/Structure/GetClubsQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { CardPlaceholder } from '../CardPlaceholder';
 import { CardTitle } from '../CardTitle';
+import { StructureParams } from '../StructureParams';
 import { styles } from '../Styles';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
@@ -41,7 +42,7 @@ type Props = {
     data?: Clubs | null,
 } & NavigationInjectedProps;
 
-class ClubsScreenBase extends AuditedScreen<Props, State> {
+class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<StructureParams>, State> {
     constructor(props) {
         super(props, ScreenName.Clubs);
 
@@ -210,9 +211,15 @@ const ConnectedClubScreen = connect(null, {
     ),
 );
 
-const ClubsScreenWithQuery = ({ fetchPolicy }) => (
+const ClubsScreenWithQuery = ({ fetchPolicy, screenProps }) => (
     <Tab>
-        <Query<Clubs> query={GetClubsQuery} fetchPolicy={fetchPolicy}>
+        <Query<Clubs, ClubsVariables>
+            query={GetClubsQuery}
+            fetchPolicy={fetchPolicy}
+            variables={{
+                association: screenProps?.association,
+            }}
+        >
             {({ loading, data, error, refetch }) => {
                 if (error) throw error;
 

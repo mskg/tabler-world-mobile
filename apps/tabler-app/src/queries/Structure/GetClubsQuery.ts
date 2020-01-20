@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { ClubOverviewFragment } from './ClubOverviewFragment';
 
 export const GetClubsQuery = gql`
-  query Clubs {
-    Clubs {
+  query Clubs ($association: ID) {
+    Clubs (association: $association) {
         ...ClubOverviewFragment
     }
 

@@ -49,3 +49,7 @@ export interface Clubs {
   Clubs: Clubs_Clubs[] | null;
   Me: Clubs_Me;
 }
+
+export interface ClubsVariables {
+  association?: string | null;
+}

@@ -15,4 +15,7 @@ export type SettingsState = {
 
     nearbyMembers?: boolean;
     hideOwnClubWhenNearby?: boolean;
+
+    notificationsBirthdays?: boolean;
+    notificationsOneToOneChat?: boolean;
 };
