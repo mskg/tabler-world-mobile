@@ -1,4 +1,4 @@
-SET ROLE 'tw_read_dev';
+SET ROLE tw_read_dev;
 
 
 select *
@@ -30,10 +30,10 @@ clubs
 
 
 select * From profiles
-where lastname = 'Kling'
+where lastname = Kling
 
 select * From tabler
-where data->>'last_name' = 'Kling'
+where data->>last_name = Kling
 
 
 REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas
@@ -55,7 +55,7 @@ from tabler
 
 
 select * from tabler
-where data->>'last_name' = 'Kling'
+where data->>last_name = Kling
 
 
 select * from jobhistory
@@ -71,8 +71,8 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
 
 
 select roles from profiles
-where lastname = 'Walter'
-and firstname = 'Sebastian'
+where lastname = Walter
+and firstname = Sebastian
 
 
 select *
@@ -81,7 +81,7 @@ where id = 14225
 
 select *
 from tabler_roles
-where reftype = 'root'
+where reftype = root
 and isvalid = true
 
 select * from structure_groups
@@ -93,8 +93,8 @@ group by removed
 
 select count(*) from tabler_roles
 where
-    groupname = 'Members'
-and functionname = 'Member'
+    groupname = Members
+and functionname = Member
 and isvalid = true
 
 select distinct groupname, functionname, reftype
@@ -107,14 +107,14 @@ and isvalid = true
 
 WITH RECURSIVE groups_objects (type, assoc, id, name, path, object) AS (
   SELECT
-    'root' as type
-    ,'null' as assoc
-    ,data->>'id' as id
-    ,data->>'name' as name
-    ,ARRAY[data->>'id'] as path
-    ,jsonb_array_elements(data->'children') as object
+    root as type
+    ,null as assoc
+    ,data->>id as id
+    ,data->>name as name
+    ,ARRAY[data->>id] as path
+    ,jsonb_array_elements(data->children) as object
   FROM groups
-  where id = 'rti'
+  where id = rti
   UNION
 
   SELECT type, assoc, id, name, path, jsonb_array_elements(children)
@@ -122,25 +122,25 @@ WITH RECURSIVE groups_objects (type, assoc, id, name, path, object) AS (
     SELECT
         -- based on the current node, the child gets a ...
         case
-            WHEN object->>'name' = 'Associations' THEN 'assoc'
-            when object->>'name' = 'Areas' THEN 'area'
-            when object->>'name' = 'Tables' THEN 'club'
-            else 'node'
+            WHEN object->>name = Associations THEN assoc
+            when object->>name = Areas THEN area
+            when object->>name = Tables THEN club
+            else node
         end as type
         -- we pull the association down to make that unique
         ,case
-            WHEN type  = 'assoc' THEN object->>'name'
+            WHEN type  = assoc THEN object->>name
             else assoc
         end as assoc
-        ,object->>'id' as id
-        ,object->>'name' as name
-        ,array_append(path, object->>'id') as path
-        ,object->'children' children
+        ,object->>id as id
+        ,object->>name as name
+        ,array_append(path, object->>id) as path
+        ,object->children children
     FROM groups_objects
-    WHERE jsonb_array_length(object->'children') > 0
+    WHERE jsonb_array_length(object->children) > 0
   ) s
 )
-SELECT type, assoc, id::int as parentId, (object->>'id')::int as id, path::int[], object->>'name' as name
+SELECT type, assoc, id::int as parentId, (object->>id)::int as id, path::int[], object->>name as name
 FROM groups_objects
 
 
@@ -161,9 +161,9 @@ order by 1
 
 select
 	id
-    ,make_key_association(data->>'parent_subdomain') as association
-    ,data->>'name' as name
-	,regexp_replace(id,'[^0-9]+','','g') areanumber
+    ,make_key_association(data->>parent_subdomain) as association
+    ,data->>name as name
+	,regexp_replace(id,[^0-9],,g) areanumber
     ,(
         select array_to_json(array_agg(r))
         from
@@ -171,17 +171,17 @@ select
             select id as member, functionname as role
             from structure_tabler_roles
             where
-                    reftype = 'area'
+                    reftype = area
                 and refid = areas.id
-                and groupname = 'Board'
+                and groupname = Board
         ) r
     ) as board
     ,(
         select array_agg(id)
         from structure_clubs
         where
-                association = make_key_association(data->>'parent_subdomain')
-            and area = make_key_area(data->>'parent_subdomain', data->>'subdomain')
+                association = make_key_association(data->>parent_subdomain)
+            and area = make_key_area(data->>parent_subdomain, data->>subdomain)
     ) as clubs
 from areas;
 
@@ -201,17 +201,17 @@ order by 2 desc, 1
 
 
 
-SET ROLE 'tw_read_dev';
+SET ROLE tw_read_dev;
 
 CREATE or replace FUNCTION make_area_number (id text) returns text as $$
 DECLARE number text;
         letter text;
 BEGIN
-    number := regexp_replace(id, '[^0-9]+', '', 'g');
-    letter := substring(id from (position('_' in id) + 1) for 1);
+    number := regexp_replace(id, [^0-9], , g);
+    letter := substring(id from (position(_ in id)  1) for 1);
 
-    if number = '' THEN
-        return upper(substring(id from (position('_' in id) + 1) for 3));
+    if number =  THEN
+        return upper(substring(id from (position(_ in id)  1) for 3));
     end if;
 
     return upper(letter) || number;
@@ -235,7 +235,7 @@ order by runon desc
 
 
 select * from tabler
-where data->>'last_name'= 'Kling'
+where data->>last_name= Kling
 
 select count(*) from tabler;
 
@@ -260,7 +260,7 @@ select board, boardAssistants
 from structure_clubs
 
 select * from profiles
-where lastname = 'Kling'
+where lastname = Kling
 
 
 select * from structure_clubs;
@@ -289,7 +289,7 @@ select * from usersettings
 
 
 update usersettings
-set tokens = ARRAY['ExponentPushToken[q_Bi7-BALwj6161xKUaY_Y]']
+set tokens = ARRAY[ExponentPushToken[q_Bi7-BALwj6161xKUaY_Y]]
 where id = 14225
 
 
@@ -300,13 +300,13 @@ select * from notification_receipts
 
 
 select * from associations
-where data->>'name' ilike '%germany%'
+where data->>name ilike %germany%
 
 
 select * from areas
 
 select * from structure_clubs
-where id = 'de_47'
+where id = de_47
 
 
 select id, removed, lastname, roles
@@ -316,13 +316,13 @@ where id in (
 )
 
 select
-    data->>'last_name' as lastname,
-    data->>'first_name' as firstname,
-    data->>'rt_club_name' as club,
-    data->>'rt_status'
+    data->>last_name as lastname,
+    data->>first_name as firstname,
+    data->>rt_club_name as club,
+    data->>rt_status
 
 from tabler
-where data->>'permission_level' = 'limit_access'
+where data->>permission_level = limit_access
 and id in (
     select id
     from structure_tabler_roles tr
@@ -338,8 +338,8 @@ order by 3, 1
 select *
 from usersettings
 where
-settings->'notifications'->>'birthdays' is null
-or settings->'notifications'->>'birthdays' = 'true'
+settings->notifications->>birthdays is null
+or settings->notifications->>birthdays = true
 
 
 
@@ -349,7 +349,74 @@ or settings->'notifications'->>'birthdays' = 'true'
     usersettings
  where
     (
-        settings->'notifications'->>'personalChat' is null
-        or settings->'notifications'->>'personalChat' = 'true'
+        settings->notifications->>personalChat is null
+        or settings->notifications->>personalChat = true
     )
     and array_length(tokens, 1) > 0
+
+
+
+
+select
+    NULLIF(data->>logo, (
+        select data->>logo
+        from associations
+        where id = make_key_association(clubs.data->>parent_subdomain)
+    ))
+
+
+
+from clubs
+
+
+drop index structure_search_text2;
+CREATE INDEX structure_search_text2 ON structure_search USING gin (
+    f_unaccent(name) gin_trgm_ops
+);
+
+
+
+explain
+select type, id
+from structure_search
+where
+-- cursor_name > 0
+-- AND
+f_unaccent(name) ILIKE ALL(
+    array(select f_unaccent(unnest(ARRAY[%129%])))
+)
+-- order by cursor_name
+limit 20
+
+
+ANALYZE structure_search
+
+explain
+select type, id
+from structure_search
+where
+cursor_name > 0
+and (
+        f_unaccent(name) ilike f_unaccent('%D%')
+ )
+order by cursor_name
+limit 20
+
+
+
+explain
+ select
+id,pic,firstname,lastname,association,associationshortname,associationname,area,areaname,areashortname,club,clubnumber,clubname,clubshortname,roles,cursor_lastfirst
+
+from profiles
+where
+        removed = FALSE AND cursor_lastfirst > 0
+AND
+(
+            f_unaccent(lastname || ' ' || firstname) ILIKE f_unaccent('%markus%')
+        or  f_unaccent(areaname || ', ' || associationname) ILIKE f_unaccent('%markus%')
+        or  f_unaccent(lastname || firstname || clubname || ', '  || areaname || ', '  || associationname) ILIKE f_unaccent('%markus%')
+)
+order by cursor_lastfirst
+limit
+20

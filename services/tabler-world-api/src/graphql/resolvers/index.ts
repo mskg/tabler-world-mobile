@@ -8,7 +8,8 @@ import { MemberResolver } from './Member';
 import { NewsResolver } from './News';
 import { ParametersResolver } from './Parameters';
 import { RolesResolver } from './Roles';
-import { SearchMemberResolver } from './Search';
+import { SearchDirectoryResolver } from './SearchDirectory';
+import { SearchMemberResolver } from './SearchMember';
 import { SettingsResolver } from './Settings';
 import { StructureResolver } from './Structure';
 import { TokenResolver } from './Token';
@@ -23,6 +24,7 @@ export const resolvers = merge(
     StructureResolver,
     RolesResolver,
     SearchMemberResolver,
+    SearchDirectoryResolver,
     TokenResolver,
     SettingsResolver,
     AddressResolver,

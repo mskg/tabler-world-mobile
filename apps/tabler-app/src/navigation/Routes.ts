@@ -12,6 +12,8 @@ export enum HomeRoutes {
     Conversation = 'conversation',
     SearchConversationPartner = 'search_conversationpartner',
     StartConversation = 'start_conversation',
+    Structure = 'structure',
+    SearchStructure = 'search_structure',
 }
 
 export enum MainRoutes {

@@ -7,13 +7,14 @@ import { MaterialTopTabBar } from 'react-navigation-tabs';
 import { connect } from 'react-redux';
 import { StandardHeader } from '../../components/Header';
 import { I18N } from '../../i18n/translation';
-import { showAssociation } from '../../redux/actions/navigation';
+import { showAssociation, showStructureSearch } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { StructureParams } from './StructureParams';
 
 type Props = {
     theme: Theme,
     showAssociation: typeof showAssociation;
+    showStructureSearch: typeof showStructureSearch;
 };
 
 type State = {
@@ -30,8 +31,6 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
             .alpha(0.87)
             .rgb()
             .string();
-
-        const assoc = this.props.navigation.getParam('association');
 
         return (
             <View
@@ -69,18 +68,24 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
                     showLine={false}
                     showAppBar={true}
 
+                    showBack={this.props.navigation.getParam('association') != null}
+
                     content={([
-                        assoc ? <Appbar.BackAction
-                            color={this.props.theme.dark ? 'white' : 'black'}
-                            onPress={() => { this.props.showAssociation(); }}
-                        /> : undefined,
-
-                        <Appbar.Content
-                            key="content"
-                            titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
-                            title={this.props.navigation.getParam('associationName') || I18N.Structure.title}
-                        />,
-
+                        (
+                            <Appbar.Content
+                                key="cnt"
+                                titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
+                                title={this.props.navigation.getParam('associationName') || I18N.Structure.title}
+                            />
+                        ),
+                        this.props.navigation.getParam('association') == null
+                            ? (
+                                <Appbar.Action
+                                    key="search"
+                                    icon="search"
+                                    onPress={() => this.props.showStructureSearch()}
+                                />
+                            ) : null,
                     ].filter(Boolean))}
                 />
             </View>
@@ -89,4 +94,4 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
 }
 
 // tslint:disable-next-line: export-name
-export const StructureScreen = connect(null, { showAssociation })(withTheme(ScreenWithBarBase));
+export const StructureScreen = connect(null, { showAssociation, showStructureSearch })(withTheme(ScreenWithBarBase));

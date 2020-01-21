@@ -166,6 +166,8 @@ and removed = FALSE`,
     }
 
     public async readMany(ids: number[]): Promise<any[]> {
+        if (ids == null || ids.length === 0) return [];
+
         this.context.logger.log('readMany', ids);
         return (await this.memberLoader.loadMany(ids)).map((member: any) => {
             if (member == null) { return member; }

@@ -15,6 +15,7 @@ export const ClubOverviewFragment = gql`
 
         association {
             name
+            id
             association
         }
     }

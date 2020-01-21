@@ -57,6 +57,7 @@ export class Categories {
         static readonly Setting = Categories._UI + '/Settings';
         static readonly Menu = Categories._UI + '/Menu';
         static readonly Search = Categories._UI + '/Search';
+        static readonly SearchStructure = Categories._UI + '/SearchStructure';
         static readonly Contacts = Categories._UI + '/Contacts';
         static readonly Member = Categories._UI + '/Member';
         static readonly Docs = Categories._UI + '/Docs';

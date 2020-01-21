@@ -85,6 +85,8 @@ const de: I18NType = {
     },
 
     Structure: {
+        navigation: 'Verzeichnis',
+
         title: 'Meine Assoziation',
         associations: 'Assoziatio...',
         clubs: 'Tische',

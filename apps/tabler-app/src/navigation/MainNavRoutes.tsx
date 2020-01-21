@@ -21,7 +21,7 @@ export const MainNavRoutes = {
     [MainRoutes.Structure]: {
         screen: StructureScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Structure.title,
+            tabBarLabel: I18N.Structure.navigation,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />),
         },
         params: {

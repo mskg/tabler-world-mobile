@@ -9,7 +9,8 @@ export function searchHistoryReducer(
     state = INITIAL_STATE.searchHistory,
     action:
         | typeof actions.addTablerSearch.shape
-        | typeof actions.addTablerLRU.shape,
+        | typeof actions.addTablerLRU.shape
+        | typeof actions.addStructureSearch.shape,
 ) {
     switch (action.type) {
         case actions.addTablerSearch.type:
@@ -24,6 +25,19 @@ export function searchHistoryReducer(
             }
 
             return newState;
+
+        case actions.addStructureSearch.type:
+            // workaround for advanced search
+            if (action.payload === '' || action.payload == null) return state;
+
+            const ns = { ...state, structure: [action.payload, ...state.structure] };
+            ns.structure = uniq(ns.structure);
+
+            while (ns.structure.length > HISTORY_LENGTH) {
+                ns.structure.shift();
+            }
+
+            return ns;
 
         case actions.addTablerLRU.type:
             const lruState = take(uniq([action.payload, ...state.lru]), 10);

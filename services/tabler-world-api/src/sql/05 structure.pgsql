@@ -63,10 +63,12 @@ select
     )) as account
     ,nullif(data->>'email', '') email
     ,nullif(data->>'phone', '') phone
-    ,case data->>'logo'
-        when 'https://roundtable-prd.s3.eu-central-1.amazonaws.com/6/clublogo/cf647650-3926-48ac-a0cc-4bc42a099ccb.png' then null
-        else data->>'logo'
-    end as logo
+    -- logo must differ from association logo
+    ,NULLIF(data->>'logo', (
+        select data->>'logo'
+        from associations
+        where id = make_key_association(clubs.data->>'parent_subdomain')
+    )) as logo
     ,(
         select jsonb_object_agg(map_club_keys(rr->>'key'), rr->>'value')
         from (

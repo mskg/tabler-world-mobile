@@ -8,6 +8,13 @@ export const addTablerSearch = createAction<'@@history/tabler/search/add', strin
 );
 
 /**
+ * Add a history entry
+ */
+export const addStructureSearch = createAction<'@@history/structure/search/add', string>(
+    '@@history/structure/search/add',
+  );
+
+/**
  * Add history entry
  */
 export const addTablerLRU = createAction<'@@history/tabler/lru/add', number>(

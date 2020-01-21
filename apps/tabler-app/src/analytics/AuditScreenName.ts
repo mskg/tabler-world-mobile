@@ -17,6 +17,7 @@ export enum AuditScreenName {
     Areas = 'Structure/Areas',
     Clubs = 'Structure/Clubs',
     ClubMap = 'Structure/ClubMap',
+    StructureSearch = 'Structure/Search',
 
     MemberList = 'Members/List',
     FilterMember = 'Members/Filter',

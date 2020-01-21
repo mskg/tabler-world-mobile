@@ -59,16 +59,15 @@ export const SearchMemberResolver = {
                 'cursor_lastfirst > $2',
             ];
 
-            if (terms.length !== 0) {
-                parameters.push(terms);
+            terms.forEach((term) => {
+                parameters.push(term);
                 filters.push(`
 (
-        f_unaccent(lastname || ' ' || firstname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
-        or  f_unaccent(areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
-        or  f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) ILIKE ALL(array(select f_unaccent(unnest($${parameters.length}::text[]))))
-)`,
-                );
-            }
+        f_unaccent(lastname || ' ' || firstname) ILIKE f_unaccent($${parameters.length})
+    or  f_unaccent(areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
+    or  f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
+)`);
+            });
 
             if (args.query.associations != null && args.query.associations.length > 0) {
                 parameters.push(args.query.associations);

@@ -1,6 +1,7 @@
 
 import { gql } from 'apollo-server-lambda';
 
+// tslint:disable-next-line: export-name
 export const Structure = gql`
     type AssociationRole {
         # member: Member!

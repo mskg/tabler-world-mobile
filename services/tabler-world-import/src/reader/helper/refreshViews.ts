@@ -19,4 +19,6 @@ export const refreshViews = async (client: IDataService) => {
     await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs');
     await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas');
     await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations');
+
+    await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search');
 };

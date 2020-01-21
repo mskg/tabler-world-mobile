@@ -25,6 +25,7 @@ export const INITIAL_STATE: IAppState = {
 
     searchHistory: {
         members: ['Markus Kling'],
+        structure: ['RT129 Böblingen/Sindelfingen'],
         lru: [],
     },
 

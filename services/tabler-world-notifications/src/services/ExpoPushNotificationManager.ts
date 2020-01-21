@@ -80,7 +80,7 @@ export class ExpoPushNotificationManager {
                 try {
                     // @ts-ignore
                     const validatedMsgs: ExpoPushMessage[] = (await Promise.all(chunk.map((msg) => {
-                        if (this.ensurePushToken(client, msg.to)) {
+                        if (this.ensurePushToken(client, msg.to as string)) {
                             return msg;
                         }
 
@@ -103,7 +103,7 @@ export class ExpoPushNotificationManager {
 
                             if (ticket.details.error === 'DeviceNotRegistered') {
                                 const pushToken = chunk[i].to;
-                                await this.removeToken(client, pushToken);
+                                await this.removeToken(client, pushToken as string);
                             }
                         }
                     }
