@@ -8,6 +8,7 @@
 - Member screen how shows member count and date joined
 - Pushing bottom navigation again scrolls the visible page to top
 - Opt-out for birthday notifications
+- Replace dark-mode maps on iOS with Apple Maps
 
 # v1.1
 

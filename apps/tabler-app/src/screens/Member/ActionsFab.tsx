@@ -28,6 +28,7 @@ type Props = {
     toggleFavorite: typeof toggleFavorite,
     startConversation: typeof startConversation,
     favorites: HashMap<boolean>,
+    chatEnabled: boolean,
 };
 
 const testIsFavorite = (tabler: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
@@ -98,7 +99,7 @@ class ActionsFabBase extends React.Component<Props> {
                         color: isFav ? this.props.theme.colors.accent : undefined,
                     },
 
-                    canChat
+                    canChat && this.props.chatEnabled
                         ? {
                             icon: 'chat',
                             label: I18N.Member.Actions.chat,
@@ -131,7 +132,7 @@ class ActionsFabBase extends React.Component<Props> {
 }
 
 export const ActionsFab = connect(
-    (state: IAppState) => ({ favorites: state.filter.member.favorites }),
+    (state: IAppState) => ({ favorites: state.filter.member.favorites, chatEnabled: state.settings.notificationsOneToOneChat == null ? true : state.settings.notificationsOneToOneChat }),
     {
         toggleFavorite,
         startConversation,
