@@ -16,6 +16,7 @@ export interface ClubOverviewFragment_area {
 export interface ClubOverviewFragment_association {
   __typename: "Association";
   name: string;
+  id: string;
   /**
    * Deprecated, don't use
    */

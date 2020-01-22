@@ -21,7 +21,7 @@ custom:
 
   email: ${env:ALERT_EMAIL}
   cache_table: tabler-world-cache-${self:custom.stage}
-  cache_version: '1.3#v1'
+  cache_version: '1.3#v2'
   sqs: ${self:service}-cacheupdates-${self:custom.stage}
   sqs_geo: ${self:service}-geocode-${self:custom.stage}
 

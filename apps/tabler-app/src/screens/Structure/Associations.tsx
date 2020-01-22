@@ -12,6 +12,8 @@ import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
+import { RefreshTracker } from '../../components/RefreshTracker';
+import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { Associations, Associations_Associations } from '../../model/graphql/Associations';
@@ -31,10 +33,28 @@ type Props = {
     fetchPolicy: any,
 };
 
-class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInjectedProps<StructureParams>, State> {
+class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInjectedProps<StructureParams & TapOnNavigationParams>, State> {
+    flatList!: FlatList<Associations_Associations> | null;
 
     constructor(props) {
         super(props, AuditScreenName.Associations);
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this.flatList?.scrollToOffset({
+                        offset: 0, animated: true,
+                    }),
+                );
+
+                // setTimeout(
+                //     () => this.props.refresh(),
+                //     100
+                // );
+            },
+        });
     }
 
     _renderItem = ({ item, index }: { item: Associations_Associations, index: number }) => {
@@ -100,49 +120,56 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
 
     render() {
         return (
-            <Query<Associations>
-                query={GetAssociationsQuery}
-                fetchPolicy={this.props.fetchPolicy}
-                variables={{
-                    id: this.props.screenProps?.association,
-                }}
-            >
-                {({ loading, error, data, refetch }) => {
-                    if (error) throw error;
-
-                    if (!loading && (data == null || data.Associations == null)) {
-                        return <CannotLoadWhileOffline />;
-                    }
-
+            <RefreshTracker>
+                {({ isRefreshing, createRunRefresh }) => {
                     return (
-                        <Placeholder
-                            ready={data != null && data.Associations != null}
-                            previewComponent={<CardPlaceholder />}
+                        <Query<Associations>
+                            query={GetAssociationsQuery}
+                            fetchPolicy={this.props.fetchPolicy}
+                            variables={{
+                                id: this.props.screenProps?.association,
+                            }}
                         >
-                            <FlatList
-                                contentContainerStyle={styles.container}
-                                data={
-                                    _(data != null ? data.Associations : [])
-                                        .sortBy(
-                                            (a) => (data != null && a.id === (this.props.screenProps?.association || data?.Me?.association.id))
-                                                ? '0'
-                                                : a.name,
-                                        )
-                                        .take(1)
-                                        .toArray()
-                                        .value()
+                            {({ loading, error, data, refetch }) => {
+                                if (error) throw error;
+
+                                if (!loading && (data == null || data.Associations == null)) {
+                                    return <CannotLoadWhileOffline />;
                                 }
 
-                                refreshing={loading}
-                                onRefresh={refetch}
+                                return (
+                                    <Placeholder
+                                        ready={data != null && data.Associations != null}
+                                        previewComponent={<CardPlaceholder />}
+                                    >
+                                        <FlatList
+                                            ref={(r) => this.flatList = r}
+                                            contentContainerStyle={styles.container}
+                                            data={
+                                                _(data != null ? data.Associations : [])
+                                                    .sortBy(
+                                                        (a) => (data != null && a.id === (this.props.screenProps?.association || data?.Me?.association.id))
+                                                            ? '0'
+                                                            : a.name,
+                                                    )
+                                                    .take(1)
+                                                    .toArray()
+                                                    .value()
+                                            }
 
-                                renderItem={this._renderItem}
-                                keyExtractor={this._key}
-                            />
-                        </Placeholder>
+                                            refreshing={isRefreshing || loading}
+                                            onRefresh={createRunRefresh(refetch)}
+
+                                            renderItem={this._renderItem}
+                                            keyExtractor={this._key}
+                                        />
+                                    </Placeholder>
+                                );
+                            }}
+                        </Query>
                     );
                 }}
-            </Query>
+            </RefreshTracker>
         );
     }
 }

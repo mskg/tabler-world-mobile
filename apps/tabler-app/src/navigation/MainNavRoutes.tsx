@@ -24,10 +24,6 @@ export const MainNavRoutes = {
             tabBarLabel: I18N.Structure.navigation,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />),
         },
-        params: {
-            association: null,
-            associationName: null,
-        },
     },
 
     [MainRoutes.News]: {

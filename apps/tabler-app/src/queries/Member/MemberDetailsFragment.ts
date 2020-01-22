@@ -8,6 +8,8 @@ export const MemberDetailsFragment = gql`
         ...MemberOverviewFragment
 
         birthdate
+        datejoined
+
         partner
         availableForChat
 

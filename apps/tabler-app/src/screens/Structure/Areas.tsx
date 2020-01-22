@@ -17,6 +17,9 @@ import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
 import { ScreenProps } from './StructureParams';
 import { styles } from './Styles';
+import { RefreshTracker } from '../../components/RefreshTracker';
+import { NavigationInjectedProps } from 'react-navigation';
+import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -42,10 +45,28 @@ function getSortKey(shortname: string) {
     return shortname;
 }
 
-class AreasScreenBase extends AuditedScreen<Props & ScreenProps, State> {
+class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInjectedProps<TapOnNavigationParams>, State> {
+    flatList!: FlatList<Areas_Areas> | null;
 
     constructor(props) {
         super(props, AuditScreenName.Areas);
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this.flatList?.scrollToOffset({
+                        offset: 0, animated: true,
+                    }),
+                );
+
+                // setTimeout(
+                //     () => this.props.refresh(),
+                //     100
+                // );
+            },
+        });
     }
 
     _renderItem = (params) => {
@@ -79,42 +100,50 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps, State> {
 
     render() {
         return (
-            <Query<Areas, AreasVariables>
-                query={GetAreasQuery}
-                fetchPolicy={this.props.fetchPolicy}
-                variables={{
-                    association: this.props.screenProps?.association,
-                }}
-            >
-                {({ loading, error, data, refetch }) => {
-                    if (error) throw error;
-
-                    if (!loading && (data == null || data.Areas == null)) {
-                        return <CannotLoadWhileOffline />;
-                    }
+            <RefreshTracker>
+                {({ isRefreshing, createRunRefresh }) => {
                     return (
-                        <Placeholder
-                            ready={data != null && data.Areas != null}
-                            previewComponent={<CardPlaceholder />}
+                        <Query<Areas, AreasVariables>
+                            query={GetAreasQuery}
+                            fetchPolicy={this.props.fetchPolicy}
+                            variables={{
+                                association: this.props.screenProps?.association,
+                            }}
                         >
-                            <FlatList
-                                contentContainerStyle={styles.container}
-                                data={
-                                    _(data != null ? data.Areas : [])
-                                        // my own area goes on top
-                                        .orderBy((a) => (data != null && data.Me.area.id === a.id) ? -1 : getSortKey(a.shortname))
-                                        .toArray()
-                                        .value()
+                            {({ loading, error, data, refetch }) => {
+                                if (error) throw error;
+
+                                if (!loading && (data == null || data.Areas == null)) {
+                                    return <CannotLoadWhileOffline />;
                                 }
-                                refreshing={loading}
-                                onRefresh={refetch}
-                                renderItem={this._renderItem}
-                                keyExtractor={this._key}
-                            />
-                        </Placeholder>
+                                return (
+                                    <Placeholder
+                                        ready={data != null && data.Areas != null}
+                                        previewComponent={<CardPlaceholder />}
+                                    >
+                                        <FlatList
+                                            ref={(r) => this.flatList = r}
+                                            contentContainerStyle={styles.container}
+                                            data={
+                                                _(data != null ? data.Areas : [])
+                                                    // my own area goes on top
+                                                    .orderBy((a) => (data != null && data.Me.area.id === a.id) ? -1 : getSortKey(a.shortname))
+                                                    .toArray()
+                                                    .value()
+                                            }
+                                            refreshing={isRefreshing || loading}
+                                            onRefresh={createRunRefresh(refetch)}
+                                            renderItem={this._renderItem}
+                                            keyExtractor={this._key}
+                                        />
+                                    </Placeholder>
+                                );
+                            }}
+                        </Query>
+
                     );
                 }}
-            </Query>
+            </RefreshTracker>
         );
     }
 }

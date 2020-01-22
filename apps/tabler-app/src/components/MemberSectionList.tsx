@@ -224,7 +224,6 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                     rowRenderer={this._rowRenderer}
 
                     scrollViewProps={{
-                        refreshing: this.props.refreshing,
                         refreshControl: (
                             <RefreshControl
                                 refreshing={this.props.refreshing}

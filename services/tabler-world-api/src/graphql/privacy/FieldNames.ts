@@ -24,5 +24,5 @@ export const system_fields = [
 
 // tslint:disable-next-line: variable-name
 export const standard_fields = [
-    'firstname', 'lastname', 'pic', 'rtemail', 'socialmedia',
+    'firstname', 'lastname', 'pic', 'rtemail', 'socialmedia', 'datejoined',
 ];

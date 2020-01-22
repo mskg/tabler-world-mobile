@@ -88,7 +88,7 @@ export class Predicates {
     static table(tables: HashMap<boolean, string | number>): Predicate {
         return (member: IMemberOverviewFragment) => {
             return tables == null
-                || tables[member.club.club] === true
+                || tables[member.club.clubnumber] === true
                 || tables[member.club.name] === true;
         };
     }

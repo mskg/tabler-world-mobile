@@ -98,6 +98,14 @@ class ActionsFabBase extends React.Component<Props> {
                         color: isFav ? this.props.theme.colors.accent : undefined,
                     },
 
+                    canChat
+                        ? {
+                            icon: 'chat',
+                            label: I18N.Member.Actions.chat,
+                            onPress: this._chat,
+                        }
+                        : undefined,
+
                     isFeatureEnabled(Features.SendToAdressbook)
                         ? {
                             icon: 'contacts',
@@ -113,14 +121,7 @@ class ActionsFabBase extends React.Component<Props> {
                             onPress: this._handleWeb,
                         }
                         : undefined,
-
-                    canChat
-                        ? {
-                            icon: 'chat',
-                            label: I18N.Member.Actions.chat,
-                            onPress: this._chat,
-                        }
-                        : undefined,
+                    ,
                 ].filter(Boolean) as Action[]}
                 onStateChange={({ open }) => this.setState({ open })}
             />

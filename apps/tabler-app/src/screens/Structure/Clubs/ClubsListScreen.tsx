@@ -12,6 +12,8 @@ import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { CachedImage } from '../../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
+import { RefreshTracker } from '../../../components/RefreshTracker';
+import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
 import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
@@ -42,7 +44,9 @@ type Props = {
     data?: Clubs | null,
 } & NavigationInjectedProps;
 
-class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<StructureParams>, State> {
+class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<StructureParams & TapOnNavigationParams>, State> {
+    flatList!: FlatList<Clubs_Clubs> | null;
+
     constructor(props) {
         super(props, ScreenName.Clubs);
 
@@ -50,6 +54,23 @@ class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Stru
             search: '',
             filtered: this.filterResults(props.data),
         };
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this.flatList?.scrollToOffset({
+                        offset: 0, animated: true,
+                    }),
+                );
+
+                // setTimeout(
+                //     () => this.props.refresh(),
+                //     100
+                // );
+            },
+        });
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -80,7 +101,7 @@ class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Stru
                     avatar={item.clubnumber}
                 />
 
-                {item.logo &&
+                {item.logo && (
                     <TouchableWithoutFeedback onPress={showClubFunc}>
                         <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                             <CachedImage
@@ -90,7 +111,7 @@ class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Stru
                             />
                         </View>
                     </TouchableWithoutFeedback>
-                }
+                )}
 
                 {/*
                 <Card.Content>
@@ -158,46 +179,56 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         const showMap = isFeatureEnabled(Features.ClubMap);
 
         return (
-            <Placeholder
-                ready={this.props.data != null && this.props.data.Clubs != null}
-                previewComponent={<CardPlaceholder />}
-            >
-                <FlatList
-                    contentContainerStyle={styles.container}
-                    data={this.state.filtered}
-                    ListHeaderComponent={
-                        <View style={{ flexDirection: 'row' }}>
-                            <Searchbar
-                                style={[styles.searchbar]}
-                                selectionColor={this.props.theme.colors.accent}
-                                placeholder={I18N.Search.search}
-                                autoCorrect={false}
+            <RefreshTracker>
+                {({ isRefreshing, createRunRefresh }) => {
+                    return (
+                        <Placeholder
+                            ready={this.props.data != null && this.props.data.Clubs != null}
+                            previewComponent={<CardPlaceholder />}
+                        >
+                            <FlatList
+                                ref={(r) => this.flatList = r}
+                                contentContainerStyle={styles.container}
+                                data={this.state.filtered}
+                                ListHeaderComponent={(
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Searchbar
+                                            style={[styles.searchbar]}
+                                            selectionColor={this.props.theme.colors.accent}
+                                            placeholder={I18N.Search.search}
+                                            autoCorrect={false}
 
-                                value={this.state.search}
-                                onChangeText={this._search}
+                                            value={this.state.search}
+                                            onChangeText={this._search}
+                                        />
+
+                                        {showMap && (
+                                            <Surface style={styles.switchLayoutButton}>
+                                                <IconButton
+                                                    icon={
+                                                        ({ size, color }) => (
+                                                            <Ionicons
+                                                                name="md-map"
+                                                                size={size}
+                                                                color={color}
+                                                            />
+                                                        )
+                                                    }
+                                                    onPress={this._showMap}
+                                                />
+                                            </Surface>
+                                        )}
+                                    </View>
+                                )}
+                                refreshing={this.props.loading || isRefreshing}
+                                onRefresh={createRunRefresh(this.props.refresh)}
+                                renderItem={this._renderItem}
+                                keyExtractor={this._key}
                             />
-
-                            {showMap &&
-                                <Surface style={styles.switchLayoutButton}>
-                                    <IconButton
-                                        icon={({ size, color }) =>
-                                            <Ionicons
-                                                name="md-map"
-                                                size={size}
-                                                color={color}
-                                            />}
-                                        onPress={this._showMap}
-                                    />
-                                </Surface>
-                            }
-                        </View>
-                    }
-                    refreshing={this.props.loading}
-                    onRefresh={this.props.refresh}
-                    renderItem={this._renderItem}
-                    keyExtractor={this._key}
-                />
-            </Placeholder>
+                        </Placeholder>
+                    );
+                }}
+            </RefreshTracker>
         );
     }
 }

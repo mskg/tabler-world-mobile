@@ -5,6 +5,7 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import { I18N } from '../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR } from '../theme/colors';
 import { MainNavRoutes } from './MainNavRoutes';
+import { defaultNavigationOptions } from '../components/ReloadNavigationOptions';
 import { EXPERIMENT_PREFIX, MainRoutes } from './Routes';
 
 const Routes = (() => {
@@ -32,5 +33,8 @@ export const MainBottomNavigation = createMaterialBottomTabNavigator(
             backgroundColor: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
             paddingBottom: 0,
         },
+
+        // tslint:disable-next-line: object-shorthand-properties-first
+        defaultNavigationOptions,
     },
 );

@@ -141,12 +141,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
         return (
             <Screen>
                 {!this.state.searching && (
-                    <>
-                        <LRU />
-                        <SearchHistory
-                            applyFilter={this.searchFilterFunction}
-                        />
-                    </>
+                    <SearchHistory applyFilter={this.searchFilterFunction} />
                 )}
 
                 {/* {this.state.searching && this.props.offline && (

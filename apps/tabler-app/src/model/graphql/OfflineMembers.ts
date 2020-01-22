@@ -118,6 +118,7 @@ export interface OfflineMembers_OwnTable {
   association: OfflineMembers_OwnTable_association;
   roles: OfflineMembers_OwnTable_roles[] | null;
   birthdate: any | null;
+  datejoined: any | null;
   partner: string | null;
   availableForChat: boolean | null;
   emails: OfflineMembers_OwnTable_emails[] | null;
@@ -239,6 +240,7 @@ export interface OfflineMembers_FavoriteMembers {
   association: OfflineMembers_FavoriteMembers_association;
   roles: OfflineMembers_FavoriteMembers_roles[] | null;
   birthdate: any | null;
+  datejoined: any | null;
   partner: string | null;
   availableForChat: boolean | null;
   emails: OfflineMembers_FavoriteMembers_emails[] | null;

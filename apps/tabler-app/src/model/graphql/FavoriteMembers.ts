@@ -118,6 +118,7 @@ export interface FavoriteMembers_FavoriteMembers {
   association: FavoriteMembers_FavoriteMembers_association;
   roles: FavoriteMembers_FavoriteMembers_roles[] | null;
   birthdate: any | null;
+  datejoined: any | null;
   partner: string | null;
   availableForChat: boolean | null;
   emails: FavoriteMembers_FavoriteMembers_emails[] | null;

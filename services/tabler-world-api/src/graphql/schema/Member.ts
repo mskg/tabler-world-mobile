@@ -151,6 +151,7 @@ export const Member = gql`
         # clubname: String
 
         birthdate: Date
+        datejoined: Date
 
         phonenumbers: [CommunicationElement!]
         emails: [CommunicationElement!]

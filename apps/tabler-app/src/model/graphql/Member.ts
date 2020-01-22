@@ -118,6 +118,7 @@ export interface Member_Member {
   association: Member_Member_association;
   roles: Member_Member_roles[] | null;
   birthdate: any | null;
+  datejoined: any | null;
   partner: string | null;
   availableForChat: boolean | null;
   emails: Member_Member_emails[] | null;

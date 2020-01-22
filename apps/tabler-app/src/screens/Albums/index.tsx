@@ -2,6 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Dimensions, FlatList, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Card, Theme, Title, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -10,6 +11,7 @@ import { HTMLView } from '../../components/HTMLView';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { ReadMore } from '../../components/ReadMore';
+import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
@@ -31,10 +33,28 @@ type Props = {
     showAlbum: typeof showAlbum,
 };
 
-class AlbumsScreenBase extends AuditedScreen<Props, State> {
+class AlbumsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<TapOnNavigationParams>, State> {
+    flatList!: FlatList<AlbumsOverview_Albums> | null;
 
     constructor(props) {
         super(props, AuditScreenName.AlbumList);
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this.flatList?.scrollToOffset({
+                        offset: 0, animated: true,
+                    }),
+                );
+
+                // setTimeout(
+                //     () => this.props.refresh(),
+                //     100
+                // );
+            },
+        });
     }
 
     _renderItem = (params) => {
@@ -99,6 +119,8 @@ class AlbumsScreenBase extends AuditedScreen<Props, State> {
                                 previewComponent={<CardPlaceholder />}
                             >
                                 <FlatList
+                                    ref={(r) => this.flatList = r}
+
                                     contentContainerStyle={styles.container}
                                     data={data != null ? data.Albums : []}
 

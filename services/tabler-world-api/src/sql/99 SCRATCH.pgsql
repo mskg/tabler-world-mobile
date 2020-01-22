@@ -420,3 +420,11 @@ AND
 order by cursor_lastfirst
 limit
 20
+
+
+select * from tabler
+where last
+
+
+select * From tabler
+where data->>'last_name' = 'Kling'

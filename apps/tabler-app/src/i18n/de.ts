@@ -1,4 +1,4 @@
-import { differenceInYears, format, parseISO } from 'date-fns';
+import { differenceInYears, format, parseISO, differenceInCalendarYears } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
 import 'moment';
 import 'moment/locale/de';
@@ -168,6 +168,11 @@ const de: I18NType = {
                 if (date == null) return undefined;
                 return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateDE })} (${differenceInYears(Date.now(), parseISO(date))})`;
             },
+
+            membership: (date?: string) => {
+                if (date == null) return undefined;
+                return `${format(parseISO(date), 'yyyy', { locale: dateDE })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
+            },
         },
 
         email: (s) => {
@@ -217,6 +222,7 @@ const de: I18NType = {
 
             companies: 'Firma',
             educations: 'Ausbildung',
+            joined: 'Eintrittsdatum',
         },
 
         Actions: {

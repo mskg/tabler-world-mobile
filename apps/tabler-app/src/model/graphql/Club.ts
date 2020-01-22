@@ -16,6 +16,7 @@ export interface Club_Club_area {
 export interface Club_Club_association {
   __typename: "Association";
   name: string;
+  id: string;
   /**
    * Deprecated, don't use
    */

@@ -1,31 +1,26 @@
-import { debounce, remove, sortBy, values } from 'lodash';
+import { debounce, remove, sortBy } from 'lodash';
 import React from 'react';
-import { Query } from 'react-apollo';
-import { Modal, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
-import { Appbar, Chip, Divider, List, Searchbar, Theme, withTheme } from 'react-native-paper';
+import { TouchableWithoutFeedback, View } from 'react-native';
+import { Appbar, Chip, Divider, Searchbar, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
-import { FilterSection, FilterTag, FilterTagType } from '../../components/FilterSection';
+import { FilterTag, FilterTagType } from '../../components/FilterSection';
 import { StandardHeader } from '../../components/Header';
-import ListSubheader from '../../components/ListSubheader';
-import { InlineLoading } from '../../components/Loading';
 import { MemberListItem } from '../../components/Member/MemberListItem';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { AssociationsAndRolesFilters } from '../../model/graphql/AssociationsAndRolesFilters';
 import { Me } from '../../model/graphql/Me';
 import { IAppState } from '../../model/IAppState';
 import { GetMeQuery } from '../../queries/Member/GetMeQuery';
-import { GetAssociationsAndRolesFiltersQuery } from '../../queries/Search/GetAssociationsAndRolesFiltersQuery';
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
-import { AssociationFilters } from './AssociationFilters';
+import { FilterDialog } from './FilterDialog';
 import { logger } from './logger';
 import { LRU } from './LRU';
 import { OfflineSearchQuery } from './OfflineSearch';
@@ -91,22 +86,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             });
         }
 
-        try {
-            const client = cachedAolloClient();
-            const me = client.readQuery<Me>({
-                query: GetMeQuery,
-            });
-
-            if (me?.Me.association.name != null) {
-                this.state.filterTags.push({
-                    type: 'association',
-                    value: me?.Me.association.name,
-                    id: me?.Me.association.id,
-                });
-            }
-            // tslint:disable-next-line: no-empty
-        } catch { }
-
+        this.state.filterTags.push(... this.getDefaultAssocFilter());
 
         logger.debug('Logged');
         this.audit.submit();
@@ -114,6 +94,28 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
 
     componentWillUnmount() {
         this.mounted = false;
+    }
+
+    getDefaultAssocFilter(): FilterTag[] {
+        try {
+            const client = cachedAolloClient();
+            const me = client.readQuery<Me>({
+                query: GetMeQuery,
+            });
+
+            if (me?.Me.association.name != null) {
+                return [{
+                    type: 'association',
+                    value: me?.Me.association.name,
+                    id: me?.Me.association.id,
+                }];
+            }
+            // tslint:disable-next-line: no-empty
+        } catch (e) {
+            logger.error(e, 'Could not load addMyAssocFilter');
+        }
+
+        return [];
     }
 
     _searchBar!: Searchbar | null;
@@ -144,7 +146,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             query: '',
             debouncedQuery: '',
             searching: false,
-            filterTags: [],
+            filterTags: this.getDefaultAssocFilter(),
             showFilter: false,
         });
     }
@@ -225,11 +227,10 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         this.setState({ showFilter: !this.state.showFilter });
     }
 
-    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <Screen>
-                {this.state.filterTags.length > 0 && (
+                {this.state.searching && this.state.filterTags.length > 0 && (
                     <TouchableWithoutFeedback onPress={this._showFilterDialog}>
                         <>
                             <View style={[styles.chips, { backgroundColor: this.props.theme.colors.primary }]}>
@@ -276,104 +277,15 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                     />
                 )}
 
-                <Modal
+                <FilterDialog
+                    filterTags={this.state.filterTags}
+                    toggleAssociation={this._onToggleAsssociation}
+                    toggleTag={this._onToggleTag}
+
                     visible={this.state.showFilter}
-                    transparent={true}
-                    onRequestClose={() => this.setState({ showFilter: false })}
-                    animationType="fade"
-                >
-                    <TouchableWithoutFeedback onPress={() => this.setState({ showFilter: false })}>
-                        <View
-                            style={{
-                                ...styles.overlay,
-                                backgroundColor: this.props.theme.colors.backdrop,
-                            }}
-                        />
-                    </TouchableWithoutFeedback>
-
-                    <View
-                        style={{
-                            ...styles.popup,
-                            backgroundColor: this.props.theme.colors.background,
-                            borderColor: this.props.theme.colors.backdrop,
-                        }}
-                    >
-                        <List.Section>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    marginRight: 4,
-                                }}
-                            >
-                                <ListSubheader>{I18N.Search.filter}</ListSubheader>
-                                <Appbar.Action color={this.props.theme.colors.accent} icon={'clear'} onPress={this._clearSearch} />
-                            </View>
-                            <ScrollView style={{ minHeight: '100%' }}>
-                                <Divider />
-                                <Query<AssociationsAndRolesFilters> query={GetAssociationsAndRolesFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
-                                    {({ data, error }) => {
-                                        // ok for now
-                                        if (error) return null;
-
-                                        if (data == null
-                                            || data.Associations == null
-                                            || data.Roles == null
-                                        ) {
-                                            return (<View style={{ marginHorizontal: 16 }}><InlineLoading /></View>);
-                                        }
-
-                                        return (
-                                            <>
-                                                <FilterSection
-                                                    title={I18N.Search.associations(data.Associations.length)}
-                                                    type="association"
-                                                    filter={this.state.filterTags}
-                                                    data={data.Associations}
-                                                    onToggle={this._onToggleAsssociation}
-                                                    theme={this.props.theme}
-                                                />
-                                                <Divider />
-
-                                                <AssociationFilters
-                                                    filterTags={this.state.filterTags}
-                                                    toggleTag={this._onToggleTag}
-                                                />
-
-                                                <FilterSection
-                                                    title={I18N.Search.roles(data.Roles.length)}
-                                                    type="role"
-                                                    filter={this.state.filterTags}
-                                                    data={data.Roles}
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-                                                <Divider />
-
-                                                <FilterSection
-                                                    title={I18N.Search.sectors(Object.keys(I18N.Search.sectorNames).length)}
-                                                    type="sector"
-                                                    filter={this.state.filterTags}
-                                                    data={values(I18N.Search.sectorNames).sort()}
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-                                                <Divider />
-                                            </>
-                                        );
-                                    }}
-                                </Query>
-                            </ScrollView>
-                        </List.Section>
-                    </View>
-
-                    <View
-                        style={{
-                            ...styles.triangle,
-                            borderBottomColor: this.props.theme.colors.background,
-                        }}
-                    />
-                </Modal>
+                    hide={() => this.setState({ showFilter: false })}
+                    clear={this._clearSearch}
+                />
 
                 <StandardHeader
                     style={[HeaderStyles.topBar, { backgroundColor: this.props.theme.colors.primary }]}

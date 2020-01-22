@@ -168,7 +168,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 <MapView
                     ref={(ref) => { this.mapRef = ref; }}
 
-                    provider={this.props.theme.dark ? PROVIDER_GOOGLE : undefined}
+                    // provider={this.props.theme.dark ? PROVIDER_GOOGLE : undefined}
                     zoomEnabled={true}
                     scrollEnabled={true}
                     region={this.state.centerOn}
@@ -213,12 +213,15 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
                     <Surface style={styles.switchLayoutButton}>
                         <IconButton
-                            icon={({ size, color }) =>
-                                <Ionicons
-                                    name="md-list"
-                                    size={size}
-                                    color={color}
-                                />}
+                            icon={
+                                ({ size, color }) => (
+                                    <Ionicons
+                                        name="md-list"
+                                        size={size}
+                                        color={color}
+                                    />
+                                )
+                            }
                             onPress={this._showList}
                         />
                     </Surface>

@@ -1,4 +1,4 @@
-import { differenceInYears, format, parseISO } from 'date-fns';
+import { differenceInYears, differenceInCalendarYears, format, parseISO } from 'date-fns';
 import dateEN from 'date-fns/locale/en-US';
 import 'moment';
 import { Platform } from 'react-native';
@@ -166,6 +166,11 @@ const en = {
                 if (date == null) return undefined;
                 return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateEN })} (${differenceInYears(Date.now(), parseISO(date))})`;
             },
+
+            membership: (date?: string) => {
+                if (date == null) return undefined;
+                return `${format(parseISO(date), 'yyyy', { locale: dateEN })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
+            },
         },
 
         email: (s) => {
@@ -215,6 +220,7 @@ const en = {
 
             companies: 'Company',
             educations: 'Education',
+            joined: 'Date Joined',
         },
 
         Actions: {

@@ -320,6 +320,10 @@ class ProfileBase extends React.Component<Props, State> {
                         field: I18N.Member.Fields.rtorg,
                         text: <Organization member={member} />,
                     },
+                    {
+                        field: I18N.Member.Fields.joined,
+                        text: I18N.Member.Formats.membership(member.datejoined),
+                    },
                 ],
             },
             {

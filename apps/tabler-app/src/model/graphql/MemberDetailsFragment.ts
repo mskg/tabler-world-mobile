@@ -118,6 +118,7 @@ export interface MemberDetailsFragment {
   association: MemberDetailsFragment_association;
   roles: MemberDetailsFragment_roles[] | null;
   birthdate: any | null;
+  datejoined: any | null;
   partner: string | null;
   availableForChat: boolean | null;
   emails: MemberDetailsFragment_emails[] | null;

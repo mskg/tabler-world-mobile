@@ -36,6 +36,7 @@ select
 	,TRIM(data->>'first_name') as firstname
 	,TRIM(data->>'last_name') as lastname
 	,cast(data->>'birth_date' as DATE) as birthdate
+	,cast(data->>'rt_date_joined' as DATE) as datejoined
 
 	,data->>'profile_pic' as pic
 	-- always private
