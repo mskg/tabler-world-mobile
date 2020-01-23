@@ -18,35 +18,37 @@ export const mocks = {
     Date: () => faker.date.future(),
 
     Query: () => ({
-      OwnTable: () => [],
-      FavoriteMembers: () => [],
+        OwnTable: () => [],
+        FavoriteMembers: () => [],
 
-    // if we don't specify a mocklist
-    // we receive errors that types are not defined for interfaces
-    // one element is consumed by Me queries
-      MembersOverview: () => new MockList(memberNames.length - 1),
+        // if we don't specify a mocklist
+        // we receive errors that types are not defined for interfaces
+        // one element is consumed by Me queries
+        MembersOverview: () => new MockList(memberNames.length - 1),
 
-      Associations: () => new MockList(1),
+        // SearchDirectory: () => new MockList(20),
 
-      Areas: () => _(clubNames)
-      .map((a: any) => a.area)
-      .uniq()
-      .map((a: any) => Area({ area: a }, {}, {}, null))
-      .value(),
+        Associations: () => new MockList(1),
 
-      Clubs: () => _(clubNames)
-      .map((c: any) => Club({ club: c.id + 1 }, {}, {}, null))
-      .value(),
+        Areas: () => _(clubNames)
+            .map((a: any) => a.area)
+            .uniq()
+            .map((a: any) => Area({ area: a }, {}, {}, null))
+            .value(),
 
-      nearbyMembers: () => new MockList(
-      faker.random.number({ min: 5, max: 20 }),
-    ),
+        Clubs: () => _(clubNames)
+            .map((c: any) => Club({ club: c.id + 1 }, {}, {}, null))
+            .value(),
 
-      Roles,
-      getParameters: () => [],
+        nearbyMembers: () => new MockList(
+            faker.random.number({ min: 5, max: 20 }),
+        ),
 
-      MyRoles: () => [],
-  }),
+        Roles,
+        getParameters: () => [],
+
+        MyRoles: () => [],
+    }),
 
     Member,
     Address,

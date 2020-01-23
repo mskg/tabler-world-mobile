@@ -28,7 +28,9 @@ from tabler where id in
 
     select id
 from profiles
-where area is null
+where area is null or club is null
+or association is null
+
 and removed = false
 )
 

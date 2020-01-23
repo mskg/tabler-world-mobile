@@ -13,6 +13,7 @@ import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
 import { LOCATION_TASK_NAME } from '../Constants';
 import { isSignedIn } from '../helper/isSignedIn';
 import { logger } from './logger';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 
 // tslint:disable-next-line: export-name
 export async function handleLocationUpdate(locations: Location.LocationData[], enable = false, force = false): Promise<boolean> {
@@ -20,7 +21,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
         logger.debug('handleLocationUpdate', locations);
 
         await persistorRehydrated();
-        if (!isSignedIn()) {
+        if (!isSignedIn() && !(await isDemoModeEnabled())) {
             logger.debug('Not signed in, stopping location services');
 
             try {

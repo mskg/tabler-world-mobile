@@ -67,7 +67,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 })
                 : undefined,
 
-            wsLink != null
+            wsLink != null && !demoMode
                 ? ApolloLink.split(
                     // split based on operation type
                     ({ query }) => {
