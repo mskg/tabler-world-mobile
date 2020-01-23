@@ -162,7 +162,12 @@ select
 	,data->>'rt_privacy_settings' as privacysettings
     ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
     ,row_number() over(order by data->>'last_name', data->>'first_name') as cursor_lastfirst
-from tabler;
+from tabler
+where
+    -- club and areea must not be null
+        make_key_club(data->>'rt_association_subdomain', data->>'rt_club_subdomain') is not null
+    and make_key_area(data->>'rt_association_subdomain', data->>'rt_area_subdomain') is not null
+;
 
 CREATE UNIQUE INDEX idx_profiles_id
 ON public.profiles USING btree (id ASC)
