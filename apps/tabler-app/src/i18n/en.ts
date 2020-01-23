@@ -1,4 +1,4 @@
-import { differenceInYears, differenceInCalendarYears, format, parseISO } from 'date-fns';
+import { differenceInCalendarYears, differenceInYears, format, parseISO } from 'date-fns';
 import dateEN from 'date-fns/locale/en-US';
 import 'moment';
 import { Platform } from 'react-native';
@@ -307,15 +307,15 @@ const en = {
     Filter: {
         title: 'Adjust member filters',
         area: 'Districts',
-        showAll: 'Show all members',
-        hideAll: 'Hide all members',
+        showAll: 'Show all my Association Members',
+        hideAll: 'Hide all my Association Members',
 
         favorites: 'Favorites',
-        toggleFavorits: 'All favorites',
-        toggleOwnTable: 'My own table',
+        toggleFavorits: 'All Favorites',
+        toggleOwnTable: 'My own Table',
 
-        toggleAssociationBoard: 'Association Board and -Assists',
-        toggleAreaBoard: 'Association Board of Advisors',
+        toggleAssociationBoard: 'My Association\'s Board and -Assists',
+        toggleAreaBoard: 'My Association\'s Board of Advisors',
     },
 
 

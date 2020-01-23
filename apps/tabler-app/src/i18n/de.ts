@@ -310,16 +310,16 @@ const de: I18NType = {
 
     Filter: {
         title: 'Filter anpassen',
-        area: 'Distrikte',
-        showAll: 'Alle Mitglieder anzeigen',
+        area: 'Distrikte meiner Assoziation',
+        showAll: 'Alle Mitglieder meiner Assoziation anzeigen',
         hideAll: 'Keine Mitglieder anzeigen',
 
         favorites: 'Favoriten',
         toggleFavorits: 'All Favoriten',
         toggleOwnTable: 'Mitglieder meines Tisches',
 
-        toggleAssociationBoard: 'Präsidium und Referenten',
-        toggleAreaBoard: 'Beirat',
+        toggleAssociationBoard: 'Präsidium und Referenten meiner Assoziation',
+        toggleAreaBoard: 'Beirat meiner Assoziation',
     },
 
 

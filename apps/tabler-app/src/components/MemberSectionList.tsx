@@ -79,10 +79,10 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                     if (data === ME_ITEM) { return ItemType.Me; } return ItemType.Section;
                 } {
                     const roles = (data != null && (data as IMemberOverviewFragment).roles) || [];
-                    if (roles.length == 0) return ItemType.Small;
+                    if (roles.length === 0) return ItemType.Small;
 
                     const length = roles.reduce(
-                        (p, c) => (p > 0 ? 3 : 0) + p + (c.name || '').length + ((c.ref || { name: '' }).name || '').length,
+                        (p, c) => (p > 0 ? 3 : 0) + p + (c.name || '').length + ((c.ref || { shortname: '' }).shortname || '').length,
                         0);
 
                     // this kills the performance of the "debugger" as

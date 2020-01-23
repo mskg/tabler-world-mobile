@@ -97,7 +97,7 @@ export const MemberResolver = {
 
                 if (args.filter.nationalBoard === true) {
                     context.logger.log('nationalBoard', args.filter);
-                    const associations = await context.dataSources.structure.allAssociations();
+                    const associations = [await context.dataSources.structure.getAssociation(context.principal.association)];
 
                     for (const assoc of associations) {
                         if (assoc.board) {
