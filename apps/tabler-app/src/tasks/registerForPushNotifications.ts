@@ -32,7 +32,7 @@ export async function registerForPushNotifications() {
             return;
         }
 
-        const existingToken = 'b' + await AsyncStorage.getItem(TOKEN_KEY);
+        const existingToken = await AsyncStorage.getItem(TOKEN_KEY);
 
         // Get the token that uniquely identifies this device
         const token = await Notifications.getExpoPushTokenAsync();
