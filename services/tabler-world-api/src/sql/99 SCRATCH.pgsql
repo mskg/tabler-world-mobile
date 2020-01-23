@@ -31,3 +31,9 @@ from profiles
 where area is null
 and removed = false
 )
+
+select * from
+jobhistory
+order by runon desc
+
+where result is null

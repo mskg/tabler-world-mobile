@@ -32,14 +32,13 @@ limit 20`);
                 case 'update::database':
                     return 'JobEmpty';
 
-                case 'update::tabler::full':
-                case 'update::tabler::incremental':
-                case 'update::clubs::full':
-                case 'update::clubs::incremental':
-                    return 'JobSync';
+                case 'push::send':
+                case 'notifications::check':
+                case 'notifications::sendBirthday':
+                    return 'JobSend';
 
                 default:
-                    return 'JobSend';
+                    return 'JobSync';
             }
 
             return null;
