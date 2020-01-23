@@ -60,9 +60,6 @@ if (isFeatureEnabled(Features.BackgroundLocation)) {
     registerLocationTask();
 }
 
-logger.log('Bootstrapping push notifications');
-registerForPushNotifications();
-
 fix2940();
 // useScreens();
 

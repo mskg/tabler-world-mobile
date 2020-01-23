@@ -37,3 +37,7 @@ jobhistory
 order by runon desc
 
 where result is null
+
+
+select * from usersettings
+where id =14225

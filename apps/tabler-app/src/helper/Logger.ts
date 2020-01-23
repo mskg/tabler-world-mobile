@@ -78,7 +78,7 @@ export class Categories {
     };
 }
 
-let FILTER: RegExp | undefined = /NearbyMembers|NearBy/ig; // /Chat|API/ig;
+let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
 const PRESERVE_CONSOLE = false;
 

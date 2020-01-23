@@ -32,21 +32,18 @@ export async function registerForPushNotifications() {
             return;
         }
 
-        const existingToken = await AsyncStorage.getItem(TOKEN_KEY);
+        const existingToken = 'b' + await AsyncStorage.getItem(TOKEN_KEY);
 
         // Get the token that uniquely identifies this device
         const token = await Notifications.getExpoPushTokenAsync();
 
         if (token != existingToken) {
-            logger.log('token is ', token);
+            logger.log('token is', token);
             getReduxStore().dispatch(storePushToken(token));
         } else {
             logger.log('Token known', existingToken);
         }
     } catch (e) {
-        // push not supported when not logged in
-        if (!__DEV__) {
-            logger.error(e, 'Failed to acquire push token');
-        }
+        logger.error(e, 'Failed to acquire push token');
     }
 }
