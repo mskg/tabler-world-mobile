@@ -99,7 +99,7 @@ class ActionsFabBase extends React.Component<Props> {
                         color: isFav ? this.props.theme.colors.accent : undefined,
                     },
 
-                    canChat && this.props.chatEnabled
+                    isFeatureEnabled(Features.Chat) && canChat && this.props.chatEnabled
                         ? {
                             icon: 'chat',
                             label: I18N.Member.Actions.chat,

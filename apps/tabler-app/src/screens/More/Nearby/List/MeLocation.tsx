@@ -5,15 +5,15 @@ import { Query } from 'react-apollo';
 import { IconButton, List, Theme, Title, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { InternalMeListItemBase } from '../../../components/MeListItem';
-import { timespan } from '../../../helper/timespan';
-import { I18N } from '../../../i18n/translation';
-import { Features, isFeatureEnabled } from '../../../model/Features';
-import { Me } from '../../../model/graphql/Me';
-import { IAppState } from '../../../model/IAppState';
-import { GetMeQuery } from '../../../queries/Member/GetMeQuery';
-import { showLocationHistory } from '../../../redux/actions/navigation';
-import { handleLocationUpdate } from '../../../tasks/location/handleLocationUpdate';
+import { InternalMeListItemBase } from '../../../../components/MeListItem';
+import { timespan } from '../../../../helper/timespan';
+import { I18N } from '../../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../../model/Features';
+import { Me } from '../../../../model/graphql/Me';
+import { IAppState } from '../../../../model/IAppState';
+import { GetMeQuery } from '../../../../queries/Member/GetMeQuery';
+import { showLocationHistory } from '../../../../redux/actions/navigation';
+import { handleLocationUpdate } from '../../../../tasks/location/handleLocationUpdate';
 
 type State = {
     message?: string,

@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { IconButton, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
-import { MemberTitle } from '../../../components/Member/MemberTitle';
-import { distance } from '../../../helper/distance';
-import { timespan } from '../../../helper/timespan';
-import { I18N } from '../../../i18n/translation';
-import { NearbyMembers_nearbyMembers_member } from '../../../model/graphql/NearbyMembers';
-import { IAppState } from '../../../model/IAppState';
-import { showProfile, startConversation } from '../../../redux/actions/navigation';
+import { InternalMemberListItem } from '../../../../components/Member/InternalMemberListItem';
+import { MemberTitle } from '../../../../components/Member/MemberTitle';
+import { distance } from '../../../../helper/distance';
+import { timespan } from '../../../../helper/timespan';
+import { I18N } from '../../../../i18n/translation';
+import { NearbyMembers_nearbyMembers_member } from '../../../../model/graphql/NearbyMembers';
+import { IAppState } from '../../../../model/IAppState';
+import { showProfile, startConversation } from '../../../../redux/actions/navigation';
 
 type OwnProps = {
     member: NearbyMembers_nearbyMembers_member,

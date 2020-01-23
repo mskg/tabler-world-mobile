@@ -1,7 +1,7 @@
 import ApolloClient from 'apollo-client';
 import { bootstrapApollo } from '../../apollo/bootstrapApollo';
 import { DisableLocationServices } from '../../model/graphql/DisableLocationServices';
-import { DisableLocationServicesMutation } from '../../queries/Location/DisableLocationServices';
+import { DisableLocationServicesMutation } from '../../queries/Location/DisableLocationServicesMutation';
 import { setLocation } from '../../redux/actions/location';
 import { updateSetting } from '../../redux/actions/settings';
 import { getReduxStore } from '../../redux/getRedux';
@@ -30,5 +30,9 @@ export async function disableNearbyTablers() {
     // await AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
     getReduxStore().dispatch(
         updateSetting({ name: 'nearbyMembers', value: false }),
+    );
+
+    getReduxStore().dispatch(
+        updateSetting({ name: 'nearbyMembersMap', value: false }),
     );
 }

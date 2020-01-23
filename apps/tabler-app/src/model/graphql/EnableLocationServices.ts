@@ -13,6 +13,10 @@ export interface EnableLocationServices {
    * Updates a setting
    */
   putSetting: boolean | null;
+  /**
+   * Updates a setting
+   */
+  nearbymembersMap: boolean | null;
   putLocation: boolean | null;
 }
 

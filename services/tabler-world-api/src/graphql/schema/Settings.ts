@@ -6,6 +6,7 @@ export const Settings = gql`
     enum SettingName {
         favorites
         nearbymembers
+        nearbymembersMap
         language
         notifications
     }

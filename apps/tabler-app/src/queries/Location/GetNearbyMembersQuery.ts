@@ -12,6 +12,7 @@ export const GetNearbyMembersQuery = gql`
             lastseen
             state
             distance
+            canshowonmap
 
             address {
                 location {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { Categories, Logger } from '../../../helper/Logger';
+import { Features, isFeatureEnabled } from '../../../model/Features';
 import { conversationUpdate } from '../../../model/graphql/conversationUpdate';
 import { GetConversations } from '../../../model/graphql/GetConversations';
 import { conversationUpdateSubscription } from '../../../queries/Conversations/conversationUpdateSubscription';
@@ -18,6 +19,10 @@ export class SubscribeToConversationUpdates extends React.PureComponent {
     }
 
     componentDidMount() {
+        if (!isFeatureEnabled(Features.Chat)) {
+            return;
+        }
+
         logger.debug('Starting watching channel udpates');
 
         const client = cachedAolloClient();

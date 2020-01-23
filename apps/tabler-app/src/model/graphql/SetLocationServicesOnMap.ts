@@ -3,17 +3,16 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: DisableLocationServices
+// GraphQL mutation operation: SetLocationServicesOnMap
 // ====================================================
 
-export interface DisableLocationServices {
+export interface SetLocationServicesOnMap {
   /**
    * Updates a setting
    */
   putSetting: boolean | null;
-  /**
-   * Updates a setting
-   */
-  nearbymembersMap: boolean | null;
-  disableLocationServices: boolean | null;
+}
+
+export interface SetLocationServicesOnMapVariables {
+  state: any;
 }

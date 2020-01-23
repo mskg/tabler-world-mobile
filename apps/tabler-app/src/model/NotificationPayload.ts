@@ -1,4 +1,4 @@
-type Reasons = 'birthday' | 'chatmessage';
+type Reasons = 'birthday' | 'chatmessage' | 'advertisment';
 
 export interface INotificationWithPayload<T = void> {
     title?: string;
@@ -24,4 +24,8 @@ export type ChatMessageNotification = INotificationWithPayload<{
     type: MessageType,
     eventId: string,
     conversationId: string,
+}>;
+
+export type AdMessageNotification = INotificationWithPayload<{
+    url?: string,
 }>;

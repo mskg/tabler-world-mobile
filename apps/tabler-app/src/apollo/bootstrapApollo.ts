@@ -46,7 +46,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
         fetch: !demoMode ? fetchAuth : fetchAuthDemo,
     });
 
-    const wsLink = new WebSocketLink(subscriptionClient);
+    const wsLink = isFeatureEnabled(Features.Chat) ? new WebSocketLink(subscriptionClient) : null;
 
     const links = ApolloLink.from(
         [
@@ -67,15 +67,17 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 })
                 : undefined,
 
-            ApolloLink.split(
-                // split based on operation type
-                ({ query }) => {
-                    const node = getMainDefinition(query);
-                    return node.kind === 'OperationDefinition' && node.operation === 'subscription';
-                },
-                wsLink,
-                httpLink,
-            ),
+            wsLink != null
+                ? ApolloLink.split(
+                    // split based on operation type
+                    ({ query }) => {
+                        const node = getMainDefinition(query);
+                        return node.kind === 'OperationDefinition' && node.operation === 'subscription';
+                    },
+                    wsLink,
+                    httpLink,
+                )
+                : httpLink,
         ].filter((f) => f != null) as ApolloLink[],
     );
 

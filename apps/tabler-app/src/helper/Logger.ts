@@ -33,6 +33,7 @@ export class Categories {
         static readonly Member = Categories.SagaRoot + '/Member';
         static readonly Push = Categories.SagaRoot + '/Push';
         static readonly Location = Categories.SagaRoot + '/Location';
+        static readonly NearbyMembers = Categories.SagaRoot + '/NearbyMembers';
         static readonly Fetch = Categories.SagaRoot + '/Fetch';
         static readonly User = Categories.SagaRoot + '/User';
         static readonly Contacts = Categories.SagaRoot + '/Contacts';
@@ -77,7 +78,7 @@ export class Categories {
     };
 }
 
-let FILTER: RegExp | undefined = undefined; // /Chat|API/ig;
+let FILTER: RegExp | undefined = /NearbyMembers|NearBy/ig; // /Chat|API/ig;
 const MAX = 24;
 const PRESERVE_CONSOLE = false;
 

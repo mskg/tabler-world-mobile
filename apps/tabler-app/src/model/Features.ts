@@ -13,6 +13,7 @@ export enum Features {
     LocationHistory,
     DarkModeSwitch,
     InternalInformation,
+    Chat,
 }
 
 export function isFeatureEnabled(feature: Features) {
@@ -33,6 +34,10 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {
+        return true;
+    }
+
+    if (feature === Features.Chat) {
         return true;
     }
 

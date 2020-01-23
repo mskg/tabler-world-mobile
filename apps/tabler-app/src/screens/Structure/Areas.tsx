@@ -67,6 +67,11 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
                 // );
             },
         });
+
+        const jumpTo = this.props.navigation.getParam('id');
+        // this.flatList?.scrollToIndex({
+        //     item: this.flatList
+        // })
     }
 
     _renderItem = (params) => {
@@ -78,7 +83,6 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
                     title={item.name}
                     subtitle={item.association.name}
                     avatar={
-
                         // there can only be one :)
                         item.id === 'de_d9'
                             ? 'DIX'
@@ -127,7 +131,10 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
                                             data={
                                                 _(data != null ? data.Areas : [])
                                                     // my own area goes on top
-                                                    .orderBy((a) => (data != null && data.Me.area.id === a.id) ? -1 : getSortKey(a.shortname))
+                                                    .orderBy((a) => (
+                                                        data != null &&
+                                                        (this.props.navigation.getParam('id') || data.Me.area.id) === a.id
+                                                    ) ? -1 : getSortKey(a.shortname))
                                                     .toArray()
                                                     .value()
                                             }

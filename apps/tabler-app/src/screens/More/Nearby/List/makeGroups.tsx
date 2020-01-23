@@ -1,5 +1,5 @@
-import { RoleType } from '../../../model/graphql/globalTypes';
-import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
+import { RoleType } from '../../../../model/graphql/globalTypes';
+import { NearbyMembers_nearbyMembers } from '../../../../model/graphql/NearbyMembers';
 
 function makeDisplayString(member: NearbyMembers_nearbyMembers) {
     return (member.address.city || member.address.region);

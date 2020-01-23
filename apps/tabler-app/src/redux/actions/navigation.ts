@@ -3,6 +3,7 @@ import { I18N } from '../../i18n/translation';
 import { HomeRoutes } from '../../navigation/Routes';
 import { Routes as MoreRoutes } from '../../screens/More/Routes';
 import { Routes } from '../../screens/More/Settings/Routes';
+import { Routes as StructureRoutes } from '../../screens/Structure/Routes';
 
 export interface IProfileParams {
     tabler: number;
@@ -130,13 +131,29 @@ export const startConversation = (id: number, title: string) => NavigationAction
     } as IConversationParams,
 });
 
-export const showAssociation = (id?: string, name?: string) => NavigationActions.navigate({
+export const showAssociation = (id: string, name: string) => NavigationActions.navigate({
     routeName: HomeRoutes.Structure,
     key: `${HomeRoutes.Structure}:${id}`,
     params: {
         association: id,
         associationName: name,
     },
+});
+
+export const showArea = (id: string) => NavigationActions.navigate({
+    routeName: HomeRoutes.Structure,
+    key: `${HomeRoutes.Structure}:${id}`,
+    params: {
+        association: id.substr(0, id.indexOf('_')),
+        associationName: undefined,
+    },
+    action: {
+        type: 'Navigation/NAVIGATE',
+        routeName: StructureRoutes.Areas,
+        params: {
+            id,
+        },
+    }
 });
 
 export const showStructureSearch = () => NavigationActions.navigate({

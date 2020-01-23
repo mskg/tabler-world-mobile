@@ -8,14 +8,17 @@ import { ActionNames } from '../../../analytics/ActionNames';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
+import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { disableNearbyTablers } from '../../../helper/geo/disable';
 import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
+import { SetLocationServicesOnMap, SetLocationServicesOnMapVariables } from '../../../model/graphql/SetLocationServicesOnMap';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { SetLocationServicesOnMapMutation } from '../../../queries/Location/SetLocationServicesOnMapMutation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { Element } from './Element';
 import { styles } from './Styles';
@@ -80,6 +83,25 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
             name: 'hideOwnClubWhenNearby',
             value: !this.props.settings.hideOwnClubWhenNearby,
         });
+    }
+
+    _toggleMap = async () => {
+        try {
+            const service = cachedAolloClient();
+            await service.mutate<SetLocationServicesOnMap, SetLocationServicesOnMapVariables>({
+                mutation: SetLocationServicesOnMapMutation,
+                variables: {
+                    state: !this.props.settings.nearbyMembersMap,
+                },
+            });
+
+            this.updateSetting({
+                name: 'nearbyMembersMap',
+                value: !this.props.settings.nearbyMembersMap,
+            });
+        } catch (e) {
+            Alert.alert(I18N.Settings.mapfailed);
+        }
     }
 
     _toggleLocationServices = async () => {
@@ -150,6 +172,20 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                                         style={{ marginTop: -4, marginRight: -4 }}
                                         value={this.props.settings.nearbyMembers}
                                         onValueChange={this._toggleLocationServices}
+                                    />
+                                )}
+                            />
+                            <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.NearbyMembers.Settings.map.field}
+                                text={(
+                                    <Switch
+                                        color={this.props.theme.colors.accent}
+                                        style={{ marginTop: -4, marginRight: -4 }}
+                                        value={this.props.settings.nearbyMembers && this.props.settings.nearbyMembersMap}
+                                        disabled={!this.props.settings.nearbyMembers}
+                                        onValueChange={this._toggleMap}
                                     />
                                 )}
                             />

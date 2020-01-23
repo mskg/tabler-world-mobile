@@ -1,7 +1,7 @@
-import { AsyncThrottle } from '../../../helper/AsyncThrottle';
-import { reverseGeocode } from '../../../helper/geo/reverseGeocode';
-import { AddressUpdateInput } from '../../../model/graphql/globalTypes';
-import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
+import { AsyncThrottle } from '../../helper/AsyncThrottle';
+import { reverseGeocode } from '../../helper/geo/reverseGeocode';
+import { AddressUpdateInput } from '../../model/graphql/globalTypes';
+import { NearbyMembers_nearbyMembers } from '../../model/graphql/NearbyMembers';
 import { logger } from './logger';
 
 const throttledCode = AsyncThrottle(reverseGeocode, 1000, 1);

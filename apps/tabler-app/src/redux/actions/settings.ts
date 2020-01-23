@@ -14,6 +14,7 @@ export type SettingsType =
     | { name: 'darkMode', value: boolean }
     | { name: 'experiments', value: boolean }
     | { name: 'nearbyMembers', value: boolean }
+    | { name: 'nearbyMembersMap', value: boolean }
     | { name: 'hideOwnClubWhenNearby', value: boolean }
 
     | { name: 'notificationsBirthdays', value: boolean }

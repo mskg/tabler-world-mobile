@@ -40,7 +40,8 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
                     address = undefined;
                 }
             } catch (e) {
-                logger.error(e, 'could not geocode using Location', location);
+                // too much traffic
+                logger.log(e, 'could not geocode using Location', location);
             }
         }
 
@@ -60,7 +61,8 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
 
         return result;
     } catch (e) {
-        logger.error(e, 'could not geocode', location);
+        // too much traffic
+        logger.log(e, 'could not geocode', location);
     }
 
     return undefined;

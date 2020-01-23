@@ -8,7 +8,7 @@ import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { OpenLink } from '../../helper/OpenLink';
 import { GetLocationHistory } from '../../model/graphql/GetLocationHistory';
-import { GetLocationHistoryQuery } from '../../queries/Location/GetLocationHistory';
+import { GetLocationHistoryQuery } from '../../queries/Location/GetLocationHistoryQuery';
 
 type State = {
 };

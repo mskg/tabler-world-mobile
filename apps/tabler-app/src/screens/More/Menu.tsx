@@ -59,16 +59,18 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                             </>
                         )}
 
-                        <>
-                            <NavigationItem
-                                icon="md-chatboxes"
-                                theme={this.props.theme}
-                                text={I18N.Conversations.title}
-                                onPress={() => this.props.navigation.navigate(Routes.Conversations)}
-                            />
+                        {isFeatureEnabled(Features.Chat) && (
+                            <>
+                                <NavigationItem
+                                    icon="md-chatboxes"
+                                    theme={this.props.theme}
+                                    text={I18N.Conversations.title}
+                                    onPress={() => this.props.navigation.navigate(Routes.Conversations)}
+                                />
 
-                            <Divider inset={true} />
-                        </>
+                                <Divider inset={true} />
+                            </>
+                        )}
                     </List.Section>
 
                     {this.props.showExperiments && (
@@ -119,6 +121,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                                 return null;
                             }}
                         </Query>
+
                         <NavigationItem
                             icon="md-settings"
                             theme={this.props.theme}

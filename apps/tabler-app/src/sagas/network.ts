@@ -33,7 +33,7 @@ function* init() {
 export function* networkSaga() {
     yield all([
         yield init(),
-        yield take(checkNetwork),
+        yield take(checkNetwork.type),
     ]);
 
     const networkChannel = yield call(networkState);

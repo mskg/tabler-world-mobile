@@ -16,6 +16,7 @@ import { SettingsState } from '../../../model/state/SettingsState';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { Element } from './Element';
 import { styles } from './Styles';
+import { isFeatureEnabled, Features } from '../../../model/Features';
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -108,23 +109,26 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        <List.Section title={I18N.Notifications.Settings.onetoone.title}>
-                            <Text style={styles.text}>{I18N.Notifications.Settings.onetoone.text}</Text>
-                            <Divider />
-                            <Element
-                                theme={this.props.theme}
-                                field={I18N.Notifications.Settings.onetoone.field}
-                                text={(
-                                    <Switch
-                                        color={this.props.theme.colors.accent}
-                                        style={{ marginTop: -4, marginRight: -4 }}
-                                        value={this.props.settings.notificationsOneToOneChat}
-                                        onValueChange={this._toggleOneToOne}
-                                    />
-                                )}
-                            />
-                            <Divider />
-                        </List.Section>
+                        {isFeatureEnabled(Features.Chat) && (
+                            <List.Section title={I18N.Notifications.Settings.onetoone.title}>
+                                <Text style={styles.text}>{I18N.Notifications.Settings.onetoone.text}</Text>
+                                <Divider />
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Notifications.Settings.onetoone.field}
+                                    text={(
+                                        <Switch
+                                            color={this.props.theme.colors.accent}
+                                            style={{ marginTop: -4, marginRight: -4 }}
+                                            value={this.props.settings.notificationsOneToOneChat}
+                                            onValueChange={this._toggleOneToOne}
+                                        />
+                                    )}
+                                />
+                                <Divider />
+                            </List.Section>
+                        )}
+
                         <View style={{ height: 50 }} />
                     </ScrollView>
                 </ScreenWithHeader>

@@ -9,6 +9,7 @@
 - Pushing bottom navigation again scrolls the visible page to top
 - Opt-out for birthday notifications
 - Replace dark-mode maps on iOS with Apple Maps
+- Oppted-in nearby members can now be displayed on a map
 
 # v1.1
 

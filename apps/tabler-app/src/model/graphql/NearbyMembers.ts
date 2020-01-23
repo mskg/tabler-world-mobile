@@ -76,6 +76,7 @@ export interface NearbyMembers_nearbyMembers {
   lastseen: any;
   state: NearbyMemberState;
   distance: number;
+  canshowonmap: boolean;
   address: NearbyMembers_nearbyMembers_address;
 }
 

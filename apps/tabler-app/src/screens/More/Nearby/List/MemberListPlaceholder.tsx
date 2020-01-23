@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { List, Surface } from 'react-native-paper';
-import { Line } from '../../../components/Placeholder/Line';
-import { MemberListItemPlaceholder } from '../../../components/Placeholder/MemberListItemPlaceholder';
+import { Line } from '../../../../components/Placeholder/Line';
+import { MemberListItemPlaceholder } from '../../../../components/Placeholder/MemberListItemPlaceholder';
 
 export const MemberListPlaceholder = () => (
     <Surface>

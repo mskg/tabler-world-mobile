@@ -86,7 +86,8 @@ const en = {
     Structure: {
         navigation: 'Directory',
 
-        title: 'My Asssociation',
+        title: 'Asssociation',
+        mytitle: 'My Asssociation',
         associations: 'Association',
         clubs: 'Clubs',
         areas: 'Areas',
@@ -426,6 +427,7 @@ const en = {
         contactpermissions: 'Location permissions are required in order to use this feature. Please grant permission through the phone\'s settings area.',
         locationpermission: 'Cannot access your location. Please grant permission through the phone\'s settings area.',
         locationfailed: 'Failed to update location settings',
+        mapfailed: 'Failed to update map settings',
 
         firstlast: 'First, Last',
         lastfirst: 'Last, First',
@@ -517,7 +519,7 @@ const en = {
             title: 'Notifications',
 
             birthday: {
-                title: 'Birthdays',
+                title: 'Birthday Reminders',
                 field: 'For own club members and favorites',
             },
 
@@ -567,6 +569,12 @@ const en = {
         on: 'Turn on',
 
         off: 'Nearby Members is off. If you turn it on, other members can see in which city you are. We don\'t store your location history, only your last known location.',
+        mapOff: 'You have opt-in for the map display to show a map yourself.',
+
+        Tabs: {
+            list: 'List',
+            map: 'Map',
+        },
 
         Settings: {
             title: 'Nearby Members',
@@ -574,6 +582,9 @@ const en = {
                 title: 'Nearby Members',
                 text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
                 field: 'Share Your Location',
+            },
+            map: {
+                field: 'Allow Others to View Your Position on a Map',
             },
             filter: {
                 title: 'Filter',

@@ -5,9 +5,16 @@ import { INITIAL_STATE } from '../initialState';
 export function locationReducer(
     state = INITIAL_STATE.location,
     action:
-        | typeof actions.setLocation.shape,
+        | typeof actions.setLocation.shape
+        | typeof actions.setNearby.shape,
 ): typeof INITIAL_STATE.location {
     switch (action.type) {
+        case actions.setNearby.type:
+            return {
+                ...state,
+                nearbyMembers: action.payload,
+            };
+
         case actions.setLocation.type:
             return {
                 ...state,

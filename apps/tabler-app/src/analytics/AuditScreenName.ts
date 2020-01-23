@@ -27,6 +27,9 @@ export enum AuditScreenName {
     MemberShowQR = 'Members/ShowQRCode',
     NearbyMembers = 'Members/Nearby',
 
+    NearbyMembersList = 'Members/Nearby/List',
+    NearbyMembersMap = 'Members/Nearby/Map',
+
     Settings = 'Settings',
     Legal = 'Settings/Legal',
     ShowMD = 'Settings/Show MD',

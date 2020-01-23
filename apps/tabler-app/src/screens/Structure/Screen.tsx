@@ -75,7 +75,13 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
                             <Appbar.Content
                                 key="cnt"
                                 titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
-                                title={this.props.navigation.getParam('associationName') || I18N.Structure.title}
+                                title={
+                                    this.props.navigation.getParam('associationName')
+                                        ? this.props.navigation.getParam('associationName')
+                                        : this.props.navigation.getParam('association')
+                                            ? I18N.Structure.title
+                                            : I18N.Structure.mytitle
+                                }
                             />
                         ),
                         this.props.navigation.getParam('association') == null

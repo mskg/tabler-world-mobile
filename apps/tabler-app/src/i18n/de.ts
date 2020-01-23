@@ -1,4 +1,4 @@
-import { differenceInYears, format, parseISO, differenceInCalendarYears } from 'date-fns';
+import { differenceInCalendarYears, differenceInYears, format, parseISO } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
 import 'moment';
 import 'moment/locale/de';
@@ -87,7 +87,9 @@ const de: I18NType = {
     Structure: {
         navigation: 'Verzeichnis',
 
-        title: 'Meine Assoziation',
+        title: 'Assoziation',
+        mytitle: 'Meine Assoziation',
+
         associations: 'Assoziatio...',
         clubs: 'Tische',
         areas: 'Distrikte',
@@ -372,6 +374,7 @@ const de: I18NType = {
         contactpermissions: 'Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
         locationpermission: 'Die App kann nicht auf Deinen Standort zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
         locationfailed: 'Die Einstellungen konnten nicht aktualisiert werden.',
+        mapfailed: 'Die Einstellung für die Kartendarstellung konnte nicht aktualisiert werden',
 
         firstlast: 'Vorname, Nachname',
         lastfirst: 'Nachname, Vorname',
@@ -461,8 +464,8 @@ const de: I18NType = {
             title: 'Benachrichtigungen',
 
             birthday: {
-                title: 'Geburtstage',
-                field: 'For own club members and favorites',
+                title: 'Geburtstagserinnerung',
+                field: 'Für den eigenen Club und Favoriten',
             },
 
             onetoone: {
@@ -511,7 +514,12 @@ const de: I18NType = {
         on: 'Einschalten',
 
         off: '\'Mitglieder in der Nähe\' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt in der du dich befindest. Wir speichern keine Standorthistorie.',
+        mapOff: 'Um andere Mitglieder auf der Karte zu sehen musst Du Dich selbst sichtbar machen.',
 
+        Tabs: {
+            list: 'Liste',
+            map: 'Karte',
+        },
 
         Settings: {
             title: 'Mitglieder in der Nähe',
@@ -519,6 +527,9 @@ const de: I18NType = {
                 title: 'Mitglieder in der Nähe',
                 text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
                 field: 'Teile Deinen Standort',
+            },
+            map: {
+                field: 'Erlaube Deinen Standort auf der Karte zu sehen',
             },
             filter: {
                 title: 'Filter',

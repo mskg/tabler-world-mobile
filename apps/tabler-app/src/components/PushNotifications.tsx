@@ -5,9 +5,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
-import { BirthdayNotification, ChatMessageNotification, INotificationWithPayload } from '../model/NotificationPayload';
+import { BirthdayNotification, ChatMessageNotification, INotificationWithPayload, AdMessageNotification } from '../model/NotificationPayload';
 import { showConversation, showProfile } from '../redux/actions/navigation';
 import { PushNotification, PushNotificationBase } from './PushNotification';
+import { isFeatureEnabled, Features } from '../model/Features';
+import { LinkingHelper } from '../helper/LinkingHelper';
+import { OpenLink } from '../helper/OpenLink';
 
 const logger = new Logger(Categories.UIComponents.Notifications);
 
@@ -44,12 +47,20 @@ class PushNotificationsBase extends PureComponent<Props> {
 
             this.props.showProfile(bd.payload.id);
         } else if (el != null && el.reason === 'chatmessage') {
-            const cm = el as ChatMessageNotification;
+            if (isFeatureEnabled(Features.Chat)) {
+                const cm = el as ChatMessageNotification;
 
-            this.props.showConversation(
-                cm.payload.conversationId,
-                cm.title,
-            );
+                this.props.showConversation(
+                    cm.payload.conversationId,
+                    cm.title,
+                );
+            }
+        } else if (el != null && el.reason === 'advertisment') {
+            const am = el as AdMessageNotification;
+
+            if (am.payload.url) {
+                OpenLink.url(am.payload.url);
+            }
         }
     }
 

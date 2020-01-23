@@ -27,7 +27,7 @@ function* runner(appStatus: AppStateStatus) {
 
 // tslint:disable-next-line: export-name
 export function* appStateSaga() {
-    yield take(checkAppState);
+    yield take(checkAppState.type);
 
     const appStateChannel = yield call(appState);
     yield takeLatest(appStateChannel, runner);
