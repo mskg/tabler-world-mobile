@@ -8,7 +8,7 @@ export async function lookupPrincipal(client: IDataService, email: string): Prom
     }
 
     const res = await client.query(
-        'select id, club, area, association from profiles where rtemail = $1 and removed = false',
+        'select c from profiles where rtemail = $1 and removed = false',
         [email.toLowerCase()],
     );
 
@@ -18,6 +18,10 @@ export async function lookupPrincipal(client: IDataService, email: string): Prom
 
     const { id, club, area, association } = res.rows[0];
     return {
+        // hardcoded for now
+        version: '1.2',
+        family: 'rti',
+
         id,
         club,
         area,
