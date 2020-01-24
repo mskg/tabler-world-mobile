@@ -79,7 +79,7 @@ export const SearchMemberResolver = {
                     // only
                     old: async () => {
                         parameters.push('de');
-                        filters.push(`association = ANY ($${parameters.length})`);
+                        filters.push(`association = $${parameters.length}`);
                     },
 
                     default: () => {

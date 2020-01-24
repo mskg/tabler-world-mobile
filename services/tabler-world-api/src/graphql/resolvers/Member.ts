@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
 
 // type MembersArgs = {
@@ -57,6 +58,21 @@ export const MemberResolver = {
                 id: root.association,
                 shortname: root.associationshortname,
             };
+        },
+    },
+
+    // compatibility
+    RoleRef: {
+        name: (root: any, _args: any, context: IApolloContext) => {
+            return byVersion({
+                context,
+                mapVersion: v12Check,
+
+                versions: {
+                    old: () => root.shortname,
+                    default: () => root.name,
+                },
+            });
         },
     },
 
