@@ -2,6 +2,7 @@ import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
+import { byVersion, v12Check } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -69,10 +70,26 @@ export const SearchMemberResolver = {
 )`);
             });
 
-            if (args.query.associations != null && args.query.associations.length > 0) {
-                parameters.push(args.query.associations);
-                filters.push(`associationname = ANY ($${parameters.length})`);
-            }
+            // old only 'de
+            byVersion({
+                context,
+                mapVersion: v12Check,
+
+                versions: {
+                    // only
+                    old: async () => {
+                        parameters.push('de');
+                        filters.push(`association = ANY ($${parameters.length})`);
+                    },
+
+                    default: () => {
+                        if (args.query.associations != null && args.query.associations.length > 0) {
+                            parameters.push(args.query.associations);
+                            filters.push(`associationname = ANY ($${parameters.length})`);
+                        }
+                    },
+                },
+            });
 
             if (args.query.areas != null && args.query.areas.length > 0) {
                 parameters.push(args.query.areas);

@@ -1,7 +1,7 @@
 import { addressHash } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
 import { sortBy } from 'lodash';
-import { byVersion } from '../helper/byVersion';
+import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
 
 type ById = {
@@ -30,10 +30,7 @@ export const StructureResolver = {
 
             return byVersion({
                 context,
-
-                mapVersion: (version) => version.startsWith('1.1') || version.startsWith('1.0')
-                    ? 'old'
-                    : 'default',
+                mapVersion: v12Check,
 
                 versions: {
                     old: async () => [await context.dataSources.structure.getAssociation(context.principal.association)],
