@@ -82,12 +82,21 @@ export const Structure = gql`
     }
 
     extend type Query {
-        Associations (id: ID): [Association!]
+        "Giving no id returns own organization"
+        Association (id: ID): Association
+        Associations: [Association!]
 
-        Clubs (association: ID): [Club!]
-        Areas (association: ID): [Area!]
-        Roles: [String!]
-
+        # this is a wrong signature, needs to be changed to ID
         Club (id: String!): Club
+
+        "Giving no id returns own organization"
+        Clubs (association: ID): [Club!]
+
+        Area (id: ID!): [Area!]
+
+        "Giving no id returns own organization"
+        Areas (association: ID): [Area!]
+
+        Roles: [String!]
     }
 `;

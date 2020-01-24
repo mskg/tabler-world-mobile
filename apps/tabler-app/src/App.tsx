@@ -10,8 +10,7 @@ import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
-import { withLoader } from './components/Loader';
-import Loading from './components/Loading';
+import { withLoadingAnimation } from './components/withLoadingAnimation';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
@@ -80,7 +79,6 @@ const App = () => {
             <PushNotifications />
             <SubscribeToConversationUpdates />
             <Linking />
-            {/* <Loading /> */}
         </>
     );
 };
@@ -93,7 +91,7 @@ export default withAppearanceProvider(
             withStore(
                 withPaperProvider(
                     withSkakeErrorReport(
-                        withLoader(
+                        withLoadingAnimation(
                             withAuthenticator(
                                 withWhoopsErrorBoundary(
                                     App,

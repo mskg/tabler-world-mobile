@@ -18,13 +18,16 @@
             "sentry": "",
             "cognitoAnalytics": "",
             "amplitudeAnalytics": "",
-            "profile": "https://rti.roundtable.world/de/members/#id#/",
-            "world": "https://rti.roundtable.world/de/",
+            "profile": "https://rti.roundtable.world/#lang#/members/#id#/",
+            "world": "https://rti.roundtable.world/#lang#/",
             "world_whitelist": [
                 "*.roundtable.world"
             ],
-            "join": "https://www.round-table.de/bist-du-wir/",
-            "support": "support@round-table.de",
+            "join": "https://rtinternational.org/about-us/about-round-table/how-to-join/",
+            "support": {
+                "de": "support@round-table.de",
+                "global": "support@roundtable.world"
+            },
             "feedback": "http://feedback.app.roundtable.world/"
         },
         "orientation": "portrait",

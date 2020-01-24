@@ -1,6 +1,7 @@
 import { addressHash } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
 import { sortBy } from 'lodash';
+import { byVersion } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
 
 type ById = {
@@ -20,24 +21,40 @@ function getSortKey(shortname: string) {
     return shortname;
 }
 
-
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const StructureResolver = {
     Query: {
-        Associations: async (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Associations', args);
+        Associations: async (_root: any, _args: any, context: IApolloContext) => {
+            context.logger.log('Associations');
 
-            if (args != null && args.id != null) {
-                return [await context.dataSources.structure.getAssociation(args.id)];
-            }
+            return byVersion({
+                context,
 
-            return context.dataSources.structure.allAssociations();
+                mapVersion: (version) => version.startsWith('1.1') || version.startsWith('1.0')
+                    ? 'old'
+                    : 'default',
+
+                versions: {
+                    old: async () => [await context.dataSources.structure.getAssociation(context.principal.association)],
+                    default: () => context.dataSources.structure.allAssociations(),
+                },
+            });
+        },
+
+        Association: (_root: any, args: ById, context: IApolloContext) => {
+            context.logger.log('Association', args);
+            return context.dataSources.structure.getAssociation(args.id || context.principal.association);
         },
 
         Clubs: (_root: any, args: ByAssociation, context: IApolloContext) => {
             context.logger.log('Clubs', args);
             return context.dataSources.structure.allClubs(args.association || context.principal.association);
+        },
+
+        Club: (_root: any, args: ById, context: IApolloContext) => {
+            context.logger.log('Club', args);
+            return context.dataSources.structure.getClub(args.id);
         },
 
         Areas: async (_root: any, args: ByAssociation, context: IApolloContext) => {
@@ -46,9 +63,9 @@ export const StructureResolver = {
             return sortBy(areas, (a) => getSortKey(a.shortname));
         },
 
-        Club: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Club', args);
-            return context.dataSources.structure.getClub(args.id);
+        Area: (_root: any, args: ById, context: IApolloContext) => {
+            context.logger.log('Area', args);
+            return context.dataSources.structure.getArea(args.id);
         },
     },
 

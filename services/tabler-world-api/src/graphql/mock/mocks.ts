@@ -2,6 +2,7 @@ import { MockList } from 'graphql-tools';
 import _ from 'lodash';
 import { Address } from './Address';
 import { Area } from './Area';
+import { Association } from './Association';
 import { BankAccount, Club, ClubInfo } from './Club';
 import { Company } from './Company';
 import { clubNames, memberNames } from './data';
@@ -9,7 +10,6 @@ import { Education } from './Education';
 import { Member } from './Member';
 import { NearbyMember } from './NearbyMember';
 import { AssociationRole, Role, RoleRef, Roles } from './Roles';
-import { Association } from './Structure';
 
 import faker = require('faker');
 faker.locale = 'de';

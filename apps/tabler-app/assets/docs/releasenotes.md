@@ -4,7 +4,6 @@
 
 - Complete world-wide data from RTI
 - Assocation search functionality
-- Member chat
 - Member screen how shows member count and date joined
 - Pushing bottom navigation again scrolls the visible page to top
 - Opt-out for birthday notifications

@@ -43,3 +43,22 @@ where result is null
 
 select * from usersettings
 where id =14225
+
+select * from profiles where id = 128511
+
+select id
+from
+    profiles o
+where id in (
+
+        select (data->>'member')::int as id
+        from
+        (
+            select json_array_elements(boardAssistants) as data
+            from
+                structure_associations
+        ) board
+)
+and
+    o.removed = true
+

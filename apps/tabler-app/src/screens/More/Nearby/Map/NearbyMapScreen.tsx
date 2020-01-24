@@ -91,6 +91,14 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
         this._fitMap();
     }
 
+    componentDidUpdate(prevProps: Props) {
+        if (!prevProps.nearbyMap && this.props.nearbyMap) {
+            this._fitMap();
+        } else if ((!prevProps.members || prevProps.members.length === 0) && (this.props.members && this.props.members.length > 0)) {
+            this._fitMap();
+        }
+    }
+
     _fitMap = _.debounce(
         () => {
             if (this.mapRef && this.props.members) {

@@ -3,7 +3,7 @@ import { MockList } from 'graphql-tools';
 import { Area } from './Area';
 import { Club } from './Club';
 import { clubNames, memberNames } from './data';
-import { Association } from './Structure';
+import { Association } from './Association';
 
 export const Member = (root: any, args: any, context: any, _info: any) => {
     // this is a dirty hack to allow generating the list

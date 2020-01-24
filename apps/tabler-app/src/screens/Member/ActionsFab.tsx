@@ -49,7 +49,9 @@ class ActionsFabBase extends React.Component<Props> {
         const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
 
         OpenLink.url(
-            urls.profile.replace('#id#', member.id.toString()),
+            urls.profile
+                .replace('#id#', member.id.toString())
+                .replace('#lang#', I18N.id),
         );
     }
 

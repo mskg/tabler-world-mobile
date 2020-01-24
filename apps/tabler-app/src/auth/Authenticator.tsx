@@ -111,7 +111,6 @@ class AuthenticatorBase extends PureComponent<Props, State> {
                 <PaperProvider theme={light}>
                     <Reloader />
                     <ConfirmSignIn />
-                    {/* <Loading /> */}
                 </PaperProvider>
             );
         } if (!this.state.demoMode && this.props.authState === 'signin') {
@@ -119,7 +118,6 @@ class AuthenticatorBase extends PureComponent<Props, State> {
                 <PaperProvider theme={light}>
                     <Reloader />
                     <SignIn />
-                    {/* <Loading /> */}
                 </PaperProvider>
             );
         }

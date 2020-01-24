@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { ScreenWithHeader } from '../../components/Screen';
+import { showShakeErrorReport } from '../../components/ShakeErrorReport';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
@@ -41,6 +42,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
         super(props, AuditScreenName.Menu);
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <ScreenWithHeader header={{ title: I18N.Menu.title }}>
@@ -92,6 +94,15 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                             theme={this.props.theme}
                             text={I18N.Feedback.title}
                             onPress={() => this.props.navigation.navigate(Routes.Feedback)}
+                        />
+
+                        <Divider inset={true} />
+
+                        <NavigationItem
+                            icon="md-warning"
+                            theme={this.props.theme}
+                            text={I18N.Support.title}
+                            onPress={() => showShakeErrorReport()}
                         />
 
                         <Divider inset={true} />

@@ -93,10 +93,9 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                     () => this._sectionList.scrollToOffset(0, 0, true),
                 );
 
-                // setTimeout(
-                //     () => this.props.refresh(),
-                //     100
-                // );
+                if (this.props.data == null || this.props.data.MembersOverview == null || this.props.data.MembersOverview.length === 0) {
+                    this.props.refresh();
+                }
             },
         });
     }

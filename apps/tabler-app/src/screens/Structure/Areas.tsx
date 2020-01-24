@@ -3,12 +3,15 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Card, Theme, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps } from 'react-navigation';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
+import { RefreshTracker } from '../../components/RefreshTracker';
+import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Areas, AreasVariables, Areas_Areas } from '../../model/graphql/Areas';
 import { GetAreasQuery } from '../../queries/Structure/GetAreasQuery';
@@ -17,9 +20,6 @@ import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
 import { ScreenProps } from './StructureParams';
 import { styles } from './Styles';
-import { RefreshTracker } from '../../components/RefreshTracker';
-import { NavigationInjectedProps } from 'react-navigation';
-import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -68,10 +68,7 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
             },
         });
 
-        const jumpTo = this.props.navigation.getParam('id');
-        // this.flatList?.scrollToIndex({
-        //     item: this.flatList
-        // })
+        // const jumpTo = this.props.navigation.getParam('id');
     }
 
     _renderItem = (params) => {
@@ -120,6 +117,7 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
                                 if (!loading && (data == null || data.Areas == null)) {
                                     return <CannotLoadWhileOffline />;
                                 }
+
                                 return (
                                     <Placeholder
                                         ready={data != null && data.Areas != null}

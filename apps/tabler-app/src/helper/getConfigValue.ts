@@ -20,7 +20,9 @@ type Key =
     | 'support'
     ;
 
-type ConfigTypes = string | string[];
+type ConfigTypes = string | string[] | {
+    [key: string]: string,
+};
 
 export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
     if (key === 'api' && __DEV__ && !Constants.isDevice) {

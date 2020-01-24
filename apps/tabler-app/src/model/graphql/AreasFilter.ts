@@ -14,5 +14,8 @@ export interface AreasFilter_Areas {
 }
 
 export interface AreasFilter {
+  /**
+   * Giving no id returns own organization
+   */
   Areas: AreasFilter_Areas[] | null;
 }

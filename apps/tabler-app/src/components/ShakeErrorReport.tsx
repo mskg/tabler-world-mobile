@@ -1,18 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
-import Constants from 'expo-constants';
-import * as MailComposer from 'expo-mail-composer';
 import { Accelerometer } from 'expo-sensors';
 import React from 'react';
-import { Alert, Animated, Dimensions, Easing, Platform, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Animated, Dimensions, Easing, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Portal, Surface, Text, Theme, Title, TouchableRipple, withTheme } from 'react-native-paper';
+import { connect } from 'react-redux';
 import { ActionNames } from '../analytics/ActionNames';
 import { Audit } from '../analytics/Audit';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
-import { getParameterValue } from '../helper/parameters/getParameterValue';
-import { UrlParameters } from '../helper/parameters/Urls';
+import { showSupportForm } from '../helper/showSupportForm';
 import { I18N } from '../i18n/translation';
-import { ParameterName } from '../model/graphql/globalTypes';
+import { showFeedback } from '../redux/actions/navigation';
 
 const logger = new Logger(Categories.UIComponents.ErrorReport);
 
@@ -66,6 +64,7 @@ const TIMEOUT = 8000;
 
 type Props = {
     theme: Theme,
+    showFeedback: typeof showFeedback,
 };
 
 type State = {
@@ -74,6 +73,15 @@ type State = {
 
 // tslint:disable-next-line: max-classes-per-file
 class ErrorReportBase extends React.Component<Props, State> {
+    static instance?: ErrorReportBase;
+
+    // tslint:disable-next-line: function-name
+    static Show() {
+        if (ErrorReportBase.instance) {
+            ErrorReportBase.instance._open();
+        }
+    }
+
     constructor(props) {
         super(props);
 
@@ -83,6 +91,8 @@ class ErrorReportBase extends React.Component<Props, State> {
 
         this.mounted = true;
         ShakeEvent.addListener(this._open);
+
+        ErrorReportBase.instance = this;
     }
 
     mounted = false;
@@ -161,35 +171,17 @@ class ErrorReportBase extends React.Component<Props, State> {
         }
     }
 
+    _runFeedback = async () => {
+        try {
+            this.props.showFeedback();
+        } finally {
+            this._close();
+        }
+    }
+
     _runSupport = async () => {
         try {
-            const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
-
-            const result = await MailComposer.composeAsync({
-                subject: I18N.ErrorReport.subject,
-                isHtml: true,
-                body: `${I18N.ErrorReport.template}
-
-------------------------------
-Platform: ${Platform.OS} v${Platform.Version}
-App Version: ${Constants.nativeAppVersion}
-Build Version: ${Constants.manifest.version}
-Device Id: ${Constants.deviceId}
-Time: ${new Date().toISOString()}
-`.replace(/\n/ig, '<br/>'),
-                recipients: [urls.support],
-            });
-
-            this.audit.trackAction(ActionNames.SendErrorReport, {
-                Result: result.status,
-            });
-        } catch (e) {
-            this.audit.trackAction(ActionNames.SendErrorReport, {
-                Result: 'Error',
-            });
-
-            logger.error(e);
-            Alert.alert(I18N.ErrorReport.noMail);
+            showSupportForm();
         } finally {
             this._close();
         }
@@ -198,11 +190,11 @@ Time: ${new Date().toISOString()}
     render() {
         return (
             <Portal>
-                {this.state.open &&
+                {this.state.open && (
                     <TouchableWithoutFeedback onPress={this._close}>
                         <View style={styles.shade} />
                     </TouchableWithoutFeedback>
-                }
+                )}
 
                 <Surface
                     // @ts-ignore transform seems not to exist?
@@ -231,10 +223,21 @@ Time: ${new Date().toISOString()}
                         ]}
                     />
 
+                    <TouchableRipple style={styles.touch} onPress={this._runFeedback}>
+                        <View style={styles.row}>
+                            <View style={styles.rowIcon}>
+                                <Ionicons name="md-microphone" size={32} />
+                            </View>
+                            <Text numberOfLines={1} style={styles.rowText}>{I18N.ErrorReport.feedback}</Text>
+                        </View>
+                    </TouchableRipple>
+
                     <TouchableRipple style={styles.touch} onPress={this._runSupport}>
                         <View style={styles.row}>
-                            <Ionicons name="md-bug" size={32} />
-                            <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
+                            <View style={styles.rowIcon}>
+                                <Ionicons name="md-bug" size={32} />
+                            </View>
+                            <Text numberOfLines={1} style={styles.rowText}>{I18N.ErrorReport.report}</Text>
                         </View>
                     </TouchableRipple>
                 </Surface>
@@ -243,12 +246,18 @@ Time: ${new Date().toISOString()}
     }
 }
 
-const ShakeErrorReport = withTheme(ErrorReportBase);
+const ShakeErrorReport = connect(
+    null,
+    {
+        showFeedback,
+    },
+)(withTheme(ErrorReportBase));
 
 // tslint:disable-next-line: export-name
 export function withSkakeErrorReport(WrappedComponent) {
     // tslint:disable-next-line: max-classes-per-file
     return class extends React.PureComponent {
+
         render() {
             return (
                 <>
@@ -258,6 +267,10 @@ export function withSkakeErrorReport(WrappedComponent) {
             );
         }
     };
+}
+
+export function showShakeErrorReport() {
+    ErrorReportBase.Show();
 }
 
 const styles = StyleSheet.create({
@@ -270,12 +283,17 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
     },
 
+    rowIcon: {
+        width: 32,
+        alignItems: 'center',
+    },
+
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
         paddingLeft: 32,
-        paddingVertical: 8,
+        paddingBottom: 8,
     },
 
     rowText: {

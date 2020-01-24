@@ -144,7 +144,7 @@ export const showArea = (id: string) => NavigationActions.navigate({
     routeName: HomeRoutes.Structure,
     key: `${HomeRoutes.Structure}:${id}`,
     params: {
-        association: id.substr(0, id.indexOf('_')),
+        association: id.indexOf('_') > 0 ? id.substr(0, id.indexOf('_')) : id,
         associationName: undefined,
     },
     action: {
@@ -159,3 +159,8 @@ export const showArea = (id: string) => NavigationActions.navigate({
 export const showStructureSearch = () => NavigationActions.navigate({
     routeName: HomeRoutes.SearchStructure,
 });
+
+export const showFeedback = () => NavigationActions.navigate({
+    routeName: MoreRoutes.Feedback,
+});
+

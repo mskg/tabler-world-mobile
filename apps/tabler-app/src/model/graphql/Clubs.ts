@@ -47,6 +47,9 @@ export interface Clubs_Me {
 }
 
 export interface Clubs {
+  /**
+   * Giving no id returns own organization
+   */
   Clubs: Clubs_Clubs[] | null;
   Me: Clubs_Me;
 }

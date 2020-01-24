@@ -26,7 +26,13 @@ export interface AreasAndClubsFilters_Clubs {
 }
 
 export interface AreasAndClubsFilters {
+  /**
+   * Giving no id returns own organization
+   */
   Areas: AreasAndClubsFilters_Areas[] | null;
+  /**
+   * Giving no id returns own organization
+   */
   Clubs: AreasAndClubsFilters_Clubs[] | null;
 }
 

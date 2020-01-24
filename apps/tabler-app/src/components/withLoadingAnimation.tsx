@@ -16,7 +16,7 @@ type State = {
     animationDone: boolean,
 };
 
-export class Loader extends React.Component<Props, State> {
+class LoadingAnimation extends React.Component<Props, State> {
     static defaultProps = {
         isLoaded: false,
     };
@@ -103,7 +103,7 @@ export class Loader extends React.Component<Props, State> {
     }
 }
 
-export function withLoader(WrappedComponent) {
+export function withLoadingAnimation(WrappedComponent) {
     // tslint:disable-next-line: max-classes-per-file
     const LoaderClass = class extends React.PureComponent<{ theme }> {
         state = {
@@ -126,7 +126,7 @@ export function withLoader(WrappedComponent) {
 
         render() {
             return (
-                <Loader
+                <LoadingAnimation
                     isLoaded={this.state.appReady}
                     imageSource={Assets.images.mask}
                     backgroundStyle={{
@@ -134,7 +134,7 @@ export function withLoader(WrappedComponent) {
                     }}
                 >
                     <WrappedComponent />
-                </Loader>
+                </LoadingAnimation>
             );
         }
     };

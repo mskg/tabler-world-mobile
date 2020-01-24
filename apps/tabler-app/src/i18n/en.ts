@@ -21,7 +21,9 @@ const en = {
     ErrorReport: {
         title: 'Report a problem',
         text: 'Your feedback helps us improve TABLER.APP.',
+
         report: 'Something isn\'t working?',
+        feedback: 'Some functionality is missing? You have an idea?',
 
         subject: 'TABLER.APP Issue',
         noMail: 'You seem to have no mail client installed?',
@@ -593,6 +595,9 @@ const en = {
         },
     },
 
+    Support: {
+        title: 'Report a Problem',
+    },
 
     Feedback: {
         title: 'Feedback',

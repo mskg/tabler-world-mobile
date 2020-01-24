@@ -21,7 +21,9 @@ const de: I18NType = {
     ErrorReport: {
         title: 'Ein Problem melden',
         text: 'Dein Feedback hilft uns die TABLER.APP zu verbessern.',
+
         report: 'Geht etwas nicht?',
+        feedback: 'Es fehlt etwas? Du hast eine Idee?',
 
         subject: 'TABLER.APP Problem',
         noMail: 'Kann es sein, dass Du keine E-Mails versenden kannst?',
@@ -536,6 +538,10 @@ const de: I18NType = {
                 field: 'Verstecke Mitglieder des eigenen Clubs',
             },
         },
+    },
+
+    Support: {
+        title: 'Ein Problem melden',
     },
 
     Feedback: {

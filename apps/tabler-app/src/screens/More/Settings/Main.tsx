@@ -115,6 +115,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 },
                             },
                         });
+
+                        Updates.reloadFromCache();
                     },
                 },
             ],

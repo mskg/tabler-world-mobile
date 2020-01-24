@@ -10,6 +10,7 @@ import { I18N } from '../../../../i18n/translation';
 import { NearbyMembers_nearbyMembers_member } from '../../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../../model/IAppState';
 import { showProfile, startConversation } from '../../../../redux/actions/navigation';
+import { isFeatureEnabled, Features } from '../../../../model/Features';
 
 type OwnProps = {
     member: NearbyMembers_nearbyMembers_member,
@@ -59,15 +60,17 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                 }
 
                 right={
-                    ({ size }) => (
-                        <IconButton
-                            style={{ marginRight: 32 }}
-                            size={size}
-                            icon={({ size: iconSize, color }) => (<Ionicons name="md-chatboxes" color={color} size={iconSize} />)}
-                            color={this.props.theme.colors.accent}
-                            onPress={this._startConversation}
-                        />
-                    )
+                    ({ size }) => isFeatureEnabled(Features.Chat)
+                        ? (
+                            <IconButton
+                                style={{ marginRight: 32 }}
+                                size={size}
+                                icon={({ size: iconSize, color }) => (<Ionicons name="md-chatboxes" color={color} size={iconSize} />)}
+                                color={this.props.theme.colors.accent}
+                                onPress={this._startConversation}
+                            />
+                        )
+                        : undefined
                 }
             />
         );

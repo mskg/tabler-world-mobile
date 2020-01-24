@@ -26,6 +26,7 @@ import { darkStyles } from './darkStyles';
 import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
+import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 
 type State = {
     location?: Location.LocationData,
@@ -44,7 +45,7 @@ type Props = {
     loading: boolean,
     refresh: () => any,
     data?: ClubsMap | null,
-} & NavigationInjectedProps;
+} & NavigationInjectedProps<TapOnNavigationParams>;
 
 class ClubsScreenBase extends AuditedScreen<Props, State> {
     mapRef: MapView | null = null;
@@ -66,7 +67,20 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         } else {
             this._getLocationAsync();
         }
+
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this._getLocationAsync(),
+                );
+
+                if (this.props.data == null || this.props.data.Clubs == null || this.props.data.Clubs.length === 0) {
+                    this.props.refresh();
+                }
+            },
+        });
     }
+
 
     componentDidUpdate(prevProps: Props) {
         if (prevProps.data !== this.props.data) {

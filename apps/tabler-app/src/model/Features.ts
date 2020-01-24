@@ -44,7 +44,7 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.Chat) {
-        return !isDemoMode;
+        return !isDemoMode && (Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test'));
     }
 
     if (feature === Features.DarkModeSwitch) {

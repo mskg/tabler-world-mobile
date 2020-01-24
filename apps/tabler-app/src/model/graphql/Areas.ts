@@ -56,6 +56,9 @@ export interface Areas_Me {
 }
 
 export interface Areas {
+  /**
+   * Giving no id returns own organization
+   */
   Areas: Areas_Areas[] | null;
   Me: Areas_Me;
 }

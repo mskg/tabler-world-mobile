@@ -7,7 +7,9 @@ import { randomLocation } from './randomLocation';
 import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
 
 export const Club = (root: any, args: any, _context: any, _info: any) => {
-    const clubId = (root || {}).club || (args || {}).id || faker.random.number({ min: 1, max: 300 });
+    const clubId = (root || {}).club || (args || {}).id
+        || faker.random.number({ min: 1, max: 31 });
+
     const club = clubNames[clubId - 1] || {};
     const members = _(memberNames)
         .filter((m) => m.club == clubId)
@@ -32,7 +34,7 @@ export const Club = (root: any, args: any, _context: any, _info: any) => {
 
 
     return {
-        id: () => 'de_' + clubId,
+        id: () => clubId,
         club: () => clubId,
         clubnumber: () => clubId,
 

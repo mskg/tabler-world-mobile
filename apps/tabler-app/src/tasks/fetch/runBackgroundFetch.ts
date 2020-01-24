@@ -10,7 +10,7 @@ import { MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
 import { GetMembersByAreasQuery } from '../../queries/Member/GetMembersByAreasQuery';
 import { GetOfflineMembersQuery } from '../../queries/Member/GetOfflineMembersQuery';
 import { GetAreasQuery } from '../../queries/Structure/GetAreasQuery';
-import { GetAssociationsQuery } from '../../queries/Structure/GetAssociationsQuery';
+import { GetAssociationQuery } from '../../queries/Structure/GetAssociationQuery';
 import { GetClubsQuery } from '../../queries/Structure/GetClubsQuery';
 import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
 import { FETCH_TASKNAME } from '../Constants';
@@ -67,7 +67,7 @@ export async function runBackgroundFetch() {
 
         const clubsPromise = updateCache(client, GetClubsQuery, 'clubs');
         const areasPromise = updateCache(client, GetAreasQuery, 'areas');
-        const associationsPromise = updateCache(client, GetAssociationsQuery, 'associations');
+        const associationsPromise = updateCache(client, GetAssociationQuery, 'associations');
 
         await Promise.all([
             updateParametersPromise,

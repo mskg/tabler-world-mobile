@@ -20,6 +20,7 @@ import { LRU } from './LRU';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 type State = {
     searching: boolean,
     query: string,
@@ -144,13 +145,9 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
                     <SearchHistory applyFilter={this.searchFilterFunction} />
                 )}
 
-                {/* {this.state.searching && this.props.offline && (
-                    <OfflineSearchQuery
-                        query={this.state.debouncedQuery}
-                        filterTags={this.state.filterTags}
-                        itemSelected={this._itemSelected}
-                    />
-                )} */}
+                {this.state.searching && this.props.offline && (
+                    <CannotLoadWhileOffline />
+                )}
 
                 {this.state.searching && !this.props.offline && (
                     <OnlineSearchQuery

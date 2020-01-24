@@ -47,5 +47,8 @@ export interface ClubsMap_Clubs {
 }
 
 export interface ClubsMap {
+  /**
+   * Giving no id returns own organization
+   */
   Clubs: ClubsMap_Clubs[] | null;
 }

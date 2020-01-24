@@ -42,9 +42,9 @@ type Props = {
     loading: boolean,
     refresh: () => any,
     data?: Clubs | null,
-} & NavigationInjectedProps;
+} & NavigationInjectedProps<StructureParams & TapOnNavigationParams>;
 
-class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<StructureParams & TapOnNavigationParams>, State> {
+class ClubsScreenBase extends AuditedScreen<Props, State> {
     flatList!: FlatList<Clubs_Clubs> | null;
 
     constructor(props) {
@@ -65,10 +65,9 @@ class ClubsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Stru
                     }),
                 );
 
-                // setTimeout(
-                //     () => this.props.refresh(),
-                //     100
-                // );
+                if (this.props.data == null || this.props.data.Clubs == null || this.props.data.Clubs.length == 0) {
+                    this.props.refresh();
+                }
             },
         });
     }

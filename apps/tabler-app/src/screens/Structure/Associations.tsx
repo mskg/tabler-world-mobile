@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
@@ -16,9 +15,9 @@ import { RefreshTracker } from '../../components/RefreshTracker';
 import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { Associations, Associations_Associations } from '../../model/graphql/Associations';
+import { Association, Association_Association } from '../../model/graphql/Association';
 import { RoleNames } from '../../model/IRole';
-import { GetAssociationsQuery } from '../../queries/Structure/GetAssociationsQuery';
+import { GetAssociationQuery } from '../../queries/Structure/GetAssociationQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { ScreenProps, StructureParams } from './StructureParams';
 import { styles } from './Styles';
@@ -34,7 +33,7 @@ type Props = {
 };
 
 class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInjectedProps<StructureParams & TapOnNavigationParams>, State> {
-    flatList!: FlatList<Associations_Associations> | null;
+    flatList!: FlatList<Association_Association> | null;
 
     constructor(props) {
         super(props, AuditScreenName.Associations);
@@ -57,7 +56,7 @@ class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & Navigat
         });
     }
 
-    _renderItem = ({ item, index }: { item: Associations_Associations, index: number }) => {
+    _renderItem = ({ item, index }: { item: Association_Association, index: number }) => {
         return (
             <Card key={item.id} style={styles.card}>
 
@@ -114,7 +113,7 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
         );
     }
 
-    _key = (item: Associations_Associations, _index: number) => {
+    _key = (item: Association_Association, _index: number) => {
         return item.id;
     }
 
@@ -123,8 +122,8 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
             <RefreshTracker>
                 {({ isRefreshing, createRunRefresh }) => {
                     return (
-                        <Query<Associations>
-                            query={GetAssociationsQuery}
+                        <Query<Association>
+                            query={GetAssociationQuery}
                             fetchPolicy={this.props.fetchPolicy}
                             variables={{
                                 id: this.props.screenProps?.association,
@@ -133,29 +132,19 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                             {({ loading, error, data, refetch }) => {
                                 if (error) throw error;
 
-                                if (!loading && (data == null || data.Associations == null)) {
+                                if (!loading && (data == null || data.Association == null)) {
                                     return <CannotLoadWhileOffline />;
                                 }
 
                                 return (
                                     <Placeholder
-                                        ready={data != null && data.Associations != null}
+                                        ready={data != null && data.Association != null}
                                         previewComponent={<CardPlaceholder />}
                                     >
                                         <FlatList
                                             ref={(r) => this.flatList = r}
                                             contentContainerStyle={styles.container}
-                                            data={
-                                                _(data != null ? data.Associations : [])
-                                                    .sortBy(
-                                                        (a) => (data != null && a.id === (this.props.screenProps?.association || data?.Me?.association.id))
-                                                            ? '0'
-                                                            : a.name,
-                                                    )
-                                                    .take(1)
-                                                    .toArray()
-                                                    .value()
-                                            }
+                                            data={data && data.Association ? [data.Association] : []}
 
                                             refreshing={isRefreshing || loading}
                                             onRefresh={createRunRefresh(refetch)}

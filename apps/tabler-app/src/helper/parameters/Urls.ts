@@ -6,7 +6,11 @@ export type UrlParameters = {
     world_whitelist: string[],
     feedback: string,
     join: string,
-    support: string,
+
+    support: {
+        global: string,
+        [key: string]: string,
+    },
 };
 
 export const UrlDefaults: UrlParameters = {
@@ -17,5 +21,6 @@ export const UrlDefaults: UrlParameters = {
 
     feedback: getConfigValue('feedback'),
     join: getConfigValue('join'),
+
     support: getConfigValue('support'),
 };
