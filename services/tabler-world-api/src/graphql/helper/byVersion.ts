@@ -18,6 +18,10 @@ type Args<T> = {
     versions: VersionMap<T>,
 };
 
+export const v12Check = (version: string) => version.startsWith('1.1') || version.startsWith('1.0')
+    ? 'old'
+    : 'default';
+
 export function byVersion<T>({ context: { lambdaEvent }, versions, mapVersion }: Args<T>): T {
     logger.log('Checking headers', lambdaEvent?.headers);
 

@@ -15,7 +15,7 @@ export class WorldScreen extends React.Component {
     async componentDidMount() {
         const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
         this.setState({
-            url: urls.world,
+            url: urls.world.replace('#lang#', I18N.id),
             whitelist: urls.world_whitelist,
         });
     }

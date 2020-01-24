@@ -27,7 +27,12 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
                 const variables = context.requestCache.variables;
 
                 graphqlResponse.errors.forEach(
-                    (err) => context.logger.error('Query', query, 'Variables', variables, 'Error', err));
+                    (err) => context.logger.error(
+                        'Query', JSON.stringify(query),
+                        'Variables', JSON.stringify(variables),
+                        'Error', JSON.stringify(err),
+                    ),
+                );
             }
         } catch (e) {
             o.context.logger.error('Faild to log error', e);

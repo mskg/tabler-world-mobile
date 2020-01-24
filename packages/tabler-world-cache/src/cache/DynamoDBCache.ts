@@ -132,7 +132,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
                 RequestItems: {
                     [this.tableOptions.tableName]: {
                         Keys: c.map((id) => ({ id })),
-                        AttributesToGet: ['id', 'data', 'ttl'],
+                        AttributesToGet: ['id', 'data', 'ttl', 'version'],
                         ConsistentRead: false,
                     },
                 },

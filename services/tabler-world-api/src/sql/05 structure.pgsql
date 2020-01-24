@@ -94,7 +94,7 @@ select
         ) cfir
     ) as meetingplace2
     ,(
-        select array_to_jsonb(array_agg(r))
+        select to_jsonb(array_to_json(array_agg(r)))
         from
         (
             select structure_tabler_roles.id as member, functionname as role
@@ -108,7 +108,7 @@ select
         ) r
     ) as board
     ,(
-        select array_to_jsonb(array_agg(r))
+        select to_jsonb(array_to_json(array_agg(r)))
         from
         (
             select structure_tabler_roles.id as member, functionname as role
@@ -161,7 +161,7 @@ select
     ,data->>'name' as name
     ,make_short_reference('area', id) as shortname
     ,(
-        select array_to_jsonb(array_agg(r))
+        select to_jsonb(array_to_json(array_agg(r)))
         from
         (
             select structure_tabler_roles.id as member, functionname as role
@@ -202,7 +202,7 @@ select
      end as logo
     ,make_short_reference('assoc', id) as shortname
    ,(
-        select array_to_jsonb(array_agg(r))
+        select to_jsonb(array_to_json(array_agg(r)))
         from
         (
             select structure_tabler_roles.id as member, functionname as role
@@ -216,7 +216,7 @@ select
         ) r
     ) as board
     ,(
-        select array_to_jsonb(array_agg(r))
+        select to_jsonb(array_to_json(array_agg(r)))
         from
         (
             select structure_tabler_roles.id as member, functionname as role
