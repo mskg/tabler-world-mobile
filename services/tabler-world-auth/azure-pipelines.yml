@@ -17,7 +17,7 @@ pr:
 trigger:
   branches:
     include:
-      - chat
+      - release/v1.2
 
   paths:
     include:
