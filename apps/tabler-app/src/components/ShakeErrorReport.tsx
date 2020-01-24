@@ -228,7 +228,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                             <View style={styles.rowIcon}>
                                 <Ionicons name="md-microphone" size={32} />
                             </View>
-                            <Text numberOfLines={1} style={styles.rowText}>{I18N.ErrorReport.feedback}</Text>
+                            <Text style={styles.rowText}>{I18N.ErrorReport.feedback}</Text>
                         </View>
                     </TouchableRipple>
 
@@ -237,7 +237,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                             <View style={styles.rowIcon}>
                                 <Ionicons name="md-bug" size={32} />
                             </View>
-                            <Text numberOfLines={1} style={styles.rowText}>{I18N.ErrorReport.report}</Text>
+                            <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
                         </View>
                     </TouchableRipple>
                 </Surface>
@@ -298,6 +298,8 @@ const styles = StyleSheet.create({
 
     rowText: {
         paddingLeft: 16,
+        flex: 1,
+        flexWrap: 'wrap',
     },
 
     shade: {
