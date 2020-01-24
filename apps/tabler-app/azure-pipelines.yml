@@ -81,6 +81,10 @@ steps:
     APP_VERSION: $(build.buildNumber)
     SOURCESDIR: $(System.DefaultWorkingDirectory)
 
+- script: npm run licenses
+  workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
+  displayName: licenses
+
 # Publish expo
 - script: |
     echo "Release is $EXPO_RELEASE_CHANNEL"
