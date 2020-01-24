@@ -19,7 +19,7 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { Album, AlbumVariables, Album_Album_pictures } from '../../model/graphql/Album';
-import { GetAlbumQuery } from '../../queries/GetAlbumQuery';
+import { GetAlbumQuery } from '../../queries/Album/GetAlbumQuery';
 import { IAlbumParams } from '../../redux/actions/navigation';
 import { HEADER_MARGIN_TOP } from '../../theme/dimensions';
 import { logger } from './logger';
@@ -76,7 +76,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                                     <Placeholder
                                         ready={false}
                                         previewComponent={
-                                            <Square width={Dimensions.get('screen').width / 4 - 3} />
+                                            <Square width={Dimensions.get('window').width / 4 - 3} />
                                         }
                                     />
                             }
@@ -201,8 +201,8 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                                             maxToRenderPerBatch: 2, // when rendering ahead, how many should we render at the same time
                                             // initialScrollIndex: this.state.selectedIndex,
                                             // getItemLayout: (data, index) => ({ // fixes scroll and pinch behavior
-                                            //   length: Dimensions.get('screen').width,
-                                            //   offset: Dimensions.get('screen').width * index,
+                                            //   length: Dimensions.get('window').width,
+                                            //   offset: Dimensions.get('window').width * index,
                                             //   index,
                                             // }),
                                         }}

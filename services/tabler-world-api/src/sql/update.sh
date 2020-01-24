@@ -1,7 +1,7 @@
 #!/bin/bash
 source ~/.bashrc
-source ../../../config/.env
-source ../../../config/.env.local
+source ../../../../config/.env
+source ../../../../config/.env.local
 
 # STACK="$(aws cloudformation list-exports)"
 # RDSHOST="$(echo $STACK | jq -r -c '.Exports[] | select(.Name == "DatabaseHostId") | .Value')"
@@ -16,7 +16,16 @@ BEGIN;
 \i '01 settings.pgsql'
 \i '01 tablers.pgsql'
 \i '01 clubs.pgsql'
+\i '01 areas.pgsql'
+\i '01 associations.pgsql'
+\i '01 families.pgsql'
+\i '01 groups.pgsql'
+\i '02 helper.pgsql'
 \i '02 roles.pgsql'
+COMMIT;
+
+BEGIN;
+
 \i '04 profiles.pgsql'
 \i '04 privacy.pgsql'
 \i '05 structure.pgsql'
@@ -24,6 +33,10 @@ BEGIN;
 \i '07 search.pgsql'
 \i '08 jobs.pgsql'
 \i '09 geocode.pgsql'
+
+COMMIT;
+
+BEGIN;
 
 select count(*) as tablers from tabler;
 select count(*) as profiles from profiles where REMOVED = false;

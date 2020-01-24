@@ -47,6 +47,8 @@ provider:
   name: aws
   stage: dev
   region: eu-west-1
+  deploymentBucket:
+    blockPublicAccess: true
 
   runtime: nodejs10.x
 

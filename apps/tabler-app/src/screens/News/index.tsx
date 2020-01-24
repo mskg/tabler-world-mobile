@@ -14,7 +14,7 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { TopNews, TopNews_TopNews } from '../../model/graphql/TopNews';
-import { GetNewsQuery } from '../../queries/GetNewsQuery';
+import { GetNewsQuery } from '../../queries/News/GetNewsQuery';
 import { showAlbum, showNewsArticle } from '../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
@@ -33,9 +33,27 @@ type Props = {
 };
 
 class NewsScreenBase extends AuditedScreen<Props, State> {
+    flatList!: FlatList<TopNews_TopNews> | null;
 
     constructor(props) {
         super(props, AuditScreenName.TopNews);
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this.flatList?.scrollToOffset({
+                        offset: 0, animated: true,
+                    }),
+                );
+
+                // setTimeout(
+                //     () => this.props.refresh(),
+                //     100
+                // );
+            },
+        });
     }
 
     _renderItem = (params) => {
@@ -52,7 +70,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                     style={styles.title}
                 />
 
-                {item.description != null &&
+                {item.description != null && (
                     <Card.Content>
                         <View
                             style={{ maxHeight: 200, overflow: 'hidden' }}
@@ -68,15 +86,15 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                             {I18N.ReadMore.more}
                         </Text>
                     </Card.Content>
-                }
+                )}
 
                 <View style={styles.bottom} />
 
-                {false && item.album &&
+                {false && item.album && (
                     <Card.Actions style={styles.action}>
                         <Button color={this.props.theme.colors.accent} onPress={_showAlbum}>{I18N.Albums.details}</Button>
                     </Card.Actions>
-                }
+                )}
             </Card>
         );
     }
@@ -102,6 +120,8 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                                 previewComponent={<CardPlaceholder />}
                             >
                                 <FlatList
+                                    ref={(r) => this.flatList = r}
+
                                     contentContainerStyle={styles.container}
                                     data={data != null ? data.TopNews : []}
 

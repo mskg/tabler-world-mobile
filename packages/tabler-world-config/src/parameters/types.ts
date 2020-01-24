@@ -32,3 +32,9 @@ export type Param_TTLS = {
     Documents: number,
     News: number,
 };
+
+export type Param_Chat = {
+    ttl: number,
+    eventsPageSize: number,
+    masterKey: string,
+};

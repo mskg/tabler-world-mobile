@@ -12,20 +12,20 @@ export const RolesResolver = {
                 makeCacheKey('Structure', ['roles', context.principal.association]),
                 () =>
 
-                useDataService(
+                    useDataService(
                         context,
                         async (client) => {
                             const res = await client.query(
                                 `
 select
-    distinct name
+    distinct functionname
 from
     structure_tabler_roles
 order by 1`,
                                 [],
                             );
 
-                            return res.rows.map((r) => r.name);
+                            return res.rows.map((r) => r.functionname);
                         },
                     ),
                 'Structure',

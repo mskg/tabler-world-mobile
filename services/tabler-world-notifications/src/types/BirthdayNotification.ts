@@ -1,4 +1,4 @@
-import { SupportedLanguages } from "./SupportedLangs";
+import { SupportedLanguages } from './SupportedLangs';
 
 export type BirthdayNotification = {
     userid: number;

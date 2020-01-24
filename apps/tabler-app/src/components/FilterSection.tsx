@@ -4,11 +4,12 @@ import { StyleSheet, View } from 'react-native';
 import { Checkbox, Divider, Text, TouchableRipple } from 'react-native-paper';
 import { Accordion } from './Accordion';
 
-export type FilterTagType = 'area' | 'role' | 'table' | 'sector';
+export type FilterTagType = 'area' | 'role' | 'table' | 'sector' | 'association';
 
 export type FilterTag = {
     type: FilterTagType,
     value: string,
+    id?: string,
 };
 
 const Element = ({ theme, title, onPress, right }: {
@@ -16,7 +17,8 @@ const Element = ({ theme, title, onPress, right }: {
 }) => (
         <TouchableRipple
             style={{ backgroundColor: color(theme.colors.background).alpha(0.35).rgb().string() }}
-            onPress={() => requestAnimationFrame(() => onPress())}>
+            onPress={() => requestAnimationFrame(() => onPress())}
+        >
             <View style={[styles.row]} pointerEvents="none">
                 <Text style={{ width: MAX_WIDTH }} numberOfLines={2}>{title}</Text>
                 {right}
@@ -24,8 +26,10 @@ const Element = ({ theme, title, onPress, right }: {
         </TouchableRipple>
     );
 
-export const FilterSection = ({ title, data, type, filter, onToggle, theme }) => {
-    if (data.length == 0) return (<React.Fragment key={type} />);
+export const FilterSection = (
+    { title, data, type, filter, onToggle, theme },
+) => {
+    if (data.length === 0) return (<React.Fragment key={type} />);
 
     return (
         <Accordion
@@ -33,7 +37,10 @@ export const FilterSection = ({ title, data, type, filter, onToggle, theme }) =>
             title={title}
         >
             {
-                data.map((tag, _position) => {
+                data.map((value, _position) => {
+                    const tag = typeof (value) === 'string' ? value : value.name;
+                    const id = typeof (value) === 'string' ? null : value.id;
+
                     const selected = !!filter.find((f: FilterTag) => f.type === type && f.value === tag);
                     return (
                         <React.Fragment key={type + tag}>
@@ -41,30 +48,16 @@ export const FilterSection = ({ title, data, type, filter, onToggle, theme }) =>
                             <Element
                                 title={tag}
                                 theme={theme}
-                                onPress={() => onToggle(type, tag)}
-                                right={
+                                onPress={() => onToggle(type, tag, id)}
+                                right={(
                                     <Checkbox.Android
                                         color={theme.colors.accent}
                                         status={selected ? 'checked' : 'unchecked'}
-                                        onPress={() => { requestAnimationFrame(() => onToggle(type, tag)); }}
+                                        onPress={() => { requestAnimationFrame(() => onToggle(type, tag, id)); }}
                                     />
-                                }
+                                )}
                             />
                         </React.Fragment>
-
-                        // <Chip
-                        //     style={[{
-                        //         marginHorizontal: 4,
-                        //         marginVertical: 2,
-                        //     },
-                        //     selected ? { backgroundColor: theme.colors.accent } : null
-                        //     ]}
-                        //     onPress={() => requestAnimationFrame(() => onToggle(type, tag))}
-                        //     selected={selected}
-                        //     key={position}
-                        // >
-                        //     <Text style={{ fontSize: 11 }}>{tag}</Text>
-                        // </Chip>
                     );
                 })
             }

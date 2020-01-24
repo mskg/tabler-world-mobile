@@ -34,7 +34,7 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 ```bash
 sdkmanager "emulator"
-sdkmanager "system-images;android-29;default;x86_64"
+sdkmanager "system-images;android-29;google_apis_playstore;x86_64"
 sdkmanager "platforms;android-29"
 sdkmanager "platform-tools"
 ```
@@ -42,7 +42,7 @@ sdkmanager "platform-tools"
 6. Create image named *expo*
 
 ```bash
-avdmanager create avd -n expo -k "system-images;android-29;default;x86_64" -g "default" --device pixel
+avdmanager create avd -n expo -k "system-images;android-29;google_apis_playstore;x86_64" --device pixel
 
 for f in ~/.android/avd/*.avd/config.ini; do echo 'hw.keyboard=yes' >> "$f"; done
 

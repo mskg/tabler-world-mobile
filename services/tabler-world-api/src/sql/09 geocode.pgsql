@@ -56,6 +56,7 @@ select
     userlocations.accuracy,
     userlocations.speed,
     userlocations.lastseen,
+    cast(coalesce(usersettings.settings->>'nearbymembersMap', 'false') as boolean) as canshowonmap,
     jsonb_strip_nulls(jsonb_build_object(
         'location',
         jsonb_build_object(
@@ -83,11 +84,12 @@ select
 
         'postal_code',
         nullif(userlocations.address->>'postalCode', '')
-    )) as address
+    )) as address,
+    userlocations
 from
-    userlocations, profiles
-where
-    profiles.id = userlocations.id
+    userlocations
+    inner join profiles on profiles.id = userlocations.id
+    left join usersettings on userlocations.id = usersettings.id
 ;
 
 ------------------------------

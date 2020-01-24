@@ -15,11 +15,24 @@ RUN apt-get update \
     libcurl3 \
     libicu55 \
     libunwind8 \
-    netcat
+    netcat \
+    apt-transport-https \
+    ca-certificates
+
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb > packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    powershell
 
 # We need node
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
 RUN apt-get install -y nodejs
+
+# We need python
+RUN apt-get install -y python3-pip
+RUN apt-get install -y sudo
 
 WORKDIR /azp
 

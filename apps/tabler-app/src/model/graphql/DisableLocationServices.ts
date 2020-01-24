@@ -11,5 +11,9 @@ export interface DisableLocationServices {
    * Updates a setting
    */
   putSetting: boolean | null;
+  /**
+   * Updates a setting
+   */
+  nearbymembersMap: boolean | null;
   disableLocationServices: boolean | null;
 }

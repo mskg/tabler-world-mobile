@@ -6,7 +6,7 @@ type Props = {
     children?: any,
 };
 
-const TEST_PLACHOLDERS = false;
+const TEST_PLACHOLDERS = false && __DEV__;
 
 export class Placeholder extends React.PureComponent<Props> {
     render() {

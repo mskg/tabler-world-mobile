@@ -21,6 +21,7 @@ custom:
 
   email: ${env:ALERT_EMAIL}
   cache_table: tabler-world-cache-${self:custom.stage}
+  cache_version: '1.3#v2'
   sqs: ${self:service}-cacheupdates-${self:custom.stage}
   sqs_geo: ${self:service}-geocode-${self:custom.stage}
 
@@ -93,6 +94,9 @@ provider:
 
   runtime: nodejs10.x
 
+  deploymentBucket:
+    blockPublicAccess: true
+
   memorySize: 128
   versionFunctions: false
 
@@ -144,11 +148,23 @@ functions:
   #
   reader:
     handler: src/reader/lambda.handler
-    timeout: 600
+    timeout: 840
 
     environment:
       sqs_queue:
         Ref: ReadUpdatesQueue
+      readerservice_arn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:lambda:"
+            - ${self:provider.region}
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":function:"
+            - "tabler-world-import-"
+            - ${self:custom.stage}
+            - "-reader"
+
       XRAY_DISABLED: true
 
     iamRoleStatementsInherit: true
@@ -162,6 +178,22 @@ functions:
             - ReadUpdatesQueue
             - Arn
 
+      # allow self execution
+      - Effect: "Allow"
+        Action:
+          - "lambda:InvokeFunction"
+        Resource:
+          Fn::Join:
+            - ""
+            - - "arn:aws:lambda:"
+              - ${self:provider.region}
+              - ":"
+              - Ref: "AWS::AccountId"
+              - ":function:"
+              - "tabler-world-import-"
+              - ${self:custom.stage}
+              - "-reader"
+
     events:
       - schedule:
           name: ${self:service}-tabler-${self:custom.stage}
@@ -172,7 +204,8 @@ functions:
 
           input:
             mode: incremental
-            type: tabler
+            offset: 0
+            maxRecords: 5000
 
       - schedule:
           name: ${self:service}-clubs-${self:custom.stage}
@@ -184,7 +217,21 @@ functions:
           input:
             mode: full
             type: clubs
+            offset: 0
+            maxRecords: 5000
 
+      - schedule:
+          name: ${self:service}-groups-${self:custom.stage}
+          description: Updates groups from TABLER.WORLD
+
+          rate: rate(24 hours)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            mode: full
+            type: groups
+            noRefreshViews: true
+            noUpdateCache: true
   #
   # Cache update
   #
@@ -269,6 +316,14 @@ functions:
 
 resources:
   Resources:
+    readerAsyncConfig:
+      Type: AWS::Lambda::EventInvokeConfig
+      Properties:
+        FunctionName:
+          Ref: ReaderLambdaFunction
+        MaximumRetryAttempts: 0
+        Qualifier: $LATEST
+
     graphqlsqTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Delete
@@ -350,6 +405,13 @@ resources:
           - Arn
       Export:
         Name: CacheTableArn-${self:custom.stage}
+
+    CacheVersion:
+      Value:
+        ${self:custom.cache_version}
+
+      Export:
+        Name: CacheVersion-${self:custom.stage}
 
     CacheTableName:
       Value:

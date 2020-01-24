@@ -5,14 +5,18 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
-import { BirthdayNotification, INotificationPayload } from '../model/NotificationPayload';
-import { showProfile } from '../redux/actions/navigation';
+import { BirthdayNotification, ChatMessageNotification, INotificationWithPayload, AdMessageNotification } from '../model/NotificationPayload';
+import { showConversation, showProfile } from '../redux/actions/navigation';
 import { PushNotification, PushNotificationBase } from './PushNotification';
+import { isFeatureEnabled, Features } from '../model/Features';
+import { LinkingHelper } from '../helper/LinkingHelper';
+import { OpenLink } from '../helper/OpenLink';
 
 const logger = new Logger(Categories.UIComponents.Notifications);
 
 type Props = {
     showProfile: typeof showProfile,
+    showConversation: typeof showConversation,
     // member: HashMap<IMember>,
 };
 
@@ -37,14 +41,26 @@ class PushNotificationsBase extends PureComponent<Props> {
         this._notificationSubscription.remove();
     }
 
-    _handleAction = (el: INotificationPayload<any>) => () => {
+    _handleAction = (el: INotificationWithPayload<any>) => () => {
         if (el != null && el.reason === 'birthday') {
             const bd = el as BirthdayNotification;
 
-            // const tabler = this.props.member[bd.payload.id];
-            // if (tabler != null) {
             this.props.showProfile(bd.payload.id);
-            // }
+        } else if (el != null && el.reason === 'chatmessage') {
+            if (isFeatureEnabled(Features.Chat)) {
+                const cm = el as ChatMessageNotification;
+
+                this.props.showConversation(
+                    cm.payload.conversationId,
+                    cm.title,
+                );
+            }
+        } else if (el != null && el.reason === 'advertisment') {
+            const am = el as AdMessageNotification;
+
+            if (am.payload.url) {
+                OpenLink.url(am.payload.url);
+            }
         }
     }
 
@@ -94,5 +110,6 @@ export const PushNotifications = connect(
     null,
     {
         showProfile,
+        showConversation,
     },
 )(PushNotificationsBase);

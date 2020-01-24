@@ -7,7 +7,7 @@ import { SettingsState } from './state/SettingsState';
 import { SnacksState } from './state/SnacksState';
 
 export interface IAppState {
-    connection: ConnectionInfo & { offline: boolean };
+    connection: ConnectionInfo & { offline: boolean, websocket: boolean };
 
     updateAvailable: boolean;
     location: LocationState;

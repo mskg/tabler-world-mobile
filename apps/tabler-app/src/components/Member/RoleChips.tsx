@@ -25,7 +25,7 @@ export class RoleChips extends React.PureComponent<Props> {
                 color={this.props.theme.colors.primary}
                 textColor={chipColor}
                 font={this.props.theme.fonts.medium}
-                level={r.ref.name}
+                level={r.ref.shortname}
                 text={r.name}
             />
         )).value();

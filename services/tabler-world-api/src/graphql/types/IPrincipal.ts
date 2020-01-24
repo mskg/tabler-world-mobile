@@ -1,8 +1,6 @@
-export interface IPrincipal {
-    id: number;
-    email: string;
+import { IPrincipal as IBase } from '@mskg/tabler-world-auth-client';
 
-    association: string;
-    area: number;
-    club: number;
+// backward compatibility
+// tslint:disable-next-line: no-empty-interface
+export interface IPrincipal extends IBase {
 }

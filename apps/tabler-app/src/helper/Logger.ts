@@ -1,4 +1,4 @@
-import { Sentry, SentrySeverity } from 'react-native-sentry';
+import * as Sentry from 'sentry-expo';
 
 // tslint:disable: max-classes-per-file prefer-template
 
@@ -23,6 +23,8 @@ export class Categories {
         static readonly Notifications = Categories._Component + '/PushNotifications';
         static readonly ErrorReport = Categories._Component + '/ErrorReport';
         static readonly Linking = Categories._Component + '/Linking';
+        static readonly Chat = Categories._Component + '/Chat';
+        static readonly ErrorBoundary = Categories._Component + '/ErrorBoundary';
     };
 
     static Sagas = class {
@@ -31,6 +33,7 @@ export class Categories {
         static readonly Member = Categories.SagaRoot + '/Member';
         static readonly Push = Categories.SagaRoot + '/Push';
         static readonly Location = Categories.SagaRoot + '/Location';
+        static readonly NearbyMembers = Categories.SagaRoot + '/NearbyMembers';
         static readonly Fetch = Categories.SagaRoot + '/Fetch';
         static readonly User = Categories.SagaRoot + '/User';
         static readonly Contacts = Categories.SagaRoot + '/Contacts';
@@ -55,6 +58,7 @@ export class Categories {
         static readonly Setting = Categories._UI + '/Settings';
         static readonly Menu = Categories._UI + '/Menu';
         static readonly Search = Categories._UI + '/Search';
+        static readonly SearchStructure = Categories._UI + '/SearchStructure';
         static readonly Contacts = Categories._UI + '/Contacts';
         static readonly Member = Categories._UI + '/Member';
         static readonly Docs = Categories._UI + '/Docs';
@@ -62,6 +66,7 @@ export class Categories {
         static readonly Club = Categories._UI + '/Club';
         static readonly Scan = Categories._UI + '/Scan';
         static readonly NearBy = Categories._UI + '/NearBy';
+        static readonly Conversation = Categories._UI + '/Chat';
     };
 
     static Helpers = class {
@@ -73,8 +78,9 @@ export class Categories {
     };
 }
 
-let FILTER; // /Location|Redux|Nearby/ig; // /NearBy/ig; // /Location|Settings/ig; // /Push/ig; // /FileStorage/ig; // /^SAGA\/Tabler$/ig;
+let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
+const PRESERVE_CONSOLE = false;
 
 // safety
 if (!__DEV__) {
@@ -95,7 +101,7 @@ export class Logger {
     debug(...args: any[]): void {
         if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
 
-        if (!__DEV__) {
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
             const message = args != null ? args[0] : null;
 
             let data: any = null;
@@ -104,12 +110,12 @@ export class Logger {
                 data = args;
             }
 
-            Sentry.captureBreadcrumb({
+            Sentry.addBreadcrumb({
                 message,
                 data,
 
                 category: this.category,
-                level: SentrySeverity.Debug,
+                level: Sentry.Severity.Debug,
             });
         } else {
             // tslint:disable-next-line: no-console
@@ -120,7 +126,7 @@ export class Logger {
     log(...args: any[]): void {
         if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
 
-        if (!__DEV__) {
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
             const message = args != null ? args[0] : null;
 
             let data: any = null;
@@ -129,12 +135,12 @@ export class Logger {
                 data = args;
             }
 
-            Sentry.captureBreadcrumb({
+            Sentry.addBreadcrumb({
                 message,
                 data,
 
                 category: this.category,
-                level: SentrySeverity.Info,
+                level: Sentry.Severity.Info,
             });
         } else {
             // tslint:disable-next-line: no-console
@@ -143,13 +149,15 @@ export class Logger {
     }
 
     error(error, ...args: any[]): void {
-        if (!__DEV__) {
-            Sentry.captureException(error, {
-                tags: {
-                    category: this.category,
-                },
-                extra: args,
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
+            Sentry.withScope((scope) => {
+                scope.setLevel(Sentry.Severity.Error);
+                scope.setExtra('args', args);
+                scope.setTag('category', this.category);
+
+                Sentry.captureException(error);
             });
+
         } else {
             // tslint:disable-next-line: no-console
             console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);

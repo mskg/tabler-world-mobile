@@ -2,8 +2,8 @@ import { Dimensions, StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
     imageThumbnail: {
-        height: Dimensions.get('screen').width / 4 - 3,
-        width: Dimensions.get('screen').width / 4 - 3,
+        height: Dimensions.get('window').width / 4 - 3,
+        width: Dimensions.get('window').width / 4 - 3,
     },
 
     imageContainer: {

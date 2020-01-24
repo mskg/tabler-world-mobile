@@ -1,8 +1,10 @@
-import { differenceInYears, format } from 'date-fns';
-import dateEN from 'date-fns/locale/en';
+import { differenceInCalendarYears, differenceInYears, format, parseISO } from 'date-fns';
+import dateEN from 'date-fns/locale/en-US';
+import 'moment';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 
+// tslint:disable-next-line: no-var-requires
 const countries = require('./countries/en.json');
 
 const en = {
@@ -19,7 +21,9 @@ const en = {
     ErrorReport: {
         title: 'Report a problem',
         text: 'Your feedback helps us improve TABLER.APP.',
+
         report: 'Something isn\'t working?',
+        feedback: 'Some functionality is missing? You have an idea?',
 
         subject: 'TABLER.APP Issue',
         noMail: 'You seem to have no mail client installed?',
@@ -82,7 +86,10 @@ const en = {
     },
 
     Structure: {
-        title: 'Directory',
+        navigation: 'Directory',
+
+        title: 'Asssociation',
+        mytitle: 'My Asssociation',
         associations: 'Association',
         clubs: 'Clubs',
         areas: 'Areas',
@@ -160,45 +167,50 @@ const en = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, 'D. MMMM YYYY', { locale: dateEN })} (${differenceInYears(Date.now(), date)})`;
+                return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateEN })} (${differenceInYears(Date.now(), parseISO(date))})`;
+            },
+
+            membership: (date?: string) => {
+                if (date == null) return undefined;
+                return `${format(parseISO(date), 'yyyy', { locale: dateEN })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
             },
         },
 
         email: (s) => {
             switch (s) {
-            case 'rt':
-                return 'TABLER.WORLD';
+                case 'rt':
+                    return 'TABLER.WORLD';
 
-            case 'home':
-                return 'Private';
+                case 'home':
+                    return 'Private';
 
-            case 'work':
-                return 'Work';
+                case 'work':
+                    return 'Work';
 
-            case 'other':
-                return 'Other';
+                case 'other':
+                    return 'Other';
 
-            default:
-                return s;
+                default:
+                    return s;
             }
         },
 
         telephone: (s) => {
             switch (s) {
-            case 'home':
-                return 'Home';
+                case 'home':
+                    return 'Home';
 
-            case 'mobile':
-                return 'Mobile';
+                case 'mobile':
+                    return 'Mobile';
 
-            case 'work':
-                return 'Work';
+                case 'work':
+                    return 'Work';
 
-            case 'other':
-                return 'Other';
+                case 'other':
+                    return 'Other';
 
-            default:
-                return s;
+                default:
+                    return s;
             }
         },
 
@@ -211,6 +223,7 @@ const en = {
 
             companies: 'Company',
             educations: 'Education',
+            joined: 'Date Joined',
         },
 
         Actions: {
@@ -219,6 +232,7 @@ const en = {
             mail: 'mail',
             web: 'tabler.world',
 
+            chat: 'Start Conversation',
             openweb: 'Show on TABLER.WORLD',
             favadd: 'Add to Favorites',
             remfav: 'Remove from Favorites',
@@ -243,6 +257,7 @@ const en = {
 
         results: (r) => r > 0 ? `Search results (${r})` : 'Search results',
 
+        associations: (r) => r > 0 ? `Associations (${r})` : 'Associations',
         roles: (r) => r > 0 ? `Roles (${r})` : 'Roles',
         areas: (r) => r > 0 ? `Areas (${r})` : 'Areas',
         tables: (r) => r > 0 ? `Tables (${r})` : 'Tables',
@@ -294,15 +309,15 @@ const en = {
     Filter: {
         title: 'Adjust member filters',
         area: 'Districts',
-        showAll: 'Show all members',
-        hideAll: 'Hide all members',
+        showAll: 'Show all my Association Members',
+        hideAll: 'Hide all my Association Members',
 
         favorites: 'Favorites',
-        toggleFavorits: 'All favorites',
-        toggleOwnTable: 'My own table',
+        toggleFavorits: 'All Favorites',
+        toggleOwnTable: 'My own Table',
 
-        toggleAssociationBoard: 'Association Board and -Assists',
-        toggleAreaBoard: 'Association Board of Advisors',
+        toggleAssociationBoard: 'My Association\'s Board and -Assists',
+        toggleAreaBoard: 'My Association\'s Board of Advisors',
     },
 
 
@@ -335,40 +350,40 @@ const en = {
         apps: {
             mail: (app: MailApps) => {
                 switch (app) {
-                case MailApps.Default:
-                    return Platform.OS == 'ios' ? 'Apple Mail' : 'Google Mail';
+                    case MailApps.Default:
+                        return Platform.OS == 'ios' ? 'Apple Mail' : 'Google Mail';
 
-                case MailApps.GoogleMail:
-                    return 'Google Mail';
+                    case MailApps.GoogleMail:
+                        return 'Google Mail';
 
-                case MailApps.Outlook:
-                    return 'Microsoft Outlook';
+                    case MailApps.Outlook:
+                        return 'Microsoft Outlook';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
 
             web: (app: WebApps) => {
                 switch (app) {
-                case WebApps.Chrome:
-                    return 'Google Chrome';
+                    case WebApps.Chrome:
+                        return 'Google Chrome';
 
-                case WebApps.Default:
-                    return Platform.OS == 'ios' ? 'Safari' : 'Google Chrome';
+                    case WebApps.Default:
+                        return Platform.OS == 'ios' ? 'Safari' : 'Google Chrome';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
 
             call: (app: CallApps) => {
                 switch (app) {
-                case CallApps.Default:
-                    return 'Mobile Phone';
+                    case CallApps.Default:
+                        return 'Mobile Phone';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
 
@@ -380,14 +395,14 @@ const en = {
                     // case MessagingApps.Telegram:
                     //     return "Telegram";
 
-                case MessagingApps.WhatsApp:
-                    return 'WhatsApp';
+                    case MessagingApps.WhatsApp:
+                        return 'WhatsApp';
 
-                case MessagingApps.Default:
-                    return Platform.OS == 'ios' ? 'Apple Messages' : 'Google Messages';
+                    case MessagingApps.Default:
+                        return Platform.OS == 'ios' ? 'Apple Messages' : 'Google Messages';
 
-                default:
-                    return app;
+                    default:
+                        return app;
                 }
             },
         },
@@ -403,18 +418,18 @@ const en = {
             contacts: 'Members',
             colors: 'Colors',
             experiments: 'Experiments',
-            nearby: 'Nearby Members',
+            locationservices: 'Location Services',
         },
 
         texts: {
             contacts: 'Members can be synchronized to your phone\'s default Contacts\' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.',
             experiments: 'These are experimental and unsupported features of the TABLER.APP and may dissapear at any time.',
-            nearby: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
         },
 
         contactpermissions: 'Location permissions are required in order to use this feature. Please grant permission through the phone\'s settings area.',
         locationpermission: 'Cannot access your location. Please grant permission through the phone\'s settings area.',
         locationfailed: 'Failed to update location settings',
+        mapfailed: 'Failed to update map settings',
 
         firstlast: 'First, Last',
         lastfirst: 'Last, First',
@@ -431,12 +446,14 @@ const en = {
             version: 'Version',
             lastSync: 'Last Synchronization',
             channel: 'Distribution Channel',
+            pushtoken: 'Push Token',
             syncFavorites: 'Synchronize Favorites',
             syncOwnTable: 'Synchronize own Table\'s Members',
             sortOrder: 'Sort Order',
             displayOrder: 'Display Order',
             experiments: 'Albums & News',
-            nearby: 'Share my location',
+            nearby: 'Nearby Members',
+            notifications: 'Notifications',
         },
 
         ReleaseNotes: 'Release Notes',
@@ -494,6 +511,26 @@ const en = {
             title: 'Birthday time',
             text: (n) => `Help ${n} to have a great day!`,
         },
+
+        chatDisabled: {
+            text: 'You disabled notifications for chat conversations. You will not be visible for other members and you will not not able to send and receive messages.',
+            button: 'Change',
+        },
+
+        Settings: {
+            title: 'Notifications',
+
+            birthday: {
+                title: 'Birthday Reminders',
+                field: 'For own club members and favorites',
+            },
+
+            onetoone: {
+                title: 'Conversations',
+                text: 'If you disable this setting, you opt-out the chat functionality.',
+                field: 'One to one chat',
+            },
+        },
     },
 
     Timespan: {
@@ -534,10 +571,45 @@ const en = {
         on: 'Turn on',
 
         off: 'Nearby Members is off. If you turn it on, other members can see in which city you are. We don\'t store your location history, only your last known location.',
+        mapOff: 'You have opt-in for the map display to show a map yourself.',
+
+        Tabs: {
+            list: 'List',
+            map: 'Map',
+        },
+
+        Settings: {
+            title: 'Nearby Members',
+            on: {
+                title: 'Nearby Members',
+                text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
+                field: 'Share Your Location',
+            },
+            map: {
+                field: 'Allow Others to View Your Position on a Map',
+            },
+            filter: {
+                title: 'Filter',
+                field: 'Hide Your own Club',
+            },
+        },
+    },
+
+    Support: {
+        title: 'Report a Problem',
     },
 
     Feedback: {
         title: 'Feedback',
+    },
+
+    Conversations: {
+        title: 'Conversations',
+        network: 'Waiting for network...',
+        copy: 'Copy',
+        retry: 'Retry',
+        placeholder: 'Type a message...',
+        loadEarlier: 'Load earlier messages',
     },
 };
 

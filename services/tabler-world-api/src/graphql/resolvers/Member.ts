@@ -17,6 +17,7 @@ type IdsArgs = {
 
 type MemberFilter = {
     filter: {
+        // deprectated
         areas?: number[],
 
         nationalBoard?: boolean,
@@ -30,18 +31,21 @@ export const MemberResolver = {
     Member: {
         area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
-                id: root.association + '_' + root.area,
+                id: root.area,
                 association: root.association,
-                area: root.area,
                 name: root.areaname,
+                shortname: root.areashortname,
             };
         },
 
         club: (root: any, _args: {}, _context: IApolloContext) => {
             return {
-                id: root.association + '_' + root.club,
-                club: root.club, // needs to be added to allow subsent resolvers to work
+                id: root.club,
+                // -- DEPRECATED --
+                club: root.clubnumber,
+                clubnumber: root.clubnumber,
                 name: root.clubname,
+                shortname: root.clubshortname,
                 association: root.association,
                 area: root.area,
             };
@@ -50,13 +54,14 @@ export const MemberResolver = {
         association: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 name: root.associationname,
-                association: root.association,
+                id: root.association,
+                shortname: root.associationshortname,
             };
         },
     },
 
     Company: {
-        sector:  (root: any, _args: {}, _context: IApolloContext) => {
+        sector: (root: any, _args: {}, _context: IApolloContext) => {
             return root.sector ? root.sector.replace(/-/ig, '') : null;
         },
     },
@@ -66,17 +71,17 @@ export const MemberResolver = {
             const result = [];
 
             // the optional filters only make sense if we don't retrieve all
-            if (args.filter != null && args.filter.areas != null) {
-                if (args.filter != null && args.filter.areas != null) {
+            if (args.filter != null && (args.filter.areas != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
+                if (args.filter.areas != null && args.filter.areas.length > 0) {
                     context.logger.log('areas', args.filter.areas);
-                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas);
+                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `de_d${a}`));
                     result.push(... (areaMembers || []));
                 }
 
                 // we make this sync
-                if (args.filter != null && args.filter.areaBoard === true) {
+                if (args.filter.areaBoard === true) {
                     context.logger.log('areaBoard', args.filter);
-                    const areas = await context.dataSources.structure.allAreas();
+                    const areas = await context.dataSources.structure.allAreas(context.principal.association);
 
                     for (const area of areas) {
                         if (area.board) {
@@ -90,9 +95,9 @@ export const MemberResolver = {
                     }
                 }
 
-                if (args.filter != null && args.filter.nationalBoard === true) {
+                if (args.filter.nationalBoard === true) {
                     context.logger.log('nationalBoard', args.filter);
-                    const associations = await context.dataSources.structure.allAssociations();
+                    const associations = [await context.dataSources.structure.getAssociation(context.principal.association)];
 
                     for (const assoc of associations) {
                         if (assoc.board) {
@@ -111,30 +116,30 @@ export const MemberResolver = {
                     }
                 }
 
-                if (result.length > 0) {
-                    context.logger.log('result', result.length, 'entries');
-                    return _.uniqBy(result, (m) => m.id);
-                }
+                return result.length > 0 ? _.uniqBy(result, (m) => m.id) : [];
             }
 
-            return context.dataSources.members.readAll();
+            return context.dataSources.members.readAll(context.principal.association);
         },
 
         FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
             const favorites = await context.dataSources.members.readFavorites();
+
             if (favorites) {
                 // there could be favorites that no longer exist
                 return favorites.filter((f) => f != null);
-            } 
-                return favorites;
-            
+            }
+
+            return favorites || [];
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            return context.dataSources.members.readClub(context.principal.association, context.principal.club);
+            const members = await context.dataSources.members.readClub(context.principal.club);
+            return members || [];
         },
 
         Members: (_root: any, args: IdsArgs, context: IApolloContext) => {
+            if (args.ids == null || args.ids.length === 0) { return []; }
             return context.dataSources.members.readMany(args.ids);
         },
 

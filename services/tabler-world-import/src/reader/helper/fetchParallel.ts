@@ -1,9 +1,9 @@
-import { AsyncThrottle } from "@mskg/tabler-world-common";
-import { getParameters, Param_Api } from "@mskg/tabler-world-config";
-import { DataHandler } from "../types/DataHandler";
-import { TablerWorldApiChunk } from "../types/TablerWorldApiChunk";
-import { downloadChunk } from "./downloadChunk";
-import { pushChanges } from "./pushChanges";
+import { AsyncThrottle } from '@mskg/tabler-world-common';
+import { getParameters, Param_Api } from '@mskg/tabler-world-config';
+import { DataHandler } from '../types/DataHandler';
+import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
+import { downloadChunk } from './downloadChunk';
+import { pushChanges } from './pushChanges';
 
 // 60*1000 / 100
 const throttledDownload = AsyncThrottle(downloadChunk, 800, 1);
@@ -26,8 +26,9 @@ export async function fetchParallel(
     if (chunk == null || chunk.next == null) { return; }
 
     // throtteling?
-    const params = await getParameters("tw-api");
-    const api = JSON.parse(params["tw-api"]) as Param_Api;
+    const params = await getParameters('tw-api');
+    const api = JSON.parse(params['tw-api']) as Param_Api;
+    let lastWriteBatch: Promise<void> | null = null;
 
     const batch = [];
     let end = false;
@@ -41,26 +42,38 @@ export async function fetchParallel(
 
         // last segment?
         if (!end) {
-            let nextUrl = chunk.next.substring(0, chunk.next.indexOf("?"));
-            nextUrl += "?offset=" + start;
+            let nextUrl = chunk.next.substring(0, chunk.next.indexOf('?'));
+            nextUrl += '?offset=' + start;
 
-            console.log("kicking", nextUrl);
+            console.log('kicking', nextUrl);
             batch.push(throttledDownload(nextUrl, method, payload));
         }
 
         // other batches waiting?
         if (batch.length >= api.batch / api.read_batch) {
-            console.log("waiting for batch");
+            console.log('waiting for batch');
 
             const resultChunks = await Promise.all(batch);
-            await pushChanges(resultChunks, handler);
+
+            // allow parallel write and read
+            if (lastWriteBatch) {
+                await lastWriteBatch;
+                lastWriteBatch = null;
+            }
+
+            lastWriteBatch = pushChanges(resultChunks, handler);
             batch.splice(0, batch.length);
         }
     }
     while (!end);
 
+    if (lastWriteBatch) {
+        await lastWriteBatch;
+        lastWriteBatch = null;
+    }
+
     // wait for other segments
-    console.log("waiting to end");
+    console.log('waiting to end');
     const resultsChunks = await Promise.all(batch);
     await pushChanges(resultsChunks, handler);
 }

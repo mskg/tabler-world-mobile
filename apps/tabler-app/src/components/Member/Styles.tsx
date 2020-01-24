@@ -1,6 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { ITEM_HEIGHT } from './Dimensions';
 
+// tslint:disable-next-line: export-name
 export const styles = StyleSheet.create({
     cardTitle: {
         height: ITEM_HEIGHT - (Platform.OS == 'ios' ? 0 : 8),

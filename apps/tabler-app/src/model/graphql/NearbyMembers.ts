@@ -12,7 +12,7 @@ export interface NearbyMembers_nearbyMembers_member_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface NearbyMembers_nearbyMembers_member_area {
@@ -23,14 +23,14 @@ export interface NearbyMembers_nearbyMembers_member_area {
 
 export interface NearbyMembers_nearbyMembers_member_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface NearbyMembers_nearbyMembers_member_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 
@@ -52,6 +52,7 @@ export interface NearbyMembers_nearbyMembers_member {
   area: NearbyMembers_nearbyMembers_member_area;
   association: NearbyMembers_nearbyMembers_member_association;
   roles: NearbyMembers_nearbyMembers_member_roles[] | null;
+  availableForChat: boolean | null;
 }
 
 export interface NearbyMembers_nearbyMembers_address_location {
@@ -75,6 +76,7 @@ export interface NearbyMembers_nearbyMembers {
   lastseen: any;
   state: NearbyMemberState;
   distance: number;
+  canshowonmap: boolean;
   address: NearbyMembers_nearbyMembers_address;
 }
 
@@ -84,4 +86,5 @@ export interface NearbyMembers {
 
 export interface NearbyMembersVariables {
   location: MyCurrentLocationInput;
+  hideOwnTable: boolean;
 }

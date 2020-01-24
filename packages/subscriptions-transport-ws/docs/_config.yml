@@ -1,0 +1,26 @@
+title: GraphQL Subscriptions Docs
+propertytitle: Using GraphQL Subscriptions
+subtitle: GraphQL Subscriptions Guide
+description: A guide to using GraphQL Subscriptions.
+versions:
+  - '1'
+sidebar_categories:
+  null:
+    - index
+    - subscriptions-to-schema
+    - setup
+    - lifecycle-events
+    - authentication
+    - express
+    - external-pubsub
+    - meteor
+github_repo: apollographql/subscriptions-transport-ws
+content_root: docs/source
+
+typescript_api_box:
+  data_file: docs.json
+
+url: https://www.apollographql.com/docs/graphql-subscriptions/
+root: /docs/graphql-subscriptions/
+
+public_dir: public/docs/graphql-subscriptions

@@ -16,13 +16,12 @@ select
 			--member
 			and id in (
 				select id
-				from tabler_roles tr
+				from structure_tabler_roles tr
 				where
-					tr.isvalid = TRUE
-				and tr.id = tabler.id
+				    tr.id = tabler.id
 				and (
-							function in (4306, 4307) -- member, honory
-							or function < 100 -- board etc.
+							function in (4306, 4307) -- member, honorary
+							or function < 100 -- board and assists for area, club, assoc
 					)
 				)
 		THEN
@@ -37,6 +36,7 @@ select
 	,TRIM(data->>'first_name') as firstname
 	,TRIM(data->>'last_name') as lastname
 	,cast(data->>'birth_date' as DATE) as birthdate
+	,cast(data->>'rt_date_joined' as DATE) as datejoined
 
 	,data->>'profile_pic' as pic
 	-- always private
@@ -47,13 +47,18 @@ select
 	,data->'emails_secondary' as emails
 	,data->'social_media' as socialmedia
 
-	--,cast(data->>'rt_club_number' as integer) as club
-	,cast(regexp_replace(data->>'rt_club_subdomain','[^0-9]+','','g') as integer) club
+    ,make_key_club(data->>'rt_association_subdomain', data->>'rt_club_subdomain') club
+	,cast(coalesce(nullif(regexp_replace(data->>'rt_club_subdomain','[^0-9]+','','g'), ''), '1') as integer) clubnumber
 	,data->>'rt_club_name' as clubname
-	,cast(regexp_replace(data->>'rt_area_subdomain','[^0-9]+','','g') as integer) area
+    ,make_short_reference('club', make_key_club(data->>'rt_association_subdomain', data->>'rt_club_subdomain')) as clubshortname
+
+	,make_key_area(data->>'rt_association_subdomain', data->>'rt_area_subdomain') area
 	,data->>'rt_area_name' as areaname
+    ,make_short_reference('area', make_key_area(data->>'rt_association_subdomain', data->>'rt_area_subdomain')) as areashortname
+
 	,data->>'rt_association_subdomain' as association
 	,data->>'rt_association_name' as associationname
+    ,make_short_reference('assoc', data->>'rt_association_subdomain') as associationshortname
 	,(
 		select value
 		from jsonb_array_elements(data->'address') t
@@ -71,31 +76,28 @@ select
 		select jsonb_agg(role)
 		from (
 			select
-					jsonb_build_object(
-					'name', name,
+				jsonb_build_object(
+					'name', functionname,
 					'group', groupname,
-
-					'level', level,
+					'level', reftype,
 
 					'ref',
 					jsonb_build_object(
 						'name',
-						get_role_shortname(level),
+						refname,
+                        'shortname',
+                        make_short_reference(reftype, refid),
 						'id',
-						levelid,
+						refid,
 						'type',
-						leveltype
+						reftype
 					)
 				) as role
-				from tabler_roles
+				from structure_tabler_roles
 				where
-					tabler_roles.isvalid = TRUE
-					and tabler_roles.id = tabler.id
-					and name not in ('Member', 'Past Member')
-					and name not like 'Placeholder%'
-					-- fix for RTI
-					and level is not null
-				order by name
+					structure_tabler_roles.id = tabler.id
+					and functionname not in ('Member', 'Past Member')
+				order by functionname
 		) rolesquery
 	) as roles
 
@@ -160,7 +162,12 @@ select
 	,data->>'rt_privacy_settings' as privacysettings
     ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
     ,row_number() over(order by data->>'last_name', data->>'first_name') as cursor_lastfirst
-from tabler;
+from tabler
+where
+    -- club and areea must not be null
+        make_key_club(data->>'rt_association_subdomain', data->>'rt_club_subdomain') is not null
+    and make_key_area(data->>'rt_association_subdomain', data->>'rt_area_subdomain') is not null
+;
 
 CREATE UNIQUE INDEX idx_profiles_id
 ON public.profiles USING btree (id ASC)

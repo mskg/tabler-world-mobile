@@ -4,13 +4,7 @@ SET ROLE 'tw_read_dev';
 -- CLEANUP
 ------------------------------
 
--- we leave this in for the update
-drop view if exists structure_clubs cascade;
-drop view if exists structure_areas cascade;
-drop view if exists structure_associations cascade;
-
 -- new cleanup
-drop materialized view if exists structure_tabler_roles cascade;
 drop materialized view if exists structure cascade;
 drop materialized view if exists structure_clubs cascade;
 drop materialized view if exists structure_areas cascade;
@@ -35,26 +29,6 @@ END;
 $$
 LANGUAGE plpgsql;
 
-------------------------------
--- Helper view
-------------------------------
-
-create materialized view structure_tabler_roles
-as
-    select * from tabler_roles
-    where
-        isvalid = TRUE
-    and name not like 'Placeholder%'
-;
-
-create unique index idx_structure_roles_update on
-structure_tabler_roles (id, groupname, name, level);
-
-create index idx_structure_roles_search on
-structure_tabler_roles (groupname, level);
-
-create index idx_structure_roles_roles on
-structure_tabler_roles (name);
 
 ------------------------------
 -- Clubs
@@ -64,11 +38,12 @@ CREATE MATERIALIZED VIEW structure_clubs
 as
 select
     -- we need to stick with the combined key here as we cannot extract the id from roles
-	regexp_replace(data->>'subdomain','[^a-z]+','','g') || '_' || cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) as id
-    ,regexp_replace(data->>'subdomain','[^a-z]+','','g') as association
-	,cast(regexp_replace(data->>'parent_subdomain','[^0-9]+','','g') as integer) area
-	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) club
+	id
+    ,make_key_association(data->>'parent_subdomain') as association
+	,make_key_area(make_key_association(data->>'parent_subdomain'), data->>'parent_subdomain') as area
+	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
     ,data->>'name' as name
+    ,make_short_reference('club', id) as shortname
     ,data->>'website' as website
 	,jsonb_strip_nulls(jsonb_build_object(
         'name',
@@ -88,10 +63,12 @@ select
     )) as account
     ,nullif(data->>'email', '') email
     ,nullif(data->>'phone', '') phone
-    ,case data->>'logo'
-        when 'https://roundtable-prd.s3.eu-central-1.amazonaws.com/6/clublogo/cf647650-3926-48ac-a0cc-4bc42a099ccb.png' then null
-        else data->>'logo'
-    end as logo
+    -- logo must differ from association logo
+    ,NULLIF(data->>'logo', (
+        select data->>'logo'
+        from associations
+        where id = make_key_association(clubs.data->>'parent_subdomain')
+    )) as logo
     ,(
         select jsonb_object_agg(map_club_keys(rr->>'key'), rr->>'value')
         from (
@@ -117,40 +94,48 @@ select
         ) cfir
     ) as meetingplace2
     ,(
-        select array_to_json(array_agg(r))
+        select array_to_jsonb(array_agg(r))
         from
         (
-            select id as member, name as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    groupname = 'Board'
-                and level = data->>'name'
+                    profiles.id = structure_tabler_roles.id
+                and removed = false
+                and reftype = 'club'
+                and refid = clubs.id
+                and groupname = 'Board'
         ) r
     ) as board
     ,(
-        select array_to_json(array_agg(r))
+        select array_to_jsonb(array_agg(r))
         from
         (
-            select id as member, name as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    groupname = 'Board Assistants'
-                and level = data->>'name'
+                    profiles.id = structure_tabler_roles.id
+                and removed = false
+                and reftype = 'club'
+                and refid = clubs.id
+                and groupname = 'Board Assistants'
         ) r
     ) as boardAssistants
     ,(
         select array_agg(id)
         from profiles
         where
-                association = regexp_replace(data->>'subdomain','[^a-z]+','','g')
-            and club = cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer)
-            and removed = false
+            removed = false
             and id in (
-                select id from structure_tabler_roles
+                select structure_tabler_roles.id
+                from structure_tabler_roles, profiles
                 where
-                    groupname = 'Members'
-                and name = 'Member'
-                and level = data->>'name'
+                    profiles.id = structure_tabler_roles.id
+                and removed = false
+                and reftype = 'club'
+                and refid = clubs.id
+                and groupname = 'Members'
+                and functionname = 'Member'
             )
     ) as members
 from clubs
@@ -159,55 +144,10 @@ where
 order by 1, 2, 3;
 
 create unique index idx_structure_club_assoc_club on
-structure_clubs (association, club);
+structure_clubs (association, clubnumber);
 
 create unique index idx_structure_club_id on
 structure_clubs (id);
-
-------------------------------
--- Assocications
-------------------------------
-
-CREATE MATERIALIZED VIEW structure_associations
-as
-select
-    association
-    ,associationname as name
-   ,(
-        select array_to_json(array_agg(r))
-        from
-        (
-            select id as member, name as role
-            from structure_tabler_roles
-            where
-                    groupname = 'Board'
-                and level = associationname
-        ) r
-    ) as board
-    ,(
-        select array_to_json(array_agg(r))
-        from
-        (
-            select id as member, name as role
-            from structure_tabler_roles
-            where
-                    groupname = 'Board Assistants'
-                and level = associationname
-        ) r
-    ) as boardAssistants
-from
-(
-    select distinct association, associationname
-    from profiles
-    where
-            associationname is not null
-        and association is not null
-        and removed = false
-    order by 1, 2
-) associations;
-
-create unique index idx_structure_association on
-structure_associations (association);
 
 ------------------------------
 -- Areas
@@ -216,40 +156,86 @@ structure_associations (association);
 CREATE MATERIALIZED VIEW structure_areas
 as
 select
-	association || '_' || area as id
-    ,association
-    ,area
-    ,areaname as name
+	id
+    ,make_key_association(data->>'parent_subdomain') as association
+    ,data->>'name' as name
+    ,make_short_reference('area', id) as shortname
     ,(
-        select array_to_json(array_agg(r))
+        select array_to_jsonb(array_agg(r))
         from
         (
-            select id as member, name as role
-            from structure_tabler_roles
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
             where
-                    groupname = 'Board'
-                and level = areaname
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'area'
+                and refid = areas.id
+                and groupname = 'Board'
         ) r
     ) as board
     ,(
         select array_agg(id)
         from structure_clubs
         where
-                association = areas.association
-            and area = areas.area
+                association = make_key_association(data->>'parent_subdomain')
+            and area = make_key_area(data->>'parent_subdomain', data->>'subdomain')
     ) as clubs
-from
-(
-    -- need to have the distinct here
-    select
-        distinct
-            regexp_replace(data->>'subdomain','[^a-z]+','','g') as association
-            ,cast(regexp_replace(data->>'parent_subdomain','[^0-9]+','','g') as integer) as area,
-            'Distrikt ' || regexp_replace(data->>'parent_subdomain','[^0-9]+','','g') as areaname
-    from clubs
-    where data->>'rt_status' = 'active'
-    order by 1, 2
-) areas;
+from areas;
 
-create unique index idx_structure_areas on
-structure_areas (association, area);
+create unique index idx_structure_areas_id on
+structure_areas (id);
+
+------------------------------
+-- Assocications
+------------------------------
+
+CREATE MATERIALIZED VIEW structure_associations
+as
+select
+    id
+    ,data->>'parent_subdomain' as family
+    ,data->>'name' as name
+    ,case
+        when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
+        else data->>'logo'
+     end as logo
+    ,make_short_reference('assoc', id) as shortname
+   ,(
+        select array_to_jsonb(array_agg(r))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'assoc'
+                and refid = associations.id
+                and groupname = 'Board'
+        ) r
+    ) as board
+    ,(
+        select array_to_jsonb(array_agg(r))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'assoc'
+                and refid = associations.id
+                and groupname = 'Board Assistants'
+        ) r
+    ) as boardAssistants
+    ,(
+        select array_agg(id)
+        from structure_areas
+        where
+                association = id
+    ) as areas
+from associations;
+
+create unique index idx_structure_associations_id on
+structure_associations (id);

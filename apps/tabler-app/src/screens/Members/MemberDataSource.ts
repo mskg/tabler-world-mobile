@@ -1,6 +1,6 @@
 
 
-import _ from 'lodash';
+import _, { find } from 'lodash';
 import { normalizeForSearch } from '../../helper/normalizeForSearch';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { Predicate, Predicates } from './Predicates';
@@ -54,8 +54,8 @@ export class MemberDataSource {
 
     section(s: string): IMemberOverviewFragment[] {
         return _(this._data)
-            .filter(f => f.title == s)
-            .map(t => t.data)
+            .filter((f) => f.title === s)
+            .map((t) => t.data)
             .flatMap()
             .toArray()
             .value();
@@ -80,13 +80,13 @@ export class MemberDataSource {
         const old = [...this._data];
 
         this._data.splice(0, this._data.length);
-        this._data.push(... _(this.member)
+        this._data.push(..._(this.member)
             .filter(this._filter || Predicates.all())
-            .sortBy(t => (t[this.sortByField] || '').toUpperCase())
-            .groupBy(t => sectionFrom(t[this.groupByfield]))
-            .mapValues(t => {
+            .sortBy((t) => (t[this.sortByField] || '').toUpperCase())
+            .groupBy((t) => sectionFrom(t[this.groupByfield]))
+            .mapValues((t) => {
                 const newId = sectionFrom(t[0][this.groupByfield]);
-                const section = _.find(old, s => s.title == newId) || {
+                const section = find(old, (s) => s.title === newId) || {
                     title: newId,
                     data: [],
                 };
@@ -96,14 +96,14 @@ export class MemberDataSource {
 
                 return section;
             })
-            .sortBy(s => isChar(s.title) ? s.title : 'a') // A < a
+            .sortBy((s) => isChar(s.title) ? s.title : 'a') // A < a
             .toArray()
             .value(),
         );
 
         this._sections.splice(0, this._sections.length);
-        this._sections.push(... _(this._data)
-            .map(s => s.title)
+        this._sections.push(..._(this._data)
+            .map((s) => s.title)
             .toArray()
             .value(),
         );

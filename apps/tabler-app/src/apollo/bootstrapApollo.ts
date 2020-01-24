@@ -4,13 +4,17 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { createPersistedQueryLink } from 'apollo-link-persisted-queries';
-import { getConfigValue } from '../helper/Configuration';
+import { RetryLink } from 'apollo-link-retry';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities';
+import { getConfigValue } from '../helper/getConfigValue';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
 import { fetchAuth, fetchAuthDemo } from './authLink';
 import { cache } from './cache';
 import { errorLink } from './errorLink';
 import { Resolvers } from './resolver';
+import { subscriptionClient } from './subscriptionClient';
 
 let client: ApolloClient<NormalizedCacheObject>;
 let persistor: CachePersistor<NormalizedCacheObject>;
@@ -23,6 +27,7 @@ export function cachedAolloClient() {
     return client;
 }
 
+// tslint:disable-next-line: max-func-body-length
 export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<NormalizedCacheObject>> {
     if (client != null && demoMode == null) return client;
 
@@ -36,9 +41,24 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
     });
 
     const api = getConfigValue('api');
+    const httpLink = createHttpLink({
+        uri: api + (demoMode ? '/graphql-demo' : '/graphql'),
+        fetch: !demoMode ? fetchAuth : fetchAuthDemo,
+    });
+
+    const wsLink = isFeatureEnabled(Features.Chat) ? new WebSocketLink(subscriptionClient) : null;
 
     const links = ApolloLink.from(
         [
+            new RetryLink({
+                attempts: {
+                    retryIf: (error, _operation) => {
+                        // in case of timeout, just retry the operation
+                        return error && error.statusCode === 502;
+                    },
+                },
+            }),
+
             errorLink,
 
             !demoMode
@@ -47,10 +67,17 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 })
                 : undefined,
 
-            createHttpLink({
-                uri: api + (demoMode ? '/graphql-demo' : '/graphql'),
-                fetch: !demoMode ? fetchAuth : fetchAuthDemo,
-            }),
+            wsLink != null && !demoMode
+                ? ApolloLink.split(
+                    // split based on operation type
+                    ({ query }) => {
+                        const node = getMainDefinition(query);
+                        return node.kind === 'OperationDefinition' && node.operation === 'subscription';
+                    },
+                    wsLink,
+                    httpLink,
+                )
+                : httpLink,
         ].filter((f) => f != null) as ApolloLink[],
     );
 
@@ -63,8 +90,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
 
         defaultOptions: {
             mutate: {
-                errorPolicy: 'none',
-                fetchPolicy: 'no-cache',
+                errorPolicy: 'all',
             },
 
             query: {
@@ -73,7 +99,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
             },
 
             watchQuery: {
-                errorPolicy: 'none',
+                errorPolicy: 'all',
             },
         },
     });

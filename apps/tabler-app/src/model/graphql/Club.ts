@@ -10,12 +10,16 @@ export interface Club_Club_area {
   __typename: "Area";
   id: string;
   name: string;
-  area: number;
+  shortname: string;
 }
 
 export interface Club_Club_association {
   __typename: "Association";
   name: string;
+  id: string;
+  /**
+   * Deprecated, don't use
+   */
   association: string;
 }
 
@@ -93,7 +97,7 @@ export interface Club_Club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
   logo: string | null;
   area: Club_Club_area;
   association: Club_Club_association;

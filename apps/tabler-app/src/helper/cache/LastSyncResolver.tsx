@@ -2,6 +2,7 @@ import { logger } from './logger';
 
 export const LastSyncResolver = () => {
     logger.log('Updated LastSync');
+
     return {
         __typename: 'LastSync',
         clubs: Date.now(),

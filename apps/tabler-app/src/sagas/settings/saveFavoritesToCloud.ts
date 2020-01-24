@@ -7,10 +7,10 @@ import { AuditEventName } from '../../analytics/AuditEventName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { SettingName } from '../../model/graphql/globalTypes';
-import { PutSetting, PutSettingVariables } from '../../model/graphql/PutSetting';
+import { SaveFavorites, SaveFavoritesVariables } from '../../model/graphql/SaveFavorites';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
-import { GetFavoriteMembersQuery } from '../../queries/GetFavoriteMembersQuery';
+import { GetFavoriteMembersQuery } from '../../queries/Member/GetFavoriteMembersQuery';
 import * as filterActions from '../../redux/actions/filter';
 import { logger } from './logger';
 
@@ -27,15 +27,15 @@ export function* saveFavoritesToCloud(_a: typeof filterActions.toggleFavorite.sh
 
     const result = Object
         .keys(favorites)
-        .map(f => parseInt(f, 10))
-        .filter(f => !isNaN(f) && typeof (f) === 'number');
+        .map((f) => parseInt(f, 10))
+        .filter((f) => !isNaN(f) && typeof (f) === 'number');
 
     logger.debug(favorites, result);
 
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
-    yield client.mutate<PutSetting, PutSettingVariables>({
+    yield client.mutate<SaveFavorites, SaveFavoritesVariables>({
         mutation: gql`
-mutation PutSetting($input: SettingInput!) {
+mutation SaveFavorites($input: SettingInput!) {
     putSetting (setting: $input)
 }`,
         variables: {

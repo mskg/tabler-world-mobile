@@ -12,7 +12,7 @@ export interface Member_Member_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface Member_Member_area {
@@ -23,14 +23,14 @@ export interface Member_Member_area {
 
 export interface Member_Member_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface Member_Member_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 
@@ -118,7 +118,9 @@ export interface Member_Member {
   association: Member_Member_association;
   roles: Member_Member_roles[] | null;
   birthdate: any | null;
+  datejoined: any | null;
   partner: string | null;
+  availableForChat: boolean | null;
   emails: Member_Member_emails[] | null;
   phonenumbers: Member_Member_phonenumbers[] | null;
   rtemail: string | null;

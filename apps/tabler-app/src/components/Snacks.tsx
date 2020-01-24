@@ -40,8 +40,8 @@ export class SnacksBase extends React.Component<Props, State> {
         this.mounted = false;
     }
 
-    componentWillUpdate(nextProps) {
-        if (nextProps.snacks !== this.props.snacks) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.snacks !== this.props.snacks) {
             // give time to fade-in
             setTimeout(() => {
                 // need to check if component is still there
@@ -49,17 +49,17 @@ export class SnacksBase extends React.Component<Props, State> {
                 // authentication errors
                 if (this.mounted) {
                     this.setState({
-                        visible: nextProps.snacks.length > 0,
+                        visible: this.props.snacks.length > 0,
                     });
                 }
-            },         200);
+            }, 200);
         }
     }
 
     _onDismiss = () => {
         this.setState({ visible: false },
             // give enough time to hide, before render update
-                      () => setTimeout(
+            () => setTimeout(
                 () => this.props.shiftSnack(), 100));
     }
 
@@ -100,5 +100,5 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, IAppState> = (state
 
 export const Snacks = connect(
     mapStateToProps, {
-        shiftSnack,
-    })(SnacksBase);
+    shiftSnack,
+})(SnacksBase);

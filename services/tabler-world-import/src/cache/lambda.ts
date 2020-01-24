@@ -1,8 +1,9 @@
-import { withDatabase } from "@mskg/tabler-world-rds-client";
-import { SQSHandler } from "aws-lambda";
-import { CacheUpdateQueueEntry } from "../shared/CacheUpdateQueueEntry";
-import { updateClub } from "./updateClub";
-import { updateMember } from "./updateMember";
+import { withDatabase } from '@mskg/tabler-world-rds-client';
+import { SQSHandler } from 'aws-lambda';
+import { CacheUpdateQueueEntry } from '../shared/CacheUpdateQueueEntry';
+import { RecordType } from '../shared/RecordType';
+import { updateClub } from './updateClub';
+import { updateMember } from './updateMember';
 
 // tslint:disable-next-line: export-name
 export const handler: SQSHandler = async (event, context, callback) => {
@@ -12,11 +13,10 @@ export const handler: SQSHandler = async (event, context, callback) => {
         for (const message of event.Records) {
             const payload = JSON.parse(message.body) as CacheUpdateQueueEntry;
 
-            if (payload.type === "club") {
-                const ids = payload.id.split("_");
-                await updateClub(client, ids[0], parseInt(ids[1], 10));
+            if (payload.type === RecordType.club) {
+                await updateClub(client, payload.id);
 
-            } else if (payload.type === "member") {
+            } else if (payload.type === RecordType.member) {
                 await updateMember(client, payload.id);
             }
         }

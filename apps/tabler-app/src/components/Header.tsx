@@ -43,7 +43,7 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
                     }}
                 />
 
-                {this.props.showAppBar == null || this.props.showAppBar &&
+                {this.props.showAppBar == null || this.props.showAppBar && (
                     <Appbar
                         style={[this.props.style, {
                             elevation: 0,
@@ -64,9 +64,9 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
                                 : null
                         }
                     </Appbar>
-                }
+                )}
 
-                {(this.props.showLine == null || this.props.showLine) &&
+                {(this.props.showLine == null || this.props.showLine) && (
                     <Divider
                         style={{
                             position: 'absolute',
@@ -75,7 +75,7 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
                             right: 0,
                         }}
                     />
-                }
+                )}
             </React.Fragment>
         );
     }
@@ -97,7 +97,8 @@ class StandardStatusBarBase extends React.PureComponent<{ theme: Theme }> {
                 backgroundColor="transparent"
                 showHideTransition={'slide'}
                 animated={false}
-            />);
+            />
+        );
     }
 }
 

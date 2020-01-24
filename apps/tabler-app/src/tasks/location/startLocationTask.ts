@@ -1,10 +1,11 @@
 import * as Location from 'expo-location';
+import { AsyncStorage } from 'react-native';
 import { GeoParameters } from '../../helper/parameters/Geo';
-import { getParameterValue } from '../../helper/parameters/getParameter';
+import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { LOCATION_TASK_NAME } from '../Constants';
-import { handleLocationUpdate } from './handleLocation';
 import { logger } from './logger';
+import { updateLocation } from './updateLocation';
 
 export async function startLocationTask(): Promise<boolean> {
     const enabled = await Location.hasServicesEnabledAsync();
@@ -27,10 +28,11 @@ export async function startLocationTask(): Promise<boolean> {
             delete settings.reverseGeocodeTimeout;
             logger.debug('settings', settings);
 
-            const location = await Location.getCurrentPositionAsync();
-            const result = await handleLocationUpdate([location], true);
+            const result = await updateLocation(true, true);
 
             await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
+            await AsyncStorage.setItem(LOCATION_TASK_NAME, true.toString());
+
             return result;
         } catch (e) {
             logger.error(e, `Start of ${LOCATION_TASK_NAME} failed`);

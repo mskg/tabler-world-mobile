@@ -60,6 +60,7 @@ SELECT
     address,
     lastseen,
     speed,
+    canshowonmap,
     CAST(ST_Distance(
         locations.point,
         $1::geography

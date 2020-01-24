@@ -26,11 +26,11 @@
                 "name": "typescript-tslint-plugin",
                 "configFile": "./tslint.json"
             }
-        ]
+        ],
+        "strict": true,
     },
     "include": [
         "App.ts",
-        "src/**/*.ts?",
     ],
     "exclude": [
         "node_modules"

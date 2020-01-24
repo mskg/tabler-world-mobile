@@ -15,10 +15,14 @@ export enum FieldNames {
 
 // tslint:disable-next-line: variable-name
 export const system_fields = [
-    'id', 'area', 'areaname', 'association', 'associationname', 'club', 'clubname', 'roles', 'modifiedon',
+    'id',
+    'area', 'areaname', 'areashortname',
+    'association', 'associationname', 'associationshortname',
+    'club', 'clubnumber', 'clubname', 'clubshortname',
+    'roles', 'modifiedon',
 ];
 
 // tslint:disable-next-line: variable-name
 export const standard_fields = [
-    'firstname', 'lastname', 'pic', 'rtemail', 'socialmedia',
+    'firstname', 'lastname', 'pic', 'rtemail', 'socialmedia', 'datejoined',
 ];

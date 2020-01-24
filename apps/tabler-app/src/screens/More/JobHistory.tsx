@@ -7,7 +7,7 @@ import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { timespan } from '../../helper/timespan';
 import { GetJobs, GetJobs_Jobs_data } from '../../model/graphql/GetJobs';
-import { GetJobsQuery } from '../../queries/GetJobs';
+import { GetJobsQuery } from '../../queries/Admin/GetJobs';
 
 type State = {
 };

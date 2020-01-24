@@ -2,7 +2,7 @@ import color from 'color';
 import React from 'react';
 import { View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
-import { MaterialTopTabBar } from 'react-navigation';
+import { MaterialTopTabBar } from 'react-navigation-tabs';
 import { StandardHeader } from '../../components/Header';
 import { I18N } from '../../i18n/translation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';

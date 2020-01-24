@@ -61,17 +61,20 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
 
         // check memory first
         const missingKeys: string[] = [];
-        const result = ids.reduce((p, id) => {
-            const val = this.memoryCache.get(id);
+        const result = ids.reduce(
+            (p, id) => {
+                const val = this.memoryCache.get(id);
 
-            if (val != null) {
-                p[id] = val;
-            } else {
-                missingKeys.push(id);
-            }
+                if (val != null) {
+                    p[id] = val;
+                } else {
+                    missingKeys.push(id);
+                }
 
-            return p;
-        },                        {} as CacheValues);
+                return p;
+            },
+            {} as CacheValues,
+        );
 
         // check backend
         if (missingKeys.length > 0) {

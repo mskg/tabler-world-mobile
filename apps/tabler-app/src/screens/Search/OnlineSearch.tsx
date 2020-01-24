@@ -7,7 +7,7 @@ import { MemberList } from '../../components/MemberList';
 import { I18N } from '../../i18n/translation';
 import { CompanySector } from '../../model/graphql/globalTypes';
 import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
-import { SearchMemberQuery } from '../../queries/SearchMemberQuery';
+import { SearchMemberQuery } from '../../queries/Search/SearchMemberQuery';
 import { logger } from './logger';
 
 type State = {
@@ -18,6 +18,7 @@ type OwnProps = {
 
     filterTags: FilterTag[],
     query: string,
+    availableForChat?: boolean,
 
     itemSelected: (item) => void,
 };
@@ -35,16 +36,21 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
 
     render() {
         return (
-            <Query<SearchMember, SearchMemberVariables> query={SearchMemberQuery} fetchPolicy="network-only" variables={{
-                text: this.props.query,
-                after: null,
-                areas: this.props.filterTags.filter((f: FilterTag) => f.type === 'area').map((f: FilterTag) => f.value),
-                clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
-                roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),
-                sectors: this.props.filterTags.filter((f: FilterTag) => f.type === 'sector').map((f: FilterTag) =>
-                    _(I18N.Search.sectorNames).findKey(v => v == f.value) as CompanySector,
-                ),
-            }}
+            <Query<SearchMember, SearchMemberVariables>
+                query={SearchMemberQuery}
+                fetchPolicy="network-only"
+                variables={{
+                    text: this.props.query,
+                    availableForChat: this.props.availableForChat,
+                    after: null,
+                    associations: this.props.filterTags.filter((f: FilterTag) => f.type === 'association').map((f: FilterTag) => f.value),
+                    areas: this.props.filterTags.filter((f: FilterTag) => f.type === 'area').map((f: FilterTag) => f.value),
+                    clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
+                    roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),
+                    sectors: this.props.filterTags.filter((f: FilterTag) => f.type === 'sector').map((f: FilterTag) =>
+                        _(I18N.Search.sectorNames).findKey((v) => v === f.value) as CompanySector,
+                    ),
+                }}
             >
                 {({ loading, data, fetchMore, error, refetch }) => {
                     if (error) throw error;
@@ -67,17 +73,18 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                     variables: {
                                         text: this.props.query,
                                         after: result ? result.pageInfo.endCursor : null,
+                                        associations: this.props.filterTags.filter((f: FilterTag) => f.type === 'association').map((f: FilterTag) => f.value),
                                         areas: this.props.filterTags.filter((f: FilterTag) => f.type === 'area').map((f: FilterTag) => f.value),
                                         clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
                                         roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),
                                         sectors: this.props.filterTags.filter((f: FilterTag) => f.type === 'sector').map((f: FilterTag) =>
-                                            _(I18N.Search.sectorNames).findKey(v => v == f.value) as CompanySector,
+                                            _(I18N.Search.sectorNames).findKey((v) => v === f.value) as CompanySector,
                                         ),
                                     },
 
                                     updateQuery: (previousResult, { fetchMoreResult }) => {
                                         // Don't do anything if there weren't any new items
-                                        if (!fetchMoreResult || fetchMoreResult.SearchMember.nodes.length == 0) {
+                                        if (!fetchMoreResult || fetchMoreResult.SearchMember.nodes.length === 0) {
 
                                             logger.log('no new data');
                                             return previousResult;
@@ -92,7 +99,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                                 ...fetchMoreResult.SearchMember,
                                                 nodes:
                                                     _([...previousResult.SearchMember.nodes, ...fetchMoreResult.SearchMember.nodes])
-                                                        .uniqBy(f => f.id)
+                                                        .uniqBy((f) => f.id)
                                                         .toArray()
                                                         .value(),
                                             },
@@ -105,8 +112,8 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                 }}
             </Query>
         );
-
     }
 }
 
+// tslint:disable-next-line: export-name
 export const OnlineSearchQuery = withTheme(OnlineSearchQueryBase);

@@ -2,12 +2,12 @@ import { WatchQueryFetchPolicy } from 'apollo-client';
 import React, { PureComponent } from 'react';
 import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
-import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
+import { isRecordValid } from '../../helper/cache/isRecordValid';
 import { I18N } from '../../i18n/translation';
 import { Member } from '../../model/graphql/Member';
 import { MemberOverviewFragment as MemberOverviewFragmentType } from '../../model/graphql/MemberOverviewFragment';
-import { GetMemberQuery } from '../../queries/GetMemberQuery';
-import { MemberOverviewFragment } from '../../queries/MemberOverviewFragment';
+import { GetMemberQuery } from '../../queries/Member/GetMemberQuery';
+import { MemberOverviewFragment } from '../../queries/Member/MemberOverviewFragment';
 import { addSnack } from '../../redux/actions/snacks';
 import { logger } from './logger';
 

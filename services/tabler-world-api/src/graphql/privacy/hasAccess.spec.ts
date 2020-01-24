@@ -1,4 +1,4 @@
-import { ASSOCIATION, CLUB, PRIVATE, PUBLIC } from './DBLevels';
+import { ALL, ASSOCIATION, CLUB, PRIVATE, PUBLIC } from './DBLevels';
 import { FilterLevel } from './FilterLevel';
 import { hasAccess } from './hasAccess';
 
@@ -6,6 +6,13 @@ import { hasAccess } from './hasAccess';
 // tslint:disable: mocha-no-side-effect-code
 
 describe('hasAccess', () => {
+    test('ALL', () => {
+        expect(hasAccess(ALL, FilterLevel.Public)).toEqual(true);
+        expect(hasAccess(ALL, FilterLevel.SameArea)).toEqual(true);
+        expect(hasAccess(ALL, FilterLevel.SameAssociation)).toEqual(true);
+        expect(hasAccess(ALL, FilterLevel.SameClub)).toEqual(true);
+        expect(hasAccess(ALL, FilterLevel.SamePerson)).toEqual(true);
+    });
 
     test('PUBLIC', () => {
         expect(hasAccess(PUBLIC, FilterLevel.Public)).toEqual(true);

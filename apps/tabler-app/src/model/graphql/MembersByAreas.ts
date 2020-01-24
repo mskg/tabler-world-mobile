@@ -10,20 +10,21 @@ import { RoleType } from "./globalTypes";
 
 export interface MembersByAreas_Me_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface MembersByAreas_Me_area {
   __typename: "Area";
   id: string;
-  area: number;
+  shortname: string;
+  name: string;
 }
 
 export interface MembersByAreas_Me_club {
   __typename: "Club";
   id: string;
-  club: number;
+  clubnumber: number;
   name: string;
 }
 
@@ -42,7 +43,7 @@ export interface MembersByAreas_MembersOverview_club {
   __typename: "Club";
   id: string;
   name: string;
-  club: number;
+  clubnumber: number;
 }
 
 export interface MembersByAreas_MembersOverview_area {
@@ -53,14 +54,14 @@ export interface MembersByAreas_MembersOverview_area {
 
 export interface MembersByAreas_MembersOverview_association {
   __typename: "Association";
-  association: string;
+  id: string;
   name: string;
 }
 
 export interface MembersByAreas_MembersOverview_roles_ref {
   __typename: "RoleRef";
   id: string;
-  name: string;
+  shortname: string;
   type: RoleType;
 }
 

@@ -1,11 +1,11 @@
-import { createStackNavigator } from 'react-navigation';
-import { ClubsScreen } from './List';
-import { ClubsMapScreen } from './Map';
+import { createStackNavigator } from 'react-navigation-stack';
+import { ClubsListScreen } from './ClubsListScreen';
+import { ClubsMapScreen } from './ClubsMapScreen';
 import { Routes } from './Routes';
 
 const Navigator = createStackNavigator(
     {
-        [Routes.List]: { screen: ClubsScreen },
+        [Routes.List]: { screen: ClubsListScreen },
         [Routes.Map]: { screen: ClubsMapScreen },
     },
     {
@@ -14,4 +14,5 @@ const Navigator = createStackNavigator(
     },
 );
 
+// tslint:disable-next-line: export-name
 export default Navigator;

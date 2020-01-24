@@ -1,5 +1,6 @@
 parameters:
   SOURCEDIR: $(System.DefaultWorkingDirectory)
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
 steps:
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
@@ -13,8 +14,15 @@ steps:
    Get-Content  ~/.npmrc
   displayName: 'PowerShell Script'
 
+- task: Cache@2
+  displayName: Cache Yarn packages
+  inputs:
+    key: 'services | $(Agent.OS) | ${{ parameters.SOURCEDIR }}/yarn.lock'
+    path: ${{ parameters.YARN_CACHE_FOLDER }}
+
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
   displayName: install
   inputs:
     projectDirectory: ${{ parameters.SOURCEDIR }}
     arguments: install
+<

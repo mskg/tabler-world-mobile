@@ -18,6 +18,8 @@ provider:
   stackName: tabler-world-auth-redirect
   stage: prod
   region: eu-west-1
+  deploymentBucket:
+    blockPublicAccess: true
 
 resources:
   Resources:

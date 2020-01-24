@@ -1,3 +1,4 @@
+import { ConversationsDataSource } from './ConversationsDataSource';
 import { GeocoderDataSource } from './GeocoderDataSource';
 import { MembersDataSource } from './MembersDataSource';
 import { StructureDataSource } from './StructureDataSource';
@@ -9,6 +10,7 @@ export const dataSources = (): IDataSources => {
         tablerWorld: new TablerWorldAPI(),
         structure: new StructureDataSource(),
         geocoder: new GeocoderDataSource(),
+        conversations: new ConversationsDataSource(),
     };
 };
 
@@ -17,4 +19,5 @@ export interface IDataSources {
     tablerWorld: TablerWorldAPI;
     structure: StructureDataSource;
     geocoder: GeocoderDataSource;
+    conversations: ConversationsDataSource;
 }

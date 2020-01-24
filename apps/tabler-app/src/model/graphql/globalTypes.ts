@@ -69,12 +69,17 @@ export enum RoleType {
   area = "area",
   assoc = "assoc",
   club = "club",
+  family = "family",
+  region = "region",
+  rti = "rti",
 }
 
 export enum SettingName {
   favorites = "favorites",
   language = "language",
   nearbymembers = "nearbymembers",
+  nearbymembersMap = "nearbymembersMap",
+  notifications = "notifications",
 }
 
 export enum UserRole {

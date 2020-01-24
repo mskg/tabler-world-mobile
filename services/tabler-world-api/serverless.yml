@@ -6,6 +6,8 @@ plugins:
   - serverless-domain-manager
   - serverless-offline
   - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-s3-local
 
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -21,11 +23,22 @@ custom:
 
   cache_table:
     Fn::ImportValue: CacheTableName-${self:custom.stage}
+  cache_version:
+    Fn::ImportValue: CacheVersion-${self:custom.stage}
 
   email: ${env:ALERT_EMAIL}
 
   domainname: ${self:custom.stage}-api.app.roundtable.world
+  wsdomainname: ${self:custom.stage}-ws-api.app.roundtable.world
+
   demo_api_key: ${env:DEMO_API_KEY}
+
+  bucket: tabler-world-chat-attachments-${self:custom.stage}
+  connections_table: tabler-world-ws-connections-${self:custom.stage}
+  subscriptions_table: tabler-world-ws-subscriptions-${self:custom.stage}
+  events_table: tabler-world-ws-events-${self:custom.stage}
+  conversations_table: tabler-world-chat-conversations-${self:custom.stage}
+  pushsubscriptions_table: tabler-world-push-subscriptions-${self:custom.stage}
 
   # api throtteling
   throttle:
@@ -79,6 +92,39 @@ custom:
     certificateName: '*.app.roundtable.world'
     createRoute53Record: true
     endpointType: 'regional'
+    websockets:
+      domainName: ${self:custom.wsdomainname}
+      certificateName: '*.app.roundtable.world'
+      createRoute53Record: true
+      endpointType: 'regional'
+      stage: '${self:custom.stage}'
+
+  # chat
+  dynamodb:
+    noStart: false
+    stages:
+      - dev
+    start:
+      port: 8004
+      inMemory: true
+      migrate: true
+      convertEmptyValues: true
+
+  s3:
+    # Uncomment the following line only if you want to specify host address of S3 service.
+    # adress: 0.0.0.0
+    # Uncomment the following line only if you want to specify S3 server address.
+    # Ordinary, this value is localhost. But you can modify this value to use other S3 server.
+    # host: 0.0.0.0
+    port: 8005
+    directory: /tmp  # this directory must be already created.
+    # Uncomment the first line only if you want to use cors with specified policy
+    # Uncomment the second line only if you don't want to use cors
+    # Not uncomment the these lines only if your wanto use cors with default policy
+    # cors: relative/path/to/your/cors.xml
+    # website: relative/path/to/your/website.xml
+    # Uncomment only if you already have a S3 server running locally
+    # noStart: true
 
 # we want seperate files to minimize depenencies in files
 package:
@@ -88,6 +134,9 @@ provider:
   name: aws
   stage: dev
   region: eu-west-1
+
+  deploymentBucket:
+    blockPublicAccess: true
 
   runtime: nodejs10.x
 
@@ -114,6 +163,7 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
     apiKeySourceType: AUTHORIZER
+#    websocketsApiKeySelectionExpression: "$context.authorizer.usageIdentifierKey"
 
   # Limited by API Keys
   usagePlan:
@@ -180,7 +230,7 @@ functions:
   # graphql Demo
   #
   graphql-demo:
-    handler: src/graphql/lambda-mock.handler
+    handler: src/graphql/graphqlLambdaMock.handler
     timeout: 15
     memorySize: 128
     tracing: Active
@@ -200,13 +250,13 @@ functions:
   # graphql
   #
   graphql:
-    handler: src/graphql/lambda.handler
+    handler: src/graphql/graphqlLambda.handler
     timeout: 30
     memorySize: 256
     tracing: Active
 
     environment:
-      cache_table: ${self:custom.cache_table}
+      ${file(serverless.env.yml):api}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -226,6 +276,52 @@ functions:
         # the specific table for the stage
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
+          - !GetAtt [ connectionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ connectionsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ subscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/*'
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/connection'
+          - !GetAtt [ conversationsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ conversationsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ eventsTable, Arn ]
+          - !GetAtt [ pushSubscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ pushSubscriptionsTable, Arn ]
+              - '/index/*'
+
+      - Effect: Allow
+        Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:custom.stage}/*'
+
+      - Effect: "Allow"
+        Action:
+         - "s3:*"
+        Resource: !Join
+          - ''
+          - - 'arn:aws:s3:::'
+            - !Ref bucketAttachments
+            - '/*'
 
     events:
       - http:
@@ -248,9 +344,365 @@ functions:
               Ref: CustomApiGatewayAuthorizer
           private: true
 
+  #
+  # websocket
+  #
+  websocket:
+    handler: src/graphql/websocketLambda.handler
+    tracing: Active
+    environment:
+      ${file(serverless.env.yml):api}
+
+    events:
+      - websocket:
+          route: $connect
+          cors: true
+
+      - websocket:
+         route: $disconnect
+
+      - websocket:
+         route: $default
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:custom.stage}/*'
+
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource:
+          - Fn::ImportValue: CacheTableArn-${self:custom.stage}
+          - !GetAtt [ connectionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ connectionsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ subscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/*'
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/connection'
+          - !GetAtt [ conversationsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ conversationsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ eventsTable, Arn ]
+          - !GetAtt [ pushSubscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ pushSubscriptionsTable, Arn ]
+              - '/index/*'
+
+  #
+  # publish messagees
+  #
+  publish:
+    handler: src/graphql/publishMessageLambda.handler
+    tracing: Active
+    environment:
+      ${file(serverless.env.yml):api}
+
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn: !GetAtt
+            - eventsTable
+            - StreamArn
+
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource:
+          - Fn::ImportValue: CacheTableArn-${self:custom.stage}
+          - !GetAtt [ connectionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ connectionsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ subscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/*'
+          - !Join
+            - ''
+            - - !GetAtt [ subscriptionsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ conversationsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ conversationsTable, Arn ]
+              - '/index/*'
+          - !GetAtt [ eventsTable, Arn ]
+          - !GetAtt [ pushSubscriptionsTable, Arn ]
+          - !Join
+            - ''
+            - - !GetAtt [ pushSubscriptionsTable, Arn ]
+              - '/index/*'
+
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeStream
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:ListStreams
+        Resource: !GetAtt [ eventsTable, StreamArn ]
+
+      - Effect: Allow
+        Action:
+          - 'execute-api:Invoke'
+          - 'execute-api:ManageConnections'
+        Resource: !Join
+          - ''
+          - - 'arn:aws:execute-api:${self:provider.region}:'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref WebsocketsApi
+            - '/${self:custom.stage}/*'
+
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::ImportValue: PushQueueArn-${self:custom.stage}
 
 resources:
   Resources:
+    bucketAttachments:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}
+        ObjectLockEnabled: false
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          # IgnorePublicAcls: true
+          # RestrictPublicBuckets: true
+        LifecycleConfiguration:
+          Rules:
+            - Id: removal-${self:custom.bucket}
+              Status: Enabled
+              ExpirationInDays: '5'
+
+    connectionsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.connections_table}
+
+        AttributeDefinitions:
+          - AttributeName: memberId
+            AttributeType: N
+          - AttributeName: connectionId
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+
+        GlobalSecondaryIndexes:
+          - IndexName: reverse
+            KeySchema:
+              - AttributeName: memberId
+                KeyType: HASH
+              - AttributeName: connectionId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+    subscriptionsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.subscriptions_table}
+
+        AttributeDefinitions:
+          - AttributeName: eventName
+            AttributeType: S
+          - AttributeName: subscription
+            AttributeType: S
+          - AttributeName: connectionId
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: subscription
+            KeyType: HASH
+
+        GlobalSecondaryIndexes:
+          - IndexName: connection
+            KeySchema:
+              - AttributeName: connectionId
+                KeyType: HASH
+              - AttributeName: subscription
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+
+          - IndexName: reverse
+            KeySchema:
+              - AttributeName: eventName
+                KeyType: HASH
+              - AttributeName: subscription
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+    pushSubscriptionsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.pushsubscriptions_table}
+
+        AttributeDefinitions:
+          - AttributeName: conversation
+            AttributeType: S
+          - AttributeName: memberId
+            AttributeType: N
+        KeySchema:
+          - AttributeName: conversation
+            KeyType: HASH
+          - AttributeName: memberId
+            KeyType: RANGE
+
+        GlobalSecondaryIndexes:
+          - IndexName: reverse
+            KeySchema:
+              - AttributeName: memberId
+                KeyType: HASH
+              - AttributeName: conversation
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+
+    conversationsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.conversations_table}
+
+        AttributeDefinitions:
+          - AttributeName: conversation
+            AttributeType: S
+          - AttributeName: memberId
+            AttributeType: N
+          - AttributeName: last_conversation
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: conversation
+            KeyType: HASH
+          - AttributeName: memberId
+            KeyType: RANGE
+
+        GlobalSecondaryIndexes:
+          # - IndexName: reverse
+          #   KeySchema:
+          #     - AttributeName: memberId
+          #       KeyType: HASH
+          #     - AttributeName: conversation
+          #       KeyType: RANGE
+          #   Projection:
+          #     ProjectionType: KEYS_ONLY
+
+          - IndexName: last_conversation
+            KeySchema:
+              - AttributeName: memberId
+                KeyType: HASH
+              - AttributeName: last_conversation
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+
+    eventsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.events_table}
+        AttributeDefinitions:
+          - AttributeName: eventName
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: eventName
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+    PublishLogGroup:
+      Properties:
+        RetentionInDays: "14"
+
+    WebsocketLogGroup:
+      Properties:
+        RetentionInDays: "14"
+
     GraphqlDashdemoLogGroup:
       Properties:
         RetentionInDays: "7"
@@ -298,6 +750,11 @@ resources:
       Export:
         Name: ApiUrl-${self:custom.stage}
 
+    WSApiUrl:
+      Value: ${self:custom.wsdomainname}
+      Export:
+        Name: ApiWSUrl-${self:custom.stage}
+
     ApiGatewayRestApiId:
       Value:
         Ref: ApiGatewayRestApi
@@ -306,7 +763,7 @@ resources:
 
     ApiGatewayRestApiRootResourceId:
       Value:
-         Fn::GetAtt:
+         !GetAtt
           - ApiGatewayRestApi
           - RootResourceId
       Export:
@@ -314,7 +771,7 @@ resources:
 
     ApiArn:
       Value:
-        Fn::GetAtt:
+        !GetAtt
           # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
           - GraphqlLambdaFunction
           - Arn

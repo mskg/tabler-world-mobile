@@ -12,6 +12,7 @@ export default {
         logo: require(ASSETS + '/images/logo_App_Logo.png'),
         splash: require(ASSETS + '/images/splash.png'),
         background: require(ASSETS + '/images/background.png'),
+        mask: require(ASSETS + '/images/logo_mask.png'),
     },
 
     files: {

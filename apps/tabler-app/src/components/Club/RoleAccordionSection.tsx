@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { isRecordValid } from '../../helper/cache/withCacheInvalidation';
+import { isRecordValid } from '../../helper/cache/isRecordValid';
 import { sortGroupRoles } from '../../helper/sortRoles';
 import { Accordion } from '../Accordion';
 import { Placeholder } from '../Placeholder/Placeholder';

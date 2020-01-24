@@ -67,6 +67,7 @@ export const Geo = gql`
 
     type NearbyMember {
         member: Member!
+        canshowonmap: Boolean!
         distance: Int!
         lastseen: Date!
         state: NearbyMemberState!

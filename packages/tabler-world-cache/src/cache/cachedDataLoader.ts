@@ -9,7 +9,7 @@ type CacheKeyType = string;
 type MakeKeyFunc<K> = (key: K) => CacheKeyType;
 type KeyFromRecordFunc = (record: any) => CacheKeyType;
 
-type LoadFunc<K> = (ids: K[]) => Promise<any[]>;
+type LoadFunc<K> = (ids: ReadonlyArray<K>) => Promise<any[]>;
 
 /**
  * This functions backs the DataLoader function by a cache.
@@ -26,7 +26,7 @@ export function cachedDataLoader<K>(
     ttl: keyof Param_TTLS,
 ): LoadFunc<K> {
 
-    return async (ids: K[]) => {
+    return async (ids: ReadonlyArray<K>) => {
         logger.log('[cachedDataLoader]', 'loading', ids);
 
         const cached = await cache.getMany(

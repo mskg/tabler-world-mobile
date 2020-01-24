@@ -1,27 +1,26 @@
-import { debounce, orderBy, remove, sortBy, values } from 'lodash';
+import { debounce, remove, sortBy } from 'lodash';
 import React from 'react';
-import { Query } from 'react-apollo';
-import { Modal, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
-import { Appbar, Chip, Divider, List, Searchbar, Theme, withTheme } from 'react-native-paper';
+import { TouchableWithoutFeedback, View } from 'react-native';
+import { Appbar, Chip, Divider, Searchbar, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { MetricNames } from '../../analytics/MetricNames';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
-import { FilterSection, FilterTag, FilterTagType } from '../../components/FilterSection';
+import { FilterTag, FilterTagType } from '../../components/FilterSection';
 import { StandardHeader } from '../../components/Header';
-import ListSubheader from '../../components/ListSubheader';
-import { InlineLoading } from '../../components/Loading';
 import { MemberListItem } from '../../components/Member/MemberListItem';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { Filters, Filters_Clubs } from '../../model/graphql/Filters';
+import { Me } from '../../model/graphql/Me';
 import { IAppState } from '../../model/IAppState';
-import { GetFiltersQuery } from '../../queries/GetFiltersQuery';
+import { GetMeQuery } from '../../queries/Member/GetMeQuery';
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
+import { FilterDialog } from './FilterDialog';
 import { logger } from './logger';
 import { LRU } from './LRU';
 import { OfflineSearchQuery } from './OfflineSearch';
@@ -87,12 +86,36 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             });
         }
 
+        this.state.filterTags.push(... this.getDefaultAssocFilter());
+
         logger.debug('Logged');
         this.audit.submit();
     }
 
     componentWillUnmount() {
         this.mounted = false;
+    }
+
+    getDefaultAssocFilter(): FilterTag[] {
+        try {
+            const client = cachedAolloClient();
+            const me = client.readQuery<Me>({
+                query: GetMeQuery,
+            });
+
+            if (me?.Me.association.name != null) {
+                return [{
+                    type: 'association',
+                    value: me?.Me.association.name,
+                    id: me?.Me.association.id,
+                }];
+            }
+            // tslint:disable-next-line: no-empty
+        } catch (e) {
+            logger.error(e, 'Could not load addMyAssocFilter');
+        }
+
+        return [];
     }
 
     _searchBar!: Searchbar | null;
@@ -123,7 +146,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             query: '',
             debouncedQuery: '',
             searching: false,
-            filterTags: [],
+            filterTags: this.getDefaultAssocFilter(),
             showFilter: false,
         });
     }
@@ -162,7 +185,19 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         // );
     }
 
-    _onToggleTag = (type: FilterTagType, value: string) => {
+    _onToggleAsssociation = (type: FilterTagType, value: string, id?: string) => {
+        const tags = this._onToggleTag(type, value, id, false);
+
+        const association = tags.filter((t) => t.type === 'association');
+
+        if (association.length > 0 || association.length === 0) {
+            remove(tags, (f: FilterTag) => f.type === 'area' || f.type === 'table');
+        }
+
+        this._adjustSearch(this.state.query, tags);
+    }
+
+    _onToggleTag = (type: FilterTagType, value: string, id?: string, refresh = true): FilterTag[] => {
         logger.debug('toggle', type, value);
 
         // @ts-ignore range is supported
@@ -174,10 +209,15 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             tags.push({
                 type,
                 value,
+                id,
             });
         }
 
-        this._adjustSearch(this.state.query, tags);
+        if (refresh) {
+            this._adjustSearch(this.state.query, tags);
+        }
+
+        return tags;
     }
 
     _showFilterDialog = () => {
@@ -187,11 +227,10 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         this.setState({ showFilter: !this.state.showFilter });
     }
 
-    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <Screen>
-                {this.state.filterTags.length > 0 &&
+                {this.state.searching && this.state.filterTags.length > 0 && (
                     <TouchableWithoutFeedback onPress={this._showFilterDialog}>
                         <>
                             <View style={[styles.chips, { backgroundColor: this.props.theme.colors.primary }]}>
@@ -199,7 +238,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                     sortBy(this.state.filterTags, ['type', 'value']).map((f: FilterTag) => (
                                         <Chip
                                             style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                                            key={f.type + ':' + f.value}
+                                            key={`${f.type}:${f.value}`}
                                             selected={true}
                                             onPress={() => this._onToggleTag(f.type, f.value)}
                                         >
@@ -211,136 +250,42 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </>
                     </TouchableWithoutFeedback>
-                }
+                )}
 
-                {!this.state.searching &&
+                {!this.state.searching && (
                     <>
                         <LRU />
                         <SearchHistory
                             applyFilter={this.searchFilterFunction}
                         />
                     </>
-                }
+                )}
 
-                {this.state.searching && this.props.offline &&
+                {this.state.searching && this.props.offline && (
                     <OfflineSearchQuery
                         query={this.state.debouncedQuery}
                         filterTags={this.state.filterTags}
                         itemSelected={this._itemSelected}
                     />
-                }
+                )}
 
-                {this.state.searching && !this.props.offline &&
+                {this.state.searching && !this.props.offline && (
                     <OnlineSearchQuery
                         query={this.state.debouncedQuery}
                         filterTags={this.state.filterTags}
                         itemSelected={this._itemSelected}
                     />
-                }
+                )}
 
-                <Modal
+                <FilterDialog
+                    filterTags={this.state.filterTags}
+                    toggleAssociation={this._onToggleAsssociation}
+                    toggleTag={this._onToggleTag}
+
                     visible={this.state.showFilter}
-                    transparent={true}
-                    onRequestClose={() => this.setState({ showFilter: false })}
-                    animationType="fade"
-                >
-                    <TouchableWithoutFeedback onPress={() => this.setState({ showFilter: false })}>
-                        <View style={{
-                            ...styles.overlay,
-                            backgroundColor: this.props.theme.colors.backdrop,
-                        }} />
-                    </TouchableWithoutFeedback>
-
-                    <View
-                        style={{
-                            ...styles.popup,
-                            backgroundColor: this.props.theme.colors.background,
-                            borderColor: this.props.theme.colors.backdrop,
-                        }}
-                    >
-                        <List.Section>
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginRight: 4,
-                            }}>
-                                <ListSubheader>{I18N.Search.filter}</ListSubheader>
-                                <Appbar.Action color={this.props.theme.colors.accent} icon={'clear'} onPress={this._clearSearch} />
-                            </View>
-                            <ScrollView style={{ minHeight: '100%' }}>
-                                <Divider />
-                                <Query<Filters> query={GetFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
-                                    {({ data, error }) => {
-                                        // ok for now
-                                        if (error) return null;
-
-                                        if (data == null
-                                            || data.Roles == null
-                                            || data.Areas == null
-                                            || data.Clubs == null) {
-                                            return (<View style={{ marginHorizontal: 16 }}><InlineLoading /></View>);
-                                        }
-
-                                        return (
-                                            <>
-                                                <FilterSection
-                                                    title={I18N.Search.roles(data.Roles.length)}
-                                                    type="role"
-                                                    filter={this.state.filterTags}
-                                                    data={data.Roles}
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-
-                                                <Divider />
-                                                <FilterSection
-                                                    title={I18N.Search.areas(data.Areas.length)}
-                                                    type="area"
-                                                    filter={this.state.filterTags}
-                                                    data={data.Areas.map(a => a.name)}
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-
-                                                <Divider />
-                                                <FilterSection
-                                                    title={I18N.Search.tables(data.Clubs.length)}
-                                                    type="table"
-                                                    filter={this.state.filterTags}
-                                                    data={
-                                                        orderBy(data.Clubs, (a: Filters_Clubs) => a.name.substring(a.name.indexOf(' ')))
-                                                            .map((a) => a.name)
-                                                    }
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-
-                                                <Divider />
-                                                <FilterSection
-                                                    title={I18N.Search.sectors(Object.keys(I18N.Search.sectorNames).length)}
-                                                    type="sector"
-                                                    filter={this.state.filterTags}
-                                                    data={values(I18N.Search.sectorNames).sort()}
-                                                    onToggle={this._onToggleTag}
-                                                    theme={this.props.theme}
-                                                />
-                                            </>
-                                        );
-                                    }}
-                                </Query>
-
-                                <Divider />
-                            </ScrollView>
-                        </List.Section>
-                    </View>
-
-                    <View
-                        style={{
-                            ...styles.triangle,
-                            borderBottomColor: this.props.theme.colors.background,
-                        }}
-                    />
-                </Modal>
+                    hide={() => this.setState({ showFilter: false })}
+                    clear={this._clearSearch}
+                />
 
                 <StandardHeader
                     style={[HeaderStyles.topBar, { backgroundColor: this.props.theme.colors.primary }]}
@@ -356,7 +301,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                     autoCorrect={false}
 
                                     value={this.state.query}
-                                    onChangeText={text => this.searchFilterFunction(text)}
+                                    onChangeText={(text) => this.searchFilterFunction(text)}
                                 />
                             </View>
                             <Appbar.Action

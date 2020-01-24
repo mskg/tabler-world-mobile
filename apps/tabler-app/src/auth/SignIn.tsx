@@ -11,7 +11,7 @@ import { AuditScreenName } from '../analytics/AuditScreenName';
 import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
-import { getParameterValue } from '../helper/parameters/getParameter';
+import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
@@ -134,7 +134,7 @@ class SignInBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <Background>
+            <Background color={'white'}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="padding" >
@@ -148,7 +148,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                     value={this.state.username}
                                     onChangeText={text => this.setState({ username: (text || '').toLowerCase() })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
-                                    style={{ borderBottomColor: this.props.theme.colors.accent }} />
+                                    style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }} />
                             </View>
 
                             <View style={[styles.buttonContainer]}>
@@ -160,11 +160,11 @@ class SignInBase extends AuditedScreen<Props, State> {
                                     disabled={!this.state.username || this.state.working}>{I18N.SignIn.continue}</Button>
                             </View>
 
-                            {this.state.error &&
+                            {this.state.error && (
                                 <View style={[styles.errorMessage]}>
                                     <Text>{this.state.error}</Text>
                                 </View>
-                            }
+                            )}
 
                             <View style={styles.demo}>
                                 <TouchableWithoutFeedback onPress={this._demo}>

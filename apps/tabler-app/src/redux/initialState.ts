@@ -7,6 +7,7 @@ export const INITIAL_STATE: IAppState = {
         effectiveType: 'unknown',
         type: 'unknown',
         offline: true,
+        websocket: false,
     },
 
     updateAvailable: false,
@@ -24,6 +25,7 @@ export const INITIAL_STATE: IAppState = {
 
     searchHistory: {
         members: ['Markus Kling'],
+        structure: ['RT129 Böblingen/Sindelfingen'],
         lru: [],
     },
 
@@ -40,6 +42,9 @@ export const INITIAL_STATE: IAppState = {
 
         darkMode: false,
         optOutAnalytics: false,
+
+        notificationsBirthdays: true,
+        notificationsOneToOneChat: true,
     },
 
     filter: {

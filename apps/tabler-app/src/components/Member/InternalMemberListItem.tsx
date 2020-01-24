@@ -10,52 +10,69 @@ import { styles } from './Styles';
 export class InternalMemberListItem extends React.PureComponent<MemberItemProps> {
     _onPress = () => {
         requestAnimationFrame(() => {
-          if (this.props.onPress) {
-            this.props.onPress(this.props.member);
-        }
-      });
+            if (this.props.onPress) {
+                this.props.onPress(this.props.member);
+            }
+        });
     }
 
     _avatar = () => {
         return <MemberAvatar member={this.props.member} />;
     }
 
+    renderBottom() {
+        if (this.props.bottom) {
+            return this.props.bottom(this.props.member);
+        }
+
+        if (this.props.member.roles) {
+            return (
+                <Card.Content style={styles.chipContainer}>
+                    <RoleChips theme={this.props.theme} roles={this.props.member.roles} />
+                </Card.Content>
+            );
+        }
+
+        return null;
+    }
+
     render() {
-        const { title, subtitle, member } = this.props;
+        const { title, subtitle } = this.props;
 
         return (
-      <View style={{
-          height: this.props.height,
-          backgroundColor: this.props.theme.colors.surface,
-        // width: ITEM_WIDTH
-      }}>
-        <TouchableRipple
-          onPress={this.props.onPress ? this._onPress : undefined}
-          style={{
-              height: this.props.height,
-            // width: ITEM_WIDTH,
-              margin: 0,
-              padding: 0,
-          }}>
-          <>
-            <CardTitle
-              style={styles.cardTitle}
-              title={title}
-              titleStyle={styles.titleContainer}
+            <View
+                style={{
+                    height: this.props.height,
+                    backgroundColor: this.props.theme.colors.surface,
+                    // width: ITEM_WIDTH
+                }}
+            >
+                <TouchableRipple
+                    onPress={this.props.onPress ? this._onPress : undefined}
+                    style={{
+                        height: this.props.height,
+                        // width: ITEM_WIDTH,
+                        margin: 0,
+                        padding: 0,
+                    }}
+                >
+                    <>
+                        <CardTitle
+                            style={styles.cardTitle}
+                            title={title}
+                            titleStyle={styles.titleContainer}
 
-              subtitle={subtitle}
-              subtitleStyle={styles.subTitleContainer}
+                            subtitle={subtitle}
+                            subtitleStyle={styles.subTitleContainer}
 
-              left={this._avatar}
-              right={this.props.right} />
+                            left={this._avatar}
+                            right={this.props.right}
+                        />
 
-            {member.roles &&
-              <Card.Content style={styles.chipContainer}>
-                <RoleChips theme={this.props.theme} roles={member.roles} />
-              </Card.Content>
-            }
-          </>
-        </TouchableRipple>
-      </View>);
+                        {this.renderBottom()}
+                    </>
+                </TouchableRipple>
+            </View>
+        );
     }
 }

@@ -2,7 +2,7 @@
 name: $(VERSION).$(rev:r)
 
 pool:
-  name: 'Default' # 'Hosted Ubuntu 1604'
+  name: 'Hosted Ubuntu 1604'
   demands: npm
 
 variables:
@@ -17,7 +17,7 @@ pr:
 trigger:
   branches:
     include:
-      - develop
+      - release/v1.2
 
   paths:
     include:

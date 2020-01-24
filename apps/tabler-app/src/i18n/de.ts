@@ -1,7 +1,10 @@
-import { differenceInYears, format } from 'date-fns';
+import { differenceInCalendarYears, differenceInYears, format, parseISO } from 'date-fns';
 import dateDE from 'date-fns/locale/de';
+import 'moment';
+import 'moment/locale/de';
 import en, { I18NType } from './en';
 
+// tslint:disable-next-line: no-var-requires
 const countries = require('./countries/de.json');
 
 const de: I18NType = {
@@ -18,7 +21,9 @@ const de: I18NType = {
     ErrorReport: {
         title: 'Ein Problem melden',
         text: 'Dein Feedback hilft uns die TABLER.APP zu verbessern.',
+
         report: 'Geht etwas nicht?',
+        feedback: 'Es fehlt etwas? Du hast eine Idee?',
 
         subject: 'TABLER.APP Problem',
         noMail: 'Kann es sein, dass Du keine E-Mails versenden kannst?',
@@ -82,7 +87,11 @@ const de: I18NType = {
     },
 
     Structure: {
-        title: 'Verzeichnis',
+        navigation: 'Verzeichnis',
+
+        title: 'Assoziation',
+        mytitle: 'Meine Assoziation',
+
         associations: 'Assoziatio...',
         clubs: 'Tische',
         areas: 'Distrikte',
@@ -161,7 +170,12 @@ const de: I18NType = {
         Formats: {
             date: (date?: string) => {
                 if (date == null) return undefined;
-                return `${format(date, 'D. MMMM YYYY', { locale: dateDE })} (${differenceInYears(Date.now(), date)})`;
+                return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateDE })} (${differenceInYears(Date.now(), parseISO(date))})`;
+            },
+
+            membership: (date?: string) => {
+                if (date == null) return undefined;
+                return `${format(parseISO(date), 'yyyy', { locale: dateDE })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
             },
         },
 
@@ -212,6 +226,7 @@ const de: I18NType = {
 
             companies: 'Firma',
             educations: 'Ausbildung',
+            joined: 'Eintrittsdatum',
         },
 
         Actions: {
@@ -220,6 +235,7 @@ const de: I18NType = {
             mail: 'E-Mail',
             web: 'TABLER.world',
 
+            chat: 'Nachricht schreiben',
             openweb: 'Auf TABLER.WORLD anzeigen',
             favadd: 'Zu Favoriten hinzufügen',
             remfav: 'Aus den Favoriten entfernen',
@@ -244,6 +260,7 @@ const de: I18NType = {
 
         results: (r) => r > 0 ? `Ergebnisse (${r})` : 'Ergebnisse',
 
+        associations: (r) => r > 0 ? `Assoziationen (${r})` : 'Assoziationen',
         roles: (r) => r > 0 ? `Rollen (${r})` : 'Rollen',
         areas: (r) => r > 0 ? `Distrikte (${r})` : 'Distrikte',
         tables: (r) => r > 0 ? `Tische (${r})` : 'Tische',
@@ -295,16 +312,16 @@ const de: I18NType = {
 
     Filter: {
         title: 'Filter anpassen',
-        area: 'Distrikte',
-        showAll: 'Alle Mitglieder anzeigen',
+        area: 'Distrikte meiner Assoziation',
+        showAll: 'Alle Mitglieder meiner Assoziation anzeigen',
         hideAll: 'Keine Mitglieder anzeigen',
 
         favorites: 'Favoriten',
         toggleFavorits: 'All Favoriten',
         toggleOwnTable: 'Mitglieder meines Tisches',
 
-        toggleAssociationBoard: 'Präsidium und Referenten',
-        toggleAreaBoard: 'Beirat',
+        toggleAssociationBoard: 'Präsidium und Referenten meiner Assoziation',
+        toggleAreaBoard: 'Beirat meiner Assoziation',
     },
 
 
@@ -348,18 +365,18 @@ const de: I18NType = {
             contacts: 'Mitglieder',
             colors: 'Farben',
             experiments: 'Experimente',
-            nearby: 'Mitglieder in der Nähe',
+            locationservices: 'Ortungsdienste',
         },
 
         texts: {
             contacts: 'Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.',
             experiments: 'Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden.',
-            nearby: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
         },
 
         contactpermissions: 'Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
         locationpermission: 'Die App kann nicht auf Deinen Standort zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
         locationfailed: 'Die Einstellungen konnten nicht aktualisiert werden.',
+        mapfailed: 'Die Einstellung für die Kartendarstellung konnte nicht aktualisiert werden',
 
         firstlast: 'Vorname, Nachname',
         lastfirst: 'Nachname, Vorname',
@@ -369,7 +386,6 @@ const de: I18NType = {
             web: 'Browser',
             sms: 'Kurznachrichten',
             phone: 'Anrufe',
-
             dark: 'Nachtmodus',
             logout: 'Abmelden und alle Einstellungen zurücksetzen',
             clear: 'Alle Inhalte löschen',
@@ -377,13 +393,14 @@ const de: I18NType = {
             version: 'Version',
             lastSync: 'Letzte Synchronisierung',
             channel: 'Kanal',
+            pushtoken: 'Push Token',
             syncFavorites: 'Favoriten synchronisieren',
             syncOwnTable: 'Tischmitglieder synchronisieren',
             sortOrder: 'Sortierung',
             displayOrder: 'Anzeige',
-
             experiments: 'Alben und Neuigkeiten',
-            nearby: 'Meinen Standort teilen',
+            nearby: 'Mitglieder in der Nähe',
+            notifications: 'Benachrichtigungen',
         },
 
         ReleaseNotes: 'Versionshinweise (Englisch)',
@@ -439,6 +456,26 @@ const de: I18NType = {
             title: 'Geburtstagszeit...',
             text: (n) => `Gratuliere ${n}, damit es ein großartiger Tag wird.`,
         },
+
+        chatDisabled: {
+            text: 'Du hast die Benachrichtigungen für Unterhaltungen deaktiviert. Du bist nicht für andere Mitglieder sichtbar und kannst auch keine neuen Nachrichten senden oder empfangen',
+            button: 'Ändern',
+        },
+
+        Settings: {
+            title: 'Benachrichtigungen',
+
+            birthday: {
+                title: 'Geburtstagserinnerung',
+                field: 'Für den eigenen Club und Favoriten',
+            },
+
+            onetoone: {
+                title: 'Unterhaltungen',
+                text: 'Wenn Du diese Benachrichtigungsfunktion deaktivierst, dann kannst Du die Chatfunktion nicht nutzen.',
+                field: '1 zu 1 Unterhaltung',
+            },
+        },
     },
 
     Timespan: {
@@ -479,10 +516,46 @@ const de: I18NType = {
         on: 'Einschalten',
 
         off: '\'Mitglieder in der Nähe\' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt in der du dich befindest. Wir speichern keine Standorthistorie.',
+        mapOff: 'Um andere Mitglieder auf der Karte zu sehen musst Du Dich selbst sichtbar machen.',
+
+        Tabs: {
+            list: 'Liste',
+            map: 'Karte',
+        },
+
+        Settings: {
+            title: 'Mitglieder in der Nähe',
+            on: {
+                title: 'Mitglieder in der Nähe',
+                text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
+                field: 'Teile Deinen Standort',
+            },
+            map: {
+                field: 'Erlaube Deinen Standort auf der Karte zu sehen',
+            },
+            filter: {
+                title: 'Filter',
+                field: 'Verstecke Mitglieder des eigenen Clubs',
+            },
+        },
+    },
+
+    Support: {
+        title: 'Ein Problem melden',
     },
 
     Feedback: {
         title: 'Feedback',
+    },
+
+    Conversations: {
+        title: 'Unterhaltungen',
+        network: 'Auf Netzwerk warten...',
+
+        copy: 'Kopieren',
+        retry: 'Wiederholen',
+        placeholder: 'Nachricht schreiben...',
+        loadEarlier: 'Alte Nachrichten laden',
     },
 };
 

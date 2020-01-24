@@ -1,0 +1,10 @@
+.idea
+.vscode
+node_modules/
+coverage
+npm-debug.log
+.DS_Store
+*.iml
+**/.serverless
+dist/
+.nyc_output/

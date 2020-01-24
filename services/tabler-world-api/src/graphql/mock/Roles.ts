@@ -32,37 +32,42 @@ export const AssociationRole = () => ({
 });
 
 export const RoleRef = () => {
-    return faker.random.arrayElement([{
-      id: () => 'de_' + faker.random.number({ min: 1, max: 300 }),
-      name: () => 'RT' + faker.random.number({ min: 1, max: 300 }),
-      type: () => 'club',
-  },
-      {
-          id: () => 'de_' + faker.random.number({ min: 1, max: 16 }),
-          name: () => 'Distrikt ' + faker.random.number({ min: 1, max: 16 }),
-          type: () => 'area',
-      },
-      {
-          id: () => 'de',
-          name: () => 'RT Germany',
-          type: () => 'assoc',
-      }]);
+    return faker.random.arrayElement([
+        {
+            id: () => 'de_' + faker.random.number({ min: 1, max: 300 }),
+            name: () => 'RT' + faker.random.number({ min: 1, max: 300 }),
+            shortname: () => 'RT' + faker.random.number({ min: 1, max: 300 }),
+            type: () => 'club',
+        },
+        {
+            id: () => 'de_' + faker.random.number({ min: 1, max: 16 }),
+            name: () => 'Distrikt ' + faker.random.number({ min: 1, max: 16 }),
+            shortname: () => 'D' + faker.random.number({ min: 1, max: 16 }),
+            type: () => 'area',
+        },
+        {
+            id: () => 'de',
+            name: () => 'RT Germany',
+            type: () => 'assoc',
+            shortname: () => 'RTDE',
+        },
+    ]);
 };
 
 export const Role = () => {
     return faker.random.boolean()
-    ? {
-        name: () => faker.random.arrayElement([...PresidentRoles, ...BoardRoles]),
-        level: () => '',
-        group: () => faker.random.arrayElement([
-          'Board',
-      ]),
-    }
-    : {
-        name: () => faker.random.arrayElement(AssistRoles),
-        level: () => '',
-        group: () => faker.random.arrayElement([
-          'Board Assistants',
-      ]),
-    };
+        ? {
+            name: () => faker.random.arrayElement([...PresidentRoles, ...BoardRoles]),
+            level: () => '',
+            group: () => faker.random.arrayElement([
+                'Board',
+            ]),
+        }
+        : {
+            name: () => faker.random.arrayElement(AssistRoles),
+            level: () => '',
+            group: () => faker.random.arrayElement([
+                'Board Assistants',
+            ]),
+        };
 };

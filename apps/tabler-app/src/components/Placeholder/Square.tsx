@@ -16,12 +16,18 @@ class SquareBase extends PureComponent<Props> {
 
         return (
             <Fade>
-                <View style={[{
-                    height: height || width,
-                    width,
-                    backgroundColor: COLOR,
-                }, style]} />
-            </Fade>);
+                <View
+                    style={[
+                        {
+                            width,
+                            height: height || width,
+                            backgroundColor: COLOR,
+                        },
+                        style,
+                    ]}
+                />
+            </Fade>
+        );
     }
 }
 

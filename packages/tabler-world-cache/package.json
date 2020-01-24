@@ -19,8 +19,9 @@
     "lodash": "*"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.121",
-    "@types/node": "^12.7.2",
-    "typescript": "3.6.2"
+    "@types/lodash": "4.14.149",
+    "@types/node": "^12.7.12",
+    "@types/node-fetch": "^2.5.4",
+    "typescript": "3.7.4"
   }
 }

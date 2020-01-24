@@ -7,7 +7,7 @@ import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
-import { GoHomeErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
+import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { AvatarPopup } from '../../components/Profile/AvatarPopup';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
@@ -82,7 +82,7 @@ class MemberBase extends AuditedScreen<Props> {
 
                 title={member ? member.firstname + ' ' + member.lastname : undefined}
                 line1={member ? member.club.name : undefined}
-                line2={member ? member.area.name + ' ' + member.association.name : undefined}
+                line2={member ? member.area.name + ', ' + member.association.name : undefined}
 
                 fab={
                     member
@@ -133,11 +133,9 @@ export class MemberScreenBase extends React.Component<NavigationInjectedProps<IP
         const { tabler } = this.props.navigation.state.params as IProfileParams;
 
         return (
-            <GoHomeErrorBoundary>
-                <MemberQueryWithPreviewAndInvalidation id={tabler}>
-                    <Member id={tabler} />
-                </MemberQueryWithPreviewAndInvalidation>
-            </GoHomeErrorBoundary>
+            <MemberQueryWithPreviewAndInvalidation id={tabler}>
+                <Member id={tabler} />
+            </MemberQueryWithPreviewAndInvalidation>
         );
     }
 }

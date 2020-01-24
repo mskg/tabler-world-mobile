@@ -1,4 +1,4 @@
-import { DataHandler } from "../types/DataHandler";
+import { DataHandler } from '../types/DataHandler';
 
 /**
  * If we have data, push it down to the handler and wait for it.

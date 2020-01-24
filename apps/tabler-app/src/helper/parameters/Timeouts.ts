@@ -1,6 +1,6 @@
 
 export const MS_PER_MINUTE = 60000;
-const hours = (hours: number) => 60 * hours * MS_PER_MINUTE;
+const hours = (h: number) => 60 * h * MS_PER_MINUTE;
 
 export type TimeoutParameters = {
     albums: number,

@@ -5,16 +5,19 @@
         "**/hoist-non-react-statics": "^3.3.0"
     },
     "scripts": {
-        "build-common": "yarn workspace @mskg/tabler-world-common run build && yarn workspace @mskg/tabler-world-aws run build && yarn workspace @mskg/tabler-world-config run build && yarn workspace @mskg/tabler-world-rds-client run build && yarn workspace @mskg/tabler-world-geo run build && yarn workspace @mskg/tabler-world-jobs run build",
+        "build-common": "yarn workspace @mskg/tabler-world-common run build && yarn workspace @mskg/tabler-world-aws run build && yarn workspace @mskg/tabler-world-config run build && yarn workspace @mskg/tabler-world-rds-client run build && yarn workspace @mskg/tabler-world-geo run build && yarn workspace @mskg/tabler-world-jobs run build && yarn workspace @mskg/tabler-world-auth-client run build && yarn workspace @mskg/tabler-world-push-client run build",
         "build-cache": "yarn workspace @mskg/tabler-world-cache run build",
-        "dev-backend": "concurrently -n SQL,DYO,API 'yarn workspace @mskg/tabler-world-data-service dev' 'yarn workspace @mskg/tabler-world-import dynamodb' 'yarn workspace @mskg/tabler-world-api dev'"
+        "dev-backend": "concurrently --kill-others -n SQL,DYO,API 'yarn workspace @mskg/tabler-world-data-service dev' 'yarn workspace @mskg/tabler-world-import dynamodb' 'yarn workspace @mskg/tabler-world-api dev'",
+        "dev-frontend": "yarn  --cwd ./apps/tabler-app run dev"
     },
-    "workspaces": [
-        "packages/*",
-        "services/*"
-    ],
+    "workspaces": {
+        "packages": [
+            "packages/*",
+            "services/*"
+        ]
+    },
     "devDependencies": {
-        "concurrently": "^4.1.2"
+        "concurrently": "^5.0.0"
     },
     "dependencies": {
         "@mskg/tabler-world-tslint-rules": "0.0.1"

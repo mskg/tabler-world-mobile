@@ -1,14 +1,11 @@
-import { removeEmptySlots } from "@mskg/tabler-world-common";
-import { IDataService } from "@mskg/tabler-world-rds-client";
-import { ChangePointer } from "../types/ChangePointer";
-import { DataHandler } from "../types/DataHandler";
-import { RecordType } from "../types/RecordType";
-
-// we create a string association_clubnumber that is unique and allows us to target records directly
-const clubPK = (c: any) => c.subdomain.replace(/[^a-z]/ig, "") + "_" + c.subdomain.replace(/[^0-9]/ig, "");
-
-// members have a unique id
-const memberPK = (c: any) => c.id;
+import { removeEmptySlots } from '@mskg/tabler-world-common';
+import { IDataService } from '@mskg/tabler-world-rds-client';
+import { recordTypeToPrimaryKey } from '../database/recordTypeToPrimaryKey';
+import { typeToTable } from '../database/typeToTable';
+import { ChangePointer } from '../types/ChangePointer';
+import { DataHandler } from '../types/DataHandler';
+import { JobType } from '../types/JobType';
+import { determineRecordType } from './determineRecordType';
 
 /**
  * Returns a DataHandler that persists the given RecordType in our database.
@@ -17,33 +14,38 @@ const memberPK = (c: any) => c.id;
  * @param client The database connection
  * @param type The record type to process
  */
-export const createWriteToDatabaseHandler = (client: IDataService, type: RecordType): DataHandler => {
-    const pk = type === RecordType.clubs ? clubPK : memberPK;
+export const createWriteToDatabaseHandler = (client: IDataService, type: JobType): DataHandler => {
+    return async (records: any[]): Promise<ChangePointer[]> => {
+        console.log('Writing chunk of', records.length, type, 'records');
 
-    return async (data: any[]): Promise<ChangePointer[]> => {
-        console.log("Writing chunk of", data.length, type, "records");
+        const inserts = await Promise.all(records.map(async (record) => {
+            const recordType = determineRecordType(type, record);
+            const pkFunction = recordTypeToPrimaryKey(recordType);
+            const id = pkFunction(record);
+            const table = typeToTable(recordType);
 
-        const results: any[] = [];
+            console.log(recordType, id);
 
-        for (const r of data) {
-            const id = pk(r);
-            console.log(id);
-
-            const result = await client.query(`
-INSERT INTO ${type}(id, data, modifiedon)
+            const result = await client.query(
+                `
+INSERT INTO ${table}(id, data, modifiedon)
 VALUES($1, $2, now())
 ON CONFLICT (id)
 DO UPDATE
   SET data = excluded.data, modifiedon = excluded.modifiedon
-  WHERE ${type}.data::text <> excluded.data::text
-`, [id, JSON.stringify(removeEmptySlots(r))]);
+  WHERE ${table}.data::text <> excluded.data::text
+`,
+                [id, JSON.stringify(removeEmptySlots(record))],
+            );
 
-            if (result.rowCount == 1) {
-                console.log(id, "modified");
-                results.push({ id, type });
+            if (result.rowCount === 1) {
+                console.log(id, 'modified');
+                return { id, type: recordType } as ChangePointer;
             }
-        }
 
-        return results;
+            return null;
+        }));
+
+        return inserts.filter((i) => i != null) as ChangePointer[];
     };
 };

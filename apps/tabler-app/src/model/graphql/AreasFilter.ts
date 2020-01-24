@@ -9,10 +9,13 @@
 export interface AreasFilter_Areas {
   __typename: "Area";
   id: string;
-  area: number;
+  shortname: string;
   name: string;
 }
 
 export interface AreasFilter {
+  /**
+   * Giving no id returns own organization
+   */
   Areas: AreasFilter_Areas[] | null;
 }

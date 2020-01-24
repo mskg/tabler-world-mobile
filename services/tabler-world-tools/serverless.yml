@@ -44,6 +44,9 @@ provider:
   region: eu-west-1
   stackName: tabler-world-tools
 
+  deploymentBucket:
+    blockPublicAccess: true
+
   runtime: nodejs10.x
 
   memorySize: 128

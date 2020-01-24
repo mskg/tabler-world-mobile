@@ -1,3 +1,4 @@
+import { RoleType } from './graphql/globalTypes';
 
 export const ROLE_GROUP_BOARD = 'Board';
 export const ROLE_GROUP_BOARD_ASSIST = 'Board Assistants';
@@ -42,7 +43,7 @@ export const RoleOrderByMapping = {
     [RoleNames.Shop]: 13,
 };
 
-export interface IRole {
+export type IRole = {
     name: string;
 
     level: string;
@@ -50,7 +51,7 @@ export interface IRole {
 
     ref: {
         id: string,
-        name: string,
-        type: 'club' | 'assoc' | 'area',
+        shortname: string,
+        type: RoleType,
     };
-}
+};

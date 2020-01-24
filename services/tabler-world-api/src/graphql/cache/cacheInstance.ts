@@ -16,4 +16,5 @@ export const cacheInstance = disableCache ? new NoCache() : new MemoryBackedCach
         tableName: EXECUTING_OFFLINE ? 'tabler-world-cache-dev' : process.env.cache_table as string,
         ttl: DEFAULT_TTL,
     },
+    EXECUTING_OFFLINE ? 'dev' : process.env.cache_version,
 ));

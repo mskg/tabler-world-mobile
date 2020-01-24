@@ -6,6 +6,7 @@ DROP FUNCTION if EXISTS get_privacylevel cascade;
 CREATE OR REPLACE FUNCTION get_privacylevel(privacy jsonb, field text)
   RETURNS text AS
 $func$
+    -- share with all associations (public) is the default
     select COALESCE((
         select value->>'level'
         from jsonb_array_elements(privacy) t
@@ -31,10 +32,10 @@ select
 CREATE OR REPLACE FUNCTION get_profile_access(
         level text
         ,recordid integer
-        ,recordclub integer
+        ,recordclub text
         ,recordassoc text
         ,userid integer
-        ,userclub integer
+        ,userclub text
         ,userassoc text
 )
   RETURNS boolean AS $$
@@ -47,6 +48,12 @@ BEGIN
         return false;
     end if;
 
+    -- all families
+    if level = 'all' then
+        return true;
+    end if;
+
+    -- same famnily, we currently cannot check that
     if level = 'public' then
         return true;
     end if;
@@ -69,6 +76,7 @@ drop materialized view if exists profiles_privacysettings cascade;
 create materialized view profiles_privacysettings as
 select
     id
+    ,get_privacylevel(privacysettings::jsonb, 'gender') as gender
     ,get_privacylevel(privacysettings::jsonb, 'education') as education
     ,get_privacylevel(privacysettings::jsonb, 'custom-field-category-110') as partner
     ,get_privacylevel(privacysettings::jsonb, 'company-position') as company

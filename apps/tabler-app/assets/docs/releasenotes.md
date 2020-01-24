@@ -1,3 +1,15 @@
+# v1.2
+
+## Improvements
+
+- Complete world-wide data from RTI
+- Assocation search functionality
+- Member screen how shows member count and date joined
+- Pushing bottom navigation again scrolls the visible page to top
+- Opt-out for birthday notifications
+- Replace dark-mode maps on iOS with Apple Maps
+- Oppted-in nearby members can now be displayed on a map
+
 # v1.1
 
 ## Improvements
@@ -9,6 +21,7 @@
 - Expandable sections on club page now only prompt for expansion with enough elements
 - Favorites now need swipe-right to toggle value
 - A scanned member is automatically added to the favorites now
+- App now follows iOS 13's appearance. Happy dark mode!
 
 ## Fixes
 
@@ -16,6 +29,8 @@
 - Sometimes, two-letter text avatars were hidden in member overview
 - Settings were not saved, when not settings existed at all #71
 - Background jobs could not access JWT tokens #68
+- App does not present downloaded documents from TABLER.WORLD #78
+- RTI roles were not displayed #76
 
 # v1.0.1
 

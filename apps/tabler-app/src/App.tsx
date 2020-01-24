@@ -1,6 +1,5 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
-import { useKeepAwake } from 'expo-keep-awake';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
@@ -11,23 +10,24 @@ import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
-import Loading from './components/Loading';
+import { withLoadingAnimation } from './components/withLoadingAnimation';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
 import { Snacks } from './components/Snacks';
 import { withPreCached } from './components/withPreCached';
+import { bootStrapSentry } from './helper/bootStrapSentry';
 import { disableFontScaling } from './helper/disableFontScaling';
 import { Categories, Logger } from './helper/Logger';
-import { bootStrapSentry } from './helper/Sentry';
 import { Features, isFeatureEnabled } from './model/Features';
 import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
-import { registerFetchTask } from './tasks/Fetch';
-import { registerLocationTask } from './tasks/Location';
-import { registerForPushNotificationsAsync } from './tasks/Push';
+import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
+import { registerFetchTask } from './tasks/registerFetchTask';
+import { registerLocationTask } from './tasks/registerLocationTask';
+import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
 
 const logger = new Logger(Categories.App);
@@ -59,43 +59,48 @@ if (isFeatureEnabled(Features.BackgroundLocation)) {
     registerLocationTask();
 }
 
-logger.log('Bootstrapping push notifications');
-registerForPushNotificationsAsync();
-
 fix2940();
+// useScreens();
 
 const App = () => {
-    if (__DEV__) useKeepAwake();
+    // if (__DEV__) useKeepAwake();
 
     const dispatch = useDispatch();
     dispatch(checkNetwork());
 
     return (
-    <React.Fragment>
-      <StandardStatusBar />
-      <Reloader />
-      <ActionSheetProvider>
-        <Navigation />
-      </ActionSheetProvider>
-      <Snacks />
-      <PushNotifications />
-      <Linking />
-      <Loading />
-    </React.Fragment>
+        <>
+            <StandardStatusBar />
+            <Reloader />
+            <ActionSheetProvider>
+                <Navigation />
+            </ActionSheetProvider>
+            <Snacks />
+            <PushNotifications />
+            <SubscribeToConversationUpdates />
+            <Linking />
+        </>
     );
 };
 
 logger.log('Loading...');
-export default withPreCached(
-  withApollo(
-    withStore(
-      withPaperProvider(
-        withSkakeErrorReport(
-          withAuthenticator(
-            withWhoopsErrorBoundary(
-              App)),
+// tslint:disable-next-line: export-name
+export default withAppearanceProvider(
+    withPreCached(
+        withApollo(
+            withStore(
+                withPaperProvider(
+                    withSkakeErrorReport(
+                        withLoadingAnimation(
+                            withAuthenticator(
+                                withWhoopsErrorBoundary(
+                                    App,
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ),
-      ),
     ),
-  ),
 );

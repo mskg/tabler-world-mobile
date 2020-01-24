@@ -57,12 +57,12 @@ enum ItemType {
 }
 
 const logger = new Logger('MemberSectionList');
-const SCREEN_FACTOR = Dimensions.get('screen').width / 375 /* 6S */;
+const SCREEN_FACTOR = Dimensions.get('window').width / 375 /* 6S */;
 
 export class MemberSectionListBase extends React.Component<Props, State>  {
     dataProvider: DataProvider;
     layoutProvider: LayoutProvider;
-    width = Dimensions.get('screen').width;
+    width = Dimensions.get('window').width;
 
     constructor(props) {
         super(props);
@@ -79,10 +79,10 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                     if (data === ME_ITEM) { return ItemType.Me; } return ItemType.Section;
                 } {
                     const roles = (data != null && (data as IMemberOverviewFragment).roles) || [];
-                    if (roles.length == 0) return ItemType.Small;
+                    if (roles.length === 0) return ItemType.Small;
 
                     const length = roles.reduce(
-                        (p, c) => (p > 0 ? 3 : 0) + p + (c.name || '').length + ((c.ref || { name: '' }).name || '').length,
+                        (p, c) => (p > 0 ? 3 : 0) + p + (c.name || '').length + ((c.ref || { shortname: '' }).shortname || '').length,
                         0);
 
                     // this kills the performance of the "debugger" as
@@ -166,10 +166,10 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.extraData != this.props.extraData) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.extraData !== this.props.extraData) {
             logger.log('Update!');
-            this.updateFrom(nextProps);
+            this.updateFrom(this.props);
         }
     }
 
@@ -224,7 +224,6 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
                     rowRenderer={this._rowRenderer}
 
                     scrollViewProps={{
-                        refreshing: this.props.refreshing,
                         refreshControl: (
                             <RefreshControl
                                 refreshing={this.props.refreshing}

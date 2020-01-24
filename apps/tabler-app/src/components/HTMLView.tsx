@@ -1,9 +1,9 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
-import { WebView } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import HTML from 'react-native-render-html';
 import { _constructStyles } from 'react-native-render-html/src/HTMLStyles';
+import { WebView } from 'react-native-webview';
 import HTMLImage from './HTMLImage';
 
 type State = {};

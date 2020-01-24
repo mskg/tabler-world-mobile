@@ -108,7 +108,7 @@ class ProfileHeaderBase extends React.Component<Props> {
                     >
                         <Placeholder
                             ready={!loading}
-                            previewComponent={<Circle size={imageTranslate} />}
+                            previewComponent={<Circle style={{marginTop: 10}} size={imageTranslate} />}
                         >
                             {!loading && Avatar && React.cloneElement(Avatar, {
                                 size: imageTranslate,

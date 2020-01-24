@@ -1,5 +1,6 @@
 parameters:
   ARTIFACT: 'app-config'
+  PATH: 'apps/tabler-app'
 
 steps:
 - task: PublishBuildArtifacts@1
@@ -9,13 +10,13 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/app.json
+    PathtoPublish: ${{ parameters.PATH }}/app.json
     ArtifactName: ${{ parameters.ARTIFACT }}
 
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: App/package.json
-#     ArtifactName: ${{ parameters.ARTIFACT }}
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: apps/tabler-app/package.json
+    ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
@@ -34,28 +35,28 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/deployment.json
+    PathtoPublish: ${{ parameters.PATH }}/deployment.json
     ArtifactName: ${{ parameters.ARTIFACT }}
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/devops/deployment.js
+    PathtoPublish: ${{ parameters.PATH }}/devops/deployment.js
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/devops/setvar.ps1
+    PathtoPublish: ${{ parameters.PATH }}/devops/setvar.ps1
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: App/devops/app.js
+    PathtoPublish: ${{ parameters.PATH }}/devops/app.js
     ArtifactName: ${{ parameters.ARTIFACT }}/config
 
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: App/assets
-#     ArtifactName: ${{ parameters.ARTIFACT }}/assets
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: ${{ parameters.PATH }}/assets
+    ArtifactName: ${{ parameters.ARTIFACT }}/assets
 
 # - task: PublishBuildArtifacts@1
 #   inputs:

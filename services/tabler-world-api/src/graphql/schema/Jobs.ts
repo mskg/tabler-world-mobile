@@ -35,6 +35,6 @@ export const Jobs = gql`
     union JobResult = JobError | JobSync | JobSend | JobEmpty
 
     extend type Query {
-        Jobs: [Job!]
+        Jobs: [Job!] @auth(requires: jobs)
     }
 `;

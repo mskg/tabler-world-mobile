@@ -4,6 +4,10 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: eu-west-1
+
+  deploymentBucket:
+    blockPublicAccess: true
+
   stage: dev
   stackName: tabler-world-rds
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { Callout, LatLng, Marker } from 'react-native-maps';
 import { Theme, Title, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -15,23 +15,16 @@ type Props = {
     club: ClubsMap_Clubs,
 };
 
-type State = {
-    visible: boolean,
-};
 
 const maxWidth = Dimensions.get('window').width - 32 - 16;
 
-class MarkerBase extends React.Component<Props> {
-    state: State = {
-        visible: false,
-    };
+// Android does not display nested Images
+// https://github.com/react-native-community/react-native-maps/issues/1870
+const customCallout = Platform.OS !== 'android';
 
+class MarkerBase extends React.Component<Props> {
     _showClub = () => {
         this.props.showClub(this.props.club.id);
-    }
-
-    _toggle = () => {
-        this.setState({ visible: !this.state.visible });
     }
 
     render() {
@@ -40,30 +33,37 @@ class MarkerBase extends React.Component<Props> {
                 identifier={this.props.club.id}
                 coordinate={this.props.club.location as LatLng}
                 tracksViewChanges={false}
+
+                title={this.props.club.name}
+                onCalloutPress={!customCallout ? this._showClub : undefined}
             >
                 <Pin
                     color={this.props.theme.dark ? this.props.theme.colors.accent : ___DONT_USE_ME_DIRECTLY___COLOR_PIN}
-                    text={this.props.club.club.toString()}
+                    text={this.props.club.clubnumber.toString()}
                 />
 
-                <Callout
-                    tooltip={true}
-                    style={[styles.callout, {
-                        backgroundColor: this.props.theme.colors.surface,
-                    }]}
-                    onPress={this._showClub}
-                >
-                    <Title numberOfLines={1} style={styles.title}>{this.props.club.name}</Title>
-                    <ClubAvatar
-                        theme={this.props.theme}
-                        source={this.props.club.logo}
-                        label={this.props.club.toString()}
-                        size={150}
-                        style={{
-                            elevation: 0,
-                        }}
-                    />
-                </Callout>
+                {customCallout &&
+                    <Callout
+                        tooltip={true}
+                        style={[
+                            styles.callout,
+                            { backgroundColor: this.props.theme.colors.surface },
+                        ]}
+                        onPress={this._showClub}
+                    >
+                        <Title numberOfLines={1} style={styles.title}>{this.props.club.name}</Title>
+
+                        <ClubAvatar
+                            theme={this.props.theme}
+                            source={this.props.club.logo}
+                            label={this.props.club.clubnumber.toString()}
+                            size={150}
+                            style={{
+                                elevation: 0,
+                            }}
+                        />
+                    </Callout>
+                }
             </Marker>
         );
     }
@@ -76,8 +76,8 @@ export const ClubMarker = connect(null, {
 
 export const styles = StyleSheet.create({
     title: {
-        paddingHorizontal: 8,
         maxWidth,
+        paddingHorizontal: 8,
     },
 
     callout: {

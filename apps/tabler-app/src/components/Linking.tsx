@@ -3,7 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Audit } from '../analytics/Audit';
 import { AuditEventName } from '../analytics/AuditEventName';
-import { parseMemberLink } from '../helper/linking/member';
+import { parseMemberLink } from '../helper/linking/parseMemberLink';
+import { parseLink } from '../helper/linking/parseLink';
 import { Categories, Logger } from '../helper/Logger';
 import { showProfile } from '../redux/actions/navigation';
 
@@ -19,11 +20,11 @@ type Props = {
 class LinkingBase extends React.Component<Props> {
 
     _handleOpenURL = (event) => {
-        const { path, queryParams } = Linking.parse(event.url);
+        const { path, queryParams } = parseLink(event.url);
         logger.debug('path', path, 'params', queryParams);
 
         Audit.trackEvent(AuditEventName.Linking, {
-            Url: path,
+            Url: path || '',
         });
 
         const memberLink = parseMemberLink(path, queryParams);

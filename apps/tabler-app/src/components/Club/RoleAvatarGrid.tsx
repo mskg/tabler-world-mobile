@@ -29,7 +29,7 @@ export class RoleAvatarGrid extends React.Component<Props, State> {
         const nbr = this.props.items;
         const margin = 16;
         const size = (
-            Dimensions.get('screen').width
+            Dimensions.get('window').width
             - 16 * 2 // padding screen
             - margin * (nbr + 1)  // padding items
         ) / nbr; // needs to be squared

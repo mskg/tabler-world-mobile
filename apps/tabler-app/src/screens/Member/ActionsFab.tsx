@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Action, FABGroup } from '../../components/FABGroup';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
-import { getParameterValue } from '../../helper/parameters/getParameter';
+import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
@@ -17,6 +17,7 @@ import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
+import { startConversation } from '../../redux/actions/navigation';
 
 type Props = {
     top?: number,
@@ -25,7 +26,9 @@ type Props = {
     theme: Theme,
 
     toggleFavorite: typeof toggleFavorite,
+    startConversation: typeof startConversation,
     favorites: HashMap<boolean>,
+    chatEnabled: boolean,
 };
 
 const testIsFavorite = (tabler: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
@@ -46,8 +49,15 @@ class ActionsFabBase extends React.Component<Props> {
         const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
 
         OpenLink.url(
-            urls.profile.replace('#id#', member.id.toString()),
+            urls.profile
+                .replace('#id#', member.id.toString())
+                .replace('#lang#', I18N.id),
         );
+    }
+
+    _chat = async () => {
+        const { member } = this.props;
+        this.props.startConversation(member.id, `${member.firstname} ${member.lastname}`);
     }
 
     _contact = async () => {
@@ -64,13 +74,14 @@ class ActionsFabBase extends React.Component<Props> {
                     shouldShowLinkedContacts: true,
                     allowsEditing: true,
                     allowsActions: true,
-                }
+                },
             );
         }
     }
 
     render() {
         const isFav = testIsFavorite(this.props.member, this.props.favorites);
+        const canChat = this.props.member.availableForChat;
 
         return (
             // <Portal>
@@ -90,6 +101,14 @@ class ActionsFabBase extends React.Component<Props> {
                         color: isFav ? this.props.theme.colors.accent : undefined,
                     },
 
+                    isFeatureEnabled(Features.Chat) && canChat && this.props.chatEnabled
+                        ? {
+                            icon: 'chat',
+                            label: I18N.Member.Actions.chat,
+                            onPress: this._chat,
+                        }
+                        : undefined,
+
                     isFeatureEnabled(Features.SendToAdressbook)
                         ? {
                             icon: 'contacts',
@@ -105,6 +124,7 @@ class ActionsFabBase extends React.Component<Props> {
                             onPress: this._handleWeb,
                         }
                         : undefined,
+                    ,
                 ].filter(Boolean) as Action[]}
                 onStateChange={({ open }) => this.setState({ open })}
             />
@@ -114,8 +134,9 @@ class ActionsFabBase extends React.Component<Props> {
 }
 
 export const ActionsFab = connect(
-    (state: IAppState) => ({ favorites: state.filter.member.favorites }),
+    (state: IAppState) => ({ favorites: state.filter.member.favorites, chatEnabled: state.settings.notificationsOneToOneChat == null ? true : state.settings.notificationsOneToOneChat }),
     {
         toggleFavorite,
+        startConversation,
     },
 )(withTheme(ActionsFabBase));
