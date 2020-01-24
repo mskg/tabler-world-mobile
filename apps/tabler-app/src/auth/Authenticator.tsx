@@ -7,7 +7,6 @@ import * as ExpoSentry from 'sentry-expo';
 import { Audit } from '../analytics/Audit';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { cachedAolloClient } from '../apollo/bootstrapApollo';
-import Loading from '../components/Loading';
 import Reloader from '../components/Reloader';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
@@ -15,7 +14,7 @@ import { Me } from '../model/graphql/Me';
 import { IAppState } from '../model/IAppState';
 import { GetMeQuery } from '../queries/Member/GetMeQuery';
 import { INITIAL_STATE } from '../redux/initialState';
-import { light as lightTheme } from '../theme/light';
+import { light } from '../theme/light';
 import ConfirmSignIn from './ConfirmSignIn';
 import SignIn from './SignIn';
 
@@ -109,18 +108,18 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
         if (!this.state.demoMode && this.props.authState === 'confirm') {
             return (
-                <PaperProvider theme={lightTheme}>
+                <PaperProvider theme={light}>
                     <Reloader />
                     <ConfirmSignIn />
-                    <Loading />
+                    {/* <Loading /> */}
                 </PaperProvider>
             );
         } if (!this.state.demoMode && this.props.authState === 'signin') {
             return (
-                <PaperProvider theme={lightTheme}>
+                <PaperProvider theme={light}>
                     <Reloader />
                     <SignIn />
-                    <Loading />
+                    {/* <Loading /> */}
                 </PaperProvider>
             );
         }

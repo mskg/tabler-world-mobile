@@ -4,8 +4,12 @@ import { Headline, Subheading } from 'react-native-paper';
 import Assets from '../Assets';
 import { styles } from './Styles';
 
-export const Background = ({ children }) => (
-    <ImageBackground source={Assets.images.background} resizeMode="cover" style={{ width: '100%', height: '100%' }}>
+export const Background = ({ children, color }) => (
+    <ImageBackground
+        source={Assets.images.background}
+        resizeMode="cover"
+        style={{ width: '100%', height: '100%', backgroundColor: color }}
+    >
         {children}
     </ImageBackground>
 );

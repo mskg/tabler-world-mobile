@@ -10,6 +10,7 @@ import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
+import { withLoader } from './components/Loader';
 import Loading from './components/Loading';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
@@ -26,7 +27,6 @@ import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
 import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
 import { registerFetchTask } from './tasks/registerFetchTask';
-import { registerForPushNotifications } from './tasks/registerForPushNotifications';
 import { registerLocationTask } from './tasks/registerLocationTask';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
@@ -70,7 +70,7 @@ const App = () => {
     dispatch(checkNetwork());
 
     return (
-        <React.Fragment>
+        <>
             <StandardStatusBar />
             <Reloader />
             <ActionSheetProvider>
@@ -80,8 +80,8 @@ const App = () => {
             <PushNotifications />
             <SubscribeToConversationUpdates />
             <Linking />
-            <Loading />
-        </React.Fragment>
+            {/* <Loading /> */}
+        </>
     );
 };
 
@@ -93,9 +93,13 @@ export default withAppearanceProvider(
             withStore(
                 withPaperProvider(
                     withSkakeErrorReport(
-                        withAuthenticator(
-                            withWhoopsErrorBoundary(
-                                App)),
+                        withLoader(
+                            withAuthenticator(
+                                withWhoopsErrorBoundary(
+                                    App,
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),

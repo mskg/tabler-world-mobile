@@ -32,7 +32,7 @@
         "splash": {
             "image": "./assets/images/splash.png",
             "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "backgroundColor": "#ffbf35"
         },
         "updates": {
             "enabled": true,
@@ -40,10 +40,11 @@
             "fallbackToCacheTimeout": 0
         },
         "assetBundlePatterns": [
-            "assets/**/icon.png",
-            "assets/**/logo.png",
+            "assets/**/logo_iOS.png",
+            "assets/**/logo_App_Logo.png",
             "assets/**/splash.png",
             "assets/**/background.png",
+            "assets/**/logo_mask.png",
             "assets/fonts/**/DejaVuSansCondensed.ttf",
             "assets/fonts/**/DejaVuSansCondensed-Bold.ttf",
             "assets/fonts/**/DejaVuSans-ExtraLight.ttf",

@@ -134,7 +134,7 @@ class SignInBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <Background>
+            <Background color={'white'}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="padding" >
