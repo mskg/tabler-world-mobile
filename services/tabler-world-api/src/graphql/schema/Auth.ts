@@ -8,5 +8,6 @@ export const Auth = gql`
 
     enum UserRole {
         jobs
+        developer
     }
 `;

@@ -54,11 +54,11 @@ class LoadingAnimation extends React.Component<Props, State> {
                 {
                     scale: this.state.loadingProgress.interpolate({
                         inputRange: [0, 10, 100],
-                        outputRange: [1, 0.8, 300],
+                        outputRange: [1, 0.8, 4 * styles.maskImageStyle.width],
                     }),
                 },
             ],
-        };
+        };w
 
         const appScale = {
             transform: [
