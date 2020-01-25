@@ -83,6 +83,7 @@ export enum SettingName {
 }
 
 export enum UserRole {
+  developer = "developer",
   jobs = "jobs",
 }
 

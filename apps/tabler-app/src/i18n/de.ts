@@ -470,6 +470,12 @@ const de: I18NType = {
                 field: 'Für den eigenen Club und Favoriten',
             },
 
+            push: {
+                title: 'Push Benachrichtigungen',
+                action: 'Gerät erneut für Push Benachrichtigungen registrieren',
+                permissions: 'Die App kann keine Benachrichtigungen anzeigen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
+            },
+
             onetoone: {
                 title: 'Unterhaltungen',
                 text: 'Wenn Du diese Benachrichtigungsfunktion deaktivierst, dann kannst Du die Chatfunktion nicht nutzen.',

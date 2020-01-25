@@ -520,6 +520,12 @@ const en = {
         Settings: {
             title: 'Notifications',
 
+            push: {
+                title: 'Push Notifications',
+                action: 'Re-register for push notifications',
+                permissions: 'Cannot show notifications. Please grant permission through the phone\'s settings area.',
+            },
+
             birthday: {
                 title: 'Birthday Reminders',
                 field: 'For own club members and favorites',

@@ -18,10 +18,14 @@ import { ScreenWithHeader } from '../../../components/Screen';
 import { isDemoModeEnabled } from '../../../helper/demoMode';
 import { LinkingHelper } from '../../../helper/LinkingHelper';
 import { Categories, Logger } from '../../../helper/Logger';
+import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/PRESERVE_CONSOLE';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
+import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
+import { UserRole } from '../../../model/graphql/globalTypes';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
@@ -42,6 +46,7 @@ type State = {
     showExperiments: boolean,
     demoMode: boolean,
     token?: string | null,
+    isDeveloper: boolean,
 };
 
 type OwnProps = {
@@ -69,6 +74,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         emailOptions: [{ label: '', value: '' }],
         showExperiments: false,
         demoMode: false,
+        isDeveloper: false,
     };
 
     constructor(props) {
@@ -86,6 +92,18 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.setState({
             token: await AsyncStorage.getItem(TOKEN_KEY),
         });
+
+        try {
+            const client = cachedAolloClient();
+            const roles = await client.query<GetMyRoles>({
+                query: GetMyRolesQuery,
+                fetchPolicy: 'cache-first',
+            });
+
+            if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.developer)) {
+                this.setState({ isDeveloper: true });
+            }
+        } catch { }
     }
 
     _clearSyncFlags = () => {
@@ -320,17 +338,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 text={Constants.manifest.releaseChannel || 'dev'} />
                             <Divider />
 
-                            {isFeatureEnabled(Features.InternalInformation) && (
-                                <>
-                                    <Element
-                                        theme={this.props.theme}
-                                        field={I18N.Settings.fields.pushtoken}
-                                        text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
-                                    />
-                                    <Divider />
-                                </>
-                            )}
-
                             <NextScreen
                                 theme={this.props.theme}
                                 text={I18N.Settings.ReleaseNotes}
@@ -559,6 +566,35 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 <Divider />
                             </List.Section>
                         }
+
+                        {(isFeatureEnabled(Features.InternalInformation) || this.state.isDeveloper) && (
+                            <List.Section title={'Development'}>
+                                <Element
+                                    theme={this.props.theme}
+                                    field={I18N.Settings.fields.pushtoken}
+                                    text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
+                                />
+                                <Divider />
+
+                                {PRESERVE_CONSOLE && (
+                                    <>
+                                        <Element
+                                            theme={this.props.theme}
+                                            field={'Console Log'}
+                                            text={PRESERVE_CONSOLE.toString()}
+                                        />
+                                        <Divider />
+                                    </>
+                                )}
+
+                                {!PRESERVE_CONSOLE && (
+                                    <>
+                                        <Action theme={this.props.theme} text={'Enable Console Log'} onPress={() => enableConsole()} />
+                                        <Divider />
+                                    </>
+                                )}
+                            </List.Section>
+                        )}
 
                         <List.Section title={I18N.Settings.sections.reset}>
                             <Divider />

@@ -62,3 +62,10 @@ where id in (
 and
     o.removed = true
 
+
+
+select count(*)
+from structure_clubs
+
+
+where point is null
