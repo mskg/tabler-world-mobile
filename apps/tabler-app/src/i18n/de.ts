@@ -533,11 +533,13 @@ const de: I18NType = {
             title: 'Mitglieder in der Nähe',
             on: {
                 title: 'Mitglieder in der Nähe',
-                text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
+                text: 'Wenn Du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt Du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
                 field: 'Teile Deinen Standort',
             },
             map: {
                 field: 'Erlaube Deinen Standort auf der Karte zu sehen',
+                title: 'Kartendarstellung',
+                text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen wo Du dich genau befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
             },
             filter: {
                 title: 'Filter',

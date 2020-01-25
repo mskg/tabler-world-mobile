@@ -592,6 +592,8 @@ const en = {
                 field: 'Share Your Location',
             },
             map: {
+                title: 'Map Display',
+                text: 'If you turn it on, other members can see exactly where you are. We don\'t store your location history, only your last known location.',
                 field: 'Allow Others to View Your Position on a Map',
             },
             filter: {
