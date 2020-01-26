@@ -60,6 +60,13 @@ select
 	,data->>'rt_association_name' as associationname
     ,make_short_reference('assoc', data->>'rt_association_subdomain') as associationshortname
 	,(
+       select url
+       from assets
+       where
+            type = 'flag'
+        and assets.id = data->>'rt_association_subdomain'
+    ) as associationflag
+	,(
 		select value
 		from jsonb_array_elements(data->'address') t
 		where t.value @> '{"address_type": 6}'

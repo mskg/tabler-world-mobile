@@ -202,6 +202,13 @@ select
      end as logo
     ,make_short_reference('assoc', id) as shortname
    ,(
+       select url
+       from assets
+       where
+            type = 'flag'
+        and assets.id = associations.id
+   ) as flag
+   ,(
         select to_jsonb(array_to_json(array_agg(r)))
         from
         (

@@ -10,6 +10,7 @@ export interface AreaSearchFragment_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface AreaSearchFragment {

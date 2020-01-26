@@ -64,8 +64,10 @@ and
 
 
 
-select count(*)
-from structure_clubs
+select id, flag, name
+from structure_associations
 
+
+select * from assets
 
 where point is null

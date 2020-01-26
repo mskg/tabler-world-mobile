@@ -593,7 +593,7 @@ const en = {
             },
             map: {
                 title: 'Map Display',
-                text: 'If you turn it on, other members can see exactly where you are. We don\'t store your location history, only your last known location.',
+                text: 'If you turn this on additionaly, other members can see exactly where you are.',
                 field: 'Allow Others to View Your Position on a Map',
             },
             filter: {

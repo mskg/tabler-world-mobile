@@ -25,6 +25,7 @@ export interface MemberOverviewFragment_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface MemberOverviewFragment_roles_ref {

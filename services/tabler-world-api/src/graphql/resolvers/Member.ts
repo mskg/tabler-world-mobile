@@ -57,6 +57,7 @@ export const MemberResolver = {
                 name: root.associationname,
                 id: root.association,
                 shortname: root.associationshortname,
+                flag: root.associationflag,
             };
         },
     },

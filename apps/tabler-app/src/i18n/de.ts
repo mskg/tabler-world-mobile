@@ -539,7 +539,7 @@ const de: I18NType = {
             map: {
                 field: 'Erlaube Deinen Standort auf der Karte zu sehen',
                 title: 'Kartendarstellung',
-                text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen wo Du dich genau befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
+                text: 'Wenn du diese Funktion zusätzlich einschaltest, dann können andere Mitglieder sehen wo Du dich genau befindest.',
             },
             filter: {
                 title: 'Filter',
