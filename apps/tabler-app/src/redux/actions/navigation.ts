@@ -153,7 +153,7 @@ export const showArea = (id: string) => NavigationActions.navigate({
         params: {
             id,
         },
-    }
+    },
 });
 
 export const showStructureSearch = () => NavigationActions.navigate({
