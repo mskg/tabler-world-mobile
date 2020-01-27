@@ -3,9 +3,17 @@ import { ITEM_HEIGHT } from './Dimensions';
 
 // tslint:disable-next-line: export-name
 export const styles = StyleSheet.create({
+    flag: {
+        marginRight: 4,
+        marginTop: 2,
+
+        width: 10 / 3 * 4,
+        height: 10,
+    },
+
     cardTitle: {
         height: ITEM_HEIGHT - (Platform.OS == 'ios' ? 0 : 8),
-    // width: ITEM_WIDTH
+        // width: ITEM_WIDTH
     },
 
     chipContainer: {
@@ -41,7 +49,7 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         lineHeight: 14,
         minHeight: Platform.OS == 'ios' ? 13 : undefined,
-    // height: Platform.OS == "ios" ? undefined : 23,
+        // height: Platform.OS == "ios" ? undefined : 23,
     },
 
     title: {

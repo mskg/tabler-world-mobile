@@ -47,7 +47,7 @@ class RolesBase extends React.PureComponent<Props> {
         return (
             <View style={styles.chipContainer}>
                 {(
-                    _(this.props.roles || []).orderBy(r => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
+                    _(this.props.roles || []).orderBy((r) => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
                         <Chip
                             style={[styles.chip, { backgroundColor: this.getColor(r) }]}
                             key={i}
@@ -65,4 +65,5 @@ class RolesBase extends React.PureComponent<Props> {
 export const Roles = connect(undefined, {
     showClub,
     showAssociation,
+    showArea,
 })(withTheme(RolesBase));

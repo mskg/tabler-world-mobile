@@ -25,6 +25,7 @@ export interface Member_Member_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface Member_Member_roles_ref {

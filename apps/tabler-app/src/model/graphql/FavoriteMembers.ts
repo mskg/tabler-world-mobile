@@ -25,6 +25,7 @@ export interface FavoriteMembers_FavoriteMembers_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface FavoriteMembers_FavoriteMembers_roles_ref {

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Card } from 'react-native-paper';
 import AvatarText from '../../components/Club/ClubTextAvatar';
 import { styles } from './Styles';
-import { Card } from 'react-native-paper';
 
 // tslint:disable-next-line: function-name
 export function CardTitle({ avatar, title, subtitle }: { avatar: any, title: string, subtitle?: any }) {
@@ -18,13 +18,15 @@ export function CardTitle({ avatar, title, subtitle }: { avatar: any, title: str
             }}
 
             left={
-                (props) => (
-                    <AvatarText
-                        {...props}
-                        size={50}
-                        label={avatar}
-                    />
-                )
+                typeof (avatar) !== 'object'
+                    ? (props) => (
+                        <AvatarText
+                            {...props}
+                            size={50}
+                            label={avatar}
+                        />
+                    )
+                    : () => avatar
             }
         />
     );

@@ -520,6 +520,12 @@ const en = {
         Settings: {
             title: 'Notifications',
 
+            push: {
+                title: 'Push Notifications',
+                action: 'Re-register for push notifications',
+                permissions: 'Cannot show notifications. Please grant permission through the phone\'s settings area.',
+            },
+
             birthday: {
                 title: 'Birthday Reminders',
                 field: 'For own club members and favorites',
@@ -586,6 +592,8 @@ const en = {
                 field: 'Share Your Location',
             },
             map: {
+                title: 'Map Display',
+                text: 'If you turn this on additionaly, other members can see exactly where you are.',
                 field: 'Allow Others to View Your Position on a Map',
             },
             filter: {

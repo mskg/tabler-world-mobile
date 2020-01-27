@@ -17,7 +17,7 @@ export enum FieldNames {
 export const system_fields = [
     'id',
     'area', 'areaname', 'areashortname',
-    'association', 'associationname', 'associationshortname',
+    'association', 'associationname', 'associationshortname', 'associationflag',
     'club', 'clubnumber', 'clubname', 'clubshortname',
     'roles', 'modifiedon',
 ];

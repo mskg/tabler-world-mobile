@@ -62,3 +62,12 @@ where id in (
 and
     o.removed = true
 
+
+
+select id, flag, name
+from structure_associations
+
+
+select * from assets
+
+where point is null

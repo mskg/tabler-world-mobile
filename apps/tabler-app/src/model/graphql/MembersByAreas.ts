@@ -56,6 +56,7 @@ export interface MembersByAreas_MembersOverview_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface MembersByAreas_MembersOverview_roles_ref {

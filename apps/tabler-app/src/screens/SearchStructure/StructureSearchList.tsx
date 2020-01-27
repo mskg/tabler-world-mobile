@@ -1,6 +1,5 @@
 import React from 'react';
 import { FlatList, Platform, View } from 'react-native';
-import Flag from 'react-native-flags';
 import { Caption, Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { renderDivider } from '../../components/ListRenderer';
@@ -9,6 +8,7 @@ import { I18N } from '../../i18n/translation';
 import { SearchDirectory_SearchDirectory_nodes } from '../../model/graphql/SearchDirectory';
 import { IWhoAmI } from '../../model/IWhoAmI';
 import { CardTitle } from '../Structure/CardTitle';
+import { FlagAvatar as FlagAvatarBase } from '../../components/FlagAvatar';
 
 type OwnProps = {
     theme: Theme,
@@ -33,14 +33,13 @@ type DispatchPros = {
 
 type Props = OwnProps & DispatchPros & NavigationInjectedProps;
 
-const Embedded = ({ name, flag, ...props }) => {
+const FlagAvatar = ({ flag, name }) => {
     return (
-        <View style={{ flexDirection: 'row' }}>
-            <Flag code={flag.toUpperCase()} size={16} style={{ marginRight: 4, marginTop: -1 }} />
-            <Caption {...props}>
-                {name}
-            </Caption>
-        </View>
+        <FlagAvatarBase
+            source={flag}
+            size={38}
+            label={name.toUpperCase()}
+        />
     );
 };
 
@@ -82,14 +81,7 @@ export class StructureSearchListBase extends React.Component<Props> {
                                 subtitle={
                                     `${item.area.name}, ${item.association.name}`
                                 }
-                                avatar={(
-                                    <View style={{ paddingTop: 4 }}>
-                                        <Flag
-                                            code={item.association.id.toUpperCase()}
-                                            size={32}
-                                        />
-                                    </View>
-                                )}
+                                avatar={<FlagAvatar name={item.association.id} flag={item.association.flag} />}
                             />
                         </TouchableRipple>
                     </View>
@@ -117,14 +109,7 @@ export class StructureSearchListBase extends React.Component<Props> {
                             <CardTitle
                                 title={item.name}
                                 subtitle={`${item.association.name}`}
-                                avatar={(
-                                    <View style={{ paddingTop: 4 }}>
-                                        <Flag
-                                            code={item.association.id.toUpperCase()}
-                                            size={32}
-                                        />
-                                    </View>
-                                )}
+                                avatar={<FlagAvatar name={item.association.id} flag={item.association.flag} />}
                             />
                         </TouchableRipple>
                     </View>
@@ -151,14 +136,7 @@ export class StructureSearchListBase extends React.Component<Props> {
                         >
                             <CardTitle
                                 title={item.name}
-                                avatar={(
-                                    <View style={{ paddingTop: 4 }}>
-                                        <Flag
-                                            code={item.id.toUpperCase()}
-                                            size={32}
-                                        />
-                                    </View>
-                                )}
+                                avatar={<FlagAvatar name={item.id} flag={item.flag} />}
                             />
                         </TouchableRipple>
                     </View>

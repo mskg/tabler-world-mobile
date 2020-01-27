@@ -25,6 +25,7 @@ export interface SearchMember_SearchMember_nodes_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface SearchMember_SearchMember_nodes_roles_ref {

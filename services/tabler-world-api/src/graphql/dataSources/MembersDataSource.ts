@@ -18,6 +18,7 @@ export const DefaultMemberColumns = [
     'association',
     'associationshortname',
     'associationname',
+    'associationflag',
 
     'area',
     'areaname',
@@ -90,9 +91,18 @@ where id = $1`,
 
                 if (favorites == null || favorites.length === 0) { return []; }
 
-                return this.memberLoader.loadMany(
+                const result = await this.memberLoader.loadMany(
                     favorites.filter((f) => typeof (f) === 'number' && !isNaN(f)),
                 );
+
+                return result.map((member: any) => {
+                    if (member == null) { return member; }
+
+                    return filter(
+                        this.context.principal,
+                        member,
+                    );
+                });
             },
         );
     }
@@ -100,6 +110,7 @@ where id = $1`,
     public async readAreas(areas: string[]): Promise<any[] | null> {
         this.context.logger.log('readAll');
 
+        // only overview columns here, no need to filter
         const results = await Promise.all(areas.map((a) =>
             writeThrough(
                 this.context,
@@ -132,6 +143,7 @@ where
     public async readAll(association: string): Promise<any[] | null> {
         this.context.logger.log('readAll');
 
+        // only overview columns here, no need to filter
         return await writeThrough(
             this.context,
             makeCacheKey('Members', [this.context.principal.association, 'all']),

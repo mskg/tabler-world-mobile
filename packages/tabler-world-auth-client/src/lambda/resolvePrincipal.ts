@@ -18,7 +18,7 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
         const user = (process.env.API_DEBUG_USER || '').replace(/'/g, '"');
         resolvedPrincipal = JSON.parse(user) as IPrincipal;
     } else {
-        const { area, club, association, id, email } = authorizer;
+        const { version, area, club, association, id, email, family } = authorizer;
 
         // tslint:disable: triple-equals
         if (area == null || area == '') { throw new AuthenticationError('Authorizer missing (area)'); }
@@ -27,7 +27,13 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
         if (id == null || id == '') { throw new AuthenticationError('Authorizer missing (id)'); }
         if (email == null || email == '') { throw new AuthenticationError('Authorizer missing (email)'); }
 
+        if (version === '1.2') {
+            if (family == null || family == '') { throw new AuthenticationError('Authorizer missing (family)'); }
+        }
+
         resolvedPrincipal = {
+            version,
+            family,
             email,
             association,
             area,
@@ -42,11 +48,23 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
         || typeof (resolvedPrincipal.area) != 'string'
         || typeof (resolvedPrincipal.club) != 'string'
         || typeof (resolvedPrincipal.id) != 'number'
+        || typeof (resolvedPrincipal.id) != 'number'
         || resolvedPrincipal.id <= 0
         || resolvedPrincipal.area === ''
         || resolvedPrincipal.club === '') {
         throw new AuthenticationError('Context not complete');
     }
+
+    // 1.2 checks
+    if (resolvedPrincipal.version != null) {
+        if (
+            resolvedPrincipal.version !== '1.2'
+            || resolvedPrincipal.family !== 'rti'
+        ) {
+            throw new AuthenticationError('Context not complete');
+        }
+    }
+
 
     return resolvedPrincipal;
 }

@@ -1,4 +1,5 @@
 import * as Sentry from 'sentry-expo';
+import { PRESERVE_CONSOLE } from './PRESERVE_CONSOLE';
 
 // tslint:disable: max-classes-per-file prefer-template
 
@@ -80,8 +81,6 @@ export class Categories {
 
 let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
-const PRESERVE_CONSOLE = false;
-
 // safety
 if (!__DEV__) {
     FILTER = undefined;
@@ -117,7 +116,9 @@ export class Logger {
                 category: this.category,
                 level: Sentry.Severity.Debug,
             });
-        } else {
+        }
+
+        if (__DEV__ || PRESERVE_CONSOLE) {
             // tslint:disable-next-line: no-console
             console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
         }
@@ -142,7 +143,9 @@ export class Logger {
                 category: this.category,
                 level: Sentry.Severity.Info,
             });
-        } else {
+        }
+
+        if (__DEV__ || PRESERVE_CONSOLE) {
             // tslint:disable-next-line: no-console
             console.info(`[INFO ] [${this.category.padEnd(MAX)}]`, ...args);
         }
@@ -157,8 +160,9 @@ export class Logger {
 
                 Sentry.captureException(error);
             });
+        }
 
-        } else {
+        if (__DEV__ || PRESERVE_CONSOLE) {
             // tslint:disable-next-line: no-console
             console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
         }

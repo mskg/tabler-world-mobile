@@ -12,4 +12,5 @@ export interface AssociationSearchFragment {
   id: string;
   logo: string | null;
   shortname: string;
+  flag: string | null;
 }

@@ -1,5 +1,6 @@
+import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -11,12 +12,15 @@ import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
+import { registerForPushNotifications } from '../../../tasks/registerForPushNotifications';
+import { Action } from './Action';
 import { Element } from './Element';
 import { styles } from './Styles';
-import { isFeatureEnabled, Features } from '../../../model/Features';
+
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -87,6 +91,16 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
         });
     }
 
+    _registerPushNotifications = async () => {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+        if (status !== 'granted') {
+            Alert.alert(I18N.Notifications.Settings.push.permissions);
+        } else {
+            await registerForPushNotifications(true);
+        }
+    }
+
     render() {
         return (
             <>
@@ -128,6 +142,11 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
                                 <Divider />
                             </List.Section>
                         )}
+
+                        <List.Section title={I18N.Notifications.Settings.push.title}>
+                            <Divider />
+                            <Action theme={this.props.theme} text={I18N.Notifications.Settings.push.action} onPress={this._registerPushNotifications} />
+                        </List.Section>
 
                         <View style={{ height: 50 }} />
                     </ScrollView>

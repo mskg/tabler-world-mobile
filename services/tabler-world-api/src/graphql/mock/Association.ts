@@ -19,6 +19,16 @@ export const Association = () => {
             }
         },
         logo: () => faker.random.image(),
+        flag: () => {
+            switch (country) {
+                case 'fr':
+                    return 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/fr.png';
+                case 'us':
+                    return 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/us.png';
+                default:
+                    return 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/de.png';
+            }
+        },
 
         board: () => new MockList(5),
         boardassistants: () => new MockList(3),

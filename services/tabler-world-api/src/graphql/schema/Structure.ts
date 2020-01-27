@@ -12,6 +12,7 @@ export const Structure = gql`
     type Association {
         id: ID!
         logo: String
+        flag: String
 
         name: String!
         shortname: String!

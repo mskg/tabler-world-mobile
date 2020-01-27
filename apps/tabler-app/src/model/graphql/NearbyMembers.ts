@@ -25,6 +25,7 @@ export interface NearbyMembers_nearbyMembers_member_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface NearbyMembers_nearbyMembers_member_roles_ref {

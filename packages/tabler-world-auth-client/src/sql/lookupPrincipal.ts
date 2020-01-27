@@ -18,6 +18,10 @@ export async function lookupPrincipal(client: IDataService, email: string): Prom
 
     const { id, club, area, association } = res.rows[0];
     return {
+        // hardcoded for now
+        version: '1.2',
+        family: 'rti',
+
         id,
         club,
         area,

@@ -1605,6 +1605,11 @@ acorn@^6.0.1, acorn@^6.2.1:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/acorn/-/acorn-6.4.0.tgz#b659d2ffbafa24baf5db1cdbb2c94a983ecd2784"
   integrity sha1-tlnS/7r6JLr12xzbsslKmD7NJ4Q=
 
+agent-base@5:
+  version "5.1.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/agent-base/-/agent-base-5.1.1.tgz#e8fb3f242959db44d63be665db7a8e739537a32c"
+  integrity sha1-6Ps/JClZ20TWO+Zl23qOc5U3oyw=
+
 agent-base@^4.3.0:
   version "4.3.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/agent-base/-/agent-base-4.3.0.tgz#8165f01c436009bccad0b1d122f05ed770efc6ee"
@@ -3688,17 +3693,17 @@ debug@3.1.0, debug@~3.1.0:
   dependencies:
     ms "2.0.0"
 
+debug@4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
+  version "4.1.1"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
+  integrity sha1-O3ImAlUQnGtYnO4FDx1RYTlmR5E=
+  dependencies:
+    ms "^2.1.1"
+
 debug@^3.1.0:
   version "3.2.6"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha1-6D0X3hbYp++3cX7b5fsQE17uYps=
-  dependencies:
-    ms "^2.1.1"
-
-debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
-  version "4.1.1"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
-  integrity sha1-O3ImAlUQnGtYnO4FDx1RYTlmR5E=
   dependencies:
     ms "^2.1.1"
 
@@ -5441,13 +5446,6 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoist-non-react-statics@^3.3.0:
-  version "3.3.2"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
-  integrity sha1-7OCsr3HWLClpwuxZ/v9CpLGoW0U=
-  dependencies:
-    react-is "^16.7.0"
-
 homedir-polyfill@^1.0.1:
   version "1.0.3"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/homedir-polyfill/-/homedir-polyfill-1.0.3.tgz#743298cef4e5af3e194161fbadcc2151d3a058e8"
@@ -5523,6 +5521,14 @@ https-proxy-agent@^3.0.0, https-proxy-agent@^3.0.1:
   dependencies:
     agent-base "^4.3.0"
     debug "^3.1.0"
+
+https-proxy-agent@^4.0.0:
+  version "4.0.0"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/https-proxy-agent/-/https-proxy-agent-4.0.0.tgz#702b71fb5520a132a66de1f67541d9e62154d82b"
+  integrity sha1-cCtx+1UgoTKmbeH2dUHZ5iFU2Cs=
+  dependencies:
+    agent-base "5"
+    debug "4"
 
 https@^1.0.0:
   version "1.0.0"
@@ -8750,7 +8756,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-is@^16.7.0, react-is@^16.8.4:
+react-is@^16.8.4:
   version "16.12.0"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha1-LMD+D7p0LZf9UnxCoTvsTusGJBw=
