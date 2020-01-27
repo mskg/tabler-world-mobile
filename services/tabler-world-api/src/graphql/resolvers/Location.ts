@@ -79,17 +79,15 @@ WHERE
     )
 
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
-    and association = $3
     ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
-    ${args.query && args.query.excludeOwnTable ? 'and club <> $4' : ''}
+    ${args.query && args.query.excludeOwnTable ? 'and club <> $3' : ''}
 ORDER BY
     locations.point <-> $1::geography
 LIMIT 20
 `,
-                                                      [
+                        [
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             context.principal.id,
-                            context.principal.association,
                             args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
                         ].filter(Boolean));
 
@@ -120,7 +118,7 @@ where
 order by lastseen desc
 LIMIT 10
 `,
-                                                      [
+                        [
                             context.principal.id,
                         ]);
 
@@ -148,7 +146,7 @@ DO UPDATE
         lastseen = excluded.lastseen,
         speed = excluded.speed
 `,
-                                       [
+                        [
                             context.principal.id,
                             `POINT(${args.location.longitude} ${args.location.latitude})`,
                             args.location.accuracy,
@@ -172,7 +170,7 @@ UPDATE userlocations
 SET address = $2
 WHERE id = $1 and address is null
 `,
-                                           [
+                            [
                                 update.member,
                                 JSON.stringify(update.address),
                             ]);
@@ -191,7 +189,7 @@ WHERE id = $1 and address is null
 delete from userlocations
 WHERE id = $1
                         `,
-                                       [context.principal.id]);
+                        [context.principal.id]);
 
                     return true;
                 },
