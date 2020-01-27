@@ -114,7 +114,7 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
             // telemetry
             await writeJobLog(client, jobName, true, {
                 records: totalRecords,
-                modified: totalProcessedRecords,
+                modified: allModifications.length,
 
                 readTime: totalTime,
                 refreshTime,
