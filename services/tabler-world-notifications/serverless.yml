@@ -136,9 +136,10 @@ functions:
   birthdays:
     handler: src/birthdays.handler
     timeout: 600
+    tracing: Active
 
     environment:
-      XRAY_DISABLED: true
+      XRAY_DISABLED: false
 
     events:
       - schedule:
@@ -157,6 +158,7 @@ functions:
     timeout: 60
     memorySize: 128
     reservedConcurrency: 1
+    tracing: Active
 
     events:
       - sqs:
@@ -170,9 +172,10 @@ functions:
   check:
     handler: src/check.handler
     timeout: 600
+    tracing: Active
 
     environment:
-      XRAY_DISABLED: true
+      XRAY_DISABLED: false
 
     events:
       # - http:

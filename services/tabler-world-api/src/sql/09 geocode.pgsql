@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS geocodes
     hash text not null,
     query text,
     result jsonb,
+    provider text,
+    method text,
     point geography,
     modifiedon timestamptz(0),
     CONSTRAINT geocodes_pkey PRIMARY KEY (hash)
@@ -17,6 +19,45 @@ CREATE TABLE IF NOT EXISTS geocodes
 WITH (
     OIDS = FALSE
 );
+
+ALTER TABLE geocodes ADD COLUMN IF NOT EXISTS method text;
+ALTER TABLE geocodes ADD COLUMN IF NOT EXISTS provider text;
+
+------------------------------
+-- Incremental Geocoding
+------------------------------
+
+drop view if exists geocodes_alladresses cascade;
+
+CREATE or replace view geocodes_alladresses as
+
+    select address
+    from profiles
+    where address is not null
+    and length(address::text) > length('{"id":2380270,"address_type":5}')
+
+union ALL
+
+    select c->'address'
+    from
+    (
+        select jsonb_array_elements(companies) as c
+        from  profiles
+    ) companies
+    where length(c->>'address') > 2
+
+union all
+
+    select meetingplace1
+    from structure_clubs
+    where meetingplace1 is not null
+
+union all
+
+    select meetingplace2
+    from structure_clubs
+    where meetingplace2 is not null
+;
 
 ------------------------------
 -- Current user location

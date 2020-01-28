@@ -2,8 +2,10 @@ export enum FieldNames {
     Id = 'id',
     Club = 'club',
     Area = 'area',
+    Family = 'family',
     Association = 'association',
     PrivacySettings = 'privacysettings',
+    AllFamiliesOptIn = 'allfamiliesoptin',
     Phonenumbers = 'phonenumbers',
     Emails = 'emails',
     BirthDate = 'birthdate',
@@ -16,6 +18,7 @@ export enum FieldNames {
 // tslint:disable-next-line: variable-name
 export const system_fields = [
     'id',
+    'family',
     'area', 'areaname', 'areashortname',
     'association', 'associationname', 'associationshortname', 'associationflag',
     'club', 'clubnumber', 'clubname', 'clubshortname',

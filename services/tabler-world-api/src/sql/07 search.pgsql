@@ -56,6 +56,8 @@ ON structure_search USING btree (type, id);
 -- INDEXES
 ------------------------------
 
+-- removed not included as this doesn't help
+
 DROP INDEX if EXISTS profiles_search_text;
 CREATE INDEX profiles_search_text ON profiles USING gin (
     cursor_lastfirst,

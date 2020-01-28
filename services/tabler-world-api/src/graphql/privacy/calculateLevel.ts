@@ -8,19 +8,26 @@ export function calculateLevel(ctx: IPrincipal, tabler: AnyType): FilterLevel {
         return FilterLevel.SamePerson;
     }
 
-    if (tabler[FieldNames.Association] === ctx.association
+    if (tabler[FieldNames.Family] === ctx.family
+        && tabler[FieldNames.Association] === ctx.association
         && tabler[FieldNames.Area] === ctx.area
         && tabler[FieldNames.Club] === ctx.club) {
         return FilterLevel.SameClub;
     }
 
-    if (tabler[FieldNames.Association] === ctx.association
+    if (tabler[FieldNames.Family] === ctx.family
+        && tabler[FieldNames.Association] === ctx.association
         && tabler[FieldNames.Area] === ctx.area) {
         return FilterLevel.SameArea;
     }
 
-    if (tabler[FieldNames.Association] === ctx.association) {
+    if (tabler[FieldNames.Family] === ctx.family
+        && tabler[FieldNames.Association] === ctx.association) {
         return FilterLevel.SameAssociation;
+    }
+
+    if (tabler[FieldNames.Family] === ctx.family) {
+        return FilterLevel.SameFamily;
     }
 
     return FilterLevel.Public;

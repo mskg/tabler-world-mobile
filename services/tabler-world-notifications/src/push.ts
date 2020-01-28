@@ -47,12 +47,17 @@ export const handler: SQSHandler = async (event, context) => {
             console.log(pushMessages);
 
             const sendResult = await mgr.send(pushMessages);
-
-            await writeJobLog(client, 'push::send', true, {
+            console.log('push::send', {
                 errors: sendResult.errors,
                 hardFails: sendResult.hardFails,
                 recipients: event.Records.length,
             });
+
+            // await writeJobLog(client, 'push::send', true, {
+            //     errors: sendResult.errors,
+            //     hardFails: sendResult.hardFails,
+            //     recipients: event.Records.length,
+            // });
         });
     } catch (e) {
         try {

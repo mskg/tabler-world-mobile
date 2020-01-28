@@ -4,4 +4,5 @@ export enum FilterLevel {
     SameArea,
     SameClub,
     SameAssociation,
+    SameFamily,
 }

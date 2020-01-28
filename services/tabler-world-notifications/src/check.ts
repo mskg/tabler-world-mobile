@@ -119,4 +119,4 @@ export async function handler(_event: any, context: Context, _callback: (error: 
         console.error(e);
         throw e;
     }
-};
+}

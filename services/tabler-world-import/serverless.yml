@@ -21,7 +21,7 @@ custom:
 
   email: ${env:ALERT_EMAIL}
   cache_table: tabler-world-cache-${self:custom.stage}
-  cache_version: '1.3#v2'
+  cache_version: '1.3#v3'
   sqs: ${self:service}-cacheupdates-${self:custom.stage}
   sqs_geo: ${self:service}-geocode-${self:custom.stage}
 
@@ -149,6 +149,7 @@ functions:
   reader:
     handler: src/reader/lambda.handler
     timeout: 840
+    tracing: Active
 
     environment:
       sqs_queue:
@@ -165,7 +166,7 @@ functions:
             - ${self:custom.stage}
             - "-reader"
 
-      XRAY_DISABLED: true
+      XRAY_DISABLED: false
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -240,10 +241,11 @@ functions:
     timeout: 10
     memorySize: 128
     reservedConcurrency: 3
+    tracing: Active
 
     environment:
       cache_table: ${self:custom.cache_table}
-      XRAY_DISABLED: true
+      XRAY_DISABLED: false
       geocode_queue:
         Ref: EncodeAddressQueue
 
@@ -288,6 +290,7 @@ functions:
     timeout: 120 # batchSize 1, elements 10
     memorySize: 128
     reservedConcurrency: 1
+    tracing: Active
 
     environment:
       geo_agent: ${self:custom.geo_agent}
@@ -296,7 +299,7 @@ functions:
         Fn::GetAtt:
           - EncodeAddressQueue
           - Arn
-      XRAY_DISABLED: true
+      XRAY_DISABLED: false
 
     iamRoleStatementsInherit: true
     iamRoleStatements:

@@ -29,6 +29,9 @@ type MemberFilter = {
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const MemberResolver = {
+    // this is not correct but removes a lot of load
+    // we know which fields are selected from the client
+    // needs to be changed probably
     Member: {
         area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
@@ -58,6 +61,12 @@ export const MemberResolver = {
                 id: root.association,
                 shortname: root.associationshortname,
                 flag: root.associationflag,
+            };
+        },
+
+        family: (root: any, _args: {}, _context: IApolloContext) => {
+            return {
+                id: root.family,
             };
         },
     },

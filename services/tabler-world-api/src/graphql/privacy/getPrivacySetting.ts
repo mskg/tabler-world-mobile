@@ -1,4 +1,4 @@
-import { PRIVATE, PUBLIC } from './DBLevels';
+import { ALL, PRIVATE, PUBLIC } from './DBLevels';
 import { FieldNames } from './FieldNames';
 import { PrivacySetting } from './PrivacySetting';
 import { AnyType } from './WhiteList';
@@ -13,7 +13,7 @@ export function getPrivacySetting(tabler: AnyType, type: string) {
 
     let parsedSetting = settings;
 
-    if (typeof(parsedSetting) === 'string') {
+    if (typeof (parsedSetting) === 'string') {
         parsedSetting = JSON.parse(settings);
 
         // tslint:disable-next-line: no-string-literal
@@ -21,6 +21,11 @@ export function getPrivacySetting(tabler: AnyType, type: string) {
     }
 
     const setting = parsedSetting.find((f: PrivacySetting) => f.type.startsWith(type));
+
+    if (setting == null && tabler[FieldNames.AllFamiliesOptIn] === true) {
+        // we don't have set, means public
+        return ALL;
+    }
 
     if (setting == null) {
         // we don't have set, means public

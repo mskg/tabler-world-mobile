@@ -34,9 +34,12 @@ CREATE OR REPLACE FUNCTION get_profile_access(
         ,recordid integer
         ,recordclub text
         ,recordassoc text
+        ,recordfamily text
+        ,recordoptin boolean
         ,userid integer
         ,userclub text
         ,userassoc text
+        ,userfamily text
 )
   RETURNS boolean AS $$
 BEGIN
@@ -54,15 +57,15 @@ BEGIN
     end if;
 
     -- same famnily, we currently cannot check that
-    if level = 'public' then
+    if level = 'public' and (recordfamily = userfamily or recordoptin) then
         return true;
     end if;
 
-    if level = 'association' and recordassoc = userassoc then
+    if level = 'association' and recordassoc = userassoc and recordfamily = userfamily then
         return true;
     end if;
 
-    if level = 'club' and recordassoc = userassoc and recordclub = userclub then
+    if level = 'club' and recordassoc = userassoc and recordclub = userclub and recordfamily = userfamily then
         return true;
     end if;
 

@@ -1,73 +1,61 @@
 SET ROLE tw_read_dev;
 
+select count(*)
+from geocodes
+where point is not null
+;
+select count(*)
+from geocodes
+;
 
-UPDATE usersettings
-SET settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{nearbymembersMap}', '"true"');
-
-
-select distinct area
-from profiles
-where not exists (
-    select 1 from structure_areas
-    where id = profiles.area
-)
-
-select id, lastname, firstname, associationname
-from profiles
-where area is null
-and removed = false
+select *
+from geocodes
+where point is null
+;
 
 
-select * from
-profiles where id = 216330
+select * from structure_tabler_roles
+where refid is null
+and groupname <> 'Past Members'
 
 
-select lastname, firstname
-from tabler where id in
-(
+select * from tabler
+where id = 15277
 
-    select id
-from profiles
-where area is null or club is null
-or association is null
 
-and removed = false
-)
+truncate table groups;
+truncate table families;
+truncate table tabler;
+truncate table clubs;
+truncate table areas;
+truncate table associations;
 
-select * from
-jobhistory
+
+select count(*) from groups;
+select count(*) from families;
+select count(*) from associations;
+select count(*) from areas;
+select count(*) from clubs;
+select count(*) from tabler;
+
+
+select id, status, name, data
+from jobhistory
 order by runon desc
 
-where result is null
 
 
-select * from usersettings
-where id =14225
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
 
-select * from profiles where id = 128511
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings;
 
-select id
-from
-    profiles o
-where id in (
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_families;
 
-        select (data->>'member')::int as id
-        from
-        (
-            select json_array_elements(boardAssistants) as data
-            from
-                structure_associations
-        ) board
-)
-and
-    o.removed = true
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search;
 
 
-
-select id, flag, name
-from structure_associations
-
-
-select * from assets
-
-where point is null

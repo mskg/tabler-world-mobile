@@ -73,7 +73,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                                             <DataTable.Header>
                                                 <DataTable.Title style={{ width: 160, flex: 0 }}>Timestamp</DataTable.Title>
                                                 <DataTable.Title style={{ width: 240, flex: 0 }}>Name</DataTable.Title>
-                                                <DataTable.Title style={{ width: 60, flex: 0 }}>Success</DataTable.Title>
+                                                <DataTable.Title style={{ width: 60, flex: 0 }}>Status</DataTable.Title>
 
                                                 <DataTable.Title>Data</DataTable.Title>
                                             </DataTable.Header>
@@ -82,7 +82,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                                                 <DataTable.Row key={i.toString()}>
                                                     <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.runon).toLocaleString()}</DataTable.Cell>
                                                     <DataTable.Cell style={{ width: 240, flex: 0 }}>{l.name}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 60, flex: 0 }}>{l.success ? 'Yes' : 'No'}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 60, flex: 0 }}>{l.status}</DataTable.Cell>
 
                                                     <DataTable.Cell>{this.formatData(l.data)}</DataTable.Cell>
                                                 </DataTable.Row>))

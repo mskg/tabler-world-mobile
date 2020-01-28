@@ -1,6 +1,9 @@
 import { NavigationActions } from 'react-navigation';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { I18N } from '../../i18n/translation';
+import { AssociationName } from '../../model/graphql/AssociationName';
 import { HomeRoutes } from '../../navigation/Routes';
+import { GetAssociationNameQuery } from '../../queries/Structure/GetAssociationNameQuery';
 import { Routes as MoreRoutes } from '../../screens/More/Routes';
 import { Routes } from '../../screens/More/Settings/Routes';
 import { Routes as StructureRoutes } from '../../screens/Structure/Routes';
@@ -140,21 +143,43 @@ export const showAssociation = (id: string, name: string) => NavigationActions.n
     },
 });
 
-export const showArea = (id: string) => NavigationActions.navigate({
-    routeName: HomeRoutes.Structure,
-    key: `${HomeRoutes.Structure}:${id}`,
-    params: {
-        association: id.indexOf('_') > 0 ? id.substr(0, id.indexOf('_')) : id,
-        associationName: undefined,
-    },
-    action: {
-        type: 'Navigation/NAVIGATE',
-        routeName: StructureRoutes.Areas,
+export const showArea = (id: string) => {
+    let assoc = id;
+    let name: string | undefined;
+
+    if (id.indexOf('_') > 0) {
+        // prefix is always 4 charactes long
+        assoc = id.substr(0, id.indexOf('_', 4));
+
+        try {
+            const client = cachedAolloClient();
+            const result = client.readQuery<AssociationName>({
+                query: GetAssociationNameQuery,
+                variables: {
+                    id: assoc,
+                },
+            });
+
+            name = result?.Association?.name;
+        } catch { }
+    }
+
+    return NavigationActions.navigate({
+        routeName: HomeRoutes.Structure,
+        key: `${HomeRoutes.Structure}:${id}`,
         params: {
-            id,
+            association: assoc,
+            associationName: name,
         },
-    },
-});
+        action: {
+            type: 'Navigation/NAVIGATE',
+            routeName: StructureRoutes.Areas,
+            params: {
+                id,
+            },
+        },
+    });
+};
 
 export const showStructureSearch = () => NavigationActions.navigate({
     routeName: HomeRoutes.SearchStructure,

@@ -25,6 +25,16 @@ function getSortKey(shortname: string) {
 // tslint:disable: variable-name
 export const StructureResolver = {
     Query: {
+        Families: (_root: any, _args: any, context: IApolloContext) => {
+            context.logger.log('Families');
+            return context.dataSources.structure.allFamilies();
+        },
+
+        Family: (_root: any, args: ById, context: IApolloContext) => {
+            context.logger.log('Family', args);
+            return context.dataSources.structure.getFamily(args.id || context.principal.family as string);
+        },
+
         Associations: async (_root: any, _args: any, context: IApolloContext) => {
             context.logger.log('Associations');
 
@@ -67,6 +77,10 @@ export const StructureResolver = {
     },
 
     Association: {
+        family: (root: any, _args: any, _context: IApolloContext) => {
+            return { id: root.family };
+        },
+
         // deprecated fixture, replaced by id
         association: (root: any, _args: any, _context: IApolloContext) => {
             return root.id;
@@ -93,7 +107,7 @@ export const StructureResolver = {
 
         location: async (root: any, _args: any, context: IApolloContext) => {
             const hash = addressHash(root.meetingplace1);
-            context.logger.log(root, hash);
+            // context.logger.log(root, hash);
 
             if (hash == null) { return null; }
 
@@ -122,9 +136,16 @@ export const StructureResolver = {
             );
         },
 
+        family: (root: any, _args: any, context: IApolloContext) => {
+            // context.logger.log("C.Association Loading", root);
+            return context.dataSources.structure.getFamily(
+                root.family,
+            );
+        },
+
         members: (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.members.readClub(
-                root.club || root.id,
+                root.id,
             );
         },
 

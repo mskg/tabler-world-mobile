@@ -70,6 +70,9 @@ export const SearchMemberResolver = {
 )`);
             });
 
+            parameters.push(context.principal.family);
+            filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+
             // old only 'de
             byVersion({
                 context,
@@ -113,6 +116,7 @@ export const SearchMemberResolver = {
                 parameters.push(context.principal.id);
                 parameters.push(context.principal.club);
                 parameters.push(context.principal.association);
+                parameters.push(context.principal.family);
 
                 filters.push(`id in (
 select sectorprofiles.id
@@ -121,8 +125,8 @@ where
         sectorprofiles.id = sectorpricacy.id
     and sectorprofiles.removed = false
     and get_profile_access(sectorpricacy.company,
-        sectorprofiles.id, sectorprofiles.club, sectorprofiles.association,
-        $${sectorsId + 1}, $${sectorsId + 2}, $${sectorsId + 3}
+        sectorprofiles.id, sectorprofiles.club, sectorprofiles.association, sectorprofiles.family, sectorprofiles.allfamiliesoptin,
+        $${sectorsId + 1}, $${sectorsId + 2}, $${sectorsId + 3}, $${sectorsId + 4}
     ) = true
     and sectorprofiles.companies @> ANY($${sectorsId}::jsonb[])
 )`);

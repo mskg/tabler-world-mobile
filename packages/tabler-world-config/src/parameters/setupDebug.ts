@@ -6,8 +6,12 @@ export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('tw-api'), JSON.stringify({
         host: process.env.API_HOST,
         key: process.env.API_KEY_PLAIN,
-        batch: parseInt(process.env.API_BATCH || '', 10),
-        read_batch: parseInt(process.env.API_READ_BATCH || '', 10),
+        batch: parseInt(process.env.API_BATCH || '100', 10),
+        read_batch: parseInt(process.env.API_READ_BATCH || '10', 10),
+        concurrency: {
+            read: parseInt(process.env.API_MAX_CONCURRENCY || '3', 10),
+            write: parseInt(process.env.DB_MAX_CONCURRENCY || '3', 10),
+        },
     } as Param_Api));
 
     memoryCache.set(mapName('database'), JSON.stringify({

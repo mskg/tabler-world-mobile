@@ -8,7 +8,7 @@ import { bootstrapApollo, getPersistor } from './bootstrapApollo';
 
 const logger = new Logger(Categories.Api);
 
-const SCHEMA_VERSION = '2'; // Must be a string.
+const SCHEMA_VERSION = '3'; // Must be a string.
 const SCHEMA_VERSION_KEY = 'apollo-schema-version';
 
 type State = {
