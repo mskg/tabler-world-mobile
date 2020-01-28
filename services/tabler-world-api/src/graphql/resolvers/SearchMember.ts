@@ -81,7 +81,7 @@ export const SearchMemberResolver = {
                 versions: {
                     // only
                     old: async () => {
-                        parameters.push('de');
+                        parameters.push(context.principal.association);
                         filters.push(`association = $${parameters.length}`);
                     },
 
