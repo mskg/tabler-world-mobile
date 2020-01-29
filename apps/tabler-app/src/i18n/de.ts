@@ -410,17 +410,10 @@ const de: I18NType = {
             thirdparty: 'Lizenzinformationen zu Drittprodukten',
             about: 'Über diese App',
 
-            docs: [
-                {
-                    title: 'Datenschutzrichtlinien',
-                    url: 'https://hilfe.roundtable.world/knowledge-base/data-protection-policy/',
-
-                },
-                {
-                    title: 'Impressum',
-                    url: 'https://hilfe.roundtable.world/knowledge-base/imprint/',
-                },
-            ],
+            docs: {
+                dataprotection: 'Datenschutzrichtlinien',
+                imprint: 'Impressum',
+            },
         },
 
         cache: {

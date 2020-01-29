@@ -463,17 +463,10 @@ const en = {
             thirdparty: 'Third Party Software Notices and Information',
             about: 'About this App',
 
-            docs: [
-                {
-                    title: 'Data Protection Policy',
-                    url: 'https://help.roundtable.world/knowledge-base/data-protection-policy/',
-
-                },
-                {
-                    title: 'Imprint',
-                    url: 'https://help.roundtable.world/knowledge-base/imprint/',
-                },
-            ],
+            docs: {
+                dataprotection: 'Data Protection Policy',
+                imprint: 'Imprint',
+            },
         },
 
         cache: {

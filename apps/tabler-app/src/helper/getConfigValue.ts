@@ -18,6 +18,8 @@ type Key =
     | 'feedback'
     | 'join'
     | 'support'
+    | 'imprint'
+    | 'dataprotection'
     ;
 
 type ConfigTypes = string | string[] | {

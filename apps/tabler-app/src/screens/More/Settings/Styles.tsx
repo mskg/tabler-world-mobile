@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../../theme/colors';
+
+const HEIGHT = 50;
 
 // tslint:disable-next-line: export-name
 export const styles = StyleSheet.create({
@@ -10,12 +11,12 @@ export const styles = StyleSheet.create({
     },
 
     select: {
-        height: 50,
+        height: HEIGHT,
         alignItems: 'stretch',
     },
 
     selectContainer: {
-        height: 50,
+        height: HEIGHT,
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -33,7 +34,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         // paddingVertical: 8,
         paddingHorizontal: 16,
-        height: ITEM_HEIGHT,
+        height: HEIGHT,
     },
 
     row: {
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         // paddingVertical: 8,
         paddingHorizontal: 16,
-        height: 50,
+        height: HEIGHT,
     },
 
     rowValue: {

@@ -11,6 +11,16 @@ export type UrlParameters = {
         global: string,
         [key: string]: string,
     },
+
+    imprint: {
+        en: string,
+        [key: string]: string,
+    },
+
+    dataprotection: {
+        en: string,
+        [key: string]: string,
+    },
 };
 
 export const UrlDefaults: UrlParameters = {
@@ -23,4 +33,7 @@ export const UrlDefaults: UrlParameters = {
     join: getConfigValue('join'),
 
     support: getConfigValue('support'),
+
+    imprint: getConfigValue('imprint'),
+    dataprotection: getConfigValue('dataprotection'),
 };

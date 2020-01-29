@@ -330,14 +330,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Element
                                 theme={this.props.theme}
                                 field={I18N.Settings.fields.version}
-                                text={Constants.manifest.revisionId || '0.0.0'} />
+                                text={Constants.manifest.revisionId || '0.0.0'}
+                            />
+
                             <Divider />
                             <Element
                                 theme={this.props.theme}
                                 field={I18N.Settings.fields.channel}
-                                text={Constants.manifest.releaseChannel || 'dev'} />
-                            <Divider />
+                                text={Constants.manifest.releaseChannel || 'dev'}
+                            />
 
+                            <Divider />
                             <NextScreen
                                 theme={this.props.theme}
                                 text={I18N.Settings.ReleaseNotes}
@@ -347,6 +350,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         source: Assets.files.releasenotes,
                                     })}
                             />
+
                             <Divider />
                             <NextScreen
                                 theme={this.props.theme}
