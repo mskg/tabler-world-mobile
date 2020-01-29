@@ -56,13 +56,7 @@ export async function runBackgroundFetch() {
         const areaMembersPromise = updateCache(client, GetMembersByAreasQuery, 'members', {
             areaBoard,
             board,
-            areas: areas != null ? _(areas)
-                .keys()
-                .filter((k) => k !== 'length')
-                .map((a) => a.replace(/[^\d]/g, ''))
-                .map((a) => parseInt(a, 10))
-                .value()
-                : null,
+            areas: areas != null ? _(areas).keys().value() : null,
         } as MembersByAreasVariables);
 
         const clubsPromise = updateCache(client, GetClubsQuery, 'clubs');

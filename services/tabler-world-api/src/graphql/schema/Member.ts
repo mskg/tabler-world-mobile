@@ -161,8 +161,10 @@ export const Member = gql`
     }
 
     input MemberFilterInput {
-        # deprecated
+        "deprecated use byArea"
         areas: [Int!]
+
+        byArea: [ID!]
 
         nationalBoard: Boolean
         areaBoard: Boolean

@@ -10,7 +10,7 @@ import { StandardHeader } from '../../components/Header';
 import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { AreasFilter } from '../../model/graphql/AreasFilter';
+import { AreasFilter, AreasFilter_Areas } from '../../model/graphql/AreasFilter';
 import { IAppState } from '../../model/IAppState';
 import { HashMap } from '../../model/Maps';
 import { GetAreasFilterQuery } from '../../queries/Search/GetAreasFilterQuery';
@@ -50,25 +50,25 @@ class FilterScreenBase extends AuditedScreen<Props> {
         super(props, AuditScreenName.FilterMember);
     }
 
-    _renderItem = (c: ListRenderItemInfo<any>) => {
-        const { name } = c.item;
+    _renderItem = (c: ListRenderItemInfo<AreasFilter_Areas>) => {
+        const { name, id } = c.item;
 
         return (
             <>
                 <Element
                     title={name}
                     theme={this.props.theme}
-                    onPress={() => this.props.toggleDistrict(name)}
-                    right={
+                    onPress={() => this.props.toggleDistrict(id)}
+                    right={(
                         <Checkbox
                             color={this.props.theme.colors.accent}
                             status={
-                                this.props.filter == null
-                                    || this.props.filter[name] === true ? 'checked' : 'unchecked'
+                                this.props.filter == null || this.props.filter[id] === true ? 'checked' : 'unchecked'
                             }
-                            onPress={() => { this.props.toggleDistrict(name); }}
+                            onPress={() => { this.props.toggleDistrict(id); }}
                         />
-                    } />
+                    )}
+                />
                 <Divider />
             </>
         );
@@ -150,17 +150,19 @@ class FilterScreenBase extends AuditedScreen<Props> {
                             if (loading || error) return null;
 
                             // we ignore the errors here for now
-                            return (<List.Section title={I18N.Filter.area}>
-                                <FlatList
-                                    data={data ? (data.Areas || []) : []}
-                                    extraData={this.props.filter}
-                                    renderItem={this._renderItem}
-                                    keyExtractor={this._keyExtractor}
-                                    refreshing={loading}
-                                    onRefresh={refetch}
-                                    bounces={false}
-                                />
-                            </List.Section>);
+                            return (
+                                <List.Section title={I18N.Filter.area}>
+                                    <FlatList
+                                        data={data ? (data.Areas || []) : []}
+                                        extraData={this.props.filter}
+                                        renderItem={this._renderItem}
+                                        keyExtractor={this._keyExtractor}
+                                        refreshing={loading}
+                                        onRefresh={refetch}
+                                        bounces={false}
+                                    />
+                                </List.Section>
+                            );
                         }}
                     </Query>
                 </ScrollView>
@@ -175,6 +177,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export const FilterScreen = connect(
     (state: IAppState) => ({
         filter: state.filter.member.area,
@@ -183,14 +186,15 @@ export const FilterScreen = connect(
         showAssociationBoard: state.filter.member.showAssociationBoard,
         showAreaBoard: state.filter.member.showAreaBoard,
 
-    }), {
-    toggleAll,
-    toggleFavorites,
-    toggleDistrict,
-    toggleOwnTable,
-    toggleAreaBoard,
-    toggleAssociationBoard,
-})(
-    withWhoopsErrorBoundary(
-        withCacheInvalidation('areas', withTheme(FilterScreenBase))),
-);
+    }),
+    {
+        toggleAll,
+        toggleFavorites,
+        toggleDistrict,
+        toggleOwnTable,
+        toggleAreaBoard,
+        toggleAssociationBoard,
+    })(
+        withWhoopsErrorBoundary(
+            withCacheInvalidation('areas', withTheme(FilterScreenBase))),
+    );

@@ -1,3 +1,4 @@
+import { Family } from '@mskg/tabler-world-auth-client';
 import _ from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
@@ -20,6 +21,7 @@ type MemberFilter = {
     filter: {
         // deprectated
         areas?: number[],
+        byArea?: string[],
 
         nationalBoard?: boolean,
         areaBoard?: boolean,
@@ -116,10 +118,16 @@ export const MemberResolver = {
             const result = [];
 
             // the optional filters only make sense if we don't retrieve all
-            if (args.filter != null && (args.filter.areas != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
+            if (args.filter != null && (args.filter.areas != null || args.filter.byArea != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
                 if (args.filter.areas != null && args.filter.areas.length > 0) {
                     context.logger.log('areas', args.filter.areas);
-                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `de_d${a}`));
+                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `${Family.RTI}_de_d${a}`));
+                    result.push(... (areaMembers || []));
+                }
+
+                if (args.filter.byArea != null && args.filter.byArea.length > 0) {
+                    context.logger.log('byArea', args.filter.areas);
+                    const areaMembers = await context.dataSources.members.readAreas(args.filter.byArea);
                     result.push(... (areaMembers || []));
                 }
 

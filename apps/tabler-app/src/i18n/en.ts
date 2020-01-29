@@ -308,7 +308,7 @@ const en = {
 
     Filter: {
         title: 'Adjust member filters',
-        area: 'Districts',
+        area: 'My Association\'s Districts',
         showAll: 'Show all my Association Members',
         hideAll: 'Hide all my Association Members',
 
