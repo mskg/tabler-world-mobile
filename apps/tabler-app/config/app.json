@@ -13,8 +13,11 @@
             "identityPoolId": "",
             "userPoolId": "",
             "userPoolWebClientId": "",
+
             "api": "",
+            "wsapi": "",
             "apidemo": "",
+
             "sentry": "",
             "cognitoAnalytics": "",
             "amplitudeAnalytics": "",

@@ -45,10 +45,7 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
         } if (Platform.OS === 'ios') {
             return 'ws://localhost:3001' as T;
         }
-    } else if (key === 'ws-api') {
-        return Constants.manifest.extra.api.replace('https', 'wss').replace('api', 'ws-api');
     }
-
 
     return Constants.manifest.extra[key];
 }
