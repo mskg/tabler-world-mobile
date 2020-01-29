@@ -17,13 +17,11 @@ CREATE OR REPLACE FUNCTION f_unaccent(text)
 $func$
 SELECT public.unaccent(
     'public.unaccent',
-    lower(
+    replace(
         replace(
-            replace(
-                replace($1, 'oe', 'o')
-            , 'ue', 'ü')
-        , 'ae', 'ä')
-    )
+            replace(lower($1), 'oe', 'ö')
+        , 'ue', 'ü')
+    , 'ae', 'ä')
 )  -- schema-qualify function and dictionary
 $func$  LANGUAGE sql IMMUTABLE;
 
