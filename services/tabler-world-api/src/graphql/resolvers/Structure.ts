@@ -107,12 +107,11 @@ export const StructureResolver = {
 
         location: async (root: any, _args: any, context: IApolloContext) => {
             const hash = addressHash(root.meetingplace1);
+            if (hash == null) { return null; }
             // context.logger.log(root, hash);
 
-            if (hash == null) { return null; }
-
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            context.logger.log(root, hash, coordinates);
+            // context.logger.log(root, hash, coordinates);
 
             return coordinates && coordinates.latitude
                 ? {
