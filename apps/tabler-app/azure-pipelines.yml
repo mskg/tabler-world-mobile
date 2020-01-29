@@ -33,7 +33,7 @@ pr:
 trigger:
   branches:
     include:
-      - release/v1.2
+      - manualonly
 
   paths:
     include:
