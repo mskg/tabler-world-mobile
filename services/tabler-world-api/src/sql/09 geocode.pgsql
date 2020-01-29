@@ -48,13 +48,13 @@ union ALL
 
 union all
 
-    select meetingplace1
+    select jsonb_set(meetingplace1, '{country}', to_jsonb(remove_key_family(association)))
     from structure_clubs
     where meetingplace1 is not null
 
 union all
 
-    select meetingplace2
+    select jsonb_set(meetingplace2, '{country}', to_jsonb(remove_key_family(association)))
     from structure_clubs
     where meetingplace2 is not null
 ;

@@ -77,6 +77,7 @@ export const Structure = gql`
         instagram: String
         facebook: String
         twitter: String
+        linkedin: String
 
         email: String
         phone: String

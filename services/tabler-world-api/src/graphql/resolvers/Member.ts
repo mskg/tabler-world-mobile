@@ -69,6 +69,15 @@ export const MemberResolver = {
                 id: root.family,
             };
         },
+
+        // only deliver it, if it contains usable data
+        address: (root: any, _args: {}, _context: IApolloContext) => {
+            if (root.city || root.postal_code || root.street1 || root.street2) {
+                return root;
+            }
+
+            return null;
+        },
     },
 
     // compatibility
@@ -89,6 +98,16 @@ export const MemberResolver = {
     Company: {
         sector: (root: any, _args: {}, _context: IApolloContext) => {
             return root.sector ? root.sector.replace(/-/ig, '') : null;
+        },
+
+        address: (root: any, _args: {}, _context: IApolloContext) => {
+            return root.address && Object.keys(root.address).length > 0 ? root.address : null;
+        },
+    },
+
+    Education: {
+        address: (root: any, _args: {}, _context: IApolloContext) => {
+            return root.address && Object.keys(root.address).length > 0 ? root.address : null;
         },
     },
 

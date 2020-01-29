@@ -1,7 +1,8 @@
-import { addressHash } from '@mskg/tabler-world-geo';
+import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
 import { sortBy } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
+import { removeFamily } from '../helper/removeFamily';
 import { IApolloContext } from '../types/IApolloContext';
 
 type ById = {
@@ -106,7 +107,16 @@ export const StructureResolver = {
         },
 
         location: async (root: any, _args: any, context: IApolloContext) => {
-            const hash = addressHash(root.meetingplace1);
+            // currently there is no country in that address
+            let address = root.meetingplace1 || root.meetingplace2;
+            if (address != null) {
+                address = enrichAddress(
+                    address,
+                    removeFamily(root.association),
+                );
+            }
+
+            const hash = addressHash(address);
             if (hash == null) { return null; }
             // context.logger.log(root, hash);
 

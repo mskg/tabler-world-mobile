@@ -1,6 +1,8 @@
+import { Family } from './Family';
+
 export interface IPrincipal {
     version?: '1.2';
-    family?: 'rti' | 'lci' | 'tci' | '41i';
+    family?: Family;
 
     principalId?: string; // cognito id
 

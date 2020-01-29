@@ -5,6 +5,6 @@ export * from './cognito/validateToken';
 export * from './helper/isAdmin';
 export * from './lambda/resolvePrincipal';
 export * from './sql/lookupPrincipal';
+export * from './types/Family';
 export * from './types/IPrincipal';
-
 
