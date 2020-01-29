@@ -112,13 +112,11 @@ select
 		where t.value @> '{"address_type": 5}'
 		limit 1
 	) as address
-
 	,(
 		select value->'rows'->0->>'value'
 		from jsonb_array_elements(data->'custom_fields') t
 		where t.value @> '{"rows": [{"key": "Name partner"}]}'
 	) as partner
-
 	,(
 		select jsonb_agg(role)
 		from (
@@ -160,22 +158,25 @@ select
                 nullif(value->>'sector', '') as sector,
                 nullif(trim(value->>'function'), '') as function,
                 nullif(value->>'begin_date', '') as begin_date,
-                jsonb_strip_nulls(jsonb_build_object(
-                    'city',
-                    nullif(value->'address'->0->>'city', ''),
+                nullif(
+                    jsonb_strip_nulls(jsonb_build_object(
+                        'city',
+                        nullif(value->'address'->0->>'city', ''),
 
-                    'country',
-                    nullif(value->'address'->0->>'country', ''),
+                        'country',
+                        nullif(value->'address'->0->>'country', ''),
 
-                    'street1',
-                    nullif(value->'address'->0->>'street1', ''),
+                        'street1',
+                        nullif(value->'address'->0->>'street1', ''),
 
-                    'street2',
-                    nullif(value->'address'->0->>'street2', ''),
+                        'street2',
+                        nullif(value->'address'->0->>'street2', ''),
 
-                    'postal_code',
-                    nullif(value->'address'->0->>'postal_code', '')
-                )) as address
+                        'postal_code',
+                        nullif(value->'address'->0->>'postal_code', '')
+                    )),
+                    '{}'
+                ) as address
             from jsonb_array_elements(data->'companies') t
         ) companies
     ) as companies
@@ -187,22 +188,25 @@ select
             select
                 nullif(trim(value->>'school_name'), '') as school,
                 nullif(trim(value->>'education_name'), '') as education,
-                jsonb_strip_nulls(jsonb_build_object(
-                    'city',
-                    nullif(value->'address'->0->>'city', ''),
+                nullif(
+                    jsonb_strip_nulls(jsonb_build_object(
+                        'city',
+                        nullif(value->'address'->0->>'city', ''),
 
-                    'country',
-                    nullif(value->'address'->0->>'country', ''),
+                        'country',
+                        nullif(value->'address'->0->>'country', ''),
 
-                    'street1',
-                    nullif(value->'address'->0->>'street1', ''),
+                        'street1',
+                        nullif(value->'address'->0->>'street1', ''),
 
-                    'street2',
-                    nullif(value->'address'->0->>'street2', ''),
+                        'street2',
+                        nullif(value->'address'->0->>'street2', ''),
 
-                    'postal_code',
-                    nullif(value->'address'->0->>'postal_code', '')
-                )) as address
+                        'postal_code',
+                        nullif(value->'address'->0->>'postal_code', '')
+                    )),
+                    '{}'
+                ) as address
             from jsonb_array_elements(data->'educations') t
         ) educations
     ) as educations
