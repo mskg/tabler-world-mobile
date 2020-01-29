@@ -204,6 +204,7 @@ functions:
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
+            type: tabler
             mode: incremental
             offset: 0
             maxRecords: 5000
