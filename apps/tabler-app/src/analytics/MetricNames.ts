@@ -8,4 +8,7 @@ export enum MetricNames {
     Toggle_Table = 'Toggle table',
 
     ShowFilterDialog = 'Show Filter Dialog',
+
+    Messages = 'Messages',
+    Pictures = 'Pictures',
 }

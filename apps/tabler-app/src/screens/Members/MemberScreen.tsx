@@ -90,7 +90,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
                 requestAnimationFrame(
-                    () => this._sectionList.scrollToOffset(0, 0, true),
+                    () => this._sectionList?.scrollToOffset(0, 0, true),
                 );
 
                 if (this.props.data == null || this.props.data.MembersOverview == null || this.props.data.MembersOverview.length === 0) {

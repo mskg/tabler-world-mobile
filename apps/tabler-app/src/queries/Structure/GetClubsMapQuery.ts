@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { AddressFragment } from '../Member/AddressFragment';
 
 export const GetClubsMapQuery = gql`
-  query ClubsMap {
-        Clubs {
+  query ClubsMap ($association: ID) {
+        Clubs (association: $association) {
             id
             name
             logo

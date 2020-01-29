@@ -88,6 +88,13 @@ export const StructureResolver = {
         },
 
         areas: async (root: any, _args: any, context: IApolloContext) => {
+            if (root.areas) {
+                return Promise.all(
+                    root.areas.map(async (r: any) =>
+                        await context.dataSources.structure.getArea(r)),
+                );
+            }
+
             return context.dataSources.structure.allAreas(root.association);
         },
 
@@ -198,8 +205,8 @@ export const StructureResolver = {
             }
 
             // we're coming from member!
-            const area = await context.dataSources.structure.getArea(root.area);
-            return area.clubs.map((r: any) => context.dataSources.structure.getClub(r));
+            const area = await context.dataSources.structure.getArea(root.id);
+            return (area.clubs || []).map((r: any) => context.dataSources.structure.getClub(r));
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {

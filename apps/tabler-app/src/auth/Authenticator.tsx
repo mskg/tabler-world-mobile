@@ -80,9 +80,9 @@ class AuthenticatorBase extends PureComponent<Props, State> {
                     result.data.Me.id.toString(),
                     {
                         ...appProps,
-                        [AuditPropertyNames.Association]: result.data.Me.association.name,
-                        [AuditPropertyNames.Area]: result.data.Me.area.name,
-                        [AuditPropertyNames.Club]: result.data.Me.club.name,
+                        [AuditPropertyNames.Association]: result.data.Me.association.id,
+                        [AuditPropertyNames.Area]: result.data.Me.area.id,
+                        [AuditPropertyNames.Club]: result.data.Me.club.id,
                     },
                 );
 

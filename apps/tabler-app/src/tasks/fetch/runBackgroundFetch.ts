@@ -14,8 +14,8 @@ import { GetAssociationQuery } from '../../queries/Structure/GetAssociationQuery
 import { GetClubsQuery } from '../../queries/Structure/GetClubsQuery';
 import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
 import { FETCH_TASKNAME } from '../Constants';
-import { isLocationTaskEnabled } from '../location/isLocationTaskEnabled';
 import { isSignedIn } from '../helper/isSignedIn';
+import { isLocationTaskEnabled } from '../location/isLocationTaskEnabled';
 import { updateLocation } from '../location/updateLocation';
 import { logger } from './logger';
 import { updateCache } from './updateCache';
@@ -42,21 +42,18 @@ export async function runBackgroundFetch() {
 
         const updateParametersPromise = updateParameters();
         const offlineMembersPromise = updateCache(client, GetOfflineMembersQuery, 'members');
-
+ 
         let locationPromise = Promise.resolve(true);
         if (await isLocationTaskEnabled()) {
             // we send a live sign here
             locationPromise = updateLocation(false, true);
         }
 
-        const areas = getReduxStore().getState().filter.member.area;
-        const board = getReduxStore().getState().filter.member.showAssociationBoard;
-        const areaBoard = getReduxStore().getState().filter.member.showAreaBoard;
-
+        const { area, showAreaBoard, showAssociationBoard } = getReduxStore().getState().filter.member;
         const areaMembersPromise = updateCache(client, GetMembersByAreasQuery, 'members', {
-            areaBoard,
-            board,
-            areas: areas != null ? _(areas).keys().value() : null,
+            areaBoard: showAreaBoard,
+            board: showAssociationBoard,
+            areas: area != null ? _(area).keys().value() : null,
         } as MembersByAreasVariables);
 
         const clubsPromise = updateCache(client, GetClubsQuery, 'clubs');

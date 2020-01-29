@@ -21,12 +21,16 @@ import { GetAssociationQuery } from '../../queries/Structure/GetAssociationQuery
 import { CardPlaceholder } from './CardPlaceholder';
 import { ScreenProps, StructureParams } from './StructureParams';
 import { styles } from './Styles';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
+import { IAppState } from '../../model/IAppState';
+import { connect } from 'react-redux';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
 type State = {};
 
 type Props = {
+    offline: boolean,
     theme: Theme,
     navigation: any,
     fetchPolicy: any,
@@ -53,6 +57,10 @@ class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & Navigat
                 //     100
                 // );
             },
+        });
+
+        this.audit.submit({
+            [AuditPropertyNames.Association]: this.props.screenProps?.association,
         });
     }
 
@@ -133,7 +141,11 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                                 if (error) throw error;
 
                                 if (!loading && (data == null || data.Association == null)) {
-                                    return <CannotLoadWhileOffline />;
+                                    if (this.props.offline) {
+                                        return <CannotLoadWhileOffline />;
+                                    }
+
+                                    setTimeout(createRunRefresh(refetch));
                                 }
 
                                 return (
@@ -168,6 +180,12 @@ export const AssociationsScreen =
     withWhoopsErrorBoundary(
         withCacheInvalidation(
             'associations',
-            withTheme(AssociationsScreenBase),
+            withTheme(
+                connect(
+                    (s: IAppState) => ({
+                        offline: s.connection.offline,
+                    }),
+                )(AssociationsScreenBase),
+            ),
         ),
     );

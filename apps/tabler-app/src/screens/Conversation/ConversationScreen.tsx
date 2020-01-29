@@ -29,6 +29,7 @@ import { PrepareFileUploadMutation } from '../../queries/Conversations/PrepareFi
 import { SendMessageMutation } from '../../queries/Conversations/SendMessageMutation';
 import { IConversationParams, showProfile } from '../../redux/actions/navigation';
 import { Chat } from './Chat';
+import { MetricNames } from '../../analytics/MetricNames';
 
 const logger = new Logger(Categories.Screens.Conversation);
 
@@ -97,6 +98,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     _uploadImage = async (baseImage: string): Promise<string | null> => {
+        this.audit.increment(MetricNames.Pictures);
         const client = cachedAolloClient();
 
         const resizedImage = await ImageManipulator.manipulateAsync(
@@ -165,6 +167,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     _sendMessage = (messages: IChatMessage[]) => {
+        this.audit.increment(MetricNames.Messages);
+
         const client = cachedAolloClient();
 
         const optimisticMessage = {

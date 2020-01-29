@@ -4,7 +4,9 @@ import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Card, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
+import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
@@ -14,6 +16,7 @@ import { RefreshTracker } from '../../components/RefreshTracker';
 import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { Areas, AreasVariables, Areas_Areas } from '../../model/graphql/Areas';
+import { IAppState } from '../../model/IAppState';
 import { GetAreasQuery } from '../../queries/Structure/GetAreasQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { CardTitle } from './CardTitle';
@@ -29,6 +32,7 @@ type Props = {
     theme: Theme,
     refreshing: boolean,
     fetchPolicy?: any,
+    offline: boolean;
 };
 
 /**
@@ -68,7 +72,10 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
             },
         });
 
-        // const jumpTo = this.props.navigation.getParam('id');
+        this.audit.submit({
+            [AuditPropertyNames.Association]: this.props.screenProps?.association,
+            [AuditPropertyNames.Area]: this.props.navigation.getParam('id'),
+        });
     }
 
     _renderItem = (params) => {
@@ -115,7 +122,11 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
                                 if (error) throw error;
 
                                 if (!loading && (data == null || data.Areas == null)) {
-                                    return <CannotLoadWhileOffline />;
+                                    if (this.props.offline) {
+                                        return <CannotLoadWhileOffline />;
+                                    }
+
+                                    setTimeout(createRunRefresh(refetch));
                                 }
 
                                 return (
@@ -158,4 +169,9 @@ export const AreasScreen =
     withWhoopsErrorBoundary(
         withCacheInvalidation(
             'areas',
-            withTheme(AreasScreenBase)));
+            withTheme(
+                connect(
+                    (s: IAppState) => ({
+                        offline: s.connection.offline,
+                    }),
+                )(AreasScreenBase))));
