@@ -1,6 +1,6 @@
 
 import { AsyncPool, ConsoleLogger } from '@mskg/tabler-world-common';
-import { useDatabase } from '@mskg/tabler-world-rds-client';
+import { useDatabasePool } from '@mskg/tabler-world-rds-client';
 import { geocode } from '../src/geocode/helper/geocode';
 
 // withClient(undefined, (client) => encode(client, {
@@ -28,12 +28,13 @@ console.log(process.env.http_proxy);
 console.log(process.env.geocoder_throttle);
 
 if (true) {
-    useDatabase(
+    useDatabasePool(
         { logger: new ConsoleLogger() },
+        3,
         async (client) => {
             const result = await client.query(`select * from geocodes_alladresses`);
 
-            await AsyncPool(5, result.rows, async (row) => {
+            await AsyncPool(10, result.rows, async (row) => {
                 try {
                     await geocode(client, row.address);
                 } catch (e) {
