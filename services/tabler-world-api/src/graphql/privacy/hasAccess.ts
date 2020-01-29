@@ -9,9 +9,19 @@ export function hasAccess(priv: string, level: FilterLevel) {
         return true;
     }
 
-    // same family only, we currently cannot check that
+    // same association only
     if (priv === PUBLIC) {
-        return true;
+        switch (level) {
+            case FilterLevel.SamePerson:
+            case FilterLevel.SameClub:
+            case FilterLevel.SameArea:
+            case FilterLevel.SameAssociation:
+            case FilterLevel.SameFamily:
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     // same person only

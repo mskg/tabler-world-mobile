@@ -3,9 +3,10 @@ import gql from 'graphql-tag';
 export const GetJobsQuery = gql`
     query GetJobs {
         Jobs {
+            id
             runon
             name
-            success
+            status
 
             data {
                 __typename

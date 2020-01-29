@@ -1,8 +1,8 @@
-import { AsyncThrottle } from '@mskg/tabler-world-common';
-import { getParameters, Param_Api } from '@mskg/tabler-world-config';
+import { AsyncPool, AsyncThrottle } from '@mskg/tabler-world-common';
 import { DataHandler } from '../types/DataHandler';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
 import { downloadChunk } from './downloadChunk';
+import { getConfiguration } from './getConfiguration';
 import { pushChanges } from './pushChanges';
 
 // 60*1000 / 100
@@ -25,16 +25,16 @@ export async function fetchParallel(
 ) {
     if (chunk == null || chunk.next == null) { return; }
 
-    // throtteling?
-    const params = await getParameters('tw-api');
-    const api = JSON.parse(params['tw-api']) as Param_Api;
+    const api = await getConfiguration();
     let lastWriteBatch: Promise<void> | null = null;
 
-    const batch = [];
+    const batch: string[] = [];
     let end = false;
     let start = chunk.offset === -1
         ? 0
         : chunk.offset;
+
+    const downloadFunc = (nextUrl: string): Promise<TablerWorldApiChunk<any>> => throttledDownload(nextUrl, method, payload);
 
     do {
         start += api.read_batch;
@@ -43,17 +43,16 @@ export async function fetchParallel(
         // last segment?
         if (!end) {
             let nextUrl = chunk.next.substring(0, chunk.next.indexOf('?'));
-            nextUrl += '?offset=' + start;
+            nextUrl += `?offset=${start}`;
 
-            console.log('kicking', nextUrl);
-            batch.push(throttledDownload(nextUrl, method, payload));
+            batch.push(nextUrl);
         }
 
         // other batches waiting?
         if (batch.length >= api.batch / api.read_batch) {
             console.log('waiting for batch');
 
-            const resultChunks = await Promise.all(batch);
+            const resultChunks = await AsyncPool(api.concurrency.read, batch, downloadFunc);
 
             // allow parallel write and read
             if (lastWriteBatch) {
@@ -74,6 +73,6 @@ export async function fetchParallel(
 
     // wait for other segments
     console.log('waiting to end');
-    const resultsChunks = await Promise.all(batch);
+    const resultsChunks = await AsyncPool(api.concurrency.read, batch, downloadFunc);
     await pushChanges(resultsChunks, handler);
 }

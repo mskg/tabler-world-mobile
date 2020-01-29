@@ -9,6 +9,7 @@ drop materialized view if exists structure cascade;
 drop materialized view if exists structure_clubs cascade;
 drop materialized view if exists structure_areas cascade;
 drop materialized view if exists structure_associations cascade;
+drop materialized view if exists structure_families cascade;
 
 ------------------------------
 -- Functions
@@ -39,8 +40,18 @@ as
 select
     -- we need to stick with the combined key here as we cannot extract the id from roles
 	id
-    ,make_key_association(data->>'parent_subdomain') as association
-	,make_key_area(make_key_association(data->>'parent_subdomain'), data->>'parent_subdomain') as area
+    ,make_key_family(data->>'hostname') as family
+    ,make_key_association(
+        make_key_family(data->>'hostname'),
+        data->>'parent_subdomain'
+     ) as association
+	,make_key_area(
+        make_key_association(
+            make_key_family(data->>'hostname'),
+            data->>'parent_subdomain'
+        ),
+        data->>'parent_subdomain'
+     ) as area
 	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
     ,data->>'name' as name
     ,make_short_reference('club', id) as shortname
@@ -67,7 +78,7 @@ select
     ,NULLIF(data->>'logo', (
         select data->>'logo'
         from associations
-        where id = make_key_association(clubs.data->>'parent_subdomain')
+        where id = make_key_association(make_key_family(clubs.data->>'hostname'), clubs.data->>'parent_subdomain')
     )) as logo
     ,(
         select jsonb_object_agg(map_club_keys(rr->>'key'), rr->>'value')
@@ -157,7 +168,10 @@ CREATE MATERIALIZED VIEW structure_areas
 as
 select
 	id
-    ,make_key_association(data->>'parent_subdomain') as association
+    ,make_key_association(
+        make_key_family(data->>'hostname'),
+        data->>'parent_subdomain'
+     ) as association
     ,data->>'name' as name
     ,make_short_reference('area', id) as shortname
     ,(
@@ -178,8 +192,17 @@ select
         select array_agg(id)
         from structure_clubs
         where
-                association = make_key_association(data->>'parent_subdomain')
-            and area = make_key_area(data->>'parent_subdomain', data->>'subdomain')
+                association = make_key_association(
+                    make_key_family(data->>'hostname'),
+                    data->>'parent_subdomain'
+                )
+            and area = make_key_area(
+                    make_key_association(
+                        make_key_family(data->>'hostname'),
+                        data->>'parent_subdomain'
+                    ),
+                    data->>'subdomain'
+                )
     ) as clubs
 from areas;
 
@@ -206,7 +229,7 @@ select
        from assets
        where
             type = 'flag'
-        and assets.id = associations.id
+        and assets.id = remove_key_family(associations.id)
    ) as flag
    ,(
         select to_jsonb(array_to_json(array_agg(r)))
@@ -246,3 +269,18 @@ from associations;
 
 create unique index idx_structure_associations_id on
 structure_associations (id);
+
+
+------------------------------
+-- Families
+------------------------------
+
+CREATE MATERIALIZED VIEW structure_families
+as
+select
+    id
+from families;
+
+create unique index idx_structure_families_id on
+structure_families (id);
+

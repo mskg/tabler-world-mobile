@@ -308,7 +308,7 @@ const en = {
 
     Filter: {
         title: 'Adjust member filters',
-        area: 'Districts',
+        area: 'My Association\'s Districts',
         showAll: 'Show all my Association Members',
         hideAll: 'Hide all my Association Members',
 
@@ -463,17 +463,10 @@ const en = {
             thirdparty: 'Third Party Software Notices and Information',
             about: 'About this App',
 
-            docs: [
-                {
-                    title: 'Data Protection Policy',
-                    url: 'https://help.roundtable.world/knowledge-base/data-protection-policy/',
-
-                },
-                {
-                    title: 'Imprint',
-                    url: 'https://help.roundtable.world/knowledge-base/imprint/',
-                },
-            ],
+            docs: {
+                dataprotection: 'Data Protection Policy',
+                imprint: 'Imprint',
+            },
         },
 
         cache: {

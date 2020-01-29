@@ -7,9 +7,13 @@ import { openstreetmap } from './openstreetmap';
 
 type geocoderFunction = (address: IAddress) => Promise<NodeGeocoder.Entry | null>;
 
+export function getGeocoderName() {
+    return process.env.geocoder_implementation || 'komoot';
+}
+
 export function getGeocoder(): geocoderFunction {
     const throttle = parseInt(process.env.geocoder_throttle || '1500', 10);
-    const implementation = process.env.geocoder_implementation || 'komoot';
+    const implementation = getGeocoderName();
 
     if (implementation === 'openstreetmap') {
         return AsyncThrottle(openstreetmap, throttle, 1);

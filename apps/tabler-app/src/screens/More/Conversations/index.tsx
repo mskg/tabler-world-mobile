@@ -5,6 +5,8 @@ import { Platform, StyleSheet } from 'react-native';
 import { Appbar, Divider, Theme, withTheme } from 'react-native-paper';
 import { FlatList, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
+import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { ChatDisabledBanner } from '../../../components/ChatDisabledBanner';
 import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
 import { EmptyComponent } from '../../../components/NoResults';
@@ -38,7 +40,11 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 // tslint:disable-next-line: export-name
-export class ConversationsScreenBase extends React.Component<Props, State> {
+export class ConversationsScreenBase extends AuditedScreen<Props, State> {
+    constructor(props) {
+        super(props, AuditScreenName.Conversations);
+    }
+
     _renderItem = ({ item: l }): React.ReactElement | null => {
         return (
             <>

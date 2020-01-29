@@ -25,7 +25,7 @@ export enum AuditScreenName {
 
     MemberScanQR = 'Members/ScanQRCode',
     MemberShowQR = 'Members/ShowQRCode',
-    NearbyMembers = 'Members/Nearby',
+    // NearbyMembers = 'Members/Nearby',
 
     NearbyMembersList = 'Members/Nearby/List',
     NearbyMembersMap = 'Members/Nearby/Map',
@@ -40,6 +40,7 @@ export enum AuditScreenName {
     ErrorReport = 'ErrorReport',
     Menu = 'Menu',
 
+    Conversations = 'Chat/Conversations',
     Conversation = 'Chat/Conversation',
     NewConversation = 'Chat/Conversation/New',
 }

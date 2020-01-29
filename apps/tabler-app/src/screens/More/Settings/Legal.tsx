@@ -9,14 +9,47 @@ import { ScreenWithHeader } from '../../../components/Screen';
 import { I18N } from '../../../i18n/translation';
 import { NextScreen } from './Action';
 import { Routes } from './Routes';
+import { getParameterValue } from '../../../helper/parameters/getParameterValue';
+import { ParameterName } from '../../../model/graphql/globalTypes';
+import { UrlParameters } from '../../../helper/parameters/Urls';
 
 type Props = {
     theme: Theme,
 };
 
-class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
+type State = {
+    urls: {
+        title: string,
+        url: string,
+    }[],
+};
+
+class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps, State> {
+    state: State = {
+        urls: [],
+    };
+
     constructor(props) {
         super(props, AuditScreenName.Legal);
+    }
+
+    async componentWillMount() {
+        super.componentDidMount();
+
+        const urls: UrlParameters = await getParameterValue(ParameterName.urls);
+
+        this.setState({
+            urls: [
+                {
+                    title: I18N.Settings.Legal.docs.imprint,
+                    url: urls.imprint[I18N.id] || urls.imprint.en,
+                },
+                {
+                    title: I18N.Settings.Legal.docs.dataprotection,
+                    url: urls.dataprotection[I18N.id] || urls.dataprotection.en,
+                },
+            ],
+        });
     }
 
     render() {
@@ -26,31 +59,43 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                     <List.Section>
                         <Divider />
                         {
-                            I18N.Settings.Legal.docs.map(d => (
-                                <React.Fragment key={d.title}>
-                                    <NextScreen theme={this.props.theme} text={d.title} onPress={
-                                        () => this.props.navigation.navigate(Routes.External, {
-                                            title: d.title,
-                                            source: d.url + '?refresh=' + Date.now,
-                                        })}
+                            this.state.urls.map((url) => (
+                                <React.Fragment key={url.title}>
+                                    <NextScreen
+                                        theme={this.props.theme}
+                                        text={url.title}
+                                        onPress={
+                                            () => this.props.navigation.navigate(Routes.External, {
+                                                title: url.title,
+                                                source: `${url.url}?refresh=${Date.now()}`,
+                                            })
+                                        }
                                     />
                                     <Divider />
                                 </React.Fragment>
                             ))
                         }
 
-                        <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.thirdparty} onPress={
-                            () => this.props.navigation.navigate(Routes.MD, {
-                                title: I18N.Settings.Legal.thirdparty,
-                                source: Assets.files.license,
-                            })}
+                        <NextScreen
+                            theme={this.props.theme}
+                            text={I18N.Settings.Legal.thirdparty}
+                            onPress={
+                                () => this.props.navigation.navigate(Routes.MD, {
+                                    title: I18N.Settings.Legal.thirdparty,
+                                    source: Assets.files.license,
+                                })
+                            }
                         />
                         <Divider />
-                        <NextScreen theme={this.props.theme} text={I18N.Settings.Legal.about} onPress={
-                            () => this.props.navigation.navigate(Routes.MD, {
-                                title: I18N.Settings.Legal.about,
-                                source: Assets.files.about,
-                            })}
+                        <NextScreen
+                            theme={this.props.theme}
+                            text={I18N.Settings.Legal.about}
+                            onPress={
+                                () => this.props.navigation.navigate(Routes.MD, {
+                                    title: I18N.Settings.Legal.about,
+                                    source: Assets.files.about,
+                                })
+                            }
                         />
                         <Divider />
                     </List.Section>

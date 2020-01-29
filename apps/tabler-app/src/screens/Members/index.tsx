@@ -48,14 +48,7 @@ class MembersQueryBase extends React.Component<Props> {
                                         query={GetMembersByAreasQuery}
                                         fetchPolicy={this.props.fetchPolicy}
                                         variables={{
-                                            areas: this.props.areas != null ? _(this.props.areas)
-                                                .keys()
-                                                .filter((k) => k !== 'length')
-                                                .map((a) => a.replace(/[^\d]/g, ''))
-                                                .map((a) => parseInt(a, 10))
-                                                .value()
-                                                : null,
-
+                                            areas: this.props.areas != null ? _(this.props.areas).keys().value() : null,
                                             board: this.props.showAssociationBoard,
                                             areaBoard: this.props.showAreaBoard,
                                         }}

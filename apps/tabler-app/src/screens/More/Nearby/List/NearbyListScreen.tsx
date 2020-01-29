@@ -40,7 +40,7 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<unkn
 
 class NearbyListScreenBase extends AuditedScreen<Props, State> {
     constructor(props) {
-        super(props, AuditScreenName.NearbyMembers);
+        super(props, AuditScreenName.NearbyMembersList);
     }
 
     makeTitle(location, country) {

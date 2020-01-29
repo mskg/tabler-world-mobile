@@ -1,3 +1,4 @@
+import { Family } from '@mskg/tabler-world-auth-client';
 import _ from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
@@ -20,6 +21,7 @@ type MemberFilter = {
     filter: {
         // deprectated
         areas?: number[],
+        byArea?: string[],
 
         nationalBoard?: boolean,
         areaBoard?: boolean,
@@ -29,6 +31,9 @@ type MemberFilter = {
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const MemberResolver = {
+    // this is not correct but removes a lot of load
+    // we know which fields are selected from the client
+    // needs to be changed probably
     Member: {
         area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
@@ -60,6 +65,21 @@ export const MemberResolver = {
                 flag: root.associationflag,
             };
         },
+
+        family: (root: any, _args: {}, _context: IApolloContext) => {
+            return {
+                id: root.family,
+            };
+        },
+
+        // only deliver it, if it contains usable data
+        address: (root: any, _args: {}, _context: IApolloContext) => {
+            if (root.city || root.postal_code || root.street1 || root.street2) {
+                return root;
+            }
+
+            return null;
+        },
     },
 
     // compatibility
@@ -81,6 +101,16 @@ export const MemberResolver = {
         sector: (root: any, _args: {}, _context: IApolloContext) => {
             return root.sector ? root.sector.replace(/-/ig, '') : null;
         },
+
+        address: (root: any, _args: {}, _context: IApolloContext) => {
+            return root.address && Object.keys(root.address).length > 0 ? root.address : null;
+        },
+    },
+
+    Education: {
+        address: (root: any, _args: {}, _context: IApolloContext) => {
+            return root.address && Object.keys(root.address).length > 0 ? root.address : null;
+        },
     },
 
     Query: {
@@ -88,10 +118,16 @@ export const MemberResolver = {
             const result = [];
 
             // the optional filters only make sense if we don't retrieve all
-            if (args.filter != null && (args.filter.areas != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
+            if (args.filter != null && (args.filter.areas != null || args.filter.byArea != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
                 if (args.filter.areas != null && args.filter.areas.length > 0) {
                     context.logger.log('areas', args.filter.areas);
-                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `de_d${a}`));
+                    const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `${Family.RTI}_de_d${a}`));
+                    result.push(... (areaMembers || []));
+                }
+
+                if (args.filter.byArea != null && args.filter.byArea.length > 0) {
+                    context.logger.log('byArea', args.filter.areas);
+                    const areaMembers = await context.dataSources.members.readAreas(args.filter.byArea);
                     result.push(... (areaMembers || []));
                 }
 

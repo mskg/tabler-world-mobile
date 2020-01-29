@@ -6,19 +6,21 @@ import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Platform, View } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, { Region } from 'react-native-maps';
 import { FAB, IconButton, Searchbar, Surface, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
+import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
 import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
-import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
+import { ClubsMap, ClubsMapVariables, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { GetClubsMapQuery } from '../../../queries/Structure/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
@@ -26,7 +28,6 @@ import { darkStyles } from './darkStyles';
 import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
-import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 
 type State = {
     location?: Location.LocationData,
@@ -39,6 +40,7 @@ type State = {
 };
 
 type Props = {
+    association?: string,
     theme: Theme,
     showClub: typeof showClub,
 
@@ -78,6 +80,10 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     this.props.refresh();
                 }
             },
+        });
+
+        this.audit.submit({
+            [AuditPropertyNames.Association]: this.props.association,
         });
     }
 
@@ -256,9 +262,15 @@ const ConnectedClubScreen = connect(null, {
     homeScreen,
 })(withTheme(withNavigation(ClubsScreenBase)));
 
-const ClubsScreenWithQuery = ({ fetchPolicy }) => (
+const ClubsScreenWithQuery = ({ fetchPolicy, screenProps }) => (
     <Tab>
-        <Query<ClubsMap> query={GetClubsMapQuery} fetchPolicy={fetchPolicy}>
+        <Query<ClubsMap, ClubsMapVariables>
+            query={GetClubsMapQuery}
+            fetchPolicy={fetchPolicy}
+            variables={{
+                association: screenProps?.association,
+            }}
+        >
             {({ loading, data, error, refetch }) => {
                 if (error) throw error;
 
@@ -271,6 +283,7 @@ const ClubsScreenWithQuery = ({ fetchPolicy }) => (
                         loading={loading}
                         data={data}
                         refresh={refetch}
+                        association={screenProps?.association}
                     />
                 );
             }}

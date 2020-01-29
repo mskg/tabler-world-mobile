@@ -4,10 +4,17 @@ export const Jobs = gql`
     scalar JSON
 
     type Job {
+       id: ID!
        runon: Date!
        name: String!
-       success: Boolean!
        data: JobResult
+       status: JobStatus!
+    }
+
+    enum JobStatus {
+        running
+        completed
+        failed
     }
 
     type JobError {

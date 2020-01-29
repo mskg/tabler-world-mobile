@@ -62,6 +62,8 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
         if (this.props.nearbyMap) {
             this._getLocationAsync();
         }
+
+        this.audit.submit();
     }
 
     _onMapReady = () => this.setState({ marginBottom: 0 });

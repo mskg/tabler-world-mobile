@@ -27,6 +27,7 @@ const patch = [
     { op: "replace", path: "/expo/extra/userPoolWebClientId", value: findAWSValue(`CognitoUserPoolClient-${channel}`) },
 
     { op: "replace", path: "/expo/extra/api", value: process.env.APP_API || `https://${findAWSValue("ApiUrl-" + channel)}` },
+    { op: "replace", path: "/expo/extra/wsapi", value: process.env.APP_WSAPI || `wss://${findAWSValue("ApiWSUrl-" + channel)}` },
     { op: "replace", path: "/expo/extra/apidemo", value: process.env.DEMO_API_KEY },
 
     { op: "replace", path: "/expo/extra/sentry", value: process.env.SENTRY },

@@ -92,7 +92,7 @@ export interface MembersByAreas {
 }
 
 export interface MembersByAreasVariables {
-  areas?: number[] | null;
+  areas?: string[] | null;
   board?: boolean | null;
   areaBoard?: boolean | null;
 }

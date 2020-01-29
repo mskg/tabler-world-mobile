@@ -13,6 +13,11 @@ export type Param_Api = {
 
     batch: number,
     read_batch: number,
+
+    concurrency: {
+        read: number,
+        write: number,
+    },
 };
 
 export type Param_Nearby = {

@@ -2,6 +2,7 @@ import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { AuthenticationError } from 'apollo-server-core';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { IPrincipal } from '../types/IPrincipal';
+import { Family } from "../types/Family";
 
 export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
     const authorizer = event.requestContext.authorizer;
@@ -59,7 +60,7 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
     if (resolvedPrincipal.version != null) {
         if (
             resolvedPrincipal.version !== '1.2'
-            || resolvedPrincipal.family !== 'rti'
+            || resolvedPrincipal.family !== Family.RTI
         ) {
             throw new AuthenticationError('Context not complete');
         }

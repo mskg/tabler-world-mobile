@@ -23,8 +23,7 @@ custom:
 
   cache_table:
     Fn::ImportValue: CacheTableName-${self:custom.stage}
-  cache_version:
-    Fn::ImportValue: CacheVersion-${self:custom.stage}
+  cache_version: '1.3#v3'
 
   email: ${env:ALERT_EMAIL}
 

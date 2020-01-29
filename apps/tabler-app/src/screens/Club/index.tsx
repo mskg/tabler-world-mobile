@@ -43,9 +43,9 @@ class ClubBase extends AuditedScreen<Props> {
 
         this.audit.submit({
             [AuditPropertyNames.Id]: this.props.id,
-            [AuditPropertyNames.Club]: club ? club.name : '',
-            [AuditPropertyNames.Association]: club ? club.association.name : '',
-            [AuditPropertyNames.Area]: club ? club.area.name : '',
+            [AuditPropertyNames.Club]: club ? club.id : '',
+            [AuditPropertyNames.Association]: club ? club.association.id : '',
+            [AuditPropertyNames.Area]: club ? club.area.id : '',
         });
     }
 

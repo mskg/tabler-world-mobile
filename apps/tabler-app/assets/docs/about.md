@@ -13,4 +13,5 @@ We're no longer hard to reach now. Just skake your device :)
 Yours in Table
 Markus Kling
 
-RT 129 Böblingen / Sindelfingen
+RT129 Böblingen / Sindelfingen
+Round Table Germany

@@ -15,6 +15,8 @@ export const DefaultMemberColumns = [
     'firstname',
     'lastname',
 
+    'family',
+
     'association',
     'associationshortname',
     'associationname',

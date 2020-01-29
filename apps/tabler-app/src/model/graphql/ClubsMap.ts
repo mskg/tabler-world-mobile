@@ -52,3 +52,7 @@ export interface ClubsMap {
    */
   Clubs: ClubsMap_Clubs[] | null;
 }
+
+export interface ClubsMapVariables {
+  association?: string | null;
+}

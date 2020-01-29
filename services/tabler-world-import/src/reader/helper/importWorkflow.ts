@@ -1,4 +1,3 @@
-import { IDataService } from '@mskg/tabler-world-rds-client';
 import { ChangePointer } from '../types/ChangePointer';
 import { JobType } from '../types/JobType';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
@@ -7,7 +6,6 @@ import { downloadChunk } from './downloadChunk';
 import { fetchParallel } from './fetchParallel';
 
 export async function importWorkflow(
-    client: IDataService,
     type: JobType,
     url: string, method: string, postData: any,
     offset: number = 0, maxRecords: number = Infinity.valueOf(),
@@ -16,7 +14,7 @@ export async function importWorkflow(
     let processedRecords = 0;
     const modifications: ChangePointer[] = [];
 
-    const databaseWriter = createWriteToDatabaseHandler(client, type);
+    const databaseWriter = createWriteToDatabaseHandler(type);
 
     // tracks modifications and maintains global array of changed records
     const modificationTracker = async (data: any[]) => {

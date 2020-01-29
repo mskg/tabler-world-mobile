@@ -13,8 +13,11 @@
             "identityPoolId": "",
             "userPoolId": "",
             "userPoolWebClientId": "",
+
             "api": "",
+            "wsapi": "",
             "apidemo": "",
+
             "sentry": "",
             "cognitoAnalytics": "",
             "amplitudeAnalytics": "",
@@ -25,10 +28,15 @@
             ],
             "join": "https://rtinternational.org/about-us/about-round-table/how-to-join/",
             "support": {
-                "de": "support@round-table.de",
                 "global": "support@roundtable.world"
             },
-            "feedback": "http://feedback.app.roundtable.world/"
+            "feedback": "http://feedback.app.roundtable.world/",
+            "imprint": {
+                "en": "https://tabler.app/en/legal-notice/"
+            },
+            "dataprotection": {
+                "en": "https://tabler.app/en/privacy-policy/"
+            }
         },
         "orientation": "portrait",
         "icon": "./assets/images/logo_iOS.png",
