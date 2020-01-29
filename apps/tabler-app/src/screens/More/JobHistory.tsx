@@ -34,11 +34,11 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
         }
 
         if (data.__typename === 'JobSend') {
-            return `Count: ${data.recipients}, Errors: ${data.errors}`;
+            return `Count: ${data.recipients || 0}, Errors: ${data.errors || 0}`;
         }
 
         if (data.__typename === 'JobSync') {
-            return `Count: ${data.records}, Modified: ${data.modified}, Duration: ${data.readTime ? timespan(data.readTime * 1000) : 'unknown'}`;
+            return `Count: ${data.records || 0}, Modified: ${data.modified || 0}, Duration: ${data.readTime ? timespan(data.readTime * 1000) : '?'}`;
         }
 
         return null;
@@ -72,8 +72,8 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                                         <DataTable style={{ width: 900 }}>
                                             <DataTable.Header>
                                                 <DataTable.Title style={{ width: 160, flex: 0 }}>Timestamp</DataTable.Title>
-                                                <DataTable.Title style={{ width: 240, flex: 0 }}>Name</DataTable.Title>
-                                                <DataTable.Title style={{ width: 60, flex: 0 }}>Status</DataTable.Title>
+                                                <DataTable.Title style={{ width: 200, flex: 0 }}>Name</DataTable.Title>
+                                                <DataTable.Title style={{ width: 80, flex: 0 }}>Status</DataTable.Title>
 
                                                 <DataTable.Title>Data</DataTable.Title>
                                             </DataTable.Header>
@@ -81,12 +81,12 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                                             {data.Jobs.map((l, i) => (
                                                 <DataTable.Row key={i.toString()}>
                                                     <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.runon).toLocaleString()}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 240, flex: 0 }}>{l.name}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 60, flex: 0 }}>{l.status}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 200, flex: 0 }}>{l.name}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 80, flex: 0 }}>{l.status}</DataTable.Cell>
 
                                                     <DataTable.Cell>{this.formatData(l.data)}</DataTable.Cell>
-                                                </DataTable.Row>))
-                                            }
+                                                </DataTable.Row>
+                                            ))}
                                         </DataTable>
                                     </Card>
                                 </ScrollView>
