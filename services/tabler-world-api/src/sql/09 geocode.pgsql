@@ -33,8 +33,12 @@ CREATE or replace view geocodes_alladresses as
 
     select address
     from profiles
-    where address is not null
-    and length(address::text) > length('{"id":2380270,"address_type":5}')
+    where
+        address is not null
+    and (
+           address->>'city' is not null
+        or address->>'postalcode' is not null
+    )
 
 union ALL
 
@@ -44,19 +48,31 @@ union ALL
         select jsonb_array_elements(companies) as c
         from  profiles
     ) companies
-    where length(c->>'address') > 2
+    where
+    (
+           c->'address'->>'city' is not null
+        or c->'address'->>'postalcode' is not null
+    )
 
 union all
 
     select jsonb_set(meetingplace1, '{country}', to_jsonb(remove_key_family(association)))
     from structure_clubs
-    where meetingplace1 is not null
+    where
+    (
+           meetingplace1->>'city' is not null
+        or meetingplace1->>'postalcode' is not null
+    )
 
 union all
 
     select jsonb_set(meetingplace2, '{country}', to_jsonb(remove_key_family(association)))
     from structure_clubs
-    where meetingplace2 is not null
+    where
+    (
+           meetingplace2->>'city' is not null
+        or meetingplace2->>'postalcode' is not null
+    )
 ;
 
 ------------------------------
