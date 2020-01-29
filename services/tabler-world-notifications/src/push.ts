@@ -50,7 +50,7 @@ export const handler: SQSHandler = async (event, context) => {
             console.log('push::send', {
                 errors: sendResult.errors,
                 hardFails: sendResult.hardFails,
-                recipients: event.Records.length,
+                recipients: msgs.length,
             });
 
             // await writeJobLog(client, 'push::send', true, {
