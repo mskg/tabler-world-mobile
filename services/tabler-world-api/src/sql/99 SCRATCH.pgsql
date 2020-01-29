@@ -59,3 +59,12 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY structure_families;
 REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search;
 
 
+
+
+select id, flag, name
+from structure_associations
+
+
+select * from assets
+
+where point is null
