@@ -102,6 +102,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                 recipients,
                 records: result.rowCount,
                 executionTime: watch.stop(),
+                awsRequestId: context.awsRequestId,
             });
 
             return true;
@@ -111,6 +112,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
             await withDatabase(context, async (client) => {
                 await writeJobLog(client, 'notifications::check', false, {
                     error: e,
+                    awsRequestId: context.awsRequestId,
                 });
             });
             // tslint:disable-next-line: no-empty

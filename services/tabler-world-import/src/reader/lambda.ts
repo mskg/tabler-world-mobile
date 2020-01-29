@@ -22,6 +22,7 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
         jobId = await withDatabase(context, (client) => startJob(client, jobContext.jobName, {
             offset: event.offset || 0,
             maxRecords: event.maxRecords || 0,
+            awsRequestId: context.awsRequestId,
         }));
 
         const watch = new StopWatch();
@@ -83,6 +84,8 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
 
             offset: event.offset || 0,
             maxRecords: event.maxRecords || 0,
+
+            awsRequestId: context.awsRequestId,
         }));
 
         callback(null, true);
@@ -92,10 +95,12 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
                 if (jobId) {
                     await completeJob(client, jobId, false, {
                         error: e,
+                        awsRequestId: context.awsRequestId,
                     });
                 } else {
                     await writeJobLog(client, jobContext.jobName, false, {
                         error: e,
+                        awsRequestId: context.awsRequestId,
                     });
                 }
             });
