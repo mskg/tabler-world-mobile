@@ -12,8 +12,10 @@ import { ImportEvent } from './types/ImportEvent';
 import { JobType } from './types/JobType';
 
 // tslint:disable: export-name
+// tslint:disable: max-func-body-length
 export async function handler(rawEvent: ImportEvent | ContinueEvent | CompressedContinueEvent, context: Context, callback: (error: any, success?: any) => void) {
     const jobContext = await setupJobContext(rawEvent);
+    console.log('jobContext', jobContext);
 
     const { event } = jobContext;
     let jobId: number;
@@ -38,6 +40,12 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
         jobContext.changePointer.push(...modifications);
         jobContext.totalProcessedRecords += processedRecords;
         let refreshTime = 0;
+
+        console.log('updated jobContext', {
+            totalTime: jobContext.totalTime,
+            totalProcessedRecords: jobContext.totalProcessedRecords,
+            pointers: jobContext.changePointer.length,
+        });
 
         if (totalRecords > jobContext.totalProcessedRecords) {
             await continueExecution({

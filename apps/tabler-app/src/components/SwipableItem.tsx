@@ -1,4 +1,4 @@
-// @flow
+
 import React from 'react';
 import { Animated, GestureResponderEvent, PanResponder, PanResponderGestureState, PanResponderInstance, Platform, StyleSheet, View, ViewProps } from 'react-native';
 

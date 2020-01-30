@@ -34,6 +34,13 @@ type UpdateLocationAddress = {
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const LocationResolver = {
+
+    Member: {
+        sharesLocation: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.location.isMemberSharingLocation(root.id);
+        },
+    },
+
     NearbyMember: {
         member: (root: any, _args: {}, context: IApolloContext) => {
             return context.dataSources.members.readOne(root.member);

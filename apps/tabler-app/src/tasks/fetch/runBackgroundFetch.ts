@@ -42,7 +42,7 @@ export async function runBackgroundFetch() {
 
         const updateParametersPromise = updateParameters();
         const offlineMembersPromise = updateCache(client, GetOfflineMembersQuery, 'members');
- 
+
         let locationPromise = Promise.resolve(true);
         if (await isLocationTaskEnabled()) {
             // we send a live sign here
@@ -51,8 +51,8 @@ export async function runBackgroundFetch() {
 
         const { area, showAreaBoard, showAssociationBoard } = getReduxStore().getState().filter.member;
         const areaMembersPromise = updateCache(client, GetMembersByAreasQuery, 'members', {
-            areaBoard: showAreaBoard,
-            board: showAssociationBoard,
+            areaBoard: area != null ? showAreaBoard : null,
+            board: area != null ? showAssociationBoard : null,
             areas: area != null ? _(area).keys().value() : null,
         } as MembersByAreasVariables);
 

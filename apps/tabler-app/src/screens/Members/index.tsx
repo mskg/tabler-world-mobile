@@ -49,8 +49,8 @@ class MembersQueryBase extends React.Component<Props> {
                                         fetchPolicy={this.props.fetchPolicy}
                                         variables={{
                                             areas: this.props.areas != null ? _(this.props.areas).keys().value() : null,
-                                            board: this.props.showAssociationBoard,
-                                            areaBoard: this.props.showAreaBoard,
+                                            board: this.props.areas != null ? this.props.showAssociationBoard : null,
+                                            areaBoard: this.props.areas != null ? this.props.showAreaBoard : null,
                                         }}
                                     >
                                         {({ loading, data, error, refetch }) => {

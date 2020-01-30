@@ -61,14 +61,30 @@ update
 set
     settings = jsonb_set(settings, '{favorites}', favorites)
 from (
-    select id, jsonb_agg(p.newid) favorites
-    from
-        usersettings,
-        jsonb_array_elements_text(settings->'favorites') f,
-        profile_mapping p
-    where
-        settings->'favorites' is not null
-        and f::int = p.oldid
+    select id, jsonb_agg(newid) favorites
+    from (
+        -- old new mapping
+        select u.id, p.newid as newid
+        from
+            usersettings u,
+            jsonb_array_elements_text(settings->'favorites') f,
+            profile_mapping p
+        where
+            settings->'favorites' is not null
+            and f::int = p.oldid
+
+        UNION
+
+        -- new existing
+        select u.id, p.id as newid
+        from
+            usersettings u,
+            jsonb_array_elements_text(settings->'favorites') f,
+            profiles p
+        where
+            settings->'favorites' is not null
+            and f::int = p.id
+    ) updated
     group by id
  ) newFavorites
 where

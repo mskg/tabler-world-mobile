@@ -83,11 +83,11 @@ class FilterScreenBase extends AuditedScreen<Props> {
                     <View style={{ paddingTop: 16 }} />
                     <Element
                         theme={this.props.theme}
-                        title={
+                        title={(
                             <Text style={{ color: this.props.theme.colors.accent }}>{
                                 this.props.filter == null ? I18N.Filter.hideAll : I18N.Filter.showAll
                             }</Text>
-                        }
+                        )}
                         onPress={() => this.props.toggleAll()}
                     />
 
@@ -96,52 +96,52 @@ class FilterScreenBase extends AuditedScreen<Props> {
                             title={I18N.Filter.toggleOwnTable}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleOwnTable()}
-                            right={
+                            right={(
                                 <Checkbox
                                     color={this.props.theme.colors.accent}
                                     status={this.props.showOwntable ? 'checked' : 'unchecked'}
                                     onPress={() => { this.props.toggleOwnTable(); }}
                                 />
-                            }
+                            )}
                         />
                         <Divider />
                         <Element
                             title={I18N.Filter.toggleFavorits}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleFavorites()}
-                            right={
+                            right={(
                                 <Checkbox
                                     color={this.props.theme.colors.accent}
                                     status={this.props.showFavorites ? 'checked' : 'unchecked'}
                                     onPress={() => { this.props.toggleFavorites(); }}
                                 />
-                            }
+                            )}
                         />
                         <Divider />
                         <Element
                             title={I18N.Filter.toggleAssociationBoard}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleAssociationBoard()}
-                            right={
+                            right={(
                                 <Checkbox
                                     color={this.props.theme.colors.accent}
                                     status={this.props.showAssociationBoard ? 'checked' : 'unchecked'}
                                     onPress={() => { this.props.toggleAssociationBoard(); }}
                                 />
-                            }
+                            )}
                         />
                         <Divider />
                         <Element
                             title={I18N.Filter.toggleAreaBoard}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleAreaBoard()}
-                            right={
+                            right={(
                                 <Checkbox
                                     color={this.props.theme.colors.accent}
                                     status={this.props.showAreaBoard ? 'checked' : 'unchecked'}
                                     onPress={() => { this.props.toggleAreaBoard(); }}
                                 />
-                            }
+                            )}
                         />
                     </List.Section>
 

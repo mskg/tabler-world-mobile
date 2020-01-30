@@ -12,6 +12,7 @@ export const Area = (root: any, args: any, _context: any, _info: any) => {
         id: () => 'de_' + area,
         area: () => area,
         name: () => 'Distrikt ' + area,
+        shortname: () => 'D' + area,
 
         board: () => new MockList(3),
 

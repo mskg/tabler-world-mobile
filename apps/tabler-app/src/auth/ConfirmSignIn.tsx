@@ -9,6 +9,7 @@ import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
 import { parseCodeLink } from '../helper/linking/parseCodeLink';
+import { parseLink } from '../helper/linking/parseLink';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
@@ -17,7 +18,6 @@ import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
 import { styles } from './Styles';
-import { parseLink } from '../helper/linking/parseLink';
 
 type Props = {
     theme: Theme,
@@ -113,8 +113,6 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 await client.cache.reset();
                 await getPersistor().purge();
 
-                this.props.restoreSettings();
-                this.props.storeLanguage();
                 this.props.singedIn();
             } catch (e) {
                 logger.error(e, 'failed to login');

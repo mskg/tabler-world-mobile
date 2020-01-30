@@ -129,4 +129,5 @@ export interface MemberDetailsFragment {
   companies: MemberDetailsFragment_companies[] | null;
   educations: MemberDetailsFragment_educations[] | null;
   socialmedia: MemberDetailsFragment_socialmedia | null;
+  sharesLocation: boolean | null;
 }

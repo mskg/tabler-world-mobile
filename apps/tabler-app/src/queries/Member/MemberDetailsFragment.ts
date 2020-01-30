@@ -68,6 +68,8 @@ export const MemberDetailsFragment = gql`
             facebook
             instagram
         }
+
+        sharesLocation
     }
 
     ${MemberOverviewFragment}

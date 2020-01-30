@@ -25,7 +25,7 @@ type OwnProps = {
     theme: Theme,
 };
 
-export type StateProps = {
+type StateProps = {
     loading: boolean;
 
     id: number;

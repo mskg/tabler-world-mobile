@@ -129,6 +129,7 @@ export interface Member_Member {
   companies: Member_Member_companies[] | null;
   educations: Member_Member_educations[] | null;
   socialmedia: Member_Member_socialmedia | null;
+  sharesLocation: boolean | null;
 }
 
 export interface Member {

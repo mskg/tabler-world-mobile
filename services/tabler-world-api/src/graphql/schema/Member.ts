@@ -158,6 +158,7 @@ export const Member = gql`
         companies: [Company!]
 
         availableForChat: Boolean
+        sharesLocation: Boolean
     }
 
     input MemberFilterInput {

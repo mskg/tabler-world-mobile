@@ -1,4 +1,4 @@
-import { ConnectionInfo } from 'react-native';
+import { NetInfoState } from '@react-native-community/netinfo';
 import { AuthState } from './state/AuthState';
 import { FilterState } from './state/FilterState';
 import { LocationState } from './state/LocationState';
@@ -7,7 +7,7 @@ import { SettingsState } from './state/SettingsState';
 import { SnacksState } from './state/SnacksState';
 
 export interface IAppState {
-    connection: ConnectionInfo & { offline: boolean, websocket: boolean };
+    connection: NetInfoState & { offline: boolean, websocket: boolean };
 
     updateAvailable: boolean;
     location: LocationState;
