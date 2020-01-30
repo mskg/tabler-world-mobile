@@ -126,7 +126,7 @@ export const MemberResolver = {
                 }
 
                 if (args.filter.byArea != null && args.filter.byArea.length > 0) {
-                    context.logger.log('byArea', args.filter.areas);
+                    context.logger.log('byArea', args.filter.byArea);
                     const areaMembers = await context.dataSources.members.readAreas(args.filter.byArea);
                     result.push(... (areaMembers || []));
                 }

@@ -73,7 +73,7 @@ and removed = FALSE`,
     }
 
     public async readFavorites(): Promise<any[] | null> {
-        this.context.logger.log('readAll');
+        this.context.logger.log('readFavorites');
 
         return await useDataService(
             this.context,
@@ -110,7 +110,7 @@ where id = $1`,
     }
 
     public async readAreas(areas: string[]): Promise<any[] | null> {
-        this.context.logger.log('readAll');
+        this.context.logger.log('readAreas', areas);
 
         // only overview columns here, no need to filter
         const results = await Promise.all(areas.map((a) =>
@@ -127,9 +127,9 @@ where id = $1`,
 select ${DefaultMemberColumns.join(',')}
 from profiles
 where
-        area = ANY ($1)
+        area = $1
     and removed = FALSE`,
-                            [areas],
+                            [a],
                         );
 
                         return res.rows;
@@ -143,7 +143,7 @@ where
     }
 
     public async readAll(association: string): Promise<any[] | null> {
-        this.context.logger.log('readAll');
+        this.context.logger.log('readAll', association);
 
         // only overview columns here, no need to filter
         return await writeThrough(
