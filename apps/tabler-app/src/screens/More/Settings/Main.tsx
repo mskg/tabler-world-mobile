@@ -571,7 +571,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
-                        {(isFeatureEnabled(Features.InternalInformation) || this.state.isDeveloper) && (
+                        {(isFeatureEnabled(Features.InternalInformation) && this.state.isDeveloper) && (
                             <List.Section title={'Development'}>
                                 <Element
                                     theme={this.props.theme}
