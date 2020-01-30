@@ -2,7 +2,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient, ApolloQueryResult } from 'apollo-client';
 import Constants from 'expo-constants';
 import { AsyncStorage, Platform } from 'react-native';
-import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
+import { bootstrapApollo } from '../../apollo/bootstrapApollo';
 import { GetParameters, GetParametersVariables } from '../../model/graphql/GetParameters';
 import { ParameterName, ParameterPlatform } from '../../model/graphql/globalTypes';
 import { GetParametersQuery } from '../../queries/GetParametersQuery';
