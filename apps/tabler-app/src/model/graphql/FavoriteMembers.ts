@@ -129,6 +129,7 @@ export interface FavoriteMembers_FavoriteMembers {
   companies: FavoriteMembers_FavoriteMembers_companies[] | null;
   educations: FavoriteMembers_FavoriteMembers_educations[] | null;
   socialmedia: FavoriteMembers_FavoriteMembers_socialmedia | null;
+  sharesLocation: boolean | null;
 }
 
 export interface FavoriteMembers {

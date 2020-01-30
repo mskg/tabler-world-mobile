@@ -572,6 +572,11 @@ const en = {
         off: 'Nearby Members is off. If you turn it on, other members can see in which city you are. We don\'t store your location history, only your last known location.',
         mapOff: 'You have opt-in for the map display to show a map yourself.',
 
+        sharesLocation: {
+            true: 'Shares his location with you',
+            false: 'Does not share his location',
+        },
+
         Tabs: {
             list: 'List',
             map: 'Map',

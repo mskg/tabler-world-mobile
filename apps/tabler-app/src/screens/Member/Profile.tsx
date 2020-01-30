@@ -39,6 +39,8 @@ type StateProps = {
     browserApp?: string,
     phoneApp?: string,
     emailApp?: string,
+    nearBy?: boolean;
+    offline: boolean;
 };
 
 type Props = OwnProps & StateProps & ActionSheetProps;
@@ -386,6 +388,20 @@ class ProfileBase extends React.Component<Props, State> {
                     },
                 ],
             },
+            {
+                icon: 'md-pin',
+                values: [
+                    {
+                        field: I18N.NearbyMembers.title,
+                        text:
+                            this.props.nearBy
+                                ? member.sharesLocation
+                                    ? I18N.NearbyMembers.sharesLocation.true
+                                    : I18N.NearbyMembers.sharesLocation.false
+                                : undefined,
+                    },
+                ],
+            },
         ]
             .map((s: Section) => ({
                 ...s,
@@ -431,6 +447,8 @@ export const Profile = connect(
         browserApp: state.settings.browserApp,
         phoneApp: state.settings.phoneApp,
         emailApp: state.settings.emailApp,
+        nearBy: state.settings.nearbyMembers,
+        offline: state.connection.offline,
     }),
     null,
 )(

@@ -517,6 +517,11 @@ const de: I18NType = {
         off: '\'Mitglieder in der Nähe\' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt in der du dich befindest. Wir speichern keine Standorthistorie.',
         mapOff: 'Um andere Mitglieder auf der Karte zu sehen musst Du Dich selbst sichtbar machen.',
 
+        sharesLocation: {
+            true: 'Teilt seinen Standort mit Dir',
+            false: 'Teilt seinen Standort nicht',
+        },
+
         Tabs: {
             list: 'Liste',
             map: 'Karte',

@@ -2,9 +2,9 @@ import { call, spawn } from 'redux-saga/effects';
 import { Categories, Logger } from '../helper/Logger';
 import { watchNearbyMembers } from './nearby/watchNearbyMembers';
 import { networkSaga } from './network';
-import { getParameters } from './parameters/getParameters';
 import { pushTokenSaga } from './pushTokenSaga';
 import { settingsSaga } from './settingsSaga';
+import { syncAllSettings } from './startup/syncAllSettings';
 import { appStateSaga } from './state';
 import { userSaga } from './userSaga';
 
@@ -46,7 +46,7 @@ export function* rootSaga() {
         settingsSaga,
         appStateSaga,
         networkSaga,
-        getParameters,
+        syncAllSettings,
         watchNearbyMembers,
     ];
 

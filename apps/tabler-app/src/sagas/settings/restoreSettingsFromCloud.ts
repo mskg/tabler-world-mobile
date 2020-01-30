@@ -14,7 +14,7 @@ import { NotificationSettings } from './NotificationSettings';
 /**
  * When a favorite is toggled, mark the record as modified
  */
-export function* restoreSettingsFromCloud(_a: typeof settingsActions.restoreSettings.shape) {
+export function* restoreSettingsFromCloud(/* _a: typeof settingsActions.restoreSettings.shape */) {
     Audit.trackEvent(AuditEventName.RestoreSettings);
     logger.debug('Restoring settings');
 

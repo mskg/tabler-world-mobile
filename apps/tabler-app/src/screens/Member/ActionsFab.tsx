@@ -22,6 +22,7 @@ import { startConversation } from '../../redux/actions/navigation';
 type Props = {
     top?: number,
 
+    user?: string,
     member: Member_Member
     theme: Theme,
 
@@ -81,7 +82,10 @@ class ActionsFabBase extends React.Component<Props> {
 
     render() {
         const isFav = testIsFavorite(this.props.member, this.props.favorites);
-        const canChat = this.props.member.availableForChat;
+
+        // we cannot chat with ourself
+        const canChat = this.props.member.availableForChat
+            && this.props.user !== this.props.member.rtemail;
 
         return (
             // <Portal>
@@ -134,7 +138,12 @@ class ActionsFabBase extends React.Component<Props> {
 }
 
 export const ActionsFab = connect(
-    (state: IAppState) => ({ favorites: state.filter.member.favorites, chatEnabled: state.settings.notificationsOneToOneChat == null ? true : state.settings.notificationsOneToOneChat }),
+    (state: IAppState) => ({
+        favorites: state.filter.member.favorites,
+        chatEnabled: state.settings.notificationsOneToOneChat == null
+            ? true : state.settings.notificationsOneToOneChat,
+        user: state.auth.username,
+    }),
     {
         toggleFavorite,
         startConversation,
