@@ -446,7 +446,6 @@ const en = {
             version: 'Version',
             lastSync: 'Last Synchronization',
             channel: 'Distribution Channel',
-            pushtoken: 'Push Token',
             syncFavorites: 'Synchronize Favorites',
             syncOwnTable: 'Synchronize own Table\'s Members',
             sortOrder: 'Sort Order',

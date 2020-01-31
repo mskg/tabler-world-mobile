@@ -28,7 +28,8 @@
     "peerDependencies": {
         "apollo-server-core": "*",
         "aws-lambda": "*",
-        "aws-lambda-graphql": "*"
+        "aws-lambda-graphql": "*",
+        "subscriptions-transport-ws": "*"
     },
     "dependencies": {
         "@mskg/tabler-world-aws": "0.0.1",

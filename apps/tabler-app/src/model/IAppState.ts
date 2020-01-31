@@ -1,5 +1,6 @@
 import { NetInfoState } from '@react-native-community/netinfo';
 import { AuthState } from './state/AuthState';
+import { ChatState } from './state/ChatState';
 import { FilterState } from './state/FilterState';
 import { LocationState } from './state/LocationState';
 import { SearchHistoryState } from './state/SearchHistoryState';
@@ -20,5 +21,6 @@ export interface IAppState {
     filter: FilterState;
 
     auth: AuthState;
-    // parameter: ParameterState,
+
+    chat: ChatState;
 }

@@ -130,7 +130,7 @@ export class WebsocketEventManager {
                         },
                     }],
                 }),
-                500,
+                1000,
             );
         }
 

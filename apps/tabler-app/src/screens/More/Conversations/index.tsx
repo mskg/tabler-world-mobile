@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { ChatDisabledBanner } from '../../../components/ChatDisabledBanner';
+import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { ITEM_HEIGHT } from '../../../components/Member/Dimensions';
 import { EmptyComponent } from '../../../components/NoResults';
 import { ScreenWithHeader } from '../../../components/Screen';
@@ -82,7 +83,7 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                     fetchPolicy="cache-and-network"
                 >
                     {({ data, error, loading, refetch, fetchMore }) => {
-                        if (error) return null;
+                        if (error) throw error;
 
                         return (
                             <FlatList
@@ -143,12 +144,16 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
     }
 }
 
-export const ConversationsScreen = withTheme(connect(
-    (state: IAppState) => ({ chatEnabled: state.settings.notificationsOneToOneChat || state.settings.notificationsOneToOneChat == null }),
-    {
-        showConversation,
-        startConversation: searchConversationPartner,
-    })(ConversationsScreenBase));
+export const ConversationsScreen =
+    withWhoopsErrorBoundary(
+        withTheme(connect(
+            (state: IAppState) => ({ chatEnabled: state.settings.notificationsOneToOneChat || state.settings.notificationsOneToOneChat == null }),
+            {
+                showConversation,
+                startConversation: searchConversationPartner,
+            })(ConversationsScreenBase),
+        ),
+    );
 
 const styles = StyleSheet.create({
     container: {

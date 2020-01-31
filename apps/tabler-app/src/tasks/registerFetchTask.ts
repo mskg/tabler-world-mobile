@@ -22,7 +22,7 @@ export async function registerFetchTask() {
                 logger.debug('Background execution allowed');
 
                 const settings = await getParameterValue<FetchParameters>(ParameterName.fetch);
-                await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME, settings);
+                await BackgroundFetch.registerTaskAsync(FETCH_TASKNAME, settings.task);
 
                 logger.debug('Registered task', FETCH_TASKNAME);
             }

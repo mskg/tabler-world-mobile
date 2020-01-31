@@ -46,6 +46,9 @@ export async function gqlOperation(context: ProtocolContext, operation: Operatio
             rootValue: operation,
             variableValues: variables,
             contextValue: {
+                clientInfo: {
+                    version: connection.context.version,
+                },
                 cache: cacheInstance,
                 dataSources: dataSources(),
                 requestCache: {},

@@ -42,6 +42,7 @@ export class Categories {
         static readonly Snacks = Categories.SagaRoot + '/Snacks';
         static readonly AppState = Categories.SagaRoot + '/AppState';
         static readonly Data = Categories.SagaRoot + '/Data';
+        static readonly Chat = Categories.SagaRoot + '/Chat';
     };
 
     static ReduxComponent = class {

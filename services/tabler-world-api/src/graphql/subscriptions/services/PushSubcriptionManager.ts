@@ -39,7 +39,7 @@ export class PushSubcriptionManager {
         }).promise();
     }
 
-    public async getSubscribers(conversation: string): Promise<number[] | undefined> {
+    public async getSubscribers(conversation: string): Promise<number[]> {
         logger.log(`[${conversation}]`, 'getSubscribers');
 
         // this is a one:one conversation

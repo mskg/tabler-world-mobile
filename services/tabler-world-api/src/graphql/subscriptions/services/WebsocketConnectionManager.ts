@@ -6,7 +6,7 @@ import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { awsGatewayClient } from '../aws/awsGatewayClient';
 import { dynamodb as client } from '../aws/dynamodb';
 import { ClientLostError } from '../types/ClientLostError';
-import { IConnection } from '../types/IConnection';
+import { IConnection, IConnectionContext } from '../types/IConnection';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { CONNECTIONS_TABLE, FieldNames } from './Constants';
 
@@ -41,7 +41,7 @@ export class WebsocketConnectionManager {
         }).promise();
     }
 
-    public async authorize(connectionId: string, member: IPrincipal): Promise<void> {
+    public async authorize(connectionId: string, member: IPrincipal, details: IConnectionContext): Promise<void> {
         logger.log(`[${connectionId}]`, 'authorize', member);
 
         const params = getWebsocketParams();
@@ -52,6 +52,7 @@ export class WebsocketConnectionManager {
                 [FieldNames.connectionId]: connectionId,
                 [FieldNames.member]: member.id,
                 [FieldNames.principal]: member,
+                [FieldNames.context]: details,
                 ttl: Math.floor(Date.now() / 1000) + (await params).ttlConnection,
             } as IConnection,
 

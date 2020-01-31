@@ -393,7 +393,6 @@ const de: I18NType = {
             version: 'Version',
             lastSync: 'Letzte Synchronisierung',
             channel: 'Kanal',
-            pushtoken: 'Push Token',
             syncFavorites: 'Favoriten synchronisieren',
             syncOwnTable: 'Tischmitglieder synchronisieren',
             sortOrder: 'Sortierung',

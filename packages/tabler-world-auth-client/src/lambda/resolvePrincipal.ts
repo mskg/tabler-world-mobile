@@ -1,10 +1,13 @@
-import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { IDataService } from '@mskg/tabler-world-rds-client';
 import { AuthenticationError } from 'apollo-server-core';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import { isDebugMode } from '../debug/isDebugMode';
+import { resolveDebugPrincipal } from '../debug/resolveDebugPrincipal';
+import { lookupPrincipal } from '../sql/lookupPrincipal';
+import { Family } from '../types/Family';
 import { IPrincipal } from '../types/IPrincipal';
-import { Family } from "../types/Family";
 
-export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
+export async function resolvePrincipal(client: IDataService, event: APIGatewayProxyEvent): Promise<IPrincipal> {
     const authorizer = event.requestContext.authorizer;
     if (authorizer == null) {
         throw new AuthenticationError('Authorizer missing');
@@ -12,12 +15,9 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
 
     let resolvedPrincipal: IPrincipal;
 
-    if (EXECUTING_OFFLINE && authorizer.principalId === 'offlineContext_authorizer_principalId') {
-        console.warn('********* AUTHENTICATION DEBUG MODE *********');
-
-        // single quotes are not allowed in JSON, but encoding in ENV is easier
-        const user = (process.env.API_DEBUG_USER || '').replace(/'/g, '"');
-        resolvedPrincipal = JSON.parse(user) as IPrincipal;
+    if (isDebugMode(event)) {
+        console.warn(`********* AUTHENTICATION DEBUG MODE *********`);
+        resolvedPrincipal = resolveDebugPrincipal(event.headers);
     } else {
         const { version, area, club, association, id, email, family } = authorizer;
 
@@ -49,7 +49,6 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
         || typeof (resolvedPrincipal.area) != 'string'
         || typeof (resolvedPrincipal.club) != 'string'
         || typeof (resolvedPrincipal.id) != 'number'
-        || typeof (resolvedPrincipal.id) != 'number'
         || resolvedPrincipal.id <= 0
         || resolvedPrincipal.area === ''
         || resolvedPrincipal.club === '') {
@@ -66,6 +65,12 @@ export function resolvePrincipal(event: APIGatewayProxyEvent): IPrincipal {
         }
     }
 
+    // we must read everything again, as the ids changed
+    // this is only valid during migration as we receive old tokens
+    if (resolvedPrincipal.version !== '1.2') {
+        console.warn('new context generated for', resolvedPrincipal.email);
+        return await lookupPrincipal(client, resolvedPrincipal.email);
+    }
 
     return resolvedPrincipal;
 }

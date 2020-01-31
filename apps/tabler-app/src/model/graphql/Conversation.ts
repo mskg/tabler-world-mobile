@@ -67,6 +67,7 @@ export interface Conversation_Conversation_messages {
 export interface Conversation_Conversation {
   __typename: "Conversation";
   id: string;
+  hasUnreadMessages: boolean;
   members: Conversation_Conversation_members[];
   messages: Conversation_Conversation_messages;
 }

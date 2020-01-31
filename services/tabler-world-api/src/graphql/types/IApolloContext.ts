@@ -6,6 +6,10 @@ import { IDataSources } from '../dataSources';
 import { IPrincipal } from './IPrincipal';
 
 export interface IApolloContext {
+    clientInfo: {
+        version: string;
+    };
+
     lambdaEvent?: APIGatewayProxyEvent;
     lambdaContext?: Context;
 

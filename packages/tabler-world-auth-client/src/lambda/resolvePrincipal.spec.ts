@@ -23,7 +23,8 @@ describe('Authorizer', () => {
         // @ts-ignore
         delete ctx.requestContext.authorizer[id];
 
-        return () => resolvePrincipal(ctx);
+        // @ts-ignore
+        return () => resolvePrincipal(null, ctx);
     }
 
     for (const key in baseCtx.requestContext.authorizer) {
@@ -37,7 +38,9 @@ describe('IPrincipal', () => {
     for (const key in baseCtx.requestContext.authorizer) {
         test(key, () => {
             const ctx = JSON.parse(JSON.stringify(baseCtx));
-            const result = resolvePrincipal(ctx);
+
+            // @ts-ignore
+            const result = resolvePrincipal(null, ctx);
 
             // @ts-ignore
             expect(result[key]).toEqual(ctx.requestContext.authorizer[key]);

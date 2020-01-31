@@ -48,6 +48,8 @@ export class SubscribeToConversationUpdates extends React.PureComponent {
                     conversations = temp.data;
                 }
 
+                logger.log('Marking conversation', data.conversationUpdate.id, ' unread!', conversations);
+
                 const nodes = conversations ? conversations.Conversations.nodes : [];
                 client.writeQuery<GetConversations>({
                     query: GetConversationsQuery,
