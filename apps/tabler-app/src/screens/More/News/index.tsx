@@ -54,6 +54,8 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                 // );
             },
         });
+
+        this.audit.submit();
     }
 
     _renderItem = (params) => {

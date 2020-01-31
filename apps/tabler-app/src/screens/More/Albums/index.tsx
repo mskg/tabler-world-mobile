@@ -41,6 +41,8 @@ class AlbumsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Tap
     }
 
     componentDidMount() {
+        super.componentDidMount();
+        
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
                 requestAnimationFrame(

@@ -19,6 +19,7 @@ import { IAppState } from '../../model/IAppState';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../redux/actions/navigation';
 import { ConversationListItem } from './ConversationListItem';
+import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -38,12 +39,26 @@ type DispatchPros = {
     showConversation: typeof showConversation,
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<TapOnNavigationParams>;
 
 // tslint:disable-next-line: export-name
 export class ConversationsScreenBase extends AuditedScreen<Props, State> {
+    _flatList!: FlatList<any> | null;
+
     constructor(props) {
         super(props, AuditScreenName.Conversations);
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this._flatList?.scrollToOffset({
+                        offset: 0, animated: true,
+                    }),
+                );
+            },
+        });
     }
 
     _renderItem = ({ item: l }): React.ReactElement | null => {
@@ -87,6 +102,8 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
 
                         return (
                             <FlatList
+                                ref={(r) => this._flatList = r}
+
                                 scrollEventThrottle={16}
                                 removeClippedSubviews={Platform.OS !== 'ios'}
                                 contentContainerStyle={styles.container}

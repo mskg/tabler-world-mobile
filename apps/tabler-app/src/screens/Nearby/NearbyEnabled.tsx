@@ -1,6 +1,5 @@
 import * as Location from 'expo-location';
 import { PureComponent } from 'react';
-import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { IAppState } from '../../model/IAppState';
 
@@ -16,7 +15,7 @@ type StateProps = {
     currentLocation?: Location.LocationData,
 };
 
-type Props = OwnProps & StateProps & NavigationInjectedProps<unknown>;
+type Props = OwnProps & StateProps;
 
 class NearbyEnabledBase extends PureComponent<Props, State> {
     render() {

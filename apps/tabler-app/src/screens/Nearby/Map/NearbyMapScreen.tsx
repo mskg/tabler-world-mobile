@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
+import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { I18N } from '../../../i18n/translation';
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../model/IAppState';
@@ -44,7 +45,7 @@ type DispatchPros = {
     showNearbySettings: typeof showNearbySettings,
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<unknown>;
+type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<TapOnNavigationParams>;
 
 class NearbyMapScreenBase extends AuditedScreen<Props, State> {
     mapRef: MapView | null = null;
@@ -59,11 +60,15 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
+
         if (this.props.nearbyMap) {
             this._getLocationAsync();
         }
 
-        this.audit.submit();
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => requestAnimationFrame(this._fitMap),
+        });
     }
 
     _onMapReady = () => this.setState({ marginBottom: 0 });

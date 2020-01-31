@@ -87,6 +87,8 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
+
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
                 requestAnimationFrame(

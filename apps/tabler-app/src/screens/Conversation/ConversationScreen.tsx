@@ -111,7 +111,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.medium, fontSize: Platform.OS === 'ios' ? 17 : 20 }}>{this.getTitle()}</Text>
                 </View>
             ),
-        }); 
+        });
     }
 
     defaultIcon() {

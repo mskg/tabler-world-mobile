@@ -8,15 +8,16 @@ import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
+import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { I18N } from '../../../i18n/translation';
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../model/IAppState';
 import { showLocationHistory, showProfile } from '../../../redux/actions/navigation';
+import { NearbyEnabled } from '../NearbyEnabled';
 import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
 import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { NearbyMemberItem } from './NearbyMemberItem';
-import { NearbyEnabled } from '../NearbyEnabled';
 
 type State = {
 };
@@ -36,11 +37,27 @@ type DispatchPros = {
     showLocationHistory: typeof showLocationHistory;
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<unknown>;
+type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<TapOnNavigationParams>;
 
 class NearbyListScreenBase extends AuditedScreen<Props, State> {
+    scrollView!: ScrollView | null;
+
     constructor(props) {
         super(props, AuditScreenName.NearbyMembersList);
+    }
+
+    componentDidMount() {
+        super.componentDidMount();
+
+        this.props.navigation.setParams({
+            tapOnTabNavigator: () => {
+                requestAnimationFrame(
+                    () => this.scrollView?.scrollTo({
+                        y: 0, x: 0, animated: true,
+                    }),
+                );
+            },
+        });
     }
 
     makeTitle(location, country) {
@@ -55,7 +72,7 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
         return (
             <NearbyEnabled>
                 <View style={{ flex: 1, backgroundColor: this.props.theme.colors.background }}>
-                    <ScrollView>
+                    <ScrollView ref={(r) => this.scrollView = r}>
                         <Placeholder previewComponent={<MemberListPlaceholder />} ready={this.props.members != null}>
                             <MeLocation now={Date.now()} />
 
