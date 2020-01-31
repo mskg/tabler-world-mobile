@@ -191,6 +191,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export default connect(
     (state: IAppState) => ({
         authState: state.auth.signinState,

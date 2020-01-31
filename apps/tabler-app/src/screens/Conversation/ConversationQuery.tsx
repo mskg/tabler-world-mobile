@@ -17,6 +17,7 @@ import { IConversationParams } from '../../redux/actions/navigation';
 import { ChatMessageEventId } from '../../sagas/chat/ChatMessageEventId';
 import { mergeMessages } from '../../sagas/chat/mergeMessages';
 import { IChatMessage } from './IChatMessage';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 
 const logger = new Logger(Categories.Screens.Conversation);
 
@@ -130,7 +131,11 @@ class ConversationQueryBase extends React.Component<Props & NavigationInjectedPr
     } as IChatMessage)
 
     _subscribeToMore = (subscribeToMore: (options: SubscribeToMoreOptions<Conversation, newChatMessageVariables, newChatMessage>) => () => void) => {
-        return () => {
+        return async () => {
+            if (await isDemoModeEnabled()) {
+                return;
+            }
+
             this.unsubscribe = subscribeToMore({
                 document: newChatMessageSubscription,
                 variables: {

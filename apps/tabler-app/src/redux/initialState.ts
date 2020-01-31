@@ -11,7 +11,8 @@ export const INITIAL_STATE: IAppState = {
         isInternetReachable: false,
 
         offline: true,
-        websocket: false,
+        // required for demo mode
+        websocket: true,
 
         details: null,
     },

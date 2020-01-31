@@ -3,9 +3,10 @@ import { markFailed, removeMessage } from '../../redux/actions/chat';
 import { getReduxStore } from '../../redux/getRedux';
 import { logger } from './logger';
 import { sendMessage } from './sendMessage';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 
 export async function sendPendingChatMessages() {
-    if (!isFeatureEnabled(Features.Chat)) {
+    if (!isFeatureEnabled(Features.Chat) || (await isDemoModeEnabled())) {
         return;
     }
 

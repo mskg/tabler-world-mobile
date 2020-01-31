@@ -6,6 +6,7 @@ import { conversationUpdate } from '../../../model/graphql/conversationUpdate';
 import { GetConversations } from '../../../model/graphql/GetConversations';
 import { conversationUpdateSubscription } from '../../../queries/Conversations/conversationUpdateSubscription';
 import { GetConversationsQuery } from '../../../queries/Conversations/GetConversationsQuery';
+import { isDemoModeEnabled } from '../../../helper/demoMode';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -18,8 +19,8 @@ export class SubscribeToConversationUpdates extends React.PureComponent {
         }
     }
 
-    componentDidMount() {
-        if (!isFeatureEnabled(Features.Chat)) {
+    async componentDidMount() {
+        if (!isFeatureEnabled(Features.Chat) || (await isDemoModeEnabled())) {
             return;
         }
 
