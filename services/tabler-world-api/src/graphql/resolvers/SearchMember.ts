@@ -135,8 +135,23 @@ where
             // we need some chat partners
             if (args.query.availableForChat && !EXECUTING_OFFLINE) {
                 parameters.push(context.principal.id);
-                filters.push(`id in (select id from usersettings where array_length(tokens, 1) > 0 and id <> $${parameters.length})`);
+                filters.push(
+                    `id in (
+select
+    id
+from
+    usersettings
+where
+        id <> $${parameters.length}
+    and (
+            settings->'notifications'->>'personalChat' is null
+        or  settings->'notifications'->>'personalChat' = 'true'
+    )
+    and array_length(tokens, 1) > 0
+)`,
+                );
             }
+
 
             // context.logger.log("Query is", filters.join(' AND '));
 
