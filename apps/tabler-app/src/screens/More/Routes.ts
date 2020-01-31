@@ -1,5 +1,6 @@
 export enum Routes {
     Menu = 'menu',
+    
     Settings = 'settings',
     NearbySettings = 'settings/nearby',
     Nearby = 'nearby',
@@ -8,4 +9,7 @@ export enum Routes {
     LocationHistory = 'locationhistory',
     JobHistory = 'JobHistory',
     Conversations = 'conversations',
+
+    News = 'news',
+    Albums = 'albums',
 }

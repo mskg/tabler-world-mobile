@@ -10,7 +10,6 @@ export enum Features {
     BackgroundFetch,
     SendToAdressbook,
     ClubMap,
-    BackgroundLocation,
     LocationHistory,
     DarkModeSwitch,
     Chat,
@@ -26,7 +25,7 @@ export function isFeatureEnabled(feature: Features) {
         return true;
     }
 
-    if (feature === Features.BackgroundLocation || feature === Features.ClubMap) {
+    if (feature === Features.ClubMap) {
         return true;
     }
 

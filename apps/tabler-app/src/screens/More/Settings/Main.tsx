@@ -25,6 +25,7 @@ import { SettingsState } from '../../../model/state/SettingsState';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
+import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
 import { DeveloperSection } from './DeveloperSection';
 import { Element } from './Element';
@@ -522,18 +523,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        {isFeatureEnabled(Features.BackgroundLocation) && (
-                            <List.Section title={I18N.Settings.sections.locationservices}>
-                                <Divider />
-                                <NextScreen
-                                    theme={this.props.theme}
-                                    text={I18N.Settings.fields.nearby}
-                                    onPress={
-                                        () => this.props.showNearbySettings()}
-                                />
-                                <Divider />
-                            </List.Section>
-                        )}
+                        <List.Section title={I18N.Settings.sections.locationservices}>
+                            <Divider />
+                            <NextScreen
+                                theme={this.props.theme}
+                                text={I18N.Settings.fields.nearby}
+                                onPress={
+                                    () => this.props.navigation.navigate(ParentRoutes.NearbySettings)
+                                }
+                            />
+                            <Divider />
+                        </List.Section>
 
                         {this.state.showExperiments &&
                             <List.Section title={I18N.Settings.sections.experiments}>

@@ -13,12 +13,13 @@ import { SearchScreen } from '../screens/Search';
 import { SearchConversationPartnerScreen } from '../screens/Search/SearchConversationPartnerScreen';
 import { SearchStructureScreen } from '../screens/SearchStructure';
 import StructureScreen from '../screens/Structure';
-import { ExperimentsNavigator } from './ExperimentsNavigator';
-import { HomeRoutes } from './Routes';
+import { HomeRoutes } from './HomeRoutes';
+import { MainBottomNavigation } from './MainBottomNavigation';
+import { NearbySettingsScreen } from '../screens/More/Settings/Nearby';
 
 const Navigator = createAppContainer(createStackNavigator(
     {
-        [HomeRoutes.Home]: { screen: ExperimentsNavigator },
+        [HomeRoutes.Home]: { screen: MainBottomNavigation },
         [HomeRoutes.Member]: { screen: MemberScreen },
         [HomeRoutes.Search]: { screen: SearchScreen },
         [HomeRoutes.Filter]: { screen: FilterScreen },
@@ -32,6 +33,8 @@ const Navigator = createAppContainer(createStackNavigator(
         [HomeRoutes.StartConversation]: { screen: StartConversationScreen },
         [HomeRoutes.Structure]: { screen: StructureScreen },
         [HomeRoutes.SearchStructure]: { screen: SearchStructureScreen },
+        [HomeRoutes.NearbySettings]: { screen: NearbySettingsScreen },
+
     },
     {
         initialRouteName: HomeRoutes.Home,

@@ -141,12 +141,12 @@ const de: I18NType = {
     },
 
     Albums: {
-        title: 'Alben',
+        title: 'Fotoalben',
         details: 'Album anzeigen',
     },
 
     News: {
-        title: 'Aktuelles',
+        title: 'Neuigkeiten',
     },
 
     Album: {
@@ -500,6 +500,7 @@ const de: I18NType = {
     },
 
     NearbyMembers: {
+        navigation: 'In der Nähe',
         title: 'Mitglieder in der Nähe',
         location: 'Dein Standort',
 

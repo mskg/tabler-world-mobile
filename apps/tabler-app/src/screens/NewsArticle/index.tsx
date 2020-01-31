@@ -18,7 +18,7 @@ import { I18N } from '../../i18n/translation';
 import { NewsArticle, NewsArticleVariables } from '../../model/graphql/NewsArticle';
 import { GetNewsArticleQuery } from '../../queries/News/GetNewsArticleQuery';
 import { INewsArticleParams, showAlbum } from '../../redux/actions/navigation';
-import { styles } from '../News/Styles';
+import { styles } from '../More/News/Styles';
 
 // const logger = new Logger(Categories.Screens.News);
 

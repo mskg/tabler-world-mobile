@@ -72,6 +72,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                 fetchMore({
                                     variables: {
                                         text: this.props.query,
+                                        availableForChat: this.props.availableForChat,
                                         after: result ? result.pageInfo.endCursor : null,
                                         associations: this.props.filterTags.filter((f: FilterTag) => f.type === 'association').map((f: FilterTag) => f.value),
                                         areas: this.props.filterTags.filter((f: FilterTag) => f.type === 'area').map((f: FilterTag) => f.value),

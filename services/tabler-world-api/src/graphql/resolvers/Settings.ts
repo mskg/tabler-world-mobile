@@ -1,3 +1,4 @@
+import { PushNotificationService } from '@mskg/tabler-world-push-client';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { keys, remove, uniq } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
@@ -61,6 +62,21 @@ WHERE id = $1`,
     },
 
     Mutation: {
+        testPushNotifications: async (_root: any, _args: QuerySettings, context: IApolloContext) => {
+            const service = new PushNotificationService();
+            await service.send([{
+                member: context.principal.id,
+                reason: 'test',
+                title: 'Whohooo!',
+                body: 'You\'re all set.',
+                payload: {
+                    reason: 'test',
+                    title: 'Whohooo!',
+                    body: 'You\'re all set.',
+                },
+            }]);
+        },
+
         removeSetting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
             return useDataService(
                 context,

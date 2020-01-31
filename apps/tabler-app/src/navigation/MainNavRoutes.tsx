@@ -1,13 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { I18N } from '../i18n/translation';
-import { AlbumsScreen } from '../screens/Albums';
+import { ConversationsScreen } from '../screens/Conversations';
 import { MembersScreen } from '../screens/Members';
 import MoreScreen from '../screens/More';
-import { NewsScreen } from '../screens/News';
+import { NearbyScreen } from '../screens/Nearby';
 import StructureScreen from '../screens/Structure';
-import { WorldScreen } from '../screens/World';
-import { MainRoutes } from './Routes';
+import { MainRoutes } from './MainRoutes';
 
 export const MainNavRoutes = {
     [MainRoutes.Members]: {
@@ -26,27 +25,19 @@ export const MainNavRoutes = {
         },
     },
 
-    [MainRoutes.News]: {
-        screen: NewsScreen,
+    [MainRoutes.Conversations]: {
+        screen: ConversationsScreen,
         navigationOptions: {
-            tabBarLabel: I18N.News.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-paper" />),
+            tabBarLabel: I18N.Conversations.title,
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-chatboxes" />),
         },
     },
 
-    [MainRoutes.Albums]: {
-        screen: AlbumsScreen,
+    [MainRoutes.NearBy]: {
+        screen: NearbyScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Albums.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-image" />),
-        },
-    },
-
-    [MainRoutes.World]: {
-        screen: WorldScreen,
-        navigationOptions: {
-            tabBarLabel: I18N.World.tab,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-globe" />),
+            tabBarLabel: I18N.NearbyMembers.navigation,
+            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-navigate" />),
         },
     },
 

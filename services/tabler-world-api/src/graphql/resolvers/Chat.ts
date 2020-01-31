@@ -223,7 +223,7 @@ export const ChatResolver = {
             return S3.getSignedUrl('getObject', {
                 Bucket: UPLOAD_BUCKET,
                 Key: root.image,
-                Expires: params.ttl,
+                Expires: params.attachmentsTTL,
             });
         },
     },
@@ -365,7 +365,7 @@ export const ChatResolver = {
 
                     sender: principalId,
                 },
-                ttl: params.ttl,
+                ttl: params.messageTTL,
                 trackDelivery: true,
             });
 

@@ -2,7 +2,6 @@ import Constants from 'expo-constants';
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps } from 'react-navigation';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { Categories, Logger } from '../../../helper/Logger';
 import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/PRESERVE_CONSOLE';
@@ -36,7 +35,7 @@ type StateProps = {
 type DispatchPros = {
 };
 
-type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+type Props = OwnProps & StateProps & DispatchPros;
 
 function formatDate(nbr: string | null) {
     if (!nbr) return null;

@@ -528,7 +528,7 @@ resources:
           Rules:
             - Id: removal-${self:custom.bucket}
               Status: Enabled
-              ExpirationInDays: '5'
+              ExpirationInDays: '17'
 
     connectionsTable:
       Type: AWS::DynamoDB::Table

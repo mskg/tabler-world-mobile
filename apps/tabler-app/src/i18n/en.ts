@@ -555,6 +555,7 @@ const en = {
     },
 
     NearbyMembers: {
+        navigation: 'Nearby',
         title: 'Nearby Members',
         location: 'Your location',
 
@@ -582,6 +583,7 @@ const en = {
         },
 
         Settings: {
+            navigation: 'Nearby Members',
             title: 'Nearby Members',
             on: {
                 title: 'Nearby Members',
@@ -609,7 +611,7 @@ const en = {
     },
 
     Conversations: {
-        title: 'Conversations',
+        title: 'Chats',
         network: 'Waiting for network...',
         copy: 'Copy',
         retry: 'Retry',

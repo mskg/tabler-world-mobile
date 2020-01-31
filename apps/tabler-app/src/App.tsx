@@ -24,7 +24,7 @@ import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
-import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
+import { SubscribeToConversationUpdates } from './screens/Conversations/SubscribeToConversationUpdates';
 import { registerFetchTask } from './tasks/registerFetchTask';
 import { registerLocationTask } from './tasks/registerLocationTask';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
@@ -54,10 +54,8 @@ if (isFeatureEnabled(Features.BackgroundFetch)) {
     registerFetchTask();
 }
 
-if (isFeatureEnabled(Features.BackgroundLocation)) {
-    logger.log('Bootstrapping background-location');
-    registerLocationTask();
-}
+logger.log('Bootstrapping background-location');
+registerLocationTask();
 
 fix2940();
 // useScreens();

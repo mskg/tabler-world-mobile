@@ -2,7 +2,7 @@ import { NavigationActions } from 'react-navigation';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { I18N } from '../../i18n/translation';
 import { AssociationName } from '../../model/graphql/AssociationName';
-import { HomeRoutes } from '../../navigation/Routes';
+import { HomeRoutes } from '../../navigation/HomeRoutes';
 import { GetAssociationNameQuery } from '../../queries/Structure/GetAssociationNameQuery';
 import { Routes as MoreRoutes } from '../../screens/More/Routes';
 import { Routes } from '../../screens/More/Settings/Routes';
@@ -73,8 +73,8 @@ export const showSettings = () => NavigationActions.navigate({
 });
 
 export const showNearbySettings = () => NavigationActions.navigate({
-    routeName: MoreRoutes.NearbySettings,
-    key: MoreRoutes.NearbySettings,
+    routeName: HomeRoutes.NearbySettings,
+    key: HomeRoutes.NearbySettings,
 });
 
 export const showNotificationSettings = () => NavigationActions.navigate({

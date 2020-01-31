@@ -1,6 +1,9 @@
 import LRU from 'lru-cache';
 import { mapName } from './mapName';
-import { Param_Api, Param_Database, Param_Nearby, Param_TTLS } from './types';
+import { Param_Api } from './types/Param_Api';
+import { Param_Database } from './types/Param_Database';
+import { Param_Nearby } from './types/Param_Nearby';
+import { Param_TTLS } from './types/Param_TTLS';
 
 export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('tw-api'), JSON.stringify({

@@ -4,6 +4,7 @@ import DataLoader from 'dataloader';
 import { conversationManager } from '../subscriptions';
 import { Conversation, UserConversation } from '../subscriptions/services/ConversationManager';
 import { IApolloContext } from '../types/IApolloContext';
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 
 export class ConversationsDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
@@ -32,6 +33,8 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
 
         this.chatProperties = new DataLoader<number, any>(
             (ids: ReadonlyArray<number>) => useDataService(this.context, async (client) => {
+                if (EXECUTING_OFFLINE) return ids;
+
                 const res = await client.query(
                     `
  select
@@ -40,13 +43,14 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
     usersettings
  where
         id = ANY($1)
+    and id <> $2
     and (
             settings->'notifications'->>'personalChat' is null
         or  settings->'notifications'->>'personalChat' = 'true'
     )
     and array_length(tokens, 1) > 0
  `,
-                    [ids],
+                    [ids, this.context.principal.id],
                 );
 
                 return ids.map((id) => res.rows.find((r) => r.id === id) != null);

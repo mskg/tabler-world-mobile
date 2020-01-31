@@ -11,7 +11,7 @@ import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
 import { StartConversation, StartConversationVariables } from '../../model/graphql/StartConversation';
-import { HomeRoutes } from '../../navigation/Routes';
+import { HomeRoutes } from '../../navigation/HomeRoutes';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { StartConversationMutation } from '../../queries/Conversations/StartConversationMutation';
 import { IConversationParams, showConversation } from '../../redux/actions/navigation';

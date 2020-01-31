@@ -1,4 +1,5 @@
 import * as Permissions from 'expo-permissions';
+import gql from 'graphql-tag';
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
@@ -8,6 +9,7 @@ import { ActionNames } from '../../../analytics/ActionNames';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
+import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { FullScreenLoading } from '../../../components/Loading';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { Categories, Logger } from '../../../helper/Logger';
@@ -20,6 +22,7 @@ import { registerForPushNotifications } from '../../../tasks/registerForPushNoti
 import { Action } from './Action';
 import { Element } from './Element';
 import { styles } from './Styles';
+import Constants from 'expo-constants';
 
 
 const logger = new Logger(Categories.Screens.Setting);
@@ -51,16 +54,6 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
         super(props, AuditScreenName.NotificationSettings);
     }
 
-    // componentDidMount() {
-    //     this.buildSMSOptions();
-    //     this.buildMail();
-    //     this.buildWebOptions();
-    //     this.buildCallOptions();
-    //     this.checkDemoMode();
-
-    //     this.audit.submit();
-    // }
-
     updateSetting(type: SettingsType) {
         logger.debug(type);
 
@@ -78,27 +71,52 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     _toggleBirthdayNotifications = async () => {
-        this.updateSetting({
-            name: 'notificationsBirthdays',
-            value: !this.props.settings.notificationsBirthdays,
-        });
+        if (await this._registerPushNotifications(false)) {
+            this.updateSetting({
+                name: 'notificationsBirthdays',
+                value: !this.props.settings.notificationsBirthdays,
+            });
+        }
     }
 
     _toggleOneToOne = async () => {
-        this.updateSetting({
-            name: 'notificationsOneToOneChat',
-            value: !this.props.settings.notificationsOneToOneChat,
-        });
+        if (await this._registerPushNotifications(false)) {
+
+            this.updateSetting({
+                name: 'notificationsOneToOneChat',
+                value: !this.props.settings.notificationsOneToOneChat,
+            });
+        }
     }
 
-    _registerPushNotifications = async () => {
+    _registerPushNotifications = async (force: boolean = true) => {
         const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
 
-        if (status !== 'granted') {
+        if (status !== 'granted' && Constants.isDevice) {
             Alert.alert(I18N.Notifications.Settings.push.permissions);
-        } else {
-            await registerForPushNotifications(true);
+            return false;
         }
+
+        await registerForPushNotifications(force);
+
+        if (force) {
+            // forces a value push to server
+            this.updateSetting({
+                name: 'notificationsBirthdays',
+                value: this.props.settings.notificationsBirthdays == null ? true : this.props.settings.notificationsBirthdays,
+            });
+
+            try {
+                const client = cachedAolloClient();
+                await client.mutate({
+                    mutation: gql`mutation { testPushNotifications() }`,
+                });
+            } catch (e) {
+                logger.error(e, 'testPushNotifications');
+            }
+        }
+
+        return true;
     }
 
     render() {
