@@ -60,7 +60,7 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                 }
 
                 right={
-                    ({ size }) => isFeatureEnabled(Features.Chat)
+                    ({ size }) => isFeatureEnabled(Features.Chat) && this.props.member.availableForChat
                         ? (
                             <IconButton
                                 style={{ marginRight: 32 }}
