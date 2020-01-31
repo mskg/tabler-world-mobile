@@ -7,7 +7,7 @@ type Key =
     | 'userPoolId'
     | 'userPoolWebClientId'
     | 'api'
-    | 'ws-api'
+    | 'wsapi'
     | 'apidemo'
     | 'sentry'
     | 'cognitoAnalytics'
@@ -37,7 +37,7 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
         }
     }
 
-    if (key === 'ws-api' && __DEV__ && !Constants.isDevice) {
+    if (key === 'wsapi' && __DEV__ && !Constants.isDevice) {
         if (Platform.OS === 'android') {
             // default redirect to localhost for android emulator
             // tslint:disable-next-line: no-http-string

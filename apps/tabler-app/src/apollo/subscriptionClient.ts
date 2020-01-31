@@ -8,7 +8,7 @@ import { getClientParameters } from './getClientParameters';
 import { getCurrentIdentity } from './getCurrentIdentity';
 import { logger } from './logger';
 
-const wsApi = getConfigValue('ws-api');
+const wsApi = getConfigValue('wsapi');
 
 export const subscriptionClient = new SubscriptionClient(
     wsApi,
