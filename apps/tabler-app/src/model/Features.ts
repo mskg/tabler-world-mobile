@@ -39,7 +39,7 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.Chat) {
-        return !isDemoMode;
+        return false;
     }
 
     if (feature === Features.DarkModeSwitch) {
