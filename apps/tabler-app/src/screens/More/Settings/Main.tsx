@@ -260,7 +260,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         for (const app of await LinkingHelper.webApps()) {
             result.push({
                 label: I18N.Settings.apps.web(app),
-                valusse: app,
+                value: app,
             });
         }
 
