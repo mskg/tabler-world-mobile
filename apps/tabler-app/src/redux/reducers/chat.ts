@@ -10,6 +10,7 @@ export function chatReducer(
         | typeof actions.sendMessage.shape
         | typeof actions.removeMessage.shape
         | typeof actions.markFailed.shape
+        | typeof actions.setBadge.shape
     ,
 ): typeof INITIAL_STATE.chat {
     switch (action.type) {
@@ -24,13 +25,16 @@ export function chatReducer(
                 ...state,
                 pendingSend: [
                     // we filter out old message on retry
-                    ... state.pendingSend.filter((m) => m.id !== action.payload.id),
+                    ...state.pendingSend.filter((m) => m.id !== action.payload.id),
                     action.payload,
                 ],
             };
 
         case actions.removeMessage.type:
             return { ...state, pendingSend: state.pendingSend.filter((m) => m.id !== action.payload) };
+
+        case actions.setBadge.type:
+            return { ...state, badge: action.payload };
 
         case actions.markFailed.type:
             const msg = state.pendingSend.find((m) => m.id === action.payload);

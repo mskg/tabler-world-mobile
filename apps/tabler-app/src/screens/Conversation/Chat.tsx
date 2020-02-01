@@ -40,7 +40,6 @@ type Props = {
 
     messages?: IChatMessage[],
     sendMessage: (messages: IChatMessage[]) => void,
-    subscribe?: () => void,
 
     sendDisabled: boolean,
 };
@@ -363,12 +362,6 @@ class ChatBase extends React.Component<Props, State> {
                 </TouchableOpacity>
             </View>
         );
-    }
-
-    componentDidMount() {
-        if (this.props.subscribe) {
-            this.props.subscribe();
-        }
     }
 
     render() {

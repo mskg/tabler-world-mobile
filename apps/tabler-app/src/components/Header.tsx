@@ -5,7 +5,8 @@ import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderStyles, TOTAL_HEADER_HEIGHT } from '../theme/dimensions';
 
 export type Props = {
-    title?: string,
+    title?: React.ReactNode,
+    subtitle?: React.ReactNode,
     backgroundColor?: string,
     showBack?: React.ReactElement | boolean,
     showAppBar?: boolean,
@@ -59,8 +60,14 @@ class HeaderBase extends React.Component<Props & NavigationInjectedProps & { the
                         }
                         {this.props.content != null
                             ? this.props.content
-                            : this.props.title ?
-                                <Appbar.Content titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={this.props.title} />
+                            : this.props.title
+                                ? (
+                                    <Appbar.Content
+                                        titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
+                                        title={this.props.title}
+                                        subtitle={this.props.subtitle}
+                                    />
+                                )
                                 : null
                         }
                     </Appbar>

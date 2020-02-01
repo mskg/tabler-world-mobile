@@ -1,11 +1,11 @@
 import faker from 'faker';
 import { MockList } from 'graphql-tools';
 import { Area } from './Area';
+import { Association } from './Association';
 import { Club } from './Club';
 import { clubNames, memberNames } from './data';
-import { Association } from './Association';
 
-export const Member = (root: any, args: any, context: any, _info: any) => {
+export const Member = (root: any, args?: any, context?: any, _info?: any) => {
     // this is a dirty hack to allow generating the list
     const memberId = (root || {}).member || (args || {}).id || (context || {}).memberId || 1;
 

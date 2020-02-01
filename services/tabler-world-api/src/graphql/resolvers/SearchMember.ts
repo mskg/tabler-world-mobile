@@ -1,4 +1,3 @@
-import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
@@ -133,7 +132,7 @@ where
             }
 
             // we need some chat partners
-            if (args.query.availableForChat && !EXECUTING_OFFLINE) {
+            if (args.query.availableForChat) {
                 parameters.push(context.principal.id);
                 filters.push(
                     `id in (

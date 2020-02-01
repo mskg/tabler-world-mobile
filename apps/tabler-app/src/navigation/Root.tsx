@@ -34,7 +34,6 @@ const Navigator = createAppContainer(createStackNavigator(
         [HomeRoutes.Structure]: { screen: StructureScreen },
         [HomeRoutes.SearchStructure]: { screen: SearchStructureScreen },
         [HomeRoutes.NearbySettings]: { screen: NearbySettingsScreen },
-
     },
     {
         initialRouteName: HomeRoutes.Home,

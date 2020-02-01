@@ -28,3 +28,7 @@ export const sendPendingMessages = createAction<'@@chat/sendPending'>(
 export const markFailed = createAction<'@@chat/markFailed', string>(
     '@@chat/markFailed',
 );
+
+export const setBadge = createAction<'@@chat/badge', number>(
+    '@@chat/badge',
+);

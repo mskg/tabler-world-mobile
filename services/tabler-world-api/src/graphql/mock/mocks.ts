@@ -3,8 +3,12 @@ import _ from 'lodash';
 import { Address } from './Address';
 import { Area } from './Area';
 import { Association } from './Association';
+import { ChatMessage } from './ChatMessage';
+import { ChatMessageIterator } from './ChatMessageIterator';
+import { ChatMessagePayload } from './ChatMessagePayload';
 import { BankAccount, Club, ClubInfo } from './Club';
 import { Company } from './Company';
+import { Conversation } from './Conversation';
 import { clubNames, memberNames } from './data';
 import { Education } from './Education';
 import { Member } from './Member';
@@ -14,6 +18,7 @@ import { AssociationRole, Role, RoleRef, Roles } from './Roles';
 import faker = require('faker');
 faker.locale = 'de';
 
+// tslint:disable: object-shorthand-properties-first
 export const mocks = {
     Date: () => faker.date.future(),
 
@@ -48,6 +53,11 @@ export const mocks = {
         getParameters: () => [],
 
         MyRoles: () => [],
+
+        Conversations: () => ({
+            nextToken: null,
+            nodes: () => new MockList(5),
+        }),
     }),
 
     Member,
@@ -63,4 +73,8 @@ export const mocks = {
     Area,
     RoleRef,
     NearbyMember,
+    Conversation,
+    ChatMessage,
+    ChatMessagePayload,
+    ChatMessageIterator,
 };

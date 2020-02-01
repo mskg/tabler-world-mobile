@@ -13,7 +13,7 @@ import { WebsocketEvent } from './types/WebsocketEvent';
 
 export const logger = new ConsoleLogger('publish/ws');
 
-export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>): Promise<number[]> {
+export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>, delivered = false): Promise<number[]> {
     const failedDeliveries: number[] = [];
 
     const promises = subscriptions.map(async ({ connection: { connectionId, payload, principal, context: connectionContext }, subscriptionId }) => {
@@ -67,7 +67,7 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
             // publiush message
             pubsub.publish(event.eventName, {
                 ...event,
-                delivered: true,
+                delivered, // this can be wrong
             } as WebsocketEvent<any>);
 
             // run resolver

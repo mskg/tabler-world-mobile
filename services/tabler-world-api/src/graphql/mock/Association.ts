@@ -18,7 +18,7 @@ export const Association = () => {
                     return 'RT Deutschland';
             }
         },
-        logo: () => faker.random.image(),
+        logo: () => 'https://loremflickr.com/g/800/240/city',
         flag: () => {
             switch (country) {
                 case 'fr':

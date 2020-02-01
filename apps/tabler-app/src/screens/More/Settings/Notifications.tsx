@@ -1,5 +1,5 @@
+import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import gql from 'graphql-tag';
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
@@ -17,13 +17,12 @@ import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { TestPushMutation } from '../../../queries/Admin/TestPushMutation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { registerForPushNotifications } from '../../../tasks/registerForPushNotifications';
 import { Action } from './Action';
 import { Element } from './Element';
 import { styles } from './Styles';
-import Constants from 'expo-constants';
-
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -109,7 +108,7 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
             try {
                 const client = cachedAolloClient();
                 await client.mutate({
-                    mutation: gql`mutation { testPushNotifications() }`,
+                    mutation: TestPushMutation,
                 });
             } catch (e) {
                 logger.error(e, 'testPushNotifications');

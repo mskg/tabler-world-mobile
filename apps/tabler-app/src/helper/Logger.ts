@@ -77,11 +77,12 @@ export class Categories {
         static readonly SecureStore = Categories._Helper + '/SecureStore';
         static readonly ImageCache = Categories._Helper + '/ImageCache';
         static readonly Geo = Categories._Helper + '/Geo';
+        static readonly Chat = Categories._Helper + '/Chat';
     };
 }
 
 console.disableYellowBox = true;
-let FILTER: RegExp | undefined; // /Chat|API/ig;
+let FILTER: RegExp | undefined = /Chat/ig; // /Chat|API/ig;
 const MAX = 24;
 
 // safety

@@ -68,6 +68,7 @@ export const INITIAL_STATE: IAppState = {
     },
 
     chat: {
+        badge: 0,
         activeConversation: null,
         pendingSend: [],
     },

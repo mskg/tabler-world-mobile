@@ -58,11 +58,11 @@ logger.log('Bootstrapping background-location');
 registerLocationTask();
 
 fix2940();
+
+// problems with navigation on 36.0.0++
 // useScreens();
 
 const App = () => {
-    // if (__DEV__) useKeepAwake();
-
     const dispatch = useDispatch();
     dispatch(checkNetwork());
 

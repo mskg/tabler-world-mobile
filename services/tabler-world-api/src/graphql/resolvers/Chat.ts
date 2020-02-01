@@ -68,7 +68,7 @@ function checkChannelAccess(channel: string, member: number): boolean {
 }
 
 function makeAllConversationKey(member: number): string {
-    return `CONV:ALL:${member}`;
+    return `CONV(:ALL:,:${member}:)`;
 }
 
 // tslint:disable: export-name
@@ -102,7 +102,7 @@ export const ChatResolver = {
 
     Member: {
         availableForChat: (root: { id: number }, _args: {}, context: IApolloContext) => {
-            if (EXECUTING_OFFLINE) { return true; }
+            if (EXECUTING_OFFLINE) { return root.id !== context.principal.id; }
 
             return root.id !== context.principal.id
                 ? context.dataSources.conversations.isMemberAvailableForChat(root.id)
@@ -141,10 +141,8 @@ export const ChatResolver = {
                     conversationManager.updateLastSeen(
                         channel,
                         principalId,
-                        encodeIdentifier(
-                            // highest message
-                            result.result[result.result.length - 1].id,
-                        ) as string,
+                        // highest message
+                        result.result[result.result.length - 1].id,
                     ),
 
                     // conversationManager.getConversation(channel),
@@ -162,6 +160,21 @@ export const ChatResolver = {
                 // );
             }
 
+            let lastSeen: string | undefined;
+            if (result.result.find((m) => !m.delivered)) {
+                context.logger.log('Not all message seen');
+
+                const conversation = await conversationManager.getConversation(channel);
+                const otherMember = (conversation.members || { values: [] }).values.filter((m) => m !== context.principal.id);
+
+                if (otherMember.length > 0) {
+                    const conv = await conversationManager.getUserConversation(channel, otherMember[0]);
+                    lastSeen = conv.lastSeen;
+                }
+
+                context.logger.log('otherMember', otherMember, 'lastSeen', lastSeen);
+            }
+
             return {
                 nodes: result.result.map((m) => ({
                     // transport informationo
@@ -172,7 +185,7 @@ export const ChatResolver = {
                     ...m.payload,
 
                     accepted: true,
-                    delivered: m.delivered,
+                    delivered: m.delivered || (lastSeen && m.id <= lastSeen),
                 } as ChatMessageWithTransport)),
 
                 nextToken: encodeIdentifier(result.nextKey),
@@ -373,12 +386,12 @@ export const ChatResolver = {
                 // TOOD: cloud be combined into onewrite
                 conversationManager.update(trigger, channelMessage),
                 conversationManager.updateLastSeen(trigger, principalId, channelMessage.id),
-                conversationManager.getConversation(trigger),
+                context.dataSources.conversations.readConversation(trigger),
             ]);
 
             // we optimize this: who is not subscribed does not need a receipt
             await Promise.all(
-                (conversation.members?.values || []).map((subscriber) => eventManager.post<string>({
+                (conversation?.members?.values || []).map((subscriber) => eventManager.post<string>({
                     trigger: makeAllConversationKey(subscriber),
                     // payload is the trigger
                     payload: trigger,

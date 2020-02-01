@@ -1,11 +1,13 @@
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React, { PureComponent } from 'react';
-import { Alert, AppState, Dimensions, Linking, Platform, View } from 'react-native';
+import { Alert, Dimensions, Linking, Platform, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
-import { NavigationEventSubscription, NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { HandleAppState } from '../../components/HandleAppState';
+import { HandleScreenState } from '../../components/HandleScreenState';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { disableNearbyTablers } from '../../helper/geo/disable';
 import { enableNearbyTablers } from '../../helper/geo/enable';
@@ -48,47 +50,24 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<unkn
 const MAX_HEIGHT = Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTOM_HEIGHT;
 
 class NearbyOptInBase extends PureComponent<Props, State> {
-    mounted: boolean = true;
-    listeners: NavigationEventSubscription[] = [];
-    removeWatcher?: () => void;
-
     constructor(props) {
         super(props);
-
         this.state = {};
     }
 
-    async componentDidMount() {
-        this.mounted = true;
-
-        this.listeners = [
-            this.props.navigation.addListener('didFocus', this._focus),
-            this.props.navigation.addListener('didBlur', this._blur),
-        ];
-
-        AppState.addEventListener('change', this.handleAppStateChange);
-        this.didFocus();
-    }
-
-    // this way, the background updates are stopped
     _focus = () => {
-        logger.debug('_focus');
-        if (this.mounted && this.props.nearbyMembersEnabled) {
-            this.props.startWatchNearby();
-        }
+        logger.debug('_focus startWatchNearby');
+        this.props.startWatchNearby();
     }
 
     _blur = () => {
-        logger.debug('_blur');
+        logger.debug('_blur stopWatchNearby');
         this.props.stopWatchNearby();
     }
 
-    handleAppStateChange = (nextAppState: string) => {
-        if (nextAppState !== 'active') {
-            // this._blur();
-            return;
-        }
-
+    // wen went from foreground to background
+    _onAppActive = () => {
+        logger.debug('_onAppActive');
         this._focus();
         this.didFocus();
     }
@@ -131,17 +110,6 @@ class NearbyOptInBase extends PureComponent<Props, State> {
         }
     }
 
-    componentWillUnmount() {
-        this.mounted = false;
-
-        if (this.removeWatcher) {
-            this.removeWatcher();
-        }
-
-        AppState.removeEventListener('change', this.handleAppStateChange);
-        this.props.stopWatchNearby();
-    }
-
     _tryopen = () => {
         Linking.canOpenURL('app-settings:').then((supported) => {
             if (!supported) {
@@ -171,26 +139,34 @@ class NearbyOptInBase extends PureComponent<Props, State> {
     }
 
     render() {
-        logger.log(
-            0, this.props.nearbyMembersEnabled && !this.props.isOffline && !this.state.message && this.props.currentLocation,
-            1, this.props.isOffline,
-            2, this.state.enabling,
-            3, !this.state.enabling && !this.props.nearbyMembersEnabled && !this.props.isOffline,
-            4, !this.state.enabling && this.props.nearbyMembersEnabled && !this.props.isOffline && this.state.message,
-        );
+        // logger.log(
+        //     0, this.props.nearbyMembersEnabled && !this.props.isOffline && !this.state.message && this.props.currentLocation,
+        //     1, this.props.isOffline,
+        //     2, this.state.enabling,
+        //     3, !this.state.enabling && !this.props.nearbyMembersEnabled && !this.props.isOffline,
+        //     4, !this.state.enabling && this.props.nearbyMembersEnabled && !this.props.isOffline && this.state.message,
+        // );
 
         if (
             this.props.nearbyMembersEnabled
             && !this.props.isOffline
             && !this.state.message
             && this.props.currentLocation) {
-            return null;
+            return (
+                <>
+                    <HandleAppState onActive={this._onAppActive} onInactive={this._blur} />
+                    <HandleScreenState onFocus={this._focus} triggerOnFirstMount={true} onBlur={this._blur} triggerOnUnmount={true} />
+                </>
+            );
         }
 
         // we are rendering over the screens below. Such, we consume all available height
         // to not get influened by the flex layout (screen) below
         return (
             <View style={{ height: MAX_HEIGHT, backgroundColor: this.props.theme.colors.background }}>
+                <HandleAppState onActive={this._onAppActive} onInactive={this._blur} />
+                <HandleScreenState onFocus={this._focus} triggerOnFirstMount={true} onBlur={this._blur} triggerOnUnmount={true} />
+
                 {this.props.isOffline &&
                     <CannotLoadWhileOffline />
                 }

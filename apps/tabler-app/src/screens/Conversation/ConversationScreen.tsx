@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Platform, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Appbar, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -11,7 +11,6 @@ import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
-import { I18N } from '../../i18n/translation';
 import { Conversation, ConversationVariables, Conversation_Conversation_members } from '../../model/graphql/Conversation';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
@@ -21,6 +20,7 @@ import { IConversationParams, showProfile } from '../../redux/actions/navigation
 import { Chat } from './Chat';
 import { ConversationQuery } from './ConversationQuery';
 import { IChatMessage } from './IChatMessage';
+import { WaitingForNetwork } from './WaitingForNetwork';
 
 type Props = {
     theme: Theme,
@@ -127,18 +127,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
     waitingForNetwork() {
         return (
-            <View
-                key="icon"
-                style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-            >
-                <ActivityIndicator />
-                <Text
-                    numberOfLines={1}
-                    style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.regular, fontSize: Platform.OS === 'ios' ? 14 : 17 }}
-                >
-                    {I18N.Conversations.network}
-                </Text>
-            </View>
+            <WaitingForNetwork />
         );
     }
 

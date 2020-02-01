@@ -11,6 +11,7 @@ import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { ITEM_HEIGHT } from '../../components/Member/Dimensions';
 import { EmptyComponent } from '../../components/NoResults';
+import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
@@ -18,8 +19,8 @@ import { GetConversations, GetConversationsVariables, GetConversations_Conversat
 import { IAppState } from '../../model/IAppState';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../redux/actions/navigation';
+import { WaitingForNetwork } from '../Conversation/WaitingForNetwork';
 import { ConversationListItem } from './ConversationListItem';
-import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -32,6 +33,7 @@ type OwnProps = {
 
 type StateProps = {
     chatEnabled: boolean,
+    websocket: boolean,
 };
 
 type DispatchPros = {
@@ -44,12 +46,21 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<TapO
 // tslint:disable-next-line: export-name
 export class ConversationsScreenBase extends AuditedScreen<Props, State> {
     _flatList!: FlatList<any> | null;
+    refetch!: () => any;
 
     constructor(props) {
         super(props, AuditScreenName.Conversations);
     }
 
+    componentDidUpdate(prev) {
+        if (prev.websocket !== this.props.websocket && this.props.websocket && this.refetch) {
+            this.refetch();
+        }
+    }
+
     componentDidMount() {
+        super.componentDidMount();
+
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
                 requestAnimationFrame(
@@ -86,7 +97,14 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                 header={{
                     showBack: false,
                     content: [
-                        <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Conversations.title} />,
+                        this.props.websocket
+                            ? (<Appbar.Content
+                                key="cnt"
+                                titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
+                                title={I18N.Conversations.title}
+                            />)
+                            : <WaitingForNetwork />
+                        ,
                         <Appbar.Action key="new" icon="add" disabled={!this.props.chatEnabled} onPress={() => this.props.startConversation()} />,
                     ],
                 }}
@@ -98,7 +116,8 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                     fetchPolicy="cache-and-network"
                 >
                     {({ data, error, loading, refetch, fetchMore }) => {
-                        if (error) throw error;
+                        this.refetch = refetch;
+                        if (error && !data) throw error;
 
                         return (
                             <FlatList
@@ -164,7 +183,10 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
 export const ConversationsScreen =
     withWhoopsErrorBoundary(
         withTheme(connect(
-            (state: IAppState) => ({ chatEnabled: state.settings.notificationsOneToOneChat || state.settings.notificationsOneToOneChat == null }),
+            (state: IAppState) => ({
+                chatEnabled: state.settings.notificationsOneToOneChat || state.settings.notificationsOneToOneChat == null,
+                websocket: state.connection.websocket,
+            }),
             {
                 showConversation,
                 startConversation: searchConversationPartner,

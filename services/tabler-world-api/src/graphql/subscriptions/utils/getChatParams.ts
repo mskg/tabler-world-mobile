@@ -3,7 +3,7 @@ import { getParameters, Param_Chat } from '@mskg/tabler-world-config';
 const chatDefaults = {
     messageTTL: 60 * 60 * 24 * 14,
     attachmentsTTL: 60 * 60 * 24 * 2,
-    eventsPageSize: 50,
+    eventsPageSize: 20,
 };
 
 export const getChatParams = async () => {

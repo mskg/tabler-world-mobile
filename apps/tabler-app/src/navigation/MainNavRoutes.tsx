@@ -7,6 +7,19 @@ import MoreScreen from '../screens/More';
 import { NearbyScreen } from '../screens/Nearby';
 import StructureScreen from '../screens/Structure';
 import { MainRoutes } from './MainRoutes';
+import { Badge } from 'react-native-paper';
+import { View } from 'react-native';
+import { connect } from 'react-redux';
+import { IAppState } from '../model/IAppState';
+
+const IconWithBadgeBase = ({ tintColor, badge }) => (
+    <View style={{ flexDirection: 'row' }}>
+        <Ionicons size={24} color={tintColor} name="md-chatboxes" />
+        {badge > 0 && <Badge size={16} style={{ marginBottom: 15, marginLeft: -5 }}>{badge}</Badge>}
+    </View>
+);
+
+const IconWithBadge = connect((s: IAppState) => ({ badge: s.chat.badge }))(IconWithBadgeBase);
 
 export const MainNavRoutes = {
     [MainRoutes.Members]: {
@@ -29,7 +42,7 @@ export const MainNavRoutes = {
         screen: ConversationsScreen,
         navigationOptions: {
             tabBarLabel: I18N.Conversations.title,
-            tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-chatboxes" />),
+            tabBarIcon: ({ tintColor }) => <IconWithBadge tintColor={tintColor} />,
         },
     },
 

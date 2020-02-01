@@ -1,23 +1,27 @@
-import { ApolloQueryResult, FetchMoreOptions, FetchMoreQueryOptions, SubscribeToMoreOptions } from 'apollo-client';
-import { filter, remove, reverse, sortBy, uniqBy } from 'lodash';
+import { ApolloQueryResult, FetchMoreOptions, FetchMoreQueryOptions } from 'apollo-client';
+import { filter, maxBy, remove, reverse, sortBy, uniqBy } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { HandleAppState } from '../../components/HandleAppState';
+import { HandleScreenState } from '../../components/HandleScreenState';
 import { FullScreenLoading } from '../../components/Loading';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
-import { newChatMessage, newChatMessageVariables } from '../../model/graphql/newChatMessage';
+import { newChatMessage } from '../../model/graphql/newChatMessage';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { newChatMessageSubscription } from '../../queries/Conversations/newChatMessageSubscription';
+import { setBadge } from '../../redux/actions/chat';
 import { IConversationParams } from '../../redux/actions/navigation';
 import { ChatMessageEventId } from '../../sagas/chat/ChatMessageEventId';
 import { mergeMessages } from '../../sagas/chat/mergeMessages';
+import { markConversationRead, updateBadgeFromConversations } from '../Conversations/chatHelpers';
 import { IChatMessage } from './IChatMessage';
-import { isDemoModeEnabled } from '../../helper/demoMode';
 
 const logger = new Logger(Categories.Screens.Conversation);
 
@@ -30,7 +34,6 @@ type InjectedProps = {
     onLoadEarlier: () => void,
 
     messages: IChatMessage[],
-    subscribe: () => void,
 };
 
 type Props = {
@@ -42,6 +45,7 @@ type Props = {
     children: React.ReactElement<InjectedProps>;
 
     partiesResolved: (member: Conversation_Conversation_members) => void;
+    setBadge: typeof setBadge;
 };
 
 
@@ -52,27 +56,69 @@ type State = {
 };
 
 // tslint:disable: max-func-body-length
-class ConversationQueryBase extends React.Component<Props & NavigationInjectedProps<IConversationParams>, State> {
-    refetch!: any;
-    unsubscribe!: () => void;
+class ConversationQueryBase extends React.PureComponent<Props & NavigationInjectedProps<IConversationParams>, State> {
+    refetch!: (v: ConversationVariables) => Promise<any>;
+    subscription!: ZenObservable.Subscription | null;
 
     constructor(props) {
         super(props);
         this.state = { loadingEarlier: false, eof: false };
     }
 
-    componentWillUnmount() {
-        if (this.unsubscribe) {
-            logger.log('Unsubscribe');
-            this.unsubscribe();
+    _subscribe = () => {
+        logger.debug('Must subscribe');
+        if (!this.subscription) {
+            logger.debug('> subscribe');
+
+            try {
+                this._watch();
+            } catch (e) {
+                logger.error(e, 'Could not subscribe');
+            }
+        }
+    }
+
+    _unsubscribe = () => {
+        logger.debug('Must unsubscribe');
+        if (this.subscription) {
+            logger.debug('> unsubscribing');
+
+            try {
+                this.subscription.unsubscribe();
+                this.subscription = null;
+            } catch (e) {
+                logger.error(e, 'Could not unsubscribe');
+            }
+        }
+
+        try {
+            markConversationRead(this.props.conversationId);
+            updateBadgeFromConversations();
+        } catch (e) { logger.log('_markConversationRead', e); }
+    }
+
+    _refresh = async () => {
+        logger.debug('Try refresh');
+        if (this.refetch) {
+            logger.debug('> refreshing');
+
+            try {
+                await this.refetch({
+                    id: this.props.conversationId,
+                    token: undefined,
+                });
+
+                requestAnimationFrame(() => this.setState({ redraw: {} }));
+            } catch (e) {
+                logger.error(e, 'Could not refetch');
+            }
         }
     }
 
     componentDidUpdate(prev) {
         if (prev.websocket !== this.props.websocket && this.props.websocket) {
-            if (this.refetch) {
-                this.refetch();
-            }
+            this._refresh();
+            this._subscribe();
         }
     }
 
@@ -130,38 +176,67 @@ class ConversationQueryBase extends React.Component<Props & NavigationInjectedPr
         failedSend: m.failed ? true : false,
     } as IChatMessage)
 
-    _subscribeToMore = (subscribeToMore: (options: SubscribeToMoreOptions<Conversation, newChatMessageVariables, newChatMessage>) => () => void) => {
-        return async () => {
-            if (await isDemoModeEnabled()) {
-                return;
-            }
+    _watch = async () => {
+        if (await isDemoModeEnabled() || this.subscription) {
+            return;
+        }
 
-            this.unsubscribe = subscribeToMore({
-                document: newChatMessageSubscription,
-                variables: {
-                    conversation: this.props.conversationId,
-                },
+        logger.debug('Starting watching newChatMessages', this.props.conversationId);
 
-                updateQuery: (prev, { subscriptionData }) => {
-                    if (!subscriptionData.data || !subscriptionData.data.newChatMessage) { return prev; }
+        const client = cachedAolloClient();
+        const query = client.subscribe<newChatMessage>({
+            query: newChatMessageSubscription,
+            variables: {
+                conversation: this.props.conversationId,
+            },
+        });
 
-                    const newFeedItem = subscriptionData.data.newChatMessage;
-                    logger.debug('received', newFeedItem);
+        this.subscription = query.subscribe(
+            async (nextVal) => {
+                const data = nextVal.data as newChatMessage;
+                if (__DEV__) { logger.debug('received', data); }
 
-                    requestAnimationFrame(() => this.setState({ redraw: {} }));
-                    return {
+                const prev = client.readQuery<Conversation, ConversationVariables>({
+                    query: GetConversationQuery,
+                    variables: {
+                        id: this.props.conversationId,
+                    },
+                });
+
+                if (!prev || !prev.Conversation) {
+                    logger.debug('no prev?', prev);
+                    return;
+                }
+
+                const nodes = mergeMessages([data.newChatMessage], prev.Conversation!.messages.nodes);
+                const max = maxBy(nodes, (n) => n.delivered ? n.eventId : 'z');
+                const maxEvent = max?.eventId || 'z';
+
+                requestAnimationFrame(() => this.setState({ redraw: {} }));
+                client.writeQuery<Conversation, ConversationVariables>({
+                    query: GetConversationQuery,
+                    variables: {
+                        id: this.props.conversationId,
+                    },
+                    data: {
                         ...prev,
                         Conversation: {
                             ...prev.Conversation,
                             messages: {
                                 ...prev.Conversation!.messages,
-                                nodes: mergeMessages([newFeedItem], prev.Conversation!.messages.nodes),
+                                nodes: nodes.map((n) => ({
+                                    ...n,
+                                    delivered: n.delivered || n.eventId < maxEvent,
+                                })),
                             },
                         },
-                    } as Conversation;
-                },
-            });
-        };
+                    },
+                });
+            },
+            (e) => { logger.error(e, 'Failed to subscribe to newChatMessage'); },
+        );
+
+        logger.debug('> subscribed');
     }
 
     _loadEarlier = (
@@ -192,7 +267,7 @@ class ConversationQueryBase extends React.Component<Props & NavigationInjectedPr
                         return previousResult;
                     }
 
-                    // logger.log('appending', fetchMoreResult.Conversation.messages.nodes.length);
+                    if (__DEV__) { logger.log('appending', fetchMoreResult.Conversation.messages.nodes); }
 
                     requestAnimationFrame(() => this.setState({ loadingEarlier: false, eof: false, redraw: {} }));
                     return {
@@ -213,99 +288,88 @@ class ConversationQueryBase extends React.Component<Props & NavigationInjectedPr
         });
     }
 
-    markConversationRead() {
-        const client = cachedAolloClient();
-
-        // we are klicked and must be in the list
-        const conversation = client.readQuery<Conversation, ConversationVariables>({
-            query: GetConversationQuery,
-            variables: {
-                id: this.props.conversationId,
-                token: undefined,
-            },
-        });
-
-        if (conversation == null) { return; }
-
-        logger.log('Marking conversation', this.props.conversationId, 'read!');
-        client.writeQuery<Conversation>({
-            query: GetConversationQuery,
-            data: {
-                ...conversation,
-                Conversation: {
-                    ...conversation.Conversation,
-                    hasUnreadMessages: false,
-                },
-            },
-        });
-    }
-
     render() {
         return (
-            <Query<Conversation, ConversationVariables>
-                query={GetConversationQuery}
-                variables={{
-                    id: this.props.conversationId,
-                    token: undefined,
-                }}
-                fetchPolicy="cache-and-network"
-            >
-                {({ client, loading, data, fetchMore, error, subscribeToMore, refetch }) => {
-                    this.refetch = refetch;
+            <>
+                <HandleAppState
+                    triggerOnUnmount={true}
+                    onInactive={this._unsubscribe}
+                    onActive={this._refresh}
+                    triggerOnFirstMount={true}
+                />
 
-                    let messages;
-                    if (error) {
-                        // not a connection problem
-                        if (this.props.websocket) {
-                            throw error;
-                        } else {
-                            const cachedConv = client.readQuery<Conversation, ConversationVariables>({
-                                query: GetConversationQuery,
-                                variables: {
-                                    id: this.props.conversationId,
-                                    token: undefined,
-                                },
-                            }, true);
+                <HandleScreenState
+                    onBlur={this._unsubscribe}
+                    onFocus={this._subscribe}
+                    triggerOnFirstMount={true}
+                />
 
-                            if (cachedConv) {
-                                messages = cachedConv.Conversation?.messages;
+                <Query<Conversation, ConversationVariables>
+                    query={GetConversationQuery}
+                    variables={{
+                        id: this.props.conversationId,
+                        token: undefined,
+                    }}
+                    fetchPolicy="cache-first"
+                >
+                    {({ client, loading, data, fetchMore, error, refetch }) => {
+                        this.refetch = refetch;
+
+                        let messages;
+                        if (error) {
+                            // not a connection problem
+                            if (this.props.websocket) {
+                                throw error;
+                            } else {
+                                const cachedConv = client.readQuery<Conversation, ConversationVariables>(
+                                    {
+                                        query: GetConversationQuery,
+                                        variables: {
+                                            id: this.props.conversationId,
+                                            token: undefined,
+                                        },
+                                    },
+                                    true,
+                                );
+
+                                if (cachedConv) {
+                                    messages = cachedConv.Conversation?.messages;
+                                }
                             }
                         }
-                    }
 
-                    if (loading && (!data || !data.Conversation) && !messages) {
-                        return <FullScreenLoading />;
-                    }
+                        if (loading && (!data || !data.Conversation) && !messages) {
+                            return <FullScreenLoading />;
+                        }
 
-                    if (data?.Conversation?.messages) {
-                        messages = data.Conversation.messages;
-                        setTimeout(() => this.markConversationRead());
-                    }
+                        if (data?.Conversation?.messages) {
+                            messages = data.Conversation.messages;
+                        }
 
-                    if (data?.Conversation?.members) {
-                        requestAnimationFrame(() =>
-                            // @ts-ignore
-                            this.props.partiesResolved(data.Conversation.members[0]),
-                        );
-                    }
+                        if (data?.Conversation?.members) {
+                            requestAnimationFrame(() =>
+                                // @ts-ignore
+                                this.props.partiesResolved(data.Conversation.members[0]),
+                            );
+                        }
 
-                    return React.cloneElement<InjectedProps>(this.props.children, {
-                        extraData: this.state.redraw,
-                        userId: data && data.Me ? data.Me.id : -1,
+                        return React.cloneElement<InjectedProps>(this.props.children, {
+                            extraData: this.state.redraw,
+                            userId: data && data.Me ? data.Me.id : -1,
 
-                        subscribe: this._subscribeToMore(subscribeToMore),
-                        isLoadingEarlier: this.state.loadingEarlier,
-                        loadEarlier: !this.state.eof,
+                            isLoadingEarlier: this.state.loadingEarlier,
+                            loadEarlier: !this.state.eof,
 
-                        onLoadEarlier: this._loadEarlier(fetchMore, messages),
+                            onLoadEarlier: this._loadEarlier(fetchMore, messages),
 
-                        messages: this._merge(
-                            (messages || { nodes: [] }).nodes.map(this._convertTransportMessage),
-                            this.props.pendingMessages.map(this._convertTemp),
-                        ),
-                    });
-                }}
-            </Query>
+                            messages: this._merge(
+                                (messages || { nodes: [] }).nodes.map(this._convertTransportMessage),
+                                this.props.pendingMessages.map(this._convertTemp),
+                            ),
+                        });
+                    }}
+                </Query>
+            </>
         );
     }
 }
@@ -319,5 +383,7 @@ export const ConversationQuery =
                 : state.settings.notificationsOneToOneChat,
             pendingMessages: state.chat.pendingSend,
         }),
-        {},
+        {
+            setBadge,
+        },
     )(withNavigation(ConversationQueryBase));

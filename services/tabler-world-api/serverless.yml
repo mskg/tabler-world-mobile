@@ -53,6 +53,11 @@ custom:
       burstLimit: 200
       rateLimit: 100
 
+  backup_eventstable:
+    dev: false
+    test: false
+    prod: true
+
   bundle:
     dev: false
     test: true
@@ -677,6 +682,8 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.events_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
         AttributeDefinitions:
           - AttributeName: eventName
             AttributeType: S
