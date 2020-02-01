@@ -10,6 +10,7 @@
 - Replace dark-mode maps on iOS with Apple Maps
 - Oppted-in nearby members can now be displayed on a map
 - 1:1 chat with other members
+- Reworked navigation to give focus on new functionalities
 
 # v1.1
 
