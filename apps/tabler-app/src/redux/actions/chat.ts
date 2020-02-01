@@ -21,14 +21,18 @@ export const removeMessage = createAction<'@@chat/message/remove', string>(
     '@@chat/message/remove',
 );
 
-export const sendPendingMessages = createAction<'@@chat/sendPending'>(
-    '@@chat/sendPending',
+export const clearMessages = createAction<'@@chat/messages/clear', string>(
+    '@@chat/messages/clear',
 );
 
-export const markFailed = createAction<'@@chat/markFailed', string>(
-    '@@chat/markFailed',
+export const sendPendingMessages = createAction<'@@chat/messages/send'>(
+    '@@chat/messages/send',
 );
 
-export const setBadge = createAction<'@@chat/badge', number>(
-    '@@chat/badge',
+export const markFailed = createAction<'@@chat/message/markFailed', string>(
+    '@@chat/message/markFailed',
+);
+
+export const setBadge = createAction<'@@chat/setBadgeCount', number>(
+    '@@chat/setBadgeCount',
 );

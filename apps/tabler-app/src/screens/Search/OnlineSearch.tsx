@@ -67,7 +67,8 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                             onRefresh={refetch}
 
                             onEndReached={() => {
-                                logger.log('Cursor is', result ? result.pageInfo : null);
+                                logger.log('Cursor is', result?.pageInfo?.hasNextPage);
+                                if (!result?.pageInfo) return;
 
                                 fetchMore({
                                     variables: {

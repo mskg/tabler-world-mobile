@@ -1,5 +1,4 @@
 import { Notifications } from 'expo';
-import { Platform } from 'react-native';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
@@ -12,8 +11,6 @@ import { getReduxStore } from '../../redux/getRedux';
 const logger = new Logger(Categories.Screens.Conversation);
 
 export async function updateBadgeFromConversations() {
-    if (Platform.OS !== 'ios') { return; }
-
     const client = cachedAolloClient();
 
     const conversation = client.readQuery<GetConversations>({
@@ -22,9 +19,11 @@ export async function updateBadgeFromConversations() {
 
     const unread = conversation?.Conversations.nodes.find((n) => n.hasUnreadMessages);
     if (!unread) {
+        logger.debug('Bade will get 0');
         getReduxStore().dispatch(setBadge(0));
         await Notifications.setBadgeNumberAsync(0);
     } else {
+        logger.debug('Bade will get 1');
         getReduxStore().dispatch(setBadge(1));
         await Notifications.setBadgeNumberAsync(1);
     }

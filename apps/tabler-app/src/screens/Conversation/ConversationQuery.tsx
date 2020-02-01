@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
-import { FullScreenLoading } from '../../components/Loading';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
@@ -21,6 +21,7 @@ import { IConversationParams } from '../../redux/actions/navigation';
 import { ChatMessageEventId } from '../../sagas/chat/ChatMessageEventId';
 import { mergeMessages } from '../../sagas/chat/mergeMessages';
 import { markConversationRead, updateBadgeFromConversations } from '../Conversations/chatHelpers';
+import { ConversationPlaceholder } from './ConversationPlaceholder';
 import { IChatMessage } from './IChatMessage';
 
 const logger = new Logger(Categories.Screens.Conversation);
@@ -339,7 +340,12 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                         }
 
                         if (loading && (!data || !data.Conversation) && !messages) {
-                            return <FullScreenLoading />;
+                            return (
+                                <Placeholder
+                                    ready={false}
+                                    previewComponent={<ConversationPlaceholder />}
+                                />
+                            );
                         }
 
                         if (data?.Conversation?.messages) {

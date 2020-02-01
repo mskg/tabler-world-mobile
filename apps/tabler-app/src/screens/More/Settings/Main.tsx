@@ -25,6 +25,8 @@ import { SettingsState } from '../../../model/state/SettingsState';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
+import { clearMessages } from '../../../redux/actions/chat';
+
 import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
 import { DeveloperSection } from './DeveloperSection';
@@ -57,6 +59,7 @@ type DispatchPros = {
     updateSetting: typeof updateSetting;
     showNearbySettings: typeof showNearbySettings;
     showNotificationSettings: typeof showNotificationSettings;
+    clearMessages: typeof clearMessages;
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
@@ -108,6 +111,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
                         const client = cachedAolloClient();
                         await client.cache.reset();
+
+                        this.props.clearMessages();
                         await getPersistor().purge();
 
                         // this forces an update of existing views
@@ -584,4 +589,5 @@ export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IA
         updateSetting,
         showNearbySettings,
         showNotificationSettings,
+        clearMessages,
     })(withNavigation(withTheme(MainSettingsScreenBase)));

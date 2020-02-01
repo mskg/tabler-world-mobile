@@ -11,6 +11,7 @@ export function chatReducer(
         | typeof actions.removeMessage.shape
         | typeof actions.markFailed.shape
         | typeof actions.setBadge.shape
+        | typeof actions.clearMessages.shape
     ,
 ): typeof INITIAL_STATE.chat {
     switch (action.type) {
@@ -29,6 +30,9 @@ export function chatReducer(
                     action.payload,
                 ],
             };
+
+        case actions.clearMessages.type:
+            return { ...state, pendingSend: [] };
 
         case actions.removeMessage.type:
             return { ...state, pendingSend: state.pendingSend.filter((m) => m.id !== action.payload) };

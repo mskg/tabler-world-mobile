@@ -1,4 +1,5 @@
 import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
 import { SendMessageMutation } from '../../queries/Conversations/SendMessageMutation';
@@ -8,22 +9,41 @@ import { logger } from './logger';
 import { uploadImage } from './uploadImage';
 
 export async function sendMessage(message: IPendingChatMessage) {
-    logger.log('Trying to send', message);
+    logger.log('sendMessage', message.conversationId, '->', message.id);
 
     const client = await bootstrapApollo();
     const optimisticMessage = convertToChatMessage(message);
 
-    // we don't use the optimistic UI here
-    // because we want to keep the message if it fails
-    // addMessageToCache(
-    //     client,
-    //     {
-    //         data: {
-    //             sendMessage: optimisticMessage,
-    //         },
-    //     },
-    //     message.conversationId,
-    // );
+    if (await isDemoModeEnabled()) {
+        optimisticMessage.eventId = (Date.now() - 5).toString();
+        optimisticMessage.delivered = true;
+        optimisticMessage.accepted = true;
+        optimisticMessage.receivedAt = Date.now();
+
+        logger.debug(optimisticMessage);
+
+        addMessageToCache(
+            client.cache,
+            // we need a deep clone
+            { data: { sendMessage: JSON.parse(JSON.stringify(optimisticMessage)) } },
+            message.conversationId,
+        );
+
+        optimisticMessage.id = Date.now().toString();
+        optimisticMessage.eventId = Date.now().toString();
+        optimisticMessage.senderId = 5;
+        optimisticMessage.payload.text = 'The answer is always 42';
+        optimisticMessage.payload.image = null;
+
+        addMessageToCache(
+            client.cache,
+            // we need a deep clone
+            { data: { sendMessage: JSON.parse(JSON.stringify(optimisticMessage)) } },
+            message.conversationId,
+        );
+
+        return;
+    }
 
     // try {
     let image: string | null = null;
@@ -41,24 +61,7 @@ export async function sendMessage(message: IPendingChatMessage) {
             conversation: message.conversationId,
         },
 
-        update: (c, cache) => addMessageToCache(c, cache, message.conversationId),
+        update: (cache, data) => addMessageToCache(cache, data, message.conversationId),
     });
-    // } catch (e) {
-    //     logger.error(e, 'Failed to send message');
 
-    //     // we don't use the optimistic UI here
-    //     // because we want to keep the message if it fails
-    //     addMessageToCache(
-    //         client,
-    //         {
-    //             data: {
-    //                 sendMessage: {
-    //                     ...optimisticMessage,
-    //                     eventId: ChatMessageEventId.Failed,
-    //                 },
-    //             },
-    //         },
-    //         message.conversationId,
-    //     );
-    // }
 }

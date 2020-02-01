@@ -1,34 +1,22 @@
-import faker from 'faker';
 import { MockList } from 'graphql-tools';
+import { associationNames } from './data';
 
 // tslint:disable-next-line: variable-name
-export const Association = () => {
+export const Association = (root?: any, args?: any, context?: any, _info?: any) => {
+    // this is a dirty hack to allow generating the list
+    const assocId = (root || {}).assoc || (args || {}).id || (context || {}).assoc || 1;
 
-    const country = faker.random.arrayElement(['de', 'us', 'fr']);
+    if (context) {
+        context.assoc = assocId + 1;
+    }
+
+    const assoc = associationNames[assocId - 1] || {};
 
     return {
-        id: () => country,
-        name: () => {
-            switch (country) {
-                case 'fr':
-                    return 'RT France';
-                case 'us':
-                    return 'RT USA';
-                default:
-                    return 'RT Deutschland';
-            }
-        },
+        id: () => assocId,
+        name: () => assoc.name,
         logo: () => 'https://loremflickr.com/g/800/240/city',
-        flag: () => {
-            switch (country) {
-                case 'fr':
-                    return 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/fr.png';
-                case 'us':
-                    return 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/us.png';
-                default:
-                    return 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/de.png';
-            }
-        },
+        flag: () => assoc.flag,
 
         board: () => new MockList(5),
         boardassistants: () => new MockList(3),

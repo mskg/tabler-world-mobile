@@ -5,7 +5,7 @@ import { Association } from './Association';
 import { Club } from './Club';
 import { clubNames, memberNames } from './data';
 
-export const Member = (root: any, args?: any, context?: any, _info?: any) => {
+export const Member = (root?: any, args?: any, context?: any, _info?: any) => {
     // this is a dirty hack to allow generating the list
     const memberId = (root || {}).member || (args || {}).id || (context || {}).memberId || 1;
 
@@ -13,7 +13,7 @@ export const Member = (root: any, args?: any, context?: any, _info?: any) => {
         context.memberId = memberId + 1; // we preserve it for iteration
     }
 
-    const member = memberNames[memberId - 1] || {};
+    const member = memberNames[memberId - 1] || memberNames[faker.random.number({ min: 10, max: 50 })];
     const club = clubNames[member.club - 1] || {};
 
     return {

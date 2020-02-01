@@ -5,6 +5,8 @@ import { sendPendingChatMessages } from '../../sagas/chat/sendPendingChatMessage
 import { logger } from './logger';
 
 export async function runSend() {
+    // double check to nont produce audit informatio
+    // when disabled
     if (!isFeatureEnabled(Features.Chat)) {
         return;
     }

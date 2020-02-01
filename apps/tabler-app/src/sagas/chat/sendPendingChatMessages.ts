@@ -3,10 +3,9 @@ import { markFailed, removeMessage } from '../../redux/actions/chat';
 import { getReduxStore } from '../../redux/getRedux';
 import { logger } from './logger';
 import { sendMessage } from './sendMessage';
-import { isDemoModeEnabled } from '../../helper/demoMode';
 
 export async function sendPendingChatMessages() {
-    if (!isFeatureEnabled(Features.Chat) || (await isDemoModeEnabled())) {
+    if (!isFeatureEnabled(Features.Chat)) {
         return;
     }
 
@@ -15,6 +14,8 @@ export async function sendPendingChatMessages() {
     for (const msg of messages.filter((m) => m.numTries == null || m.numTries <= 5)) {
         try {
             await sendMessage(msg);
+
+            logger.log('Removing', msg.id);
             getReduxStore().dispatch(removeMessage(msg.id as string));
         } catch (e) {
             logger.error(e, 'Failed to send', msg.id);

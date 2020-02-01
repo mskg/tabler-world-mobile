@@ -11,6 +11,8 @@ import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { ITEM_HEIGHT } from '../../components/Member/Dimensions';
 import { EmptyComponent } from '../../components/NoResults';
+import { Placeholder } from '../../components/Placeholder/Placeholder';
+import { RefreshTracker } from '../../components/RefreshTracker';
 import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Categories, Logger } from '../../helper/Logger';
@@ -20,7 +22,9 @@ import { IAppState } from '../../model/IAppState';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../redux/actions/navigation';
 import { WaitingForNetwork } from '../Conversation/WaitingForNetwork';
+import { updateBadgeFromConversations } from './chatHelpers';
 import { ConversationListItem } from './ConversationListItem';
+import { MemberListPlaceholder } from './MemberListPlaceholder';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -53,8 +57,8 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidUpdate(prev) {
-        if (prev.websocket !== this.props.websocket && this.props.websocket && this.refetch) {
-            this.refetch();
+        if (prev.websocket !== this.props.websocket && this.props.websocket) {
+            this._refresh();
         }
     }
 
@@ -91,6 +95,19 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
         };
     }
 
+    _refresh = async () => {
+        logger.debug('refresh');
+        // need to include network in the check
+        if (this.refetch && this.props.websocket) {
+            await this.refetch();
+            logger.debug('refresh end');
+        }
+
+        // need to wait a bit for data to be available in cache?
+        setTimeout(() => updateBadgeFromConversations(), 500);
+    }
+
+    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <ScreenWithHeader
@@ -111,70 +128,81 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
             >
                 <ChatDisabledBanner />
 
-                <Query<GetConversations, GetConversationsVariables>
-                    query={GetConversationsQuery}
-                    fetchPolicy="cache-and-network"
-                >
-                    {({ data, error, loading, refetch, fetchMore }) => {
-                        this.refetch = refetch;
-                        if (error && !data) throw error;
-
+                <RefreshTracker>
+                    {({ isRefreshing, createRunRefresh }) => {
                         return (
-                            <FlatList
-                                ref={(r) => this._flatList = r}
+                            <Query<GetConversations, GetConversationsVariables>
+                                query={GetConversationsQuery}
+                                fetchPolicy="cache-and-network"
+                            >
+                                {({ data, error, loading, refetch, fetchMore }) => {
+                                    this.refetch = createRunRefresh(refetch);
+                                    if (error && !data) throw error;
 
-                                scrollEventThrottle={16}
-                                removeClippedSubviews={Platform.OS !== 'ios'}
-                                contentContainerStyle={styles.container}
+                                    return (
+                                        <Placeholder
+                                            ready={data != null}
+                                            previewComponent={<MemberListPlaceholder />}
+                                        >
+                                            <FlatList
+                                                ref={(r) => this._flatList = r}
 
-                                keyExtractor={this._extractKey}
-                                renderItem={this._renderItem}
-                                getItemLayout={this._getItemLayout}
+                                                scrollEventThrottle={16}
+                                                removeClippedSubviews={Platform.OS !== 'ios'}
+                                                contentContainerStyle={styles.container}
 
-                                ListEmptyComponent={loading ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
+                                                keyExtractor={this._extractKey}
+                                                renderItem={this._renderItem}
+                                                getItemLayout={this._getItemLayout}
 
-                                data={data && data.Conversations ? data.Conversations.nodes : []}
+                                                ListEmptyComponent={loading ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
 
-                                refreshing={loading}
-                                onRefresh={() => refetch()}
+                                                data={data && data.Conversations ? data.Conversations.nodes : []}
 
-                                onEndReached={() => {
-                                    if (!data) { return; }
+                                                refreshing={loading || isRefreshing}
+                                                onRefresh={this._refresh}
 
-                                    fetchMore({
-                                        variables: {
-                                            token: data.Conversations.nextToken,
-                                        },
+                                                onEndReached={() => {
+                                                    if (!data || !data.Conversations.nextToken) { return; }
 
-                                        updateQuery: (previousResult, { fetchMoreResult }) => {
-                                            // Don't do anything if there weren't any new items
-                                            if (!fetchMoreResult || fetchMoreResult.Conversations.nodes.length === 0) {
+                                                    fetchMore({
+                                                        variables: {
+                                                            token: data.Conversations.nextToken,
+                                                        },
 
-                                                logger.log('no new data');
-                                                return previousResult;
-                                            }
+                                                        updateQuery: (previousResult, { fetchMoreResult }) => {
+                                                            // Don't do anything if there weren't any new items
+                                                            if (!fetchMoreResult || fetchMoreResult.Conversations.nodes.length === 0) {
 
-                                            logger.log('appending', fetchMoreResult.Conversations.nodes.length);
+                                                                logger.log('no new data');
+                                                                return previousResult;
+                                                            }
 
-                                            return {
-                                                // There are bugs that the calls are excuted twice
-                                                // a lot of notes on the internet
-                                                Conversations: {
-                                                    ...fetchMoreResult.Conversations,
-                                                    nodes: uniqBy(
-                                                        [...previousResult.Conversations.nodes, ...fetchMoreResult.Conversations.nodes],
-                                                        (f) => f.id,
-                                                    ),
-                                                },
-                                            };
-                                        },
-                                    });
+                                                            logger.log('appending', fetchMoreResult.Conversations.nodes.length);
+
+                                                            return {
+                                                                // There are bugs that the calls are excuted twice
+                                                                // a lot of notes on the internet
+                                                                Conversations: {
+                                                                    ...fetchMoreResult.Conversations,
+                                                                    nodes: uniqBy(
+                                                                        [...previousResult.Conversations.nodes, ...fetchMoreResult.Conversations.nodes],
+                                                                        (f) => f.id,
+                                                                    ),
+                                                                },
+                                                            };
+                                                        },
+                                                    });
+                                                }}
+                                                onEndReachedThreshold={0.5}
+                                            />
+                                        </Placeholder>
+                                    );
                                 }}
-                                onEndReachedThreshold={0.5}
-                            />
+                            </Query>
                         );
                     }}
-                </Query>
+                </RefreshTracker>
             </ScreenWithHeader>
         );
     }

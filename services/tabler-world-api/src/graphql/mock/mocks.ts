@@ -23,6 +23,8 @@ export const mocks = {
     Date: () => faker.date.future(),
 
     Query: () => ({
+        Me: () => Member(null, null, null, null), // must always be 1
+
         OwnTable: () => [],
         FavoriteMembers: () => [],
 
@@ -33,7 +35,7 @@ export const mocks = {
 
         // SearchDirectory: () => new MockList(20),
 
-        Associations: () => new MockList(1),
+        Associations: () => new MockList(20),
 
         Areas: () => _(clubNames)
             .map((a: any) => a.area)

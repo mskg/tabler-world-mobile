@@ -2,6 +2,7 @@ import { DataProxy } from 'apollo-cache';
 import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { mergeMessages } from './mergeMessages';
+import { logger } from './logger';
 
 export function addMessageToCache(
     cache: DataProxy, { data: { sendMessage } }: any,
@@ -20,6 +21,7 @@ export function addMessageToCache(
     });
 
     if (data == null) {
+        logger.debug('data is null?');
         return;
     }
 
@@ -29,6 +31,8 @@ export function addMessageToCache(
         data.Conversation!.messages.nodes,
         true,
     );
+
+    // logger.debug('data', newArray);
 
     if (newArray !== data.Conversation!.messages.nodes) {
         // cache has change detection, we only modify what we need
