@@ -9,6 +9,8 @@ import { MetricNames } from '../../analytics/MetricNames';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
+import { HandleAppState } from '../../components/HandleAppState';
+import { HandleScreenState } from '../../components/HandleScreenState';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
 import { Conversation, ConversationVariables, Conversation_Conversation_members } from '../../model/graphql/Conversation';
@@ -50,12 +52,11 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         this.state = {};
     }
 
-    componentDidMount() {
-        super.componentDidMount();
+    _registerConversation = () => {
         this.props.setActiveConversation(this.getConversationId());
     }
 
-    componentWillUnmount() {
+    _unregisterConversation = () => {
         this.props.clearActiveConversation();
     }
 
@@ -127,7 +128,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
     waitingForNetwork() {
         return (
-            <WaitingForNetwork />
+            <WaitingForNetwork key="network" />
         );
     }
 
@@ -143,6 +144,19 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                 }}
             >
                 <ChatDisabledBanner />
+
+                <HandleScreenState
+                    onBlur={this._unregisterConversation}
+                    onFocus={this._registerConversation}
+                    triggerOnFirstMount={true}
+                    triggerOnUnmount={true}
+                />
+
+                <HandleAppState
+                    triggerOnUnmount={true}
+                    onInactive={this._unregisterConversation}
+                    onActive={this._registerConversation}
+                />
 
                 <ConversationQuery
                     conversationId={this.getConversationId()}
