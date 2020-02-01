@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Searchbar, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
@@ -61,6 +61,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
         this.mounted = true;
 
         // if called without blur, settimeout, keyboard will never get dismissed?
@@ -72,9 +73,6 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
                 }
             });
         }
-
-        logger.debug('Logged');
-        this.audit.submit();
     }
 
     componentWillUnmount() {

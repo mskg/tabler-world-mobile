@@ -66,7 +66,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
-        this.audit.submit();
+        super.componentDidMount();
 
         // we're reloaded without a valid state
         if (this.props.authState == null) {

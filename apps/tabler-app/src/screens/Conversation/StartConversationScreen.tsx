@@ -64,6 +64,8 @@ class StartConversationScreenBase extends AuditedScreen<Props & NavigationInject
                 } as IConversationParams,
             }),
         );
+
+        this.audit.submit();
     }
 
     render() {

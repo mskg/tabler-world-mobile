@@ -18,7 +18,6 @@ import { HomeRoutes } from '../../navigation/HomeRoutes';
 import { addTablerSearch } from '../../redux/actions/history';
 import { IConversationParams } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
-import { logger } from './logger';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { styles } from './styles';
 
@@ -62,6 +61,7 @@ class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
         this.mounted = true;
 
         // if called without blur, settimeout, keyboard will never get dismissed?
@@ -73,9 +73,6 @@ class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
                 }
             });
         }
-
-        logger.debug('Logged');
-        this.audit.submit();
     }
 
     componentWillUnmount() {

@@ -40,6 +40,8 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
+
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
                 requestAnimationFrame(
@@ -54,8 +56,6 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                 // );
             },
         });
-
-        this.audit.submit();
     }
 
     _renderItem = (params) => {
@@ -107,7 +107,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <ScreenWithHeader header={{ showBack:true, title: I18N.News.title }}>
+            <ScreenWithHeader header={{ showBack: true, title: I18N.News.title }}>
                 <Query<TopNews> query={GetNewsQuery} fetchPolicy={this.props.fetchPolicy}>
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;

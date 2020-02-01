@@ -22,11 +22,10 @@ import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { clearMessages } from '../../../redux/actions/chat';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
-import { clearMessages } from '../../../redux/actions/chat';
-
 import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
 import { DeveloperSection } from './DeveloperSection';
@@ -34,6 +33,7 @@ import { Element } from './Element';
 import { Routes } from './Routes';
 import { SelectionList } from './SelectionList';
 import { styles } from './Styles';
+
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -85,13 +85,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     async componentDidMount() {
+        super.componentDidMount();
+
         this.buildSMSOptions();
         this.buildMail();
         this.buildWebOptions();
         this.buildCallOptions();
         this.checkDemoMode();
-
-        this.audit.submit();
     }
 
     _clearSyncFlags = () => {
