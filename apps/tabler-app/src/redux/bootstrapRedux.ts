@@ -63,7 +63,9 @@ export function bootstrapRedux() {
     };
 
     const reduxLogger = (_store) => (next) => (action) => {
-        logger.debug(action.type, action.key);
+        if (__DEV__) {
+            logger.debug(action.type, action.payload);
+        }
         return next(action);
     };
 
