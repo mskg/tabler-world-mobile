@@ -1,5 +1,5 @@
-import Constants from 'expo-constants';
 import { getConfigValue } from '../helper/getConfigValue';
+import { getClientParameters } from './getClientParameters';
 import { getCurrentIdentity } from './getCurrentIdentity';
 import { logger } from './logger';
 
@@ -9,8 +9,7 @@ export const fetchAuth = async (uri: RequestInfo, options?: RequestInit): Promis
         ...(options || {}),
         headers: {
             ...(options || {}).headers,
-            'X-Client-Name': Constants.manifest.name,
-            'X-Client-Version': Constants.manifest.version || 'dev',
+            ...getClientParameters(),
             Authorization: await getCurrentIdentity(),
         },
     };
@@ -29,8 +28,7 @@ export const fetchAuthDemo = async (uri: RequestInfo, options?: RequestInit): Pr
         ...(options || {}),
         headers: {
             ...(options || {}).headers,
-            'X-Client-Name': Constants.manifest.name,
-            'X-Client-Version': Constants.manifest.version || 'dev',
+            ...getClientParameters(),
             Authorization: `DEMO ${getConfigValue('apidemo')}`,
         },
     };

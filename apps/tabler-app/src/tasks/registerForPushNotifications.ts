@@ -29,6 +29,7 @@ export async function registerForPushNotifications(force = false) {
         // Stop here if the user did not grant permissions
         if (finalStatus !== 'granted') {
             logger.log('status', finalStatus);
+
             return;
         }
 

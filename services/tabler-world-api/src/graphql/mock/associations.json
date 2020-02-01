@@ -1,0 +1,277 @@
+[
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ag.png",
+        "name": "RT Arabian Gulf",
+        "id": "ag"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/au.png",
+        "name": "RT Australia",
+        "id": "au"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/at.png",
+        "name": "RT Austria",
+        "id": "at"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/bd.png",
+        "name": "RT Bangladesh",
+        "id": "bd"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/be.png",
+        "name": "RT Belgium",
+        "id": "be"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/bw.png",
+        "name": "RT Botswana",
+        "id": "bw"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/bg.png",
+        "name": "RT Bulgaria",
+        "id": "bg"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ca.png",
+        "name": "RT Canada",
+        "id": "ca"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/cy.png",
+        "name": "RT Cyprus",
+        "id": "cy"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/dk.png",
+        "name": "RT Denmark",
+        "id": "dk"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ee.png",
+        "name": "RT Estonia",
+        "id": "ee"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/fr.png",
+        "name": "RT France",
+        "id": "fr"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/de.png",
+        "name": "RT Germany",
+        "id": "de"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/gi.png",
+        "name": "RT Gibraltar",
+        "id": "gi"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/gb.png",
+        "name": "RT Great Britain and Ireland",
+        "id": "gb"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/hk.png",
+        "name": "RT Hong Kong",
+        "id": "hk"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/hu.png",
+        "name": "RT Hungary",
+        "id": "hu"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/is.png",
+        "name": "RT Iceland",
+        "id": "is"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/in.png",
+        "name": "RT India",
+        "id": "in"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/il.png",
+        "name": "RT Israel",
+        "id": "il"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/it.png",
+        "name": "RT Italy",
+        "id": "it"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/lv.png",
+        "name": "RT Latvia",
+        "id": "lv"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/lt.png",
+        "name": "RT Lithuania",
+        "id": "lt"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/lu.png",
+        "name": "RT Luxembourg",
+        "id": "lu"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/mg.png",
+        "name": "RT Madagascar",
+        "id": "mg"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/mw.png",
+        "name": "RT Malawi",
+        "id": "mw"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/my.png",
+        "name": "RT Malaysia",
+        "id": "my"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/mt.png",
+        "name": "RT Malta",
+        "id": "mt"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/mu.png",
+        "name": "RT Mauritius",
+        "id": "mu"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/md.png",
+        "name": "RT Moldova",
+        "id": "md"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/mc.png",
+        "name": "RT Monaco",
+        "id": "mc"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ma.png",
+        "name": "RT Morocco",
+        "id": "ma"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/np.png",
+        "name": "RT Nepal",
+        "id": "np"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/nl.png",
+        "name": "RT Netherlands",
+        "id": "nl"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/nz.png",
+        "name": "RT New Zealand",
+        "id": "nz"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/no.png",
+        "name": "RT Norway",
+        "id": "no"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ph.png",
+        "name": "RT Philippines",
+        "id": "ph"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/pt.png",
+        "name": "RT Portugal",
+        "id": "pt"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ro.png",
+        "name": "RT Romania",
+        "id": "ro"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ru.png",
+        "name": "RT Russia",
+        "id": "ru"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/sm.png",
+        "name": "RT San Marino",
+        "id": "sm"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/sn.png",
+        "name": "RT Senegal",
+        "id": "sn"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/sc.png",
+        "name": "RT Seychelles",
+        "id": "sc"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/sg.png",
+        "name": "RT Singapore",
+        "id": "sg"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/za.png",
+        "name": "RT Southern Africa",
+        "id": "za"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/lk.png",
+        "name": "RT Sri Lanka",
+        "id": "lk"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/fi.png",
+        "name": "RT Suomi Finland",
+        "id": "fi"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/sr.png",
+        "name": "RT Suriname",
+        "id": "sr"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/se.png",
+        "name": "RT Sweden",
+        "id": "se"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ch.png",
+        "name": "RT Switzerland",
+        "id": "ch"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/tt.png",
+        "name": "RT Trinidad & Tobago",
+        "id": "tt"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/tn.png",
+        "name": "RT Tunisia",
+        "id": "tn"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/us.png",
+        "name": "RT USA",
+        "id": "us"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/zm.png",
+        "name": "RT Zambia",
+        "id": "zm"
+    },
+    {
+        "flag": "https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/zw.png",
+        "name": "RT Zimbabwe",
+        "id": "zw"
+    }
+]

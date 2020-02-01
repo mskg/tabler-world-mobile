@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { migrateToNull, MIGRATE_VERSION } from '../migrations';
 import { EncryptedFileStorage } from '../persistor/EncryptedFileStorage';
+import { chatReducer } from './chat';
 import { filterReducer } from './filter';
 import { searchHistoryReducer } from './history';
 import { locationReducer } from './location';
@@ -83,4 +84,12 @@ export default {
     ),
 
     snacks: snackReducer,
+
+    chat: persistReducer(
+        {
+            ...defaultConfig,
+            key: 'chat',
+        },
+        chatReducer,
+    ),
 };

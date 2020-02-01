@@ -66,7 +66,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
-        this.audit.submit();
+        super.componentDidMount();
 
         // we're reloaded without a valid state
         if (this.props.authState == null) {
@@ -191,6 +191,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export default connect(
     (state: IAppState) => ({
         authState: state.auth.signinState,

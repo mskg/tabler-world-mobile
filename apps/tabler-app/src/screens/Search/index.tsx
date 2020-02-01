@@ -74,6 +74,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
         this.mounted = true;
 
         // if called without blur, settimeout, keyboard will never get dismissed?
@@ -87,9 +88,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
         }
 
         this.state.filterTags.push(... this.getDefaultAssocFilter());
-
-        logger.debug('Logged');
-        this.audit.submit();
     }
 
     componentWillUnmount() {

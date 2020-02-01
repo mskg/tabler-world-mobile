@@ -10,10 +10,8 @@ export enum Features {
     BackgroundFetch,
     SendToAdressbook,
     ClubMap,
-    BackgroundLocation,
     LocationHistory,
     DarkModeSwitch,
-    InternalInformation,
     Chat,
 }
 
@@ -27,15 +25,11 @@ export function isFeatureEnabled(feature: Features) {
         return true;
     }
 
-    if (feature === Features.BackgroundLocation || feature === Features.ClubMap) {
+    if (feature === Features.ClubMap) {
         return true;
     }
 
     if (feature === Features.LocationHistory) {
-        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test');
-    }
-
-    if (feature === Features.InternalInformation) {
         return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test');
     }
 
@@ -44,7 +38,7 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.Chat) {
-        return !isDemoMode && (Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test'));
+        return true;
     }
 
     if (feature === Features.DarkModeSwitch) {

@@ -13,11 +13,9 @@
             "identityPoolId": "",
             "userPoolId": "",
             "userPoolWebClientId": "",
-
             "api": "",
             "wsapi": "",
             "apidemo": "",
-
             "sentry": "",
             "cognitoAnalytics": "",
             "amplitudeAnalytics": "",
@@ -91,6 +89,7 @@
                 "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
                 "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
                 "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
+                "NSPhotoLibraryUsageDescription": "You can send images to other members from your library using TABLER.APP.",
                 "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
                 "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you."
             }

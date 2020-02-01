@@ -1,5 +1,5 @@
 import { SagaIterator } from 'redux-saga';
-import { all, debounce, fork, takeEvery, takeLatest } from 'redux-saga/effects';
+import { all, debounce, fork, takeEvery, takeLatest, call } from 'redux-saga/effects';
 import * as filterActions from '../redux/actions/filter';
 import * as settingsActions from '../redux/actions/settings';
 import { checkLinking } from './settings/checkLinking';
@@ -7,10 +7,12 @@ import { pushLanguage } from './settings/pushLanguage';
 import { restoreSettingsFromCloud } from './settings/restoreSettingsFromCloud';
 import { saveFavoritesToCloud } from './settings/saveFavoritesToCloud';
 import { saveNotificationSettingsToCloud } from './settings/saveNotificationSettingsToCloud';
+import { checkAndDisableNotifications } from './settings/checkAndDisableNotifications';
 
 export function* settingsSaga(): SagaIterator {
     yield all([
         fork(checkLinking),
+        call(checkAndDisableNotifications),
 
         // restore settings
         takeLatest(settingsActions.restoreSettings.type, restoreSettingsFromCloud),

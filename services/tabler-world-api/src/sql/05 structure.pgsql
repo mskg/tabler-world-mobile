@@ -152,7 +152,7 @@ select
 from clubs
 where
     data->>'rt_status' = 'active'
-order by 1, 2, 3;
+order by 2, 3, 6;
 
 create unique index idx_structure_club_assoc_club on
 structure_clubs (association, clubnumber);
@@ -204,7 +204,8 @@ select
                     data->>'subdomain'
                 )
     ) as clubs
-from areas;
+from areas
+order by 2, 3;
 
 create unique index idx_structure_areas_id on
 structure_areas (id);
@@ -265,7 +266,8 @@ select
         where
                 association = id
     ) as areas
-from associations;
+from associations
+order by 2, 3;
 
 create unique index idx_structure_associations_id on
 structure_associations (id);

@@ -9,13 +9,13 @@
         "id": 1,
         "area": 1,
         "name": "Lake Norwood",
-        "pic": "http://lorempixel.com/500/480/city?random=25801"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 2,
         "area": 1,
         "name": "Port Thurmanberg",
-        "pic": "http://lorempixel.com/500/480/city?random=14693"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 3,
@@ -27,13 +27,13 @@
         "id": 4,
         "area": 1,
         "name": "Robelhaven",
-        "pic": "http://lorempixel.com/500/480/city?random=7007"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 5,
         "area": 1,
         "name": "Funkhaven",
-        "pic": "http://lorempixel.com/500/480/city?random=59467"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 6,
@@ -45,7 +45,7 @@
         "id": 7,
         "area": 1,
         "name": "South Johathan",
-        "pic": "http://lorempixel.com/500/480/city?random=16373"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 8,
@@ -57,13 +57,13 @@
         "id": 9,
         "area": 1,
         "name": "Augustashire",
-        "pic": "http://lorempixel.com/500/480/city?random=36203"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 10,
         "area": 1,
         "name": "Kilbackfurt",
-        "pic": "http://lorempixel.com/500/480/city?random=8040"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 11,
@@ -99,7 +99,7 @@
         "id": 16,
         "area": 3,
         "name": "Port Anabellemouth",
-        "pic": "http://lorempixel.com/500/480/city?random=19431"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 17,
@@ -111,25 +111,25 @@
         "id": 18,
         "area": 3,
         "name": "Jenkinston",
-        "pic": "http://lorempixel.com/500/480/city?random=73526"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 19,
         "area": 3,
         "name": "Nelsonbury",
-        "pic": "http://lorempixel.com/500/480/city?random=65612"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 20,
         "area": 3,
         "name": "East Jarredburgh",
-        "pic": "http://lorempixel.com/500/480/city?random=1409"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 21,
         "area": 3,
         "name": "Fletahaven",
-        "pic": "http://lorempixel.com/500/480/city?random=6342"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 22,
@@ -141,7 +141,7 @@
         "id": 23,
         "area": 4,
         "name": "Myrtismouth",
-        "pic": "http://lorempixel.com/500/480/city?random=97613"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 24,
@@ -153,7 +153,7 @@
         "id": 25,
         "area": 5,
         "name": "Labadiechester",
-        "pic": "http://lorempixel.com/500/480/city?random=89031"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 26,
@@ -165,13 +165,13 @@
         "id": 27,
         "area": 5,
         "name": "South Wiltonmouth",
-        "pic": "http://lorempixel.com/500/480/city?random=39608"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 28,
         "area": 5,
         "name": "South Kyra",
-        "pic": "http://lorempixel.com/500/480/city?random=74224"
+        "pic": "https://loremflickr.com/g/800/240/city"
     },
     {
         "id": 29,
@@ -183,6 +183,6 @@
         "id": 30,
         "area": 6,
         "name": "East Zola",
-        "pic": "http://lorempixel.com/500/480/city?random=42246"
+        "pic": "https://loremflickr.com/g/800/240/city"
     }
 ]

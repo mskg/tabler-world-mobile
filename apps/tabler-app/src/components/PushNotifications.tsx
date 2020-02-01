@@ -5,19 +5,19 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
-import { BirthdayNotification, ChatMessageNotification, INotificationWithPayload, AdMessageNotification } from '../model/NotificationPayload';
+import { OpenLink } from '../helper/OpenLink';
+import { Features, isFeatureEnabled } from '../model/Features';
+import { IAppState } from '../model/IAppState';
+import { AdMessageNotification, BirthdayNotification, ChatMessageNotification, INotificationWithPayload } from '../model/NotificationPayload';
 import { showConversation, showProfile } from '../redux/actions/navigation';
 import { PushNotification, PushNotificationBase } from './PushNotification';
-import { isFeatureEnabled, Features } from '../model/Features';
-import { LinkingHelper } from '../helper/LinkingHelper';
-import { OpenLink } from '../helper/OpenLink';
 
 const logger = new Logger(Categories.UIComponents.Notifications);
 
 type Props = {
     showProfile: typeof showProfile,
     showConversation: typeof showConversation,
-    // member: HashMap<IMember>,
+    activeConversation: string;
 };
 
 type Notification = {
@@ -50,10 +50,13 @@ class PushNotificationsBase extends PureComponent<Props> {
             if (isFeatureEnabled(Features.Chat)) {
                 const cm = el as ChatMessageNotification;
 
-                this.props.showConversation(
-                    cm.payload.conversationId,
-                    cm.title,
-                );
+                // if the same conversation is active, we can skip the notification
+                if (this.props.activeConversation !== cm.payload.conversationId) {
+                    this.props.showConversation(
+                        cm.payload.conversationId,
+                        cm.title,
+                    );
+                }
             }
         } else if (el != null && el.reason === 'advertisment') {
             const am = el as AdMessageNotification;
@@ -107,7 +110,9 @@ class PushNotificationsBase extends PureComponent<Props> {
 }
 
 export const PushNotifications = connect(
-    null,
+    (state: IAppState) => ({
+        activeConversation: state.chat.activeConversation,
+    }),
     {
         showProfile,
         showConversation,

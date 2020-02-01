@@ -1,14 +1,12 @@
 import gql from 'graphql-tag';
 import { ChatMessageFragment } from './ChatMessageFragment';
-import { MemberAvatarFragment } from './MemberAvatarFragment';
+import { ConversationOverviewFragment } from './ConversationOverviewFragment';
 
 export const GetConversationQuery = gql`
     query Conversation($id: ID!, $token: String) {
       Conversation (id: $id) {
-        id
-        members {
-            ...MemberAvatarFragment
-        }
+        ...ConversationOverviewFragment
+
         messages (token: $token) @connection(key: "messages") {
           nodes {
             ...ChatMessageFragment
@@ -23,5 +21,5 @@ export const GetConversationQuery = gql`
     }
 
     ${ChatMessageFragment}
-    ${MemberAvatarFragment}
+    ${ConversationOverviewFragment}
 `;

@@ -1,7 +1,8 @@
-import { lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
-import { withClient } from '@mskg/tabler-world-rds-client';
+import { resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
+import { useDataService } from '@mskg/tabler-world-rds-client';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
+import { extractVersion } from '../../helper/extractVersion';
 import { connectionManager } from '../services';
 import { ClientLostError } from '../types/ClientLostError';
 import { ProtocolContext } from './ProtocolContext';
@@ -9,21 +10,18 @@ import { ProtocolContext } from './ProtocolContext';
 export async function gqlInit(context: ProtocolContext, operation: OperationMessage) {
     context.logger.log('gqlInit');
 
-    const { Authorization: token } = operation.payload || {};
     try {
-        context.logger.log('Validating Authorization', token);
-        if (!token) {
-            console.log('No token provided');
-            throw new Error('Unauthorized (token)');
-        }
-
-        const { email } = await validateToken(process.env.AWS_REGION as string, process.env.UserPoolId as string, token);
-        context.logger.log('Found', email);
-
-        const principal = await withClient(context.lambdaContext, (client) => lookupPrincipal(client, email));
+        const principal = await useDataService(
+            context,
+            (client) => resolveWebsocketPrincipal(client, operation),
+        );
 
         context.logger.log('resolved', principal);
-        await connectionManager.authorize(context.connectionId, principal);
+        await connectionManager.authorize(
+            context.connectionId,
+            principal,
+            { version: extractVersion(operation.payload || {}) },
+        );
 
         context.logger.log('authorized');
         await connectionManager.sendACK(context.connectionId);
@@ -32,8 +30,10 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
 
         // if we haven't lost the client, we drop it
         if (!(e instanceof ClientLostError)) {
-            await connectionManager.sendError(context.connectionId, { message: e.message }, MessageTypes.GQL_CONNECTION_ERROR);
-            await connectionManager.forceDisconnect(context.connectionId);
+            Promise.all([
+                connectionManager.sendError(context.connectionId, { message: e.message }, MessageTypes.GQL_CONNECTION_ERROR),
+                connectionManager.forceDisconnect(context.connectionId),
+            ]);
         }
     }
 }

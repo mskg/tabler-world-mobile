@@ -3,7 +3,7 @@ import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, AsyncStorage, ScrollView, Text as NativeText, View } from 'react-native';
+import { Alert, ScrollView, Text as NativeText, View } from 'react-native';
 import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -18,23 +18,22 @@ import { ScreenWithHeader } from '../../../components/Screen';
 import { isDemoModeEnabled } from '../../../helper/demoMode';
 import { LinkingHelper } from '../../../helper/LinkingHelper';
 import { Categories, Logger } from '../../../helper/Logger';
-import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/PRESERVE_CONSOLE';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
-import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
-import { UserRole } from '../../../model/graphql/globalTypes';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
-import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
+import { clearMessages } from '../../../redux/actions/chat';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
-import { TOKEN_KEY } from '../../../tasks/Constants';
+import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
+import { DeveloperSection } from './DeveloperSection';
 import { Element } from './Element';
 import { Routes } from './Routes';
 import { SelectionList } from './SelectionList';
 import { styles } from './Styles';
+
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -45,8 +44,6 @@ type State = {
     emailOptions: any[],
     showExperiments: boolean,
     demoMode: boolean,
-    token?: string | null,
-    isDeveloper: boolean,
 };
 
 type OwnProps = {
@@ -62,9 +59,15 @@ type DispatchPros = {
     updateSetting: typeof updateSetting;
     showNearbySettings: typeof showNearbySettings;
     showNotificationSettings: typeof showNotificationSettings;
+    clearMessages: typeof clearMessages;
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+
+function formatDate(nbr: string | null) {
+    if (!nbr) return null;
+    return new Date(parseInt(nbr || '0', 10));
+}
 
 class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     state: State = {
@@ -72,9 +75,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         browserOptions: [{ label: '', value: '' }],
         callOptions: [{ label: '', value: '' }],
         emailOptions: [{ label: '', value: '' }],
+
         showExperiments: false,
         demoMode: false,
-        isDeveloper: false,
     };
 
     constructor(props) {
@@ -82,28 +85,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     async componentDidMount() {
+        super.componentDidMount();
+
         this.buildSMSOptions();
         this.buildMail();
         this.buildWebOptions();
         this.buildCallOptions();
         this.checkDemoMode();
-
-        this.audit.submit();
-        this.setState({
-            token: await AsyncStorage.getItem(TOKEN_KEY),
-        });
-
-        try {
-            const client = cachedAolloClient();
-            const roles = await client.query<GetMyRoles>({
-                query: GetMyRolesQuery,
-                fetchPolicy: 'cache-first',
-            });
-
-            if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.developer)) {
-                this.setState({ isDeveloper: true });
-            }
-        } catch { }
     }
 
     _clearSyncFlags = () => {
@@ -123,6 +111,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
                         const client = cachedAolloClient();
                         await client.cache.reset();
+
+                        this.props.clearMessages();
                         await getPersistor().purge();
 
                         // this forces an update of existing views
@@ -538,18 +528,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        {isFeatureEnabled(Features.BackgroundLocation) && (
-                            <List.Section title={I18N.Settings.sections.locationservices}>
-                                <Divider />
-                                <NextScreen
-                                    theme={this.props.theme}
-                                    text={I18N.Settings.fields.nearby}
-                                    onPress={
-                                        () => this.props.showNearbySettings()}
-                                />
-                                <Divider />
-                            </List.Section>
-                        )}
+                        <List.Section title={I18N.Settings.sections.locationservices}>
+                            <Divider />
+                            <NextScreen
+                                theme={this.props.theme}
+                                text={I18N.Settings.fields.nearby}
+                                onPress={
+                                    () => this.props.navigation.navigate(ParentRoutes.NearbySettings)
+                                }
+                            />
+                            <Divider />
+                        </List.Section>
 
                         {this.state.showExperiments &&
                             <List.Section title={I18N.Settings.sections.experiments}>
@@ -571,34 +560,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
-                        {(isFeatureEnabled(Features.InternalInformation) && this.state.isDeveloper) && (
-                            <List.Section title={'Development'}>
-                                <Element
-                                    theme={this.props.theme}
-                                    field={I18N.Settings.fields.pushtoken}
-                                    text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
-                                />
-                                <Divider />
-
-                                {PRESERVE_CONSOLE && (
-                                    <>
-                                        <Element
-                                            theme={this.props.theme}
-                                            field={'Console Log'}
-                                            text={PRESERVE_CONSOLE.toString()}
-                                        />
-                                        <Divider />
-                                    </>
-                                )}
-
-                                {!PRESERVE_CONSOLE && (
-                                    <>
-                                        <Action theme={this.props.theme} text={'Enable Console Log'} onPress={() => enableConsole()} />
-                                        <Divider />
-                                    </>
-                                )}
-                            </List.Section>
-                        )}
+                        <DeveloperSection />
 
                         <List.Section title={I18N.Settings.sections.reset}>
                             <Divider />
@@ -627,4 +589,5 @@ export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IA
         updateSetting,
         showNearbySettings,
         showNotificationSettings,
+        clearMessages,
     })(withNavigation(withTheme(MainSettingsScreenBase)));

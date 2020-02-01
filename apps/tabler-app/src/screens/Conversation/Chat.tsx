@@ -33,13 +33,13 @@ type Props = {
     theme: Theme,
 
     extraData?: any,
+
     isLoadingEarlier: boolean,
     loadEarlier: boolean,
     onLoadEarlier: () => void,
 
     messages?: IChatMessage[],
     sendMessage: (messages: IChatMessage[]) => void,
-    subscribe?: () => void,
 
     sendDisabled: boolean,
 };
@@ -270,6 +270,7 @@ class ChatBase extends React.Component<Props, State> {
             currentMessage
             && (currentMessage.sent || currentMessage.received || currentMessage.pending)
             && !currentMessage.failedSend
+            && currentMessage.user._id == this.props.userId
         ) {
             return (
                 <View style={styles.tickView}>
@@ -280,11 +281,12 @@ class ChatBase extends React.Component<Props, State> {
                         <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
                     )}
                     {!!currentMessage.pending && (
-                        <Ionicons name="md-time" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons style={{paddingBottom: 4}} name="md-time" color={this.props.theme.colors.disabled} size={10} />
                     )}
                 </View>
             );
         }
+
         return null;
     }
 
@@ -360,12 +362,6 @@ class ChatBase extends React.Component<Props, State> {
                 </TouchableOpacity>
             </View>
         );
-    }
-
-    componentDidMount() {
-        if (this.props.subscribe) {
-            this.props.subscribe();
-        }
     }
 
     render() {

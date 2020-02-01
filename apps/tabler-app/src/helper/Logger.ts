@@ -42,6 +42,7 @@ export class Categories {
         static readonly Snacks = Categories.SagaRoot + '/Snacks';
         static readonly AppState = Categories.SagaRoot + '/AppState';
         static readonly Data = Categories.SagaRoot + '/Data';
+        static readonly Chat = Categories.SagaRoot + '/Chat';
     };
 
     static ReduxComponent = class {
@@ -76,11 +77,14 @@ export class Categories {
         static readonly SecureStore = Categories._Helper + '/SecureStore';
         static readonly ImageCache = Categories._Helper + '/ImageCache';
         static readonly Geo = Categories._Helper + '/Geo';
+        static readonly Chat = Categories._Helper + '/Chat';
     };
 }
 
-let FILTER: RegExp | undefined; // /Chat|API/ig;
+console.disableYellowBox = true;
+let FILTER: RegExp | undefined = /Chat/ig; // /Chat|API/ig;
 const MAX = 24;
+
 // safety
 if (!__DEV__) {
     FILTER = undefined;

@@ -6,12 +6,12 @@ import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import Assets from '../../../Assets';
 import { ScreenWithHeader } from '../../../components/Screen';
+import { getParameterValue } from '../../../helper/parameters/getParameterValue';
+import { UrlParameters } from '../../../helper/parameters/Urls';
 import { I18N } from '../../../i18n/translation';
+import { ParameterName } from '../../../model/graphql/globalTypes';
 import { NextScreen } from './Action';
 import { Routes } from './Routes';
-import { getParameterValue } from '../../../helper/parameters/getParameterValue';
-import { ParameterName } from '../../../model/graphql/globalTypes';
-import { UrlParameters } from '../../../helper/parameters/Urls';
 
 type Props = {
     theme: Theme,
@@ -37,7 +37,6 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps, Sta
         super.componentDidMount();
 
         const urls: UrlParameters = await getParameterValue(ParameterName.urls);
-
         this.setState({
             urls: [
                 {

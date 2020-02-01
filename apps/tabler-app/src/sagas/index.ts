@@ -1,5 +1,6 @@
 import { call, spawn } from 'redux-saga/effects';
 import { Categories, Logger } from '../helper/Logger';
+import { chatSaga } from './chatSaga';
 import { watchNearbyMembers } from './nearby/watchNearbyMembers';
 import { networkSaga } from './network';
 import { pushTokenSaga } from './pushTokenSaga';
@@ -48,6 +49,7 @@ export function* rootSaga() {
         networkSaga,
         syncAllSettings,
         watchNearbyMembers,
+        chatSaga,
     ];
 
     yield* sagas.map((saga) =>

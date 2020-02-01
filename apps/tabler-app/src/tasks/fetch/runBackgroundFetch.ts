@@ -1,24 +1,20 @@
 import * as BackgroundFetch from 'expo-background-fetch';
-import _ from 'lodash';
+import { AsyncStorage } from 'react-native';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
 import { isDemoModeEnabled } from '../../helper/demoMode';
-import { updateParameters } from '../../helper/parameters/updateParameters';
-import { MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
-import { GetMembersByAreasQuery } from '../../queries/Member/GetMembersByAreasQuery';
-import { GetOfflineMembersQuery } from '../../queries/Member/GetOfflineMembersQuery';
-import { GetAreasQuery } from '../../queries/Structure/GetAreasQuery';
-import { GetAssociationQuery } from '../../queries/Structure/GetAssociationQuery';
-import { GetClubsQuery } from '../../queries/Structure/GetClubsQuery';
-import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
-import { FETCH_TASKNAME } from '../Constants';
+import { FetchParameters } from '../../helper/parameters/Fetch';
+import { getParameterValue } from '../../helper/parameters/getParameterValue';
+import { ParameterName } from '../../model/graphql/globalTypes';
+import { getReduxPersistor, persistorRehydrated } from '../../redux/getRedux';
+import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN } from '../Constants';
 import { isSignedIn } from '../helper/isSignedIn';
-import { isLocationTaskEnabled } from '../location/isLocationTaskEnabled';
-import { updateLocation } from '../location/updateLocation';
 import { logger } from './logger';
-import { updateCache } from './updateCache';
+import { runDataUpdates } from './runDataUpdates';
+import { runLocationUpdate } from './runLocationUpdate';
+import { runSend } from './runSend';
 
 export async function runBackgroundFetch() {
     if (await isDemoModeEnabled()) {
@@ -34,56 +30,50 @@ export async function runBackgroundFetch() {
 
     const timer = Audit.timer(AuditEventName.BackgroundSync);
     try {
-        logger.debug('Running');
-        Audit.trackEvent(AuditEventName.BackgroundSync);
+        const lastFetch = parseInt(await AsyncStorage.getItem(FETCH_LAST_DATA_RUN) || '0', 10);
+        const mininutesElapsed = (Date.now() - lastFetch) / 1000 / 60;
 
-        const client = await bootstrapApollo();
+        await bootstrapApollo();
         await getPersistor().restore();
 
-        const updateParametersPromise = updateParameters();
-        const offlineMembersPromise = updateCache(client, GetOfflineMembersQuery, 'members');
+        const parameters = await getParameterValue<FetchParameters>(ParameterName.fetch);
 
-        let locationPromise = Promise.resolve(true);
-        if (await isLocationTaskEnabled()) {
-            // we send a live sign here
-            locationPromise = updateLocation(false, true);
+        if (mininutesElapsed > parameters.dataUpdateInterval) {
+            try {
+                Promise.all([
+                    runDataUpdates(),
+                    runLocationUpdate(),
+                ]);
+            } finally {
+                await AsyncStorage.setItem(FETCH_LAST_DATA_RUN, Date.now().toString());
+            }
         }
 
-        const { area, showAreaBoard, showAssociationBoard } = getReduxStore().getState().filter.member;
-        const areaMembersPromise = updateCache(client, GetMembersByAreasQuery, 'members', {
-            areaBoard: area != null ? showAreaBoard : null,
-            board: area != null ? showAssociationBoard : null,
-            areas: area != null ? _(area).keys().value() : null,
-        } as MembersByAreasVariables);
+        await runSend();
 
-        const clubsPromise = updateCache(client, GetClubsQuery, 'clubs');
-        const areasPromise = updateCache(client, GetAreasQuery, 'areas');
-        const associationsPromise = updateCache(client, GetAssociationQuery, 'associations');
+        timer.submit({
+            [AuditPropertyNames.BackgroundFetchResult]: 'OK',
+        });
 
-        await Promise.all([
-            updateParametersPromise,
-            offlineMembersPromise,
-            areaMembersPromise,
-            clubsPromise,
-            areasPromise,
-            associationsPromise,
-            locationPromise,
-        ]);
-
-        await getPersistor().persist();
-
-        const result = BackgroundFetch.Result.NewData;
-        logger.debug('done', result);
-
-        timer.submit({ [AuditPropertyNames.BackgroundFetchResult]: result.toString() });
-        return result;
+        logger.debug('done');
+        return BackgroundFetch.Result.NewData;
     } catch (error) {
+        logger.error(error, 'runBackgroundFetch');
+
+        timer.submit({
+            [AuditPropertyNames.BackgroundFetchResult]: 'Failed',
+        });
+    } finally {
+        await AsyncStorage.setItem(FETCH_LAST_RUN, Date.now().toString());
+
         try { await getPersistor().persist(); } catch (pe) {
-            logger.error(pe, 'Could not persist');
+            logger.error(pe, 'Could not persist apollo');
         }
 
-        logger.error(error, FETCH_TASKNAME);
-        timer.submit({ [AuditPropertyNames.BackgroundFetchResult]: BackgroundFetch.Result.Failed.toString() });
-        return BackgroundFetch.Result.Failed;
+        try { getReduxPersistor().flush(); } catch (pe) {
+            logger.error(pe, 'Could not persist redux');
+        }
     }
+
+    return BackgroundFetch.Result.Failed;
 }

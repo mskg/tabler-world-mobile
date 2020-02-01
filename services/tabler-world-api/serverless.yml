@@ -53,6 +53,11 @@ custom:
       burstLimit: 200
       rateLimit: 100
 
+  backup_eventstable:
+    dev: false
+    test: false
+    prod: true
+
   bundle:
     dev: false
     test: true
@@ -322,6 +327,13 @@ functions:
             - !Ref bucketAttachments
             - '/*'
 
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::ImportValue: PushQueueArn-${self:custom.stage}
+
     events:
       - http:
           path: graphql
@@ -528,7 +540,7 @@ resources:
           Rules:
             - Id: removal-${self:custom.bucket}
               Status: Enabled
-              ExpirationInDays: '5'
+              ExpirationInDays: '17'
 
     connectionsTable:
       Type: AWS::DynamoDB::Table
@@ -677,6 +689,8 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.events_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
         AttributeDefinitions:
           - AttributeName: eventName
             AttributeType: S

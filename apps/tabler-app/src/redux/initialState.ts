@@ -1,13 +1,20 @@
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 import { IAppState } from '../model/IAppState';
+import { NetInfoStateType } from '@react-native-community/netinfo';
 
 // tslint:disable-next-line: export-name
 export const INITIAL_STATE: IAppState = {
     connection: {
-        effectiveType: 'unknown',
-        type: 'unknown',
+        // effectiveType: 'unknown',
+        type: NetInfoStateType.unknown,
+        isConnected: false,
+        isInternetReachable: false,
+
         offline: true,
-        websocket: false,
+        // required for demo mode
+        websocket: true,
+
+        details: null,
     },
 
     updateAvailable: false,
@@ -58,5 +65,11 @@ export const INITIAL_STATE: IAppState = {
             area: [],
             favorites: {},
         },
+    },
+
+    chat: {
+        badge: 0,
+        activeConversation: null,
+        pendingSend: [],
     },
 };

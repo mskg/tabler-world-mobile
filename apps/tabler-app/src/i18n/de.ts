@@ -92,7 +92,7 @@ const de: I18NType = {
         title: 'Assoziation',
         mytitle: 'Meine Assoziation',
 
-        associations: 'Assoziatio...',
+        associations: 'Assoziationen',
         clubs: 'Tische',
         areas: 'Distrikte',
 
@@ -141,12 +141,12 @@ const de: I18NType = {
     },
 
     Albums: {
-        title: 'Alben',
+        title: 'Fotoalben',
         details: 'Album anzeigen',
     },
 
     News: {
-        title: 'Aktuelles',
+        title: 'Neuigkeiten',
     },
 
     Album: {
@@ -257,6 +257,8 @@ const de: I18NType = {
         lru: 'Zuletzt geöffnet',
 
         filter: 'Filtern',
+        expand: 'Alle anzeigen',
+        collapse: 'Weniger anzeigen',
 
         results: (r) => r > 0 ? `Ergebnisse (${r})` : 'Ergebnisse',
 
@@ -393,7 +395,6 @@ const de: I18NType = {
             version: 'Version',
             lastSync: 'Letzte Synchronisierung',
             channel: 'Kanal',
-            pushtoken: 'Push Token',
             syncFavorites: 'Favoriten synchronisieren',
             syncOwnTable: 'Tischmitglieder synchronisieren',
             sortOrder: 'Sortierung',
@@ -501,6 +502,7 @@ const de: I18NType = {
     },
 
     NearbyMembers: {
+        navigation: 'In der Nähe',
         title: 'Mitglieder in der Nähe',
         location: 'Dein Standort',
 

@@ -4,7 +4,7 @@ import { Categories, Logger } from '../helper/Logger';
 const logger = new Logger(Categories.Redux);
 
 // if you want to wipe the store just increment the number here
-export const MIGRATE_VERSION = 49;
+export const MIGRATE_VERSION = 50;
 
 export const migrateToNull = createMigrate(
     {

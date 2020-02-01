@@ -1,8 +1,9 @@
-import { IPrincipal } from '@mskg/tabler-world-auth-client';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
+import { ISubscriptionContext } from '../../types/ISubscriptionContext';
 import { dynamodb as client } from '../aws/dynamodb';
 import { ClientLostError } from '../types/ClientLostError';
+import { IConnectionContext } from '../types/IConnection';
 import { ISubscription } from '../types/ISubscription';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { FieldNames, SUBSCRIPTIONS_TABLE } from './Constants';
@@ -30,7 +31,7 @@ export class WebsocketSubscriptionManager {
                 ':trigger': trigger,
             },
 
-            ProjectionExpression: `${FieldNames.subscription}, ${FieldNames.principal}, ${FieldNames.payload}`,
+            ProjectionExpression: `${FieldNames.subscription}, ${FieldNames.principal}, ${FieldNames.payload}, ${FieldNames.context}`,
         }).promise();
 
         return clients
@@ -41,16 +42,18 @@ export class WebsocketSubscriptionManager {
                     subscriptionId,
                     connection: {
                         connectionId,
+                        memberId: c[FieldNames.principal].id,
                         payload: c[FieldNames.payload],
                         principal: c[FieldNames.principal],
+                        context: c[FieldNames.context],
                     },
                 } as ISubscription);
             })
             : [];
     }
 
-    public async subscribe(connectionId: string, subscriptionId: string, triggers: string[], principal: IPrincipal, payload: any): Promise<void> {
-        logger.log(`[${connectionId}] [${subscriptionId}]`, 'subscribe', triggers, payload);
+    public async subscribe(context: ISubscriptionContext, subscriptionId: string, triggers: string[], payload: any): Promise<void> {
+        logger.log(`[${context.connectionId}] [${subscriptionId}]`, 'subscribe', triggers, payload);
 
         const params = await getWebsocketParams();
         await client.batchWrite({
@@ -58,15 +61,16 @@ export class WebsocketSubscriptionManager {
                 [SUBSCRIPTIONS_TABLE]: triggers.map((trigger) => ({
                     PutRequest: {
                         Item: {
-                            [FieldNames.subscription]: makeKey(connectionId, subscriptionId, trigger),
-                            [FieldNames.connectionId]: connectionId,
+                            [FieldNames.subscription]: makeKey(context.connectionId, subscriptionId, trigger),
+                            [FieldNames.connectionId]: context.connectionId,
                             [FieldNames.trigger]: trigger,
 
                             // Authentication
-                            [FieldNames.principal]: principal,
+                            [FieldNames.principal]: context.principal,
 
-                            // GraphQL subscritption
+                            // GraphQL subscription
                             [FieldNames.payload]: payload,
+                            [FieldNames.context]: context.clientInfo as IConnectionContext,
 
                             ttl: Math.floor(Date.now() / 1000) + params.ttlSubscription,
                         },

@@ -1,5 +1,4 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { DataSource } from 'apollo-datasource';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
 import { keys } from 'lodash';
@@ -14,11 +13,10 @@ import { WebsocketEvent } from './types/WebsocketEvent';
 
 export const logger = new ConsoleLogger('publish/ws');
 
-export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>): Promise<number[]> {
+export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>, delivered = false): Promise<number[]> {
     const failedDeliveries: number[] = [];
-    const ds = dataSources();
 
-    const promises = subscriptions.map(async ({ connection: { connectionId, payload, principal }, subscriptionId }) => {
+    const promises = subscriptions.map(async ({ connection: { connectionId, payload, principal, context: connectionContext }, subscriptionId }) => {
         try {
             logger.log(`[${connectionId}] [${subscriptionId}]`, 'working');
 
@@ -31,15 +29,18 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
             const context = {
                 connectionId,
                 principal,
-                dataSources: ds,
+                clientInfo: {
+                    version: connectionContext.version,
+                },
+                dataSources: dataSources(),
                 logger: new ConsoleLogger('publish', connectionId, principal.id),
                 cache: cacheInstance,
                 requestCache: {},
             } as ISubscriptionContext;
 
-            keys(ds).forEach((k) => {
+            keys(context.dataSources).forEach((k) => {
                 // @ts-ignore
-                (ds[k] as DataSource<any>).initialize({
+                context.dataSources[k].initialize({
                     context,
                     cache: cacheInstance,
                 });
@@ -66,7 +67,7 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
             // publiush message
             pubsub.publish(event.eventName, {
                 ...event,
-                delivered: true,
+                delivered, // this can be wrong
             } as WebsocketEvent<any>);
 
             // run resolver

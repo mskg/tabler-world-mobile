@@ -1,7 +1,7 @@
 import Auth from '@aws-amplify/auth';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
-import { Updates } from 'expo';
+import { Notifications, Updates } from 'expo';
 import * as SecureStore from 'expo-secure-store';
 import { AsyncStorage } from 'react-native';
 import { put } from 'redux-saga/effects';
@@ -31,6 +31,8 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
     yield client.cache.reset();
     yield getPersistor().purge();
+w
+    Notifications.setBadgeNumberAsync(0);
 
     yield Auth.signOut();
     yield Updates.reloadFromCache();

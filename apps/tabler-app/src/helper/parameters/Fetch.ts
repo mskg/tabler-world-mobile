@@ -1,12 +1,18 @@
 
 export type FetchParameters = {
-    minimumInterval: number,
-    startOnBoot: boolean,
-    stopOnTerminate: boolean,
+    dataUpdateInterval: number,
+    task: {
+        minimumInterval: number,
+        startOnBoot?: boolean,
+        stopOnTerminate?: boolean,
+    },
 };
 
 export const FetchParameterDefaults: FetchParameters = {
-    minimumInterval: 60 * 60 * (24 / 4),
-    startOnBoot: true,
-    stopOnTerminate: true,
+    dataUpdateInterval: 60 * 60 * (24 / 4),
+    task: {
+        minimumInterval: 60 * 15,
+        startOnBoot: true,
+        stopOnTerminate: true,
+    },
 };

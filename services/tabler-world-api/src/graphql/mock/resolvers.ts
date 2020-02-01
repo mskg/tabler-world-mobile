@@ -7,4 +7,8 @@ export const resolvers = {
     JobResult: {
         __resolveType: () => 'JobError',
     },
+
+    // SearchDirectoryResult: {
+    //     __resolveType: () => ,
+    // },
 };

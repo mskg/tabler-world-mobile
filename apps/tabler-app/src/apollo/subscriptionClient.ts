@@ -1,12 +1,14 @@
 
+import Constants from 'expo-constants';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { getConfigValue } from '../helper/getConfigValue';
 import { updateWebsocket } from '../redux/actions/state';
 import { getReduxStore } from '../redux/getRedux';
+import { getClientParameters } from './getClientParameters';
 import { getCurrentIdentity } from './getCurrentIdentity';
 import { logger } from './logger';
 
-const wsApi = getConfigValue('ws-api');
+const wsApi = getConfigValue('wsapi');
 
 export const subscriptionClient = new SubscriptionClient(
     wsApi,
@@ -16,10 +18,26 @@ export const subscriptionClient = new SubscriptionClient(
         reconnectionAttempts: Infinity,
 
         connectionParams: async () => ({
+            ...getClientParameters(),
             Authorization: await getCurrentIdentity(),
+            Device: Constants.deviceId || 'dev',
         }),
     },
 );
+
+// export const subscriptionClientDemo = new SubscriptionClient(
+//     wsApi,
+//     {
+//         lazy: true,
+//         reconnect: true,
+//         reconnectionAttempts: Infinity,
+
+//         connectionParams: async () => ({
+//             ... getClientParameters(),
+//             Authorization: `DEMO ${getConfigValue('apidemo')}`,
+//         }),
+//     },
+// );
 
 subscriptionClient.use([{
     applyMiddleware: (options, next) => {

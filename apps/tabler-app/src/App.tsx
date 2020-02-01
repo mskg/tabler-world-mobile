@@ -10,11 +10,11 @@ import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
-import { withLoadingAnimation } from './components/withLoadingAnimation';
 import { PushNotifications } from './components/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
 import { Snacks } from './components/Snacks';
+import { withLoadingAnimation } from './components/withLoadingAnimation';
 import { withPreCached } from './components/withPreCached';
 import { bootStrapSentry } from './helper/bootStrapSentry';
 import { disableFontScaling } from './helper/disableFontScaling';
@@ -24,7 +24,7 @@ import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
-import { SubscribeToConversationUpdates } from './screens/More/Conversations/SubscribeToConversationUpdates';
+import { SubscribeToConversationUpdates } from './screens/Conversations/SubscribeToConversationUpdates';
 import { registerFetchTask } from './tasks/registerFetchTask';
 import { registerLocationTask } from './tasks/registerLocationTask';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
@@ -54,17 +54,15 @@ if (isFeatureEnabled(Features.BackgroundFetch)) {
     registerFetchTask();
 }
 
-if (isFeatureEnabled(Features.BackgroundLocation)) {
-    logger.log('Bootstrapping background-location');
-    registerLocationTask();
-}
+logger.log('Bootstrapping background-location');
+registerLocationTask();
 
 fix2940();
+
+// problems with navigation on 36.0.0++
 // useScreens();
 
 const App = () => {
-    // if (__DEV__) useKeepAwake();
-
     const dispatch = useDispatch();
     dispatch(checkNetwork());
 

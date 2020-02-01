@@ -14,11 +14,10 @@ import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { IAppState } from '../../model/IAppState';
-import { HomeRoutes } from '../../navigation/Routes';
+import { HomeRoutes } from '../../navigation/HomeRoutes';
 import { addTablerSearch } from '../../redux/actions/history';
 import { IConversationParams } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
-import { logger } from './logger';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { styles } from './styles';
 
@@ -62,6 +61,7 @@ class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
         this.mounted = true;
 
         // if called without blur, settimeout, keyboard will never get dismissed?
@@ -73,9 +73,6 @@ class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
                 }
             });
         }
-
-        logger.debug('Logged');
-        this.audit.submit();
     }
 
     componentWillUnmount() {

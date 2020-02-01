@@ -14,6 +14,7 @@ export enum FieldNames {
     members = 'members',
     conversation = 'conversation',
     principal = 'principal',
+    context = 'context',
     trigger = 'eventName',
     subscription = 'subscription',
     lastMessage = 'lastMessage',

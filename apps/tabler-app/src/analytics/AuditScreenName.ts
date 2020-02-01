@@ -43,4 +43,6 @@ export enum AuditScreenName {
     Conversations = 'Chat/Conversations',
     Conversation = 'Chat/Conversation',
     NewConversation = 'Chat/Conversation/New',
+
+    Feedback = 'Feedback',
 }

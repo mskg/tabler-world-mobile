@@ -43,7 +43,6 @@ export class ErrorBoundary extends React.Component<Props, State> {
         AppState.removeEventListener('change', this.handleAppStateChange);
     }
 
-
     componentDidCatch(error: Error, _info: ErrorInfo) {
         logger.error(error);
 
