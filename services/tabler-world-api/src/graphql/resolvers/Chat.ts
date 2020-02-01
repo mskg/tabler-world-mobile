@@ -383,7 +383,7 @@ export const ChatResolver = {
                     // payload is the trigger
                     payload: trigger,
                     pushNotification: undefined,
-                    ttl: params.ttl,
+                    ttl: params.messageTTL,
                     trackDelivery: false,
                 })),
             );
