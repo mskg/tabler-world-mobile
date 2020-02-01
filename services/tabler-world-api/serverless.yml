@@ -327,6 +327,13 @@ functions:
             - !Ref bucketAttachments
             - '/*'
 
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::ImportValue: PushQueueArn-${self:custom.stage}
+
     events:
       - http:
           path: graphql
