@@ -1,11 +1,12 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { ScrollView, View } from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
 import { showShakeErrorReport } from '../../components/ShakeErrorReport';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
@@ -48,7 +49,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                 <ScrollView>
                     <List.Section>
                         <NavigationItem
-                            icon="md-globe"
+                            icon={<Image source={Assets.images.icon_tw} style={{ marginTop: 2, height: 32, width: 32 }} />}
                             theme={this.props.theme}
                             text={I18N.World.title}
                             onPress={() => this.props.navigation.navigate(Routes.World)}
