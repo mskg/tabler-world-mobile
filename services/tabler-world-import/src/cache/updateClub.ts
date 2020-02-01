@@ -22,7 +22,7 @@ export async function updateClub(client: IDataService, club: string) {
     }
 
     const res = await client.query(
-        `select * from structure_clubs where club = $1`,
+        `select * from structure_clubs where id = $1`,
         [club]);
 
     const newClub = res.rows.length === 1 ? res.rows[0] : undefined;
