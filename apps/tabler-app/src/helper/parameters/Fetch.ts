@@ -13,6 +13,6 @@ export const FetchParameterDefaults: FetchParameters = {
     task: {
         minimumInterval: 60 * 15,
         startOnBoot: true,
-        stopOnTerminate: true,
+        stopOnTerminate: false,
     },
 };
