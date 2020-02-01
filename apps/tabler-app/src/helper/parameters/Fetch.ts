@@ -9,7 +9,7 @@ export type FetchParameters = {
 };
 
 export const FetchParameterDefaults: FetchParameters = {
-    dataUpdateInterval: 60 * 60 * (24 / 4),
+    dataUpdateInterval: 60 * (24 / 4),
     task: {
         minimumInterval: 60 * 15,
         startOnBoot: true,
