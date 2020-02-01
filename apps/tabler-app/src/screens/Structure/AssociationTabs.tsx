@@ -30,7 +30,7 @@ export const AssociationTabs = createMaterialTopTabNavigator(
         [Routes.Associations]: {
             screen: AssociationsScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.associations} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.title} />,
             },
         },
 

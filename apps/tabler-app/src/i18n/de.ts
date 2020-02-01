@@ -92,7 +92,7 @@ const de: I18NType = {
         title: 'Assoziation',
         mytitle: 'Meine Assoziation',
 
-        associations: 'Assoziatio...',
+        associations: 'Assoziationen',
         clubs: 'Tische',
         areas: 'Distrikte',
 
@@ -257,6 +257,8 @@ const de: I18NType = {
         lru: 'Zuletzt geöffnet',
 
         filter: 'Filtern',
+        expand: 'Alle anzeigen',
+        collapse: 'Weniger anzeigen',
 
         results: (r) => r > 0 ? `Ergebnisse (${r})` : 'Ergebnisse',
 

@@ -90,7 +90,8 @@ const en = {
 
         title: 'Asssociation',
         mytitle: 'My Asssociation',
-        associations: 'Association',
+        associations: 'Associations',
+
         clubs: 'Clubs',
         areas: 'Areas',
 
@@ -254,6 +255,9 @@ const en = {
         lru: 'Recently Opened',
 
         filter: 'Filter',
+
+        expand: 'See All',
+        collapse: 'See Less',
 
         results: (r) => r > 0 ? `Search results (${r})` : 'Search results',
 

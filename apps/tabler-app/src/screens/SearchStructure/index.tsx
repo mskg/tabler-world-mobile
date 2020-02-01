@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Searchbar, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
@@ -8,6 +8,7 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { StandardHeader } from '../../components/Header';
+import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Screen } from '../../components/Screen';
 import { I18N } from '../../i18n/translation';
 import { SearchDirectory_SearchDirectory_nodes } from '../../model/graphql/SearchDirectory';
@@ -15,12 +16,12 @@ import { IAppState } from '../../model/IAppState';
 import { addStructureSearch } from '../../redux/actions/history';
 import { showAssociation, showClub } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
+import { AssociationsList } from './AssociationsList';
 import { logger } from './logger';
-import { LRU } from './LRU';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
-import { CannotLoadWhileOffline } from '../../components/NoResults';
+
 type State = {
     searching: boolean,
     query: string,
@@ -142,7 +143,10 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
         return (
             <Screen>
                 {!this.state.searching && (
-                    <SearchHistory applyFilter={this.searchFilterFunction} />
+                    <ScrollView>
+                        <AssociationsList />
+                        <SearchHistory applyFilter={this.searchFilterFunction} />
+                    </ScrollView>
                 )}
 
                 {this.state.searching && this.props.offline && (
