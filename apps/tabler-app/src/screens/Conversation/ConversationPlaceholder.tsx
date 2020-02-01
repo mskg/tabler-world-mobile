@@ -8,6 +8,7 @@ const Left = ({ children }) => (
     <View style={{ width: '100%', alignItems: 'flex-start' }}>
         {
             (Array.isArray(children) ? children : [children]).map((c, i, e) => React.cloneElement(c, {
+                key: i.toString(),
                 style: {
                     borderBottomLeftRadius: i === e.length - 1 ? undefined : 0,
                     borderTopLeftRadius: e.length > 1 && i > 0 ? 0 : undefined,
@@ -22,6 +23,7 @@ const Right = ({ children }) => (
     <View style={{ width: '100%', alignItems: 'flex-end' }}>
         {
             (Array.isArray(children) ? children : [children]).map((c, i, e) => React.cloneElement(c, {
+                key: i.toString(),
                 style: {
                     borderBottomRightRadius: i === e.length - 1 ? undefined : 0,
                     borderTopRightRadius: e.length > 1 && i > 0 ? 0 : undefined,
