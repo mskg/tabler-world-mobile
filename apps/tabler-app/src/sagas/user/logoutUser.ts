@@ -31,7 +31,7 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
     yield client.cache.reset();
     yield getPersistor().purge();
-w
+
     Notifications.setBadgeNumberAsync(0);
 
     yield Auth.signOut();

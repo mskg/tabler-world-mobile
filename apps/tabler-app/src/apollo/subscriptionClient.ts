@@ -25,20 +25,6 @@ export const subscriptionClient = new SubscriptionClient(
     },
 );
 
-// export const subscriptionClientDemo = new SubscriptionClient(
-//     wsApi,
-//     {
-//         lazy: true,
-//         reconnect: true,
-//         reconnectionAttempts: Infinity,
-
-//         connectionParams: async () => ({
-//             ... getClientParameters(),
-//             Authorization: `DEMO ${getConfigValue('apidemo')}`,
-//         }),
-//     },
-// );
-
 subscriptionClient.use([{
     applyMiddleware: (options, next) => {
         logger.log('[WS] subscribe', options.operationName);

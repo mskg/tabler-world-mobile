@@ -54,6 +54,7 @@
             "assets/**/splash.png",
             "assets/**/background.png",
             "assets/**/logo_mask.png",
+            "assets/**/icon_tw.png",
             "assets/fonts/**/DejaVuSansCondensed.ttf",
             "assets/fonts/**/DejaVuSansCondensed-Bold.ttf",
             "assets/fonts/**/DejaVuSans-ExtraLight.ttf",

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import color from 'color';
 import React from 'react';
 import { View } from 'react-native';
@@ -84,6 +85,16 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
                                 }
                             />
                         ),
+
+                        this.props.navigation.getParam('association') == null
+                            ? (
+                                <Appbar.Action
+                                    key="world"
+                                    icon={'language'}
+                                    onPress={() => this.props.showStructureSearch(true)}
+                                />
+                            ) : null,
+
                         this.props.navigation.getParam('association') == null
                             ? (
                                 <Appbar.Action

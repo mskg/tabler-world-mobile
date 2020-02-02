@@ -142,7 +142,7 @@ export const ChatResolver = {
                         channel,
                         principalId,
                         // highest message
-                        result.result[result.result.length - 1].id,
+                        result.result[0].id,
                     ),
 
                     // conversationManager.getConversation(channel),

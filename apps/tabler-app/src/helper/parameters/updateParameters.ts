@@ -21,7 +21,7 @@ export async function updateParameters() {
             fetchPolicy: 'network-only',
             variables: {
                 info: {
-                    version: Constants.manifest.revisionId || 'dev',
+                    version: Constants.manifest.version || 'dev',
                     os: Platform.OS === 'android' ? ParameterPlatform.android : ParameterPlatform.ios,
                 },
             },

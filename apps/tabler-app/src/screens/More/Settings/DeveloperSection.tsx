@@ -1,13 +1,14 @@
 import Constants from 'expo-constants';
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Clipboard } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { Categories, Logger } from '../../../helper/Logger';
+import { getParameterValue } from '../../../helper/parameters/getParameterValue';
 import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/PRESERVE_CONSOLE';
 import { I18N } from '../../../i18n/translation';
 import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
-import { UserRole } from '../../../model/graphql/globalTypes';
+import { ParameterName, UserRole } from '../../../model/graphql/globalTypes';
 import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN, TOKEN_KEY } from '../../../tasks/Constants';
 import { runBackgroundFetch } from '../../../tasks/fetch/runBackgroundFetch';
@@ -23,6 +24,7 @@ type State = {
     lastDataRun: Date | null,
 
     isDeveloper: boolean,
+    params?: string | null,
 };
 
 type OwnProps = {
@@ -51,10 +53,17 @@ class DeveloperSectionBase extends React.Component<Props, State> {
     };
 
     async fetchData() {
+        const params = {};
+
+        Promise.all(Object.keys(ParameterName).map(async (k) => {
+            params[ParameterName[k]] = await getParameterValue(k as ParameterName);
+        }));
+
         this.setState({
             token: await AsyncStorage.getItem(TOKEN_KEY),
             lastFetchRun: formatDate(await AsyncStorage.getItem(FETCH_LAST_RUN)),
             lastDataRun: formatDate(await AsyncStorage.getItem(FETCH_LAST_DATA_RUN)),
+            params: JSON.stringify(params),
         });
 
     }
@@ -111,7 +120,7 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                         <Action theme={this.props.theme} text={'Run Fetch Task'} onPress={async () => { await runBackgroundFetch(); await this.fetchData(); }} />
                         <Divider />
 
-                        {PRESERVE_CONSOLE && (
+                        {false && PRESERVE_CONSOLE && (
                             <>
                                 <Element
                                     theme={this.props.theme}
@@ -122,12 +131,16 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                             </>
                         )}
 
-                        {!PRESERVE_CONSOLE && (
+                        {false && !PRESERVE_CONSOLE && (
                             <>
                                 <Action theme={this.props.theme} text={'Enable Console Log'} onPress={() => enableConsole()} />
                                 <Divider />
                             </>
                         )}
+
+                        <Action theme={this.props.theme} text={'Copy Parameters'} onPress={() => Clipboard.setString(this.state.params || 'null')} />
+                        <Divider />
+
                     </List.Section>
                 )}
             </>

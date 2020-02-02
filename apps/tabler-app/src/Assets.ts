@@ -1,5 +1,6 @@
 const ASSETS = '../assets';
 
+// tslint:disable-next-line: export-name
 export default {
     fonts: {
         normal: require(ASSETS + '/fonts/dejavu-sans/DejaVuSansCondensed.ttf'),
@@ -13,6 +14,7 @@ export default {
         splash: require(ASSETS + '/images/splash.png'),
         background: require(ASSETS + '/images/background.png'),
         mask: require(ASSETS + '/images/logo_mask.png'),
+        icon_tw: require(ASSETS + '/images/icon_tw.png'),
     },
 
     files: {

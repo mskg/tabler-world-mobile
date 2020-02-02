@@ -21,6 +21,7 @@ import { logger } from './logger';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type State = {
     searching: boolean,
@@ -43,7 +44,11 @@ type DispatchPros = {
     addStructureSearch: typeof addStructureSearch;
 };
 
-type Props = OwnProps & StateProps & DispatchPros;
+type NavigationParams = {
+    expandAssociations?: boolean,
+}
+
+type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<NavigationParams>;
 
 class SearchStructureScreenBase extends AuditedScreen<Props, State> {
     mounted = true;
@@ -142,7 +147,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
             <Screen>
                 {!this.state.searching && (
                     <ScrollView>
-                        <AssociationsList />
+                        <AssociationsList expanded={this.props.navigation.getParam('expandAssociations')} />
                         <SearchHistory applyFilter={this.searchFilterFunction} />
                     </ScrollView>
                 )}
@@ -195,6 +200,7 @@ export const SearchStructureScreen = connect(
     },
 )(
     withWhoopsErrorBoundary(
-        withTheme(SearchStructureScreenBase),
+        withTheme(
+            withNavigation(SearchStructureScreenBase)),
     ),
 );
