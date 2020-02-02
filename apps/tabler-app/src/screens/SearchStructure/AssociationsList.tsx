@@ -17,6 +17,7 @@ import { showAssociation } from '../../redux/actions/navigation';
 type OwnProps = {
     navigation: any,
     theme: Theme,
+    expanded?: boolean,
 };
 
 type StateProps = {
@@ -36,7 +37,7 @@ const NUM_ELEMENTS = 3;
 
 class AssociationsListBase extends React.Component<Props> {
     state = {
-        expanded: false,
+        expanded: this.props.expanded,
     };
 
     _toggle = () => {

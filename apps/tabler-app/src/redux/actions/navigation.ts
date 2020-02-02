@@ -181,8 +181,11 @@ export const showArea = (id: string) => {
     });
 };
 
-export const showStructureSearch = () => NavigationActions.navigate({
+export const showStructureSearch = (expandAssociations?: boolean) => NavigationActions.navigate({
     routeName: HomeRoutes.SearchStructure,
+    params: {
+        expandAssociations,
+    }
 });
 
 export const showFeedback = () => NavigationActions.navigate({
