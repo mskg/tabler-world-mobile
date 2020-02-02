@@ -65,10 +65,12 @@ class AssociationsListBase extends React.Component<Props> {
                     <View
                         style={{
                             backgroundColor: this.props.theme.colors.background,
+                            justifyContent: this.state.expanded ? 'space-between' : undefined,
                             flexWrap: 'wrap',
                             flexDirection: this.state.expanded ? 'row' : 'column',
                             height: !this.state.expanded ? ITEM_WIDTH * NUM_ELEMENTS + ITEM_PADDING * NUM_ELEMENTS : undefined,
                             marginLeft: -ITEM_PADDING / 2,
+                            marginRight: this.state.expanded ? ITEM_PADDING / 2 : undefined,
                         }}
                     >
                         <Query<Assocations>
@@ -131,7 +133,6 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 8,
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
         paddingRight: 24,
