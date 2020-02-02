@@ -47,6 +47,7 @@ const Navigator = createMaterialTopTabNavigator(
         // removeClippedSubviews: true,
         swipeEnabled: true,
         tabBarPosition: 'top',
+        backBehavior: 'history',
     },
 );
 
