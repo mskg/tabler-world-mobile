@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Dimensions, StyleSheet, View, ViewPropTypes } from 'react-native';
+import { Dimensions, StyleSheet, View, ViewPropTypes, ActivityIndicator } from 'react-native';
 import { IMessage, MessageImageProps } from 'react-native-gifted-chat';
 // @ts-ignore
 import Lightbox from 'react-native-lightbox';
@@ -20,6 +20,11 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 13,
         resizeMode: 'cover',
+    },
+
+    loading: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     imageActive: {
@@ -48,6 +53,11 @@ export class MessageImage<TMessage extends IMessage = IMessage> extends Componen
         lightboxProps: PropTypes.object,
     };
 
+    makeCacheKey(img?: string) {
+        if (!img) { return undefined; }
+        return img.replace(/\?.*/ig, '');
+    }
+
     render() {
         const {
             containerStyle,
@@ -70,17 +80,26 @@ export class MessageImage<TMessage extends IMessage = IMessage> extends Componen
                             cacheGroup="chat"
                             uri={currentMessage.image}
                             style={[styles.image, imageStyle]}
+                            changeDetectionOverride={this.makeCacheKey(currentMessage.image)}
+                            transitionDuration={500}
                             preview={(
-                                <Placeholder
-                                    ready={false}
-                                    previewComponent={(
-                                        <Square
-                                            width={150}
-                                            height={100}
-                                            style={[styles.image, imageStyle]}
+                                <>
+                                    <View style={[styles.image, styles.loading]}>
+                                        <ActivityIndicator />
+                                    </View>
+                                    {false && (
+                                        <Placeholder
+                                            ready={false}
+                                            previewComponent={(
+                                                <Square
+                                                    width={150}
+                                                    height={100}
+                                                    style={[styles.image, imageStyle]}
+                                                />
+                                            )}
                                         />
                                     )}
-                                />
+                                </>
                             )}
                             {...imageProps}
                         />

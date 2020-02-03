@@ -30,28 +30,48 @@ export class CacheEntry {
             return path;
         }
 
-        const encodedUri = encodeURI(uri);
+        // const encodedUri = encodeURI(uri);
         try {
             logger.debug('Downloading', uri, 'to', tmpPath);
-            const result = await FileSystem.createDownloadResumable(
-                encodedUri,
+            let result = await FileSystem.createDownloadResumable(
+                uri,
                 tmpPath,
                 options,
             ).downloadAsync();
 
             // If the image download failed, we don't cache anything
             if (result && result.status !== 200) {
-                logger.log('Failed to download uri, status != 200', encodedUri, result.status);
+                logger.log('Failed to download uri, status != 200', uri, result.status);
 
-                try {
-                    await FileSystem.deleteAsync(tmpPath);
-                    await FileSystem.deleteAsync(path);
-                } catch { }
+                const encoded = encodeURI(uri);
+                if (encoded !== uri) {
+                    logger.log('Retry with encoded URI', encoded);
+
+                    result = await FileSystem.createDownloadResumable(
+                        encoded,
+                        tmpPath,
+                        options,
+                    ).downloadAsync();
+
+                    if (result && result.status !== 200) {
+                        logger.log('Failed to download uri, status != 200', encoded, result.status);
+
+                        try {
+                            await FileSystem.deleteAsync(tmpPath);
+                            await FileSystem.deleteAsync(path);
+                        } catch { }
+                    }
+                } else {
+                    try {
+                        await FileSystem.deleteAsync(tmpPath);
+                        await FileSystem.deleteAsync(path);
+                    } catch { }
+                }
 
                 return undefined;
             }
         } catch (e) {
-            logger.log('Error downloading uri', encodedUri, e);
+            logger.log('Error downloading uri', uri, e);
             return undefined;
         }
 

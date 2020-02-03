@@ -12,7 +12,9 @@ type ImageProps = {
     options?: DownloadOptions;
     cacheGroup?: CacheGroup;
 
+    changeDetectionOverride?: string;
     uri?: string | null;
+
     transitionDuration?: number;
     resizeMode?: ImageResizeMode,
 };
@@ -58,6 +60,11 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
 
     componentDidUpdate(prevProps: ImageProps, _prevState: ImageState) {
         if (this.props.uri !== prevProps.uri) {
+            if (this.props.changeDetectionOverride != null && this.props.changeDetectionOverride === prevProps.changeDetectionOverride) {
+                // we are equal
+                return;
+            }
+
             this.setState({ uri: undefined, intensity: new Animated.Value(0), hidePreview: false });
 
             // tslint:disable-next-line: no-increment-decrement
@@ -68,25 +75,26 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
     _startAnimation = () => {
         const { transitionDuration } = this.props;
         const { intensity } = this.state;
-
         const request = this.requestId;
-        // if (__DEV__) { logger.debug('Hiding preview', request); }
 
-        // if (Platform.OS === 'android') {
-        //     this.setState({ hidePreview: true });
-        // } else {
-        Animated.timing(intensity, {
-            duration: transitionDuration || 300,
-            toValue: 100,
-            useNativeDriver: true,
-        }).start(() => {
+        if (transitionDuration !== 0) {
+            Animated.timing(intensity, {
+                duration: transitionDuration || 300,
+                toValue: 100,
+                useNativeDriver: true,
+            }).start(() => {
+                if (this.mounted && request === this.requestId) {
+                    this.setState({ hidePreview: true });
+                }
+            });
+        } else {
+            logger.debug('No transitionDuration');
             if (this.mounted && request === this.requestId) {
                 this.setState({ hidePreview: true });
             }
-        });
+        }
 
         this.forceUpdate();
-        // }
     }
 
     componentWillUnmount() {
