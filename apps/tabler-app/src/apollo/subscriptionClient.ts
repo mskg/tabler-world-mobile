@@ -1,5 +1,6 @@
 
 import Constants from 'expo-constants';
+import { AppState } from 'react-native';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { getConfigValue } from '../helper/getConfigValue';
 import { updateWebsocket } from '../redux/actions/state';
@@ -24,6 +25,49 @@ export const subscriptionClient = new SubscriptionClient(
         }),
     },
 );
+
+const INACTIVE_TIMEOUT = 5 * 1000;
+
+// tslint:disable-next-line: one-variable-per-declaration
+let closing: number | undefined;
+AppState.addEventListener('change', (nextAppState: string) => {
+    try {
+        logger.log('[WS] close', subscriptionClient.status);
+
+        if (nextAppState !== 'active') {
+            if (subscriptionClient.status === WebSocket.OPEN) {
+                try {
+                    logger.log('[WS] starting closing with timeout');
+
+                    if (closing) {
+                        clearTimeout(closing);
+                    }
+
+                    closing = setTimeout(
+                        () => {
+                            subscriptionClient.close(true, true);
+                            closing = undefined;
+                        },
+                        INACTIVE_TIMEOUT,
+                    );
+                } catch (e) {
+                    logger.log('Failed to close', e);
+                }
+            }
+        } else {
+            if (closing) {
+                clearTimeout(closing);
+                closing = undefined;
+            }
+
+            // @ts-ignore
+            // this method is not public but we need to call it to reconnect
+            subscriptionClient.tryReconnect();
+        }
+    } catch (e) {
+        logger.error(e, 'Failed to change wbsocket state on active/inactive');
+    }
+});
 
 subscriptionClient.use([{
     applyMiddleware: (options, next) => {
