@@ -6,6 +6,7 @@ import { conversationManager, eventManager, pushSubscriptionManager, subscriptio
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
 import { pubsub } from '../subscriptions/services/pubsub';
+import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../subscriptions/types/Constants';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
@@ -59,17 +60,25 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
+/**
+ * CONV(:1:,:2:)
+ * @param members
+ */
 function makeConversationKey(members: number[]): string {
-    return `CONV(${members.sort().map((m) => `:${m}:`).join(',')})`;
+    return `${DIRECT_CHAT_PREFIX}${members.sort().map((m) => `${MEMBER_ENCLOSING}${m}${MEMBER_ENCLOSING}`).join(MEMBER_SEPERATOR)}${DIRECT_CHAT_SUFFIX}`;
 }
 
 // this is a very simple security check that is now sufficient in the 1:1 test
 function checkChannelAccess(channel: string, member: number): boolean {
-    return decodeIdentifier(channel).match(new RegExp(`:${member}:`, 'g'));
+    return decodeIdentifier(channel).match(new RegExp(`${MEMBER_ENCLOSING}${member}${MEMBER_ENCLOSING}`, 'g'));
 }
 
+/**
+ * ALL(:1:)
+ * @param member
+ */
 function makeAllConversationKey(member: number): string {
-    return `CONV(:ALL:,:${member}:)`;
+    return `${ALL_CHANNEL_PREFIX}${member}${ALL_CHANNEL_SUFFIX}`;
 }
 
 // tslint:disable: export-name
@@ -120,10 +129,6 @@ export const ChatResolver = {
         // tslint:disable-next-line: variable-name
         messages: async (root: { id: string }, args: IteratorArgs, context: IApolloContext) => {
             const principalId = context.principal.id;
-
-            if (!checkChannelAccess(root.id, principalId)) {
-                throw new Error(`Access denied (${root.id}, ${principalId})`);
-            }
 
             const channel = decodeIdentifier(root.id);
             const params = await getChatParams();
@@ -296,10 +301,12 @@ export const ChatResolver = {
                 throw new Error('Access denied.');
             }
 
-            await conversationManager.removeMembers(decodeIdentifier(id as string), [context.principal.id]);
+            await Promise.all([
+                conversationManager.removeMembers(decodeIdentifier(id as string), [context.principal.id]),
 
-            // we make this generic and always leave, even if that does not exist for a 1:1
-            await pushSubscriptionManager.unsubscribe(decodeIdentifier(id as string), [context.principal.id]);
+                // we make this generic and always leave, even if that does not exist for a 1:1
+                pushSubscriptionManager.unsubscribe(decodeIdentifier(id as string), [context.principal.id]),
+            ]);
 
             return true;
         },
@@ -322,19 +329,19 @@ export const ChatResolver = {
 
             const existing = await context.dataSources.conversations.readConversation(id);
             if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
-                context.logger.log('######################################### Conversation already exists', existing?.members?.values);
-
                 return {
                     id,
-                    members: existing?.members?.values,
+
+                    // most likely this is wrong as we are also part of the conversation
+                    members: existing?.members?.values.filter((f) => f === context.principal.id),
                 };
             }
 
-            // make id stable
-            await conversationManager.addMembers(id, [context.principal.id, args.member]);
+            await Promise.all([
+                conversationManager.addMembers(id, [context.principal.id, args.member]),
+                pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]),
+            ]);
 
-            // we don't join for a 1:1 conversation, always there
-            // await pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]);
             return {
                 id,
                 members: [args.member],

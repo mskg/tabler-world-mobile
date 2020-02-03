@@ -1,5 +1,6 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { dynamodb as client } from '../aws/dynamodb';
+import { DIRECT_CHAT_PREFIX } from '../types/Constants';
 import { FieldNames, PUSH_SUBSCRIPTIONS_TABLE } from './Constants';
 
 const logger = new ConsoleLogger('PushSubscriptions');
@@ -7,6 +8,11 @@ const logger = new ConsoleLogger('PushSubscriptions');
 export class PushSubcriptionManager {
     public async subscribe(conversation: string, member: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'subscribe', conversation, member);
+
+        // this is a one:one conversation, you cannot unsuscribe
+        if (conversation.startsWith(DIRECT_CHAT_PREFIX)) {
+            return;
+        }
 
         await client.batchWrite({
             RequestItems: {
@@ -24,6 +30,11 @@ export class PushSubcriptionManager {
 
     public async unsubscribe(conversation: string, member: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'unsubscribe', member);
+
+        // this is a one:one conversation, you cannot unsubscribe
+        if (conversation.startsWith(DIRECT_CHAT_PREFIX)) {
+            return;
+        }
 
         await client.batchWrite({
             RequestItems: {
@@ -43,7 +54,7 @@ export class PushSubcriptionManager {
         logger.log(`[${conversation}]`, 'getSubscribers');
 
         // this is a one:one conversation
-        if (conversation.startsWith('CONV(')) {
+        if (conversation.startsWith(DIRECT_CHAT_PREFIX)) {
             const [a, b] = conversation
                 .replace(/CONV\(|\)|:/ig, '')
                 .split(',');
