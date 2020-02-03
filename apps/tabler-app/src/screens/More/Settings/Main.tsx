@@ -11,7 +11,7 @@ import { ActionNames } from '../../../analytics/ActionNames';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
-import { cachedAolloClient, getPersistor } from '../../../apollo/bootstrapApollo';
+import { cachedAolloClient, getApolloCachePersistor } from '../../../apollo/bootstrapApollo';
 import Assets from '../../../Assets';
 import CacheManager from '../../../components/Image/CacheManager';
 import { ScreenWithHeader } from '../../../components/Screen';
@@ -113,7 +113,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         await client.cache.reset();
 
                         this.props.clearMessages();
-                        await getPersistor().purge();
+                        await getApolloCachePersistor().purge();
 
                         // this forces an update of existing views
                         client.writeData({
@@ -199,7 +199,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     text: I18N.Settings.confirm,
                     style: 'destructive',
                     onPress: async () => {
-                        await getPersistor().persist();
+                        await getApolloCachePersistor().persist();
                         Updates.reloadFromCache();
                     },
                 },

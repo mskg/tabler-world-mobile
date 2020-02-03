@@ -1,13 +1,13 @@
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { getCacheEntry } from '../../components/Image/getCacheEntry';
 import { PrepareFileUpload, PrepareFileUploadVariables } from '../../model/graphql/PrepareFileUpload';
 import { PrepareFileUploadMutation } from '../../queries/Conversations/PrepareFileUploadMutation';
 import { logger } from './logger';
 
 export async function uploadImage(conversationId: string, baseImage: string): Promise<string | null> {
-    const client = await bootstrapApollo();
+    const client = cachedAolloClient();
 
     const resizedImage = await ImageManipulator.manipulateAsync(
         baseImage,

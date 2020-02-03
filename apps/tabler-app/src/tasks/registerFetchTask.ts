@@ -5,11 +5,11 @@ import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { FETCH_TASKNAME } from './Constants';
 import { logger } from './fetch/logger';
-import { runBackgroundFetch } from './fetch/runBackgroundFetch';
+import { runFetchTask } from './fetch/runFetchTask';
 
 export async function registerFetchTask() {
     try {
-        TaskManager.defineTask(FETCH_TASKNAME, runBackgroundFetch);
+        TaskManager.defineTask(FETCH_TASKNAME, runFetchTask);
 
         const status = await BackgroundFetch.getStatusAsync();
         switch (status) {

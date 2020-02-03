@@ -4,7 +4,8 @@ import { ApolloProvider } from 'react-apollo';
 import { AsyncStorage } from 'react-native';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
-import { bootstrapApollo, getPersistor } from './bootstrapApollo';
+import { Features, isFeatureEnabled } from '../model/Features';
+import { bootstrapApollo, getApolloCachePersistor } from './bootstrapApollo';
 
 const logger = new Logger(Categories.Api);
 
@@ -18,8 +19,12 @@ type State = {
 export function withApollo(App) {
     return class extends React.PureComponent<{}, State> {
         async componentDidMount() {
-            const client = await bootstrapApollo(await isDemoModeEnabled());
-            const persistor = getPersistor();
+            const client = await bootstrapApollo({
+                demoMode: await isDemoModeEnabled(),
+                noWebsocket: !isFeatureEnabled(Features.Chat),
+            });
+
+            const persistor = getApolloCachePersistor();
 
             try {
                 const currentVersion = await AsyncStorage.getItem(SCHEMA_VERSION_KEY);

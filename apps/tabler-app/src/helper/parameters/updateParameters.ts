@@ -2,7 +2,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient, ApolloQueryResult } from 'apollo-client';
 import Constants from 'expo-constants';
 import { AsyncStorage, Platform } from 'react-native';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { GetParameters, GetParametersVariables } from '../../model/graphql/GetParameters';
 import { ParameterName, ParameterPlatform } from '../../model/graphql/globalTypes';
 import { GetParametersQuery } from '../../queries/GetParametersQuery';
@@ -11,7 +11,7 @@ import { Categories, Logger } from '../Logger';
 const logger = new Logger(Categories.Sagas.Parameters);
 
 export async function updateParameters() {
-    const client: ApolloClient<NormalizedCacheObject> = await bootstrapApollo();
+    const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
 
     try {
         logger.debug('Fetching parameters');
