@@ -9,6 +9,7 @@ import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
+import { reverse } from 'lodash';
 
 type SendMessageArgs = {
     message: {
@@ -83,7 +84,8 @@ export const ChatResolver = {
             );
 
             return {
-                nodes: result.result.map((c) => ({ id: c })),
+                // index is reverse, list is other way round
+                nodes: reverse(result.result.map((c) => ({ id: c }))),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
