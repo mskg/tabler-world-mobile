@@ -271,18 +271,18 @@ class ChatBase extends React.Component<Props, State> {
             currentMessage
             && (currentMessage.sent || currentMessage.received || currentMessage.pending)
             && !currentMessage.failedSend
-            && currentMessage.user._id == this.props.userId
+            && currentMessage.user._id === this.props.userId
         ) {
             return (
                 <View style={styles.tickView}>
                     {!!currentMessage.sent && (
-                        <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons name="md-checkmark" color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={10} />
                     )}
                     {!!currentMessage.received && (
-                        <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons name="md-checkmark" color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={10} />
                     )}
                     {!!currentMessage.pending && (
-                        <Ionicons style={{ paddingBottom: 4 }} name="md-time" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons style={{ paddingBottom: 4 }} name="md-time" color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={10} />
                     )}
                 </View>
             );
@@ -387,7 +387,7 @@ class ChatBase extends React.Component<Props, State> {
                     onLongPress={this._onLongPress}
 
                     dateFormat={'ddd D. MMM'}
-                    timeFormat={'hh:HH'}
+                    timeFormat={'hh:mm'}
 
                     extraData={this.props.extraData}
                     renderAvatar={null}
