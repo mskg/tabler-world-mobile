@@ -2,7 +2,7 @@ import { resolveWebPrincipal } from '@mskg/tabler-world-auth-client';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { cacheInstance } from './cache/cacheInstance';
-import { extractVersion } from './helper/extractVersion';
+import { extractPlatform, extractVersion } from './helper/extractVersion';
 import { Logger } from './logging/Logger';
 import { IApolloContext } from './types/IApolloContext';
 
@@ -19,6 +19,7 @@ export const constructContext = async ({ event, context }: Params): Promise<IApo
     return ({
         clientInfo: {
             version: extractVersion(event.headers),
+            os: extractPlatform(event.headers),
         },
 
         lambdaEvent: event,
