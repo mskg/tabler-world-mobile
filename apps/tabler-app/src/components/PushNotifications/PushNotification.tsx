@@ -1,8 +1,8 @@
 import React from 'react';
 import { Animated, Dimensions, Image, ImageSourcePropType, PanResponder, PanResponderInstance, Platform, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Portal, Surface, Text, Theme, Title, withTheme } from 'react-native-paper';
-import { isIphoneX } from '../helper/isIphoneX';
-import { Categories, Logger } from '../helper/Logger';
+import { isIphoneX } from '../../helper/isIphoneX';
+import { Categories, Logger } from '../../helper/Logger';
 
 const logger = new Logger(Categories.UIComponents.Notifications);
 
@@ -21,7 +21,7 @@ const HORIZONTAL_MARGIN = 8;
 const SLIDE_OUT_OFFSET = -30;
 
 const SLIDE_DURATION = 400;
-const TIMEOUT = 4000;
+const TIMEOUT = __DEV__ ? 100000 : 4000;
 
 type State = {
     show: boolean,
@@ -92,11 +92,13 @@ export class PushNotificationBase extends React.Component<Props, State> {
         // Prevent dragging down too much
         const newDragOffset = gestureState.dy < 100 ? gestureState.dy : 100;
         containerDragOffsetY.setValue(newDragOffset);
+
+        if (DEBUG_UI) { logger.debug('newDragOffset', newDragOffset); }
     }
 
     _onPanResponderRelease = (_e, gestureState) => {
-        if (DEBUG_UI) { logger.debug('_onPanResponderRelease', gestureState); }
         const { containerDragOffsetY } = this.state;
+        if (DEBUG_UI) { logger.debug('_onPanResponderRelease', gestureState, containerDragOffsetY); }
 
         // Present feedback
         this._onPressOutFeedback();
@@ -188,8 +190,14 @@ export class PushNotificationBase extends React.Component<Props, State> {
         Animated
             .timing(containerSlideOffsetY, { toValue: 0, duration: duration || SLIDE_DURATION })
             .start(() => {
-                if (this.state.message && this.state.message.onDismiss != null) { this.state.message.onDismiss(); }
-                this.setState({ show: false });
+                this.setState(
+                    { show: false },
+                    () => {
+                        if (this.state.message && this.state.message.onDismiss != null) {
+                            this.state.message.onDismiss();
+                        }
+                    },
+                );
             });
     }
 
@@ -260,11 +268,11 @@ export class PushNotificationBase extends React.Component<Props, State> {
                                     </View>
                                 </View>
                                 <View style={styles.contentContainer}>
-                                    {message.title &&
+                                    {message.title && (
                                         <View style={styles.contentTitleContainer}>
                                             <Title style={styles.contentTitle}>{message.title}</Title>
                                         </View>
-                                    }
+                                    )}
                                     <View style={styles.contentTextContainer}>
                                         <Text style={styles.contentText}>{message.body || ''}</Text>
                                     </View>

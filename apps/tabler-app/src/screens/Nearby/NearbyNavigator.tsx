@@ -47,5 +47,6 @@ export const NearbyNavigator = createMaterialTopTabNavigator(
         swipeEnabled: true,
         // animationEnabled: true,
         tabBarPosition: 'top',
+        backBehavior: 'history',
     },
 );

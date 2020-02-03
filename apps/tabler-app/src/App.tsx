@@ -10,7 +10,7 @@ import { withWhoopsErrorBoundary } from './components/ErrorBoundary';
 import { fix2940 } from './components/fix2940';
 import { StandardStatusBar } from './components/Header';
 import Linking from './components/Linking';
-import { PushNotifications } from './components/PushNotifications';
+import { PushNotifications } from './components/PushNotifications/PushNotifications';
 import Reloader from './components/Reloader';
 import { withSkakeErrorReport } from './components/ShakeErrorReport';
 import { Snacks } from './components/Snacks';

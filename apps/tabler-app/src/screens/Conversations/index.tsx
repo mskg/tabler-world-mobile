@@ -115,12 +115,14 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                     showBack: false,
                     content: [
                         this.props.websocket
-                            ? (<Appbar.Content
-                                key="cnt"
-                                titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
-                                title={I18N.Conversations.title}
-                            />)
-                            : <WaitingForNetwork />
+                            ? (
+                                <Appbar.Content
+                                    key="cnt"
+                                    titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
+                                    title={I18N.Conversations.title}
+                                />
+                            )
+                            : <WaitingForNetwork key="network" />
                         ,
                         <Appbar.Action key="new" icon="add" disabled={!this.props.chatEnabled} onPress={() => this.props.startConversation()} />,
                     ],

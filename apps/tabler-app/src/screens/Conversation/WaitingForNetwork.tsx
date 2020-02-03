@@ -5,7 +5,6 @@ import { I18N } from '../../i18n/translation';
 
 const WaitingForNetworkBase = ({ theme }) => (
     <View
-        key="icon"
         style={{
             flex: 1,
             paddingHorizontal: 12,
