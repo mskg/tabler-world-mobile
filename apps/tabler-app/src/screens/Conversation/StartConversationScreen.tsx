@@ -15,8 +15,7 @@ import { HomeRoutes } from '../../navigation/HomeRoutes';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { StartConversationMutation } from '../../queries/Conversations/StartConversationMutation';
 import { IConversationParams, showConversation } from '../../redux/actions/navigation';
-
-const logger = new Logger(Categories.Screens.Conversation);
+import { logger } from './logger';
 
 type Props = {
     theme: Theme,

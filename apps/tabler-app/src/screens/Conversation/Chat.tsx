@@ -19,6 +19,7 @@ import { resize } from './resize';
 
 const logger = new Logger(Categories.Screens.Conversation);
 const TEMP_TEXT_IMAGE = '#__#';
+const IMAGE_SIZE = 100;
 
 const emojiRegex = emojiRegexCreator();
 function isPureEmojiString(text) {
@@ -43,6 +44,12 @@ type Props = {
     sendMessage: (messages: IChatMessage[]) => void,
 
     sendDisabled: boolean,
+
+    onTextChanged?: (text: string) => void;
+    onImageChanged?: (image?: string) => void;
+
+    text?: string;
+    image?: string;
 };
 
 type State = {
@@ -54,13 +61,39 @@ type State = {
 };
 
 class ChatBase extends React.Component<Props, State> {
-    state: State = {};
+
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            pickedImage: this.props.image ?
+                {
+                    uri: this.props.image,
+                    height: IMAGE_SIZE,
+                    width: IMAGE_SIZE,
+                }
+                : undefined,
+        };
+    }
 
     // _renderLoadEarlier = (props: any) => {
     //     return (
     //         <LoadEarlier {...props} />
     //     );
     // }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.image !== this.props.image) {
+            this.setState({
+                pickedImage: this.props.image ?
+                    {
+                        uri: this.props.image,
+                        height: IMAGE_SIZE,
+                        width: IMAGE_SIZE,
+                    }
+                    : undefined,
+            });
+        }
+    }
 
     _renderBubble = (props: any) => {
         return (
@@ -174,6 +207,7 @@ class ChatBase extends React.Component<Props, State> {
         }
 
         this.setState({ pickedImage: undefined });
+        if (this.props.onImageChanged) { this.props.onImageChanged(undefined); }
     }
 
     export(source) {
@@ -300,7 +334,7 @@ class ChatBase extends React.Component<Props, State> {
 
     _renderFooter = () => {
         if (this.state.pickedImage) {
-            const resized = resize(this.state.pickedImage, 100, 100);
+            const resized = resize(this.state.pickedImage, IMAGE_SIZE, IMAGE_SIZE);
 
             return (
                 <View style={[styles.reply_to_footer, { backgroundColor: this.props.theme.colors.backdrop }]}>
@@ -334,6 +368,7 @@ class ChatBase extends React.Component<Props, State> {
 
         if (pickedImage.cancelled) {
             this.setState({ pickedImage: undefined });
+            if (this.props.onImageChanged) { this.props.onImageChanged(undefined); }
         } else {
             this.setState({
                 pickedImage: {
@@ -342,6 +377,7 @@ class ChatBase extends React.Component<Props, State> {
                     width: pickedImage.width,
                 },
             });
+            if (this.props.onImageChanged) { this.props.onImageChanged(pickedImage.uri); }
         }
     }
 
@@ -418,6 +454,11 @@ class ChatBase extends React.Component<Props, State> {
                     renderChatFooter={this._renderFooter}
 
                     renderMessageImage={this._renderMessageImage}
+
+                    onInputTextChanged={this.props.onTextChanged}
+
+                    text={this.props.text}
+                    image={this.props.image}
                 />
 
                 {Platform.OS === 'android' && <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={80} />}
@@ -459,12 +500,12 @@ const styles = StyleSheet.create({
     },
 
     reply_to_footer: {
-        height: 100,
+        height: IMAGE_SIZE,
         flexDirection: 'row',
     },
 
     reply_to_border: {
-        height: 100,
+        height: IMAGE_SIZE,
         width: 5,
     },
 

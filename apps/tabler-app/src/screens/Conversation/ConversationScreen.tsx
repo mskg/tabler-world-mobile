@@ -16,13 +16,15 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { Conversation, ConversationVariables, Conversation_Conversation_members } from '../../model/graphql/Conversation';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
+import { ChatEdits } from '../../model/state/ChatState';
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
-import { clearActiveConversation, sendMessage, sendPendingMessages, setActiveConversation } from '../../redux/actions/chat';
+import { clearActiveConversation, sendMessage, sendPendingMessages, setActiveConversation, setText } from '../../redux/actions/chat';
 import { IConversationParams, showProfile } from '../../redux/actions/navigation';
 import { Chat } from './Chat';
 import { ConversationQuery } from './ConversationQuery';
 import { IChatMessage } from './IChatMessage';
 import { WaitingForNetwork } from './WaitingForNetwork';
+import { logger } from './logger';
 
 type Props = {
     theme: Theme,
@@ -38,26 +40,59 @@ type Props = {
     chatEnabled: boolean,
 
     pendingMessages: IPendingChatMessage[],
+
+    texts: ChatEdits,
+    setText: typeof setText;
 };
 
 type State = {
     member?: Conversation_Conversation_members,
     icon?: any,
+
+    lastText?: string,
+    lastImage?: string,
 };
 
 // tslint:disable: max-func-body-length
 class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IConversationParams>, State> {
     constructor(props) {
         super(props, AuditScreenName.Conversation);
-        this.state = {};
+        this.state = {
+            lastText: this.props.texts[this.getConversationId()]?.text,
+            lastImage: this.props.texts[this.getConversationId()]?.image,
+        };
     }
 
     _registerConversation = () => {
+        logger.debug('_registerConversation');
+
         this.props.setActiveConversation(this.getConversationId());
+        this.setState({
+            lastText: this.props.texts[this.getConversationId()]?.text,
+            lastImage: this.props.texts[this.getConversationId()]?.image,
+        });
     }
 
     _unregisterConversation = () => {
+        logger.log('_unregisterConversation');
+
         this.props.clearActiveConversation();
+        this.props.setText({
+            conversation: this.getConversationId(),
+            text: this.state.lastText,
+            image: this.state.lastImage,
+        });
+    }
+
+    _onImageChanged = (image) => {
+        logger.log('_onImageChanged', image);
+        this.setState({ lastImage: image });
+    }
+
+
+    _onTextChanged = (text) => {
+        if (__DEV__) { logger.log('_onTextChanged', text); }
+        this.setState({ lastText: text });
     }
 
     _sendMessage = (messages: IChatMessage[]) => {
@@ -165,6 +200,10 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     <Chat
                         sendDisabled={!this.props.websocket || !this.props.chatEnabled}
                         sendMessage={this._sendMessage}
+                        onTextChanged={this._onTextChanged}
+                        onImageChanged={this._onImageChanged}
+                        text={this.state.lastText}
+                        image={this.state.lastImage}
                     />
                 </ConversationQuery>
             </ScreenWithHeader >
@@ -181,6 +220,7 @@ export const ConversationScreen =
                     ? true
                     : state.settings.notificationsOneToOneChat,
                 pendingMessages: state.chat.pendingSend,
+                texts: state.chat.lastEdits,
             }),
             {
                 showProfile,
@@ -188,6 +228,7 @@ export const ConversationScreen =
                 clearActiveConversation,
                 sendMessage,
                 sendPendingMessages,
+                setText,
             },
         )(withTheme(withNavigation(ConversationScreenBase))),
     );

@@ -11,6 +11,7 @@ export function chatReducer(
         | typeof actions.removeMessage.shape
         | typeof actions.markFailed.shape
         | typeof actions.setBadge.shape
+        | typeof actions.setText.shape
         | typeof actions.clearMessages.shape
     ,
 ): typeof INITIAL_STATE.chat {
@@ -39,6 +40,19 @@ export function chatReducer(
 
         case actions.setBadge.type:
             return { ...state, badge: action.payload };
+
+        case actions.setText.type:
+            return {
+                ...state,
+                // @ts-ignore
+                lastEdits: {
+                    ...state.lastEdits,
+                    [action.payload.conversation]: {
+                        text: action.payload.text,
+                        image: action.payload.image,
+                    },
+                },
+            };
 
         case actions.markFailed.type:
             const msg = state.pendingSend.find((m) => m.id === action.payload);

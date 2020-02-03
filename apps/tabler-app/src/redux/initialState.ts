@@ -71,5 +71,6 @@ export const INITIAL_STATE: IAppState = {
         badge: 0,
         activeConversation: null,
         pendingSend: [],
+        lastEdits: {},
     },
 };
