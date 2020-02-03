@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Dimensions, StyleSheet, View, ViewPropTypes, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet, View, ViewPropTypes } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { IMessage, MessageImageProps } from 'react-native-gifted-chat';
 // @ts-ignore
 import Lightbox from 'react-native-lightbox';
@@ -13,6 +14,12 @@ const styles = StyleSheet.create({
         width: 156,
         height: 116,
         padding: 3,
+    },
+
+    touchStyle: {
+        width: 156,
+        height: 116,
+        borderRadius: 13,
     },
 
     image: {
@@ -53,9 +60,15 @@ export class MessageImage<TMessage extends IMessage = IMessage> extends Componen
         lightboxProps: PropTypes.object,
     };
 
+    lightBox!: Lightbox;
+
     makeCacheKey(img?: string) {
         if (!img) { return undefined; }
         return img.replace(/\?.*/ig, '');
+    }
+
+    _showLightBox = () => {
+        this.lightBox.open();
     }
 
     render() {
@@ -68,12 +81,17 @@ export class MessageImage<TMessage extends IMessage = IMessage> extends Componen
         } = this.props;
         if (!!currentMessage) {
             return (
-                <View style={[styles.container, containerStyle]}>
+                // android does not trigger the touch event. we workarround that behavior!
+                <TouchableWithoutFeedback
+                    style={[styles.container, containerStyle]}
+                    onPress={this._showLightBox}
+                >
                     <Lightbox
                         activeProps={{
                             style: styles.imageActive,
                             preview: undefined,
                         }}
+                        ref={(ref) => { this.lightBox = ref; }}
                         {...lightboxProps}
                     >
                         <CachedImage
@@ -104,7 +122,7 @@ export class MessageImage<TMessage extends IMessage = IMessage> extends Componen
                             {...imageProps}
                         />
                     </Lightbox>
-                </View>
+                </TouchableWithoutFeedback>
             );
         }
         return null;

@@ -225,7 +225,7 @@ export const ChatResolver = {
     },
 
     ChatMessagePayload: {
-        image: async (root: { image: string }, _args: any, _context: IApolloContext) => {
+        image: async (root: { image: string }, _args: any, context: IApolloContext) => {
             if (!root.image) {
                 return null;
             }
@@ -235,11 +235,18 @@ export const ChatResolver = {
             }
 
             const params = await getChatParams();
-            return S3.getSignedUrl('getObject', {
+            const url = S3.getSignedUrl('getObject', {
                 Bucket: UPLOAD_BUCKET,
                 Key: root.image,
                 Expires: params.attachmentsTTL,
             });
+
+            if (EXECUTING_OFFLINE && context.clientInfo.os === 'android' && context.clientInfo.version === 'dev') {
+                // default redirect for anroid emular
+                return url.replace(/localhost/ig, '10.0.2.2');
+            }
+
+            return url;
         },
     },
 

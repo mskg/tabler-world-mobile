@@ -11,7 +11,6 @@ export enum HomeRoutes {
     Pair = 'pair',
     Conversation = 'conversation',
     SearchConversationPartner = 'search_conversationpartner',
-    StartConversation = 'start_conversation',
     Structure = 'structure',
     SearchStructure = 'search_structure',
     NearbySettings = 'nearby_settings',

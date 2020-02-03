@@ -2,7 +2,10 @@ import { NavigationActions } from 'react-navigation';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { I18N } from '../../i18n/translation';
 import { AssociationName } from '../../model/graphql/AssociationName';
+import { StartConversation, StartConversationVariables } from '../../model/graphql/StartConversation';
 import { HomeRoutes } from '../../navigation/HomeRoutes';
+import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
+import { StartConversationMutation } from '../../queries/Conversations/StartConversationMutation';
 import { GetAssociationNameQuery } from '../../queries/Structure/GetAssociationNameQuery';
 import { Routes as MoreRoutes } from '../../screens/More/Routes';
 import { Routes } from '../../screens/More/Settings/Routes';
@@ -31,6 +34,7 @@ export interface IPictureParams {
 
 export interface IConversationParams {
     id?: string;
+
     title?: string;
     member?: number;
 }
@@ -125,14 +129,32 @@ export const showConversation = (id: string, title?: string) => NavigationAction
     } as IConversationParams,
 });
 
-export const startConversation = (id: number, title: string) => NavigationActions.navigate({
-    routeName: HomeRoutes.StartConversation,
-    key: HomeRoutes.StartConversation,
-    params: {
-        title,
-        member: id,
-    } as IConversationParams,
-});
+export const startConversation = async (member: number, title: string) => {
+    const client = cachedAolloClient();
+    const result = await client.mutate<StartConversation, StartConversationVariables>({
+        mutation: StartConversationMutation,
+        // refetchQueries: [  ]
+        variables: {
+            member,
+        },
+
+        refetchQueries: [{
+            query: GetConversationsQuery,
+        }],
+    });
+
+    return NavigationActions.navigate({
+        routeName: HomeRoutes.Conversation,
+
+        // key: HomeRoutes.SearchConversationPartner,
+        key: `${HomeRoutes.Conversation}:${result.data!.startConversation.id}`,
+
+        params: {
+            title,
+            id: result.data!.startConversation.id,
+        } as IConversationParams,
+    });
+};
 
 export const showAssociation = (id: string, name: string) => NavigationActions.navigate({
     routeName: HomeRoutes.Structure,
@@ -185,7 +207,7 @@ export const showStructureSearch = (expandAssociations?: boolean) => NavigationA
     routeName: HomeRoutes.SearchStructure,
     params: {
         expandAssociations,
-    }
+    },
 });
 
 export const showFeedback = () => NavigationActions.navigate({

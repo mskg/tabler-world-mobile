@@ -18,11 +18,12 @@ import { Features, isFeatureEnabled } from '../../model/Features';
 import { Member_Member } from '../../model/graphql/Member';
 import { IAddress } from '../../model/IAddress';
 import { IAppState } from '../../model/IAppState';
-import { startConversation } from '../../redux/actions/navigation';
+import { startConversation, IProfileParams } from '../../redux/actions/navigation';
 import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from './openLink';
 import { Organization } from './Organization';
 import { Roles } from './Roles';
 import { Social } from './Social';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type State = {
     numbers: string[],
@@ -45,10 +46,9 @@ type StateProps = {
     offline: boolean;
     user?: string;
     chatEnabled: boolean;
-    startConversation: typeof startConversation;
 };
 
-type Props = OwnProps & StateProps & ActionSheetProps;
+type Props = OwnProps & StateProps & ActionSheetProps & NavigationInjectedProps<IProfileParams>;
 
 type SectionValue = {
     field?: string,
@@ -235,15 +235,15 @@ class ProfileBase extends React.Component<Props, State> {
             LinkType.EMail);
     }
 
-    _startChat = () => {
+    _startChat = async () => {
         if (!this.props.member) {
             return;
         }
 
-        this.props.startConversation(
+        this.props.navigation.dispatch(await startConversation(
             this.props.member.id,
             `${this.props.member.firstname} ${this.props.member.lastname}`,
-        );
+        ));
     }
 
     handleAddress = (address?: IAddress | null) => () => {
@@ -298,6 +298,7 @@ class ProfileBase extends React.Component<Props, State> {
 
         const canChat = member.availableForChat && this.props.user !== member.rtemail
             && isFeatureEnabled(Features.Chat) && this.props.chatEnabled;
+            // && !this.props.navigation.getParam('preventChat');
 
         const sections: Sections = [
             {
@@ -484,7 +485,6 @@ export const Profile = connect(
         user: state.auth.username,
     }),
     {
-        startConversation,
     },
 )(
-    withTheme(connectActionSheet(ProfileBase)));
+    withTheme(withNavigation(connectActionSheet(ProfileBase))));

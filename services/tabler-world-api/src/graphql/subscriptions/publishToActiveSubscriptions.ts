@@ -31,6 +31,7 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                 principal,
                 clientInfo: {
                     version: connectionContext.version,
+                    os: connectionContext.os,
                 },
                 dataSources: dataSources(),
                 logger: new ConsoleLogger('publish', connectionId, principal.id),

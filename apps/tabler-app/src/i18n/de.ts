@@ -179,7 +179,7 @@ const de: I18NType = {
             },
         },
 
-        chat: (s) => `Du kannst mit ${s} chatten`,
+        chat: (s) => `Schreib ${s} eine Nachricht`,
 
         email: (s) => {
             switch (s) {

@@ -11,6 +11,7 @@ import { NearbyMembers_nearbyMembers_member } from '../../../model/graphql/Nearb
 import { IAppState } from '../../../model/IAppState';
 import { showProfile, startConversation } from '../../../redux/actions/navigation';
 import { isFeatureEnabled, Features } from '../../../model/Features';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type OwnProps = {
     member: NearbyMembers_nearbyMembers_member,
@@ -24,19 +25,18 @@ type StateProps = {
 
 type DispatchPros = {
     showProfile: typeof showProfile,
-    startConversation: typeof startConversation,
 };
 
-type Props = OwnProps & StateProps & DispatchPros & { theme };
+type Props = OwnProps & StateProps & DispatchPros & { theme } & NavigationInjectedProps;
 
 class NearbyMemberItemBase extends React.PureComponent<Props> {
 
     _startConversation = () => {
-        requestAnimationFrame(() =>
-            this.props.startConversation(
+        requestAnimationFrame(async () =>
+            this.props.navigation.dispatch(await startConversation(
                 this.props.member.id,
                 `${this.props.member.firstname} ${this.props.member.lastname}`,
-            ));
+            )));
     }
 
     _showProfile = () => this.props.showProfile(this.props.member.id);
@@ -81,7 +81,6 @@ export const NearbyMemberItem = connect<StateProps, DispatchPros, OwnProps, IApp
     null,
     {
         showProfile,
-        startConversation,
     },
 )(
-    withTheme(NearbyMemberItemBase));
+    withTheme(withNavigation(NearbyMemberItemBase)));

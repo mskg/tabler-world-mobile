@@ -167,12 +167,17 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         );
     }
 
+    _goBack = () => {
+        this.props.navigation.goBack(this.props.navigation.getParam('key'));
+    }
+
     render() {
         return (
             <ScreenWithHeader
                 header={{
-                    showBack: true,
+                    showBack: false,
                     content: [
+                        <Appbar.BackAction key="back" color={this.props.theme.dark ? 'white' : 'black'} onPress={this._goBack} />,
                         !this.props.websocket ? this.waitingForNetwork() : (this.state.icon || this.defaultIcon()),
                         <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
                     ],

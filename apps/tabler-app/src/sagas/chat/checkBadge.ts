@@ -4,15 +4,19 @@ import { getReduxStore } from '../../redux/getRedux';
 import { isFeatureEnabled, Features } from '../../model/Features';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { call } from 'redux-saga/effects';
+import { Platform } from 'react-native';
 
 export function* checkBadge() {
+
     const demo = yield call(isDemoModeEnabled);
 
     if (!isFeatureEnabled(Features.Chat) || demo) {
-        Notifications.setBadgeNumberAsync(0);
+        if (Platform.OS === 'ios') { Notifications.setBadgeNumberAsync(0); }
         getReduxStore().dispatch(setBadge(0));
     } else {
-        const unread = yield Notifications.getBadgeNumberAsync();
-        getReduxStore().dispatch(setBadge(unread));
+        if (Platform.OS === 'ios') {
+            const unread = yield Notifications.getBadgeNumberAsync();
+            getReduxStore().dispatch(setBadge(unread));
+        }
     }
 }

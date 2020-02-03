@@ -14,6 +14,7 @@ import { startConversation } from '../../redux/actions/navigation';
 import { FavoriteIcon } from '../FavoriteButton';
 import { SwipableItem, SwipeButtonsContainer } from '../SwipableItem';
 import { MemberListItem } from './MemberListItem';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type Props = {
     item: IMemberOverviewFragment;
@@ -26,8 +27,7 @@ type Props = {
     chat: boolean,
     favorites: HashMap<boolean>,
     toggleFavorite: typeof toggleFavorite,
-    startConversation: typeof startConversation,
-};
+} & NavigationInjectedProps;
 
 type State = {
     canChat: boolean,
@@ -76,11 +76,11 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
     }
 
     _chat = () => {
-        requestAnimationFrame(() => {
-            this.props.startConversation(
+        requestAnimationFrame(async () => {
+            this.props.navigation.dispatch(await startConversation(
                 this.props.item.id,
                 `${this.props.item.firstname} ${this.props.item.lastname}`,
-            );
+            ));
 
             if (this.ref) { this.ref.close(); }
         });
@@ -250,6 +250,5 @@ export const MemberItemWithSwipe = connect(
     }),
     {
         toggleFavorite,
-        startConversation,
     },
-)(MemberItemWithSwipeBase);
+)(withNavigation(MemberItemWithSwipeBase));

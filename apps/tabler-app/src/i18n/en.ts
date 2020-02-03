@@ -177,7 +177,7 @@ const en = {
             },
         },
 
-        chat: (s) => `You can chat with ${s}`,
+        chat: (s) => `Send a message to ${s}`,
 
         email: (s) => {
             switch (s) {
