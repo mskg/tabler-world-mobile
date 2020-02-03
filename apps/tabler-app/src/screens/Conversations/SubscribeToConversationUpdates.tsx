@@ -1,19 +1,20 @@
+import { Notifications } from 'expo';
 import React from 'react';
+import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { HandleAppState } from '../../components/HandleAppState';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Categories, Logger } from '../../helper/Logger';
 import { Features, isFeatureEnabled } from '../../model/Features';
+import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
 import { conversationUpdate } from '../../model/graphql/conversationUpdate';
 import { GetConversations } from '../../model/graphql/GetConversations';
 import { IAppState } from '../../model/IAppState';
 import { conversationUpdateSubscription } from '../../queries/Conversations/conversationUpdateSubscription';
+import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { setBadge } from '../../redux/actions/chat';
-import { Notifications } from 'expo';
-import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
-import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 
 const logger = new Logger(Categories.Helpers.Chat);
 
@@ -90,20 +91,25 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                     if (this.props.badge === 0) {
                         logger.debug('Updating badge');
                         this.props.setBadge(1);
-                        await Notifications.setBadgeNumberAsync(1);
+
+                        if (Platform.OS === 'ios') { await Notifications.setBadgeNumberAsync(1); }
                     }
 
                     // we update our local data
                     if (this.props.activeConversation !== data.conversationUpdate.id) {
                         logger.debug('Updating local data');
 
-                        setTimeout(() => {
-                            client.query<Conversation, ConversationVariables>({
-                                query: GetConversationQuery,
-                                variables: {
-                                    id: data.conversationUpdate.id,
-                                },
-                            });
+                        setTimeout(async () => {
+                            try {
+                                await client.query<Conversation, ConversationVariables>({
+                                    query: GetConversationQuery,
+                                    variables: {
+                                        id: data.conversationUpdate.id,
+                                    },
+                                });
+                            } catch (e) {
+                                logger.error(e, 'Failed to refresh data.');
+                            }
                         });
                     }
                 }
