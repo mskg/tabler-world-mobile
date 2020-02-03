@@ -1,31 +1,51 @@
+
+export interface IExpoNotification {
+    origin: 'selected' | 'received';
+    remote: boolean;
+    isMultiple: boolean;
+    data?: AppNotifications;
+}
+
 type Reasons = 'birthday' | 'chatmessage' | 'advertisment';
 
-export interface INotificationWithPayload<T = void> {
+export interface INotificationPayload<T, R extends Reasons> {
     title?: string;
     body: string;
-    reason: Reasons;
+    reason: R;
     payload: T;
 }
 
-export type BirthdayNotification = INotificationWithPayload<{
+export type BirthdayNotification = INotificationPayload<{
     date: Date,
     id: number,
-}>;
+}, 'birthday'>;
 
-enum MessageType {
+enum ChatMessageType {
     text = 'text',
+    image = 'image',
 }
 
-export type ChatMessageNotification = INotificationWithPayload<{
+export type ChatMessageNotification = INotificationPayload<{
     id: string,
     senderId: number,
-    payload: any,
+    payload: {
+        text?: string,
+        image?: string,
+    },
     receivedAt: number,
-    type: MessageType,
+    type: ChatMessageType,
     eventId: string,
     conversationId: string,
-}>;
+    delivered?: boolean,
+    accepted?: boolean,
+}, 'chatmessage'>;
 
-export type AdMessageNotification = INotificationWithPayload<{
+export type AdMessageNotification = INotificationPayload<{
     url?: string,
-}>;
+}, 'advertisment'>;
+
+export type AppNotifications = BirthdayNotification
+    | ChatMessageNotification
+    | AdMessageNotification;
+
+

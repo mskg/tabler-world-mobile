@@ -76,11 +76,11 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     getConversationId() {
-        return (this.props.navigation.state.params as IConversationParams).id as string;
+        return this.props.navigation.getParam('id') as string;
     }
 
     getTitle() {
-        return (this.props.navigation.state.params as IConversationParams).title as string;
+        return this.props.navigation.getParam('title');
     }
 
     showProfile() {
