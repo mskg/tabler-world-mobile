@@ -1,6 +1,7 @@
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { markFailed, removeMessage } from '../../redux/actions/chat';
 import { getReduxStore } from '../../redux/getRedux';
+import { checkBadge } from './checkBadge';
 import { logger } from './logger';
 import { sendMessage } from './sendMessage';
 
@@ -26,4 +27,5 @@ export async function sendPendingChatMessages() {
 
 export function* sendPendingMessageIterator() {
     yield sendPendingChatMessages();
+    yield checkBadge();
 }

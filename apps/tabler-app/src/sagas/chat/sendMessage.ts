@@ -1,4 +1,3 @@
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { SendMessage, SendMessageVariables } from '../../model/graphql/sendMessage';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
@@ -7,11 +6,12 @@ import { addMessageToCache } from './addMessageToCache';
 import { convertToChatMessage } from './convertToChatMessage';
 import { logger } from './logger';
 import { uploadImage } from './uploadImage';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 
 export async function sendMessage(message: IPendingChatMessage) {
     logger.log('sendMessage', message.conversationId, '->', message.id);
 
-    const client = await bootstrapApollo();
+    const client = cachedAolloClient();
     const optimisticMessage = convertToChatMessage(message);
 
     if (await isDemoModeEnabled()) {

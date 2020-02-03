@@ -1,5 +1,5 @@
 import ApolloClient from 'apollo-client';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { DisableLocationServices } from '../../model/graphql/DisableLocationServices';
 import { DisableLocationServicesMutation } from '../../queries/Location/DisableLocationServicesMutation';
 import { setLocation } from '../../redux/actions/location';
@@ -13,7 +13,7 @@ import { logger } from './logger';
 export async function disableNearbyTablers() {
     logger.log('disableNearbyTablers');
 
-    const client: ApolloClient<any> = await bootstrapApollo();
+    const client: ApolloClient<any> = cachedAolloClient();
     await client.mutate<DisableLocationServices>({
         mutation: DisableLocationServicesMutation,
     });

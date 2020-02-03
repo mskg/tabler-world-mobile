@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { updateParameters } from '../../helper/parameters/updateParameters';
 import { MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
 import { GetMembersByAreasQuery } from '../../queries/Member/GetMembersByAreasQuery';
@@ -18,7 +18,7 @@ export async function runDataUpdates() {
         Audit.trackEvent(AuditEventName.DataUpdate);
         logger.debug('runDataUpdates');
 
-        const client = await bootstrapApollo();
+        const client = cachedAolloClient();
 
         const updateParametersPromise = updateParameters();
         const offlineMembersPromise = updateCache(client, GetOfflineMembersQuery, 'members');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
-import { GiftedChat, MessageContainer, InputToolbar } from 'react-native-gifted-chat';
+import { GiftedChat, GiftedChatProps, InputToolbar, MessageContainer } from 'react-native-gifted-chat';
 import { IChatMessage } from './IChatMessage';
 
 export class FixedChat extends GiftedChat<IChatMessage> {
@@ -64,7 +64,7 @@ export class FixedChat extends GiftedChat<IChatMessage> {
             : (fragment);
     }
 
-    componentDidUpdate(prevProps: any = {}) {
+    componentDidUpdate(prevProps: GiftedChatProps) {
         const { messages, text, extraData } = this.props;
 
         if (messages
@@ -85,7 +85,7 @@ export class FixedChat extends GiftedChat<IChatMessage> {
         }
 
         if (text !== prevProps.text) {
-            this.setTextFromProp(text);
+            this.setTextFromProp(text || '');
         }
     }
 }

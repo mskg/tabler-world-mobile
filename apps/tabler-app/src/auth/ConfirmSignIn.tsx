@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
+import { cachedAolloClient, getApolloCachePersistor } from '../apollo/bootstrapApollo';
 import { parseCodeLink } from '../helper/linking/parseCodeLink';
 import { parseLink } from '../helper/linking/parseLink';
 import { Categories, Logger } from '../helper/Logger';
@@ -111,7 +111,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
                 const client = cachedAolloClient();
                 await client.cache.reset();
-                await getPersistor().purge();
+                await getApolloCachePersistor().purge();
 
                 this.props.singedIn();
             } catch (e) {

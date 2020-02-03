@@ -9,7 +9,6 @@ import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { isDemoModeEnabled } from '../../helper/demoMode';
-import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
 import { newChatMessage } from '../../model/graphql/newChatMessage';
 import { IAppState } from '../../model/IAppState';
@@ -23,8 +22,7 @@ import { mergeMessages } from '../../sagas/chat/mergeMessages';
 import { markConversationRead, updateBadgeFromConversations } from '../Conversations/chatHelpers';
 import { ConversationPlaceholder } from './ConversationPlaceholder';
 import { IChatMessage } from './IChatMessage';
-
-const logger = new Logger(Categories.Screens.Conversation);
+import { logger } from './logger';
 
 type InjectedProps = {
     extraData: any,

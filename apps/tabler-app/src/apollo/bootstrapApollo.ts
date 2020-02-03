@@ -19,7 +19,7 @@ import { subscriptionClient } from './subscriptionClient';
 let client: ApolloClient<NormalizedCacheObject>;
 let persistor: CachePersistor<NormalizedCacheObject>;
 
-export function getPersistor(): CachePersistor<NormalizedCacheObject> {
+export function getApolloCachePersistor(): CachePersistor<NormalizedCacheObject> {
     return persistor;
 }
 
@@ -28,8 +28,17 @@ export function cachedAolloClient() {
 }
 
 // tslint:disable-next-line: max-func-body-length
-export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<NormalizedCacheObject>> {
-    if (client != null && demoMode == null) return client;
+export async function bootstrapApollo({ demoMode, noWebsocket }: { demoMode?: boolean; noWebsocket?: boolean; } = {}): Promise<ApolloClient<NormalizedCacheObject>> {
+    if (client != null && demoMode == null) {
+        console.warn(
+            `
+*********************************************************
+This must only be called once in the lifecyle!
+*********************************************************`,
+        );
+
+        return client;
+    }
 
     persistor = new CachePersistor({
         cache,
@@ -67,7 +76,7 @@ export async function bootstrapApollo(demoMode?: boolean): Promise<ApolloClient<
                 })
                 : undefined,
 
-            wsLink != null && !demoMode
+            wsLink != null && !demoMode && !noWebsocket
                 ? ApolloLink.split(
                     // split based on operation type
                     ({ query }) => {

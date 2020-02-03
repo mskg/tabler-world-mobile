@@ -36,3 +36,11 @@ export const markFailed = createAction<'@@chat/message/markFailed', string>(
 export const setBadge = createAction<'@@chat/setBadgeCount', number>(
     '@@chat/setBadgeCount',
 );
+
+export const setText = createAction<'@@chat/text', {
+    conversation: string,
+    image?: string,
+    text?: string,
+}>(
+    '@@chat/text',
+);

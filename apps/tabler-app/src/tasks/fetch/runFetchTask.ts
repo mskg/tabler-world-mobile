@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
-import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
+import { bootstrapApollo, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { FetchParameters } from '../../helper/parameters/Fetch';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
@@ -11,12 +11,12 @@ import { ParameterName } from '../../model/graphql/globalTypes';
 import { getReduxPersistor, persistorRehydrated } from '../../redux/getRedux';
 import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN } from '../Constants';
 import { isSignedIn } from '../helper/isSignedIn';
+import { updateLocation } from '../location/updateLocation';
 import { logger } from './logger';
 import { runDataUpdates } from './runDataUpdates';
-import { runLocationUpdate } from './runLocationUpdate';
 import { runSend } from './runSend';
 
-export async function runBackgroundFetch() {
+export async function runFetchTask() {
     if (await isDemoModeEnabled()) {
         logger.debug('Demonstration mode -> exit');
         return BackgroundFetch.Result.NoData;
@@ -33,8 +33,9 @@ export async function runBackgroundFetch() {
         const lastFetch = parseInt(await AsyncStorage.getItem(FETCH_LAST_DATA_RUN) || '0', 10);
         const mininutesElapsed = (Date.now() - lastFetch) / 1000 / 60;
 
-        await bootstrapApollo();
-        await getPersistor().restore();
+        logger.debug('Bootstrapping apollo');
+        await bootstrapApollo({ noWebsocket: true });
+        await getApolloCachePersistor().restore();
 
         const parameters = await getParameterValue<FetchParameters>(ParameterName.fetch);
 
@@ -42,7 +43,7 @@ export async function runBackgroundFetch() {
             try {
                 Promise.all([
                     runDataUpdates(),
-                    runLocationUpdate(),
+                    updateLocation(false, true),
                 ]);
             } finally {
                 await AsyncStorage.setItem(FETCH_LAST_DATA_RUN, Date.now().toString());
@@ -66,7 +67,7 @@ export async function runBackgroundFetch() {
     } finally {
         await AsyncStorage.setItem(FETCH_LAST_RUN, Date.now().toString());
 
-        try { await getPersistor().persist(); } catch (pe) {
+        try { await getApolloCachePersistor().persist(); } catch (pe) {
             logger.error(pe, 'Could not persist apollo');
         }
 

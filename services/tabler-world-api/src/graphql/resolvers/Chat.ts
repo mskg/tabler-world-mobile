@@ -1,5 +1,6 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import * as crypto from 'crypto';
+import { reverse } from 'lodash';
 import { S3, UPLOAD_BUCKET } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
@@ -83,7 +84,8 @@ export const ChatResolver = {
             );
 
             return {
-                nodes: result.result.map((c) => ({ id: c })),
+                // index is reverse, list is other way round
+                nodes: reverse(result.result.map((c) => ({ id: c }))),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
@@ -223,7 +225,7 @@ export const ChatResolver = {
     },
 
     ChatMessagePayload: {
-        image: async (root: { image: string }) => {
+        image: async (root: { image: string }, _args: any, _context: IApolloContext) => {
             if (!root.image) {
                 return null;
             }
@@ -233,14 +235,11 @@ export const ChatResolver = {
             }
 
             const params = await getChatParams();
-            const url = S3.getSignedUrl('getObject', {
+            return S3.getSignedUrl('getObject', {
                 Bucket: UPLOAD_BUCKET,
                 Key: root.image,
                 Expires: params.attachmentsTTL,
             });
-
-            // already encoded, decode
-            return decodeURIComponent(url);
         },
     },
 

@@ -177,6 +177,8 @@ const en = {
             },
         },
 
+        chat: (s) => `You can chat with ${s}`,
+
         email: (s) => {
             switch (s) {
                 case 'rt':
@@ -216,6 +218,7 @@ const en = {
         },
 
         Fields: {
+            chat: 'TABLER.APP Chat',
             home: 'Home Address',
             birthday: 'Birthday',
             partner: 'Partner',
@@ -587,7 +590,6 @@ const en = {
         },
 
         Settings: {
-            navigation: 'Nearby Members',
             title: 'Nearby Members',
             on: {
                 title: 'Nearby Members',

@@ -14,9 +14,11 @@ import { collectEMails, collectPhones } from '../../helper/collect';
 import { LinkingHelper } from '../../helper/LinkingHelper';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../model/Features';
 import { Member_Member } from '../../model/graphql/Member';
 import { IAddress } from '../../model/IAddress';
 import { IAppState } from '../../model/IAppState';
+import { startConversation } from '../../redux/actions/navigation';
 import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from './openLink';
 import { Organization } from './Organization';
 import { Roles } from './Roles';
@@ -41,6 +43,9 @@ type StateProps = {
     emailApp?: string,
     nearBy?: boolean;
     offline: boolean;
+    user?: string;
+    chatEnabled: boolean;
+    startConversation: typeof startConversation;
 };
 
 type Props = OwnProps & StateProps & ActionSheetProps;
@@ -230,6 +235,17 @@ class ProfileBase extends React.Component<Props, State> {
             LinkType.EMail);
     }
 
+    _startChat = () => {
+        if (!this.props.member) {
+            return;
+        }
+
+        this.props.startConversation(
+            this.props.member.id,
+            `${this.props.member.firstname} ${this.props.member.lastname}`,
+        );
+    }
+
     handleAddress = (address?: IAddress | null) => () => {
         showAddress(address);
     }
@@ -280,7 +296,20 @@ class ProfileBase extends React.Component<Props, State> {
             );
         }
 
+        const canChat = member.availableForChat && this.props.user !== member.rtemail
+            && isFeatureEnabled(Features.Chat) && this.props.chatEnabled;
+
         const sections: Sections = [
+            {
+                icon: 'md-chatbubbles',
+                values: [
+                    {
+                        field: I18N.Member.Fields.chat,
+                        text: !canChat ? undefined : I18N.Member.chat(member.firstname),
+                    }
+                ],
+                onPress: this._startChat,
+            },
             {
                 icon: 'md-call',
                 values: (collectPhones(member)).map(
@@ -449,7 +478,13 @@ export const Profile = connect(
         emailApp: state.settings.emailApp,
         nearBy: state.settings.nearbyMembers,
         offline: state.connection.offline,
+
+        chatEnabled: state.settings.notificationsOneToOneChat == null
+            ? true : state.settings.notificationsOneToOneChat,
+        user: state.auth.username,
     }),
-    null,
+    {
+        startConversation,
+    },
 )(
     withTheme(connectActionSheet(ProfileBase)));

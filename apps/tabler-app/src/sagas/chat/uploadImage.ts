@@ -1,13 +1,13 @@
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { getCacheEntry } from '../../components/Image/getCacheEntry';
 import { PrepareFileUpload, PrepareFileUploadVariables } from '../../model/graphql/PrepareFileUpload';
 import { PrepareFileUploadMutation } from '../../queries/Conversations/PrepareFileUploadMutation';
 import { logger } from './logger';
 
 export async function uploadImage(conversationId: string, baseImage: string): Promise<string | null> {
-    const client = await bootstrapApollo();
+    const client = cachedAolloClient();
 
     const resizedImage = await ImageManipulator.manipulateAsync(
         baseImage,
@@ -42,13 +42,18 @@ export async function uploadImage(conversationId: string, baseImage: string): Pr
         const params = signedUrl.data.prepareFileUpload;
 
         // this will be the final url
-        const { path } = await getCacheEntry(`${params.url}/${params.fields.key}`, 'chat');
+        let { path: cachePath } = await getCacheEntry(`${params.url}/${params.fields.key}`, 'chat');
         try {
             // prepare cache
-            logger.debug('Moving', imageUri, 'to', path);
-            await FileSystem.moveAsync({ from: imageUri, to: path });
+            logger.debug('Moving', imageUri, 'to', cachePath);
+
+            // we want to test the download uris
+            await FileSystem.moveAsync({ from: imageUri, to: cachePath });
         } catch (e) {
-            logger.log('Error moving', imageUri, path);
+            logger.log('Error moving', imageUri, cachePath);
+
+            // we reset the url
+            cachePath = imageUri;
         }
 
         const formData = new FormData();
@@ -61,9 +66,9 @@ export async function uploadImage(conversationId: string, baseImage: string): Pr
         formData.append('Content-Type', 'image/jpeg');
 
         // @ts-ignore
-        formData.append('file', { uri: path, type: 'image/jpeg', name: 'upload.jpg' });
+        formData.append('file', { uri: cachePath, type: 'image/jpeg', name: 'upload.jpg' });
 
-        logger.log('Uploading', path, 'to', params.url, 'using', params.fields);
+        logger.log('Uploading', cachePath, 'to', params.url, 'using', params.fields);
         const result = await fetch(params.url, {
             method: 'POST',
             headers: {

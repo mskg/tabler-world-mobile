@@ -11,7 +11,7 @@ import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
 import { ParameterName, UserRole } from '../../../model/graphql/globalTypes';
 import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN, TOKEN_KEY } from '../../../tasks/Constants';
-import { runBackgroundFetch } from '../../../tasks/fetch/runBackgroundFetch';
+import { runFetchTask } from '../../../tasks/fetch/runFetchTask';
 import { Action } from './Action';
 import { Element } from './Element';
 
@@ -117,7 +117,7 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                         />
                         <Divider />
 
-                        <Action theme={this.props.theme} text={'Run Fetch Task'} onPress={async () => { await runBackgroundFetch(); await this.fetchData(); }} />
+                        <Action theme={this.props.theme} text={'Run Fetch Task'} onPress={async () => { await runFetchTask(); await this.fetchData(); }} />
                         <Divider />
 
                         {false && PRESERVE_CONSOLE && (
