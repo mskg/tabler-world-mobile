@@ -254,6 +254,7 @@ const en = {
     Search: {
         title: 'Search',
         history: 'Search history',
+        favorites: 'Favorites',
         search: 'Search...',
         lru: 'Recently Opened',
 

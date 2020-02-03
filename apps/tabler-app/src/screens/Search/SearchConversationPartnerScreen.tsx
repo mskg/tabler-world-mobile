@@ -2,7 +2,7 @@ import { debounce } from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
 import { Searchbar, Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, StackActions, withNavigation } from 'react-navigation';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -14,11 +14,12 @@ import { Screen } from '../../components/Screen';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
 import { IAppState } from '../../model/IAppState';
-import { HomeRoutes } from '../../navigation/HomeRoutes';
 import { addTablerSearch } from '../../redux/actions/history';
-import { IConversationParams } from '../../redux/actions/navigation';
+import { startConversation } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
+import { ListFavorites } from './ListFavorites';
 import { OnlineSearchQuery } from './OnlineSearch';
+import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
 
 type State = {
@@ -119,23 +120,15 @@ class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
         }
     }
 
-    _itemSelected = (item) => {
+    _itemSelected = async (item) => {
         this.props.addTablerSearch(this.state.query);
 
         this.props.navigation.dispatch(
-            StackActions.replace({
-                routeName: HomeRoutes.StartConversation,
-                newKey: HomeRoutes.StartConversation,
-                params: {
-                    title: `${item.firstname} ${item.lastname}`,
-                    member: item.id,
-                } as IConversationParams,
-            }),
+            await startConversation(
+                item.id,
+                `${item.firstname} ${item.lastname}`,
+            ),
         );
-
-        // this.props.newConversation(
-        //     item.id,
-        //     );
     }
 
     render() {
@@ -153,6 +146,18 @@ class SearchConversationPartnerScreenBase extends AuditedScreen<Props, State> {
                         availableForChat={true}
                     />
                 )}
+
+                {!this.state.searching && (
+                    <View style={{ flexGrow: 1 }}>
+                        <SearchHistory
+                            applyFilter={this.searchFilterFunction}
+                        />
+                        <ListFavorites
+                            itemSelected={this._itemSelected}
+                        />
+                    </View>
+                )}
+
 
                 <StandardHeader
                     style={[HeaderStyles.topBar, { backgroundColor: this.props.theme.colors.primary }]}

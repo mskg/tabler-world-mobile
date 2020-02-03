@@ -320,19 +320,24 @@ export const ChatResolver = {
 
             const id = makeConversationKey([context.principal.id, args.member]);
 
+            const existing = await context.dataSources.conversations.readConversation(id);
+            if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
+                context.logger.log('######################################### Conversation already exists', existing?.members?.values);
+
+                return {
+                    id,
+                    members: existing?.members?.values,
+                };
+            }
+
             // make id stable
             await conversationManager.addMembers(id, [context.principal.id, args.member]);
-            // const key = await conversationManager.getEncryptionKey(id);
 
             // we don't join for a 1:1 conversation, always there
             // await pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]);
             return {
-                // key,
-                // conversation: {
                 id,
-                owners: [args.member],
                 members: [args.member],
-                // },
             };
         },
 

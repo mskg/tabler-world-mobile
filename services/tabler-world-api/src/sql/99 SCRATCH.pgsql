@@ -68,3 +68,9 @@ from structure_associations
 select * from assets
 
 where point is null
+
+
+select id, settings
+From
+usersettings
+where settings->'notifications'->>'personalChat' is null

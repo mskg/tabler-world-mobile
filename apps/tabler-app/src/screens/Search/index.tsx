@@ -251,12 +251,13 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                 )}
 
                 {!this.state.searching && (
-                    <>
+                    <View style={{ flexGrow: 1, }}>
                         <LRU />
                         <SearchHistory
                             applyFilter={this.searchFilterFunction}
+                            contentContainerStyle={{ paddingBottom: 16 }}
                         />
-                    </>
+                    </View>
                 )}
 
                 {this.state.searching && this.props.offline && (

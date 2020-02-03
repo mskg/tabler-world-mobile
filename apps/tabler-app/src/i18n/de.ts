@@ -258,6 +258,7 @@ const de: I18NType = {
         history: 'Verlauf',
         search: 'Suchen...',
         lru: 'Zuletzt geöffnet',
+        favorites: 'Favoriten',
 
         filter: 'Filtern',
         expand: 'Alle anzeigen',
