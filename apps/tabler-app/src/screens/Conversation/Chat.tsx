@@ -14,6 +14,7 @@ import { I18N } from '../../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
+import { MessageImage } from './MessageImage';
 import { resize } from './resize';
 
 const logger = new Logger(Categories.Screens.Conversation);
@@ -281,7 +282,7 @@ class ChatBase extends React.Component<Props, State> {
                         <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
                     )}
                     {!!currentMessage.pending && (
-                        <Ionicons style={{paddingBottom: 4}} name="md-time" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons style={{ paddingBottom: 4 }} name="md-time" color={this.props.theme.colors.disabled} size={10} />
                     )}
                 </View>
             );
@@ -364,6 +365,10 @@ class ChatBase extends React.Component<Props, State> {
         );
     }
 
+    _renderMessageImage = (props) => {
+        return <MessageImage {...props} />;
+    }
+
     render() {
         return (
             <View style={{ backgroundColor: this.props.theme.colors.background, flex: 1 }}>
@@ -411,6 +416,8 @@ class ChatBase extends React.Component<Props, State> {
                     renderComposer={this._renderActions}
                     renderActions={this._renderComposer}
                     renderChatFooter={this._renderFooter}
+
+                    renderMessageImage={this._renderMessageImage}
                 />
 
                 {Platform.OS === 'android' && <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={80} />}

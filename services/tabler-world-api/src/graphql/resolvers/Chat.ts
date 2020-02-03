@@ -233,11 +233,14 @@ export const ChatResolver = {
             }
 
             const params = await getChatParams();
-            return S3.getSignedUrl('getObject', {
+            const url = S3.getSignedUrl('getObject', {
                 Bucket: UPLOAD_BUCKET,
                 Key: root.image,
                 Expires: params.attachmentsTTL,
             });
+
+            // already encoded, decode
+            return decodeURIComponent(url);
         },
     },
 

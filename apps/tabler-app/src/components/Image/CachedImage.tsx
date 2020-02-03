@@ -105,15 +105,17 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
             outputRange: [1, 0],
         });
 
+        const flattened = style ? StyleSheet.flatten(style) : null;
+
         return (
             <View style={styles.container}>
                 {isImageReady && (
                     <Image
                         source={{ uri }}
-                        style={style || styles.imageStyles}
+                        style={flattened || styles.imageStyles}
                         onLoadEnd={this._startAnimation}
                         fadeDuration={hasPreview ? 0 : undefined}
-                        resizeMode={this.props.resizeMode || 'contain'}
+                        resizeMode={this.props.resizeMode || flattened?.resizeMode || 'contain'}
                     />
                 )}
 
