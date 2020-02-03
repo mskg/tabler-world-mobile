@@ -3,7 +3,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { Notifications, Updates } from 'expo';
 import * as SecureStore from 'expo-secure-store';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 import { put } from 'redux-saga/effects';
 import { cachedAolloClient, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
 import { disableNearbyTablers } from '../../helper/geo/disable';
@@ -32,7 +32,7 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     yield client.cache.reset();
     yield getApolloCachePersistor().purge();
 
-    Notifications.setBadgeNumberAsync(0);
+    if (Platform.OS === 'ios') { yield Notifications.setBadgeNumberAsync(0); }
 
     yield Auth.signOut();
     yield Updates.reloadFromCache();
