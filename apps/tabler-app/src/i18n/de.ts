@@ -179,6 +179,8 @@ const de: I18NType = {
             },
         },
 
+        chat: (s) => `Du kannst mit ${s} chatten`,
+
         email: (s) => {
             switch (s) {
                 case 'rt':
@@ -218,6 +220,7 @@ const de: I18NType = {
         },
 
         Fields: {
+            chat: 'TABLER.APP Chat',
             home: 'Privatadresse',
             birthday: 'Geburtstag',
             partner: 'Partnerin/Partner',
@@ -557,7 +560,7 @@ const de: I18NType = {
     },
 
     Conversations: {
-        title: 'Unterhaltungen',
+        title: 'Chats',
         network: 'Auf Netzwerk warten...',
 
         copy: 'Kopieren',

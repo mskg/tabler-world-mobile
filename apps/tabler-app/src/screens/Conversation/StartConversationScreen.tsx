@@ -2,7 +2,7 @@ import 'moment';
 import 'moment/locale/de';
 import React from 'react';
 import { Theme, withTheme } from 'react-native-paper';
-import { NavigationInjectedProps, StackActions, withNavigation } from 'react-navigation';
+import { NavigationInjectedProps, StackActions, withNavigation, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -50,19 +50,35 @@ class StartConversationScreenBase extends AuditedScreen<Props & NavigationInject
 
         logger.debug('New conversation', result);
 
-        this.props.navigation.dispatch(
-            StackActions.replace({
-                routeName: HomeRoutes.Conversation,
+        try {
+            this.props.navigation.dispatch(
+                StackActions.replace({
+                    routeName: HomeRoutes.Conversation,
 
-                // key: HomeRoutes.SearchConversationPartner,
-                newKey: `${HomeRoutes.Conversation}:${result.data!.startConversation.id}`,
+                    // key: HomeRoutes.SearchConversationPartner,
+                    newKey: `${HomeRoutes.Conversation}:${result.data!.startConversation.id}`,
 
-                params: {
-                    title,
-                    id: result.data!.startConversation.id,
-                } as IConversationParams,
-            }),
-        );
+                    params: {
+                        title,
+                        id: result.data!.startConversation.id,
+                    } as IConversationParams,
+                }),
+            );
+        } catch (e) {
+            this.props.navigation.dispatch(
+                NavigationActions.navigate({
+                    routeName: HomeRoutes.Conversation,
+
+                    // key: HomeRoutes.SearchConversationPartner,
+                    key: `${HomeRoutes.Conversation}:${result.data!.startConversation.id}`,
+
+                    params: {
+                        title,
+                        id: result.data!.startConversation.id,
+                    } as IConversationParams,
+                }),
+            );
+        }
 
         this.audit.submit();
     }

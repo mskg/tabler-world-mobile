@@ -17,19 +17,16 @@ import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
 import { toggleFavorite } from '../../redux/actions/filter';
-import { startConversation } from '../../redux/actions/navigation';
 
 type Props = {
     top?: number,
 
-    user?: string,
+
     member: Member_Member
     theme: Theme,
 
     toggleFavorite: typeof toggleFavorite,
-    startConversation: typeof startConversation,
     favorites: HashMap<boolean>,
-    chatEnabled: boolean,
 };
 
 const testIsFavorite = (tabler: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
@@ -83,10 +80,6 @@ class ActionsFabBase extends React.Component<Props> {
     render() {
         const isFav = testIsFavorite(this.props.member, this.props.favorites);
 
-        // we cannot chat with ourself
-        const canChat = this.props.member.availableForChat
-            && this.props.user !== this.props.member.rtemail;
-
         return (
             // <Portal>
             <FABGroup
@@ -104,14 +97,6 @@ class ActionsFabBase extends React.Component<Props> {
                         onPress: this._toggle,
                         color: isFav ? this.props.theme.colors.accent : undefined,
                     },
-
-                    isFeatureEnabled(Features.Chat) && canChat && this.props.chatEnabled
-                        ? {
-                            icon: 'chat',
-                            label: I18N.Member.Actions.chat,
-                            onPress: this._chat,
-                        }
-                        : undefined,
 
                     isFeatureEnabled(Features.SendToAdressbook)
                         ? {
@@ -140,12 +125,8 @@ class ActionsFabBase extends React.Component<Props> {
 export const ActionsFab = connect(
     (state: IAppState) => ({
         favorites: state.filter.member.favorites,
-        chatEnabled: state.settings.notificationsOneToOneChat == null
-            ? true : state.settings.notificationsOneToOneChat,
-        user: state.auth.username,
     }),
     {
         toggleFavorite,
-        startConversation,
     },
 )(withTheme(ActionsFabBase));
