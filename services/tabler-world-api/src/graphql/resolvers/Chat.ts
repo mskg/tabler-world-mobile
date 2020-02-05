@@ -372,7 +372,7 @@ export const ChatResolver = {
             }
 
             const channelMessage = await eventManager.post<ChatMessage>({
-                trigger,
+                triggers: [trigger],
 
                 payload: ({
                     id: message.id,
@@ -405,27 +405,24 @@ export const ChatResolver = {
 
             const [, , conversation] = await Promise.all([
                 // TOOD: cloud be combined into onewrite
-                conversationManager.update(trigger, channelMessage),
-                conversationManager.updateLastSeen(trigger, principalId, channelMessage.id),
+                conversationManager.update(trigger, channelMessage[0]),
+                conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id),
                 context.dataSources.conversations.readConversation(trigger),
             ]);
 
-            // we optimize this: who is not subscribed does not need a receipt
-            await Promise.all(
-                (conversation?.members?.values || []).map((subscriber) => eventManager.post<string>({
-                    trigger: makeAllConversationKey(subscriber),
-                    // payload is the trigger
-                    payload: trigger,
-                    pushNotification: undefined,
-                    ttl: params.messageTTL,
-                    trackDelivery: false,
-                })),
-            );
+            await eventManager.post<string>({
+                triggers: (conversation?.members?.values || []).map((subscriber) => makeAllConversationKey(subscriber)),
+                // payload is the trigger
+                payload: trigger,
+                pushNotification: undefined,
+                ttl: params.messageTTL,
+                trackDelivery: false,
+            });
 
             return {
-                ...channelMessage.payload,
-                eventId: channelMessage.id,
-                conversationId: channelMessage.eventName,
+                ...channelMessage[0].payload,
+                eventId: channelMessage[0].id,
+                conversationId: channelMessage[0].eventName,
                 accepted: true,
                 delivered: false,
             } as ChatMessageWithTransport;

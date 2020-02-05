@@ -1,4 +1,4 @@
-import { cachedDataLoader, makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
@@ -114,7 +114,7 @@ where id = $1`,
 
         // only overview columns here, no need to filter
         const results = await Promise.all(areas.map((a) =>
-            writeThrough(
+            cachedLoad(
                 this.context,
                 makeCacheKey('Members', [this.context.principal.association, 'area', a]),
                 async () => await useDataService(
@@ -146,7 +146,7 @@ where
         this.context.logger.log('readAll', association);
 
         // only overview columns here, no need to filter
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Members', [this.context.principal.association, 'all']),
             async () => await useDataService(

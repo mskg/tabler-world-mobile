@@ -1,41 +1,26 @@
-import { CacheData, CacheValues, IManyKeyValueCache } from '@mskg/tabler-world-cache';
+import { CacheValues, IManyKeyValueCache } from '@mskg/tabler-world-cache';
 import { KeyValueCache } from 'apollo-server-core';
 
 // we still support the query cache
 export class NoCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
-    public cache: { [key: string]: string } = {};
 
-    public async set(
-        id: string,
-        data: string,
-        _options?: { ttl?: number },
-    ) {
-        this.cache[id] = data;
+    // tslint:disable-next-line: no-empty
+    public async set() {
     }
 
-    public async delete(id: string): Promise<boolean | void> {
-        delete this.cache[id];
+    // tslint:disable-next-line: no-empty
+    public async delete(): Promise<boolean | void> {
     }
 
-    public async getMany(ids: string[]): Promise<CacheValues> {
-        return ids.reduce((p: any, c: string) => {
-            const v = this.get(c);
-            if (v) {
-                p[c] = v;
-            }
-
-            return p;
-        },                {});
+    public async getMany(): Promise<CacheValues<string>> {
+        return {};
     }
 
-    public async setMany(data: CacheData<string>[]): Promise<void> {
-        data.forEach((d) =>
-            this.cache[d.id] = d.data,
-        );
+    // tslint:disable-next-line: no-empty
+    public async setMany(): Promise<void> {
     }
 
-    public async get(
-        id: string): Promise<string | undefined> {
-        return this.cache[id];
+    public async get(): Promise<string | undefined> {
+        return undefined;
     }
 }

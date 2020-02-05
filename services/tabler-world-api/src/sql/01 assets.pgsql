@@ -268,7 +268,9 @@ INSERT INTO assets (type, id, url) VALUES
     ('flag', 'yt', 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/yt.png'),
     ('flag', 'za', 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/za.png'),
     ('flag', 'zm', 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/zm.png'),
-    ('flag', 'zw', 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/zw.png')
+    ('flag', 'zw', 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/zw.png'),
+    ('flag', 'ea', 'https://s3-eu-west-1.amazonaws.com/assets.app.roundtable.world/flags/ea.png')
+
 
 ON CONFLICT (type, id)
 DO

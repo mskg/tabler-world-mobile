@@ -7,4 +7,5 @@ export type Param_TTLS = {
     Albums: number;
     Documents: number;
     News: number;
+    Principal: number;
 };

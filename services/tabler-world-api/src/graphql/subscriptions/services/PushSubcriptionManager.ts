@@ -1,3 +1,4 @@
+import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { dynamodb as client } from '../aws/dynamodb';
 import { DIRECT_CHAT_PREFIX } from '../types/Constants';
@@ -14,18 +15,21 @@ export class PushSubcriptionManager {
             return;
         }
 
-        await client.batchWrite({
-            RequestItems: {
-                [PUSH_SUBSCRIPTIONS_TABLE]: member.map((m) => ({
-                    PutRequest: {
-                        Item: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: m,
-                        },
+        const items: [string, WriteRequest][] = member.map((m) => ([
+            PUSH_SUBSCRIPTIONS_TABLE,
+            {
+                PutRequest: {
+                    Item: {
+                        [FieldNames.conversation]: conversation,
+                        [FieldNames.member]: m,
                     },
-                })),
+                },
             },
-        }).promise();
+        ]));
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Updated', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+        }
     }
 
     public async unsubscribe(conversation: string, member: number[]): Promise<void> {
@@ -36,18 +40,21 @@ export class PushSubcriptionManager {
             return;
         }
 
-        await client.batchWrite({
-            RequestItems: {
-                [PUSH_SUBSCRIPTIONS_TABLE]: member.map((m) => ({
-                    DeleteRequest: {
-                        Key: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: m,
-                        },
+        const items: [string, WriteRequest][] = member.map((m) => ([
+            PUSH_SUBSCRIPTIONS_TABLE,
+            {
+                DeleteRequest: {
+                    Key: {
+                        [FieldNames.conversation]: conversation,
+                        [FieldNames.member]: m,
                     },
-                })),
+                },
             },
-        }).promise();
+        ]));
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Deleted', item[0], item[1].DeleteRequest?.Key[FieldNames.member]);
+        }
     }
 
     public async getSubscribers(conversation: string): Promise<number[]> {

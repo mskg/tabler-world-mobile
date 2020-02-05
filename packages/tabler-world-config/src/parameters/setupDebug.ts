@@ -40,6 +40,7 @@ export function setupDebug(memoryCache: LRU<string, string>) {
         Albums: hours(4),
         Documents: hours(4),
         News: hours(4),
+        Principal: hours(1),
     } as Param_TTLS));
 
     memoryCache.set(mapName('app'), JSON.stringify({

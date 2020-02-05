@@ -1,5 +1,5 @@
-export type CacheValues = {
-    [key: string]: string;
+export type CacheValues<T> = {
+    [key: string]: T;
 };
 
 export type CacheKeyOptions = {
@@ -17,7 +17,7 @@ export type CacheData<T> = {
 };
 
 export interface IManyKeyValueCache<T> {
-    getMany(ids: T[]): Promise<CacheValues>;
+    getMany(ids: T[]): Promise<CacheValues<T>>;
     setMany(data: CacheData<T>[]): Promise<void>;
 }
 

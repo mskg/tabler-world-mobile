@@ -7,7 +7,13 @@ import { resolveDebugPrincipal } from '../debug/resolveDebugPrincipal';
 import { lookupPrincipal } from '../sql/lookupPrincipal';
 import { IPrincipal } from '../types/IPrincipal';
 
-export async function resolvePrincipal(client: IDataService, operation: OperationMessage) {
+type ResolverFunc = (email: string) => Promise<IPrincipal>;
+type ClientType = IDataService | ResolverFunc;
+
+export async function resolvePrincipal(
+    operation: OperationMessage,
+    client: ClientType,
+) {
     const payload = operation.payload || {};
     let principal: IPrincipal;
 
@@ -25,7 +31,9 @@ export async function resolvePrincipal(client: IDataService, operation: Operatio
         const { email } = await validateToken(process.env.AWS_REGION as string, process.env.UserPoolId as string, token);
 
         // we don't need additional validations here this is already the original function
-        principal = await lookupPrincipal(client, email);
+        principal = typeof (client) === 'function'
+            ? await client(email)
+            : await lookupPrincipal(client, email);
     }
 
     return principal;

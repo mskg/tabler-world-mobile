@@ -1,0 +1,1 @@
+Ported [dynamodb-data-wrapper-js](https://github.com/awslabs/dynamodb-data-mapper-js) to DocumentClient.

@@ -1,4 +1,4 @@
-import { cachedDataLoader, makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
@@ -181,7 +181,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     }
 
     public async allClubs(association: string) {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', [association, 'clubs', 'all']),
             async () => await useDataService(
@@ -204,7 +204,7 @@ where
     }
 
     public async allAreas(assoc: string) {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', [assoc, 'areas', 'all']),
             async () => await useDataService(
@@ -230,7 +230,7 @@ where
      * Currently this limits the result to only the current organization of the user
      */
     public async allAssociations() {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', ['associations', 'all']),
             async () => await useDataService(
@@ -253,7 +253,7 @@ from structure_associations
     }
 
     public async allFamilies() {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', ['families', 'all']),
             async () => await useDataService(

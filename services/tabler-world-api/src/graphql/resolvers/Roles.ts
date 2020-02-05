@@ -1,4 +1,4 @@
-import { makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -7,7 +7,7 @@ import { IApolloContext } from '../types/IApolloContext';
 export const RolesResolver = {
     Query: {
         Roles: async (_root: any, _args: any, context: IApolloContext) => {
-            return writeThrough(
+            return cachedLoad(
                 context,
                 makeCacheKey('Structure', ['roles', context.principal.association]),
                 () =>

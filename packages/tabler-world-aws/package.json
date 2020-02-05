@@ -1,25 +1,28 @@
 {
-  "name": "@mskg/tabler-world-aws",
-  "version": "0.0.1",
-  "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch"
-  },
-  "author": "Markus Kling",
-  "license": "Copyright 2019-present Markus Kling",
-  "dependencies": {},
-  "peerDependencies": {
-    "aws-sdk": "*",
-    "aws-xray-sdk": "*",
-    "https": "*",
-    "pg": "*"
-  },
-  "devDependencies": {
-    "@types/node": "^12.7.12",
-    "@types/pg": "^7.11.0",
-    "typescript": "3.7.4"
-  }
+    "name": "@mskg/tabler-world-aws",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "test": "jest"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "peerDependencies": {
+        "aws-sdk": "*",
+        "aws-xray-sdk": "*",
+        "https": "*",
+        "pg": "*"
+    },
+    "devDependencies": {
+        "@types/jest": "^25.1.1",
+        "@types/node": "^12.7.12",
+        "@types/pg": "^7.11.0",
+        "jest": "^25.1.0",
+        "ts-jest": "^25.2.0",
+        "typescript": "3.7.4"
+    }
 }

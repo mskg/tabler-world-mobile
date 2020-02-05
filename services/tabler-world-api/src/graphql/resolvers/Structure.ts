@@ -172,6 +172,8 @@ export const StructureResolver = {
 
     ClubInfo: {
         charter_date: (root: any, _args: any, context: IApolloContext) => {
+            if (!root.charter_date) { return null; }
+
             try {
                 const date = DateParser.parse(root.charter_date, 'DD/MM/YYYY');
                 return new Date(date).toISOString();

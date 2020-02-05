@@ -1,3 +1,4 @@
+import { ILogger } from '@mskg/tabler-world-common';
 import { KeyValueCache } from 'apollo-server-caching';
 import LRU from 'lru-cache';
 import { CACHE_SIZE } from './config';
@@ -14,12 +15,15 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
         maxAge: MEMORY_TTL * 1000,
     });
 
-    constructor(private innerCache: KeyValueCache<string> & IManyKeyValueCache<string>) {
-        console.debug('[MemoryBackedCache] init');
+    constructor(
+        private innerCache: KeyValueCache<string> & IManyKeyValueCache<string>,
+        private logger: ILogger = console,
+    ) {
+        this.logger.log('init');
     }
 
     public async get(key: string): Promise<string | undefined> {
-        console.debug('[MemoryBackedCache] get', key);
+        this.logger.log('get', key);
 
         let cached = this.memoryCache.get(key);
         if (cached) {
@@ -28,7 +32,7 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
 
         cached = await this.innerCache.get(key);
         if (cached) {
-            console.debug('[MemoryBackedCache] updating store', key);
+            this.logger.log('updating store', key);
 
             // we could extend the value by TTLS.Memoy here, but we live with that
             // we don't wait for it
@@ -39,25 +43,21 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     }
 
     public async set(key: string, value: string, options?: { ttl?: number | undefined; } | undefined): Promise<void> {
-        console.debug('[MemoryBackedCache] set ', key, options);
+        this.logger.log('set ', key, options);
 
         this.memoryCache.set(key, value);
-
-        // we don't wait for it
-        this.innerCache.set(key, value, options);
+        await this.innerCache.set(key, value, options);
     }
 
     public async delete(key: string): Promise<boolean | void> {
-        console.debug('[MemoryBackedCache] delete ', key);
+        this.logger.log('delete ', key);
 
         this.memoryCache.del(key);
-
-        // we don't wait for it
-        this.innerCache.delete(key);
+        await this.innerCache.delete(key);
     }
 
-    public async getMany(ids: string[]): Promise<CacheValues> {
-        console.debug('[MemoryBackedCache] getMany', ids);
+    public async getMany(ids: string[]): Promise<CacheValues<string>> {
+        this.logger.log('getMany', ids);
 
         // check memory first
         const missingKeys: string[] = [];
@@ -73,18 +73,18 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
 
                 return p;
             },
-            {} as CacheValues,
+            {} as CacheValues<string>,
         );
 
         // check backend
         if (missingKeys.length > 0) {
-            console.debug('[MemoryBackedCache] missed keys', missingKeys);
+            this.logger.log('missed keys', missingKeys);
 
             const missing = await this.innerCache.getMany(missingKeys);
             const foundMissingKeys = Object.keys(missing);
 
             if (foundMissingKeys.length > 0) {
-                console.debug('[MemoryBackedCache] updating store', foundMissingKeys);
+                this.logger.log('updating store', foundMissingKeys);
 
                 // write through missing keys
                 foundMissingKeys.forEach(
@@ -104,9 +104,9 @@ export class MemoryBackedCache implements KeyValueCache<string>, IManyKeyValueCa
     }
 
     public async setMany(data: CacheData<string>[]): Promise<void> {
-        data.forEach(d => this.memoryCache.set(d.id, d.data));
+        this.logger.log('setMany', data.map((d) => d.id));
 
-        // we don't wait for it
-        this.innerCache.setMany(data);
+        data.forEach((d) => this.memoryCache.set(d.id, d.data));
+        await this.innerCache.setMany(data);
     }
 }

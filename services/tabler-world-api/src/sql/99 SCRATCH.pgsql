@@ -74,3 +74,8 @@ select id, settings
 From
 usersettings
 where settings->'notifications'->>'personalChat' is null
+
+
+select * From profiles
+where rtemail = 'michael.stadtherr@19-de.roundtable.world'
+and removed = false

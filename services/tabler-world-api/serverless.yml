@@ -621,6 +621,8 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.pushsubscriptions_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
 
         AttributeDefinitions:
           - AttributeName: conversation
@@ -649,6 +651,8 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.conversations_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
 
         AttributeDefinitions:
           - AttributeName: conversation
@@ -691,6 +695,7 @@ resources:
         TableName: ${self:custom.events_table}
         PointInTimeRecoverySpecification:
           PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
+
         AttributeDefinitions:
           - AttributeName: eventName
             AttributeType: S
