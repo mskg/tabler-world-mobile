@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import * as Sentry from 'sentry-expo';
 import { PRESERVE_CONSOLE } from './PRESERVE_CONSOLE';
 
@@ -123,8 +124,13 @@ export class Logger {
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
-            // tslint:disable-next-line: no-console
-            console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+            if (__DEV__) {
+                // tslint:disable-next-line: no-console
+                console.debug(Constants.deviceId, `[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+            } else {
+                // tslint:disable-next-line: no-console
+                console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+            }
         }
     }
 
@@ -150,8 +156,13 @@ export class Logger {
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
-            // tslint:disable-next-line: no-console
-            console.info(`[INFO ] [${this.category.padEnd(MAX)}]`, ...args);
+            if (__DEV__) {
+                // tslint:disable-next-line: no-console
+                console.log(Constants.deviceId, `[INFO] [${this.category.padEnd(MAX)}]`, ...args);
+            } else {
+                // tslint:disable-next-line: no-console
+                console.log(`[INFO] [${this.category.padEnd(MAX)}]`, ...args);
+            }
         }
     }
 
@@ -167,8 +178,13 @@ export class Logger {
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
-            // tslint:disable-next-line: no-console
-            console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+            if (__DEV__) {
+                // tslint:disable-next-line: no-console
+                console.warn(Constants.deviceId, `[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+            } else {
+                // tslint:disable-next-line: no-console
+                console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+            }
         }
     }
 }
