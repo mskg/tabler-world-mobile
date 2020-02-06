@@ -9,7 +9,7 @@ import { bootstrapApollo, getApolloCachePersistor } from './bootstrapApollo';
 
 const logger = new Logger(Categories.Api);
 
-const SCHEMA_VERSION = '3'; // Must be a string.
+const SCHEMA_VERSION = '4'; // Must be a string.
 const SCHEMA_VERSION_KEY = 'apollo-schema-version';
 
 type State = {
