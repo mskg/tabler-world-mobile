@@ -5,6 +5,8 @@ import React, { PureComponent } from 'react';
 import Assets from '../../Assets';
 import { Categories, Logger } from '../../helper/Logger';
 import { AppNotifications, IExpoNotification } from '../../model/NotificationPayload';
+import { isSignedIn } from '../../tasks/helper/isSignedIn';
+import { registerForPushNotifications } from '../../tasks/registerForPushNotifications';
 import { AdvertismentHandler } from './AdvertismentHandler';
 import { BirthdayHandler } from './BirthdayHandler';
 import { ChatMessageHandler } from './ChatMessageHandler';
@@ -47,6 +49,11 @@ class PushNotificationsBase extends PureComponent<Props> {
                 () => test(this._handleNotification),
                 2000,
             );
+        }
+
+        if (isSignedIn()) {
+            // we need the saga to run
+            registerForPushNotifications();
         }
     }
 
