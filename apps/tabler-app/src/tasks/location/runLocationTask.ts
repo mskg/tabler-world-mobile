@@ -2,6 +2,7 @@ import * as Location from 'expo-location';
 import { AsyncStorage } from 'react-native';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
+import { bootstrapApollo, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { getReduxPersistor, persistorRehydrated } from '../../redux/getRedux';
 import { LOCATION_TASK_NAME } from '../Constants';
@@ -41,8 +42,15 @@ export async function runLocationTask({ data, error }) {
                     AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
                 }
             } else {
+                await bootstrapApollo({ noWebsocket: true });
+                await getApolloCachePersistor().restore();
+
                 // do something with the locations captured in the background
-                await handleLocationUpdate(locations);
+                if (await handleLocationUpdate(locations)) {
+                    try { getReduxPersistor().flush(); } catch (pe) {
+                        logger.error(pe, 'Could not persist redux');
+                    }
+                }
             }
         } else {
             logger.debug('no locations?');

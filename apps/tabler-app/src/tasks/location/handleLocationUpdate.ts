@@ -73,6 +73,8 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             },
         });
 
+        // we don't need to persist the apollo cache, we don't change it
+
         return true;
     } catch (error) {
         logger.error(error, 'handleLocationUpdate');
