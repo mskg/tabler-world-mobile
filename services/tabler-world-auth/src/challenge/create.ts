@@ -8,6 +8,10 @@ export const ses = new xAWS.SES();
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
     let secretLoginCode: string = '';
 
+    if (process.env.maintenance === 'true') {
+        throw new Error('We\'re sorry, TABLER.APP is currently down for maintenance.');
+    }
+
     if (!event.request.session || !event.request.session.length) {
         const allowed = process.env.allowed_countries?.split(',') || [];
         const found = allowed.find((ext) => event.request.userAttributes.email.endsWith(`-${ext}.roundtable.world`));

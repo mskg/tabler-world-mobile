@@ -3,6 +3,10 @@ import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 
 // tslint:disable-next-line: export-name
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
+    if (process.env.maintenance === 'true') {
+        throw new Error('We\'re sorry, TABLER.APP is currently down for maintenance.');
+    }
+
     const allowed = process.env.allowed_countries?.split(',') || [];
     const found = allowed.find((ext) => event.request.userAttributes.email.endsWith(`-${ext}.roundtable.world`));
     if (!found) {
