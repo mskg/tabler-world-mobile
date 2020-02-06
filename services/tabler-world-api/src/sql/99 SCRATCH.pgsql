@@ -70,12 +70,19 @@ select * from assets
 where point is null
 
 
-select id, settings
-From
-usersettings
-where settings->'notifications'->>'personalChat' is null
+select id, jsonb_set(settings, '{notifications,personalChat}', 'null')
+from usersettings
+where settings->'notifications'->>'personalChat' = 'false'
+
+
+
 
 
 select * From profiles
 where rtemail = 'michael.stadtherr@19-de.roundtable.world'
 and removed = false
+
+
+
+select distinct jsonb_agg(remove_key_family(id))
+from structure_associations

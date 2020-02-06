@@ -47,8 +47,8 @@ export async function runLocationTask({ data, error }) {
 
                 // do something with the locations captured in the background
                 if (await handleLocationUpdate(locations)) {
-                    try { getReduxPersistor().flush(); } catch (pe) {
-                        logger.error(pe, 'Could not persist redux');
+                    try { await getApolloCachePersistor().persist(); } catch (pe) {
+                        logger.error(pe, 'Could not persist apollo');
                     }
                 }
             }
