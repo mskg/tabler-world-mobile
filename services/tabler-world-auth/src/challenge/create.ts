@@ -9,7 +9,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
     let secretLoginCode: string = '';
 
     if (process.env.maintenance === 'true') {
-        throw new Error('We\'re sorry, TABLER.APP is currently down for maintenance.');
+        throw new Error('"We\'re sorry, TABLER.APP is currently down for maintenance."');
     }
 
     if (!event.request.session || !event.request.session.length) {
@@ -17,7 +17,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
         const found = allowed.find((ext) => event.request.userAttributes.email.endsWith(`-${ext}.roundtable.world`));
         if (!found) {
             console.error('[CREATE]', event.request.userAttributes.email, 'unkown country');
-            throw new Error('Sorry, country is locked.');
+            throw new Error('"We\'re sorry, the country you entered is currently not available."');
         }
 
         await withClient(context, async (client) => {
@@ -27,7 +27,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
 
             if (res.rowCount !== 1) {
                 console.error('[CREATE]', event.request.userAttributes.email, 'not found');
-                throw new Error('Sorry, we don\'t know you.');
+                throw new Error('"Sorry, we don\'t know you. Are you still an active tabler?"');
             }
 
             console.debug('[CREATE]', event.request.userAttributes.email, 'found');
