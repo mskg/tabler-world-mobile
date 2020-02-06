@@ -9,7 +9,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
     let secretLoginCode: string = '';
 
     if (process.env.maintenance === 'true') {
-        throw new Error('"We\'re sorry, TABLER.APP is currently down for maintenance."');
+        throw new Error(process.env.maintenance_text || '"We\'re sorry, TABLER.APP is currently down for maintenance."');
     }
 
     if (!event.request.session || !event.request.session.length) {
