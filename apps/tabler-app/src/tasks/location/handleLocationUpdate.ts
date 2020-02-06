@@ -30,7 +30,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             && existing.coords.latitude === location.coords.latitude
             && !force) {
             logger.debug('Ignoring coordinates');
-            return true;
+            return false;
         }
 
         const ci = await NetInfo.fetch();

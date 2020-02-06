@@ -45,11 +45,16 @@ export async function runLocationTask({ data, error }) {
                 await bootstrapApollo({ noWebsocket: true });
                 await getApolloCachePersistor().restore();
 
+                const result = await handleLocationUpdate(locations);
                 // do something with the locations captured in the background
-                if (await handleLocationUpdate(locations)) {
+                if (result) {
+                    logger.log('Persisting');
+
                     try { await getApolloCachePersistor().persist(); } catch (pe) {
                         logger.error(pe, 'Could not persist apollo');
                     }
+                } else {
+                    logger.log('Not persisting');
                 }
             }
         } else {
