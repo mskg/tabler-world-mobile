@@ -117,7 +117,6 @@ export function withLoadingAnimation(WrappedComponent) {
         };
 
         componentDidMount() {
-            console.log('########################### run?');
             setTimeout(
                 () => {
                     this.setState(
