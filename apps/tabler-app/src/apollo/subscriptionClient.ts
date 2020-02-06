@@ -28,6 +28,11 @@ export const subscriptionClient = new SubscriptionClient(
 
 const INACTIVE_TIMEOUT = 5 * 1000;
 
+function isSignedIn(): boolean {
+    const authState = getReduxStore().getState().auth.state;
+    return authState === 'singedIn';
+}
+
 // tslint:disable-next-line: one-variable-per-declaration
 let closing: number | undefined;
 AppState.addEventListener('change', (nextAppState: string) => {
@@ -58,6 +63,10 @@ AppState.addEventListener('change', (nextAppState: string) => {
             if (closing) {
                 clearTimeout(closing);
                 closing = undefined;
+            }
+
+            if (!isSignedIn()) {
+                return;
             }
 
             // @ts-ignore
