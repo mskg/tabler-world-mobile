@@ -49,7 +49,7 @@ export const Chat = gql`
 
         hasUnreadMessages: Boolean!
         members: [Member!]!
-        messages(token: String): ChatMessageIterator!
+        messages(token: String, dontMarkAsRead: Boolean): ChatMessageIterator!
     }
 
     # type ConversationAndKey {

@@ -101,11 +101,14 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
 
                         setTimeout(async () => {
                             try {
+                                // need to update cache this way
                                 await client.query<Conversation, ConversationVariables>({
                                     query: GetConversationQuery,
                                     variables: {
                                         id: data.conversationUpdate.id,
+                                        dontMarkAsRead: true,
                                     },
+                                    fetchPolicy: 'network-only',
                                 });
                             } catch (e) {
                                 logger.error(e, 'Failed to refresh data.');

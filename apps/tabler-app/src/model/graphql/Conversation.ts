@@ -85,4 +85,5 @@ export interface Conversation {
 export interface ConversationVariables {
   id: string;
   token?: string | null;
+  dontMarkAsRead?: boolean | null;
 }

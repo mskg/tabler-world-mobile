@@ -307,7 +307,6 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                     query={GetConversationQuery}
                     variables={{
                         id: this.props.conversationId,
-                        token: undefined,
                     }}
                     fetchPolicy="cache-first"
                 >
@@ -325,7 +324,6 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                                         query: GetConversationQuery,
                                         variables: {
                                             id: this.props.conversationId,
-                                            token: undefined,
                                         },
                                     },
                                     true,

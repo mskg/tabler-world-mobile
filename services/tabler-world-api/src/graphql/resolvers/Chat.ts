@@ -33,6 +33,7 @@ type SubscriptionArgs = {
 
 type IteratorArgs = {
     token?: string,
+    dontMarkAsRead?: boolean,
 };
 
 type IdArgs = {
@@ -143,28 +144,14 @@ export const ChatResolver = {
 
             // only if the token is null we have seen the last values
             if (args.token == null && result.result.length > 0) {
-                // const [, conversation] =
-                await Promise.all([
-                    conversationManager.updateLastSeen(
+                if (!args.dontMarkAsRead) {
+                    await conversationManager.updateLastSeen(
                         channel,
                         principalId,
                         // highest message
                         result.result[0].id,
-                    ),
-
-                    // conversationManager.getConversation(channel),
-                ]);
-
-                // await Promise.all(
-                //     (conversation.members?.values || []).map((subscriber) => eventManager.post<string>({
-                //         trigger: makeAllConversationKey(subscriber),
-                //         // payload is the trigger
-                //         payload: root.id,
-                //         pushNotification: undefined,
-                //         ttl: params.ttl,
-                //         trackDelivery: false,
-                //     })),
-                // );
+                    );
+                }
             }
 
             let lastSeen: string | undefined;
@@ -206,7 +193,7 @@ export const ChatResolver = {
             const user = await context.dataSources.conversations.readUserConversation(channel, context.principal.id);
             const global = await context.dataSources.conversations.readConversation(channel);
 
-            context.logger.log(user, global);
+            context.logger.log('hasUnreadMessages', global, user);
 
             if (user == null || global == null) { return true; }
             if (!user.lastSeen && global.lastMessage) { return true; }
@@ -350,19 +337,12 @@ export const ChatResolver = {
 
         // tslint:disable-next-line: variable-name
         sendMessage: async (_root: {}, { message }: SendMessageArgs, context: IApolloContext) => {
-            context.logger.log('sendMessage', message);
+            context.logger.log('sendMessage', context.principal.id);
             const principalId = context.principal.id;
 
             if (!checkChannelAccess(message.conversationId, principalId)) {
                 throw new Error('Access denied.');
             }
-
-            const member = await context.dataSources.members.readOne(principalId);
-
-            const trigger = decodeIdentifier(message.conversationId);
-            const params = await getChatParams();
-
-            const text = message.text || 'New message';
 
             if (message.image) {
                 // some basic level of security here
@@ -370,6 +350,14 @@ export const ChatResolver = {
                     throw new Error('Access denied.');
                 }
             }
+
+            const trigger = decodeIdentifier(message.conversationId);
+            const text = message.text || 'New message';
+
+            const [member, params] = await Promise.all([
+                context.dataSources.members.readOne(principalId),
+                getChatParams(),
+            ]);
 
             const channelMessage = await eventManager.post<ChatMessage>({
                 triggers: [trigger],

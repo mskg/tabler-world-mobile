@@ -38,7 +38,9 @@ export class ChatMessageHandler implements INotificationHandler<ChatMessageNotif
             query: GetConversationQuery,
             variables: {
                 id: notification.payload.conversationId,
+                dontMarkAsRead: true,
             },
+            fetchPolicy: 'network-only',
         });
     }
 

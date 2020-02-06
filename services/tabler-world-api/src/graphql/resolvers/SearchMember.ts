@@ -79,7 +79,7 @@ export const SearchMemberResolver = {
 
                 versions: {
                     // only
-                    old: async () => {
+                    old: () => {
                         parameters.push(context.principal.association);
                         filters.push(`association = $${parameters.length}`);
                     },
