@@ -9,10 +9,6 @@ import { Platform } from 'react-native';
 
 export function* checkBadge() {
     const notifications = yield allowsPushNotifications();
-    if (!notifications) {
-        return;
-    }
-
     const demo = yield call(isDemoModeEnabled);
 
     if (!isFeatureEnabled(Features.Chat) || demo) {
