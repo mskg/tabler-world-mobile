@@ -15,6 +15,7 @@ import { conversationUpdateSubscription } from '../../queries/Conversations/conv
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { setBadge } from '../../redux/actions/chat';
+import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
 
 const logger = new Logger(Categories.Helpers.Chat);
 
@@ -92,7 +93,9 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                         logger.debug('Updating badge');
                         this.props.setBadge(1);
 
-                        if (Platform.OS === 'ios') { await Notifications.setBadgeNumberAsync(1); }
+                        if (Platform.OS === 'ios' && await allowsPushNotifications()) {
+                            await Notifications.setBadgeNumberAsync(1);
+                        }
                     }
 
                     // we update our local data

@@ -3,13 +3,11 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { rootSaga } from '../sagas';
 import { getReduxPersistor, getReduxStore, getSagaMiddleware } from './getRedux';
-import { registerForPushNotifications } from '../tasks/registerForPushNotifications';
 
 export function withStore(WrappedComponent) {
     return class extends React.PureComponent {
         _runSagas = () => {
             getSagaMiddleware().run(rootSaga);
-            registerForPushNotifications();
         }
 
         render() {

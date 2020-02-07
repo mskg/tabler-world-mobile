@@ -6,6 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { AsyncStorage, Platform } from 'react-native';
 import { put } from 'redux-saga/effects';
 import { cachedAolloClient, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
+import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
 import { disableNearbyTablers } from '../../helper/geo/disable';
 import * as actions from '../../redux/actions/user';
 import { getReduxPersistor } from '../../redux/getRedux';
@@ -32,7 +33,12 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     yield client.cache.reset();
     yield getApolloCachePersistor().purge();
 
-    if (Platform.OS === 'ios') { yield Notifications.setBadgeNumberAsync(0); }
+    if (Platform.OS === 'ios') {
+        const notifications = yield allowsPushNotifications();
+        if (notifications) {
+            yield Notifications.setBadgeNumberAsync(0);
+        }
+    }
 
     yield Auth.signOut();
     yield Updates.reloadFromCache();
