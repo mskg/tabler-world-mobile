@@ -23,7 +23,7 @@ variables:
   #  1.2-r, r1, r2, ...
 
   - name: EXPO_RELEASE_CHANNEL
-    value: '1.2-r6'
+    value: '1.2-r8'
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'

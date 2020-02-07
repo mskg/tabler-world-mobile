@@ -86,3 +86,5 @@ and removed = false
 
 select distinct jsonb_agg(remove_key_family(id))
 from structure_associations
+
+truncate table userlocations_history
