@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { HandleAppState } from '../../components/HandleAppState';
+import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Categories, Logger } from '../../helper/Logger';
 import { Features, isFeatureEnabled } from '../../model/Features';
@@ -15,7 +16,7 @@ import { conversationUpdateSubscription } from '../../queries/Conversations/conv
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { setBadge } from '../../redux/actions/chat';
-import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
+import { checkBadge } from '../../sagas/chat/checkBadge';
 
 const logger = new Logger(Categories.Helpers.Chat);
 
@@ -29,6 +30,10 @@ type Props = {
 
 class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
     subscription!: ZenObservable.Subscription | null;
+
+    componentDidMount() {
+        checkBadge();
+    }
 
     componentDidUpdate(prev) {
         if (prev.websocket !== this.props.websocket && this.props.websocket && this.props.chatEnabled) {
@@ -93,8 +98,12 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                         logger.debug('Updating badge');
                         this.props.setBadge(1);
 
-                        if (Platform.OS === 'ios' && await allowsPushNotifications()) {
-                            await Notifications.setBadgeNumberAsync(1);
+                        try {
+                            if (Platform.OS === 'ios' && await allowsPushNotifications()) {
+                                await Notifications.setBadgeNumberAsync(1);
+                            }
+                        } catch (e) {
+                            logger.error(e, 'Failed to setBadgeNumber');
                         }
                     }
 
