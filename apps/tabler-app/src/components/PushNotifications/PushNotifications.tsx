@@ -50,11 +50,6 @@ class PushNotificationsBase extends PureComponent<Props> {
                 2000,
             );
         }
-
-        if (isSignedIn()) {
-            // we need the saga to run
-            registerForPushNotifications();
-        }
     }
 
     componentWillUnmount() {

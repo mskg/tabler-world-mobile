@@ -29,8 +29,12 @@ export const subscriptionClient = new SubscriptionClient(
 const INACTIVE_TIMEOUT = 5 * 1000;
 
 function isSignedIn(): boolean {
-    const authState = getReduxStore()?.getState()?.auth?.state;
-    return authState === 'singedIn';
+    try {
+        const authState = getReduxStore()?.getState()?.auth?.state;
+        return authState === 'singedIn';
+    } catch {
+        return false;
+    }
 }
 
 // tslint:disable-next-line: one-variable-per-declaration
@@ -50,8 +54,11 @@ AppState.addEventListener('change', (nextAppState: string) => {
 
                     closing = setTimeout(
                         () => {
-                            subscriptionClient.close(true, true);
-                            closing = undefined;
+                            try {
+                                subscriptionClient.close(true, true);
+                                closing = undefined;
+                            // tslint:disable-next-line: no-empty
+                            } catch { }
                         },
                         INACTIVE_TIMEOUT,
                     );
