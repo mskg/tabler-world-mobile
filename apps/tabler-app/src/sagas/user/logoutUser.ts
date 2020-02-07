@@ -33,12 +33,17 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     yield client.cache.reset();
     yield getApolloCachePersistor().purge();
 
-    if (Platform.OS === 'ios') {
-        const notifications = yield allowsPushNotifications();
-        if (notifications) {
-            yield Notifications.setBadgeNumberAsync(0);
+    try {
+        if (Platform.OS === 'ios') {
+            const notifications = yield allowsPushNotifications();
+            if (notifications) {
+                yield Notifications.setBadgeNumberAsync(0);
+            }
         }
+    } catch (e) {
+        logger.debug(e, 'setBadgeNumberAsync');
     }
+
 
     yield Auth.signOut();
     yield Updates.reloadFromCache();
