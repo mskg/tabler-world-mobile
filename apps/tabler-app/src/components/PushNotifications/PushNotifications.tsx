@@ -50,10 +50,6 @@ class PushNotificationsBase extends PureComponent<Props> {
                 2000,
             );
         }
-
-        if (isSignedIn()) {
-            registerForPushNotifications();
-        }
     }
 
     componentWillUnmount() {
