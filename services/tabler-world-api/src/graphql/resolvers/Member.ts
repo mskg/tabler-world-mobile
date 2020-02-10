@@ -1,6 +1,7 @@
 import { Family } from '@mskg/tabler-world-auth-client';
 import _ from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
+import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
 
 // type MembersArgs = {
@@ -99,7 +100,12 @@ export const MemberResolver = {
 
     Company: {
         sector: (root: any, _args: {}, _context: IApolloContext) => {
-            return root.sector ? root.sector.replace(/-/ig, '') : null;
+            if (!root.sector) return null;
+
+            const id = root.sector.replace(/-/ig, '');
+            if (SECTOR_MAPPING[id]) { return id; }
+
+            return null;
         },
 
         address: (root: any, _args: {}, _context: IApolloContext) => {
