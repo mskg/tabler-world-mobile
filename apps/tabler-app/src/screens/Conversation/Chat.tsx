@@ -190,7 +190,7 @@ class ChatBase extends React.Component<Props, State> {
 
                     marginTop: 5,
                     marginBottom: 5,
-                    marginVerical: 5,
+                    marginVertical: 5,
 
                     paddingTop: props.composerHeight >= 40 ? 0 : 4,
                 }}
