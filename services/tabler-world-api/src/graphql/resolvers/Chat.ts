@@ -368,7 +368,7 @@ export const ChatResolver = {
                     payload: {
                         image: message.image,
                         type: message.image ? MessageType.image : MessageType.text,
-                        text: message.text,
+                        text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
                     receivedAt: Date.now(),
                 } as ChatMessage),

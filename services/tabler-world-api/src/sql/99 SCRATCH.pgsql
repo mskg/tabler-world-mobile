@@ -1,90 +1,42 @@
 SET ROLE tw_read_dev;
 
-select count(*)
-from geocodes
-where point is not null
-;
-select count(*)
-from geocodes
-;
+
+
+select r->>'sector', count(*), jsonb_agg(id)
+from (
+select jsonb_array_elements(companies) as r, id
+from profiles
+) companies
+group by r->>'sector'
+order by 2
+
 
 select *
-from geocodes
-where point is null
-;
+from (
+select jsonb_array_elements(companies) as r, id
+from profiles
+) companies
+where r->>'sector' = 'CONSULTING'
 
 
-select * from structure_tabler_roles
-where refid is null
-and groupname <> 'Past Members'
+select *
+from profiles where id = 123640
 
 
-select * from tabler
-where id = 15277
+1	Insurance	1	[145681]
+2	Construction	1	[123667]
+4	Import/export	1	[145679]
+5	Real Estate	1	[145693]
+6	HR	1	[145690]
+7	Legal	1	[145696]
+8	FMCG / Industrial / Luxury goods	1	[123647]
+9	SHIPPING	1	[123641]
+10	CONSULTING	1	[123640]
+11	Web Marketing	2	[145685,145698]
+12	Medical	2	[145684,145686]
+13	Informatics	2	[145680,145682]
+14	Finance	2	[145683,145688]
+15	IT	2	[123666,123664]
+16	Automobile	2	[145692,145694]
+17	Textile	2	[145689,145687]
 
-
-truncate table groups;
-truncate table families;
-truncate table tabler;
-truncate table clubs;
-truncate table areas;
-truncate table associations;
-
-
-select count(*) from groups;
-select count(*) from families;
-select count(*) from associations;
-select count(*) from areas;
-select count(*) from clubs;
-select count(*) from tabler;
-
-
-select id, status, name, data
-from jobhistory
-order by runon desc
-
-
-
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups;
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
-
-REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
-REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings;
-
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs;
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_families;
-
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search;
-
-
-
-
-select id, flag, name
-from structure_associations
-
-
-select * from assets
-
-where point is null
-
-
-select id, jsonb_set(settings, '{notifications,personalChat}', 'null')
-from usersettings
-where settings->'notifications'->>'personalChat' = 'false'
-
-
-
-
-
-select * From profiles
-where rtemail = 'michael.stadtherr@19-de.roundtable.world'
-and removed = false
-
-
-
-select distinct jsonb_agg(remove_key_family(id))
-from structure_associations
-
-truncate table userlocations_history
