@@ -406,6 +406,9 @@ const de: I18NType = {
             experiments: 'Alben und Neuigkeiten',
             nearby: 'Mitglieder in der Nähe',
             notifications: 'Benachrichtigungen',
+
+            subscription: 'Jährliches Abo',
+            subscription_valid: 'Gültig',
         },
 
         ReleaseNotes: 'Versionshinweise (Englisch)',

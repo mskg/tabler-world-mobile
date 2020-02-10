@@ -461,6 +461,9 @@ const en = {
             experiments: 'Albums & News',
             nearby: 'Nearby Members',
             notifications: 'Notifications',
+
+            subscription: 'Yearly Subscription',
+            subscription_valid: 'Valid',
         },
 
         ReleaseNotes: 'Release Notes',
