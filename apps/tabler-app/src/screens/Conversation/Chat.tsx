@@ -192,13 +192,15 @@ class ChatBase extends React.Component<Props, State> {
                     marginBottom: 5,
                     marginVerical: 5,
 
-                    padding: 0,
-                    paddingVertical: 0,
-                    paddingTop: 0,
+                    paddingTop: props.composerHeight >= 40 ? 0 : 4,
                 }}
+
                 textInputAutoFocus={!this.props.sendDisabled}
                 textInputProps={{
                     maxLength: 10 * 1024,
+                    selectionColor: this.props.theme.colors.accent,
+                    allowFontScaling: false,
+                    placeholder: null,
                 }}
             // disableComposer={this.props.sendDisabled}
             />
@@ -452,8 +454,8 @@ class ChatBase extends React.Component<Props, State> {
                     // renderLoadEarlier={this._renderLoadEarlier}
 
                     messages={this.props.messages || []}
-                    minComposerHeight={30}
-                    minInputToolbarHeight={44}
+                    // minComposerHeight={44}
+                    // minInputToolbarHeight={44}
 
                     renderBubble={this._renderBubble}
                     maxInputLength={10 * 1024}
