@@ -423,7 +423,7 @@ class ChatBase extends React.Component<Props, State> {
                     onLongPress={this._onLongPress}
 
                     dateFormat={'ddd D. MMM'}
-                    timeFormat={'hh:mm'}
+                    timeFormat={'HH:mm'}
 
                     extraData={this.props.extraData}
                     renderAvatar={null}
