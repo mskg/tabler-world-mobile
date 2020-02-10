@@ -1,14 +1,17 @@
-import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
+import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
-import { NavigationEventSubscription, NavigationInjectedProps } from 'react-navigation';
+import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../analytics/ActionNames';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import { HandleScreenState } from '../../components/HandleScreenState';
+import { FullScreenLoading } from '../../components/Loading';
+import { EmptyComponent } from '../../components/NoResults';
 import { parseLink } from '../../helper/linking/parseLink';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
@@ -32,40 +35,35 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
         visible: true,
     };
 
-    listeners: NavigationEventSubscription[] = [];
-
     constructor(props: Props) {
         super(props, AuditScreenName.MemberScanQR);
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        super.componentDidMount();
         this.getPermissionsAsync();
-
-        this.listeners = [
-            this.props.navigation.addListener('didFocus', this._focus),
-            this.props.navigation.addListener('didBlur', this._blur),
-        ];
-
-        this.audit.submit();
     }
 
-    _focus = () => this.setState({ visible: true });
-    _blur = () => this.setState({ visible: false });
+    _focus = () => {
+        logger.debug('_focus');
+        this.setState({ visible: true });
+    }
 
-    componentWillUnmount() {
-        if (this.listeners) {
-            this.listeners.forEach(item => item.remove());
-        }
+    _blur = () => {
+        logger.debug('_blur');
+        this.setState({ visible: false });
     }
 
     getPermissionsAsync = async () => {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ hasCameraPermission: status === 'granted', visible: true });
+        this.setState(
+            { hasCameraPermission: status === 'granted', visible: true },
+            () => this.forceUpdate(),
+        );
     }
 
     render() {
         const { hasCameraPermission } = this.state;
-        if (!this.state.visible) return null;
 
         return (
             <View
@@ -76,33 +74,34 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                     backgroundColor: hasCameraPermission
                         ? 'black'
                         : this.props.theme.colors.background,
-                }}>
+                }}
+            >
+                <HandleScreenState
+                    onBlur={this._blur}
+                    onFocus={this._focus}
+                />
 
                 {hasCameraPermission === null &&
-                    <Text>{I18N.Pair.request}</Text>
+                    <EmptyComponent title={I18N.Pair.request} />
                 }
 
                 {hasCameraPermission === false
-                    ? <Text>{I18N.Pair.permission}</Text>
-                    : <BarCodeScanner
-                        onBarCodeScanned={this.handleBarCodeScanned}
-                        style={StyleSheet.absoluteFillObject}
-
-                    >
-                        {/* <View style={styles.layerTop} />
-            <View style={styles.layerCenter}>
-              <View style={styles.layerLeft} />
-              <View style={styles.focused} />
-              <View style={styles.layerRight} />
-            </View>
-            <View style={styles.layerBottom} /> */}
-                    </BarCodeScanner>
+                    ? <EmptyComponent title={I18N.Pair.permission} />
+                    : this.state.visible
+                        ? (
+                            <Camera
+                                onBarCodeScanned={this.handleBarCodeScanned}
+                                style={StyleSheet.absoluteFillObject}
+                            // flashMode="torch"
+                            />
+                        )
+                        : <FullScreenLoading />
                 }
             </View>
         );
     }
 
-    handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
+    handleBarCodeScanned = ({ type, data }) => {
         logger.log('Scanned', type, data);
 
         const { path, queryParams } = parseLink(data);

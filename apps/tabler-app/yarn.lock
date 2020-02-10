@@ -7562,10 +7562,10 @@ expo-background-fetch@~8.0.0:
   dependencies:
     expo-task-manager "~8.0.0"
 
-expo-barcode-scanner@~8.0.0:
+expo-camera@^8.0.0:
   version "8.0.0"
-  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-barcode-scanner/-/expo-barcode-scanner-8.0.0.tgz#f574191621907aa286cf47f6757031cc112720a5"
-  integrity sha1-9XQZFiGQeqKGz0f2dXAxzBEnIKU=
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/expo-camera/-/expo-camera-8.0.0.tgz#a0caee7baf1f2013203fe6a4635125ade12ec164"
+  integrity sha1-oMrue68fIBMgP+akY1ElreEuwWQ=
   dependencies:
     lodash "^4.6.0"
     prop-types "^15.6.0"
