@@ -186,8 +186,19 @@ class ChatBase extends React.Component<Props, State> {
                 placeholder={I18N.Conversations.placeholder}
                 textInputStyle={{
                     fontFamily: this.props.theme.fonts.regular,
-                    marginVertical: 10,
                     lineHeight: 20,
+
+                    marginTop: 5,
+                    marginBottom: 5,
+                    marginVerical: 5,
+
+                    padding: 0,
+                    paddingVertical: 0,
+                    paddingTop: 0,
+                }}
+                textInputAutoFocus={!this.props.sendDisabled}
+                textInputProps={{
+                    maxLength: 10 * 1024,
                 }}
             // disableComposer={this.props.sendDisabled}
             />
@@ -441,6 +452,8 @@ class ChatBase extends React.Component<Props, State> {
                     // renderLoadEarlier={this._renderLoadEarlier}
 
                     messages={this.props.messages || []}
+                    minComposerHeight={30}
+                    minInputToolbarHeight={44}
 
                     renderBubble={this._renderBubble}
                     maxInputLength={10 * 1024}
