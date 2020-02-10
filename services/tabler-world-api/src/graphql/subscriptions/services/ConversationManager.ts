@@ -1,6 +1,6 @@
 import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import DynamoDB, { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
+import DynamoDB, { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { dynamodb as client } from '../aws/dynamodb';
 import { DIRECT_CHAT_PREFIX } from '../types/Constants';
 import { WebsocketEvent } from '../types/WebsocketEvent';
@@ -25,14 +25,19 @@ export type Conversation = {
     channelKey?: string,
 };
 
+type QueryOptions = {
+    pageSize: number,
+    token?: DocumentClient.Key,
+};
+
 export class ConversationManager {
-    public async getConversations(member: number, key?: Key): Promise<PaggedResponse<string>> {
+    public async getConversations(member: number, options: QueryOptions = { pageSize: 10 }): Promise<PaggedResponse<string>> {
         logger.log('getConversations', member);
 
         const { Items: channels, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
             TableName: CONVERSATIONS_TABLE,
-            ExclusiveStartKey: key,
-            Limit: 10,
+            ExclusiveStartKey: options.token,
+            Limit: options.pageSize,
 
             KeyConditionExpression: `${FieldNames.member} = :member`,
             ExpressionAttributeValues: {
@@ -105,6 +110,7 @@ export class ConversationManager {
             },
         }).promise();
 
+        logger.log(Item);
         return Item as UserConversation;
     }
 
@@ -118,6 +124,7 @@ export class ConversationManager {
     public async updateLastSeen(conversation: string, member: number, lastSeen: string) {
         logger.log(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
 
+        // preserve existing data
         await client.update({
             TableName: CONVERSATIONS_TABLE,
 
@@ -168,6 +175,8 @@ export class ConversationManager {
             const items: [string, WriteRequest][] = members.map((member: number) => ([
                 CONVERSATIONS_TABLE,
                 {
+                    // this removes lastseen counter which is ok
+                    // as we have a new message arriving, which cannot be already seen
                     PutRequest: {
                         Item: {
                             [FieldNames.conversation]: conversation,

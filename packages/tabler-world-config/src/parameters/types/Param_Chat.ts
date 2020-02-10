@@ -6,4 +6,5 @@ export type Param_Chat = {
     masterKey: string;
 
     maxTextLength: number;
+    conversationsPageSize: number;
 };
