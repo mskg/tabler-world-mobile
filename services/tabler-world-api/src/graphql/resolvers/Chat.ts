@@ -207,18 +207,6 @@ export const ChatResolver = {
         members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
 
-            // if a member unsubscribes for a 1:1, we still need to return him on conversation read
-            if (channel.startsWith(DIRECT_CHAT_PREFIX)) {
-                // this is a one:one conversation
-                const [a, b] = channel
-                    .replace(/CONV\(|\)|:/ig, '')
-                    .split(',');
-
-                const [aId, bId] = [parseInt(a, 10), parseInt(b, 10)];
-
-                return [context.dataSources.members.readOne(aId === context.principal.id ? bId : aId)];
-            }
-
             const result = await context.dataSources.conversations.readConversation(channel);
             const members = result ? result.members : null;
             if (!members || members.values.length === 0) { return []; }
