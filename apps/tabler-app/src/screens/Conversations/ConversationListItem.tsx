@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Theme, TouchableRipple, withTheme } from 'react-native-paper';
+import { Theme, TouchableRipple, withTheme, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { MemberListItem } from '../../components/Member/MemberListItem';
@@ -24,6 +24,12 @@ type DispatchPros = {
 };
 
 type Props = OwnProps & StateProps & DispatchPros;
+
+/*
+● BLACK CIRCLE          25CF
+⚫ MEDIUM BLACK CIRCLE  26AB
+⬤ BLACK LARGE CIRCLE   2B24
+*/
 
 // tslint:disable-next-line: export-name
 class ConversationListItemBase extends React.PureComponent<Props> {
@@ -130,12 +136,13 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                     right={({ size }) => {
                         if (this.props.conversation.hasUnreadMessages) {
                             return (
-                                <Ionicons
-                                    name="md-chatbubbles"
-                                    size={size}
-                                    style={{ marginRight: 30 }}
-                                    color={this.props.theme.colors.accent}
-                                />
+                                <Text style={{ marginRight: 30, color: this.props.theme.colors.accent }}>{'\u25CF'}</Text>
+                                // <Ionicons
+                                //     name="md-chatbubbles"
+                                //     size={size}
+                                //     style={{ marginRight: 30 }}
+                                //     color={this.props.theme.colors.accent}
+                                // />
                             );
                         }
 
