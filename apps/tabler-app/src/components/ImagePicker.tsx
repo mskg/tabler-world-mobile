@@ -1,0 +1,220 @@
+import { Ionicons } from '@expo/vector-icons';
+import { Camera, Constants } from 'expo-camera';
+import { CapturedPicture } from 'expo-camera/build/Camera.types';
+import * as ExpoImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import React from 'react';
+import { StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Theme, withTheme } from 'react-native-paper';
+import { isIphoneX } from '../helper/isIphoneX';
+import { I18N } from '../i18n/translation';
+import { FullScreenLoading } from './Loading';
+import { EmptyComponent } from './NoResults';
+
+type Props = {
+    theme: Theme,
+
+    onClose?: () => void;
+    onCameraPictureSelected?: (photo: CapturedPicture) => void;
+    onGalleryPictureSelected?: (photo: ExpoImagePicker.ImagePickerResult) => void;
+};
+
+type State = {
+    hasPermission?: boolean,
+    cameraType: Constants.Type,
+};
+
+class ImagePickerBase extends React.Component<Props, State> {
+    camera!: Camera | null;
+
+    state: State = {
+        cameraType: Constants.Type.back,
+    };
+
+    componentDidMount() {
+        this.getPermissionAsync();
+    }
+
+    async getPermissionAsync() {
+        // Camera Permission
+        const { status } = await Camera.requestPermissionsAsync();
+        this.setState({ hasPermission: status === 'granted' });
+    }
+
+    _close = () => {
+        if (this.props.onClose) {
+            this.props.onClose();
+        }
+    }
+
+    _handleCameraType = () => {
+        const { cameraType } = this.state;
+
+        this.setState({
+            cameraType:
+                cameraType === Constants.Type.back
+                    ? Constants.Type.front
+                    : Constants.Type.back,
+        });
+    }
+
+    _takePicture = async () => {
+        this._close();
+
+        if (this.camera) {
+            const photo = await this.camera.takePictureAsync({
+
+                exif: false,
+                base64: false,
+            });
+
+            if (this.props.onCameraPictureSelected) {
+                this.props.onCameraPictureSelected(photo);
+            }
+        }
+    }
+
+    _pickImage = async () => {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+        if (status !== 'granted') {
+            alert(I18N.ImagePicker.nogallery);
+            return;
+        }
+
+        const photo = await ExpoImagePicker.launchImageLibraryAsync({
+            mediaTypes: ExpoImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
+            allowsMultipleSelection: false,
+            exif: false,
+            base64: false,
+        });
+
+        this._close();
+
+        if (!photo.cancelled && this.props.onGalleryPictureSelected) {
+            this.props.onGalleryPictureSelected(photo);
+        }
+    }
+
+    render() {
+        const { hasPermission } = this.state;
+        if (hasPermission === null) {
+            return (<FullScreenLoading />);
+        }
+
+        if (hasPermission === false) {
+            return (
+                <EmptyComponent title={I18N.ImagePicker.nocamera} />
+            );
+        }
+
+        return (
+            <View style={{ flex: 1 }}>
+                <StatusBar hidden={true} />
+                <Camera
+                    style={{ flex: 1 }}
+                    type={this.state.cameraType}
+                    ref={(ref) => { this.camera = ref; }}
+                    zoom={0}
+                >
+                    <View
+                        style={styles.topBar}
+                    >
+                        <TouchableOpacity
+                            style={styles.touchable}
+                            onPress={this._close}
+                        >
+                            <Ionicons
+                                name="md-close"
+                                style={styles.closeButton}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View
+                        style={styles.bottomBar}
+                    >
+                        <View
+                            style={styles.bottomBarContainer}
+                        >
+                            <TouchableOpacity
+                                style={styles.touchable}
+                                onPress={this._pickImage}
+                            >
+                                <Ionicons
+                                    name="md-images"
+                                    style={styles.smallButton}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.touchable}
+                                onPress={this._takePicture}
+                            >
+                                <Ionicons
+                                    name="ios-radio-button-on"
+                                    style={styles.largeButton}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.touchable}
+                                onPress={this._handleCameraType}
+                            >
+                                <Ionicons
+                                    name="ios-reverse-camera"
+                                    style={styles.smallButton}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Camera>
+            </View >
+        );
+    }
+}
+
+export const ImagePicker = withTheme(ImagePickerBase);
+
+const styles = StyleSheet.create({
+    topBar: {
+        flex: 1,
+        alignItems: 'flex-start',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        margin: 30,
+        marginTop: isIphoneX() ? 50 : 30,
+    },
+
+    bottomBar: {
+        flex: 1,
+        alignItems: 'flex-end',
+        flexDirection: 'row',
+        marginBottom: 30,
+    },
+
+    bottomBarContainer: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    },
+
+    touchable: {
+        backgroundColor: 'transparent',
+    },
+
+    closeButton: {
+        color: '#fff',
+        fontSize: 30,
+    },
+
+    smallButton: {
+        color: '#fff',
+        fontSize: 40,
+    },
+
+    largeButton: {
+        color: '#fff',
+        fontSize: 70,
+    },
+});

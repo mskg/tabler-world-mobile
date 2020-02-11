@@ -1,34 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
-import emojiRegexCreator from 'emoji-regex';
+import { ScreenOrientation } from 'expo';
+import { CapturedPicture } from 'expo-camera/build/Camera.types';
 import * as FileSystem from 'expo-file-system';
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
+import * as ExpoImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, Image, KeyboardAvoidingView, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, Image, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
+import { ImagePicker } from '../../components/ImagePicker';
 import { isIphoneX } from '../../helper/isIphoneX';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
+import { isPureEmojiString } from './emojiRegex';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
 import { MessageImage } from './MessageImage';
 import { resize } from './resize';
 
 const logger = new Logger(Categories.Screens.Conversation);
+
 const TEMP_TEXT_IMAGE = '#__#';
 const IMAGE_SIZE = 100;
-
-const emojiRegex = emojiRegexCreator();
-function isPureEmojiString(text) {
-    if (!text || !text.trim()) {
-        return false;
-    }
-
-    return text.replace(emojiRegex, '').trim() === '';
-}
 
 type Props = {
     userId: number,
@@ -53,6 +47,8 @@ type Props = {
 };
 
 type State = {
+    imagePickerOpen: boolean,
+
     pickedImage?: {
         uri: string,
         width: number,
@@ -65,6 +61,7 @@ class ChatBase extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
+            imagePickerOpen: false,
             pickedImage: this.props.image ?
                 {
                     uri: this.props.image,
@@ -74,12 +71,6 @@ class ChatBase extends React.Component<Props, State> {
                 : undefined,
         };
     }
-
-    // _renderLoadEarlier = (props: any) => {
-    //     return (
-    //         <LoadEarlier {...props} />
-    //     );
-    // }
 
     componentDidUpdate(prevProps: Props) {
         if (prevProps.image !== this.props.image) {
@@ -195,7 +186,7 @@ class ChatBase extends React.Component<Props, State> {
                     paddingTop: props.composerHeight >= 40 ? 0 : 4,
                 }}
 
-                textInputAutoFocus={!this.props.sendDisabled}
+                // textInputAutoFocus={!this.props.sendDisabled}
                 textInputProps={{
                     maxLength: 10 * 1024,
                     selectionColor: this.props.theme.colors.accent,
@@ -338,13 +329,6 @@ class ChatBase extends React.Component<Props, State> {
         return null;
     }
 
-    getPermissionAsync = async () => {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to make this work!');
-        }
-    }
-
     _renderFooter = () => {
         if (this.state.pickedImage) {
             const resized = resize(this.state.pickedImage, IMAGE_SIZE, IMAGE_SIZE);
@@ -368,17 +352,19 @@ class ChatBase extends React.Component<Props, State> {
         return null;
     }
 
-    _openImagePicker = async () => {
-        await this.getPermissionAsync();
-
-        const pickedImage = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: false,
-            allowsMultipleSelection: false,
-            exif: false,
-            base64: false,
+    _onCameraImage = (pickedImage: CapturedPicture) => {
+        this.setState({
+            pickedImage: {
+                uri: pickedImage.uri,
+                height: pickedImage.height,
+                width: pickedImage.width,
+            },
         });
 
+        if (this.props.onImageChanged) { this.props.onImageChanged(pickedImage.uri); }
+    }
+
+    _onGalleryImage = (pickedImage: ExpoImagePicker.ImagePickerResult) => {
         if (pickedImage.cancelled) {
             this.setState({ pickedImage: undefined });
             if (this.props.onImageChanged) { this.props.onImageChanged(undefined); }
@@ -390,6 +376,7 @@ class ChatBase extends React.Component<Props, State> {
                     width: pickedImage.width,
                 },
             });
+
             if (this.props.onImageChanged) { this.props.onImageChanged(pickedImage.uri); }
         }
     }
@@ -405,7 +392,7 @@ class ChatBase extends React.Component<Props, State> {
                     </View>
                 </TouchableOpacity> */}
 
-                <TouchableOpacity onPress={this._openImagePicker}>
+                <TouchableOpacity onPress={this._openPicker}>
                     <View style={styles.buttonContainer}>
                         <Ionicons name="md-image" size={23} color={this.props.theme.colors.accent} />
                     </View>
@@ -418,12 +405,39 @@ class ChatBase extends React.Component<Props, State> {
         return <MessageImage {...props} />;
     }
 
+    _openPicker = () => {
+        this.setState(
+            { imagePickerOpen: true },
+            () => ScreenOrientation.unlockAsync(),
+        );
+    }
+
+    _closePicker = () => {
+        this.setState(
+            { imagePickerOpen: false },
+            () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP),
+        );
+    }
+
     render() {
         return (
             <View style={{ backgroundColor: this.props.theme.colors.background, flex: 1 }}>
                 <View
                     style={[styles.footer, { backgroundColor: this.props.theme.colors.primary }]}
                 />
+
+                <Modal
+                    animationType="none"
+                    transparent={false}
+                    visible={this.state.imagePickerOpen}
+                    onRequestClose={this._closePicker}
+                >
+                    <ImagePicker
+                        onClose={this._closePicker}
+                        onGalleryPictureSelected={this._onGalleryImage}
+                        onCameraPictureSelected={this._onCameraImage}
+                    />
+                </Modal>
 
                 <FixedChat
                     user={{ _id: this.props.userId }}
@@ -478,7 +492,6 @@ class ChatBase extends React.Component<Props, State> {
 
                 {Platform.OS === 'android' && <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={80} />}
             </View>
-
         );
     }
 }

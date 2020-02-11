@@ -628,6 +628,11 @@ const en = {
         placeholder: 'Type a message...',
         loadEarlier: 'Load earlier messages',
     },
+
+    ImagePicker: {
+        nocamera: 'No camera permissions granted.',
+        nogallery: 'Sorry, we need camera roll permissions to make this work.',
+    },
 };
 
 export type I18NType = typeof en;

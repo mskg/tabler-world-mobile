@@ -14120,9 +14120,9 @@ react-native-gifted-chat@^0.13.0:
     react-native-parsed-text "https://github.com/EvanBacon/react-native-parsed-text.git"
     uuid "3.3.3"
 
-"react-native-image-gallery@https://github.com/mskg/react-native-image-gallery/archive/v2.1.5-mskg.tar.gz":
+"react-native-image-gallery@https://github.com/mskg/react-native-image-gallery/archive/v2.1.6-mskg.tar.gz":
   version "2.1.5"
-  resolved "https://github.com/mskg/react-native-image-gallery/archive/v2.1.5-mskg.tar.gz#a8d61007e637dbd0216001c19630f3f25eed1fe9"
+  resolved "https://github.com/mskg/react-native-image-gallery/archive/v2.1.6-mskg.tar.gz#700bb4b4afd82ce105164edc10890beb85875dde"
   dependencies:
     prop-types "^15.6.0"
     react-mixin "^3.0.5"
