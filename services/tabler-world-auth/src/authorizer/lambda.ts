@@ -8,7 +8,7 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'U
     const token = event.authorizationToken;
     if (!token) {
         console.log('No token provided');
-        throw new Error('Unauthorized (token)');
+        return 'Unauthorized'; // should result in 401
     }
 
     // Get AWS AccountId and API Options
@@ -33,10 +33,21 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'U
         return demoResult;
     }
 
-    const { principalId, email } = await validateToken(
-        process.env.AWS_REGION as string,
-        process.env.UserPoolId as string,
-        token);
+    let principalId: string;
+    let email: string;
+
+    try {
+        const result = await validateToken(
+            process.env.AWS_REGION as string,
+            process.env.UserPoolId as string,
+            token);
+
+        principalId = result.principalId;
+        email = result.email;
+    } catch (e) {
+        console.error(e);
+        return 'Unauthorized'; // should result in 401
+    }
 
     return await withClient(context, async (client) => {
         let principal: IPrincipal;
