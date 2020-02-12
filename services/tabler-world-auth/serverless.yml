@@ -152,6 +152,10 @@ resources:
       Properties:
         RetentionInDays: "30"
 
+    AuthorizerLogGroup:
+      Properties:
+        RetentionInDays: "30"
+
     CognitoUserPoolMyUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
