@@ -88,8 +88,8 @@ const en = {
     Structure: {
         navigation: 'Directory',
 
-        title: 'Asssociation',
-        mytitle: 'My Asssociation',
+        title: 'Association',
+        mytitle: 'My Association',
         associations: 'Associations',
 
         clubs: 'Clubs',
