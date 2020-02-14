@@ -26,14 +26,14 @@ export const TimeoutDefaults: TimeoutParameters = {
     albums: hours(4),
     album: hours(4),
 
-    members: hours(12),
-    member: hours(12),
+    members: hours(6),
+    member: hours(6),
 
-    associations: hours(24),
-    areas: hours(24),
+    associations: hours(12),
+    areas: hours(12),
+    clubs: hours(12),
 
-    clubs: hours(24),
-    club: hours(24),
+    club: hours(6),
 
     utility: hours(4),
     news: hours(4),
