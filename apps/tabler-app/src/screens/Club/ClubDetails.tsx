@@ -38,7 +38,7 @@ class ClubDetailsBase extends React.Component<Props> {
             return (
                 <Placeholder
                     ready={false}
-                    previewComponent={
+                    previewComponent={(
                         <>
                             <View style={styles.actions}>
                                 <Square width={53} />
@@ -49,14 +49,13 @@ class ClubDetailsBase extends React.Component<Props> {
                             <SectionSquarePlaceholder />
                             <Divider />
                             <SectionSquarePlaceholder />
-                            {/* <Divider />
-                    <SectionsPlaceholder count={2} /> */}
+
                             <Divider />
                             <SectionSquarePlaceholder />
                             <Divider />
                             <SectionSquarePlaceholder />
                         </>
-                    }
+                    )}
                 />
             );
         }
@@ -138,7 +137,7 @@ class ClubDetailsBase extends React.Component<Props> {
                 <Divider />
 
                 <Placeholder ready={!this.props.loading} previewComponent={<SectionSquarePlaceholder />}>
-                    {((place1 && place1 !== '') || (place2 && place2 !== '') || first_meeting || second_meeting) &&
+                    {((place1 && place1 !== '') || (place2 && place2 !== '') || first_meeting || second_meeting) && (
                         <Section theme={this.props.theme} icon={'md-calendar'} highlight={true}>
                             <Element field={I18N.Club.meetings} text={[first_meeting, second_meeting].filter(Boolean).join('\n')} />
                             {/* <Element field={I18N.Club.second} text={second_meeting} /> */}
@@ -149,11 +148,11 @@ class ClubDetailsBase extends React.Component<Props> {
                                 <Element onPress={this.handleAddress(club.meetingplace2)} field={I18N.Club.place(places, 2)} text={place2} />
                             }
                         </Section>
-                    }
+                    )}
                 </Placeholder>
 
                 <Placeholder ready={!this.props.loading} previewComponent={<SectionSquarePlaceholder />}>
-                    {(international_godparent || national_godparent || charter_date || !members.isEmpty()) &&
+                    {(international_godparent || national_godparent || charter_date || !members.isEmpty()) && (
                         <Section theme={this.props.theme} icon={'md-school'}>
                             <Element
                                 field={I18N.Club.international}
@@ -169,11 +168,11 @@ class ClubDetailsBase extends React.Component<Props> {
 
                             <Element field={I18N.Club.members} text={members.isEmpty() ? null : members.size().toString()} />
                         </Section>
-                    }
+                    )}
                 </Placeholder>
 
                 <Placeholder ready={!this.props.loading || !board.isEmpty()} previewComponent={<SectionSquarePlaceholder />}>
-                    {!board.isEmpty() &&
+                    {!board.isEmpty() && (
                         <>
                             <Section theme={this.props.theme} icon={'md-medal'} disableRipple={true}>
                                 <ExpandableElement
@@ -184,11 +183,11 @@ class ClubDetailsBase extends React.Component<Props> {
                                 />
                             </Section>
                         </>
-                    }
+                    )}
                 </Placeholder>
 
                 <Placeholder ready={!this.props.loading || !assist.isEmpty()} previewComponent={<SectionSquarePlaceholder />}>
-                    {!assist.isEmpty() &&
+                    {!assist.isEmpty() && (
                         <>
                             <Section theme={this.props.theme} icon={'md-medkit'} disableRipple={true}>
                                 <ExpandableElement
@@ -199,39 +198,44 @@ class ClubDetailsBase extends React.Component<Props> {
                                 />
                             </Section>
                         </>
-                    }
+                    )}
                 </Placeholder>
 
                 <Placeholder ready={!this.props.loading || !members.isEmpty()} previewComponent={<SectionSquarePlaceholder />}>
-                    {!members.isEmpty() &&
+                    {!members.isEmpty() && (
                         <>
                             <Section theme={this.props.theme} icon={'md-contacts'} disableRipple={true}>
                                 <ExpandableElement
                                     field={`${I18N.Club.members} (${members.size()})`}
-                                    text={
+                                    text={(
                                         <RoleScrollView
-                                            roles={members.map((m) => ({
-                                                role: 'Member',
-                                                member: m,
-                                            })).value()}
+                                           roles={
+                                                members
+                                                    .map((m) => ({
+                                                        role: 'Member',
+                                                        member: m,
+                                                    }))
+                                                    .sortBy((m) => `${m.member.firstname} ${m.member.lastname}`)
+                                                    .value()
+                                            }
                                         />
-                                    }
+                                    )}
                                     disabled={members.size() < 3}
                                 />
                             </Section>
                         </>
-                    }
+                    )}
                 </Placeholder>
 
                 <Placeholder ready={!this.props.loading} previewComponent={<SectionPlaceholder />}>
-                    {(account) &&
+                    {(account) && (
                         <Section theme={this.props.theme} icon={'md-cash'}>
                             <Element
                                 field={I18N.Club.account}
                                 text={account}
                             />
                         </Section>
-                    }
+                    )}
                 </Placeholder>
 
                 <View style={{ height: 16 }} />

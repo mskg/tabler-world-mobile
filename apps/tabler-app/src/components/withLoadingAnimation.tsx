@@ -1,7 +1,7 @@
 import MaskedView from '@react-native-community/masked-view';
 import { SplashScreen } from 'expo';
 import * as React from 'react';
-import { Animated, StatusBar, StyleSheet, View } from 'react-native';
+import { Animated, PixelRatio, StatusBar, StyleSheet, View, Platform } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import Assets from '../Assets';
 
@@ -41,6 +41,11 @@ class LoadingAnimation extends React.Component<Props, State> {
     }
 
     render() {
+        // cannot be animated on Android
+        if (Platform.OS === 'android') {
+            return this.props.children;
+        }
+
         const opacityClearToVisible = {
             opacity: this.state.loadingProgress.interpolate({
                 inputRange: [0, 15, 30],
@@ -54,7 +59,7 @@ class LoadingAnimation extends React.Component<Props, State> {
                 {
                     scale: this.state.loadingProgress.interpolate({
                         inputRange: [0, 10, 100],
-                        outputRange: [1, 0.8, 300],
+                        outputRange: [1, 0.8, 4 * styles.maskImageStyle.width],
                     }),
                 },
             ],
@@ -82,6 +87,7 @@ class LoadingAnimation extends React.Component<Props, State> {
             <View style={styles.fullScreen}>
                 <StatusBar animated={true} hidden={!this.state.animationDone} />
                 {fullScreenBackgroundLayer}
+
                 <MaskedView
                     style={{ flex: 1 }}
                     maskElement={(
@@ -154,8 +160,9 @@ const styles = StyleSheet.create({
     },
 
     maskImageStyle: {
-        height: 220,
-        width: 220,
+        height: 331 / PixelRatio.get(),
+        width: 331 / PixelRatio.get(),
+        resizeMode: 'contain',
     },
 
     fullScreenWhiteLayer: {

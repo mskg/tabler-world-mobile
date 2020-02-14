@@ -17,4 +17,9 @@ export const Deprecated = gql`
         "Deprecated, don't use"
         club: Int!
     }
+
+    extend type Job {
+        "Deprecated, don't use"
+        success: Boolean!
+    }
 `;

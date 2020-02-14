@@ -10,6 +10,7 @@ export interface SearchDirectory_SearchDirectory_nodes_Area_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface SearchDirectory_SearchDirectory_nodes_Area {
@@ -24,6 +25,7 @@ export interface SearchDirectory_SearchDirectory_nodes_Club_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface SearchDirectory_SearchDirectory_nodes_Club_area {
@@ -48,6 +50,7 @@ export interface SearchDirectory_SearchDirectory_nodes_Association {
   id: string;
   logo: string | null;
   shortname: string;
+  flag: string | null;
 }
 
 export type SearchDirectory_SearchDirectory_nodes = SearchDirectory_SearchDirectory_nodes_Area | SearchDirectory_SearchDirectory_nodes_Club | SearchDirectory_SearchDirectory_nodes_Association;

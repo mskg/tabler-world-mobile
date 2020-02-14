@@ -14,6 +14,7 @@
             "userPoolId": "",
             "userPoolWebClientId": "",
             "api": "",
+            "wsapi": "",
             "apidemo": "",
             "sentry": "",
             "cognitoAnalytics": "",
@@ -25,10 +26,15 @@
             ],
             "join": "https://rtinternational.org/about-us/about-round-table/how-to-join/",
             "support": {
-                "de": "support@round-table.de",
                 "global": "support@roundtable.world"
             },
-            "feedback": "http://feedback.app.roundtable.world/"
+            "feedback": "http://feedback.app.roundtable.world/",
+            "imprint": {
+                "en": "https://tabler.app/en/legal-notice/"
+            },
+            "dataprotection": {
+                "en": "https://tabler.app/en/privacy-policy/"
+            }
         },
         "orientation": "portrait",
         "icon": "./assets/images/logo_iOS.png",
@@ -48,6 +54,7 @@
             "assets/**/splash.png",
             "assets/**/background.png",
             "assets/**/logo_mask.png",
+            "assets/**/icon_tw.png",
             "assets/fonts/**/DejaVuSansCondensed.ttf",
             "assets/fonts/**/DejaVuSansCondensed-Bold.ttf",
             "assets/fonts/**/DejaVuSans-ExtraLight.ttf",
@@ -83,6 +90,7 @@
                 "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
                 "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
                 "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
+                "NSPhotoLibraryUsageDescription": "You can send images to other members from your library using TABLER.APP.",
                 "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
                 "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you."
             }

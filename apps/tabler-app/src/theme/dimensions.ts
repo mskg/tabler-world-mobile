@@ -1,4 +1,5 @@
 import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { isIphoneX } from '../helper/isIphoneX';
 
 export const HEADER_MARGIN_TOP = Platform.OS === 'ios'
     ? 28
@@ -7,9 +8,8 @@ export const HEADER_MARGIN_TOP = Platform.OS === 'ios'
 export const HEADER_HEIGHT = 56;
 
 export const TOTAL_HEADER_HEIGHT = HEADER_MARGIN_TOP + HEADER_HEIGHT;
-export const BOTTOM_HEIGHT = Platform.OS === 'ios'
-    ? 88
-    : 54;
+// we must consider the nob on the bottom
+export const BOTTOM_HEIGHT = isIphoneX() ? 88 : 54;
 
 export const HeaderStyles = StyleSheet.create({
     header: {

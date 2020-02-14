@@ -13,6 +13,7 @@ const fileNames = [
     require('./01 associations.pgsql').default,
     require('./01 families.pgsql').default,
     require('./01 groups.pgsql').default,
+    require('./01 assets.pgsql').default,
     require('./02 helper.pgsql').default,
     require('./02 roles.pgsql').default,
     require('./04 profiles.pgsql').default,

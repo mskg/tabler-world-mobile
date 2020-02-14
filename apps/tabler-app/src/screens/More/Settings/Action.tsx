@@ -26,7 +26,10 @@ export const NavigationItem = ({ icon, theme, text, onPress }) => (
     <TouchableRipple onPress={onPress} style={{ backgroundColor: theme.colors.surface }}>
         <View style={[styles.rowicon]}>
             <View style={{ width: 38, height: 38, marginRight: 16, alignItems: 'center' }}>
-                <Ionicons name={icon} color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={38} />
+                {typeof (icon) === 'object'
+                    ? icon
+                    : <Ionicons name={icon} color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={38} />
+                }
             </View>
             <Text>{text}</Text>
         </View>

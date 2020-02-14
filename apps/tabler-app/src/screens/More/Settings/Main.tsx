@@ -3,7 +3,7 @@ import { Updates } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { Alert, AsyncStorage, ScrollView, Text as NativeText, View } from 'react-native';
+import { Alert, ScrollView, Text as NativeText, View } from 'react-native';
 import { Banner, Divider, List, Switch, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import { ActionNames } from '../../../analytics/ActionNames';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
 import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../../analytics/AuditScreenName';
-import { cachedAolloClient, getPersistor } from '../../../apollo/bootstrapApollo';
+import { cachedAolloClient, getApolloCachePersistor } from '../../../apollo/bootstrapApollo';
 import Assets from '../../../Assets';
 import CacheManager from '../../../components/Image/CacheManager';
 import { ScreenWithHeader } from '../../../components/Screen';
@@ -22,15 +22,18 @@ import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { clearMessages } from '../../../redux/actions/chat';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
-import { TOKEN_KEY } from '../../../tasks/Constants';
+import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
+import { DeveloperSection } from './DeveloperSection';
 import { Element } from './Element';
 import { Routes } from './Routes';
 import { SelectionList } from './SelectionList';
 import { styles } from './Styles';
+
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -41,7 +44,6 @@ type State = {
     emailOptions: any[],
     showExperiments: boolean,
     demoMode: boolean,
-    token?: string | null,
 };
 
 type OwnProps = {
@@ -57,9 +59,15 @@ type DispatchPros = {
     updateSetting: typeof updateSetting;
     showNearbySettings: typeof showNearbySettings;
     showNotificationSettings: typeof showNotificationSettings;
+    clearMessages: typeof clearMessages;
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
+
+function formatDate(nbr: string | null) {
+    if (!nbr) return null;
+    return new Date(parseInt(nbr || '0', 10));
+}
 
 class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     state: State = {
@@ -67,6 +75,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         browserOptions: [{ label: '', value: '' }],
         callOptions: [{ label: '', value: '' }],
         emailOptions: [{ label: '', value: '' }],
+
         showExperiments: false,
         demoMode: false,
     };
@@ -76,16 +85,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     }
 
     async componentDidMount() {
+        super.componentDidMount();
+
         this.buildSMSOptions();
         this.buildMail();
         this.buildWebOptions();
         this.buildCallOptions();
         this.checkDemoMode();
-
-        this.audit.submit();
-        this.setState({
-            token: await AsyncStorage.getItem(TOKEN_KEY),
-        });
     }
 
     _clearSyncFlags = () => {
@@ -105,7 +111,9 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
                         const client = cachedAolloClient();
                         await client.cache.reset();
-                        await getPersistor().purge();
+
+                        this.props.clearMessages();
+                        await getApolloCachePersistor().purge();
 
                         // this forces an update of existing views
                         client.writeData({
@@ -191,7 +199,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     text: I18N.Settings.confirm,
                     style: 'destructive',
                     onPress: async () => {
-                        await getPersistor().persist();
+                        await getApolloCachePersistor().persist();
                         Updates.reloadFromCache();
                     },
                 },
@@ -312,25 +320,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Element
                                 theme={this.props.theme}
                                 field={I18N.Settings.fields.version}
-                                text={Constants.manifest.revisionId || '0.0.0'} />
+                                text={Constants.manifest.revisionId || '0.0.0'}
+                            />
+
                             <Divider />
                             <Element
                                 theme={this.props.theme}
                                 field={I18N.Settings.fields.channel}
-                                text={Constants.manifest.releaseChannel || 'dev'} />
+                                text={Constants.manifest.releaseChannel || 'dev'}
+                            />
+
                             <Divider />
-
-                            {isFeatureEnabled(Features.InternalInformation) && (
-                                <>
-                                    <Element
-                                        theme={this.props.theme}
-                                        field={I18N.Settings.fields.pushtoken}
-                                        text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
-                                    />
-                                    <Divider />
-                                </>
-                            )}
-
                             <NextScreen
                                 theme={this.props.theme}
                                 text={I18N.Settings.ReleaseNotes}
@@ -340,6 +340,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                         source: Assets.files.releasenotes,
                                     })}
                             />
+
                             <Divider />
                             <NextScreen
                                 theme={this.props.theme}
@@ -527,18 +528,17 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        {isFeatureEnabled(Features.BackgroundLocation) && (
-                            <List.Section title={I18N.Settings.sections.locationservices}>
-                                <Divider />
-                                <NextScreen
-                                    theme={this.props.theme}
-                                    text={I18N.Settings.fields.nearby}
-                                    onPress={
-                                        () => this.props.showNearbySettings()}
-                                />
-                                <Divider />
-                            </List.Section>
-                        )}
+                        <List.Section title={I18N.Settings.sections.locationservices}>
+                            <Divider />
+                            <NextScreen
+                                theme={this.props.theme}
+                                text={I18N.Settings.fields.nearby}
+                                onPress={
+                                    () => this.props.navigation.navigate(ParentRoutes.NearbySettings)
+                                }
+                            />
+                            <Divider />
+                        </List.Section>
 
                         {this.state.showExperiments &&
                             <List.Section title={I18N.Settings.sections.experiments}>
@@ -559,6 +559,8 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 <Divider />
                             </List.Section>
                         }
+
+                        <DeveloperSection />
 
                         <List.Section title={I18N.Settings.sections.reset}>
                             <Divider />
@@ -587,4 +589,5 @@ export const MainSettingsScreen = connect<StateProps, DispatchPros, OwnProps, IA
         updateSetting,
         showNearbySettings,
         showNotificationSettings,
+        clearMessages,
     })(withNavigation(withTheme(MainSettingsScreenBase)));

@@ -6,19 +6,21 @@ import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Platform, View } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, { Region } from 'react-native-maps';
 import { FAB, IconButton, Searchbar, Surface, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenName';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
-import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
+import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { filterData } from '../../../helper/filterData';
 import { I18N } from '../../../i18n/translation';
-import { ClubsMap, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
+import { ClubsMap, ClubsMapVariables, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
+import { IAppState } from '../../../model/IAppState';
 import { GetClubsMapQuery } from '../../../queries/Structure/GetClubsMapQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { styles } from '../Styles';
@@ -26,7 +28,8 @@ import { darkStyles } from './darkStyles';
 import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
-import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
+import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
+import { RefreshTracker } from '../../../components/RefreshTracker';
 
 type State = {
     location?: Location.LocationData,
@@ -39,12 +42,14 @@ type State = {
 };
 
 type Props = {
+    offline: boolean,
+    association?: string,
     theme: Theme,
     showClub: typeof showClub,
 
     loading: boolean,
     refresh: () => any,
-    data?: ClubsMap | null,
+    data: ClubsMap_Clubs[] | null,
 } & NavigationInjectedProps<TapOnNavigationParams>;
 
 class ClubsScreenBase extends AuditedScreen<Props, State> {
@@ -62,11 +67,11 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
-        if (Platform.OS === 'android' && !Constants.isDevice) {
-            // canot get location
-        } else {
-            this._getLocationAsync();
-        }
+        // if (Platform.OS === 'android' && !Constants.isDevice) {
+        //     // canot get location
+        // } else {
+        //     this._getLocationAsync();
+        // }
 
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
@@ -74,10 +79,14 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     () => this._getLocationAsync(),
                 );
 
-                if (this.props.data == null || this.props.data.Clubs == null || this.props.data.Clubs.length === 0) {
+                if (this.props.data == null || this.props.data.length === 0) {
                     this.props.refresh();
                 }
             },
+        });
+
+        this.audit.submit({
+            [AuditPropertyNames.Association]: this.props.association,
         });
     }
 
@@ -86,10 +95,13 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
         if (prevProps.data !== this.props.data) {
             // logger.debug("Received", JSON.stringify(nextProps.data));
 
-            this.setState({
-                search: this.state.search,
-                filtered: this.filterResults(this.props.data, this.state.search),
-            });
+            this.setState(
+                {
+                    search: this.state.search,
+                    filtered: this.filterResults(this.props.data, this.state.search),
+                },
+                this._fitMap,
+            );
         }
     }
 
@@ -131,9 +143,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     _fitMap = _.debounce(
         () => {
             if (this.mapRef) {
-                if (this.state.search === '') {
-                    this._getLocationAsync();
-                } else {
+                if (this.state.filtered != null && this.state.filtered.length > 0) {
                     this.mapRef.fitToSuppliedMarkers(
                         this.state.filtered.map((d) => d.id),
                     );
@@ -151,11 +161,10 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     //     };
     // };
 
-
-    filterResults(data: ClubsMap | undefined | null, text?: string) {
+    filterResults(data: ClubsMap_Clubs[] | null, text?: string) {
         return filterData(
             this._makeSearchTexts,
-            data ? data.Clubs : null,
+            data,
             text,
             this._filterSearch,
         );
@@ -173,10 +182,6 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
-        if (this.props.data == null || this.props.data.Clubs == null) {
-            return <FullScreenLoading />;
-        }
-
         return (
             <>
                 <MapView
@@ -242,10 +247,18 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                 </View>
 
                 <FAB
+                    style={styles.fab2}
+                    icon={({ size, color }) => <Ionicons style={{ paddingLeft: 3 }} size={size + 2} color={color} name="md-refresh" />}
+                    onPress={() => this.props.refresh()}
+                />
+
+                <FAB
                     style={styles.fab}
-                    icon={({ size, color }) => <Ionicons size={size + 2} color={color} name="md-compass" />}
+                    icon={({ size, color }) => <Ionicons style={{ paddingLeft: 1 }} size={size + 2} color={color} name="md-compass" />}
                     onPress={this._getLocationAsync}
                 />
+
+                {this.props.loading && <FullScreenLoading />}
             </>
         );
     }
@@ -256,31 +269,53 @@ const ConnectedClubScreen = connect(null, {
     homeScreen,
 })(withTheme(withNavigation(ClubsScreenBase)));
 
-const ClubsScreenWithQuery = ({ fetchPolicy }) => (
+const ClubsScreenWithQuery = ({ fetchPolicy, screenProps, offline }) => (
     <Tab>
-        <Query<ClubsMap> query={GetClubsMapQuery} fetchPolicy={fetchPolicy}>
-            {({ loading, data, error, refetch }) => {
-                if (error) throw error;
-
-                if (!loading && (data == null || data.Clubs == null)) {
-                    return <CannotLoadWhileOffline />;
-                }
-
+        <RefreshTracker>
+            {({ isRefreshing, createRunRefresh }) => {
                 return (
-                    <ConnectedClubScreen
-                        loading={loading}
-                        data={data}
-                        refresh={refetch}
-                    />
+                    <Query<ClubsMap, ClubsMapVariables>
+                        query={GetClubsMapQuery}
+                        fetchPolicy={fetchPolicy}
+                        variables={{
+                            association: screenProps?.association,
+                        }}
+                    >
+                        {({ loading, data, error, refetch }) => {
+                            if (error) throw error;
+
+                            if (!loading && (data == null || data.Clubs == null)) {
+                                if (offline) {
+                                    return <CannotLoadWhileOffline />;
+                                }
+
+                                setTimeout(createRunRefresh(refetch));
+                            }
+
+                            return (
+                                <ConnectedClubScreen
+                                    offline={offline}
+                                    loading={loading || isRefreshing}
+                                    data={data && data.Clubs ? data.Clubs.filter((c) => c.location != null) : null}
+                                    refresh={createRunRefresh(refetch)}
+                                    association={screenProps?.association}
+                                />
+                            );
+                        }}
+                    </Query>
                 );
             }}
-        </Query>
+        </RefreshTracker>
     </Tab>
 );
 
 export const ClubsMapScreen = withWhoopsErrorBoundary(
     withCacheInvalidation(
         'clubs',
-        ClubsScreenWithQuery,
+        connect(
+            (s: IAppState) => ({
+                offline: s.connection.offline,
+            }),
+        )(ClubsScreenWithQuery),
     ),
 );

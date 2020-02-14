@@ -9,9 +9,16 @@ export const Structure = gql`
         role: String!
     }
 
+    type Family {
+        id: ID!
+    }
+
     type Association {
         id: ID!
+        family: Family!
+
         logo: String
+        flag: String
 
         name: String!
         shortname: String!
@@ -51,8 +58,9 @@ export const Structure = gql`
     type Club {
         id: ID!
 
-        association: Association!
         area: Area!
+        association: Association!
+        family: Family!
 
         account: BankAccount
 
@@ -69,6 +77,7 @@ export const Structure = gql`
         instagram: String
         facebook: String
         twitter: String
+        linkedin: String
 
         email: String
         phone: String
@@ -82,6 +91,9 @@ export const Structure = gql`
     }
 
     extend type Query {
+        Families: [Family!]
+        Family (id: ID): Family
+
         "Giving no id returns own organization"
         Association (id: ID): Association
         Associations: [Association!]

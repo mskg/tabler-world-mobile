@@ -8,6 +8,7 @@ export const GetLRUMembersQuery = gql`
           lastname
           pic
           club {
+              id
               name
           }
       }

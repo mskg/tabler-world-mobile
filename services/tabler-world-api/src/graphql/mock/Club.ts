@@ -41,7 +41,7 @@ export const Club = (root: any, args: any, _context: any, _info: any) => {
         location: randomLocation,
 
         name: () => 'RT ' + clubId + ' ' + club.name,
-        logo: () => club.pic,
+        logo: () => club.pic ? club.pic + '?id=' + clubId : null,
 
         website: () => faker.internet.url(),
         instagram: () => faker.internet.url(),

@@ -1,4 +1,4 @@
-import { cachedDataLoader, makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
@@ -61,12 +61,41 @@ import { IApolloContext } from '../types/IApolloContext';
 export class StructureDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
 
+    private familyLoader!: DataLoader<string, any>;
     private associationLoader!: DataLoader<string, any>;
     private clubLoader!: DataLoader<string, any>;
     private areaLoader!: DataLoader<string, any>;
 
+    // tslint:disable-next-line: max-func-body-length
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
+
+        this.familyLoader = new DataLoader<string, any>(
+            cachedDataLoader<string>(
+                this.context,
+                (k) => makeCacheKey('Family', [k]),
+                (r) => makeCacheKey('Family', [r.id]),
+                (ids) => useDataService(
+                    this.context,
+                    async (client) => {
+                        this.context.logger.log('DB reading families', ids);
+
+                        const res = await client.query(`
+    select *
+    from structure_familes
+    where
+        id = ANY($1)
+    `, [ids]);
+
+                        return res.rows;
+                    },
+                ),
+                'Structure',
+            ),
+            {
+                cacheKeyFn: (k: string) => k,
+            },
+        );
 
         this.associationLoader = new DataLoader<string, any>(
             cachedDataLoader<string>(
@@ -152,7 +181,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
     }
 
     public async allClubs(association: string) {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', [association, 'clubs', 'all']),
             async () => await useDataService(
@@ -175,7 +204,7 @@ where
     }
 
     public async allAreas(assoc: string) {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', [assoc, 'areas', 'all']),
             async () => await useDataService(
@@ -201,7 +230,7 @@ where
      * Currently this limits the result to only the current organization of the user
      */
     public async allAssociations() {
-        return await writeThrough(
+        return await cachedLoad(
             this.context,
             makeCacheKey('Structure', ['associations', 'all']),
             async () => await useDataService(
@@ -221,6 +250,33 @@ from structure_associations
         );
 
         // return [await this.getAssociation(this.context.principal.association)];
+    }
+
+    public async allFamilies() {
+        return await cachedLoad(
+            this.context,
+            makeCacheKey('Structure', ['families', 'all']),
+            async () => await useDataService(
+                this.context,
+                async (client) => {
+                    this.context.logger.log('DB reading allFamilies');
+
+                    const res = await client.query(`
+select *
+from structure_families
+`);
+
+                    return res.rows;
+                },
+            ),
+            'StructureOverview',
+        );
+
+        // return [await this.getAssociation(this.context.principal.association)];
+    }
+
+    public async getFamily(family: string) {
+        return this.familyLoader.load(family);
     }
 
     public async getAssociation(assoc: string) {

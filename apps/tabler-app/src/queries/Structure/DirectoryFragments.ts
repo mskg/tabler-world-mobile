@@ -5,10 +5,11 @@ export const DirectoryFragments = gql`
       name
       id
       shortname
-      
+
       association {
         id
         name
+        flag
       }
     }
 
@@ -21,6 +22,7 @@ export const DirectoryFragments = gql`
       association {
           id
           name
+          flag
       }
 
       area {
@@ -34,5 +36,6 @@ export const DirectoryFragments = gql`
       id
       logo
       shortname
+      flag
     }
 `;

@@ -56,13 +56,13 @@ export class Predicates {
 
     static area(areas: HashMap<boolean, string> | null): Predicate {
         return (member) => {
-            return areas == null || areas[member.area.name] === true;
+            return areas == null || areas[member.area.id] === true || areas[member.area.name] === true;
         };
     }
 
     static association(associations: HashMap<boolean, string> | null): Predicate {
         return (member) => {
-            return associations == null || associations[member.association.name] === true;
+            return associations == null || associations[member.association.name] === true || associations[member.association.id] === true;
         };
     }
 

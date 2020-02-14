@@ -1,11 +1,17 @@
 import { xHttps } from '@mskg/tabler-world-aws';
+import { StopWatch } from '@mskg/tabler-world-common';
+import { RequestOptions } from 'https';
+import HttpsProxyAgent from 'https-proxy-agent';
 
 export class HttpClient {
     private _maxTries = 3;
     private _waitTime = 5000;
     private _headers: { [key: string]: string } = {};
 
-    constructor(private host: string, private port = 443) {
+    constructor(
+        private host: string,
+        private port = 443,
+    ) {
     }
 
     set maxTries(tries: number) {
@@ -28,8 +34,8 @@ export class HttpClient {
         return this.run<T>(url, method, postdata);
     }
 
-    protected configureOptions(path: string, method: string) {
-        const options = {
+    protected configureOptions(path: string, method: string): RequestOptions {
+        const options: RequestOptions = {
             port: this.port,
             method,
             headers: {
@@ -37,6 +43,11 @@ export class HttpClient {
                 ...this._headers,
             },
         };
+
+        const proxy = process.env.http_proxy;
+        if (proxy != null) {
+            options.agent = new HttpsProxyAgent(proxy);
+        }
 
         return {
             ...options,
@@ -58,6 +69,7 @@ export class HttpClient {
             const maxTries = this._maxTries;
             const waitTime = this._waitTime;
             const run = this.run;
+            const stopWatch = new StopWatch();
 
             return new Promise<T>((resolve, reject) => {
                 try {
@@ -90,6 +102,8 @@ export class HttpClient {
                             } catch (eEnd) {
                                 console.error('[API] on end', eEnd);
                                 return reject(eEnd);
+                            } finally {
+                                console.debug('[API] Downloading from', options.host, options.port, options.path, options.method, 'took', stopWatch.stop(), 'ms');
                             }
                         });
                     });

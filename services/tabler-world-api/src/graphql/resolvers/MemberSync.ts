@@ -63,19 +63,25 @@ export const MemberSyncResolver = {
                     let res: QueryResult;
                     if (calculatedCursor > 0) {
                         // use index to page
-                        res = await client.query(`
+                        res = await client.query(
+                            `
                             select * from profiles
                             where ${CURSOR_MODIFIED} >= $1
                             order by ${CURSOR_MODIFIED} asc
-                            limit $2`,           [calculatedCursor, limit + 1]);
+                            limit $2`,
+                            [calculatedCursor, limit + 1]
+                        );
 
                     } else {
                         // the first time, we query by modified on
-                        res = await client.query(`
+                        res = await client.query(
+                            `
                             select * from profiles
                             where ${FIELD_MODIFIED} > $1::timestamptz(0)
                             order by ${CURSOR_MODIFIED} asc
-                            limit $2`,           [new Date(state).toISOString(), limit + 1]);
+                            limit $2`,
+                            [new Date(state).toISOString(), limit + 1]
+                        );
                     }
 
                     // no next

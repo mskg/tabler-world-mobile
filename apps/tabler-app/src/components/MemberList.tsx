@@ -27,6 +27,8 @@ type OwnProps = {
     onItemSelected?: (member: IMemberOverviewFragment) => void,
 
     onEndReached?: () => any;
+
+    contentContainerStyle?: any,
 };
 
 type DispatchPros = {
@@ -90,7 +92,7 @@ export class MemberListBase extends React.Component<Props> {
                 renderItem={this._renderItem}
                 // getItemLayout={this._getItemLayout}
                 ListEmptyComponent={this.props.refreshing ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
-                contentContainerStyle={{ flexGrow: 1, paddingBottom: 56 + 10 }}
+                contentContainerStyle={this.props.contentContainerStyle || { flexGrow: 1, paddingBottom: 56 + 10 }}
 
                 keyExtractor={extractKey}
 

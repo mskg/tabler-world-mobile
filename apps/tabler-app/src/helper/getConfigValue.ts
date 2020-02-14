@@ -7,7 +7,7 @@ type Key =
     | 'userPoolId'
     | 'userPoolWebClientId'
     | 'api'
-    | 'ws-api'
+    | 'wsapi'
     | 'apidemo'
     | 'sentry'
     | 'cognitoAnalytics'
@@ -18,6 +18,8 @@ type Key =
     | 'feedback'
     | 'join'
     | 'support'
+    | 'imprint'
+    | 'dataprotection'
     ;
 
 type ConfigTypes = string | string[] | {
@@ -35,7 +37,7 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
         }
     }
 
-    if (key === 'ws-api' && __DEV__ && !Constants.isDevice) {
+    if (key === 'wsapi' && __DEV__ && !Constants.isDevice) {
         if (Platform.OS === 'android') {
             // default redirect to localhost for android emulator
             // tslint:disable-next-line: no-http-string
@@ -43,10 +45,7 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
         } if (Platform.OS === 'ios') {
             return 'ws://localhost:3001' as T;
         }
-    } else if (key === 'ws-api') {
-        return Constants.manifest.extra.api.replace('https', 'wss').replace('api', 'ws-api');
     }
-
 
     return Constants.manifest.extra[key];
 }

@@ -1,7 +1,7 @@
-import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
+import { byVersion, v12Check } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -69,10 +69,29 @@ export const SearchMemberResolver = {
 )`);
             });
 
-            if (args.query.associations != null && args.query.associations.length > 0) {
-                parameters.push(args.query.associations);
-                filters.push(`associationname = ANY ($${parameters.length})`);
-            }
+            parameters.push(context.principal.family);
+            filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+
+            // old only 'de
+            byVersion({
+                context,
+                mapVersion: v12Check,
+
+                versions: {
+                    // only
+                    old: () => {
+                        parameters.push(context.principal.association);
+                        filters.push(`association = $${parameters.length}`);
+                    },
+
+                    default: () => {
+                        if (args.query.associations != null && args.query.associations.length > 0) {
+                            parameters.push(args.query.associations);
+                            filters.push(`associationname = ANY ($${parameters.length})`);
+                        }
+                    },
+                },
+            });
 
             if (args.query.areas != null && args.query.areas.length > 0) {
                 parameters.push(args.query.areas);
@@ -96,6 +115,7 @@ export const SearchMemberResolver = {
                 parameters.push(context.principal.id);
                 parameters.push(context.principal.club);
                 parameters.push(context.principal.association);
+                parameters.push(context.principal.family);
 
                 filters.push(`id in (
 select sectorprofiles.id
@@ -104,18 +124,33 @@ where
         sectorprofiles.id = sectorpricacy.id
     and sectorprofiles.removed = false
     and get_profile_access(sectorpricacy.company,
-        sectorprofiles.id, sectorprofiles.club, sectorprofiles.association,
-        $${sectorsId + 1}, $${sectorsId + 2}, $${sectorsId + 3}
+        sectorprofiles.id, sectorprofiles.club, sectorprofiles.association, sectorprofiles.family, sectorprofiles.allfamiliesoptin,
+        $${sectorsId + 1}, $${sectorsId + 2}, $${sectorsId + 3}, $${sectorsId + 4}
     ) = true
     and sectorprofiles.companies @> ANY($${sectorsId}::jsonb[])
 )`);
             }
 
             // we need some chat partners
-            if (args.query.availableForChat && !EXECUTING_OFFLINE) {
+            if (args.query.availableForChat) {
                 parameters.push(context.principal.id);
-                filters.push(`id in (select id from usersettings where array_length(tokens, 1) > 0 and id <> $${parameters.length})`);
+                filters.push(
+                    `id in (
+select
+    id
+from
+    usersettings
+where
+        id <> $${parameters.length}
+    and (
+            settings->'notifications'->>'personalChat' is null
+        or  settings->'notifications'->>'personalChat' = 'true'
+    )
+    and array_length(tokens, 1) > 0
+)`,
+                );
             }
+
 
             // context.logger.log("Query is", filters.join(' AND '));
 

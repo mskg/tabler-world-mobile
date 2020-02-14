@@ -2,7 +2,7 @@ import { DarkTheme, Theme } from 'react-native-paper';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR } from './colors';
 import { light } from './light';
 
-export const dark: Theme = {
+export const dark: Theme & { colors: { notification } } = {
     ...DarkTheme,
     roundness: 2,
     fonts: light.fonts,
@@ -18,5 +18,7 @@ export const dark: Theme = {
 
         primary: DarkTheme.colors.background,
         accent: ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT,
+
+        notification: 'red',
     },
 };

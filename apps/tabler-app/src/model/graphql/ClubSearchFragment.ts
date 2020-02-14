@@ -10,6 +10,7 @@ export interface ClubSearchFragment_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface ClubSearchFragment_area {

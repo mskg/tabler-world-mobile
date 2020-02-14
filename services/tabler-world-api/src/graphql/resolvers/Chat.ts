@@ -1,13 +1,14 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import * as crypto from 'crypto';
+import { reverse } from 'lodash';
 import { S3, UPLOAD_BUCKET } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
 import { pubsub } from '../subscriptions/services/pubsub';
+import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../subscriptions/types/Constants';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
-import { withFilter } from '../subscriptions/utils/withFilter';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
 
@@ -32,6 +33,7 @@ type SubscriptionArgs = {
 
 type IteratorArgs = {
     token?: string,
+    dontMarkAsRead?: boolean,
 };
 
 type IdArgs = {
@@ -59,16 +61,26 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
+/**
+ * CONV(:1:,:2:)
+ * @param members
+ */
 function makeConversationKey(members: number[]): string {
-    return `CONV(${members.sort().map((m) => `:${m}:`).join(',')})`;
+    return `${DIRECT_CHAT_PREFIX}${members.sort().map((m) => `${MEMBER_ENCLOSING}${m}${MEMBER_ENCLOSING}`).join(MEMBER_SEPERATOR)}${DIRECT_CHAT_SUFFIX}`;
 }
 
 // this is a very simple security check that is now sufficient in the 1:1 test
 function checkChannelAccess(channel: string, member: number): boolean {
-    return decodeIdentifier(channel).match(new RegExp(`:${member}:`, 'g'));
+    return decodeIdentifier(channel).match(new RegExp(`${MEMBER_ENCLOSING}${member}${MEMBER_ENCLOSING}`, 'g'));
 }
 
-const ALL_CONVERSATIONS_TOPIC = 'CONV:ALL';
+/**
+ * ALL(:1:)
+ * @param member
+ */
+function makeAllConversationKey(member: number): string {
+    return `${ALL_CHANNEL_PREFIX}${member}${ALL_CHANNEL_SUFFIX}`;
+}
 
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
@@ -82,7 +94,8 @@ export const ChatResolver = {
             );
 
             return {
-                nodes: result.result.map((c) => ({ id: c })),
+                // index is reverse, list is other way round
+                nodes: reverse(result.result.map((c) => ({ id: c }))),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
@@ -101,7 +114,7 @@ export const ChatResolver = {
 
     Member: {
         availableForChat: (root: { id: number }, _args: {}, context: IApolloContext) => {
-            if (EXECUTING_OFFLINE) { return true; }
+            if (EXECUTING_OFFLINE) { return root.id !== context.principal.id; }
 
             return root.id !== context.principal.id
                 ? context.dataSources.conversations.isMemberAvailableForChat(root.id)
@@ -118,10 +131,6 @@ export const ChatResolver = {
         messages: async (root: { id: string }, args: IteratorArgs, context: IApolloContext) => {
             const principalId = context.principal.id;
 
-            if (!checkChannelAccess(root.id, principalId)) {
-                throw new Error(`Access denied (${root.id}, ${principalId})`);
-            }
-
             const channel = decodeIdentifier(root.id);
             const params = await getChatParams();
             const result = await eventManager.events<ChatMessage>(
@@ -135,24 +144,29 @@ export const ChatResolver = {
 
             // only if the token is null we have seen the last values
             if (args.token == null && result.result.length > 0) {
-                conversationManager.updateLastSeen(
-                    channel,
-                    principalId,
-                    encodeIdentifier(
+                if (!args.dontMarkAsRead) {
+                    await conversationManager.updateLastSeen(
+                        channel,
+                        principalId,
                         // highest message
-                        result.result[result.result.length - 1].id,
-                    ) as string,
-                );
+                        result.result[0].id,
+                    );
+                }
+            }
 
-                // Conversation did update
-                await eventManager.post<string>({
-                    trigger: ALL_CONVERSATIONS_TOPIC,
-                    // payload is the trigger
-                    payload: channel,
-                    pushNotification: undefined,
-                    ttl: params.ttl,
-                    trackDelivery: false,
-                });
+            let lastSeen: string | undefined;
+            if (result.result.find((m) => !m.delivered)) {
+                context.logger.log('Not all message seen');
+
+                const conversation = await conversationManager.getConversation(channel);
+                const otherMember = (conversation.members || { values: [] }).values.filter((m) => m !== context.principal.id);
+
+                if (otherMember.length > 0) {
+                    const conv = await conversationManager.getUserConversation(channel, otherMember[0]);
+                    lastSeen = conv.lastSeen;
+                }
+
+                context.logger.log('otherMember', otherMember, 'lastSeen', lastSeen);
             }
 
             return {
@@ -165,7 +179,7 @@ export const ChatResolver = {
                     ...m.payload,
 
                     accepted: true,
-                    delivered: m.delivered,
+                    delivered: m.delivered || (lastSeen && m.id <= lastSeen),
                 } as ChatMessageWithTransport)),
 
                 nextToken: encodeIdentifier(result.nextKey),
@@ -179,7 +193,7 @@ export const ChatResolver = {
             const user = await context.dataSources.conversations.readUserConversation(channel, context.principal.id);
             const global = await context.dataSources.conversations.readConversation(channel);
 
-            context.logger.log(user, global);
+            context.logger.log('hasUnreadMessages', global, user);
 
             if (user == null || global == null) { return true; }
             if (!user.lastSeen && global.lastMessage) { return true; }
@@ -199,6 +213,32 @@ export const ChatResolver = {
 
             const values = members.values.filter((v) => v !== context.principal.id);
             return context.dataSources.members.readMany(values);
+        },
+    },
+
+    ChatMessagePayload: {
+        image: async (root: { image: string }, _args: any, context: IApolloContext) => {
+            if (!root.image) {
+                return null;
+            }
+
+            if (root.image.toLowerCase().match(/x\-amz\-signature/)) {
+                return root.image;
+            }
+
+            const params = await getChatParams();
+            const url = S3.getSignedUrl('getObject', {
+                Bucket: UPLOAD_BUCKET,
+                Key: root.image,
+                Expires: params.attachmentsTTL,
+            });
+
+            if (EXECUTING_OFFLINE && context.clientInfo.os === 'android' && context.clientInfo.version === 'dev') {
+                // default redirect for anroid emular
+                return url.replace(/localhost/ig, '10.0.2.2');
+            }
+
+            return url;
         },
     },
 
@@ -248,10 +288,12 @@ export const ChatResolver = {
                 throw new Error('Access denied.');
             }
 
-            await conversationManager.removeMembers(decodeIdentifier(id as string), [context.principal.id]);
+            await Promise.all([
+                conversationManager.removeMembers(decodeIdentifier(id as string), [context.principal.id]),
 
-            // we make this generic and always leave, even if that does not exist for a 1:1
-            await pushSubscriptionManager.unsubscribe(decodeIdentifier(id as string), [context.principal.id]);
+                // we make this generic and always leave, even if that does not exist for a 1:1
+                pushSubscriptionManager.unsubscribe(decodeIdentifier(id as string), [context.principal.id]),
+            ]);
 
             return true;
         },
@@ -272,60 +314,59 @@ export const ChatResolver = {
 
             const id = makeConversationKey([context.principal.id, args.member]);
 
-            // make id stable
-            await conversationManager.addMembers(id, [context.principal.id, args.member]);
-            // const key = await conversationManager.getEncryptionKey(id);
+            const existing = await context.dataSources.conversations.readConversation(id);
+            if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
+                return {
+                    id,
 
-            // we don't join for a 1:1 conversation, always there
-            // await pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]);
+                    // most likely this is wrong as we are also part of the conversation
+                    members: existing?.members?.values.filter((f) => f === context.principal.id),
+                };
+            }
+
+            await Promise.all([
+                conversationManager.addMembers(id, [context.principal.id, args.member]),
+                pushSubscriptionManager.subscribe(id, [context.principal.id, args.member]),
+            ]);
+
             return {
-                // key,
-                // conversation: {
                 id,
-                owners: [args.member],
                 members: [args.member],
-                // },
             };
         },
 
         // tslint:disable-next-line: variable-name
         sendMessage: async (_root: {}, { message }: SendMessageArgs, context: IApolloContext) => {
-            context.logger.log('sendMessage', message);
+            context.logger.log('sendMessage', context.principal.id);
             const principalId = context.principal.id;
 
             if (!checkChannelAccess(message.conversationId, principalId)) {
                 throw new Error('Access denied.');
             }
 
-            const member = await context.dataSources.members.readOne(principalId);
-
-            const trigger = decodeIdentifier(message.conversationId);
-            const params = await getChatParams();
-
-            const text = message.text || 'New message';
-            let image;
-
             if (message.image) {
                 // some basic level of security here
                 if (!message.image.startsWith(message.conversationId)) {
                     throw new Error('Access denied.');
                 }
-
-                image = S3.getSignedUrl('getObject', {
-                    Bucket: UPLOAD_BUCKET,
-                    Key: message.image,
-                    Expires: params.ttl,
-                });
             }
 
+            const trigger = decodeIdentifier(message.conversationId);
+            const text = message.text || 'New message';
+
+            const [member, params] = await Promise.all([
+                context.dataSources.members.readOne(principalId),
+                getChatParams(),
+            ]);
+
             const channelMessage = await eventManager.post<ChatMessage>({
-                trigger,
+                triggers: [trigger],
 
                 payload: ({
                     id: message.id,
                     senderId: principalId,
                     payload: {
-                        image,
+                        image: message.image,
                         type: message.image ? MessageType.image : MessageType.text,
                         text: message.text,
                     },
@@ -346,28 +387,30 @@ export const ChatResolver = {
 
                     sender: principalId,
                 },
-                ttl: params.ttl,
+                ttl: params.messageTTL,
                 trackDelivery: true,
             });
 
-            // TOOD: cloud be combined into onewrite
-            await conversationManager.update(trigger, channelMessage);
-            await conversationManager.updateLastSeen(trigger, principalId, channelMessage.id);
+            const [, , conversation] = await Promise.all([
+                // TOOD: cloud be combined into onewrite
+                conversationManager.update(trigger, channelMessage[0]),
+                conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id),
+                context.dataSources.conversations.readConversation(trigger),
+            ]);
 
-            // Conversation did update
             await eventManager.post<string>({
-                trigger: ALL_CONVERSATIONS_TOPIC,
+                triggers: (conversation?.members?.values || []).map((subscriber) => makeAllConversationKey(subscriber)),
                 // payload is the trigger
                 payload: trigger,
                 pushNotification: undefined,
-                ttl: params.ttl,
+                ttl: params.messageTTL,
                 trackDelivery: false,
             });
 
             return {
-                ...channelMessage.payload,
-                eventId: channelMessage.id,
-                conversationId: channelMessage.eventName,
+                ...channelMessage[0].payload,
+                eventId: channelMessage[0].id,
+                conversationId: channelMessage[0].eventName,
                 accepted: true,
                 delivered: false,
             } as ChatMessageWithTransport;
@@ -377,29 +420,32 @@ export const ChatResolver = {
     Subscription: {
         conversationUpdate: {
             // tslint:disable-next-line: variable-name
-            subscribe: async (root: SubscriptionArgs, args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
+            subscribe: async (root: SubscriptionArgs, _args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
+                const topic = makeAllConversationKey(context.principal.id);
+
                 // if we resolve, root is null
                 if (root) {
-                    context.logger.log('subscribe', root.id, ALL_CONVERSATIONS_TOPIC);
+                    context.logger.log('subscribe', root.id, topic);
 
                     await subscriptionManager.subscribe(
-                        context.connectionId,
+                        context,
                         root.id,
-                        [ALL_CONVERSATIONS_TOPIC],
-                        context.principal,
+                        [topic],
                         image.rootValue.payload,
                     );
                 }
 
-                // this will be very very expensive
-                return withFilter(
-                    () => pubsub.asyncIterator(ALL_CONVERSATIONS_TOPIC),
-                    (event: WebsocketEvent<string>): boolean => {
-                        return checkChannelAccess(event.payload, context.principal.id);
-                        //     const channel = await conversationManager.getConversation(payload.eventName);
-                        //     return channel.members != null && (channel.members.values.find((m) => m === context.principal.id) != null);
-                    },
-                )(root, args, context, image);
+                return pubsub.asyncIterator(topic);
+
+                // // this will be very very expensive
+                // return withFilter(
+                //     () => pubsub.asyncIterator(ALL_CONVERSATIONS_TOPIC),
+                //     (event: WebsocketEvent<string>): boolean => {
+                //         return checkChannelAccess(event.payload, context.principal.id);
+                //         //     const channel = await conversationManager.getConversation(payload.eventName);
+                //         //     return channel.members != null && (channel.members.values.find((m) => m === context.principal.id) != null);
+                //     },
+                // )(root, args, context, image);
             },
 
             // tslint:disable-next-line: variable-name
@@ -434,10 +480,9 @@ export const ChatResolver = {
                     }
 
                     await subscriptionManager.subscribe(
-                        context.connectionId,
+                        context,
                         root.id,
                         [decodeIdentifier(args.conversation)],
-                        context.principal,
                         image.rootValue.payload,
                     );
                 }

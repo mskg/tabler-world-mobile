@@ -25,6 +25,7 @@ export interface Member_Member_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface Member_Member_roles_ref {
@@ -128,6 +129,7 @@ export interface Member_Member {
   companies: Member_Member_companies[] | null;
   educations: Member_Member_educations[] | null;
   socialmedia: Member_Member_socialmedia | null;
+  sharesLocation: boolean | null;
 }
 
 export interface Member {

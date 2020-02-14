@@ -35,6 +35,14 @@ export const styles = StyleSheet.create({
         bottom: 0,
     },
 
+    fab2: {
+        position: 'absolute',
+        margin: 16,
+        marginBottom: 16 + 56 + 8,
+        right: 0,
+        bottom: 0,
+    },
+
     container: {
         padding: 16,
     },

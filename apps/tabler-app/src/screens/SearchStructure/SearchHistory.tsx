@@ -4,6 +4,7 @@ import { Divider, List, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { I18N } from '../../i18n/translation';
 import { IAppState } from '../../model/IAppState';
+import { isIphoneX } from '../../helper/isIphoneX';
 
 type State = {
 };
@@ -23,13 +24,14 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros;
 
 class SearchHistoryBase extends React.Component<Props, State> {
-    _renderSearchHistoryItem = (c: ListRenderItemInfo<string>) => (
-        <React.Fragment>
+    _renderSearchHistoryItem = (c: { item: string }) => (
+        <React.Fragment key={c.item}>
             <List.Item
                 style={{ backgroundColor: this.props.theme.colors.surface }}
                 // workarround
                 title={<Text style={{ fontSize: 14 }}>{c.item}</Text>}
-                onPress={() => this.props.applyFilter(c.item)} />
+                onPress={() => this.props.applyFilter(c.item)}
+            />
             <Divider />
         </React.Fragment>
     )
@@ -40,14 +42,9 @@ class SearchHistoryBase extends React.Component<Props, State> {
         if (this.props.history == null || this.props.history.length === 0) return null;
 
         return (
-            <List.Section title={I18N.Search.history}>
+            <List.Section title={I18N.Search.history} style={{ marginBottom: isIphoneX() ? 48 : 32 }}>
                 <Divider />
-                <FlatList
-                    data={this.props.history}
-                    renderItem={this._renderSearchHistoryItem}
-                    keyExtractor={this._keyExtractor}
-                    bounces={false}
-                />
+                {this.props.history.map((item) => this._renderSearchHistoryItem({ item }))}
             </List.Section>
         );
     }

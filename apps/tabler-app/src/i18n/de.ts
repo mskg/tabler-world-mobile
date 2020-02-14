@@ -92,7 +92,7 @@ const de: I18NType = {
         title: 'Assoziation',
         mytitle: 'Meine Assoziation',
 
-        associations: 'Assoziatio...',
+        associations: 'Assoziationen',
         clubs: 'Tische',
         areas: 'Distrikte',
 
@@ -141,12 +141,12 @@ const de: I18NType = {
     },
 
     Albums: {
-        title: 'Alben',
+        title: 'Fotoalben',
         details: 'Album anzeigen',
     },
 
     News: {
-        title: 'Aktuelles',
+        title: 'Neuigkeiten',
     },
 
     Album: {
@@ -178,6 +178,8 @@ const de: I18NType = {
                 return `${format(parseISO(date), 'yyyy', { locale: dateDE })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
             },
         },
+
+        chat: (s) => `Schreib ${s} eine Nachricht`,
 
         email: (s) => {
             switch (s) {
@@ -218,6 +220,7 @@ const de: I18NType = {
         },
 
         Fields: {
+            chat: 'TABLER.APP Chat',
             home: 'Privatadresse',
             birthday: 'Geburtstag',
             partner: 'Partnerin/Partner',
@@ -255,8 +258,11 @@ const de: I18NType = {
         history: 'Verlauf',
         search: 'Suchen...',
         lru: 'Zuletzt geöffnet',
+        favorites: 'Favoriten',
 
         filter: 'Filtern',
+        expand: 'Alle anzeigen',
+        collapse: 'Weniger anzeigen',
 
         results: (r) => r > 0 ? `Ergebnisse (${r})` : 'Ergebnisse',
 
@@ -393,7 +399,6 @@ const de: I18NType = {
             version: 'Version',
             lastSync: 'Letzte Synchronisierung',
             channel: 'Kanal',
-            pushtoken: 'Push Token',
             syncFavorites: 'Favoriten synchronisieren',
             syncOwnTable: 'Tischmitglieder synchronisieren',
             sortOrder: 'Sortierung',
@@ -410,17 +415,10 @@ const de: I18NType = {
             thirdparty: 'Lizenzinformationen zu Drittprodukten',
             about: 'Über diese App',
 
-            docs: [
-                {
-                    title: 'Datenschutzrichtlinien',
-                    url: 'https://hilfe.roundtable.world/knowledge-base/data-protection-policy/',
-
-                },
-                {
-                    title: 'Impressum',
-                    url: 'https://hilfe.roundtable.world/knowledge-base/imprint/',
-                },
-            ],
+            docs: {
+                dataprotection: 'Datenschutzrichtlinien',
+                imprint: 'Impressum',
+            },
         },
 
         cache: {
@@ -470,6 +468,12 @@ const de: I18NType = {
                 field: 'Für den eigenen Club und Favoriten',
             },
 
+            push: {
+                title: 'Push Benachrichtigungen',
+                action: 'Gerät erneut für Push Benachrichtigungen registrieren',
+                permissions: 'Die App kann keine Benachrichtigungen anzeigen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.',
+            },
+
             onetoone: {
                 title: 'Unterhaltungen',
                 text: 'Wenn Du diese Benachrichtigungsfunktion deaktivierst, dann kannst Du die Chatfunktion nicht nutzen.',
@@ -502,6 +506,7 @@ const de: I18NType = {
     },
 
     NearbyMembers: {
+        navigation: 'In der Nähe',
         title: 'Mitglieder in der Nähe',
         location: 'Dein Standort',
 
@@ -518,6 +523,11 @@ const de: I18NType = {
         off: '\'Mitglieder in der Nähe\' ist deaktiviert. Bitte aktiviere die Option in den Einstellungen, um deinen Standort zu teilen. Es wird nur die Stadt angezeigt in der du dich befindest. Wir speichern keine Standorthistorie.',
         mapOff: 'Um andere Mitglieder auf der Karte zu sehen musst Du Dich selbst sichtbar machen.',
 
+        sharesLocation: {
+            true: 'Teilt seinen Standort mit Dir',
+            false: 'Teilt seinen Standort nicht',
+        },
+
         Tabs: {
             list: 'Liste',
             map: 'Karte',
@@ -527,11 +537,13 @@ const de: I18NType = {
             title: 'Mitglieder in der Nähe',
             on: {
                 title: 'Mitglieder in der Nähe',
-                text: 'Wenn du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
+                text: 'Wenn Du die Funktion einschaltest, dann können andere Mitglieder sehen in welcher Stadt Du dich befindest. Wir speichern keine Standorthistorie, nur den letzten bekannten Standort.',
                 field: 'Teile Deinen Standort',
             },
             map: {
                 field: 'Erlaube Deinen Standort auf der Karte zu sehen',
+                title: 'Kartendarstellung',
+                text: 'Wenn du diese Funktion zusätzlich einschaltest, dann können andere Mitglieder sehen wo Du dich genau befindest.',
             },
             filter: {
                 title: 'Filter',
@@ -549,7 +561,7 @@ const de: I18NType = {
     },
 
     Conversations: {
-        title: 'Unterhaltungen',
+        title: 'Chats',
         network: 'Auf Netzwerk warten...',
 
         copy: 'Kopieren',

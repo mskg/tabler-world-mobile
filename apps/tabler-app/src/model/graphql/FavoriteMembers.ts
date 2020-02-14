@@ -25,6 +25,7 @@ export interface FavoriteMembers_FavoriteMembers_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface FavoriteMembers_FavoriteMembers_roles_ref {
@@ -128,6 +129,7 @@ export interface FavoriteMembers_FavoriteMembers {
   companies: FavoriteMembers_FavoriteMembers_companies[] | null;
   educations: FavoriteMembers_FavoriteMembers_educations[] | null;
   socialmedia: FavoriteMembers_FavoriteMembers_socialmedia | null;
+  sharesLocation: boolean | null;
 }
 
 export interface FavoriteMembers {

@@ -25,6 +25,7 @@ export interface MemberDetailsFragment_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface MemberDetailsFragment_roles_ref {
@@ -128,4 +129,5 @@ export interface MemberDetailsFragment {
   companies: MemberDetailsFragment_companies[] | null;
   educations: MemberDetailsFragment_educations[] | null;
   socialmedia: MemberDetailsFragment_socialmedia | null;
+  sharesLocation: boolean | null;
 }

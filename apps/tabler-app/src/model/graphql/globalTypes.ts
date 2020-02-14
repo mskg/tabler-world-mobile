@@ -48,6 +48,12 @@ export enum CompanySector {
   warehousingdistribution = "warehousingdistribution",
 }
 
+export enum JobStatus {
+  completed = "completed",
+  failed = "failed",
+  running = "running",
+}
+
 export enum NearbyMemberState {
   Steady = "Steady",
   Traveling = "Traveling",
@@ -83,6 +89,7 @@ export enum SettingName {
 }
 
 export enum UserRole {
+  developer = "developer",
   jobs = "jobs",
 }
 

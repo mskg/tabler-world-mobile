@@ -1,3 +1,4 @@
+import { take } from 'lodash';
 import React from 'react';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { Divider, List, Text, Theme, withTheme } from 'react-native-paper';
@@ -10,7 +11,10 @@ type State = {
 
 type OwnProps = {
     theme: Theme,
+    limit?: number,
     applyFilter: (text: string) => void,
+
+    contentContainerStyle?: any,
 };
 
 type StateProps = {
@@ -37,16 +41,18 @@ class SearchHistoryBase extends React.Component<Props, State> {
     _keyExtractor = (item: string) => item;
 
     render() {
-        if (this.props.history == null || this.props.history.length == 0) return null;
+        if (this.props.history == null || this.props.history.length === 0) return null;
 
         return (
-            <List.Section title={I18N.Search.history}>
+            <List.Section style={{ flex: 1, flexBasis: 1 }} title={I18N.Search.history}>
                 <Divider />
                 <FlatList
-                    data={this.props.history}
+                    data={take(this.props.history, this.props.limit || 20)}
                     renderItem={this._renderSearchHistoryItem}
                     keyExtractor={this._keyExtractor}
-                    bounces={false}
+                    bounces={true}
+                    style={{ flex: 1 }}
+                    contentContainerStyle={this.props.contentContainerStyle}
                 />
             </List.Section>
         );
@@ -57,6 +63,6 @@ export const SearchHistory = connect(
     (state: IAppState) => ({
         history: state.searchHistory.members,
     }), {
-    })(
-        withTheme(SearchHistoryBase),
-    );
+})(
+    withTheme(SearchHistoryBase),
+);

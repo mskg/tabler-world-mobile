@@ -1,8 +1,10 @@
-import { IPrincipal } from '@mskg/tabler-world-auth-client';
+import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
+import { ISubscriptionContext } from '../../types/ISubscriptionContext';
 import { dynamodb as client } from '../aws/dynamodb';
 import { ClientLostError } from '../types/ClientLostError';
+import { IConnectionContext } from '../types/IConnection';
 import { ISubscription } from '../types/ISubscription';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { FieldNames, SUBSCRIPTIONS_TABLE } from './Constants';
@@ -30,7 +32,7 @@ export class WebsocketSubscriptionManager {
                 ':trigger': trigger,
             },
 
-            ProjectionExpression: `${FieldNames.subscription}, ${FieldNames.principal}, ${FieldNames.payload}`,
+            ProjectionExpression: `${FieldNames.subscription}, ${FieldNames.principal}, ${FieldNames.payload}, ${FieldNames.context}`,
         }).promise();
 
         return clients
@@ -41,39 +43,48 @@ export class WebsocketSubscriptionManager {
                     subscriptionId,
                     connection: {
                         connectionId,
+                        memberId: c[FieldNames.principal].id,
                         payload: c[FieldNames.payload],
                         principal: c[FieldNames.principal],
+                        context: c[FieldNames.context],
                     },
                 } as ISubscription);
             })
             : [];
     }
 
-    public async subscribe(connectionId: string, subscriptionId: string, triggers: string[], principal: IPrincipal, payload: any): Promise<void> {
-        logger.log(`[${connectionId}] [${subscriptionId}]`, 'subscribe', triggers, payload);
+    public async subscribe(context: ISubscriptionContext, subscriptionId: string, triggers: string[], payload: any): Promise<void> {
+        logger.log(`[${context.connectionId}] [${subscriptionId}]`, 'subscribe', triggers, payload);
 
         const params = await getWebsocketParams();
-        await client.batchWrite({
-            RequestItems: {
-                [SUBSCRIPTIONS_TABLE]: triggers.map((trigger) => ({
-                    PutRequest: {
-                        Item: {
-                            [FieldNames.subscription]: makeKey(connectionId, subscriptionId, trigger),
-                            [FieldNames.connectionId]: connectionId,
-                            [FieldNames.trigger]: trigger,
 
-                            // Authentication
-                            [FieldNames.principal]: principal,
+        const items: [string, WriteRequest][] = triggers.map((trigger) => ([
+            SUBSCRIPTIONS_TABLE,
+            {
+                PutRequest: {
+                    Item: {
+                        [FieldNames.subscription]: makeKey(context.connectionId, subscriptionId, trigger),
+                        [FieldNames.connectionId]: context.connectionId,
+                        [FieldNames.trigger]: trigger,
 
-                            // GraphQL subscritption
-                            [FieldNames.payload]: payload,
+                        // Authentication
+                        [FieldNames.principal]: context.principal,
 
-                            ttl: Math.floor(Date.now() / 1000) + params.ttlSubscription,
-                        },
+                        // GraphQL subscription
+                        [FieldNames.payload]: payload,
+
+                        // Metadata
+                        [FieldNames.context]: context.clientInfo as IConnectionContext,
+
+                        ttl: Math.floor(Date.now() / 1000) + params.ttlSubscription,
                     },
-                })),
-            },
-        }).promise();
+                },
+            }]),
+        );
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.subscription]);
+        }
     }
 
     public async unsubscribe(connectionId: string, subscriptionId: string): Promise<void> {
@@ -94,17 +105,20 @@ export class WebsocketSubscriptionManager {
 
         if (!subscriptions || subscriptions.length === 0) { return; }
 
-        await client.batchWrite({
-            RequestItems: {
-                [SUBSCRIPTIONS_TABLE]: subscriptions.map((t) => ({
-                    DeleteRequest: {
-                        Key: {
-                            [FieldNames.subscription]: t[FieldNames.subscription],
-                        },
+        const items: [string, WriteRequest][] = subscriptions.map((t) => ([
+            SUBSCRIPTIONS_TABLE,
+            {
+                DeleteRequest: {
+                    Key: {
+                        [FieldNames.subscription]: t[FieldNames.subscription],
                     },
-                })),
+                },
             },
-        }).promise();
+        ]));
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.subscription]);
+        }
     }
 
     public async unsubscribeAll(connectionId: string): Promise<void> {
@@ -122,17 +136,20 @@ export class WebsocketSubscriptionManager {
 
         if (!subscriptions || subscriptions.length === 0) { return; }
 
-        await client.batchWrite({
-            RequestItems: {
-                [SUBSCRIPTIONS_TABLE]: subscriptions.map((t) => ({
-                    DeleteRequest: {
-                        Key: {
-                            [FieldNames.subscription]: t[FieldNames.subscription],
-                        },
+        const items: [string, WriteRequest][] = subscriptions.map((t) => ([
+            SUBSCRIPTIONS_TABLE,
+            {
+                DeleteRequest: {
+                    Key: {
+                        [FieldNames.subscription]: t[FieldNames.subscription],
                     },
-                })),
+                },
             },
-        }).promise();
+        ]));
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.subscription]);
+        }
     }
 
     public async sendData(connectionId: string, subscriptionId: string, payload: any): Promise<void> {

@@ -7,8 +7,9 @@ import { connect } from 'react-redux';
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { cachedAolloClient, getPersistor } from '../apollo/bootstrapApollo';
+import { cachedAolloClient, getApolloCachePersistor } from '../apollo/bootstrapApollo';
 import { parseCodeLink } from '../helper/linking/parseCodeLink';
+import { parseLink } from '../helper/linking/parseLink';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
@@ -17,7 +18,6 @@ import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
 import { styles } from './Styles';
-import { parseLink } from '../helper/linking/parseLink';
 
 type Props = {
     theme: Theme,
@@ -66,7 +66,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 
     componentDidMount() {
-        this.audit.submit();
+        super.componentDidMount();
 
         // we're reloaded without a valid state
         if (this.props.authState == null) {
@@ -111,10 +111,8 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
                 const client = cachedAolloClient();
                 await client.cache.reset();
-                await getPersistor().purge();
+                await getApolloCachePersistor().purge();
 
-                this.props.restoreSettings();
-                this.props.storeLanguage();
                 this.props.singedIn();
             } catch (e) {
                 logger.error(e, 'failed to login');
@@ -193,6 +191,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export default connect(
     (state: IAppState) => ({
         authState: state.auth.signinState,

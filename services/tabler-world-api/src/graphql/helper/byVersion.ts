@@ -1,7 +1,3 @@
-import { ILogger } from '@mskg/tabler-world-common';
-import { APIGatewayProxyEvent } from 'aws-lambda';
-import { logger } from '../subscriptions/publishToActiveSubscriptions';
-
 
 type VersionMap<T> = {
     default: () => T,
@@ -10,26 +6,30 @@ type VersionMap<T> = {
 
 type Args<T> = {
     context: {
-        logger: ILogger,
-        lambdaEvent?: APIGatewayProxyEvent,
+        // logger: ILogger,
+        clientInfo: {
+            version: string;
+        },
     },
 
     mapVersion?: (version: string) => string,
     versions: VersionMap<T>,
 };
 
-export function byVersion<T>({ context: { lambdaEvent }, versions, mapVersion }: Args<T>): T {
-    logger.log('Checking headers', lambdaEvent?.headers);
+function parseVersion(version: string) {
+    const [major, minor, bugfix] = version.split('.').map((e) => parseInt(e, 10));
+    return {
+        major,
+        minor,
+        bugfix,
+    };
+}
 
-    if (!lambdaEvent || lambdaEvent.headers['x-client-name'] !== 'TABLER.APP') {
-        logger.log('x-client-name not found');
-        return versions.default();
-    }
+export const v12Check = (version: string) => version.startsWith('1.1') || version.startsWith('1.0')
+    ? 'old'
+    : 'default';
 
-    const version = lambdaEvent.headers['x-client-version'];
-
+export function byVersion<T>({ context: { clientInfo: { version } }, versions, mapVersion }: Args<T>): T {
     const mappedVersion = mapVersion ? mapVersion(version) : version;
-    logger.log('x-client-version is', version, mappedVersion);
-
     return (versions[mappedVersion] || versions.default)();
 }

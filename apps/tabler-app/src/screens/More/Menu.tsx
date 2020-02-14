@@ -1,16 +1,16 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { ScrollView, View } from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
 import { showShakeErrorReport } from '../../components/ShakeErrorReport';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
 import { I18N } from '../../i18n/translation';
-import { Features, isFeatureEnabled } from '../../model/Features';
 import { GetMyRoles } from '../../model/graphql/GetMyRoles';
 import { UserRole } from '../../model/graphql/globalTypes';
 import { IAppState } from '../../model/IAppState';
@@ -48,40 +48,32 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
             <ScreenWithHeader header={{ title: I18N.Menu.title }}>
                 <ScrollView>
                     <List.Section>
-                        {isFeatureEnabled(Features.BackgroundLocation) && (
-                            <>
-                                <NavigationItem
-                                    icon="md-navigate"
-                                    theme={this.props.theme}
-                                    text={I18N.NearbyMembers.title}
-                                    onPress={() => this.props.navigation.navigate(Routes.Nearby)}
-                                />
+                        <NavigationItem
+                            icon={<Image source={Assets.images.icon_tw} style={{ marginTop: 2, height: 32, width: 32 }} />}
+                            theme={this.props.theme}
+                            text={I18N.World.title}
+                            onPress={() => this.props.navigation.navigate(Routes.World)}
+                        />
 
-                                <Divider inset={true} />
-                            </>
-                        )}
-
-                        {isFeatureEnabled(Features.Chat) && (
-                            <>
-                                <NavigationItem
-                                    icon="md-chatboxes"
-                                    theme={this.props.theme}
-                                    text={I18N.Conversations.title}
-                                    onPress={() => this.props.navigation.navigate(Routes.Conversations)}
-                                />
-
-                                <Divider inset={true} />
-                            </>
-                        )}
+                        <Divider inset={true} />
                     </List.Section>
 
                     {this.props.showExperiments && (
                         <List.Section>
                             <NavigationItem
-                                icon="md-globe"
+                                icon="md-paper"
                                 theme={this.props.theme}
-                                text={I18N.World.title}
-                                onPress={() => this.props.navigation.navigate(Routes.World)}
+                                text={I18N.News.title}
+                                onPress={() => this.props.navigation.navigate(Routes.News)}
+                            />
+
+                            <Divider inset={true} />
+
+                            <NavigationItem
+                                icon="md-image"
+                                theme={this.props.theme}
+                                text={I18N.Albums.title}
+                                onPress={() => this.props.navigation.navigate(Routes.Albums)}
                             />
 
                             <Divider inset={true} />

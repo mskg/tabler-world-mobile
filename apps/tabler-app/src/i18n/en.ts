@@ -90,7 +90,8 @@ const en = {
 
         title: 'Asssociation',
         mytitle: 'My Asssociation',
-        associations: 'Association',
+        associations: 'Associations',
+
         clubs: 'Clubs',
         areas: 'Areas',
 
@@ -176,6 +177,8 @@ const en = {
             },
         },
 
+        chat: (s) => `Send a message to ${s}`,
+
         email: (s) => {
             switch (s) {
                 case 'rt':
@@ -215,6 +218,7 @@ const en = {
         },
 
         Fields: {
+            chat: 'TABLER.APP Chat',
             home: 'Home Address',
             birthday: 'Birthday',
             partner: 'Partner',
@@ -250,10 +254,14 @@ const en = {
     Search: {
         title: 'Search',
         history: 'Search history',
+        favorites: 'Favorites',
         search: 'Search...',
         lru: 'Recently Opened',
 
         filter: 'Filter',
+
+        expand: 'See All',
+        collapse: 'See Less',
 
         results: (r) => r > 0 ? `Search results (${r})` : 'Search results',
 
@@ -308,7 +316,7 @@ const en = {
 
     Filter: {
         title: 'Adjust member filters',
-        area: 'Districts',
+        area: 'My Association\'s Districts',
         showAll: 'Show all my Association Members',
         hideAll: 'Hide all my Association Members',
 
@@ -446,7 +454,6 @@ const en = {
             version: 'Version',
             lastSync: 'Last Synchronization',
             channel: 'Distribution Channel',
-            pushtoken: 'Push Token',
             syncFavorites: 'Synchronize Favorites',
             syncOwnTable: 'Synchronize own Table\'s Members',
             sortOrder: 'Sort Order',
@@ -463,17 +470,10 @@ const en = {
             thirdparty: 'Third Party Software Notices and Information',
             about: 'About this App',
 
-            docs: [
-                {
-                    title: 'Data Protection Policy',
-                    url: 'https://help.roundtable.world/knowledge-base/data-protection-policy/',
-
-                },
-                {
-                    title: 'Imprint',
-                    url: 'https://help.roundtable.world/knowledge-base/imprint/',
-                },
-            ],
+            docs: {
+                dataprotection: 'Data Protection Policy',
+                imprint: 'Imprint',
+            },
         },
 
         cache: {
@@ -520,6 +520,12 @@ const en = {
         Settings: {
             title: 'Notifications',
 
+            push: {
+                title: 'Push Notifications',
+                action: 'Re-register for push notifications',
+                permissions: 'Cannot show notifications. Please grant permission through the phone\'s settings area.',
+            },
+
             birthday: {
                 title: 'Birthday Reminders',
                 field: 'For own club members and favorites',
@@ -557,6 +563,7 @@ const en = {
     },
 
     NearbyMembers: {
+        navigation: 'Nearby',
         title: 'Nearby Members',
         location: 'Your location',
 
@@ -573,6 +580,11 @@ const en = {
         off: 'Nearby Members is off. If you turn it on, other members can see in which city you are. We don\'t store your location history, only your last known location.',
         mapOff: 'You have opt-in for the map display to show a map yourself.',
 
+        sharesLocation: {
+            true: 'Shares his location with you',
+            false: 'Does not share his location',
+        },
+
         Tabs: {
             list: 'List',
             map: 'Map',
@@ -586,6 +598,8 @@ const en = {
                 field: 'Share Your Location',
             },
             map: {
+                title: 'Map Display',
+                text: 'If you turn this on additionaly, other members can see exactly where you are.',
                 field: 'Allow Others to View Your Position on a Map',
             },
             filter: {
@@ -604,7 +618,7 @@ const en = {
     },
 
     Conversations: {
-        title: 'Conversations',
+        title: 'Chats',
         network: 'Waiting for network...',
         copy: 'Copy',
         retry: 'Retry',

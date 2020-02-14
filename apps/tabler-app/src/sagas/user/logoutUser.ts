@@ -1,11 +1,11 @@
 import Auth from '@aws-amplify/auth';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
-import { Updates } from 'expo';
+import { Notifications, Updates } from 'expo';
 import * as SecureStore from 'expo-secure-store';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 import { put } from 'redux-saga/effects';
-import { bootstrapApollo, getPersistor } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
 import { disableNearbyTablers } from '../../helper/geo/disable';
 import * as actions from '../../redux/actions/user';
 import { getReduxPersistor } from '../../redux/getRedux';
@@ -28,9 +28,11 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     yield getReduxPersistor().purge();
     yield getReduxPersistor().flush();
 
-    const client: ApolloClient<NormalizedCacheObject> = yield bootstrapApollo();
+    const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
     yield client.cache.reset();
-    yield getPersistor().purge();
+    yield getApolloCachePersistor().purge();
+
+    if (Platform.OS === 'ios') { yield Notifications.setBadgeNumberAsync(0); }
 
     yield Auth.signOut();
     yield Updates.reloadFromCache();

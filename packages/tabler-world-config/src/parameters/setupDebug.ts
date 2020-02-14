@@ -1,13 +1,20 @@
 import LRU from 'lru-cache';
 import { mapName } from './mapName';
-import { Param_Api, Param_Database, Param_Nearby, Param_TTLS } from './types';
+import { Param_Api } from './types/Param_Api';
+import { Param_Database } from './types/Param_Database';
+import { Param_Nearby } from './types/Param_Nearby';
+import { Param_TTLS } from './types/Param_TTLS';
 
 export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('tw-api'), JSON.stringify({
         host: process.env.API_HOST,
         key: process.env.API_KEY_PLAIN,
-        batch: parseInt(process.env.API_BATCH || '', 10),
-        read_batch: parseInt(process.env.API_READ_BATCH || '', 10),
+        batch: parseInt(process.env.API_BATCH || '100', 10),
+        read_batch: parseInt(process.env.API_READ_BATCH || '10', 10),
+        concurrency: {
+            read: parseInt(process.env.API_MAX_CONCURRENCY || '3', 10),
+            write: parseInt(process.env.DB_MAX_CONCURRENCY || '3', 10),
+        },
     } as Param_Api));
 
     memoryCache.set(mapName('database'), JSON.stringify({
@@ -33,6 +40,7 @@ export function setupDebug(memoryCache: LRU<string, string>) {
         Albums: hours(4),
         Documents: hours(4),
         News: hours(4),
+        Principal: hours(1),
     } as Param_TTLS));
 
     memoryCache.set(mapName('app'), JSON.stringify({

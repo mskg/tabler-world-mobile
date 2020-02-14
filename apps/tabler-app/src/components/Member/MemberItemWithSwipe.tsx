@@ -2,13 +2,19 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Theme, TouchableRipple } from 'react-native-paper';
 import { connect } from 'react-redux';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { Features, isFeatureEnabled } from '../../model/Features';
+import { CanMemberChat } from '../../model/graphql/CanMemberChat';
 import { IAppState } from '../../model/IAppState';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { HashMap } from '../../model/Maps';
+import { GetCanMemberChatQuery } from '../../queries/Member/GetCanMemberChatQuery';
 import { toggleFavorite } from '../../redux/actions/filter';
+import { startConversation } from '../../redux/actions/navigation';
 import { FavoriteIcon } from '../FavoriteButton';
 import { SwipableItem, SwipeButtonsContainer } from '../SwipableItem';
 import { MemberListItem } from './MemberListItem';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type Props = {
     item: IMemberOverviewFragment;
@@ -17,13 +23,14 @@ type Props = {
     margin?: number;
     height?: number;
 
+    email?: string,
+    chat: boolean,
     favorites: HashMap<boolean>,
     toggleFavorite: typeof toggleFavorite,
-};
+} & NavigationInjectedProps;
 
 type State = {
-    initialized: boolean,
-    hasPhone: boolean,
+    canChat: boolean,
 };
 
 const testIsFavorite = (member: IMemberOverviewFragment, favorites: HashMap<boolean>) => {
@@ -33,16 +40,22 @@ const testIsFavorite = (member: IMemberOverviewFragment, favorites: HashMap<bool
 export class MemberItemWithSwipeBase extends React.Component<Props, State> {
     ref;
 
+    state = {
+        canChat: false,
+    };
+
     getSnapshotBeforeUpdate(prevProps) {
         if (prevProps.item !== this.props.item) {
             return true;
         }
+
         return false;
     }
 
     componentDidUpdate(_prevProps, _prevState, snapshot) {
-        if (snapshot) {
-            this.ref.close();
+        if (snapshot && this.ref) {
+            if (this.ref) { this.ref.close(); }
+            this.setState({ canChat: false });
         }
     }
 
@@ -58,8 +71,38 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
     _toggle = () => {
         requestAnimationFrame(() => {
             this.props.toggleFavorite(this.props.item);
-            this.ref.close();
+            if (this.ref) { this.ref.close(); }
         });
+    }
+
+    _chat = () => {
+        requestAnimationFrame(async () => {
+            this.props.navigation.dispatch(await startConversation(
+                this.props.item.id,
+                `${this.props.item.firstname} ${this.props.item.lastname}`,
+            ));
+
+            if (this.ref) { this.ref.close(); }
+        });
+    }
+
+    _checkChat = async () => {
+        if (!isFeatureEnabled(Features.Chat) || !this.props.chat) {
+            return;
+        }
+
+        const client = cachedAolloClient();
+        const result = await client.query<CanMemberChat>({
+            query: GetCanMemberChatQuery,
+            variables: {
+                id: this.props.item.id,
+            },
+            fetchPolicy: 'cache-first',
+        });
+
+        if (result.data.Member?.availableForChat) {
+            this.setState({ canChat: true });
+        }
     }
 
     // tslint:disable-next-line: max-func-body-length
@@ -70,6 +113,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
         return (
             <SwipableItem
                 ref={(o) => { this.ref = o; }}
+                onRightButtonsShowed={this._checkChat}
 
                 leftButtons={(
                     <SwipeButtonsContainer
@@ -77,15 +121,8 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexDirection: 'row',
-                            // height: this.props.height,
-                            backgroundColor: this.props.theme.colors.accent,
-                        }}>
-                        {/* <FavoriteButton
-                        theme={this.props.theme}
-                        member={this.props.item}
-                        size={24}
-                    /> */}
-
+                        }}
+                    >
                         <TouchableRipple
                             onPress={this._toggle}
                             style={{
@@ -104,6 +141,43 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
                         </TouchableRipple>
                     </SwipeButtonsContainer>
                 )}
+
+                rightButtons={
+                    (!isFeatureEnabled(Features.Chat) || !this.props.chat)
+                        ? undefined
+                        : (
+                            <SwipeButtonsContainer
+                                style={{
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexDirection: 'row',
+                                }}
+                            >
+                                <TouchableRipple
+                                    onPress={this._chat}
+                                    disabled={!this.state.canChat}
+                                    style={{
+                                        height: '100%',
+                                        width: 24 * 4,
+                                        paddingLeft: 24,
+                                        paddingRight: 24,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: this.props.theme.colors.background,
+                                    }}
+                                >
+                                    <Ionicons
+                                        size={24}
+                                        name={'md-chatbubbles'}
+                                        color={this.state.canChat ?
+                                            this.props.theme.colors.accent
+                                            : this.props.theme.colors.disabled
+                                        }
+                                    />
+                                </TouchableRipple>
+                            </SwipeButtonsContainer>
+                        )
+                }
 
             // rightButtons={
             //     <SwipeButtonsContainer style={{
@@ -169,8 +243,12 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
 
 
 export const MemberItemWithSwipe = connect(
-    (state: IAppState) => ({ favorites: state.filter.member.favorites }),
+    (state: IAppState) => ({
+        favorites: state.filter.member.favorites,
+        chat: state.settings.notificationsOneToOneChat == null || state.settings.notificationsOneToOneChat,
+        email: state.auth.username,
+    }),
     {
         toggleFavorite,
     },
-)(MemberItemWithSwipeBase);
+)(withNavigation(MemberItemWithSwipeBase));

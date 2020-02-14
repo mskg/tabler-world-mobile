@@ -1,24 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
-import Flag from 'react-native-flags';
 import { Text, Title } from 'react-native-paper';
 import { styles } from './Styles';
-
-const CountryFlag = () => {
-    return (
-        <View
-            style={{
-                marginTop: -1,
-                paddingLeft: 8,
-            }}
-        >
-            <Flag
-                code="DE"
-                size={16}
-            />
-        </View>
-    );
-};
 
 // tslint:disable: jsx-wrap-multiline
 export class MemberTitleBase extends React.PureComponent<{

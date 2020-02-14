@@ -9,7 +9,14 @@ export class CacheEntry {
     }
 
     async getPath(): Promise<string | undefined> {
+        // tslint:disable-next-line: no-this-assignment
         const { uri, options } = this;
+
+        if (uri.toLowerCase().startsWith('file://')) {
+            logger.log('Ignoring local uri', uri);
+            return uri;
+        }
+
         const { path, exists, tmpPath } = await getCacheEntry(uri, this.group);
 
         if (exists) {
@@ -23,24 +30,48 @@ export class CacheEntry {
             return path;
         }
 
+        // const encodedUri = encodeURI(uri);
         try {
             logger.debug('Downloading', uri, 'to', tmpPath);
-            const result = await FileSystem.createDownloadResumable(
-                encodeURI(uri),
-                tmpPath, options).downloadAsync();
+            let result = await FileSystem.createDownloadResumable(
+                uri,
+                tmpPath,
+                options,
+            ).downloadAsync();
 
             // If the image download failed, we don't cache anything
             if (result && result.status !== 200) {
-                logger.log('Failed to download uri', uri, result.status);
+                logger.log('Failed to download uri, status != 200', uri, result.status);
 
-                try {
-                    await FileSystem.deleteAsync(tmpPath);
-                    await FileSystem.deleteAsync(path);
-                } catch { }
+                const encoded = encodeURI(uri);
+                if (encoded !== uri) {
+                    logger.log('Retry with encoded URI', encoded);
+
+                    result = await FileSystem.createDownloadResumable(
+                        encoded,
+                        tmpPath,
+                        options,
+                    ).downloadAsync();
+
+                    if (result && result.status !== 200) {
+                        logger.log('Failed to download uri, status != 200', encoded, result.status);
+
+                        try {
+                            await FileSystem.deleteAsync(tmpPath);
+                            await FileSystem.deleteAsync(path);
+                        } catch { }
+                    }
+                } else {
+                    try {
+                        await FileSystem.deleteAsync(tmpPath);
+                        await FileSystem.deleteAsync(path);
+                    } catch { }
+                }
+
                 return undefined;
             }
         } catch (e) {
-            logger.log('Failed to download uri', uri, e);
+            logger.log('Error downloading uri', uri, e);
             return undefined;
         }
 

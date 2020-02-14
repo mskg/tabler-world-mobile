@@ -58,7 +58,18 @@ export async function komoot(address: IAddress): Promise<NodeGeocoder.Entry | nu
     const thisops: { [key: string]: string; } = {
         limit: '1',
         lang: 'de',
-        q: addressToString(address) as string,
+        q: addressToString(address, ', ') as string,
+
+        // addressToString(
+        //     {
+        //         ...address,
+        //         country: address.country
+        //             // @ts-ignore
+        //             ? countryNames[address.country.toUpperCase()] || address.country
+        //             : undefined,
+        //     },
+        //     ', ',
+        // ) as string,
     };
 
     const api = new HttpClient('photon.komoot.de');

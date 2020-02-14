@@ -32,5 +32,7 @@ export const Settings = gql`
 
         "Updates a setting"
         putSetting(setting: SettingInput!): Boolean
+
+        testPushNotifications: Boolean
     }
 `;

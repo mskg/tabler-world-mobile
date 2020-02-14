@@ -14,13 +14,16 @@ import { collectEMails, collectPhones } from '../../helper/collect';
 import { LinkingHelper } from '../../helper/LinkingHelper';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../model/Features';
 import { Member_Member } from '../../model/graphql/Member';
 import { IAddress } from '../../model/IAddress';
 import { IAppState } from '../../model/IAppState';
+import { startConversation, IProfileParams } from '../../redux/actions/navigation';
 import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from './openLink';
 import { Organization } from './Organization';
 import { Roles } from './Roles';
 import { Social } from './Social';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type State = {
     numbers: string[],
@@ -39,9 +42,13 @@ type StateProps = {
     browserApp?: string,
     phoneApp?: string,
     emailApp?: string,
+    nearBy?: boolean;
+    offline: boolean;
+    user?: string;
+    chatEnabled: boolean;
 };
 
-type Props = OwnProps & StateProps & ActionSheetProps;
+type Props = OwnProps & StateProps & ActionSheetProps & NavigationInjectedProps<IProfileParams>;
 
 type SectionValue = {
     field?: string,
@@ -228,6 +235,17 @@ class ProfileBase extends React.Component<Props, State> {
             LinkType.EMail);
     }
 
+    _startChat = async () => {
+        if (!this.props.member) {
+            return;
+        }
+
+        this.props.navigation.dispatch(await startConversation(
+            this.props.member.id,
+            `${this.props.member.firstname} ${this.props.member.lastname}`,
+        ));
+    }
+
     handleAddress = (address?: IAddress | null) => () => {
         showAddress(address);
     }
@@ -278,7 +296,21 @@ class ProfileBase extends React.Component<Props, State> {
             );
         }
 
+        const canChat = member.availableForChat && this.props.user !== member.rtemail
+            && isFeatureEnabled(Features.Chat) && this.props.chatEnabled;
+            // && !this.props.navigation.getParam('preventChat');
+
         const sections: Sections = [
+            {
+                icon: 'md-chatbubbles',
+                values: [
+                    {
+                        field: I18N.Member.Fields.chat,
+                        text: !canChat ? undefined : I18N.Member.chat(member.firstname),
+                    }
+                ],
+                onPress: this._startChat,
+            },
             {
                 icon: 'md-call',
                 values: (collectPhones(member)).map(
@@ -386,6 +418,20 @@ class ProfileBase extends React.Component<Props, State> {
                     },
                 ],
             },
+            {
+                icon: 'md-pin',
+                values: [
+                    {
+                        field: I18N.NearbyMembers.title,
+                        text:
+                            this.props.nearBy
+                                ? member.sharesLocation
+                                    ? I18N.NearbyMembers.sharesLocation.true
+                                    : I18N.NearbyMembers.sharesLocation.false
+                                : undefined,
+                    },
+                ],
+            },
         ]
             .map((s: Section) => ({
                 ...s,
@@ -431,7 +477,14 @@ export const Profile = connect(
         browserApp: state.settings.browserApp,
         phoneApp: state.settings.phoneApp,
         emailApp: state.settings.emailApp,
+        nearBy: state.settings.nearbyMembers,
+        offline: state.connection.offline,
+
+        chatEnabled: state.settings.notificationsOneToOneChat == null
+            ? true : state.settings.notificationsOneToOneChat,
+        user: state.auth.username,
     }),
-    null,
+    {
+    },
 )(
-    withTheme(connectActionSheet(ProfileBase)));
+    withTheme(withNavigation(connectActionSheet(ProfileBase))));

@@ -6,6 +6,7 @@ import { Button, Card, IconButton, Searchbar, Surface, Theme, withTheme } from '
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../../analytics/AuditPropertyNames';
 import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenName';
 import { RoleAccordionSection } from '../../../components/Club/RoleAccordionSection';
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
@@ -27,6 +28,7 @@ import { StructureParams } from '../StructureParams';
 import { styles } from '../Styles';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
+import { IAppState } from '../../../model/IAppState';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -36,6 +38,7 @@ type State = {
 };
 
 type Props = {
+    association?: string,
     theme: Theme,
     showClub: typeof showClub,
 
@@ -69,6 +72,10 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     this.props.refresh();
                 }
             },
+        });
+
+        this.audit.submit({
+            [AuditPropertyNames.Association]: this.props.association,
         });
     }
 
@@ -178,56 +185,50 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
         const showMap = isFeatureEnabled(Features.ClubMap);
 
         return (
-            <RefreshTracker>
-                {({ isRefreshing, createRunRefresh }) => {
-                    return (
-                        <Placeholder
-                            ready={this.props.data != null && this.props.data.Clubs != null}
-                            previewComponent={<CardPlaceholder />}
-                        >
-                            <FlatList
-                                ref={(r) => this.flatList = r}
-                                contentContainerStyle={styles.container}
-                                data={this.state.filtered}
-                                ListHeaderComponent={(
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Searchbar
-                                            style={[styles.searchbar]}
-                                            selectionColor={this.props.theme.colors.accent}
-                                            placeholder={I18N.Search.search}
-                                            autoCorrect={false}
+            <Placeholder
+                ready={this.props.data != null && this.props.data.Clubs != null}
+                previewComponent={<CardPlaceholder />}
+            >
+                <FlatList
+                    ref={(r) => this.flatList = r}
+                    contentContainerStyle={styles.container}
+                    data={this.state.filtered}
+                    ListHeaderComponent={(
+                        <View style={{ flexDirection: 'row' }}>
+                            <Searchbar
+                                style={[styles.searchbar]}
+                                selectionColor={this.props.theme.colors.accent}
+                                placeholder={I18N.Search.search}
+                                autoCorrect={false}
 
-                                            value={this.state.search}
-                                            onChangeText={this._search}
-                                        />
-
-                                        {showMap && (
-                                            <Surface style={styles.switchLayoutButton}>
-                                                <IconButton
-                                                    icon={
-                                                        ({ size, color }) => (
-                                                            <Ionicons
-                                                                name="md-map"
-                                                                size={size}
-                                                                color={color}
-                                                            />
-                                                        )
-                                                    }
-                                                    onPress={this._showMap}
-                                                />
-                                            </Surface>
-                                        )}
-                                    </View>
-                                )}
-                                refreshing={this.props.loading || isRefreshing}
-                                onRefresh={createRunRefresh(this.props.refresh)}
-                                renderItem={this._renderItem}
-                                keyExtractor={this._key}
+                                value={this.state.search}
+                                onChangeText={this._search}
                             />
-                        </Placeholder>
-                    );
-                }}
-            </RefreshTracker>
+
+                            {showMap && (
+                                <Surface style={styles.switchLayoutButton}>
+                                    <IconButton
+                                        icon={
+                                            ({ size, color }) => (
+                                                <Ionicons
+                                                    name="md-map"
+                                                    size={size}
+                                                    color={color}
+                                                />
+                                            )
+                                        }
+                                        onPress={this._showMap}
+                                    />
+                                </Surface>
+                            )}
+                        </View>
+                    )}
+                    refreshing={this.props.loading}
+                    onRefresh={this.props.refresh}
+                    renderItem={this._renderItem}
+                    keyExtractor={this._key}
+                />
+            </Placeholder>
         );
     }
 }
@@ -241,25 +242,42 @@ const ConnectedClubScreen = connect(null, {
     ),
 );
 
-const ClubsScreenWithQuery = ({ fetchPolicy, screenProps }) => (
+const ClubsScreenWithQuery = ({ fetchPolicy, screenProps, offline }) => (
     <Tab>
-        <Query<Clubs, ClubsVariables>
-            query={GetClubsQuery}
-            fetchPolicy={fetchPolicy}
-            variables={{
-                association: screenProps?.association,
-            }}
-        >
-            {({ loading, data, error, refetch }) => {
-                if (error) throw error;
+        <RefreshTracker>
+            {({ isRefreshing, createRunRefresh }) => {
+                return (
+                    <Query<Clubs, ClubsVariables>
+                        query={GetClubsQuery}
+                        fetchPolicy={fetchPolicy}
+                        variables={{
+                            association: screenProps?.association,
+                        }}
+                    >
+                        {({ loading, data, error, refetch }) => {
+                            if (error) throw error;
 
-                if (!loading && (data == null || data.Clubs == null)) {
-                    return (<CannotLoadWhileOffline />);
-                }
+                            if (!loading && (data == null || data.Clubs == null)) {
+                                if (offline) {
+                                    return <CannotLoadWhileOffline />;
+                                }
 
-                return (<ConnectedClubScreen loading={loading} data={data} refresh={refetch} />);
+                                setTimeout(createRunRefresh(refetch));
+                            }
+
+                            return (
+                                <ConnectedClubScreen
+                                    loading={loading || isRefreshing}
+                                    data={data}
+                                    refresh={createRunRefresh(refetch)}
+                                    association={screenProps?.association}
+                                />
+                            );
+                        }}
+                    </Query>
+                );
             }}
-        </Query>
+        </RefreshTracker>
     </Tab>
 );
 
@@ -267,4 +285,9 @@ export const ClubsListScreen =
     withWhoopsErrorBoundary(
         withCacheInvalidation(
             'clubs',
-            ClubsScreenWithQuery));
+            connect(
+                (s: IAppState) => ({
+                    offline: s.connection.offline,
+                }),
+            )(ClubsScreenWithQuery),
+        ));

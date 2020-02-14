@@ -25,6 +25,7 @@ export interface OfflineMembers_OwnTable_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface OfflineMembers_OwnTable_roles_ref {
@@ -128,6 +129,7 @@ export interface OfflineMembers_OwnTable {
   companies: OfflineMembers_OwnTable_companies[] | null;
   educations: OfflineMembers_OwnTable_educations[] | null;
   socialmedia: OfflineMembers_OwnTable_socialmedia | null;
+  sharesLocation: boolean | null;
 }
 
 export interface OfflineMembers_FavoriteMembers_club {
@@ -147,6 +149,7 @@ export interface OfflineMembers_FavoriteMembers_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface OfflineMembers_FavoriteMembers_roles_ref {
@@ -250,6 +253,7 @@ export interface OfflineMembers_FavoriteMembers {
   companies: OfflineMembers_FavoriteMembers_companies[] | null;
   educations: OfflineMembers_FavoriteMembers_educations[] | null;
   socialmedia: OfflineMembers_FavoriteMembers_socialmedia | null;
+  sharesLocation: boolean | null;
 }
 
 export interface OfflineMembers {

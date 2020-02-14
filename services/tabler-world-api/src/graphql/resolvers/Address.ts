@@ -60,7 +60,7 @@ export const AddressResolver = {
             }
 
             const hash = addressHash(root);
-            context.logger.log(root, hash);
+            // context.logger.log(root, hash);
 
             if (hash == null) { return null; }
 

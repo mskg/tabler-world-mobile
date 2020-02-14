@@ -1,5 +1,5 @@
 -- Table: public.tabler
-SET ROLE tw_read_dev;
+SET ROLE 'tw_read_dev';
 
 CREATE TABLE IF NOT EXISTS groups
 (

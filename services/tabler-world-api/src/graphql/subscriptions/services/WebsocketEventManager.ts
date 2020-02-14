@@ -1,4 +1,4 @@
-import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { BatchWrite, EXECUTING_OFFLINE, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { PushNotificationBase } from '@mskg/tabler-world-push-client';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
@@ -94,8 +94,8 @@ export class WebsocketEventManager {
         }).promise();
     }
 
-    public async post<T = any>({ trigger, payload, pushNotification, ttl, trackDelivery = true }: {
-        trigger: string;
+    public async post<T = any>({ triggers, payload, pushNotification, ttl, trackDelivery = true }: {
+        triggers: string[];
         payload: T;
         pushNotification?: {
             sender?: number;
@@ -103,50 +103,70 @@ export class WebsocketEventManager {
         };
         trackDelivery?: boolean,
         ttl?: number;
-    }): Promise<WebsocketEvent<T>> {
-        logger.log('postMessage', trigger, payload);
+    }): Promise<WebsocketEvent<T>[]> {
+        logger.log('postMessage', triggers, payload);
 
-        const rawMessage = {
+        const baseMessage = {
             trackDelivery,
             payload,
-            eventName: trigger,
-            id: ulid(),
+            // eventName: trigger,
+            // id: ulid(),
             pushNotification: pushNotification ? pushNotification.message : undefined,
             sender: pushNotification ? pushNotification.sender : undefined,
             delivered: false,
         } as WebsocketEvent<T>;
 
-        const message = await this.marshall<T>(rawMessage);
+        const messages = await Promise.all(triggers.map(async (t) => {
+            const message = await this.marshall<T>({
+                // need a full copy
+                ...JSON.parse(JSON.stringify(baseMessage)),
+                id: ulid(),
+                eventName: t,
+            });
+
+            // we don't care about the little drift
+            if (ttl) {
+                // @ts-ignore
+                message.ttl = Math.floor(Date.now() / 1000) + ttl;
+            }
+
+            return message;
+        }));
 
         // dynamodb streams are not working offline so invoke lambda directly
         if (EXECUTING_OFFLINE) {
             setTimeout(
                 () => publish({
-                    Records: [{
-                        eventName: 'INSERT' as 'INSERT',
-                        // @ts-ignore
+                    // @ts-ignore
+                    Records: messages.map((message) => ({
+                        eventName: 'INSERT',
                         dynamodb: {
                             NewImage: message,
                         },
-                    }],
+                    })),
                 }),
-                500,
+                2000,
             );
         }
 
-        if (ttl) {
-            // @ts-ignore
-            message.ttl = Math.floor(Date.now() / 1000) + ttl;
+        const items: [string, WriteRequest][] = messages.map((message) => ([
+            EVENTS_TABLE,
+            {
+                PutRequest: {
+                    Item: message,
+                },
+            },
+        ]));
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Updated', item[0], item[1].PutRequest?.Item[FieldNames.id]);
         }
 
-        await client.put({
-            Item: {
-                ...message,
-            },
-            TableName: EVENTS_TABLE,
-        }).promise();
-
-        return rawMessage;
+        return messages.map((m) => ({
+            ...baseMessage,
+            id: m.id,
+            eventName: m.eventName,
+        }));
     }
 
     private async unMarshallWithEncryptionManager<T>(em: EncryptionManager, message: EncodedWebsocketEvent): Promise<WebsocketEvent<T>> {

@@ -137,6 +137,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
         }
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
         return (
             <>
@@ -175,6 +176,11 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                                     />
                                 )}
                             />
+                            <Divider />
+                        </List.Section>
+
+                        <List.Section title={I18N.NearbyMembers.Settings.map.title}>
+                            <Text style={styles.text}>{I18N.NearbyMembers.Settings.map.text}</Text>
                             <Divider />
                             <Element
                                 theme={this.props.theme}

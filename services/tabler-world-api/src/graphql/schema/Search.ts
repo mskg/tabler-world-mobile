@@ -9,8 +9,13 @@ export const SearchMember = gql`
         sectors: [CompanySector!]
         roles: [String!]
 
+        # should be ID!
         associations: [String!]
+
+        # should be ID!
         areas: [String!]
+
+        # should be ID!
         clubs: [String!]
     }
 

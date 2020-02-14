@@ -110,6 +110,7 @@ export const Member = gql`
         firstname: String
         lastname: String
 
+        family: Family!
         association: Association!
         area: Area!
         club: Club!,
@@ -126,8 +127,6 @@ export const Member = gql`
 
     type Member implements MemberListView {
         id: Int!
-        #removed: Boolean
-
         pic: String
 
         title: String
@@ -136,19 +135,10 @@ export const Member = gql`
 
         address: Address
 
-        # association: String
-        # associationname: String
-
+        family: Family!
         association: Association!
-
         area: Area!
-        # area: Int
-        # area_domain: String
-
         club: Club!,
-
-        # club: Int
-        # clubname: String
 
         birthdate: Date
         datejoined: Date
@@ -168,11 +158,14 @@ export const Member = gql`
         companies: [Company!]
 
         availableForChat: Boolean
+        sharesLocation: Boolean
     }
 
     input MemberFilterInput {
-        # deprecated
+        "deprecated use byArea"
         areas: [Int!]
+
+        byArea: [ID!]
 
         nationalBoard: Boolean
         areaBoard: Boolean

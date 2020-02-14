@@ -14,10 +14,12 @@ import { I18N } from '../../i18n/translation';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { FixedChat } from './FixedChat';
 import { IChatMessage } from './IChatMessage';
+import { MessageImage } from './MessageImage';
 import { resize } from './resize';
 
 const logger = new Logger(Categories.Screens.Conversation);
 const TEMP_TEXT_IMAGE = '#__#';
+const IMAGE_SIZE = 100;
 
 const emojiRegex = emojiRegexCreator();
 function isPureEmojiString(text) {
@@ -33,15 +35,21 @@ type Props = {
     theme: Theme,
 
     extraData?: any,
+
     isLoadingEarlier: boolean,
     loadEarlier: boolean,
     onLoadEarlier: () => void,
 
     messages?: IChatMessage[],
     sendMessage: (messages: IChatMessage[]) => void,
-    subscribe?: () => void,
 
     sendDisabled: boolean,
+
+    onTextChanged?: (text: string) => void;
+    onImageChanged?: (image?: string) => void;
+
+    text?: string;
+    image?: string;
 };
 
 type State = {
@@ -53,13 +61,39 @@ type State = {
 };
 
 class ChatBase extends React.Component<Props, State> {
-    state: State = {};
+
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            pickedImage: this.props.image ?
+                {
+                    uri: this.props.image,
+                    height: IMAGE_SIZE,
+                    width: IMAGE_SIZE,
+                }
+                : undefined,
+        };
+    }
 
     // _renderLoadEarlier = (props: any) => {
     //     return (
     //         <LoadEarlier {...props} />
     //     );
     // }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.image !== this.props.image) {
+            this.setState({
+                pickedImage: this.props.image ?
+                    {
+                        uri: this.props.image,
+                        height: IMAGE_SIZE,
+                        width: IMAGE_SIZE,
+                    }
+                    : undefined,
+            });
+        }
+    }
 
     _renderBubble = (props: any) => {
         return (
@@ -173,6 +207,7 @@ class ChatBase extends React.Component<Props, State> {
         }
 
         this.setState({ pickedImage: undefined });
+        if (this.props.onImageChanged) { this.props.onImageChanged(undefined); }
     }
 
     export(source) {
@@ -270,21 +305,23 @@ class ChatBase extends React.Component<Props, State> {
             currentMessage
             && (currentMessage.sent || currentMessage.received || currentMessage.pending)
             && !currentMessage.failedSend
+            && currentMessage.user._id === this.props.userId
         ) {
             return (
                 <View style={styles.tickView}>
                     {!!currentMessage.sent && (
-                        <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons name="md-checkmark" color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={10} />
                     )}
                     {!!currentMessage.received && (
-                        <Ionicons name="md-checkmark" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons name="md-checkmark" color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={10} />
                     )}
                     {!!currentMessage.pending && (
-                        <Ionicons name="md-time" color={this.props.theme.colors.disabled} size={10} />
+                        <Ionicons style={{ paddingBottom: 4 }} name="md-time" color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} size={10} />
                     )}
                 </View>
             );
         }
+
         return null;
     }
 
@@ -297,7 +334,7 @@ class ChatBase extends React.Component<Props, State> {
 
     _renderFooter = () => {
         if (this.state.pickedImage) {
-            const resized = resize(this.state.pickedImage, 100, 100);
+            const resized = resize(this.state.pickedImage, IMAGE_SIZE, IMAGE_SIZE);
 
             return (
                 <View style={[styles.reply_to_footer, { backgroundColor: this.props.theme.colors.backdrop }]}>
@@ -331,6 +368,7 @@ class ChatBase extends React.Component<Props, State> {
 
         if (pickedImage.cancelled) {
             this.setState({ pickedImage: undefined });
+            if (this.props.onImageChanged) { this.props.onImageChanged(undefined); }
         } else {
             this.setState({
                 pickedImage: {
@@ -339,6 +377,7 @@ class ChatBase extends React.Component<Props, State> {
                     width: pickedImage.width,
                 },
             });
+            if (this.props.onImageChanged) { this.props.onImageChanged(pickedImage.uri); }
         }
     }
 
@@ -362,10 +401,8 @@ class ChatBase extends React.Component<Props, State> {
         );
     }
 
-    componentDidMount() {
-        if (this.props.subscribe) {
-            this.props.subscribe();
-        }
+    _renderMessageImage = (props) => {
+        return <MessageImage {...props} />;
     }
 
     render() {
@@ -386,7 +423,7 @@ class ChatBase extends React.Component<Props, State> {
                     onLongPress={this._onLongPress}
 
                     dateFormat={'ddd D. MMM'}
-                    timeFormat={'hh:HH'}
+                    timeFormat={'hh:mm'}
 
                     extraData={this.props.extraData}
                     renderAvatar={null}
@@ -415,6 +452,13 @@ class ChatBase extends React.Component<Props, State> {
                     renderComposer={this._renderActions}
                     renderActions={this._renderComposer}
                     renderChatFooter={this._renderFooter}
+
+                    renderMessageImage={this._renderMessageImage}
+
+                    onInputTextChanged={this.props.onTextChanged}
+
+                    text={this.props.text}
+                    image={this.props.image}
                 />
 
                 {Platform.OS === 'android' && <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={80} />}
@@ -456,12 +500,12 @@ const styles = StyleSheet.create({
     },
 
     reply_to_footer: {
-        height: 100,
+        height: IMAGE_SIZE,
         flexDirection: 'row',
     },
 
     reply_to_border: {
-        height: 100,
+        height: IMAGE_SIZE,
         width: 5,
     },
 

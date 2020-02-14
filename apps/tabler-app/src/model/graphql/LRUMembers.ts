@@ -8,6 +8,7 @@
 
 export interface LRUMembers_Members_club {
   __typename: "Club";
+  id: string;
   name: string;
 }
 

@@ -1,4 +1,6 @@
+import Constants from 'expo-constants';
 import * as Sentry from 'sentry-expo';
+import { PRESERVE_CONSOLE } from './PRESERVE_CONSOLE';
 
 // tslint:disable: max-classes-per-file prefer-template
 
@@ -41,6 +43,7 @@ export class Categories {
         static readonly Snacks = Categories.SagaRoot + '/Snacks';
         static readonly AppState = Categories.SagaRoot + '/AppState';
         static readonly Data = Categories.SagaRoot + '/Data';
+        static readonly Chat = Categories.SagaRoot + '/Chat';
     };
 
     static ReduxComponent = class {
@@ -75,12 +78,13 @@ export class Categories {
         static readonly SecureStore = Categories._Helper + '/SecureStore';
         static readonly ImageCache = Categories._Helper + '/ImageCache';
         static readonly Geo = Categories._Helper + '/Geo';
+        static readonly Chat = Categories._Helper + '/Chat';
     };
 }
 
+console.disableYellowBox = true;
 let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
-const PRESERVE_CONSOLE = false;
 
 // safety
 if (!__DEV__) {
@@ -117,9 +121,16 @@ export class Logger {
                 category: this.category,
                 level: Sentry.Severity.Debug,
             });
-        } else {
-            // tslint:disable-next-line: no-console
-            console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+        }
+
+        if (__DEV__ || PRESERVE_CONSOLE) {
+            if (__DEV__) {
+                // tslint:disable-next-line: no-console
+                console.debug(Constants.deviceId, `[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+            } else {
+                // tslint:disable-next-line: no-console
+                console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+            }
         }
     }
 
@@ -142,9 +153,16 @@ export class Logger {
                 category: this.category,
                 level: Sentry.Severity.Info,
             });
-        } else {
-            // tslint:disable-next-line: no-console
-            console.info(`[INFO ] [${this.category.padEnd(MAX)}]`, ...args);
+        }
+
+        if (__DEV__ || PRESERVE_CONSOLE) {
+            if (__DEV__) {
+                // tslint:disable-next-line: no-console
+                console.log(Constants.deviceId, `[INFO] [${this.category.padEnd(MAX)}]`, ...args);
+            } else {
+                // tslint:disable-next-line: no-console
+                console.log(`[INFO] [${this.category.padEnd(MAX)}]`, ...args);
+            }
         }
     }
 
@@ -157,10 +175,16 @@ export class Logger {
 
                 Sentry.captureException(error);
             });
+        }
 
-        } else {
-            // tslint:disable-next-line: no-console
-            console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+        if (__DEV__ || PRESERVE_CONSOLE) {
+            if (__DEV__) {
+                // tslint:disable-next-line: no-console
+                console.warn(Constants.deviceId, `[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+            } else {
+                // tslint:disable-next-line: no-console
+                console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+            }
         }
     }
 }

@@ -36,6 +36,9 @@ export interface Jobs_Jobs {
   __typename: "Job";
   runon: any;
   name: string;
+  /**
+   * Deprecated, don't use
+   */
   success: boolean;
   data: Jobs_Jobs_data | null;
 }

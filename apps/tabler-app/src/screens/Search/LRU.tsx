@@ -11,6 +11,7 @@ import { LRUMembers } from '../../model/graphql/LRUMembers';
 import { IAppState } from '../../model/IAppState';
 import { GetLRUMembersQuery } from '../../queries/Search/GetLRUMembersQuery';
 import { showProfile } from '../../redux/actions/navigation';
+import _ from 'lodash';
 
 // const logger = new Logger(Categories.Screens.Search);
 
@@ -53,7 +54,9 @@ class LRUBase extends React.Component<Props> {
                                 <View style={{ backgroundColor: this.props.theme.colors.surface }}>
                                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginLeft: 16, paddingTop: 8 }}>
                                         {
-                                            data.Members.map((r) => (
+                                            // we must resort them based on the LRU list as they come
+                                            // in named order from the server
+                                            _(data.Members).sortBy((e) => this.props.lru.indexOf(e.id)).map((r) => (
                                                 <View style={{ marginRight: 16, marginTop: 4, marginBottom: 12 }} key={r.id}>
                                                     <RoleAvatar
                                                         member={r}
@@ -61,7 +64,7 @@ class LRUBase extends React.Component<Props> {
                                                         width={widthMax}
                                                     />
                                                 </View>
-                                            ))
+                                            )).value()
                                         }
                                     </ScrollView>
                                 </View>

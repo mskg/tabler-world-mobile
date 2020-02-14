@@ -4,6 +4,13 @@ import { IApolloContext } from '../types/IApolloContext';
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const JobsResolver = {
+    Job: {
+        // deprecated
+        success: (root: any, _args: any, _context: IApolloContext) => {
+            return root.status === 'completed' || root.status === 'running';
+        },
+    },
+
     Query: {
         Jobs: async (_root: any, _args: any, context: IApolloContext) => {
             return useDataService(context, async (client) => {

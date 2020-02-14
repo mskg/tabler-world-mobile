@@ -30,7 +30,7 @@ export function bootstrapRedux() {
     };
 
     // this breaks the experimental navigation option in DEV!
-    if (false || !__DEV__) {
+    if (true || !__DEV__) {
         persistConfig.blacklist = [...(persistConfig.blacklist || []), 'navigation'];
     }
 
@@ -63,7 +63,9 @@ export function bootstrapRedux() {
     };
 
     const reduxLogger = (_store) => (next) => (action) => {
-        logger.debug(action.type, action.key);
+        if (__DEV__) {
+            logger.debug(action.type, action.payload);
+        }
         return next(action);
     };
 

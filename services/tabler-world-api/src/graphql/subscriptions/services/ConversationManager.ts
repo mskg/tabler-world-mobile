@@ -1,3 +1,4 @@
+import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import DynamoDB, { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
 import { dynamodb as client } from '../aws/dynamodb';
@@ -146,37 +147,43 @@ export class ConversationManager {
 
         const members = (result[FieldNames.members] || { values: null }).values;
         if (members && members.length !== 0) {
-            await client.batchWrite({
-                RequestItems: {
-                    [CONVERSATIONS_TABLE]: members.map((member: number) => ({
-                        PutRequest: {
-                            Item: {
-                                [FieldNames.conversation]: conversation,
-                                [FieldNames.member]: member,
-                                [FieldNames.lastConversation]: `${eventId}_${conversation}`,
-                            },
+            const items: [string, WriteRequest][] = members.map((member: number) => ([
+                CONVERSATIONS_TABLE,
+                {
+                    PutRequest: {
+                        Item: {
+                            [FieldNames.conversation]: conversation,
+                            [FieldNames.member]: member,
+                            [FieldNames.lastConversation]: `${eventId}_${conversation}`,
                         },
-                    })),
+                    },
                 },
-            });
+            ]));
+
+            for await (const item of new BatchWrite(client, items)) {
+                logger.log('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+            }
         }
     }
 
     public async removeMembers(conversation: string, members: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'removeMembers', members);
 
-        await client.batchWrite({
-            RequestItems: {
-                [CONVERSATIONS_TABLE]: members.map((member) => ({
-                    DeleteRequest: {
-                        Key: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: member,
-                        },
+        const items: [string, WriteRequest][] = members.map((member) => ([
+            CONVERSATIONS_TABLE,
+            {
+                DeleteRequest: {
+                    Key: {
+                        [FieldNames.conversation]: conversation,
+                        [FieldNames.member]: member,
                     },
-                })),
-            },
-        }).promise();
+                },
+            }]),
+        );
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Wrote', item[0], item[1].DeleteRequest?.Key[FieldNames.member]);
+        }
 
         await client.update({
             TableName: CONVERSATIONS_TABLE,
@@ -196,19 +203,22 @@ export class ConversationManager {
     public async addMembers(conversation: string, members: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'addMembers', members);
 
-        await client.batchWrite({
-            RequestItems: {
-                [CONVERSATIONS_TABLE]: members.map((member) => ({
-                    PutRequest: {
-                        Item: {
-                            [FieldNames.conversation]: conversation,
-                            [FieldNames.member]: member,
-                            [FieldNames.lastConversation]: `0_${conversation}`,
-                        },
+        const items: [string, WriteRequest][] = members.map((member) => ([
+            CONVERSATIONS_TABLE,
+            {
+                PutRequest: {
+                    Item: {
+                        [FieldNames.conversation]: conversation,
+                        [FieldNames.member]: member,
+                        [FieldNames.lastConversation]: `0_${conversation}`,
                     },
-                })),
+                },
             },
-        }).promise();
+        ]));
+
+        for await (const item of new BatchWrite(client, items)) {
+            logger.log('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+        }
 
         await client.update({
             TableName: CONVERSATIONS_TABLE,

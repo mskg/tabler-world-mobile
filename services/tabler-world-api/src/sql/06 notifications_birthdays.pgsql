@@ -21,6 +21,8 @@ as select
     , birthdate(birthdate) as birthdate
     , firstname
     , lastname
+    , allfamiliesoptin
+    , family
     , association
     , area
     , club
@@ -44,9 +46,11 @@ from
 where
         p.birthdate = birthdate(current_date)
     and u.id <> p.id -- not for himself
-    and get_profile_access (p.privacy,
-        p.id, p.club, p.association,
-        u.id, u.club, u.association) = true
+    and get_profile_access (
+            p.privacy,
+            p.id, p.club, p.association, p.family, p.allfamiliesoptin,
+            u.id, u.club, u.association, u.family
+        ) = true
 
     and (
             a.settings->'favorites' @> ('[' || p.id || ']')::jsonb -- favorite

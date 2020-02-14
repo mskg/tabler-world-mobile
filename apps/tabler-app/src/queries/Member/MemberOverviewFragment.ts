@@ -22,6 +22,7 @@ export const MemberOverviewFragment = gql`
        association {
             id
             name
+            flag
        }
 
         roles {

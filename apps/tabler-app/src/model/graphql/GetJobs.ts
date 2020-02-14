@@ -2,6 +2,8 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
+import { JobStatus } from "./globalTypes";
+
 // ====================================================
 // GraphQL query operation: GetJobs
 // ====================================================
@@ -35,9 +37,10 @@ export type GetJobs_Jobs_data = GetJobs_Jobs_data_JobEmpty | GetJobs_Jobs_data_J
 
 export interface GetJobs_Jobs {
   __typename: "Job";
+  id: string;
   runon: any;
   name: string;
-  success: boolean;
+  status: JobStatus;
   data: GetJobs_Jobs_data | null;
 }
 

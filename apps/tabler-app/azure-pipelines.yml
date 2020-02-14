@@ -15,13 +15,20 @@ variables:
     value: $[counter(variables['VERSION'], 0)]
   - name: ANDROID_VERSION
     value: $[counter('ANDROID_VERSION', 11070)]
+
+  # naming
+  #  1.2-dev
+  #  1.2-test
+  #  1.2-rc1, rc2, ...
+  #  1.2-r, r1, r2, ...
+
   - name: EXPO_RELEASE_CHANNEL
-    value: '1.2-rc1' # was $(build.buildNumber)-$(EXPO_RELEASE_CHANNEL)
+    value: '1.2-r2'
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
-  - group: 'ENV Germany TEST'
+  - group: 'ENV Germany PROD'
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
 
@@ -33,7 +40,7 @@ pr:
 trigger:
   branches:
     include:
-      - release/v1.2
+      - manualonly
 
   paths:
     include:
@@ -80,6 +87,10 @@ steps:
     APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
     APP_VERSION: $(build.buildNumber)
     SOURCESDIR: $(System.DefaultWorkingDirectory)
+
+- script: npm run licenses
+  workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
+  displayName: licenses
 
 # Publish expo
 - script: |

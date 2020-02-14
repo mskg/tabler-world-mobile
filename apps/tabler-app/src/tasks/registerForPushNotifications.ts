@@ -8,7 +8,7 @@ import { TOKEN_KEY } from './Constants';
 
 const logger = new Logger(Categories.Sagas.Push);
 
-export async function registerForPushNotifications() {
+export async function registerForPushNotifications(force = false) {
     // TODO: dupliacte code with checkPersmissions
     try {
         const { status: existingStatus } = await Permissions.getAsync(
@@ -29,6 +29,7 @@ export async function registerForPushNotifications() {
         // Stop here if the user did not grant permissions
         if (finalStatus !== 'granted') {
             logger.log('status', finalStatus);
+
             return;
         }
 
@@ -37,7 +38,8 @@ export async function registerForPushNotifications() {
         // Get the token that uniquely identifies this device
         const token = await Notifications.getExpoPushTokenAsync();
 
-        if (token != existingToken) {
+        // tslint:disable-next-line: possible-timing-attack
+        if (token !== existingToken || force) {
             logger.log('token is', token);
             getReduxStore().dispatch(storePushToken(token));
         } else {

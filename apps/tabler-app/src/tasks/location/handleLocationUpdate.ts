@@ -3,35 +3,19 @@ import * as Location from 'expo-location';
 import _ from 'lodash';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
-import { bootstrapApollo } from '../../apollo/bootstrapApollo';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { reverseGeocode } from '../../helper/geo/reverseGeocode';
 import { PutLocation, PutLocationVariables } from '../../model/graphql/PutLocation';
 import { EnableLocationServicesMutation } from '../../queries/Location/EnableLocationServicesMutation';
 import { PutLocationMutation } from '../../queries/Location/PutLocationMutation';
 import { setLocation } from '../../redux/actions/location';
-import { getReduxStore, persistorRehydrated } from '../../redux/getRedux';
-import { LOCATION_TASK_NAME } from '../Constants';
-import { isSignedIn } from '../helper/isSignedIn';
+import { getReduxStore } from '../../redux/getRedux';
 import { logger } from './logger';
-import { isDemoModeEnabled } from '../../helper/demoMode';
 
 // tslint:disable-next-line: export-name
 export async function handleLocationUpdate(locations: Location.LocationData[], enable = false, force = false): Promise<boolean> {
     try {
         logger.debug('handleLocationUpdate', locations);
-
-        await persistorRehydrated();
-        if (!isSignedIn() && !(await isDemoModeEnabled())) {
-            logger.debug('Not signed in, stopping location services');
-
-            try {
-                await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
-            } catch (e) {
-                logger.error(e, `failed to stop ${LOCATION_TASK_NAME} task.`);
-            }
-
-            return false;
-        }
 
         const location = _(locations).maxBy((l) => l.timestamp) as Location.LocationData;
         if (location == null) {
@@ -50,7 +34,9 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
         }
 
         const ci = await NetInfo.fetch();
-        const offline = ci.type === 'none' || ci.type === 'unknown';
+
+        // we ignore unkown network state and try in that case
+        const offline = ci.type === 'none';
 
         if (offline) {
             logger.log('Network seems to be offline', ci);
@@ -73,7 +59,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             address,
         }));
 
-        const client = await bootstrapApollo();
+        const client = cachedAolloClient();
         await client.mutate<PutLocation, PutLocationVariables>({
             mutation: enable ? EnableLocationServicesMutation : PutLocationMutation,
             variables: {
@@ -89,7 +75,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
 
         return true;
     } catch (error) {
-        logger.error(error, LOCATION_TASK_NAME);
+        logger.error(error, 'handleLocationUpdate');
         return false;
     }
 }

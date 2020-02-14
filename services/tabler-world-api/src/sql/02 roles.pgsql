@@ -120,7 +120,7 @@ BEGIN
         from areas
         where
             data->>'name' = name
-        AND data->>'parent_subdomain' = associations_row.id;
+        AND id like associations_row.id || '_%';
 
         return areas_row.id;
     end if;
@@ -139,26 +139,6 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-
-
--- CREATE or replace FUNCTION get_role_shortname(val text) RETURNS text AS $$
--- BEGIN
---     if val = 'Round Table International' then
---         return 'RTI';
---     end if;
-
---     if val = 'RT Germany' then
---         return 'RTD';
---     end if;
-
---     if position('Distrikt ' in val) > 0 then
---         return trim('D' || replace(val, 'Distrikt ', ''));
---     end if;
-
---     return trim(left(val, position(' ' in val)));
--- END;
--- $$
--- LANGUAGE plpgsql;
 
 ------------------------------
 -- tabler_roles
@@ -197,6 +177,7 @@ select
     ,structure_parentgroups.id as groupid
     ,structure_parentgroups.groupname as groupname
     ,structure_parentgroups.type as reftype
+    ,structure_parentgroups.assoc as assoc
     ,get_role_reference(
        structure_parentgroups.type,
        structure_parentgroups.assoc,

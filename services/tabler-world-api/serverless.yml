@@ -23,8 +23,7 @@ custom:
 
   cache_table:
     Fn::ImportValue: CacheTableName-${self:custom.stage}
-  cache_version:
-    Fn::ImportValue: CacheVersion-${self:custom.stage}
+  cache_version: '1.3#v3'
 
   email: ${env:ALERT_EMAIL}
 
@@ -53,6 +52,11 @@ custom:
     prod:
       burstLimit: 200
       rateLimit: 100
+
+  backup_eventstable:
+    dev: false
+    test: false
+    prod: true
 
   bundle:
     dev: false
@@ -323,6 +327,13 @@ functions:
             - !Ref bucketAttachments
             - '/*'
 
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          Fn::ImportValue: PushQueueArn-${self:custom.stage}
+
     events:
       - http:
           path: graphql
@@ -529,7 +540,7 @@ resources:
           Rules:
             - Id: removal-${self:custom.bucket}
               Status: Enabled
-              ExpirationInDays: '5'
+              ExpirationInDays: '17'
 
     connectionsTable:
       Type: AWS::DynamoDB::Table
@@ -610,6 +621,8 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.pushsubscriptions_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
 
         AttributeDefinitions:
           - AttributeName: conversation
@@ -638,6 +651,8 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.conversations_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
 
         AttributeDefinitions:
           - AttributeName: conversation
@@ -678,6 +693,9 @@ resources:
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.events_table}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${self:custom.backup_eventstable.${self:custom.stage}}
+
         AttributeDefinitions:
           - AttributeName: eventName
             AttributeType: S

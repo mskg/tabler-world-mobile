@@ -1,4 +1,4 @@
-import { cachedDataLoader, makeCacheKey, writeThrough } from '@mskg/tabler-world-cache';
+import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
@@ -15,9 +15,12 @@ export const DefaultMemberColumns = [
     'firstname',
     'lastname',
 
+    'family',
+
     'association',
     'associationshortname',
     'associationname',
+    'associationflag',
 
     'area',
     'areaname',
@@ -70,7 +73,7 @@ and removed = FALSE`,
     }
 
     public async readFavorites(): Promise<any[] | null> {
-        this.context.logger.log('readAll');
+        this.context.logger.log('readFavorites');
 
         return await useDataService(
             this.context,
@@ -90,18 +93,28 @@ where id = $1`,
 
                 if (favorites == null || favorites.length === 0) { return []; }
 
-                return this.memberLoader.loadMany(
+                const result = await this.memberLoader.loadMany(
                     favorites.filter((f) => typeof (f) === 'number' && !isNaN(f)),
                 );
+
+                return result.map((member: any) => {
+                    if (member == null) { return member; }
+
+                    return filter(
+                        this.context.principal,
+                        member,
+                    );
+                });
             },
         );
     }
 
     public async readAreas(areas: string[]): Promise<any[] | null> {
-        this.context.logger.log('readAll');
+        this.context.logger.log('readAreas', areas);
 
+        // only overview columns here, no need to filter
         const results = await Promise.all(areas.map((a) =>
-            writeThrough(
+            cachedLoad(
                 this.context,
                 makeCacheKey('Members', [this.context.principal.association, 'area', a]),
                 async () => await useDataService(
@@ -114,9 +127,9 @@ where id = $1`,
 select ${DefaultMemberColumns.join(',')}
 from profiles
 where
-        area = ANY ($1)
+        area = $1
     and removed = FALSE`,
-                            [areas],
+                            [a],
                         );
 
                         return res.rows;
@@ -130,9 +143,10 @@ where
     }
 
     public async readAll(association: string): Promise<any[] | null> {
-        this.context.logger.log('readAll');
+        this.context.logger.log('readAll', association);
 
-        return await writeThrough(
+        // only overview columns here, no need to filter
+        return await cachedLoad(
             this.context,
             makeCacheKey('Members', [this.context.principal.association, 'all']),
             async () => await useDataService(

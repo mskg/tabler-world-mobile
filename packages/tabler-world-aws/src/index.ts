@@ -1,3 +1,4 @@
+export * from './dynamodb';
 export * from './isServerlessOffline';
 export * from './xray/aws';
 export * from './xray/DocumentClient';
