@@ -4,11 +4,10 @@ import * as React from 'react';
 import { Dimensions, Image, ImageResizeMode, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import TransformableImage from 'react-native-image-gallery/src/libraries/TransformableImage';
 import { IconButton, Portal, Theme, withTheme } from 'react-native-paper';
-import { HEADER_MARGIN_TOP } from '../theme/dimensions';
+import { isIphoneX } from '../helper/isIphoneX';
 import { CachedImage } from './Image/CachedImage';
 import { CacheGroup } from './Image/CacheGroup';
 import CacheManager from './Image/CacheManager';
-import { isIphoneX } from '../helper/isIphoneX';
 
 type Props = {
     theme: Theme,
@@ -29,6 +28,7 @@ type Props = {
 
 type State = {
     open: boolean,
+
     uri?: string,
     dimensions?: any,
 };
@@ -36,7 +36,6 @@ type State = {
 class LightboxBase extends React.Component<Props, State> {
     state: State = {
         open: false,
-
     };
 
     _showLightBox = async () => {
