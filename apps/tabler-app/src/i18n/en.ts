@@ -55,6 +55,8 @@ const en = {
         confirm: 'Confirm',
         cancel: 'Cancel',
 
+        warning: 'IMPORTANT! You can now logon with your TABLER.WORLD password. E-mails will no longer be sent.',
+
         welcomeBack: 'Welcome back,',
         signin: 'please sign in with your TABLER.WORLD public e-mail address',
         confirmTitle: 'Enter Password',

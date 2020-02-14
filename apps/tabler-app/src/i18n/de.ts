@@ -56,6 +56,8 @@ const de: I18NType = {
         confirm: 'Bestätigen',
         cancel: 'Abbrechen',
 
+        warning: 'WICHTIG! Du kannst Dich jetzt mit Deinem TABLER.WORLD Passwort anmelden. Es werden keine E-Mails mehr verschickt.',
+
         welcomeBack: 'Willkommen zurück,',
         signin: 'melde Dich mit Deiner öffentlichen TABLER.WORLD E-Mail-Adresse an',
         confirmTitle: 'Bitte gib Dein Passwort ein',
