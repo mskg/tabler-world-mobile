@@ -200,6 +200,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                             || (
                                 this.props.loading
                                 && this.props.data?.Me != null
+                                && this.props.offlineData?.OwnTable != null
                             )
                         }
                         previewComponent={<MemberListPlaceholder />}
