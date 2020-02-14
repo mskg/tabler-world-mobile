@@ -6,7 +6,7 @@ export interface IExpoNotification {
     data?: AppNotifications;
 }
 
-type Reasons = 'birthday' | 'chatmessage' | 'advertisment';
+type Reasons = 'birthday' | 'chatmessage' | 'advertisment' | 'test';
 
 export interface INotificationPayload<T, R extends Reasons> {
     title?: string;
@@ -44,8 +44,13 @@ export type AdMessageNotification = INotificationPayload<{
     url?: string,
 }, 'advertisment'>;
 
+export type TestMessageNotification = INotificationPayload<{
+}, 'test'>;
+
+
 export type AppNotifications = BirthdayNotification
     | ChatMessageNotification
-    | AdMessageNotification;
+    | AdMessageNotification
+    | TestMessageNotification;
 
 

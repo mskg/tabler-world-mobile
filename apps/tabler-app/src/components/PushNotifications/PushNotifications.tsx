@@ -5,13 +5,12 @@ import React, { PureComponent } from 'react';
 import Assets from '../../Assets';
 import { Categories, Logger } from '../../helper/Logger';
 import { AppNotifications, IExpoNotification } from '../../model/NotificationPayload';
-import { isSignedIn } from '../../tasks/helper/isSignedIn';
-import { registerForPushNotifications } from '../../tasks/registerForPushNotifications';
 import { AdvertismentHandler } from './AdvertismentHandler';
 import { BirthdayHandler } from './BirthdayHandler';
 import { ChatMessageHandler } from './ChatMessageHandler';
 import { INotificationHandler, NotificationHandlerResult } from './INotificationHandler';
 import { PushNotification, PushNotificationBase } from './PushNotification';
+import { TestHandler } from './TestHandler';
 
 const logger = new Logger(Categories.UIComponents.Notifications);
 
@@ -37,6 +36,7 @@ class PushNotificationsBase extends PureComponent<Props> {
         new ChatMessageHandler(logger),
         new BirthdayHandler(),
         new AdvertismentHandler(),
+        new TestHandler(),
     ];
 
     componentDidMount() {
