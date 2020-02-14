@@ -10,7 +10,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: '1.2'
+    value: 1.4
   - name: PATCH
     value: $[counter(variables['VERSION'], 0)]
   - name: ANDROID_VERSION
@@ -23,7 +23,7 @@ variables:
   #  1.2-r, r1, r2, ...
 
   - name: EXPO_RELEASE_CHANNEL
-    value: '1.2-r2'
+    value: '1.4-dev'
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'
