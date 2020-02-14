@@ -1,7 +1,7 @@
 import { AuthPolicy, HttpVerb, IPrincipal, lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
 import { withClient } from '@mskg/tabler-world-rds-client';
 import { CustomAuthorizerEvent, CustomAuthorizerResult, Handler } from 'aws-lambda';
-import { isDemoKey } from './isDemoKey';
+import { isDemoKey } from '@mskg/tabler-world-auth/src/helper/isDemoKey';
 
 // tslint:disable-next-line: export-name
 export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'Unauthorized'> = async (event, context) => {

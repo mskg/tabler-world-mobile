@@ -24,7 +24,7 @@ const patch = [
     { op: "replace", path: "/expo/extra/region", value: process.env.AWS_DEFAULT_REGION },
     { op: "replace", path: "/expo/extra/userPoolId", value: findAWSValue(`CognitoUserPool-${channel}`) },
     { op: "replace", path: "/expo/extra/identityPoolId", value: findAWSValue(`CognitoIdentityPool-${channel}`) },
-    { op: "replace", path: "/expo/extra/userPoolWebClientId", value: findAWSValue(`CognitoUserPoolClient-${channel}`) },
+    { op: "replace", path: "/expo/extra/userPoolWebClientId", value: findAWSValue(`CognitoUserPoolClientPassword-${channel}`) },
 
     { op: "replace", path: "/expo/extra/api", value: process.env.APP_API || `https://${findAWSValue("ApiUrl-" + channel)}` },
     { op: "replace", path: "/expo/extra/wsapi", value: process.env.APP_WSAPI || `wss://${findAWSValue("ApiWSUrl-" + channel)}` },

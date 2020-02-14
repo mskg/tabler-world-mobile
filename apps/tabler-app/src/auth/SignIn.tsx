@@ -53,11 +53,14 @@ class SignInBase extends AuditedScreen<Props, State> {
 
     async signIn(doThrow = false) {
         const { username } = this.state;
-        logger.debug('Try sign In for ' + username);
+        logger.debug('Try sign In for', username);
 
         try {
             this.audit.trackAction(ActionNames.SignIn);
-            const user = await Auth.signIn(username as string);
+            const user = await Auth.signIn(
+                username as string
+            );
+
             logger.debug('signIn response', user);
 
             this.props.confirmSignIn({
@@ -146,7 +149,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                 <Input
                                     placeholder={I18N.SignIn.placeholderEMail}
                                     value={this.state.username}
-                                    onChangeText={text => this.setState({ username: (text || '').toLowerCase() })}
+                                    onChangeText={(text) => this.setState({ username: (text || '').toLowerCase() })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
                                     style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }} />
                             </View>
@@ -154,7 +157,8 @@ class SignInBase extends AuditedScreen<Props, State> {
                             <View style={[styles.buttonContainer]}>
                                 <Button
                                     color={this.props.theme.colors.accent}
-                                    style={{ ...styles.button }} mode="contained"
+                                    style={{ ...styles.button }}
+                                    mode="contained"
                                     onPress={this._signInOrUp}
                                     loading={this.state.working}
                                     disabled={!this.state.username || this.state.working}>{I18N.SignIn.continue}</Button>

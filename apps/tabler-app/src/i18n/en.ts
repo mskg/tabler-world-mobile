@@ -49,19 +49,18 @@ const en = {
 
     SignIn: {
         placeholderEMail: 'firstname.lastname@123-de.roundtable.world',
-        placeholderCode: 'Authorization Code',
+        placeholderCode: 'Your Password',
 
         continue: 'Login',
         confirm: 'Confirm',
         cancel: 'Cancel',
 
         welcomeBack: 'Welcome back,',
-        signin: 'sign in to continue',
-        confirmTitle: 'Please confirm your login',
-        checkEmail: 'Check your e-mails!',
-        codeWrong: 'Code verification failed, you have to restart.',
+        signin: 'please sign in with your TABLER.WORLD public e-mail address',
+        confirmTitle: 'Enter Password',
+        codeWrong: 'Verification failed, you have to restart.',
         accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please member the TABLER.WORLD team via e-mail.',
-        codeVerify: (tries) => `Could not verify code, ${tries} tries left.`,
+        codeVerify: (tries) => `Could not verify password, ${tries} tries left.`,
 
         demoMode: 'Try the App',
         join: 'How to join Round Table?',

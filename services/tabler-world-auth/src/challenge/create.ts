@@ -1,5 +1,6 @@
+import { verifyCountry } from '@mskg/tabler-world-auth/src/helper/verifyCountry';
+import { verifyUser } from '@mskg/tabler-world-auth/src/helper/verifyUser';
 import { xAWS } from '@mskg/tabler-world-aws';
-import { withClient } from '@mskg/tabler-world-rds-client';
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 import { randomDigits } from 'crypto-secure-random-digit';
 import { sendEmail } from './sendEmail';
@@ -8,35 +9,20 @@ export const ses = new xAWS.SES();
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {
     let secretLoginCode: string = '';
 
-    if (process.env.maintenance === 'true') {
-        throw new Error(process.env.maintenance_text || '"We\'re sorry, TABLER.APP is currently down for maintenance."');
-    }
-
     if (!event.request.session || !event.request.session.length) {
-        const allowed = process.env.allowed_countries?.split(',') || [];
-        const found = allowed.find((ext) => event.request.userAttributes.email.endsWith(`-${ext}.roundtable.world`));
-        if (!found) {
-            console.error('[CREATE]', event.request.userAttributes.email, 'unkown country');
-            throw new Error('"We\'re sorry, the country you entered is currently not available."');
+        verifyCountry(event.request.userAttributes.email);
+
+        if (!await verifyUser(context, event.request.userAttributes.email)) {
+            throw new Error('"Sorry, we don\'t know you. Are you still an active tabler?"');
         }
 
-        await withClient(context, async (client) => {
-            const res = await client.query(
-                'select * from profiles where rtemail = $1 and removed = FALSE',
-                [event.request.userAttributes.email]);
+        // This is a new auth session
+        // Generate a new secret login code and mail it to the user
+        secretLoginCode = randomDigits(6).join('');
 
-            if (res.rowCount !== 1) {
-                console.error('[CREATE]', event.request.userAttributes.email, 'not found');
-                throw new Error('"Sorry, we don\'t know you. Are you still an active tabler?"');
-            }
-
-            console.debug('[CREATE]', event.request.userAttributes.email, 'found');
-
-            // This is a new auth session
-            // Generate a new secret login code and mail it to the user
-            secretLoginCode = randomDigits(6).join('');
+        if (event.callerContext.clientId === process.env.EMAIL_CLIENT) {
             await sendEmail(event.request.userAttributes.email, secretLoginCode);
-        });
+        }
     } else {
         console.debug('[CREATE]', event.request.userAttributes.email, 're-use session');
 
@@ -51,7 +37,9 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
     console.log('[CREATE]', event.request.userAttributes.email, 'code', secretLoginCode);
 
     // This is sent back to the client app
-    event.response.publicChallengeParameters = { email: event.request.userAttributes.email };
+    event.response.publicChallengeParameters = {
+        email: event.request.userAttributes.email,
+    };
 
     // Add the secret login code to the private challenge parameters
     // so it can be verified by the "Verify Auth Challenge Response" trigger
