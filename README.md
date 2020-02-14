@@ -33,10 +33,14 @@
 - **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/18/84)
 - **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/18/85)
 
-
-## iOS App & Android App
+## iOS App
 
 [README](App/README.md)
 
-- **TEST** ![test](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/10/59)
-- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/13/68)
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/10/77)
+
+## Android App
+
+[README](App/README.md)
+
+- **PROD** ![prod](https://tabler-world.vsrm.visualstudio.com/_apis/public/Release/badge/a746efd2-3499-4212-b0dc-32647f2c9245/10/78)
