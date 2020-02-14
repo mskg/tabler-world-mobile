@@ -59,19 +59,21 @@ class ImagePickerBase extends React.Component<Props, State> {
     }
 
     _takePicture = async () => {
-        this._close();
-
         if (this.camera) {
             const photo = await this.camera.takePictureAsync({
-
                 exif: false,
                 base64: false,
+                skipProcessing: true,
             });
 
             if (this.props.onCameraPictureSelected) {
                 this.props.onCameraPictureSelected(photo);
             }
         }
+
+        requestAnimationFrame(() =>
+            this._close(),
+        );
     }
 
     _pickImage = async () => {
@@ -90,11 +92,13 @@ class ImagePickerBase extends React.Component<Props, State> {
             base64: false,
         });
 
-        this._close();
-
         if (!photo.cancelled && this.props.onGalleryPictureSelected) {
             this.props.onGalleryPictureSelected(photo);
         }
+
+        requestAnimationFrame(() =>
+            this._close(),
+        );
     }
 
     render() {

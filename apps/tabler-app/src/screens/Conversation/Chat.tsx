@@ -353,6 +353,8 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _onCameraImage = (pickedImage: CapturedPicture) => {
+        logger.debug('_onCameraImage', pickedImage);
+
         this.setState({
             pickedImage: {
                 uri: pickedImage.uri,
@@ -365,6 +367,8 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _onGalleryImage = (pickedImage: ExpoImagePicker.ImagePickerResult) => {
+        logger.debug('_onGalleryImage', pickedImage);
+
         if (pickedImage.cancelled) {
             this.setState({ pickedImage: undefined });
             if (this.props.onImageChanged) { this.props.onImageChanged(undefined); }
