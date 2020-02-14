@@ -1,15 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Theme, TouchableRipple, withTheme, Text } from 'react-native-paper';
+import { Query } from 'react-apollo';
+import { Card, Text, Theme, TouchableRipple, withTheme, Caption } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { MemberListItem } from '../../components/Member/MemberListItem';
+import { styles } from '../../components/Member/Styles';
 import { SwipableItem, SwipeButtonsContainer } from '../../components/SwipableItem';
+import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
 import { GetConversations, GetConversations_Conversations_nodes } from '../../model/graphql/GetConversations';
 import { RemoveConversation, RemoveConversationVariables } from '../../model/graphql/RemoveConversation';
+import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { RemoveConversationMutation } from '../../queries/Conversations/RemoveConversationMutation';
 import { showConversation } from '../../redux/actions/navigation';
+import { I18N } from '../../i18n/translation';
+import { View } from 'react-native';
 
 type OwnProps = {
     theme: Theme,
@@ -30,6 +36,44 @@ type Props = OwnProps & StateProps & DispatchPros;
 ⚫ MEDIUM BLACK CIRCLE  26AB
 ⬤ BLACK LARGE CIRCLE   2B24
 */
+
+const LastMessage = ({ id, theme }) => (
+    <Query<Conversation, ConversationVariables>
+        query={GetConversationQuery}
+        variables={{ id }}
+        fetchPolicy="cache-first"
+    >
+        {({ data }) => {
+            if (data?.Conversation?.messages?.nodes == null || data.Conversation.messages.nodes.length === 0) {
+                return null;
+            }
+
+            // @ts-ignore
+            const nodes = data.Conversation.messages.nodes;
+
+            return (
+                <Card.Content style={[styles.chipContainer, { marginBottom: 8 }]}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                        {nodes[0].payload.image && (
+                            <Ionicons
+                                name="md-image" size={15}
+                                color={theme.colors.text}
+                                style={{ paddingRight: 7, opacity: 0.54 }}
+                            />
+                        )}
+
+                        <Caption
+                            style={{ flex: 1, marginVertical: 0, lineHeight: 15, }}
+                            numberOfLines={1}
+                        >
+                            {nodes[0].payload.text ?? I18N.Conversations.photo}
+                        </Caption>
+                    </View>
+                </Card.Content>
+            );
+        }}
+    </Query>
+);
 
 // tslint:disable-next-line: export-name
 class ConversationListItemBase extends React.PureComponent<Props> {
@@ -64,9 +108,14 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                 },
             });
 
-            let conversations = client.readQuery<GetConversations>({
-                query: GetConversationsQuery,
-            });
+            let conversations;
+
+            try {
+                conversations = client.readQuery<GetConversations>({
+                    query: GetConversationsQuery,
+                });
+            }
+            catch { }
 
             if (conversations == null) {
                 const temp = await client.query<GetConversations>({
@@ -149,7 +198,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                         return null;
                     }}
 
-                    bottom={() => null}
+                    bottom={() => <LastMessage theme={this.props.theme} id={this.props.conversation.id} />}
                     onPress={this._onPress}
                 />
             </SwipableItem>

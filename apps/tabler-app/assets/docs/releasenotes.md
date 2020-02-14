@@ -1,3 +1,30 @@
+# v1.2 - Update 1
+
+## Improvements
+- You can now login with your TABLER.WORLD email and corresponding password
+- The images in conversations can now be transformed on-screen and be exported/shared (resolves #116, #115)
+- Images in member and club profiles can now also be zoomed
+- Changed unread conversation badge to a circle
+- Conversations that you started but never posted a message, are now automatically invisible
+- Conversations now show last message
+- Nearby members screen now shows country flag beside table name
+- Nearby members settings are now preserved if you reinstall the App
+
+## Fixes
+
+- Removed invalid sectors from companies preventing profiles to load
+- Clubs that are in preparation are now visible
+- Fixed an issue when loading conversations, where one partner had archived the conversation
+- Fixed time format for conversations
+- Workaround for camera not always loading in "Exchange Contact Details"
+- Fixed an issue on conversations screen, where parts of input where hidden during edit
+- Fixed spelling of 'Association'
+- Fixed an issue in the news-screens preventing videos to load correctly (fixes #125)
+- Fixed an issue that prevents a test-notification from being shown
+- Fixed an issue that prevented links in news to be opened a second time (fixes #126)
+- Fixed an issue with last opened members not being associated correctly (fixes #128)
+- When exporting contacts, the url now correctly display the language
+
 # v1.2
 
 ## Improvements

@@ -1,7 +1,5 @@
-import { Notifications } from 'expo';
-import { Platform } from 'react-native';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
-import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
+import { setBadgeNumber } from '../../helper/bagde';
 import { Categories, Logger } from '../../helper/Logger';
 import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
 import { GetConversations } from '../../model/graphql/GetConversations';
@@ -22,18 +20,14 @@ export async function updateBadgeFromConversations() {
     const unread = conversation?.Conversations.nodes.find((n) => n.hasUnreadMessages);
     if (!unread) {
         logger.debug('Bade will get 0');
-        getReduxStore().dispatch(setBadge(0));
 
-        if (Platform.OS === 'ios' && await allowsPushNotifications()) {
-            await Notifications.setBadgeNumberAsync(0);
-        }
+        getReduxStore().dispatch(setBadge(0));
+        setBadgeNumber(0);
     } else {
         logger.debug('Bade will get 1');
-        getReduxStore().dispatch(setBadge(1));
 
-        if (Platform.OS === 'ios' && await allowsPushNotifications()) {
-            await Notifications.setBadgeNumberAsync(1);
-        }
+        getReduxStore().dispatch(setBadge(1));
+        setBadgeNumber(1);
     }
 }
 

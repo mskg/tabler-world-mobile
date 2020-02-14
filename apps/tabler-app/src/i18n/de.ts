@@ -565,7 +565,7 @@ const de: I18NType = {
     Conversations: {
         title: 'Chats',
         network: 'Auf Netzwerk warten...',
-
+        photo: 'Foto',
         copy: 'Kopieren',
         retry: 'Wiederholen',
         placeholder: 'Nachricht schreiben...',

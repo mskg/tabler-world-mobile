@@ -1,7 +1,6 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { Appearance } from 'react-native-appearance';
-import { isDemoModeEnabled } from '../helper/demoMode';
 
 export enum Features {
     ContactSync,
@@ -14,11 +13,6 @@ export enum Features {
     DarkModeSwitch,
     Chat,
 }
-
-// this is a very dirty hack to synchronously check demo mode
-// as we reload the app upon demo on-/off this might work?
-let isDemoMode: boolean = false;
-(async () => { isDemoMode = await isDemoModeEnabled(); })();
 
 export function isFeatureEnabled(feature: Features) {
     if (feature === Features.BackgroundFetch) {

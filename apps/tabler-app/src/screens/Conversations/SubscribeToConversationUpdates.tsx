@@ -1,10 +1,8 @@
-import { Notifications } from 'expo';
 import React from 'react';
-import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { HandleAppState } from '../../components/HandleAppState';
-import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
+import { setBadgeNumber } from '../../helper/bagde';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Categories, Logger } from '../../helper/Logger';
 import { Features, isFeatureEnabled } from '../../model/Features';
@@ -78,13 +76,20 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                 if (__DEV__) { logger.debug('Received', nextVal); }
                 const data = nextVal.data as conversationUpdate;
 
-                let conversations = client.readQuery<GetConversations>({
-                    query: GetConversationsQuery,
-                });
+                let conversations;
+
+                try {
+                    conversations = client.readQuery<GetConversations>({
+                        query: GetConversationsQuery,
+                    });
+                } catch (e) {
+                    logger.log('Failed to read conversations', e);
+                }
 
                 if (conversations == null) {
                     const temp = await client.query<GetConversations>({
                         query: GetConversationsQuery,
+                        fetchPolicy: 'network-only',
                     });
 
                     conversations = temp.data;
@@ -96,15 +101,9 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                 if (data.conversationUpdate.hasUnreadMessages) {
                     if (this.props.badge === 0) {
                         logger.debug('Updating badge');
-                        this.props.setBadge(1);
 
-                        try {
-                            if (Platform.OS === 'ios' && await allowsPushNotifications()) {
-                                await Notifications.setBadgeNumberAsync(1);
-                            }
-                        } catch (e) {
-                            logger.error(e, 'Failed to setBadgeNumber');
-                        }
+                        this.props.setBadge(1);
+                        setBadgeNumber(1);
                     }
 
                     // we update our local data

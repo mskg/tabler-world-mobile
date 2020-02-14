@@ -22,4 +22,5 @@ export interface EnableLocationServices {
 
 export interface EnableLocationServicesVariables {
   location: MyLocationInput;
+  map: any;
 }

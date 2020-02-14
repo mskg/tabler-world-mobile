@@ -59,18 +59,25 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             address,
         }));
 
+        const locationVariables = {
+            address,
+            longitude: location.coords.longitude,
+            latitude: location.coords.latitude,
+            accuracy: location.coords.accuracy,
+            speed: location.coords.speed,
+        };
+
+        const variables = enable
+            ? {
+                map: getReduxStore().getState().settings.nearbyMembersMap || false,
+                location: locationVariables,
+            }
+            : { location: locationVariables };
+
         const client = cachedAolloClient();
         await client.mutate<PutLocation, PutLocationVariables>({
+            variables,
             mutation: enable ? EnableLocationServicesMutation : PutLocationMutation,
-            variables: {
-                location: {
-                    address,
-                    longitude: location.coords.longitude,
-                    latitude: location.coords.latitude,
-                    accuracy: location.coords.accuracy,
-                    speed: location.coords.speed,
-                },
-            },
         });
 
         // we don't need to persist the apollo cache, we don't change it

@@ -84,7 +84,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
     }
 
     const config = await getParameterValue<UrlParameters>(ParameterName.urls);
-    const twUrl = config.profile.replace(/#id#/, member.id.toString());
+    const twUrl = config.profile
+        .replace(/#id#/, member.id.toString())
+        .replace(/#lang#/, I18N.id);
 
     const profiles: Contacts.SocialProfile[] = [];
     profiles.push({

@@ -281,6 +281,15 @@ export const ChatResolver = {
             });
 
             context.logger.log(result);
+
+            if (EXECUTING_OFFLINE && context.clientInfo.os === 'android' && context.clientInfo.version === 'dev') {
+                // default redirect for anroid emular
+                return {
+                    ...result,
+                    url: result.url.replace(/localhost/ig, '10.0.2.2'),
+                };
+            }
+
             return result;
         },
 

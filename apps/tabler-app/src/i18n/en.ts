@@ -622,6 +622,7 @@ const en = {
     Conversations: {
         title: 'Chats',
         network: 'Waiting for network...',
+        photo: 'Photo',
         copy: 'Copy',
         retry: 'Retry',
         placeholder: 'Type a message...',

@@ -22,6 +22,7 @@ export interface GetConversations_Conversations_nodes_members_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface GetConversations_Conversations_nodes_members {

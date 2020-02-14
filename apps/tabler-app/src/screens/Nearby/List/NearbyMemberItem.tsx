@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { IconButton, withTheme } from 'react-native-paper';
+import { IconButton, withTheme, Chip } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
 import { MemberTitle } from '../../../components/Member/MemberTitle';
@@ -12,6 +12,14 @@ import { IAppState } from '../../../model/IAppState';
 import { showProfile, startConversation } from '../../../redux/actions/navigation';
 import { isFeatureEnabled, Features } from '../../../model/Features';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { MemberOverviewFragment, MemberOverviewFragment_roles } from '../../../model/graphql/MemberOverviewFragment';
+import { InternalMemberListItemFooter } from '../../../components/Member/InternalMemberListItemFooter';
+import { RoleChips } from '../../../components/Member/RoleChips';
+import { styles } from '../../../components/Member/Styles';
+import { View } from 'react-native';
+import { CachedImage } from '../../../components/Image/CachedImage';
+import { RoleChip } from '../../../components/Member/RoleChip';
+import color from 'color';
 
 type OwnProps = {
     member: NearbyMembers_nearbyMembers_member,
@@ -41,6 +49,40 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
 
     _showProfile = () => this.props.showProfile(this.props.member.id);
 
+    _renderFooter = (member: MemberOverviewFragment) => {
+        const chipColor = color(this.props.theme.colors.text)
+            .alpha(0.87)
+            .rgb()
+            .string();
+
+        return (
+            <InternalMemberListItemFooter>
+                <RoleChip
+                    color={this.props.theme.colors.primary}
+                    textColor={chipColor}
+                    font={this.props.theme.fonts.medium}
+                    level={
+                        this.props.member.association.flag ? (
+                            <CachedImage
+                                containerStyle={{paddingRight: 5}}
+                                style={{ width: 12, height: 12, borderRadius: 12 }}
+                                cacheGroup={'other'}
+                                uri={this.props.member.association.flag}
+                                resizeMode={'cover'}
+                            />
+                        ) : undefined
+                    }
+                    text={this.props.member.club.name}
+                />
+
+                {member.roles && member.roles.length > 0 &&
+                    < RoleChips theme={this.props.theme} roles={member.roles as MemberOverviewFragment_roles[]} />
+                }
+
+            </InternalMemberListItemFooter>
+        );
+    }
+
     // tslint:disable-next-line: max-func-body-length
     render() {
         return (
@@ -58,6 +100,8 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                             new Date(this.props.lastseen).getTime(),
                         ))
                 }
+
+                bottom={this._renderFooter}
 
                 right={
                     ({ size }) => isFeatureEnabled(Features.Chat) && this.props.member.availableForChat

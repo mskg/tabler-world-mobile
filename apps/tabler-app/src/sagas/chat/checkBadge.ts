@@ -1,7 +1,5 @@
-import { Notifications } from 'expo';
-import { Platform } from 'react-native';
 import { call } from 'redux-saga/effects';
-import { allowsPushNotifications } from '../../helper/allowsPushNotifications';
+import { getBadgeNumber, setBadgeNumber } from '../../helper/bagde';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { setBadge } from '../../redux/actions/chat';
@@ -10,16 +8,15 @@ import { logger } from './logger';
 
 export function* checkBadge() {
     try {
-        const notifications = yield allowsPushNotifications();
         const demo = yield call(isDemoModeEnabled);
 
         if (!isFeatureEnabled(Features.Chat) || demo) {
-            if (Platform.OS === 'ios' && notifications) { yield Notifications.setBadgeNumberAsync(0); }
+            setBadgeNumber(0);
             getReduxStore().dispatch(setBadge(0));
         } else {
-            if (Platform.OS === 'ios' && notifications) {
-                const unread = yield Notifications.getBadgeNumberAsync();
-                getReduxStore().dispatch(setBadge(unread));
+            const bn = yield getBadgeNumber();
+            if (bn) {
+                getReduxStore().dispatch(setBadge(bn));
             }
         }
     } catch (e) {

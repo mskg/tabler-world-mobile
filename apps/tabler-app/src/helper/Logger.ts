@@ -79,6 +79,7 @@ export class Categories {
         static readonly ImageCache = Categories._Helper + '/ImageCache';
         static readonly Geo = Categories._Helper + '/Geo';
         static readonly Chat = Categories._Helper + '/Chat';
+        static readonly Badge = Categories._Helper + '/Badge';
     };
 }
 

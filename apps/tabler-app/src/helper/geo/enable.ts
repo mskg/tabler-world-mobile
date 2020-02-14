@@ -23,9 +23,11 @@ export async function enableNearbyTablers() {
             updateSetting({ name: 'nearbyMembers', value: true }),
         );
 
-        getReduxStore().dispatch(
-            updateSetting({ name: 'nearbyMembersMap', value: false }),
-        );
+        // we don't set it to false explicitly
+        // otherwise it cannot be removed
+        // getReduxStore().dispatch(
+        //     updateSetting({ name: 'nearbyMembersMap', value: false }),
+        // );
     } else {
         throw new Error('startLocationTask false');
     }

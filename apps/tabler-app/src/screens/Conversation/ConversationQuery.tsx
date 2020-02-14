@@ -319,15 +319,20 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                             if (this.props.websocket) {
                                 throw error;
                             } else {
-                                const cachedConv = client.readQuery<Conversation, ConversationVariables>(
-                                    {
-                                        query: GetConversationQuery,
-                                        variables: {
-                                            id: this.props.conversationId,
+                                let cachedConv;
+
+                                // TODO: not sure why this is here as 'cache-first' should aready do this
+                                try {
+                                    cachedConv = client.readQuery<Conversation, ConversationVariables>(
+                                        {
+                                            query: GetConversationQuery,
+                                            variables: {
+                                                id: this.props.conversationId,
+                                            },
                                         },
-                                    },
-                                    true,
-                                );
+                                        true,
+                                    );
+                                } catch { }
 
                                 if (cachedConv) {
                                     messages = cachedConv.Conversation?.messages;

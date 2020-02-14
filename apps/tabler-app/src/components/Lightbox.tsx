@@ -58,28 +58,28 @@ class LightboxBase extends React.Component<Props, State> {
     }
 
     _export = () => requestAnimationFrame(() => {
-        FileSystem.downloadAsync(
-            this.state.uri as string,
-            `${FileSystem.cacheDirectory}share.jpeg`,
-        )
-            .then(({ uri }) => {
-                if (Platform.OS === 'android') {
-                    Sharing.shareAsync(
-                        uri,
-                        {
-                            mimeType: 'image/jpeg',
-                            UTI: 'image/jpeg',
-                        },
-                    );
-                } else {
-                    ShareNative.share({
-                        url: uri,
-                    });
-                }
-            })
-            .catch((error) => {
-                // logger.error(error);
+        // FileSystem.downloadAsync(
+        //     this.state.uri as string,
+        //     `${FileSystem.cacheDirectory}share.jpeg`,
+        // )
+        //     .then(({ uri }) => {
+        if (Platform.OS === 'android') {
+            Sharing.shareAsync(
+                `${FileSystem.cacheDirectory}share.jpeg`,
+                {
+                    mimeType: 'image/jpeg',
+                    UTI: 'image/jpeg',
+                },
+            );
+        } else {
+            ShareNative.share({
+                url: `${FileSystem.cacheDirectory}share.jpeg`,
             });
+        }
+        // })
+        // .catch((error) => {
+        //     // logger.error(error);
+        // });
     })
 
     render() {
