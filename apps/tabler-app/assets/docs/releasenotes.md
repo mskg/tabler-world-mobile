@@ -9,6 +9,7 @@
 - Conversations now show last message sent or received
 - Nearby members screen now shows country flag beside table name
 - Nearby members settings are now preserved if you reinstall/upgrade the App
+- You can now also take a picture with your camera during chat conversations
 
 ## Fixes
 
