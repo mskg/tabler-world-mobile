@@ -1,10 +1,10 @@
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { IDataService, useDataService } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { conversationManager } from '../subscriptions';
 import { Conversation, UserConversation } from '../subscriptions/services/ConversationManager';
 import { IApolloContext } from '../types/IApolloContext';
-import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 
 export async function isChatEnabled(client: IDataService, ids: ReadonlyArray<number>): Promise<boolean[]> {
     const res = await client.query(
@@ -24,7 +24,7 @@ export async function isChatEnabled(client: IDataService, ids: ReadonlyArray<num
         [ids],
     );
 
-    return ids.map((id) => res.rows.find((r) => r.id === id) != null);
+    return ids.map((id) => res.rows.find((r) => r.id === id) != null || EXECUTING_OFFLINE);
 }
 
 export class ConversationsDataSource extends DataSource<IApolloContext> {

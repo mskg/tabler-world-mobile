@@ -17,3 +17,8 @@ export interface DisableLocationServices {
   nearbymembersMap: boolean | null;
   disableLocationServices: boolean | null;
 }
+
+export interface DisableLocationServicesVariables {
+  nearby: any;
+  map: any;
+}

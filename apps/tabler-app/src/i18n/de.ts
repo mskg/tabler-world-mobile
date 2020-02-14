@@ -50,19 +50,18 @@ const de: I18NType = {
 
     SignIn: {
         placeholderEMail: 'vorname.nachname@123-de.roundtable.world',
-        placeholderCode: 'Authorisierungscode',
+        placeholderCode: 'Passwort',
 
         continue: 'Anmelden',
         confirm: 'Bestätigen',
         cancel: 'Abbrechen',
 
         welcomeBack: 'Willkommen zurück,',
-        signin: 'melde Dich an um fortzufahren',
-        confirmTitle: 'Bitte bestätige Deine Anmeldung!',
-        checkEmail: 'Den Code dazu hast Du per E-Mail erhalten',
-        codeWrong: 'Authorisierungscode konnte nicht verifiziert werden, Du must von vorne anfangen.',
+        signin: 'melde Dich mit Deiner öffentlichen TABLER.WORLD E-Mail-Adresse an',
+        confirmTitle: 'Bitte gib Dein Passwort ein',
+        codeWrong: 'Du konntest nicht verifiziert werden, Du must von vorne anfangen.',
         accessDenied: 'Mit dieser Anmeldungen kannst Du diese App nicht verweden. Wenn Du das Gefühl hast, dass das nicht stimmmen kann, dann kontaktiere das TABLER.WORLD Team bitte via E-Mail.',
-        codeVerify: (tries) => `Der Authorisierungscode konnte nicht verifiziert werden. Du hast noch ${tries} Versuche übrig.`,
+        codeVerify: (tries) => `Dein Passwort konnte nicht verifiziert werden. Du hast noch ${tries} Versuche übrig.`,
 
         demoMode: 'App ausprobieren',
         join: 'Mitglied werden?',
@@ -406,6 +405,9 @@ const de: I18NType = {
             experiments: 'Alben und Neuigkeiten',
             nearby: 'Mitglieder in der Nähe',
             notifications: 'Benachrichtigungen',
+
+            subscription: 'Jährliches Abo',
+            subscription_valid: 'Gültig',
         },
 
         ReleaseNotes: 'Versionshinweise (Englisch)',
@@ -563,7 +565,7 @@ const de: I18NType = {
     Conversations: {
         title: 'Chats',
         network: 'Auf Netzwerk warten...',
-
+        photo: 'Foto',
         copy: 'Kopieren',
         retry: 'Wiederholen',
         placeholder: 'Nachricht schreiben...',

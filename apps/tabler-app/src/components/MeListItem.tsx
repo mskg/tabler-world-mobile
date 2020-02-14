@@ -55,6 +55,8 @@ type StateProps = {
 };
 
 type Props = OwnProps & StateProps;
+
+// tslint:disable-next-line: max-classes-per-file
 class MeListItemBase extends React.PureComponent<Props> {
     render() {
         const { me } = this.props;
@@ -79,7 +81,7 @@ export const MeListItem = connect(null, { showPair })(MeListItemBase);
 
 const styles = StyleSheet.create({
     right: {
-        marginRight: 38,
+        marginRight: 30,
     },
 
     card: {

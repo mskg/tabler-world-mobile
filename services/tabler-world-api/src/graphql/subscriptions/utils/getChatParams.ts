@@ -4,6 +4,8 @@ const chatDefaults = {
     messageTTL: 60 * 60 * 24 * 14,
     attachmentsTTL: 60 * 60 * 24 * 2,
     eventsPageSize: 20,
+    conversationsPageSize: 30,
+    maxTextLength: 10 * 1024,
 };
 
 export const getChatParams = async () => {

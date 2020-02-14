@@ -7,6 +7,7 @@ import { DownloadOptions } from './DownloadOptions';
 
 type ImageProps = {
     style?: any;
+    containerStyle?: any;
 
     preview?: React.ReactElement;
     options?: DownloadOptions;
@@ -116,7 +117,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
         const flattened = style ? StyleSheet.flatten(style) : null;
 
         return (
-            <View style={styles.container}>
+            <View style={this.props.containerStyle || styles.container}>
                 {isImageReady && (
                     <Image
                         source={{ uri }}
@@ -127,11 +128,11 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
                     />
                 )}
 
-                {hasPreview && !hidePreview &&
+                {hasPreview && !hidePreview && (
                     <Animated.View style={[styles.container, { opacity }]}>
                         {preview}
                     </Animated.View>
-                }
+               )}
             </View>
         );
     }

@@ -16,14 +16,14 @@ type Args<T> = {
     versions: VersionMap<T>,
 };
 
-function parseVersion(version: string) {
-    const [major, minor, bugfix] = version.split('.').map((e) => parseInt(e, 10));
-    return {
-        major,
-        minor,
-        bugfix,
-    };
-}
+// function parseVersion(version: string) {
+//     const [major, minor, bugfix] = version.split('.').map((e) => parseInt(e, 10));
+//     return {
+//         major,
+//         minor,
+//         bugfix,
+//     };
+// }
 
 export const v12Check = (version: string) => version.startsWith('1.1') || version.startsWith('1.0')
     ? 'old'

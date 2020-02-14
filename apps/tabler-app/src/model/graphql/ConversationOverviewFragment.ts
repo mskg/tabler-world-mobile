@@ -22,6 +22,7 @@ export interface ConversationOverviewFragment_members_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface ConversationOverviewFragment_members {

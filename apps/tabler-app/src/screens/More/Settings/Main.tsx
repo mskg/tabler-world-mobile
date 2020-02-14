@@ -331,6 +331,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             />
 
                             <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={I18N.Settings.fields.subscription}
+                                text={I18N.Settings.fields.subscription_valid}
+                            />
+
+                            <Divider />
                             <NextScreen
                                 theme={this.props.theme}
                                 text={I18N.Settings.ReleaseNotes}

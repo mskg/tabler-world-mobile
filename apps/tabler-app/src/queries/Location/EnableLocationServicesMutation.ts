@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const EnableLocationServicesMutation = gql`
-    mutation EnableLocationServices($location: MyLocationInput!) {
+    mutation EnableLocationServices($location: MyLocationInput!, $map: SettingValue!) {
         putSetting(setting: {
             name: nearbymembers
             value: true
@@ -9,7 +9,7 @@ export const EnableLocationServicesMutation = gql`
 
         nearbymembersMap: putSetting (setting: {
             name: nearbymembersMap
-            value: false
+            value: $map
         })
 
         putLocation(location: $location)

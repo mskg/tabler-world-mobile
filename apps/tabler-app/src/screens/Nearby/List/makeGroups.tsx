@@ -1,4 +1,3 @@
-import { RoleType } from '../../../model/graphql/globalTypes';
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
 
 function makeDisplayString(member: NearbyMembers_nearbyMembers) {
@@ -16,31 +15,31 @@ export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     };
 
     const result: typeof group[] = [];
-    const withRoles = data.map((m) => {
-        const r = {
-            ...m,
-            member: {
-                ...m.member,
-            },
-        };
+    // const withRoles = data.map((m) => {
+    //     const r = {
+    //         ...m,
+    //         member: {
+    //             ...m.member,
+    //         },
+    //     };
 
-        r.member.roles = [...(m.member.roles || []), {
-            __typename: 'Role',
-            name: 'Member',
-            group: 'Member',
-            level: m.member.club.name,
-            ref: {
-                __typename: 'RoleRef',
-                type: RoleType.club,
-                shortname: `RT${m.member.club.clubnumber}`,
-                id: m.member.club.id,
-            },
-        }];
+    //     r.member.roles = [...(m.member.roles || []), {
+    //         __typename: 'Role',
+    //         name: 'Member',
+    //         group: 'Member',
+    //         level: m.member.club.name,
+    //         ref: {
+    //             __typename: 'RoleRef',
+    //             type: RoleType.club,
+    //             shortname: `RT${m.member.club.clubnumber}`,
+    //             id: m.member.club.id,
+    //         },
+    //     }];
 
-        return r;
-    });
+    //     return r;
+    // });
 
-    for (const member of withRoles) {
+    for (const member of data) {
         const title = makeDisplayString(member);
         if (title !== group.title) {
             result.push(group);

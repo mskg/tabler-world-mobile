@@ -1,8 +1,9 @@
-import { take, uniq } from 'lodash';
+import { filter, take, uniq } from 'lodash';
 import * as actions from '../actions/history';
 import { INITIAL_STATE } from '../initialState';
 
 const HISTORY_LENGTH = 20;
+const LRU_HISTORY_LENGTH = 10;
 
 // tslint:disable-next-line: max-func-body-length export-name
 export function searchHistoryReducer(
@@ -40,7 +41,18 @@ export function searchHistoryReducer(
             return ns;
 
         case actions.addTablerLRU.type:
-            const lruState = take(uniq([action.payload, ...state.lru]), 10);
+            if (action.payload == null) return state;
+
+            const lruState = take(
+                uniq(
+                    [
+                        action.payload,
+                        // there seems to be some old data in that?
+                        ...filter(state.lru, (l) => l && !isNaN(parseInt(l.toString(), 10))),
+                    ],
+                ),
+                LRU_HISTORY_LENGTH,
+            );
 
             return {
                 ...state,

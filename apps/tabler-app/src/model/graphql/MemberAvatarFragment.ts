@@ -22,6 +22,7 @@ export interface MemberAvatarFragment_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface MemberAvatarFragment {

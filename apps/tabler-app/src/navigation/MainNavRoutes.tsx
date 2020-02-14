@@ -15,7 +15,7 @@ import { IAppState } from '../model/IAppState';
 const IconWithBadgeBase = ({ tintColor, badge }) => (
     <View style={{ flexDirection: 'row' }}>
         <Ionicons size={24} color={tintColor} name="md-chatboxes" />
-        {badge > 0 && <Badge size={16} style={{ marginBottom: 15, marginLeft: -5 }}>{badge}</Badge>}
+        {badge > 0 && <Badge size={10} style={{ marginBottom: 15, marginLeft: -5 }} />}
     </View>
 );
 

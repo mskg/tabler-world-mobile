@@ -9,8 +9,6 @@ export function withStore(WrappedComponent) {
     return class extends React.PureComponent {
         _runSagas = () => {
             getSagaMiddleware().run(rootSaga);
-
-            // we need the saga to run
             registerForPushNotifications();
         }
 

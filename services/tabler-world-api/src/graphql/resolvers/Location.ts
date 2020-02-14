@@ -61,7 +61,8 @@ export const LocationResolver = {
             return useDataService(
                 context,
                 async (client) => {
-                    const result = await client.query(`
+                    const result = await client.query(
+                        `
 SELECT
     member,
     address,
@@ -109,7 +110,8 @@ LIMIT 20
             return useDataService(
                 context,
                 async (client) => {
-                    const result = await client.query(`
+                    const result = await client.query(
+                        `
 select
     lastseen,
     address->>'city' as city,
@@ -142,7 +144,8 @@ LIMIT 10
             useDataService(
                 context,
                 async (client) => {
-                    await client.query(`
+                    await client.query(
+                        `
 INSERT INTO userlocations(id, point, accuracy, speed, address, lastseen)
 VALUES($1, $2, $3, $4, $5, now())
 ON CONFLICT (id)
@@ -159,7 +162,8 @@ DO UPDATE
                             args.location.accuracy,
                             Math.round(args.location.speed),
                             args.location.address ? JSON.stringify(args.location.address) : null,
-                        ]);
+                        ],
+                    );
                     return true;
                 },
             );
@@ -172,7 +176,8 @@ DO UPDATE
                 context,
                 async (client) => {
                     for (const update of args.corrections) {
-                        await client.query(`
+                        await client.query(
+                            `
 UPDATE userlocations
 SET address = $2
 WHERE id = $1 and address is null
@@ -180,7 +185,8 @@ WHERE id = $1 and address is null
                             [
                                 update.member,
                                 JSON.stringify(update.address),
-                            ]);
+                            ],
+                        );
                     }
 
                     return true;
@@ -192,11 +198,13 @@ WHERE id = $1 and address is null
             return useDataService(
                 context,
                 async (client) => {
-                    await client.query(`
+                    await client.query(
+                        `
 delete from userlocations
 WHERE id = $1
                         `,
-                        [context.principal.id]);
+                        [context.principal.id],
+                    );
 
                     return true;
                 },

@@ -28,6 +28,15 @@ export const subscriptionClient = new SubscriptionClient(
 
 const INACTIVE_TIMEOUT = 5 * 1000;
 
+function isSignedIn(): boolean {
+    try {
+        const authState = getReduxStore()?.getState()?.auth?.state;
+        return authState === 'singedIn';
+    } catch {
+        return false;
+    }
+}
+
 // tslint:disable-next-line: one-variable-per-declaration
 let closing: number | undefined;
 AppState.addEventListener('change', (nextAppState: string) => {
@@ -45,8 +54,11 @@ AppState.addEventListener('change', (nextAppState: string) => {
 
                     closing = setTimeout(
                         () => {
-                            subscriptionClient.close(true, true);
-                            closing = undefined;
+                            try {
+                                subscriptionClient.close(true, true);
+                                closing = undefined;
+                            // tslint:disable-next-line: no-empty
+                            } catch { }
                         },
                         INACTIVE_TIMEOUT,
                     );
@@ -60,6 +72,10 @@ AppState.addEventListener('change', (nextAppState: string) => {
                 closing = undefined;
             }
 
+            if (!isSignedIn()) {
+                return;
+            }
+
             // @ts-ignore
             // this method is not public but we need to call it to reconnect
             subscriptionClient.tryReconnect();
@@ -71,35 +87,60 @@ AppState.addEventListener('change', (nextAppState: string) => {
 
 subscriptionClient.use([{
     applyMiddleware: (options, next) => {
-        logger.log('[WS] subscribe', options.operationName);
-        getReduxStore().dispatch(updateWebsocket(true));
-        return next();
+        try {
+            logger.log('[WS] subscribe', options.operationName);
+            getReduxStore().dispatch(updateWebsocket(true));
+            return next();
+        } catch (e) {
+            logger.error(e, 'Failed to send to redux');
+        }
     },
 }]);
 
 subscriptionClient.onConnecting(() => {
-    getReduxStore().dispatch(updateWebsocket(false));
-    logger.debug('[WS] connecting');
+    try {
+
+        getReduxStore().dispatch(updateWebsocket(false));
+        logger.debug('[WS] connecting');
+    } catch (e) {
+        logger.error(e, 'Failed to send to redux');
+    }
 });
 
 subscriptionClient.onConnected(() => {
-    getReduxStore().dispatch(updateWebsocket(true));
-    logger.debug('[WS] connected');
+    try {
+        getReduxStore().dispatch(updateWebsocket(true));
+        logger.debug('[WS] connected');
+    } catch (e) {
+        logger.error(e, 'Failed to send to redux');
+    }
 });
 
 subscriptionClient.onReconnecting(() => {
-    getReduxStore().dispatch(updateWebsocket(false));
-    logger.debug('[WS] econnecting');
+    try {
+        getReduxStore().dispatch(updateWebsocket(false));
+        logger.debug('[WS] econnecting');
+    } catch (e) {
+        logger.error(e, 'Failed to send to redux');
+    }
 });
 
 subscriptionClient.onReconnected(() => {
-    getReduxStore().dispatch(updateWebsocket(true));
-    logger.debug('r[WS] econnected');
+    try {
+        getReduxStore().dispatch(updateWebsocket(true));
+        logger.debug('r[WS] econnected');
+    } catch (e) {
+        logger.error(e, 'Failed to send to redux');
+    }
 });
 
 subscriptionClient.onDisconnected(() => {
-    getReduxStore().dispatch(updateWebsocket(false));
-    logger.debug('[WS] disconnected');
+    try {
+        getReduxStore().dispatch(updateWebsocket(false));
+        logger.debug('[WS] disconnected');
+    } catch (e) {
+        logger.error(e, 'Failed to send to redux');
+    }
 });
 
 subscriptionClient.onError((error: any) => {

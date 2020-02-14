@@ -1,8 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Card, TouchableRipple } from 'react-native-paper';
+import { TouchableRipple } from 'react-native-paper';
 import { MemberAvatar } from '../MemberAvatar';
 import { CardTitle } from './CardTitle';
+import { InternalMemberListItemFooter } from './InternalMemberListItemFooter';
 import { MemberItemProps } from './MemberItemProps';
 import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
@@ -27,9 +28,9 @@ export class InternalMemberListItem extends React.PureComponent<MemberItemProps>
 
         if (this.props.member.roles) {
             return (
-                <Card.Content style={styles.chipContainer}>
+                <InternalMemberListItemFooter>
                     <RoleChips theme={this.props.theme} roles={this.props.member.roles} />
-                </Card.Content>
+                </InternalMemberListItemFooter>
             );
         }
 

@@ -46,6 +46,12 @@ export const cache = new InMemoryCache({
             NewsArticle: (_, args, { getCacheKey }) =>
                 getCacheKey({ __typename: 'NewsArticle', id: args.id }),
 
+            Association: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Association', id: args.id }),
+
+            Area: (_, args, { getCacheKey }) =>
+                getCacheKey({ __typename: 'Area', id: args.id }),
+
             Club: (_, args, { getCacheKey }) =>
                 getCacheKey({ __typename: 'Club', id: args.id }),
 

@@ -115,6 +115,8 @@ functions:
 
     environment:
       SES_FROM_ADDRESS: ${self:custom.SES_FROM_ADDRESS}
+      # This is not possible due to circular references
+      #   Ref: CognitoUserPoolClientPassword
 
     # global vpc definition
     events:
@@ -152,6 +154,10 @@ resources:
       Properties:
         RetentionInDays: "30"
 
+    AuthorizerLogGroup:
+      Properties:
+        RetentionInDays: "30"
+
     CognitoUserPoolMyUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
@@ -169,6 +175,18 @@ resources:
             RequireNumbers: false
             RequireSymbols: false
             RequireUppercase: false
+
+    CognitoUserPoolClientPassword:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        # Generate an app client name based on the stage
+        ClientName: tabler-world-client-password-${self:custom.stage}
+        UserPoolId:
+          Ref: CognitoUserPoolMyUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - CUSTOM_AUTH_FLOW_ONLY
+        RefreshTokenValidity: 3650
 
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
@@ -307,6 +325,12 @@ resources:
         Ref: CognitoUserPoolMyUserPool
       Export:
         Name: CognitoUserPool-${self:custom.stage}
+
+    UserPoolPasswordClientId:
+      Value:
+        Ref: CognitoUserPoolClientPassword
+      Export:
+        Name: CognitoUserPoolClientPassword-${self:custom.stage}
 
     UserPoolClientId:
       Value:

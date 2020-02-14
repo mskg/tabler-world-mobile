@@ -22,6 +22,7 @@ export interface StartConversation_startConversation_members_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface StartConversation_startConversation_members {
