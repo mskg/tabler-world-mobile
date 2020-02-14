@@ -1,6 +1,5 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import * as crypto from 'crypto';
-import { reverse } from 'lodash';
 import { S3, UPLOAD_BUCKET } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
@@ -88,14 +87,19 @@ export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
         Conversations: async (_root: {}, args: IteratorArgs, context: IApolloContext) => {
+            const params = await getChatParams();
+
             const result = await conversationManager.getConversations(
                 context.principal.id,
-                decodeIdentifier(args.token),
+                {
+                    token: decodeIdentifier(args.token),
+                    pageSize: params.conversationsPageSize,
+                },
             );
 
             return {
                 // index is reverse, list is other way round
-                nodes: reverse(result.result.map((c) => ({ id: c }))),
+                nodes: result.result.map((c) => ({ id: c })),
                 nextToken: encodeIdentifier(result.nextKey),
             };
         },
@@ -206,8 +210,8 @@ export const ChatResolver = {
         // tslint:disable-next-line: variable-name
         members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
-            const result = await context.dataSources.conversations.readConversation(channel);
 
+            const result = await context.dataSources.conversations.readConversation(channel);
             const members = result ? result.members : null;
             if (!members || members.values.length === 0) { return []; }
 
@@ -277,6 +281,15 @@ export const ChatResolver = {
             });
 
             context.logger.log(result);
+
+            if (EXECUTING_OFFLINE && context.clientInfo.os === 'android' && context.clientInfo.version === 'dev') {
+                // default redirect for anroid emular
+                return {
+                    ...result,
+                    url: result.url.replace(/localhost/ig, '10.0.2.2'),
+                };
+            }
+
             return result;
         },
 
@@ -368,7 +381,7 @@ export const ChatResolver = {
                     payload: {
                         image: message.image,
                         type: message.image ? MessageType.image : MessageType.text,
-                        text: message.text,
+                        text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
                     receivedAt: Date.now(),
                 } as ChatMessage),
@@ -391,12 +404,14 @@ export const ChatResolver = {
                 trackDelivery: true,
             });
 
-            const [, , conversation] = await Promise.all([
+            const [, conversation] = await Promise.all([
                 // TOOD: cloud be combined into onewrite
                 conversationManager.update(trigger, channelMessage[0]),
-                conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id),
                 context.dataSources.conversations.readConversation(trigger),
             ]);
+
+            // this must be done after update as, as update removes all seen flags
+            await conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id);
 
             await eventManager.post<string>({
                 triggers: (conversation?.members?.values || []).map((subscriber) => makeAllConversationKey(subscriber)),

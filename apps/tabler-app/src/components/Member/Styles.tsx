@@ -31,6 +31,10 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 6,
         marginRight: 4,
         marginBottom: 4,
+
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
     },
 
     chipText: {

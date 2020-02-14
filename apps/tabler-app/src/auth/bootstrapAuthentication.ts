@@ -2,6 +2,7 @@
 // import Amplify from 'aws-amplify';
 import Auth from '@aws-amplify/auth';
 import Amplify from '@aws-amplify/core';
+import { getClientParameters } from '../apollo/getClientParameters';
 import { getConfigValue } from '../helper/getConfigValue';
 import { Categories, Logger } from '../helper/Logger';
 import { SecureStorage } from './SecureStorage';
@@ -28,5 +29,9 @@ export function bootstrapAuthentication() {
         userPoolId,
         userPoolWebClientId,
         storage: SecureStorage,
+        authenticationFlowType: 'CUSTOM_FLOW',
+        clientMetadata: {
+            ...getClientParameters(),
+        },
     });
 }

@@ -1,4 +1,5 @@
 import * as WebBrowser from 'expo-web-browser';
+import { BrowserResult } from 'expo-web-browser/build/WebBrowser.types';
 import React from 'react';
 import { Theme, withTheme } from 'react-native-paper';
 import HTML from 'react-native-render-html';
@@ -16,7 +17,20 @@ type Props = {
 };
 
 class HTMLViewBase extends React.Component<Props, State> {
+    open!: Promise<BrowserResult>;
+
+    async openLink(url) {
+        WebBrowser.dismissBrowser();
+
+        if (this.open) {
+            await this.open;
+        }
+
+        this.open = WebBrowser.openBrowserAsync(url);
+    }
+
     render() {
+        console.log(this.props.html);
         return (
             <HTML
                 staticContentMaxWidth={this.props.maxWidth}
@@ -31,7 +45,7 @@ class HTMLViewBase extends React.Component<Props, State> {
                     // fontSize: 12,
                 }}
 
-                onLinkPress={async (_a, url, _other) => await WebBrowser.openBrowserAsync(url)}
+                onLinkPress={async (_a, url, _other) => this.openLink(url)}
 
                 tagsStyles={
                     {
@@ -91,6 +105,11 @@ class HTMLViewBase extends React.Component<Props, State> {
                         }
 
                         const source = htmlAttribs.srcdoc ? { html: htmlAttribs.srcdoc } : { uri: htmlAttribs.src };
+                        if (source.uri as string) {
+                            if (source.uri.startsWith('//')) {
+                                source.uri = 'https:' + source.uri;
+                            }
+                        }
 
                         return (
                             <WebView

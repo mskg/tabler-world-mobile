@@ -104,7 +104,7 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
         }
 
         // need to wait a bit for data to be available in cache?
-        setTimeout(() => updateBadgeFromConversations(), 500);
+        setTimeout(() => { try { updateBadgeFromConversations(); } catch { } }, 500);
     }
 
     // tslint:disable-next-line: max-func-body-length

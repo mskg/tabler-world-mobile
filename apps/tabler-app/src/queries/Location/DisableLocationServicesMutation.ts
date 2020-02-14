@@ -2,15 +2,15 @@ import gql from 'graphql-tag';
 
 // tslint:disable-next-line: export-name
 export const DisableLocationServicesMutation = gql`
-    mutation DisableLocationServices {
+    mutation DisableLocationServices ($nearby: SettingValue!, $map: SettingValue!) {
         putSetting(setting: {
             name: nearbymembers
-            value: false
+            value: $nearby
         })
 
         nearbymembersMap: putSetting(setting: {
             name: nearbymembersMap
-            value: false
+            value: $map
         })
 
         disableLocationServices

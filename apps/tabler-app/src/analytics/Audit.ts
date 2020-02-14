@@ -7,6 +7,7 @@ import { SceenAudit } from './SceenAudit';
 import { TimerEvent } from './TimerEvent';
 import { IAuditor, IAuditSubmit, Metrics, Params } from './Types';
 
+// tslint:disable: function-name
 export class Audit {
     static provider: IAnalyticsProvider = new DevAnalytics();
 

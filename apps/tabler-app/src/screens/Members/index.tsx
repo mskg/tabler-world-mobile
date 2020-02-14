@@ -65,7 +65,7 @@ class MembersQueryBase extends React.Component<Props> {
 
                                             return (
                                                 <ConnectedMemberScreen
-                                                    loading={loading || isRefreshing}
+                                                    loading={loading || oLoading || isRefreshing}
                                                     data={data}
                                                     offlineData={oData}
                                                     refresh={createRunRefresh(() => Promise.all([refetch(), oRefetch()]))}

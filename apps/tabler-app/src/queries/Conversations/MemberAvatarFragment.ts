@@ -20,6 +20,7 @@ export const MemberAvatarFragment = gql`
         association {
             id
             name
+            flag
         }
     }
 `;

@@ -49,19 +49,18 @@ const en = {
 
     SignIn: {
         placeholderEMail: 'firstname.lastname@123-de.roundtable.world',
-        placeholderCode: 'Authorization Code',
+        placeholderCode: 'Your Password',
 
         continue: 'Login',
         confirm: 'Confirm',
         cancel: 'Cancel',
 
         welcomeBack: 'Welcome back,',
-        signin: 'sign in to continue',
-        confirmTitle: 'Please confirm your login',
-        checkEmail: 'Check your e-mails!',
-        codeWrong: 'Code verification failed, you have to restart.',
+        signin: 'please sign in with your TABLER.WORLD public e-mail address',
+        confirmTitle: 'Enter Password',
+        codeWrong: 'Verification failed, you have to restart.',
         accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please member the TABLER.WORLD team via e-mail.',
-        codeVerify: (tries) => `Could not verify code, ${tries} tries left.`,
+        codeVerify: (tries) => `Could not verify password, ${tries} tries left.`,
 
         demoMode: 'Try the App',
         join: 'How to join Round Table?',
@@ -88,8 +87,8 @@ const en = {
     Structure: {
         navigation: 'Directory',
 
-        title: 'Asssociation',
-        mytitle: 'My Asssociation',
+        title: 'Association',
+        mytitle: 'My Association',
         associations: 'Associations',
 
         clubs: 'Clubs',
@@ -461,6 +460,9 @@ const en = {
             experiments: 'Albums & News',
             nearby: 'Nearby Members',
             notifications: 'Notifications',
+
+            subscription: 'Yearly Subscription',
+            subscription_valid: 'Valid',
         },
 
         ReleaseNotes: 'Release Notes',
@@ -620,10 +622,16 @@ const en = {
     Conversations: {
         title: 'Chats',
         network: 'Waiting for network...',
+        photo: 'Photo',
         copy: 'Copy',
         retry: 'Retry',
         placeholder: 'Type a message...',
         loadEarlier: 'Load earlier messages',
+    },
+
+    ImagePicker: {
+        nocamera: 'No camera permissions granted.',
+        nogallery: 'Sorry, we need camera roll permissions to make this work.',
     },
 };
 

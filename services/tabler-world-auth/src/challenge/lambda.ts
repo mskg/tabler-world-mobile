@@ -1,10 +1,13 @@
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
+import { verifyMaintenance } from '../helper/verifyMaintenance';
 import { handler as createHandler } from './create';
 import { handler as defineHandler } from './define';
 import { handler as verifyHandler } from './verify';
 
 // tslint:disable-next-line: export-name
 export const handler: CognitoUserPoolTriggerHandler = async (event, context, callback) => {
+    verifyMaintenance();
+
     if (event.triggerSource === 'DefineAuthChallenge_Authentication') {
         return await defineHandler(event, context, callback);
     }

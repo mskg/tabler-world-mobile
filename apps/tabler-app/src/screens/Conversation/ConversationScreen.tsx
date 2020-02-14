@@ -23,8 +23,8 @@ import { IConversationParams, showProfile } from '../../redux/actions/navigation
 import { Chat } from './Chat';
 import { ConversationQuery } from './ConversationQuery';
 import { IChatMessage } from './IChatMessage';
-import { WaitingForNetwork } from './WaitingForNetwork';
 import { logger } from './logger';
+import { WaitingForNetwork } from './WaitingForNetwork';
 
 type Props = {
     theme: Theme,
@@ -137,7 +137,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     _assignIcon = (member: Conversation_Conversation_members) => {
-        if (this.state.icon || member.pic == null || member.pic === '') { return; }
+        if (this.state.icon || !member || member.pic == null || member.pic === '') { return; }
 
         this.setState({
             member,

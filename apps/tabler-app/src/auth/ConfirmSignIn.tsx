@@ -46,7 +46,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
             code: '',
             working: false,
             noretry: false,
-            tries: 3,
+            tries: 2,
             error: null,
         };
     }
@@ -86,7 +86,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 code: '',
                 working: false,
                 noretry: false,
-                tries: 3,
+                tries: 2,
                 error: null,
             });
         }
@@ -150,32 +150,44 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="position">
                             <Logo />
-                            <Greeting title={I18N.SignIn.confirmTitle} subtitle={I18N.SignIn.checkEmail} />
+                            <Greeting
+                                title={I18N.SignIn.confirmTitle}
+                                subtitle={this.props.authState.challengeParam.email}
+                            />
 
                             <View style={styles.inputContainer}>
                                 <Input
                                     placeholder={I18N.SignIn.placeholderCode}
                                     value={this.state.code}
-                                    keyboardType="numeric"
-                                    onChangeText={text => this.setState({ code: text })}
+                                    secureTextEntry={true}
+                                    textContentType="password"
+                                    onChangeText={(text) => this.setState({ code: text })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
-                                    style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }} />
+                                    style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }}
+                                />
                             </View>
 
 
                             <View style={[styles.buttonContainer]}>
                                 <Button
                                     color={this.props.theme.colors.accent}
-                                    style={styles.button} mode="contained"
+                                    style={styles.button}
+                                    mode="contained"
                                     disabled={!this.state.code || this.state.working || this.state.noretry}
                                     loading={this.state.working}
                                     onPress={this._confirm}
-                                >{I18N.SignIn.confirm}</Button>
+                                >
+                                    {I18N.SignIn.confirm}
+                                </Button>
 
                                 <Button
                                     color={this.props.theme.colors.accent}
-                                    style={styles.button} mode="contained"
-                                    onPress={() => this.props.signin()}>{I18N.SignIn.cancel}</Button>
+                                    style={styles.button}
+                                    mode="contained"
+                                    onPress={() => this.props.signin()}
+                                >
+                                    {I18N.SignIn.cancel}
+                                </Button>
                             </View>
 
                             {this.state.error && (

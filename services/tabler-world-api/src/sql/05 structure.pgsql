@@ -151,7 +151,9 @@ select
     ) as members
 from clubs
 where
-    data->>'rt_status' = 'active'
+        data->>'rt_status' = 'active'
+    or data->>'rt_status' = 'formation'
+    or data->>'rt_status' = 'preparation'
 order by 2, 3, 6;
 
 create unique index idx_structure_club_assoc_club on

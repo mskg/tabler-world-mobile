@@ -33,5 +33,11 @@
     "typescript.tsdk": "node_modules/typescript/lib",
     "[yaml]": {
         "editor.tabSize": 2
-    }
+    },
+    "todohighlight.include": [
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx"
+    ]
 }

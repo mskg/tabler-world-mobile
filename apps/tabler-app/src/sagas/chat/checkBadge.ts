@@ -1,22 +1,25 @@
-import { Notifications } from 'expo';
+import { call } from 'redux-saga/effects';
+import { getBadgeNumber, setBadgeNumber } from '../../helper/bagde';
+import { isDemoModeEnabled } from '../../helper/demoMode';
+import { Features, isFeatureEnabled } from '../../model/Features';
 import { setBadge } from '../../redux/actions/chat';
 import { getReduxStore } from '../../redux/getRedux';
-import { isFeatureEnabled, Features } from '../../model/Features';
-import { isDemoModeEnabled } from '../../helper/demoMode';
-import { call } from 'redux-saga/effects';
-import { Platform } from 'react-native';
+import { logger } from './logger';
 
 export function* checkBadge() {
+    try {
+        const demo = yield call(isDemoModeEnabled);
 
-    const demo = yield call(isDemoModeEnabled);
-
-    if (!isFeatureEnabled(Features.Chat) || demo) {
-        if (Platform.OS === 'ios') { Notifications.setBadgeNumberAsync(0); }
-        getReduxStore().dispatch(setBadge(0));
-    } else {
-        if (Platform.OS === 'ios') {
-            const unread = yield Notifications.getBadgeNumberAsync();
-            getReduxStore().dispatch(setBadge(unread));
+        if (!isFeatureEnabled(Features.Chat) || demo) {
+            setBadgeNumber(0);
+            getReduxStore().dispatch(setBadge(0));
+        } else {
+            const bn = yield getBadgeNumber();
+            if (bn) {
+                getReduxStore().dispatch(setBadge(bn));
+            }
         }
+    } catch (e) {
+        logger.error(e, 'Failed to checkBadge');
     }
 }

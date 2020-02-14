@@ -22,6 +22,7 @@ export interface conversationUpdate_conversationUpdate_members_association {
   __typename: "Association";
   id: string;
   name: string;
+  flag: string | null;
 }
 
 export interface conversationUpdate_conversationUpdate_members {

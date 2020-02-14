@@ -1,6 +1,10 @@
 import { getReduxStore } from '../../redux/getRedux';
 
 export function isSignedIn(): boolean {
-    const authState = getReduxStore().getState().auth.state;
-    return authState === 'singedIn';
+    try {
+        const authState = getReduxStore()?.getState()?.auth?.state;
+        return authState === 'singedIn';
+    } catch {
+        return false;
+    }
 }

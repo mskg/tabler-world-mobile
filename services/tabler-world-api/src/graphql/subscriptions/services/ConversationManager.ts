@@ -1,7 +1,8 @@
 import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import DynamoDB, { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
+import DynamoDB, { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { dynamodb as client } from '../aws/dynamodb';
+import { DIRECT_CHAT_PREFIX } from '../types/Constants';
 import { WebsocketEvent } from '../types/WebsocketEvent';
 import { CONVERSATIONS_TABLE, FieldNames } from './Constants';
 
@@ -24,14 +25,19 @@ export type Conversation = {
     channelKey?: string,
 };
 
+type QueryOptions = {
+    pageSize: number,
+    token?: DocumentClient.Key,
+};
+
 export class ConversationManager {
-    public async getConversations(member: number, key?: Key): Promise<PaggedResponse<string>> {
+    public async getConversations(member: number, options: QueryOptions = { pageSize: 10 }): Promise<PaggedResponse<string>> {
         logger.log('getConversations', member);
 
         const { Items: channels, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
             TableName: CONVERSATIONS_TABLE,
-            ExclusiveStartKey: key,
-            Limit: 10,
+            ExclusiveStartKey: options.token,
+            Limit: options.pageSize,
 
             KeyConditionExpression: `${FieldNames.member} = :member`,
             ExpressionAttributeValues: {
@@ -50,12 +56,17 @@ export class ConversationManager {
         return channels
             ? {
                 nextKey,
-                result: channels.map((m) => {
-                    const combinedKey = m[FieldNames.lastConversation] as string;
-                    const [, conversation] = combinedKey.split('_');
+                result: channels
+                    .map((m) => {
+                        const combinedKey = m[FieldNames.lastConversation] as string;
+                        const [event, conversation] = combinedKey.split('_');
 
-                    return conversation;
-                }) as string[],
+                        // no message has been sent in this channel
+                        if (event === '0') { return null; }
+
+                        return conversation;
+                    })
+                    .filter((c) => c != null) as string[],
             }
             : EMPTY_RESULT;
     }
@@ -72,6 +83,18 @@ export class ConversationManager {
             },
         }).promise();
 
+        if (Item && conversation.startsWith(DIRECT_CHAT_PREFIX)) {
+            // this is a one:one conversation
+            const [a, b] = conversation
+                .replace(/CONV\(|\)|:/ig, '')
+                .split(',');
+
+            const [aId, bId] = [parseInt(a, 10), parseInt(b, 10)];
+
+            // we fix that to always be 2 members
+            Item[FieldNames.members] = { type: 'Number', values: [aId, bId] };
+        }
+
         return Item as Conversation;
     }
 
@@ -87,6 +110,7 @@ export class ConversationManager {
             },
         }).promise();
 
+        logger.log(Item);
         return Item as UserConversation;
     }
 
@@ -100,6 +124,7 @@ export class ConversationManager {
     public async updateLastSeen(conversation: string, member: number, lastSeen: string) {
         logger.log(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
 
+        // preserve existing data
         await client.update({
             TableName: CONVERSATIONS_TABLE,
 
@@ -150,6 +175,8 @@ export class ConversationManager {
             const items: [string, WriteRequest][] = members.map((member: number) => ([
                 CONVERSATIONS_TABLE,
                 {
+                    // this removes lastseen counter which is ok
+                    // as we have a new message arriving, which cannot be already seen
                     PutRequest: {
                         Item: {
                             [FieldNames.conversation]: conversation,
@@ -210,6 +237,8 @@ export class ConversationManager {
                     Item: {
                         [FieldNames.conversation]: conversation,
                         [FieldNames.member]: member,
+
+                        // this is the 0 conversation beeing filtered out in query
                         [FieldNames.lastConversation]: `0_${conversation}`,
                     },
                 },

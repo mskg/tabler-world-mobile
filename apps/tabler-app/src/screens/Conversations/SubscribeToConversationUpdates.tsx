@@ -1,9 +1,8 @@
-import { Notifications } from 'expo';
 import React from 'react';
-import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { HandleAppState } from '../../components/HandleAppState';
+import { setBadgeNumber } from '../../helper/bagde';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { Categories, Logger } from '../../helper/Logger';
 import { Features, isFeatureEnabled } from '../../model/Features';
@@ -15,6 +14,7 @@ import { conversationUpdateSubscription } from '../../queries/Conversations/conv
 import { GetConversationQuery } from '../../queries/Conversations/GetConversationQuery';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { setBadge } from '../../redux/actions/chat';
+import { checkBadge } from '../../sagas/chat/checkBadge';
 
 const logger = new Logger(Categories.Helpers.Chat);
 
@@ -28,6 +28,10 @@ type Props = {
 
 class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
     subscription!: ZenObservable.Subscription | null;
+
+    componentDidMount() {
+        checkBadge();
+    }
 
     componentDidUpdate(prev) {
         if (prev.websocket !== this.props.websocket && this.props.websocket && this.props.chatEnabled) {
@@ -72,13 +76,20 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                 if (__DEV__) { logger.debug('Received', nextVal); }
                 const data = nextVal.data as conversationUpdate;
 
-                let conversations = client.readQuery<GetConversations>({
-                    query: GetConversationsQuery,
-                });
+                let conversations;
+
+                try {
+                    conversations = client.readQuery<GetConversations>({
+                        query: GetConversationsQuery,
+                    });
+                } catch (e) {
+                    logger.log('Failed to read conversations', e);
+                }
 
                 if (conversations == null) {
                     const temp = await client.query<GetConversations>({
                         query: GetConversationsQuery,
+                        fetchPolicy: 'network-only',
                     });
 
                     conversations = temp.data;
@@ -90,9 +101,9 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                 if (data.conversationUpdate.hasUnreadMessages) {
                     if (this.props.badge === 0) {
                         logger.debug('Updating badge');
-                        this.props.setBadge(1);
 
-                        if (Platform.OS === 'ios') { await Notifications.setBadgeNumberAsync(1); }
+                        this.props.setBadge(1);
+                        setBadgeNumber(1);
                     }
 
                     // we update our local data
