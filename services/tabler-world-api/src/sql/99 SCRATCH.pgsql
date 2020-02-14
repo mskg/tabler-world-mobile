@@ -34,8 +34,5 @@ select distinct data->>'rt_status'
 From clubs
 where id = 'rti_ro_22'
 
-
-
-select *
-From structure_areas
-where id = 'rti_ro_area1'
+select * From
+usersettings where id = 14225

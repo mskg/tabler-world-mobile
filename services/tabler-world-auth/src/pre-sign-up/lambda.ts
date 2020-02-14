@@ -1,7 +1,7 @@
 import { withClient } from '@mskg/tabler-world-rds-client';
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
-import { verifyMaintenance } from '@mskg/tabler-world-auth/src/helper/verifyMaintenance';
-import { verifyCountry } from '@mskg/tabler-world-auth/src/helper/verifyCountry';
+import { verifyCountry } from '../helper/verifyCountry';
+import { verifyMaintenance } from '../helper/verifyMaintenance';
 
 // tslint:disable-next-line: export-name
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {

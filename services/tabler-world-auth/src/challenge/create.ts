@@ -1,8 +1,8 @@
-import { verifyCountry } from '@mskg/tabler-world-auth/src/helper/verifyCountry';
-import { verifyUser } from '@mskg/tabler-world-auth/src/helper/verifyUser';
 import { xAWS } from '@mskg/tabler-world-aws';
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
 import { randomDigits } from 'crypto-secure-random-digit';
+import { verifyCountry } from '../helper/verifyCountry';
+import { verifyUser } from '../helper/verifyUser';
 import { sendEmail } from './sendEmail';
 
 export const ses = new xAWS.SES();

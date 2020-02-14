@@ -1,5 +1,5 @@
-import { verifyPassword } from '@mskg/tabler-world-auth/src/helper/verifyPassword';
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
+import { verifyPassword } from '../helper/verifyPassword';
 
 // tslint:disable-next-line: export-name
 export const handler: CognitoUserPoolTriggerHandler = async (event, context) => {

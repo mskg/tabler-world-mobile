@@ -1,5 +1,5 @@
-import { verifyMaintenance } from '@mskg/tabler-world-auth/src/helper/verifyMaintenance';
 import { CognitoUserPoolTriggerHandler } from 'aws-lambda';
+import { verifyMaintenance } from '../helper/verifyMaintenance';
 import { handler as createHandler } from './create';
 import { handler as defineHandler } from './define';
 import { handler as verifyHandler } from './verify';
