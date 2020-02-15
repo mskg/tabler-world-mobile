@@ -16,7 +16,7 @@
         "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql",
         "android": "emulator -avd expo -gpu host",
         "publish": "expo publish --release-channel dev",
-        "translations": "ts-node --project config/tsconfig.json config/translations"
+        "translations": "ts-node --project config/tsconfig.json config/generate-translations"
     },
     "workspaces": {
         "packages": [
@@ -121,6 +121,7 @@
         "@types/react-native": "^0.60.31",
         "@types/react-navigation": "^3.4.0",
         "@types/react-redux": "^7.1.6",
+        "@vitalets/google-translate-api": "^3.0.0",
         "apollo": "^2.21.3",
         "babel-plugin-import-graphql": "^2.7.0",
         "babel-preset-expo": "^8.0.0",
