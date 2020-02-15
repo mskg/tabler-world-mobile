@@ -13,5 +13,6 @@ export const ChatMessage = (root?: any, args?: any, context?: any, _info?: any) 
         accepted: true,
         delivered: true,
         senderId: () => faker.random.boolean() ? 1 : 5,
+        receivedAt: () => faker.date.recent(7),
     };
 };

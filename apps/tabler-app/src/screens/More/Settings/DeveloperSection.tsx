@@ -106,14 +106,14 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                         <Element
                             theme={this.props.theme}
                             field={'Lasts Fetch Run'}
-                            text={I18N.Settings.sync.date(this.state.lastFetchRun)}
+                            text={I18N.formatDate(this.state.lastFetchRun, 'Date_Short_Time')}
                         />
                         <Divider />
 
                         <Element
                             theme={this.props.theme}
                             field={'Last Data Sync'}
-                            text={I18N.Settings.sync.date(this.state.lastDataRun)}
+                            text={I18N.formatDate(this.state.lastDataRun, 'Date_Short_Time')}
                         />
                         <Divider />
 

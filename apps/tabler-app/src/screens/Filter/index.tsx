@@ -85,15 +85,15 @@ class FilterScreenBase extends AuditedScreen<Props> {
                         theme={this.props.theme}
                         title={(
                             <Text style={{ color: this.props.theme.colors.accent }}>{
-                                this.props.filter == null ? I18N.Filter.hideAll : I18N.Filter.showAll
+                                this.props.filter == null ? I18N.Screen_Filter.hideAll : I18N.Screen_Filter.showAll
                             }</Text>
                         )}
                         onPress={() => this.props.toggleAll()}
                     />
 
-                    <List.Section title={I18N.Filter.favorites}>
+                    <List.Section title={I18N.Screen_Filter.favorites}>
                         <Element
-                            title={I18N.Filter.toggleOwnTable}
+                            title={I18N.Screen_Filter.toggleOwnTable}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleOwnTable()}
                             right={(
@@ -106,7 +106,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
                         />
                         <Divider />
                         <Element
-                            title={I18N.Filter.toggleFavorits}
+                            title={I18N.Screen_Filter.toggleFavorits}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleFavorites()}
                             right={(
@@ -119,7 +119,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
                         />
                         <Divider />
                         <Element
-                            title={I18N.Filter.toggleAssociationBoard}
+                            title={I18N.Screen_Filter.toggleAssociationBoard}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleAssociationBoard()}
                             right={(
@@ -132,7 +132,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
                         />
                         <Divider />
                         <Element
-                            title={I18N.Filter.toggleAreaBoard}
+                            title={I18N.Screen_Filter.toggleAreaBoard}
                             theme={this.props.theme}
                             onPress={() => this.props.toggleAreaBoard()}
                             right={(
@@ -151,7 +151,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
 
                             // we ignore the errors here for now
                             return (
-                                <List.Section title={I18N.Filter.area}>
+                                <List.Section title={I18N.Screen_Filter.area}>
                                     <FlatList
                                         data={data ? (data.Areas || []) : []}
                                         extraData={this.props.filter}
@@ -170,7 +170,7 @@ class FilterScreenBase extends AuditedScreen<Props> {
                 <StandardHeader
                     style={[HeaderStyles.topBar]}
                     showBack={true}
-                    title={I18N.Filter.title}
+                    title={I18N.Screen_Filter.title}
                 />
             </Screen>
         );

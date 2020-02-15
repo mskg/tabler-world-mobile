@@ -187,7 +187,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
                     header={
                         {
                             content: [
-                                <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Members.title} />,
+                                <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Screen_Members.title} />,
                                 <Appbar.Action key="filter" icon="filter-list" onPress={() => this.props.showFilter()} />,
                                 <Appbar.Action key="search" icon="search" onPress={() => this.props.showSearch()} />,
                             ],

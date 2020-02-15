@@ -42,7 +42,7 @@ class AlbumsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Tap
 
     componentDidMount() {
         super.componentDidMount();
-        
+
         this.props.navigation.setParams({
             tapOnTabNavigator: () => {
                 requestAnimationFrame(
@@ -94,7 +94,7 @@ class AlbumsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Tap
                 <View style={styles.bottom} />
 
                 <Card.Actions style={styles.action}>
-                    <Button color={this.props.theme.colors.accent} onPress={showAlbumFunc}>{I18N.Albums.details}</Button>
+                    <Button color={this.props.theme.colors.accent} onPress={showAlbumFunc}>{I18N.Screen_Albums.details}</Button>
                 </Card.Actions>
             </Card>
         );
@@ -106,7 +106,7 @@ class AlbumsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Tap
 
     render() {
         return (
-            <ScreenWithHeader header={{ showBack: true, title: I18N.Albums.title }}>
+            <ScreenWithHeader header={{ showBack: true, title: I18N.Screen_Albums.title }}>
                 <Query<AlbumsOverview> query={GetAlbumsOverviewQuery} fetchPolicy={this.props.fetchPolicy}>
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;

@@ -165,7 +165,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                         <>
                             <ScreenWithHeader
                                 header={{
-                                    title: data != null && data.Album != null ? data.Album.name : I18N.Album.title,
+                                    title: data != null && data.Album != null ? data.Album.name : I18N.Screen_Album.title,
                                     showBack: true,
                                 }}
                             >

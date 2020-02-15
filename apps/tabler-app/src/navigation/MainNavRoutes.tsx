@@ -25,7 +25,7 @@ export const MainNavRoutes = {
     [MainRoutes.Members]: {
         screen: MembersScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Members.title,
+            tabBarLabel: I18N.Screen_Members.title,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-body" />),
         },
     },
@@ -33,7 +33,7 @@ export const MainNavRoutes = {
     [MainRoutes.Structure]: {
         screen: StructureScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Structure.navigation,
+            tabBarLabel: I18N.Screen_Structure.navigation,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-book" />),
         },
     },
@@ -41,7 +41,7 @@ export const MainNavRoutes = {
     [MainRoutes.Conversations]: {
         screen: ConversationsScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Conversations.title,
+            tabBarLabel: I18N.Screen_Conversations.title,
             tabBarIcon: ({ tintColor }) => <IconWithBadge tintColor={tintColor} />,
         },
     },
@@ -49,7 +49,7 @@ export const MainNavRoutes = {
     [MainRoutes.NearBy]: {
         screen: NearbyScreen,
         navigationOptions: {
-            tabBarLabel: I18N.NearbyMembers.navigation,
+            tabBarLabel: I18N.Screen_NearbyMembers.navigation,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-navigate" />),
         },
     },
@@ -57,7 +57,7 @@ export const MainNavRoutes = {
     [MainRoutes.More]: {
         screen: MoreScreen,
         navigationOptions: {
-            tabBarLabel: I18N.Menu.title,
+            tabBarLabel: I18N.Screen_Menu.title,
             tabBarIcon: ({ tintColor }) => (<Ionicons size={24} color={tintColor} name="md-menu" />),
         },
     },

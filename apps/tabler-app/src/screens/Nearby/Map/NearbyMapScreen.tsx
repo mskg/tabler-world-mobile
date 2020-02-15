@@ -124,8 +124,8 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                     {!this.props.nearbyMap && (
                         <Message
                             theme={this.props.theme}
-                            text={I18N.NearbyMembers.mapOff}
-                            button={I18N.NearbyMembers.on}
+                            text={I18N.Screen_NearbyMembers.mapOff}
+                            button={I18N.Screen_NearbyMembers.on}
                             onPress={() => this.props.showNearbySettings()}
                         />
                     )}

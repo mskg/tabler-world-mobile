@@ -40,11 +40,11 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps, Sta
         this.setState({
             urls: [
                 {
-                    title: I18N.Settings.Legal.docs.imprint,
+                    title: I18N.Screen_Settings.Legal.docs.imprint,
                     url: urls.imprint[I18N.id] || urls.imprint.en,
                 },
                 {
-                    title: I18N.Settings.Legal.docs.dataprotection,
+                    title: I18N.Screen_Settings.Legal.docs.dataprotection,
                     url: urls.dataprotection[I18N.id] || urls.dataprotection.en,
                 },
             ],
@@ -53,7 +53,7 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps, Sta
 
     render() {
         return (
-            <ScreenWithHeader header={{ title: I18N.Settings.Legal.title, showBack: true }}>
+            <ScreenWithHeader header={{ title: I18N.Screen_Settings.Legal.title, showBack: true }}>
                 <ScrollView>
                     <List.Section>
                         <Divider />
@@ -77,10 +77,10 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps, Sta
 
                         <NextScreen
                             theme={this.props.theme}
-                            text={I18N.Settings.Legal.thirdparty}
+                            text={I18N.Screen_Settings.Legal.thirdparty}
                             onPress={
                                 () => this.props.navigation.navigate(Routes.MD, {
-                                    title: I18N.Settings.Legal.thirdparty,
+                                    title: I18N.Screen_Settings.Legal.thirdparty,
                                     source: Assets.files.license,
                                 })
                             }
@@ -88,10 +88,10 @@ class LegalScreenBase extends AuditedScreen<Props & NavigationInjectedProps, Sta
                         <Divider />
                         <NextScreen
                             theme={this.props.theme}
-                            text={I18N.Settings.Legal.about}
+                            text={I18N.Screen_Settings.Legal.about}
                             onPress={
                                 () => this.props.navigation.navigate(Routes.MD, {
-                                    title: I18N.Settings.Legal.about,
+                                    title: I18N.Screen_Settings.Legal.about,
                                     source: Assets.files.about,
                                 })
                             }

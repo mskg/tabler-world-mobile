@@ -164,7 +164,7 @@ export class StructureSearchListBase extends React.Component<Props> {
 
                 renderItem={this._renderItem}
 
-                ListEmptyComponent={this.props.refreshing ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
+                ListEmptyComponent={this.props.refreshing ? undefined : <EmptyComponent title={I18N.Screen_Members.noresults} />}
                 contentContainerStyle={{ flexGrow: 1, paddingBottom: 56 + 10 }}
 
                 keyExtractor={this._extractKey}

@@ -51,7 +51,7 @@ export const showPictureSceen = (pic: string, title?: string) => NavigationActio
     routeName: HomeRoutes.Picture,
     params: {
         picture: pic,
-        title: title || I18N.Image.Member,
+        title: title || I18N.Screen_Image.title_Member,
     },
 });
 

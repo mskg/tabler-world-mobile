@@ -1,18 +1,7 @@
-import moment from 'moment';
-import { Platform } from 'react-native';
-import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
-
-// tslint:disable-next-line: no-var-requires
-const countries = require('./countries/en.json');
-
 const en = {
     id: 'en',
 
-    init: () => {
-        moment.locale(en.id);
-    },
-
-    Whoops: {
+    Component_Whoops: {
         title: 'Whoops?',
         try: 'Try Again',
         partialData: 'Failed to load data from server, showing partial result',
@@ -20,146 +9,127 @@ const en = {
         offline: 'You\'re offline.',
     },
 
-    ErrorReport: {
+    Component_ErrorReport: {
         title: 'Report a problem',
         text: 'Your feedback helps us improve TABLER.APP.',
-
         report: 'Something isn\'t working?',
         feedback: 'Some functionality is missing? You have an idea?',
-
         subject: 'TABLER.APP Issue',
         noMail: 'You seem to have no mail client installed?',
-        template: `Please describe what happened:`,
+        template: 'Please describe what happened:',
     },
 
-    Image: {
-        Member: 'Member Info',
-        Club: 'Club Info',
+    Screen_Image: {
+        title_Member: 'Member Info',
+        title_Club: 'Club Info',
     },
 
     NavigationStyle: {
         fontSize: 12,
         textAlign: 'center',
         backgroundColor: 'transparent',
-    } as any,
+    },
 
-    Loader: {
+    Component_Loader: {
         title: 'Update',
         text: 'New application update were found, restart must required.',
         accept: 'Accept',
     },
 
-    SignIn: {
+    Screen_SignIn: {
         placeholderEMail: 'firstname.lastname@123-de.roundtable.world',
         placeholderCode: 'Your Password',
-
         continue: 'Login',
         confirm: 'Confirm',
         cancel: 'Cancel',
-
         warning: 'IMPORTANT! You can now logon with your TABLER.WORLD password. E-mails will no longer be sent.',
-
         welcomeBack: 'Welcome back,',
         signin: 'please sign in with your TABLER.WORLD public e-mail address',
         confirmTitle: 'Enter Password',
         codeWrong: 'Verification failed, you have to restart.',
         accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please member the TABLER.WORLD team via e-mail.',
-        codeVerify: (tries) => `Could not verify password, ${tries} tries left.`,
-
+        codeVerify: 'Could not verify password, {tries} tries left.',
         demoMode: 'Try the App',
         join: 'How to join Round Table?',
-
         demo: {
             title: 'Demo Mode',
             text: 'After confirmation, we will restart the application. To exit the demo, goto Settings | Logout.',
         },
     },
 
-    Pair: {
+    Screen_Pair: {
         action: 'Exchange contact details',
         title: 'Exchange Contact Details',
         scan: 'Scan Code',
         me: 'My Code',
-
         request: 'Requesting for camera permission',
         permission: 'No access to camera',
-
         remove: 'Member has been added to your favorites',
         undo: 'Undo',
     },
 
-    Structure: {
+    Screen_Structure: {
         navigation: 'Directory',
-
         title: 'Association',
         mytitle: 'My Association',
         associations: 'Associations',
-
         clubs: 'Clubs',
         areas: 'Areas',
-
         president: 'President',
-
         board: 'Board',
         assist: 'Board Assistants',
-
         details: 'Show Club',
     },
 
-    Club: {
+    Screen_Club: {
         title: 'Club',
-
         board: 'Board',
         assist: 'Board Assistants',
-
         members: 'Members',
         member: 'Member',
-
         Actions: {
             web: 'web',
             facebook: 'facebook',
             instagram: 'instagram',
             twitter: 'twitter',
         },
-
         web: 'Website',
-
         charter: 'Charter Date',
         national: 'National God Parent',
         international: 'International God Parent',
-
         account: 'Bank Account',
-
-        place: (n1, n2) => n1 > 1 ? `Meeting Place ${n2}` : 'Meeting Place',
-
+        place: {
+            one: 'Meeting Place',
+            other: 'Meeting Place {place}',
+        },
         meetings: 'Monthly Meetings at',
         expand: 'See All',
     },
 
-    World: {
+    Screen_World: {
         title: 'TABLER.WORLD',
         tab: 'Online',
     },
 
-    Albums: {
+    Screen_Albums: {
         title: 'Albums',
         details: 'Show Album',
     },
 
-    News: {
+    Screen_News: {
         title: 'News',
     },
 
-    Album: {
+    Screen_Album: {
         title: 'Album',
     },
 
-    ReadMore: {
+    Component_ReadMore: {
         more: 'Read more',
         less: 'Hide',
     },
 
-    Member: {
+    Screen_Member: {
         Menu: {
             email: 'Send e-mail',
             tel: 'Call',
@@ -167,47 +137,6 @@ const en = {
             url: 'Open web page',
             cancel: 'Cancel',
         },
-
-        chat: (s) => `Send a message to ${s}`,
-
-        email: (s) => {
-            switch (s) {
-                case 'rt':
-                    return 'TABLER.WORLD';
-
-                case 'home':
-                    return 'Private';
-
-                case 'work':
-                    return 'Work';
-
-                case 'other':
-                    return 'Other';
-
-                default:
-                    return s;
-            }
-        },
-
-        telephone: (s) => {
-            switch (s) {
-                case 'home':
-                    return 'Home';
-
-                case 'mobile':
-                    return 'Mobile';
-
-                case 'work':
-                    return 'Work';
-
-                case 'other':
-                    return 'Other';
-
-                default:
-                    return s;
-            }
-        },
-
         Fields: {
             chat: 'TABLER.APP Chat',
             home: 'Home Address',
@@ -215,112 +144,128 @@ const en = {
             partner: 'Partner',
             roles: 'RT Functions (this year)',
             rtorg: 'RT Organization',
-
             companies: 'Company',
             educations: 'Education',
             joined: 'Date Joined',
         },
-
         Actions: {
             message: 'message',
             call: 'call',
             mail: 'mail',
             web: 'tabler.world',
-
-            chat: 'Start Conversation',
+            chat: 'Send a message to {name}',
             openweb: 'Show on TABLER.WORLD',
             favadd: 'Add to Favorites',
             remfav: 'Remove from Favorites',
             contact: 'Update Phonebook',
-
             linkedin: 'linkedin',
             facebook: 'facebook',
             instagram: 'instagram',
             twitter: 'twitter',
-
             clipboard: 'Copied text',
         },
     },
 
-    Search: {
+    EMailNames: {
+        rt: 'TABLER.WORLD',
+        home: 'Private',
+        work: 'Work',
+        other: 'Other',
+    },
+
+    PhoneNames: {
+        home: 'Home',
+        mobile: 'Mobile',
+        work: 'Work',
+        other: 'Other',
+    },
+
+    Screen_Search: {
         title: 'Search',
         history: 'Search history',
         favorites: 'Favorites',
         search: 'Search...',
         lru: 'Recently Opened',
-
         filter: 'Filter',
-
         expand: 'See All',
         collapse: 'See Less',
-
-        results: (r) => r > 0 ? `Search results (${r})` : 'Search results',
-
-        associations: (r) => r > 0 ? `Associations (${r})` : 'Associations',
-        roles: (r) => r > 0 ? `Roles (${r})` : 'Roles',
-        areas: (r) => r > 0 ? `Areas (${r})` : 'Areas',
-        tables: (r) => r > 0 ? `Tables (${r})` : 'Tables',
-        sectors: (r) => r > 0 ? `Sectors (${r})` : 'Sectors',
-
-        sectorNames: {
-            accountingauditing: 'Accounting & Auditing',
-            administrativesupportservices: 'Administrative & Support Services',
-            advertisingmarketingpublicrelations: 'Advertising, Marketing & Public Relations',
-            aerospaceaviation: 'Aerospace/ Aviation',
-            agricultureforestryfishing: 'Agriculture, Forestry & Fishing',
-            architecturalservices: 'Architectural Services',
-            artsentertainmentmedia: 'Arts, Entertainment & Media',
-            banking: 'Banking',
-            biotechnologypharmaceutical: 'Biotechnology & Pharmaceutical',
-            communitysocialservicesnonprofit: 'Community, Social Services & Non-profit',
-            constructiontradesmining: 'Construction, Trades & Mining',
-            consultingservices: 'Consulting Services',
-            customerservicecallcenter: 'Customer Service & Call Center',
-            design: 'Design',
-            educationtraininglibrary: 'Education, Training & Library',
-            employmentrecruitmentagency: 'Employment & Recruitment Agency',
-            engineering: 'Engineering',
-            financeeconomics: 'Finance & Economics',
-            governmentpolicy: 'Government & Policy',
-            healthsocialcarepractitionertechnician: 'Health & Social Care, Practitioner & Technician',
-            hospitalitytourism: 'Hospitality & Tourism',
-            humanresources: 'Human Resources',
-            industry: 'Industry',
-            informationtechnology: 'Information Technology',
-            installationmaintenancerepair: 'Installation, Maintenance & Repair',
-            insurance: 'Insurance',
-            lawenforcementsecurity: 'Law Enforcement & Security',
-            legal: 'Legal',
-            manufacturingproduction: 'Manufacturing & Production',
-            other: 'Other',
-            personalcare: 'Personal Care',
-            realestate: 'Real Estate',
-            restaurantfoodservice: 'Restaurant & Food Service',
-            retailwholesale: 'Retail & Wholesale',
-            sales: 'Sales',
-            scienceresearch: 'Science & Research',
-            telecommunications: 'Telecommunications',
-            voluntaryservices: 'Voluntary Services',
-            warehousingdistribution: 'Warehousing & Distribution',
+        associations: {
+            one: 'Association',
+            other: 'Associations ({number})',
+        },
+        roles: {
+            one: 'Role',
+            other: 'Roles ({number})',
+        },
+        areas: {
+            one: 'Area',
+            other: 'Areas ({number})',
+        },
+        tables: {
+            one: 'Club',
+            other: 'Clubs ({number})',
+        },
+        sectors: {
+            one: 'Sector',
+            other: 'Sectors ({number})',
         },
     },
 
-    Filter: {
+    Sectors: {
+        accountingauditing: 'Accounting & Auditing',
+        administrativesupportservices: 'Administrative & Support Services',
+        advertisingmarketingpublicrelations: 'Advertising, Marketing & Public Relations',
+        aerospaceaviation: 'Aerospace/ Aviation',
+        agricultureforestryfishing: 'Agriculture, Forestry & Fishing',
+        architecturalservices: 'Architectural Services',
+        artsentertainmentmedia: 'Arts, Entertainment & Media',
+        banking: 'Banking',
+        biotechnologypharmaceutical: 'Biotechnology & Pharmaceutical',
+        communitysocialservicesnonprofit: 'Community, Social Services & Non-profit',
+        constructiontradesmining: 'Construction, Trades & Mining',
+        consultingservices: 'Consulting Services',
+        customerservicecallcenter: 'Customer Service & Call Center',
+        design: 'Design',
+        educationtraininglibrary: 'Education, Training & Library',
+        employmentrecruitmentagency: 'Employment & Recruitment Agency',
+        engineering: 'Engineering',
+        financeeconomics: 'Finance & Economics',
+        governmentpolicy: 'Government & Policy',
+        healthsocialcarepractitionertechnician: 'Health & Social Care, Practitioner & Technician',
+        hospitalitytourism: 'Hospitality & Tourism',
+        humanresources: 'Human Resources',
+        industry: 'Industry',
+        informationtechnology: 'Information Technology',
+        installationmaintenancerepair: 'Installation, Maintenance & Repair',
+        insurance: 'Insurance',
+        lawenforcementsecurity: 'Law Enforcement & Security',
+        legal: 'Legal',
+        manufacturingproduction: 'Manufacturing & Production',
+        other: 'Other',
+        personalcare: 'Personal Care',
+        realestate: 'Real Estate',
+        restaurantfoodservice: 'Restaurant & Food Service',
+        retailwholesale: 'Retail & Wholesale',
+        sales: 'Sales',
+        scienceresearch: 'Science & Research',
+        telecommunications: 'Telecommunications',
+        voluntaryservices: 'Voluntary Services',
+        warehousingdistribution: 'Warehousing & Distribution',
+    },
+
+    Screen_Filter: {
         title: 'Adjust member filters',
         area: 'My Association\'s Districts',
         showAll: 'Show all my Association Members',
         hideAll: 'Hide all my Association Members',
-
         favorites: 'Favorites',
         toggleFavorits: 'All Favorites',
         toggleOwnTable: 'My own Table',
-
         toggleAssociationBoard: 'My Association\'s Board and -Assists',
         toggleAreaBoard: 'My Association\'s Board of Advisors',
     },
 
-
-    Settings: {
+    Screen_Settings: {
         title: 'Settings',
         logout: {
             title: 'Please confirm your logout!',
@@ -328,87 +273,16 @@ const en = {
             button: 'LOGOUT',
             demo: 'You are using the app in demonstration mode. To leave this mode, please log out.',
         },
-
         reload: {
             title: 'Reload required',
             text: 'To enable that feature, we must restart the App.',
         },
-
         sync: {
             title: 'We will remove all local data!',
             text: 'This action cannot be undone.',
-            date: (date: Date | null) => {
-                const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-
-                return date == null
-                    ? 'never'
-                    : new Date(date).toLocaleString('de-de', options);
-            },
         },
-
-        apps: {
-            mail: (app: MailApps) => {
-                switch (app) {
-                    case MailApps.Default:
-                        return Platform.OS == 'ios' ? 'Apple Mail' : 'Google Mail';
-
-                    case MailApps.GoogleMail:
-                        return 'Google Mail';
-
-                    case MailApps.Outlook:
-                        return 'Microsoft Outlook';
-
-                    default:
-                        return app;
-                }
-            },
-
-            web: (app: WebApps) => {
-                switch (app) {
-                    case WebApps.Chrome:
-                        return 'Google Chrome';
-
-                    case WebApps.Default:
-                        return Platform.OS == 'ios' ? 'Safari' : 'Google Chrome';
-
-                    default:
-                        return app;
-                }
-            },
-
-            call: (app: CallApps) => {
-                switch (app) {
-                    case CallApps.Default:
-                        return 'Mobile Phone';
-
-                    default:
-                        return app;
-                }
-            },
-
-            messaging: (app: MessagingApps) => {
-                switch (app) {
-                    // case MessagingApps.Signal:
-                    //     return "Signal Messenger";
-
-                    // case MessagingApps.Telegram:
-                    //     return "Telegram";
-
-                    case MessagingApps.WhatsApp:
-                        return 'WhatsApp';
-
-                    case MessagingApps.Default:
-                        return Platform.OS == 'ios' ? 'Apple Messages' : 'Google Messages';
-
-                    default:
-                        return app;
-                }
-            },
-        },
-
         confirm: 'Confirm',
         cancel: 'Cancel',
-
         sections: {
             about: 'About',
             sync: 'Update Your Phone\'s Addressbook',
@@ -419,20 +293,16 @@ const en = {
             experiments: 'Experiments',
             locationservices: 'Location Services',
         },
-
         texts: {
             contacts: 'Members can be synchronized to your phone\'s default Contacts\' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.',
             experiments: 'These are experimental and unsupported features of the TABLER.APP and may dissapear at any time.',
         },
-
         contactpermissions: 'Location permissions are required in order to use this feature. Please grant permission through the phone\'s settings area.',
         locationpermission: 'Cannot access your location. Please grant permission through the phone\'s settings area.',
         locationfailed: 'Failed to update location settings',
         mapfailed: 'Failed to update map settings',
-
         firstlast: 'First, Last',
         lastfirst: 'Last, First',
-
         fields: {
             mail: 'Create new Mail in',
             web: 'Open Browser in',
@@ -452,79 +322,307 @@ const en = {
             experiments: 'Albums & News',
             nearby: 'Nearby Members',
             notifications: 'Notifications',
-
             subscription: 'Yearly Subscription',
             subscription_valid: 'Valid',
         },
-
         ReleaseNotes: 'Release Notes',
-
         Legal: {
             title: 'Legal',
             thirdparty: 'Third Party Software Notices and Information',
             about: 'About this App',
-
             docs: {
                 dataprotection: 'Data Protection Policy',
                 imprint: 'Imprint',
             },
         },
-
         cache: {
             title: 'Cache has been cleared',
         },
     },
 
-    Members: {
+    Screen_Members: {
         noresults: 'No data available.',
         search: 'Search...',
         title: 'Members',
     },
 
-    SnackBar: {
+    Component_SnackBar: {
         dismiss: 'Dismiss',
-        syncTablers: (m) => `Failed to refresh members (${m})`,
-        syncStructure: (m) => `Failed to refresh structure (${m})`,
-
-        error: (m) => `${m}`,
     },
 
     Countries: {
-        translate: (c: string | undefined | null) => {
-            if (c == null) return null;
-            return countries.countries[c.toUpperCase()] || c;
-        },
+        AF: 'Afghanistan',
+        AL: 'Albania',
+        DZ: 'Algeria',
+        AS: 'American Samoa',
+        AD: 'Andorra',
+        AO: 'Angola',
+        AI: 'Anguilla',
+        AQ: 'Antarctica',
+        AG: 'Antigua and Barbuda',
+        AR: 'Argentina',
+        AM: 'Armenia',
+        AW: 'Aruba',
+        AU: 'Australia',
+        AT: 'Austria',
+        AZ: 'Azerbaijan',
+        BS: 'Bahamas',
+        BH: 'Bahrain',
+        BD: 'Bangladesh',
+        BB: 'Barbados',
+        BY: 'Belarus',
+        BE: 'Belgium',
+        BZ: 'Belize',
+        BJ: 'Benin',
+        BM: 'Bermuda',
+        BT: 'Bhutan',
+        BO: 'Bolivia',
+        BA: 'Bosnia and Herzegovina',
+        BW: 'Botswana',
+        BV: 'Bouvet Island',
+        BR: 'Brazil',
+        IO: 'British Indian Ocean Territory',
+        BN: 'Brunei Darussalam',
+        BG: 'Bulgaria',
+        BF: 'Burkina Faso',
+        BI: 'Burundi',
+        KH: 'Cambodia',
+        CM: 'Cameroon',
+        CA: 'Canada',
+        CV: 'Cape Verde',
+        KY: 'Cayman Islands',
+        CF: 'Central African Republic',
+        TD: 'Chad',
+        CL: 'Chile',
+        CN: 'China',
+        CX: 'Christmas Island',
+        CC: 'Cocos (Keeling) Islands',
+        CO: 'Colombia',
+        KM: 'Comoros',
+        CG: 'Congo',
+        CD: 'Congo, the Democratic Republic of the',
+        CK: 'Cook Islands',
+        CR: 'Costa Rica',
+        CI: 'Cote D\'Ivoire',
+        HR: 'Croatia',
+        CU: 'Cuba',
+        CY: 'Cyprus',
+        CZ: 'Czech Republic',
+        DK: 'Denmark',
+        DJ: 'Djibouti',
+        DM: 'Dominica',
+        DO: 'Dominican Republic',
+        EC: 'Ecuador',
+        EG: 'Egypt',
+        SV: 'El Salvador',
+        GQ: 'Equatorial Guinea',
+        ER: 'Eritrea',
+        EE: 'Estonia',
+        ET: 'Ethiopia',
+        FK: 'Falkland Islands (Malvinas)',
+        FO: 'Faroe Islands',
+        FJ: 'Fiji',
+        FI: 'Finland',
+        FR: 'France',
+        GF: 'French Guiana',
+        PF: 'French Polynesia',
+        TF: 'French Southern Territories',
+        GA: 'Gabon',
+        GM: 'Gambia',
+        GE: 'Georgia',
+        DE: 'Germany',
+        GH: 'Ghana',
+        GI: 'Gibraltar',
+        GR: 'Greece',
+        GL: 'Greenland',
+        GD: 'Grenada',
+        GP: 'Guadeloupe',
+        GU: 'Guam',
+        GT: 'Guatemala',
+        GN: 'Guinea',
+        GW: 'Guinea-Bissau',
+        GY: 'Guyana',
+        HT: 'Haiti',
+        HM: 'Heard Island and Mcdonald Islands',
+        VA: 'Holy See (Vatican City State)',
+        HN: 'Honduras',
+        HK: 'Hong Kong',
+        HU: 'Hungary',
+        IS: 'Iceland',
+        IN: 'India',
+        ID: 'Indonesia',
+        IR: 'Iran, Islamic Republic of',
+        IQ: 'Iraq',
+        IE: 'Ireland',
+        IL: 'Israel',
+        IT: 'Italy',
+        JM: 'Jamaica',
+        JP: 'Japan',
+        JO: 'Jordan',
+        KZ: 'Kazakhstan',
+        KE: 'Kenya',
+        KI: 'Kiribati',
+        KP: 'North Korea',
+        KR: 'South Korea',
+        KW: 'Kuwait',
+        KG: 'Kyrgyzstan',
+        LA: 'Lao People\'s Democratic Republic',
+        LV: 'Latvia',
+        LB: 'Lebanon',
+        LS: 'Lesotho',
+        LR: 'Liberia',
+        LY: 'Libya',
+        LI: 'Liechtenstein',
+        LT: 'Lithuania',
+        LU: 'Luxembourg',
+        MO: 'Macao',
+        MG: 'Madagascar',
+        MW: 'Malawi',
+        MY: 'Malaysia',
+        MV: 'Maldives',
+        ML: 'Mali',
+        MT: 'Malta',
+        MH: 'Marshall Islands',
+        MQ: 'Martinique',
+        MR: 'Mauritania',
+        MU: 'Mauritius',
+        YT: 'Mayotte',
+        MX: 'Mexico',
+        FM: 'Micronesia, Federated States of',
+        MD: 'Moldova, Republic of',
+        MC: 'Monaco',
+        MN: 'Mongolia',
+        MS: 'Montserrat',
+        MA: 'Morocco',
+        MZ: 'Mozambique',
+        MM: 'Myanmar',
+        NA: 'Namibia',
+        NR: 'Nauru',
+        NP: 'Nepal',
+        NL: 'Netherlands',
+        NC: 'New Caledonia',
+        NZ: 'New Zealand',
+        NI: 'Nicaragua',
+        NE: 'Niger',
+        NG: 'Nigeria',
+        NU: 'Niue',
+        NF: 'Norfolk Island',
+        MK: 'North Macedonia, Republic of',
+        MP: 'Northern Mariana Islands',
+        NO: 'Norway',
+        OM: 'Oman',
+        PK: 'Pakistan',
+        PW: 'Palau',
+        PS: 'Palestinian Territory, Occupied',
+        PA: 'Panama',
+        PG: 'Papua New Guinea',
+        PY: 'Paraguay',
+        PE: 'Peru',
+        PH: 'Philippines',
+        PN: 'Pitcairn',
+        PL: 'Poland',
+        PT: 'Portugal',
+        PR: 'Puerto Rico',
+        QA: 'Qatar',
+        RE: 'Reunion',
+        RO: 'Romania',
+        RU: 'Russian Federation',
+        RW: 'Rwanda',
+        SH: 'Saint Helena',
+        KN: 'Saint Kitts and Nevis',
+        LC: 'Saint Lucia',
+        PM: 'Saint Pierre and Miquelon',
+        VC: 'Saint Vincent and the Grenadines',
+        WS: 'Samoa',
+        SM: 'San Marino',
+        ST: 'Sao Tome and Principe',
+        SA: 'Saudi Arabia',
+        SN: 'Senegal',
+        SC: 'Seychelles',
+        SL: 'Sierra Leone',
+        SG: 'Singapore',
+        SK: 'Slovakia',
+        SI: 'Slovenia',
+        SB: 'Solomon Islands',
+        SO: 'Somalia',
+        ZA: 'South Africa',
+        GS: 'South Georgia and the South Sandwich Islands',
+        ES: 'Spain',
+        LK: 'Sri Lanka',
+        SD: 'Sudan',
+        SR: 'Suriname',
+        SJ: 'Svalbard and Jan Mayen',
+        SZ: 'Swaziland',
+        SE: 'Sweden',
+        CH: 'Switzerland',
+        SY: 'Syrian Arab Republic',
+        TW: 'Taiwan',
+        TJ: 'Tajikistan',
+        TZ: 'Tanzania, United Republic of',
+        TH: 'Thailand',
+        TL: 'Timor-Leste',
+        TG: 'Togo',
+        TK: 'Tokelau',
+        TO: 'Tonga',
+        TT: 'Trinidad and Tobago',
+        TN: 'Tunisia',
+        TR: 'Turkey',
+        TM: 'Turkmenistan',
+        TC: 'Turks and Caicos Islands',
+        TV: 'Tuvalu',
+        UG: 'Uganda',
+        UA: 'Ukraine',
+        AE: 'United Arab Emirates',
+        GB: 'United Kingdom',
+        US: 'United States of America',
+        UM: 'United States Minor Outlying Islands',
+        UY: 'Uruguay',
+        UZ: 'Uzbekistan',
+        VU: 'Vanuatu',
+        VE: 'Venezuela',
+        VN: 'Viet Nam',
+        VG: 'Virgin Islands, British',
+        VI: 'Virgin Islands, U.S.',
+        WF: 'Wallis and Futuna',
+        EH: 'Western Sahara',
+        YE: 'Yemen',
+        ZM: 'Zambia',
+        ZW: 'Zimbabwe',
+        AX: 'Åland Islands',
+        BQ: 'Bonaire, Sint Eustatius and Saba',
+        CW: 'Curaçao',
+        GG: 'Guernsey',
+        IM: 'Isle of Man',
+        JE: 'Jersey',
+        ME: 'Montenegro',
+        BL: 'Saint Barthélemy',
+        MF: 'Saint Martin (French part)',
+        RS: 'Serbia',
+        SX: 'Sint Maarten (Dutch part)',
+        SS: 'South Sudan',
+        XK: 'Kosovo',
     },
 
     ContactSync: {
         primaryaddress: 'home',
     },
 
-    Notifications: {
-        birthday: {
-            title: 'Birthday time',
-            text: (n) => `Help ${n} to have a great day!`,
-        },
-
+    Component_Notifications: {
         chatDisabled: {
             text: 'You disabled notifications for chat conversations. You will not be visible for other members and you will not not able to send and receive messages.',
             button: 'Change',
         },
-
         Settings: {
             title: 'Notifications',
-
             push: {
                 title: 'Push Notifications',
                 action: 'Re-register for push notifications',
                 permissions: 'Cannot show notifications. Please grant permission through the phone\'s settings area.',
             },
-
             birthday: {
                 title: 'Birthday Reminders',
                 field: 'For own club members and favorites',
             },
-
             onetoone: {
                 title: 'Conversations',
                 text: 'If you disable this setting, you opt-out the chat functionality.',
@@ -534,24 +632,11 @@ const en = {
     },
 
     Date: {
-        date: (date?: string) => {
-            if (date == null) return undefined;
-            const mt = moment(date);
-
-            return `${mt.format('D MMMM YYYY')} (${Math.abs(mt.diff(Date.now(), 'years'))})`;
-        },
-
-        membership: (date?: string) => {
-            if (date == null) return undefined;
-
-            const mt = moment(date);
-            return `${mt.format('YYYY')} (${new Date().getFullYear() - mt.toDate().getFullYear() + 1})`;
-        },
+        date: 'D MMMM YYYY',
     },
 
     Timespan: {
         now: 'Now',
-
         seconds: 'seconds',
         minutes: 'minutes',
         hours: 'hours',
@@ -559,8 +644,6 @@ const en = {
         weeks: 'weeks',
         months: 'months',
         years: 'years',
-
-        toOne: (s: string) => s.substring(0, s.length - 1),
     },
 
     Distance: {
@@ -568,38 +651,32 @@ const en = {
         km: 'km',
     },
 
-    Menu: {
+    Screen_Menu: {
         title: 'Menu',
     },
 
-    NearbyMembers: {
+    Screen_NearbyMembers: {
         navigation: 'Nearby',
         title: 'Nearby Members',
         location: 'Your location',
-
-        near: (s?: string) => s ? 'Near ' + s : 'Location Unknown',
-        ago: (s: string) => `${s} ago`,
-
+        near: 'Near {location}',
+        unknown: 'Location Unknown',
+        ago: '{timespan} ago',
         notsupported: 'Background location is not available in this application.',
         permissions: 'Location permissions are required in order to use this feature. You can manually enable them at any time in the Settings App of your phone.',
         always: 'Nearby Members needs \'Always\' Location Access.',
-
         setlocation: 'Set Location to Always',
         on: 'Turn on',
-
         off: 'Nearby Members is off. If you turn it on, other members can see in which city you are. We don\'t store your location history, only your last known location.',
         mapOff: 'You have opt-in for the map display to show a map yourself.',
-
         sharesLocation: {
             true: 'Shares his location with you',
             false: 'Does not share his location',
         },
-
         Tabs: {
             list: 'List',
             map: 'Map',
         },
-
         Settings: {
             title: 'Nearby Members',
             on: {
@@ -619,15 +696,15 @@ const en = {
         },
     },
 
-    Support: {
+    Screen_Support: {
         title: 'Report a Problem',
     },
 
-    Feedback: {
+    Screen_Feedback: {
         title: 'Feedback',
     },
 
-    Conversations: {
+    Screen_Conversations: {
         title: 'Chats',
         network: 'Waiting for network...',
         photo: 'Photo',
@@ -637,11 +714,10 @@ const en = {
         loadEarlier: 'Load earlier messages',
     },
 
-    ImagePicker: {
+    Component_ImagePicker: {
         nocamera: 'No camera permissions granted.',
         nogallery: 'Sorry, we need camera roll permissions to make this work.',
     },
 };
 
-export type I18NType = typeof en;
 export default en;

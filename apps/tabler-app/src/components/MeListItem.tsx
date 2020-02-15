@@ -69,7 +69,7 @@ class MeListItemBase extends React.PureComponent<Props> {
                 theme={this.props.theme}
 
                 title={<Title>{me.firstname} {me.lastname}</Title>}
-                subtitle={I18N.Pair.action}
+                subtitle={I18N.Screen_Pair.action}
 
                 right={({ size }) => <Ionicons name="md-qr-scanner" size={size} />}
             />

@@ -62,7 +62,7 @@ class AssociationFiltersBase extends React.Component<Props> {
                     return (
                         <>
                             <FilterSection
-                                title={I18N.Search.areas(data.Areas.length)}
+                                title={I18N.pluralize(I18N.Screen_Search.areas, data.Areas.length)}
                                 type="area"
                                 filter={this.props.filterTags}
                                 data={data.Areas}
@@ -72,7 +72,7 @@ class AssociationFiltersBase extends React.Component<Props> {
 
                             <Divider />
                             <FilterSection
-                                title={I18N.Search.tables(filteredClubs.length)}
+                                title={I18N.pluralize(I18N.Screen_Search.tables, filteredClubs.length)}
                                 type="table"
                                 filter={this.props.filterTags}
                                 data={filteredClubs}

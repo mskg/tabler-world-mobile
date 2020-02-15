@@ -16,10 +16,10 @@ class WhoopsBase extends React.Component<Props> {
             <View style={styles.emptyContainer}>
                 <Ionicons name="md-wifi" size={56 * 2} color={___DONT_USE_ME_DIRECTLY___COLOR_GRAY} />
 
-                <Text style={styles.emptyText}>{I18N.Whoops.title}</Text>
+                <Text style={styles.emptyText}>{I18N.Component_Whoops.title}</Text>
 
                 {this.props.resetError &&
-                    <Button color={this.props.theme.colors.accent} onPress={this.props.resetError}>{I18N.Whoops.try}</Button>
+                    <Button color={this.props.theme.colors.accent} onPress={this.props.resetError}>{I18N.Component_Whoops.try}</Button>
                 }
             </View>
         );

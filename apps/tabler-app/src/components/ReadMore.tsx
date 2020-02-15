@@ -105,7 +105,7 @@ export class ReadMore extends React.Component<Props, State> {
 
             return (
                 <Text style={styles.button} onPress={this._handlePressReadMore}>
-                    {I18N.ReadMore.more}
+                    {I18N.Component_ReadMore.more}
                 </Text>
             );
         }  if (shouldShowReadMore && showAllText) {
@@ -115,7 +115,7 @@ export class ReadMore extends React.Component<Props, State> {
 
             return (
                 <Text style={styles.button} onPress={this._handlePressReadLess}>
-                    {I18N.ReadMore.less}
+                    {I18N.Component_ReadMore.less}
                 </Text>
             );
         }

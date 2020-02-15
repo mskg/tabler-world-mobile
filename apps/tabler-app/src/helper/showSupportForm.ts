@@ -45,9 +45,9 @@ export async function showSupportForm() {
         }
 
         const result = await MailComposer.composeAsync({
-            subject: `${I18N.ErrorReport.subject} (${country})`,
+            subject: `${I18N.Component_ErrorReport.subject} (${country})`,
             isHtml: true,
-            body: `${I18N.ErrorReport.template}
+            body: `${I18N.Component_ErrorReport.template}
 
 ------------------------------
 Platform: ${Platform.OS} v${Platform.Version}
@@ -68,6 +68,6 @@ Time: ${new Date().toISOString()}
         });
 
         logger.error(e);
-        Alert.alert(I18N.ErrorReport.noMail);
+        Alert.alert(I18N.Component_ErrorReport.noMail);
     }
 }

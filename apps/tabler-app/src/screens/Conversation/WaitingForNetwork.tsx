@@ -22,7 +22,7 @@ const WaitingForNetworkBase = ({ theme }) => (
                 fontSize: Platform.OS === 'ios' ? 14 : 17,
             }}
         >
-            {I18N.Conversations.network}
+            {I18N.Screen_Conversations.network}
         </Text>
     </View>
 );

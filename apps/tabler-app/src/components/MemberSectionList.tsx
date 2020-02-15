@@ -205,7 +205,7 @@ export class MemberSectionListBase extends React.Component<Props, State>  {
 
     render() {
         if (this.props.data.length === 0) {
-            return (<EmptyComponent title={I18N.Members.noresults} />);
+            return (<EmptyComponent title={I18N.Screen_Members.noresults} />);
         }
 
         return (

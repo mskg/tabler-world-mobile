@@ -203,8 +203,8 @@ class ErrorReportBase extends React.Component<Props, State> {
                         { transform: [{ translateY: this.bounceValue }] },
                     ]}
                 >
-                    <Title>{I18N.ErrorReport.title}</Title>
-                    <Text>{I18N.ErrorReport.text}</Text>
+                    <Title>{I18N.Component_ErrorReport.title}</Title>
+                    <Text>{I18N.Component_ErrorReport.text}</Text>
 
                     <AnimatedIcon
                         name="md-phone-portrait"
@@ -228,7 +228,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                             <View style={styles.rowIcon}>
                                 <Ionicons name="md-microphone" size={32} />
                             </View>
-                            <Text style={styles.rowText}>{I18N.ErrorReport.feedback}</Text>
+                            <Text style={styles.rowText}>{I18N.Component_ErrorReport.feedback}</Text>
                         </View>
                     </TouchableRipple>
 
@@ -237,7 +237,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                             <View style={styles.rowIcon}>
                                 <Ionicons name="md-bug" size={32} />
                             </View>
-                            <Text style={styles.rowText}>{I18N.ErrorReport.report}</Text>
+                            <Text style={styles.rowText}>{I18N.Component_ErrorReport.report}</Text>
                         </View>
                     </TouchableRipple>
                 </Surface>

@@ -2,7 +2,7 @@ import * as Location from 'expo-location';
 import { Feature, FeatureCollection } from 'geojson';
 import _ from 'lodash';
 import { AppState, Platform } from 'react-native';
-import deCountries from '../../i18n/countries/de.json';
+import deCountries from '../../i18n/translations/de';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Categories, Logger } from '../Logger';
 import { GeoParameters } from '../parameters/Geo';
@@ -68,7 +68,7 @@ export async function reverseGeocode(location: EarthLocation): Promise<Location.
     return undefined;
 }
 
-const reversed = _(deCountries.countries).entries().reduce(
+const reversed = _(deCountries.Countries).entries().reduce(
     (p, c) => {
         p[c[1].toUpperCase()] = c[0];
         return p;

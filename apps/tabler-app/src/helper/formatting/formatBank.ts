@@ -1,4 +1,4 @@
-import { IBankAccount } from '../model/IBankAccount';
+import { IBankAccount } from '../../model/IBankAccount';
 
 export function formatBank(address?: IBankAccount | null) {
     if (address == null) {

@@ -91,7 +91,7 @@ export class MemberListBase extends React.Component<Props> {
                 ListHeaderComponent={this._renderHeader}
                 renderItem={this._renderItem}
                 // getItemLayout={this._getItemLayout}
-                ListEmptyComponent={this.props.refreshing ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
+                ListEmptyComponent={this.props.refreshing ? undefined : <EmptyComponent title={I18N.Screen_Members.noresults} />}
                 contentContainerStyle={this.props.contentContainerStyle || { flexGrow: 1, paddingBottom: 56 + 10 }}
 
                 keyExtractor={extractKey}

@@ -79,7 +79,7 @@ class ListFavoritesBase extends React.Component<Props, State> {
                     }
 
                     return (
-                        <List.Section style={{ flex: 1, flexBasis: '40%', }} title={I18N.Search.favorites}>
+                        <List.Section style={{ flex: 1, flexBasis: '40%', }} title={I18N.Screen_Search.favorites}>
                             <Divider />
                             <MemberList
                                 data={r}

@@ -45,13 +45,13 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
     // tslint:disable-next-line: max-func-body-length
     render() {
         return (
-            <ScreenWithHeader header={{ title: I18N.Menu.title }}>
+            <ScreenWithHeader header={{ title: I18N.Screen_Menu.title }}>
                 <ScrollView>
                     <List.Section>
                         <NavigationItem
                             icon={<Image source={Assets.images.icon_tw} style={{ marginTop: 2, height: 32, width: 32 }} />}
                             theme={this.props.theme}
-                            text={I18N.World.title}
+                            text={I18N.Screen_World.title}
                             onPress={() => this.props.navigation.navigate(Routes.World)}
                         />
 
@@ -63,7 +63,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                             <NavigationItem
                                 icon="md-paper"
                                 theme={this.props.theme}
-                                text={I18N.News.title}
+                                text={I18N.Screen_News.title}
                                 onPress={() => this.props.navigation.navigate(Routes.News)}
                             />
 
@@ -72,7 +72,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                             <NavigationItem
                                 icon="md-image"
                                 theme={this.props.theme}
-                                text={I18N.Albums.title}
+                                text={I18N.Screen_Albums.title}
                                 onPress={() => this.props.navigation.navigate(Routes.Albums)}
                             />
 
@@ -84,7 +84,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                         <NavigationItem
                             icon="md-microphone"
                             theme={this.props.theme}
-                            text={I18N.Feedback.title}
+                            text={I18N.Screen_Feedback.title}
                             onPress={() => this.props.navigation.navigate(Routes.Feedback)}
                         />
 
@@ -93,7 +93,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                         <NavigationItem
                             icon="md-warning"
                             theme={this.props.theme}
-                            text={I18N.Support.title}
+                            text={I18N.Screen_Support.title}
                             onPress={() => showShakeErrorReport()}
                         />
 
@@ -128,7 +128,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                         <NavigationItem
                             icon="md-settings"
                             theme={this.props.theme}
-                            text={I18N.Settings.title}
+                            text={I18N.Screen_Settings.title}
                             onPress={() => this.props.navigation.navigate(Routes.Settings)}
                         />
 

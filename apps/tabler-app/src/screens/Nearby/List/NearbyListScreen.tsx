@@ -61,11 +61,11 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
     }
 
     makeTitle(location, country) {
-        if (this.props.address && I18N.Countries.translate(country) !== I18N.Countries.translate(this.props.address.country)) {
-            return I18N.NearbyMembers.near(`${location}, ${I18N.Countries.translate(country)}`);
+        if (this.props.address && I18N.countryName(country) !== I18N.countryName(this.props.address.country)) {
+            return I18N.format(I18N.Screen_NearbyMembers.near, { location: `${location}, ${I18N.countryName(country)}` });
         }
 
-        return I18N.NearbyMembers.near(location);
+        return I18N.format(I18N.Screen_NearbyMembers.near, { location });
     }
 
     render() {
@@ -77,8 +77,8 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
                             <MeLocation now={Date.now()} />
 
                             {this.props.members.length === 0 && (
-                                <List.Section title={I18N.NearbyMembers.title}>
-                                    <Text style={{ marginHorizontal: 16 }}>{I18N.Members.noresults}</Text>
+                                <List.Section title={I18N.Screen_NearbyMembers.title}>
+                                    <Text style={{ marginHorizontal: 16 }}>{I18N.Screen_Members.noresults}</Text>
                                 </List.Section>
                             )}
 

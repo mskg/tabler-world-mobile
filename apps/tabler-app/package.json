@@ -15,7 +15,8 @@
         "dev": "yarn expo start",
         "codegen": "rm -f src/model/graphql/*.ts && yarn apollo client:codegen --target=typescript --outputFlat src/model/graphql",
         "android": "emulator -avd expo -gpu host",
-        "publish": "expo publish --release-channel dev"
+        "publish": "expo publish --release-channel dev",
+        "translations": "ts-node --project config/tsconfig.json config/translations"
     },
     "workspaces": {
         "packages": [
@@ -128,6 +129,7 @@
         "jest-expo": "^36.0.0",
         "license-checker": "^25.0.1",
         "ntl": "^5.0.0",
+        "ts-node": "^8.6.2",
         "tslint": "^5.20.1",
         "tslint-config-airbnb": "^5.11.1",
         "tslint-microsoft-contrib": "^6.2.0",

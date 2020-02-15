@@ -21,7 +21,7 @@ class ClubsSectionBase extends React.Component<Props> {
         const print = orderBy(this.props.clubs, (c) => c.clubnumber);
 
         return (
-            <Accordion style={styles.accordeon} title={I18N.Structure.clubs}>
+            <Accordion style={styles.accordeon} title={I18N.Screen_Structure.clubs}>
                 <View style={styles.chipContainer}>
                     {
                         print.map((club) => (

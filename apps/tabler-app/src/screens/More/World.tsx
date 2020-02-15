@@ -28,7 +28,7 @@ export class WorldScreen extends React.Component {
                 showBack={true}
                 url={this.state.url}
                 whitelist={this.state.whitelist}
-                title={I18N.World.title}
+                title={I18N.Screen_World.title}
             />
         );
     }

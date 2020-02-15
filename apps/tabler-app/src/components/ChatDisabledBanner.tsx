@@ -38,7 +38,7 @@ export class ChatDisabledBannerBase extends React.Component<Props, State> {
                     actions={[
                         {
                             // @ts-ignore We provide a Text to color it
-                            label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Notifications.chatDisabled.button.toUpperCase()}</NativeText>,
+                            label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Component_Notifications.chatDisabled.button.toUpperCase()}</NativeText>,
                             onPress: () => this.props.showNotificationSettings(),
                         },
                     ]}
@@ -46,7 +46,7 @@ export class ChatDisabledBannerBase extends React.Component<Props, State> {
                         <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
                     }
                 >
-                    {I18N.Notifications.chatDisabled.text}
+                    {I18N.Component_Notifications.chatDisabled.text}
                 </Banner>
             </View>
         );

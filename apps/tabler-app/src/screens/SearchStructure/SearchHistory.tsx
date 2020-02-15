@@ -42,7 +42,7 @@ class SearchHistoryBase extends React.Component<Props, State> {
         if (this.props.history == null || this.props.history.length === 0) return null;
 
         return (
-            <List.Section title={I18N.Search.history} style={{ marginBottom: isIphoneX() ? 48 : 32 }}>
+            <List.Section title={I18N.Screen_Search.history} style={{ marginBottom: isIphoneX() ? 48 : 32 }}>
                 <Divider />
                 {this.props.history.map((item) => this._renderSearchHistoryItem({ item }))}
             </List.Section>

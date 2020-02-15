@@ -16879,6 +16879,17 @@ ts-node@^8:
     source-map-support "^0.5.6"
     yn "^3.0.0"
 
+ts-node@^8.6.2:
+  version "8.6.2"
+  resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/ts-node/-/ts-node-8.6.2.tgz#7419a01391a818fbafa6f826a33c1a13e9464e35"
+  integrity sha1-dBmgE5GoGPuvpvgmozwaE+lGTjU=
+  dependencies:
+    arg "^4.1.0"
+    diff "^4.0.1"
+    make-error "^1.1.1"
+    source-map-support "^0.5.6"
+    yn "3.1.1"
+
 ts-object-utils@0.0.5:
   version "0.0.5"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/ts-object-utils/-/ts-object-utils-0.0.5.tgz#95361cdecd7e52167cfc5e634c76345e90a26077"
@@ -18464,7 +18475,7 @@ yarn@^1.21.1:
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/yarn/-/yarn-1.21.1.tgz#1d5da01a9a03492dc4a5957befc1fd12da83d89c"
   integrity sha1-HV2gGpoDSS3EpZV778H9EtqD2Jw=
 
-yn@^3.0.0:
+yn@3.1.1, yn@^3.0.0:
   version "3.1.1"
   resolved "https://tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha1-HodAGgnXZ8HV6rJqbkwYUYLS61A=

@@ -11,7 +11,7 @@ export const EmptyComponent = ({ title }) => (
 );
 
 export const CannotLoadWhileOffline = () => (
-    <EmptyComponent title={I18N.Whoops.offline} />
+    <EmptyComponent title={I18N.Component_Whoops.offline} />
 );
 
 const styles = StyleSheet.create({

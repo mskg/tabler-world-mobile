@@ -31,7 +31,7 @@ export class FeedbackScreen extends AuditedScreen {
             <WebScreen
                 showBack={true}
                 url={this.state.url}
-                title={I18N.Feedback.title}
+                title={I18N.Screen_Feedback.title}
             />
         );
     }
