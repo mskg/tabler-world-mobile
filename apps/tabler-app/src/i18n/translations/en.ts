@@ -144,7 +144,6 @@ const en = {
             message: 'message',
             call: 'call',
             mail: 'mail',
-            web: 'tabler.world',
             chat: 'Send a message to {name}',
             openweb: 'Show on TABLER.WORLD',
             favadd: 'Add to Favorites',
