@@ -1,5 +1,4 @@
 {
-    "id": "de",
     "Component_Whoops": {
         "title": "Oooops?",
         "try": "Wiederholen",
@@ -19,12 +18,6 @@
     "Screen_Image": {
         "title_Member": "Mitgliedsinformationen",
         "title_Club": "Tischinformationen"
-    },
-    "NavigationStyle": {
-        "paddingHorizontal": 4,
-        "fontSize": 10,
-        "textAlign": "center",
-        "backgroundColor": "transparent"
     },
     "Component_Loader": {
         "title": "Aktualisierung verfügbar",

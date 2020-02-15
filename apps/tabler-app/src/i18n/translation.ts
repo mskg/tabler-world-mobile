@@ -11,6 +11,20 @@ import en from './translations/en';
 
 let res: any = en;
 
+// we need to add internal information to en
+// this is not part of the export
+{
+    // @ts-ignore
+    en.id = 'en';
+
+    // @ts-ignore
+    en.NavigationStyle = {
+        fontSize: 12,
+        textAlign: 'center',
+        backgroundColor: 'transparent',
+    };
+}
+
 if (Localization.locale.toLocaleLowerCase().startsWith('de')) {
     // tslint:disable-next-line: no-var-requires
     const de = require('./translations/de').default;

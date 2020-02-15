@@ -1,6 +1,4 @@
 const en = {
-    id: 'en',
-
     Component_Whoops: {
         title: 'Whoops?',
         try: 'Try Again',
@@ -22,12 +20,6 @@ const en = {
     Screen_Image: {
         title_Member: 'Member Info',
         title_Club: 'Club Info',
-    },
-
-    NavigationStyle: {
-        fontSize: 12,
-        textAlign: 'center',
-        backgroundColor: 'transparent',
     },
 
     Component_Loader: {
