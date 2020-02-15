@@ -1,11 +1,11 @@
 import React from 'react';
-import { Query } from 'react-apollo';
 import { Image, ScrollView, View } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
+import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import Assets from '../../Assets';
 import { ScreenWithHeader } from '../../components/Screen';
 import { showShakeErrorReport } from '../../components/ShakeErrorReport';
@@ -21,6 +21,8 @@ import { NavigationItem } from './Settings/Action';
 // const logger = new Logger(Categories.Screens.Menu);
 
 type State = {
+    isDeveloper?: boolean,
+    viewJobs?: boolean,
 };
 
 type OwnProps = {
@@ -40,6 +42,27 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 class MenuScreenBase extends AuditedScreen<Props, State> {
     constructor(props) {
         super(props, AuditScreenName.Menu);
+        this.state = {};
+    }
+
+    async componentDidMount() {
+        super.componentDidMount();
+
+        try {
+            const client = cachedAolloClient();
+            const roles = await client.query<GetMyRoles>({
+                query: GetMyRolesQuery,
+                fetchPolicy: 'cache-first',
+            });
+
+            if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.developer || i === UserRole.i18n)) {
+                this.setState({ isDeveloper: true });
+            }
+
+            if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.jobs)) {
+                this.setState({ viewJobs: true });
+            }
+        } catch { }
     }
 
     // tslint:disable-next-line: max-func-body-length
@@ -101,29 +124,31 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                     </List.Section>
 
                     <List.Section>
-                        <Query<GetMyRoles>
-                            query={GetMyRolesQuery}
-                            fetchPolicy={this.props.fetchPolicy}
-                        >
-                            {({ data }) => {
-                                if (data && data.MyRoles && data.MyRoles.find((i) => i === UserRole.jobs)) {
-                                    return (
-                                        <>
-                                            <NavigationItem
-                                                icon="md-alarm"
-                                                theme={this.props.theme}
-                                                text={'Job History'}
-                                                onPress={() => this.props.navigation.navigate(Routes.JobHistory)}
-                                            />
+                        {this.state.viewJobs && (
+                            <>
+                                <NavigationItem
+                                    icon="md-alarm"
+                                    theme={this.props.theme}
+                                    text={'Job History'}
+                                    onPress={() => this.props.navigation.navigate(Routes.JobHistory)}
+                                />
 
-                                            <Divider inset={true} />
-                                        </>
-                                    );
-                                }
+                                <Divider inset={true} />
+                            </>
+                        )}
 
-                                return null;
-                            }}
-                        </Query>
+                        {this.state.isDeveloper && (
+                            <>
+                                <NavigationItem
+                                    icon="md-construct"
+                                    theme={this.props.theme}
+                                    text={'Developer'}
+                                    onPress={() => this.props.navigation.navigate(Routes.Developer)}
+                                />
+
+                                <Divider inset={true} />
+                            </>
+                        )}
 
                         <NavigationItem
                             icon="md-settings"
@@ -137,7 +162,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
 
                     <View style={{ height: 50 }} />
                 </ScrollView>
-            </ScreenWithHeader >
+            </ScreenWithHeader>
         );
     }
 }

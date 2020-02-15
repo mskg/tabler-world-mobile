@@ -6,6 +6,7 @@ import React from 'react';
 import { Image } from 'react-native';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
+import { loadOverridenLanguage } from '../i18n/overrideLanguage';
 
 const logger = new Logger(Categories.UIComponents.Cache);
 
@@ -70,6 +71,7 @@ export function withPreCached(WrappedComponent) {
                 logger.error(e, 'Initial loading');
             }
 
+            await loadOverridenLanguage();
             this.setState({ isReady: true });
         }
 

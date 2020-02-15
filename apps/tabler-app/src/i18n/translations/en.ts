@@ -12,6 +12,7 @@ const en = {
         text: 'Your feedback helps us improve TABLER.APP.',
         report: 'Something isn\'t working?',
         feedback: 'Some functionality is missing? You have an idea?',
+        language: 'Typo? Wrong terms? Translation is really bad?',
         subject: 'TABLER.APP Issue',
         noMail: 'You seem to have no mail client installed?',
         template: 'Please describe what happened:',

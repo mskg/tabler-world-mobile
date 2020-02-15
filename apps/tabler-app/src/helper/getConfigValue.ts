@@ -16,6 +16,7 @@ type Key =
     | 'world'
     | 'world_whitelist'
     | 'feedback'
+    | 'translate'
     | 'join'
     | 'support'
     | 'imprint'

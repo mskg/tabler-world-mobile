@@ -90,6 +90,7 @@ export enum SettingName {
 
 export enum UserRole {
   developer = "developer",
+  i18n = "i18n",
   jobs = "jobs",
 }
 

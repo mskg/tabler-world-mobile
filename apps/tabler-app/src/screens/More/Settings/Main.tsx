@@ -24,15 +24,17 @@ import { LinkingHelper } from '../../../helper/LinkingHelper';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
+import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
+import { UserRole } from '../../../model/graphql/globalTypes';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
+import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { clearMessages } from '../../../redux/actions/chat';
 import { showNearbySettings, showNotificationSettings } from '../../../redux/actions/navigation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
 import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
-import { DeveloperSection } from './DeveloperSection';
 import { Element } from './Element';
 import { Routes } from './Routes';
 import { SelectionList } from './SelectionList';
@@ -67,11 +69,6 @@ type DispatchPros = {
 };
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
-
-function formatDate(nbr: string | null) {
-    if (!nbr) return null;
-    return new Date(parseInt(nbr || '0', 10));
-}
 
 class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     state: State = {
@@ -570,8 +567,6 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 <Divider />
                             </List.Section>
                         }
-
-                        <DeveloperSection />
 
                         <List.Section title={I18N.Screen_Settings.sections.reset}>
                             <Divider />

@@ -13,6 +13,7 @@ import { Query } from './Query';
 import { SearchMember } from './Search';
 import { Settings } from './Settings';
 import { Structure } from './Structure';
+import { Translations } from './Translations';
 
 // tslint:disable-next-line: export-name
 export const schema = [
@@ -35,4 +36,5 @@ export const schema = [
     Parameters,
     Chat,
     Deprecated,
+    Translations,
 ];

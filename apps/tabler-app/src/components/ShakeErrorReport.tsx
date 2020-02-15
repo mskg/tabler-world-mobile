@@ -8,8 +8,12 @@ import { ActionNames } from '../analytics/ActionNames';
 import { Audit } from '../analytics/Audit';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
+import { OpenLink } from '../helper/OpenLink';
+import { getParameterValue } from '../helper/parameters/getParameterValue';
+import { UrlParameters } from '../helper/parameters/Urls';
 import { showSupportForm } from '../helper/showSupportForm';
 import { I18N } from '../i18n/translation';
+import { ParameterName } from '../model/graphql/globalTypes';
 import { showFeedback } from '../redux/actions/navigation';
 
 const logger = new Logger(Categories.UIComponents.ErrorReport);
@@ -57,7 +61,7 @@ class ShakeEvent {
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 // Height of the dialog from bottom
-const HEIGHT = 300 + 16;
+const HEIGHT = 350 + 16;
 
 // How many miliseconds to automatically close the dialog
 const TIMEOUT = 8000;
@@ -179,6 +183,15 @@ class ErrorReportBase extends React.Component<Props, State> {
         }
     }
 
+    _runTranslation = async () => {
+        try {
+            const params = await getParameterValue<UrlParameters>(ParameterName.urls);
+            OpenLink.url(params.translate);
+        } finally {
+            this._close();
+        }
+    }
+
     _runSupport = async () => {
         try {
             showSupportForm();
@@ -229,6 +242,16 @@ class ErrorReportBase extends React.Component<Props, State> {
                                 <Ionicons name="md-microphone" size={32} />
                             </View>
                             <Text style={styles.rowText}>{I18N.Component_ErrorReport.feedback}</Text>
+                        </View>
+                    </TouchableRipple>
+
+
+                    <TouchableRipple style={styles.touch} onPress={this._runTranslation}>
+                        <View style={styles.row}>
+                            <View style={styles.rowIcon}>
+                                <Ionicons name="ios-paper" size={32} />
+                            </View>
+                            <Text style={styles.rowText}>{I18N.Component_ErrorReport.language}</Text>
                         </View>
                     </TouchableRipple>
 

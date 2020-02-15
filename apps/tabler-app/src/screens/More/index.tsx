@@ -1,5 +1,6 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { AlbumsScreen } from './Albums';
+import { DevelopmentScreen } from './Developer';
 import { FeedbackScreen } from './Feedback';
 import { JobsHistoryScreen } from './JobHistory';
 import { LocationHistoryScreen } from './LocationHistory';
@@ -22,6 +23,7 @@ const Navigator = createStackNavigator(
 
         [Routes.Albums]: { screen: AlbumsScreen },
         [Routes.News]: { screen: NewsScreen },
+        [Routes.Developer]: { screen: DevelopmentScreen },
     },
     {
         initialRouteName: Routes.Menu,

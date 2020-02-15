@@ -11,6 +11,7 @@
         "text": "Your feedback helps us improve TABLER.APP.",
         "report": "Something isn't working?",
         "feedback": "Some functionality is missing? You have an idea?",
+        "language": "Typo? Wrong terms? Translation is really bad?",
         "subject": "TABLER.APP Issue",
         "noMail": "You seem to have no mail client installed?",
         "template": "Please describe what happened:"
@@ -131,7 +132,6 @@
             "message": "message",
             "call": "call",
             "mail": "mail",
-            "web": "tabler.world",
             "chat": "Send a message to {name}",
             "openweb": "Show on TABLER.WORLD",
             "favadd": "Add to Favorites",
