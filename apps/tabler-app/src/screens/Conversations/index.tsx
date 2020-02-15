@@ -21,6 +21,7 @@ import { GetConversations, GetConversationsVariables, GetConversations_Conversat
 import { IAppState } from '../../model/IAppState';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { searchConversationPartner, showConversation } from '../../redux/actions/navigation';
+import { BOTTOM_HEIGHT } from '../../theme/dimensions';
 import { WaitingForNetwork } from '../Conversation/WaitingForNetwork';
 import { updateBadgeFromConversations } from './chatHelpers';
 import { ConversationListItem } from './ConversationListItem';
@@ -226,7 +227,8 @@ export const ConversationsScreen =
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
+        paddingBottom: BOTTOM_HEIGHT,
     },
 
     content: {
