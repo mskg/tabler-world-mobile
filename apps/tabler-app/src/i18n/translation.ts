@@ -9,6 +9,14 @@ import { I18NType } from './I18NType';
 import { pluralize, PluralizeFunc } from './pluralize';
 import en from './translations/en';
 
+let DEBUG_LANGUAGE: any;
+if (!__DEV__) {
+    // be sure about that
+    DEBUG_LANGUAGE = null;
+}
+
+const LANGUAGE = DEBUG_LANGUAGE ?? Localization.locale.toLocaleLowerCase();
+
 let res: any = en;
 
 // we need to add internal information to en
@@ -25,16 +33,14 @@ let res: any = en;
     };
 }
 
-if (Localization.locale.toLocaleLowerCase().startsWith('de')) {
-    // tslint:disable-next-line: no-var-requires
+// tslint:disable: no-var-requires
+if (LANGUAGE.startsWith('de')) {
     const de = require('./translations/de').default;
     res = _.merge(en, de);
-} else if (Localization.locale.toLocaleLowerCase().startsWith('fi')) {
-    // tslint:disable-next-line: no-var-requires
+} else if (LANGUAGE.startsWith('fi')) {
     const fi = require('./translations/fi').default;
     res = _.merge(en, fi);
-} else if (Localization.locale.toLocaleLowerCase().startsWith('is')) {
-    // tslint:disable-next-line: no-var-requires
+} else if (LANGUAGE.startsWith('is')) {
     const is = require('./translations/is').default;
     res = _.merge(en, is);
 }
