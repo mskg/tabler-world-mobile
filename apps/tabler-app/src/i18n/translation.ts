@@ -10,10 +10,19 @@ import { pluralize, PluralizeFunc } from './pluralize';
 import en from './translations/en';
 
 let res: any = en;
+
 if (Localization.locale.toLocaleLowerCase().startsWith('de')) {
     // tslint:disable-next-line: no-var-requires
     const de = require('./translations/de').default;
     res = _.merge(en, de);
+} else if (Localization.locale.toLocaleLowerCase().startsWith('fi')) {
+    // tslint:disable-next-line: no-var-requires
+    const fi = require('./translations/fi').default;
+    res = _.merge(en, fi);
+} else if (Localization.locale.toLocaleLowerCase().startsWith('is')) {
+    // tslint:disable-next-line: no-var-requires
+    const is = require('./translations/is').default;
+    res = _.merge(en, is);
 }
 
 moment.locale((res as I18NType).id);
