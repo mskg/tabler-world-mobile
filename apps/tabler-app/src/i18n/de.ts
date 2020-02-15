@@ -1,6 +1,4 @@
-import { differenceInCalendarYears, differenceInYears, format, parseISO } from 'date-fns';
-import dateDE from 'date-fns/locale/de';
-import 'moment';
+import moment from 'moment';
 import 'moment/locale/de';
 import en, { I18NType } from './en';
 
@@ -9,6 +7,10 @@ const countries = require('./countries/de.json');
 
 const de: I18NType = {
     id: 'de',
+
+    init: () => {
+        moment.locale(de.id);
+    },
 
     Whoops: {
         title: 'Oooops?',
@@ -166,18 +168,6 @@ const de: I18NType = {
             sms: 'SMS senden',
             url: 'Website öffnen',
             cancel: 'Abbrechen',
-        },
-
-        Formats: {
-            date: (date?: string) => {
-                if (date == null) return undefined;
-                return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateDE })} (${differenceInYears(Date.now(), parseISO(date))})`;
-            },
-
-            membership: (date?: string) => {
-                if (date == null) return undefined;
-                return `${format(parseISO(date), 'yyyy', { locale: dateDE })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
-            },
         },
 
         chat: (s) => `Schreib ${s} eine Nachricht`,
@@ -486,6 +476,17 @@ const de: I18NType = {
         },
     },
 
+    Date: {
+        date: (date?: string) => {
+            if (date == null) return undefined;
+            const mt = moment(date);
+
+            return `${mt.format('D. MMMM YYYY')} (${Math.abs(mt.diff(Date.now(), 'years'))})`;
+        },
+
+        membership: en.Date.membership,
+    },
+
     Timespan: {
         now: 'Jetzt',
 
@@ -572,6 +573,11 @@ const de: I18NType = {
         retry: 'Wiederholen',
         placeholder: 'Nachricht schreiben...',
         loadEarlier: 'Alte Nachrichten laden',
+    },
+
+    ImagePicker: {
+        nocamera: 'Keine Berechtigungen für die Kamera.',
+        nogallery: 'Wir benötigen Zugriff auf Deine Bilder.',
     },
 };
 

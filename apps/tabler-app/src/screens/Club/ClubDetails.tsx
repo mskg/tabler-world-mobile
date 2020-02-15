@@ -164,7 +164,7 @@ class ClubDetailsBase extends React.Component<Props> {
                                 text={national_godparent}
                             />
 
-                            <Element field={I18N.Club.charter} text={I18N.Member.Formats.date(charter_date)} />
+                            <Element field={I18N.Club.charter} text={I18N.Date.date(charter_date)} />
 
                             <Element field={I18N.Club.members} text={members.isEmpty() ? null : members.size().toString()} />
                         </Section>

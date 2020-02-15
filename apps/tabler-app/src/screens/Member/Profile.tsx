@@ -354,7 +354,7 @@ class ProfileBase extends React.Component<Props, State> {
                     },
                     {
                         field: I18N.Member.Fields.joined,
-                        text: I18N.Member.Formats.membership(member.datejoined),
+                        text: I18N.Date.membership(member.datejoined),
                     },
                 ],
             },
@@ -414,7 +414,7 @@ class ProfileBase extends React.Component<Props, State> {
                 values: [
                     {
                         field: I18N.Member.Fields.birthday,
-                        text: I18N.Member.Formats.date(member.birthdate),
+                        text: I18N.Date.date(member.birthdate),
                     },
                 ],
             },

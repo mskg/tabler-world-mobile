@@ -1,6 +1,4 @@
-import { differenceInCalendarYears, differenceInYears, format, parseISO } from 'date-fns';
-import dateEN from 'date-fns/locale/en-US';
-import 'moment';
+import moment from 'moment';
 import { Platform } from 'react-native';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 
@@ -9,6 +7,10 @@ const countries = require('./countries/en.json');
 
 const en = {
     id: 'en',
+
+    init: () => {
+        moment.locale(en.id);
+    },
 
     Whoops: {
         title: 'Whoops?',
@@ -164,18 +166,6 @@ const en = {
             sms: 'Send SMS',
             url: 'Open web page',
             cancel: 'Cancel',
-        },
-
-        Formats: {
-            date: (date?: string) => {
-                if (date == null) return undefined;
-                return `${format(parseISO(date), 'd. MMMM yyyy', { locale: dateEN })} (${differenceInYears(Date.now(), parseISO(date))})`;
-            },
-
-            membership: (date?: string) => {
-                if (date == null) return undefined;
-                return `${format(parseISO(date), 'yyyy', { locale: dateEN })} (${differenceInCalendarYears(Date.now(), parseISO(date))})`;
-            },
         },
 
         chat: (s) => `Send a message to ${s}`,
@@ -540,6 +530,22 @@ const en = {
                 text: 'If you disable this setting, you opt-out the chat functionality.',
                 field: 'One to one chat',
             },
+        },
+    },
+
+    Date: {
+        date: (date?: string) => {
+            if (date == null) return undefined;
+            const mt = moment(date);
+
+            return `${mt.format('D MMMM YYYY')} (${Math.abs(mt.diff(Date.now(), 'years'))})`;
+        },
+
+        membership: (date?: string) => {
+            if (date == null) return undefined;
+
+            const mt = moment(date);
+            return `${mt.format('YYYY')} (${new Date().getFullYear() - mt.toDate().getFullYear() + 1})`;
         },
     },
 
