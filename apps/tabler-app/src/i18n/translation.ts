@@ -48,6 +48,10 @@ export function assignLanguage(otherLang: any) {
         ),
     );
 
+    if (__DEV__) {
+        logger.debug(currentLanguage);
+    }
+
     moment.locale((currentLanguage as I18NType).id);
 
     currentLanguage.format = format;

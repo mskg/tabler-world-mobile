@@ -1,3 +1,4 @@
+import { removeEmptySlots } from '@mskg/tabler-world-common';
 import { request } from 'https';
 import querystring from 'querystring';
 import { IApolloContext } from '../types/IApolloContext';
@@ -117,7 +118,23 @@ export const TranslationsResolver = {
 
             const translations: any = {};
 
-            answer.result.terms.forEach((term: any) => {
+            for (const term of answer.result.terms) {
+                let newValue;
+
+                if (term.translation.content === '' || term.translation.content === null) {
+                    continue;
+                }
+
+                if (typeof (term.translation.content) === 'object') {
+                    newValue = removeEmptySlots(term.translation.content);
+
+                    if (Object.keys(newValue).length === 0) {
+                        continue;
+                    }
+                } else {
+                    newValue = term.translation.content;
+                }
+
                 let v: any;
 
                 term.context.split('.').forEach((c: string) => {
@@ -131,8 +148,8 @@ export const TranslationsResolver = {
                     v = translations[c];
                 });
 
-                v[term.term] = term.translation.content;
-            });
+                v[term.term] = newValue;
+            }
 
             return translations;
         },
