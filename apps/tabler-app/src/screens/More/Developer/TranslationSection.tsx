@@ -6,15 +6,14 @@ import { Divider, List, Portal, Theme, withTheme } from 'react-native-paper';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { FullScreenLoading } from '../../../components/Loading';
 import { Categories, Logger } from '../../../helper/Logger';
-import { clearOverrideLanguage, getOverridenLanguage, overrideLanguage, saveLanguageFile } from '../../../i18n/overrideLanguage';
+import { refreshOverridenLanguage } from '../../../i18n/override/refreshOverridenLanguage';
+import { clearOverridenLanguage, getOverridenLanguage, setOverridenLanguage } from '../../../i18n/overrideLanguage';
 import { I18N } from '../../../i18n/translation';
 import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
 import { UserRole } from '../../../model/graphql/globalTypes';
 import { Languages } from '../../../model/graphql/Languages';
-import { Translations } from '../../../model/graphql/Translations';
 import { GetLanguagesQuery } from '../../../queries/Admin/GetLanguagesQuery';
 import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
-import { GetTranslationsQuery } from '../../../queries/Admin/GetTranslationsQuery';
 import { Action } from '../Settings/Action';
 import { Element } from '../Settings/Element';
 import { SelectionList } from '../Settings/SelectionList';
@@ -99,43 +98,29 @@ class TranslationSectionBase extends React.Component<Props, State> {
 
         logger.log('_changeLang', lang);
         try {
-            const client = cachedAolloClient();
-            const translations = await client.query<Translations>({
-                query: GetTranslationsQuery,
-                variables: {
-                    id: lang,
-                },
-                fetchPolicy: 'network-only',
-            });
+            await refreshOverridenLanguage(lang);
 
-            if (translations.data && translations.data.Translations) {
-                await saveLanguageFile(
-                    lang,
-                    translations.data.Translations,
-                );
-
-                Alert.alert(
-                    `Downloaded latest translations for language '${lang}'`,
-                    'Press OK to reload App',
-                    [
-                        {
-                            text: 'Cancel',
-                            style: 'cancel',
-                            onPress: () => {
-                                this.setState({ language: I18N.id, wait: false });
-                            },
+            Alert.alert(
+                `Downloaded latest translations for language '${lang}'`,
+                'Press OK to reload App',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                        onPress: () => {
+                            this.setState({ language: I18N.id, wait: false });
                         },
-                        {
-                            text: 'OK',
-                            style: 'destructive',
-                            onPress: async () => {
-                                await overrideLanguage(lang);
-                                await Updates.reloadFromCache();
-                            },
+                    },
+                    {
+                        text: 'OK',
+                        style: 'destructive',
+                        onPress: async () => {
+                            await setOverridenLanguage(lang);
+                            await Updates.reloadFromCache();
                         },
-                    ],
-                );
-            }
+                    },
+                ],
+            );
         } catch (e) {
             logger.error(e, '_refreshLanguage');
             Alert.alert('Failed');
@@ -168,7 +153,7 @@ class TranslationSectionBase extends React.Component<Props, State> {
                     text: 'OK',
                     style: 'destructive',
                     onPress: async () => {
-                        await clearOverrideLanguage();
+                        await clearOverridenLanguage();
                         await Updates.reloadFromCache();
                     },
                 },

@@ -33,6 +33,7 @@
             "imprint": {
                 "en": "https://tabler.app/en/legal-notice/"
             },
+            "translations": "https://tabler-world-assets.s3-accelerate.amazonaws.com/translations/#channel#/#lang#.json",
             "dataprotection": {
                 "en": "https://tabler.app/en/privacy-policy/"
             }

@@ -21,6 +21,7 @@ type Key =
     | 'support'
     | 'imprint'
     | 'dataprotection'
+    | 'translations'
     ;
 
 type ConfigTypes = string | string[] | {

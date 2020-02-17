@@ -1,10 +1,10 @@
 import Constants from 'expo-constants';
 import React from 'react';
 import { AsyncStorage, Clipboard } from 'react-native';
-import { Divider, List, Theme, withTheme, Portal } from 'react-native-paper';
+import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
+import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/Logger';
 import { getParameterValue } from '../../../helper/parameters/getParameterValue';
-import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/PRESERVE_CONSOLE';
 import { I18N } from '../../../i18n/translation';
 import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
 import { ParameterName, UserRole } from '../../../model/graphql/globalTypes';
@@ -13,7 +13,6 @@ import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN, TOKEN_KEY } from '../../../tasks/C
 import { runFetchTask } from '../../../tasks/fetch/runFetchTask';
 import { Action } from '../Settings/Action';
 import { Element } from '../Settings/Element';
-import { FullScreenLoading } from '../../../components/Loading';
 
 type State = {
     token?: string | null,

@@ -1,5 +1,6 @@
 import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { POEditorApi } from '../dataSources/POEditorApi';
+import { pseudoLocalize } from '../helper/pseudoLocalize';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
@@ -14,23 +15,26 @@ export const TranslationsResolver = {
                 'I18N',
             );
 
-            return response.result.languages.map((l: any) => {
-                return l.code;
-            });
+            return [
+                'pseudo',
+                ...response.result.languages.map((l: any) => {
+                    return l.code;
+                }),
+            ];
         },
 
         Translations: async (_root: any, { language }: any, _context: IApolloContext) => {
             const response = await POEditorApi.call(
                 '/v2/terms/list',
                 {
-                    language,
+                    language: language === 'pseudo' ? 'en' : language,
                 },
             );
 
             const translations: any = {};
 
             for (const term of response.result.terms) {
-                let newValue;
+                let newValue: any;
 
                 // no content
                 if (term.translation.content === '' || term.translation.content === null) {
@@ -60,7 +64,18 @@ export const TranslationsResolver = {
                     });
                 }
 
-                node[term.term] = newValue;
+                if (language === 'pseudo') {
+                    if (typeof (newValue) === 'object') {
+                        node[term.term] = {
+                            // @ts-ignore
+                            ...Object.keys(newValue).map((k) => pseudoLocalize(newValue[k])),
+                        };
+                    } else {
+                        node[term.term] = pseudoLocalize(newValue);
+                    }
+                } else {
+                    node[term.term] = newValue;
+                }
             }
 
             return translations;

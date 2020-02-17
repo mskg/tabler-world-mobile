@@ -1,4 +1,13 @@
 {
+    "Permissions": {
+        "NSCameraUsageDescription": "TABLER.APP verwendet die Kamera, um Barcodes anderer Mitglieder zu scannen.",
+        "NSContactsUsageDescription": "TABLER.APP aktualisiert dein Telefonbuch mit den Mitgliederdaten.",
+        "NSCalendarsUsageDescription": "TABLER.APP aktualisiert deinen Kalender mit Event- und Geburtstagsdetails.",
+        "NSLocationWhenInUseUsageDescription": "TABLER.APP zeigt andere Mitglieder und Clubs rund um deinen aktuellen Standort.",
+        "NSLocationAlwaysUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
+        "NSPhotoLibraryUsageDescription": "Du kannst Bilder aus Deiner Bibliothek mit der TABLER.APP an andere Mitglieder schicken."
+    },
     "Component_Whoops": {
         "title": "Oooops?",
         "try": "Wiederholen",

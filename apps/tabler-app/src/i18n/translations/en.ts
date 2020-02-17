@@ -1,4 +1,13 @@
 const en = {
+    Permissions: {
+        NSCameraUsageDescription: 'TABLER.APP uses the camera to scan barcodes of other members.',
+        NSContactsUsageDescription: 'TABLER.APP updates your phonebook with member details.',
+        NSCalendarsUsageDescription: 'TABLER.APP updates your calendar with event and birthday details.',
+        NSLocationWhenInUseUsageDescription: 'TABLER.APP shows other members and clubs arround your current location.',
+        NSLocationAlwaysUsageDescription: 'TABLER.APP tracks your position to allow other members to get in touch with you.',
+        NSLocationAlwaysAndWhenInUseUsageDescription: 'TABLER.APP tracks your position to allow other members to get in touch with you.',
+    },
+
     Component_Whoops: {
         title: 'Whoops?',
         try: 'Try Again',
@@ -40,7 +49,7 @@ const en = {
         signin: 'please sign in with your TABLER.WORLD public e-mail address',
         confirmTitle: 'Enter Password',
         codeWrong: 'Verification failed, you have to restart.',
-        accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please member the TABLER.WORLD team via e-mail.',
+        accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please contact the TABLER.WORLD team via e-mail.',
         codeVerify: 'Could not verify password, {tries} tries left.',
         demoMode: 'Try the App',
         join: 'How to join Round Table?',
