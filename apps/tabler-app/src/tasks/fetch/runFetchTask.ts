@@ -31,7 +31,7 @@ export async function runFetchTask() {
     const timer = Audit.timer(AuditEventName.BackgroundSync);
     try {
         const lastFetch = parseInt(await AsyncStorage.getItem(FETCH_LAST_DATA_RUN) || '0', 10);
-        const mininutesElapsed = (Date.now() - lastFetch) / 1000 / 60;
+        const minutesElapsed = (Date.now() - lastFetch) / 1000 / 60;
 
         logger.debug('Bootstrapping apollo');
         await bootstrapApollo({ noWebsocket: true });
@@ -39,7 +39,7 @@ export async function runFetchTask() {
 
         const parameters = await getParameterValue<FetchParameters>(ParameterName.fetch);
 
-        if (mininutesElapsed > parameters.dataUpdateInterval) {
+        if (minutesElapsed > parameters.dataUpdateInterval) {
             try {
                 Promise.all([
                     runDataUpdates(),
