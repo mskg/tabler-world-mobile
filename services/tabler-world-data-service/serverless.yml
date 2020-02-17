@@ -144,7 +144,7 @@ functions:
   #
   api:
     handler: src/lambda.handler
-    timeout: 30
+    timeout: 60
     tracing: Active
 
     environment:
