@@ -1,6 +1,6 @@
 import { AppStateStatus, AsyncStorage } from 'react-native';
 import { getAppLanguage } from '../../i18n/getAppLanguage';
-import { loadLanguageFiles } from '../../i18n/loadLanguageFiles';
+import { bootstrapLanguage } from '../../i18n/bootstrapLanguage';
 import { refreshLanguageFile } from '../../i18n/override/refreshLanguageFile';
 import { logger } from './logger';
 
@@ -22,7 +22,7 @@ export function* checkLanguageFiles(state: AppStateStatus) {
             const result = yield refreshLanguageFile(getAppLanguage());
             if (result) {
                 // apply it immediatly
-                yield loadLanguageFiles();
+                yield bootstrapLanguage();
             }
         } catch (e) {
             // we don't handle this as errors

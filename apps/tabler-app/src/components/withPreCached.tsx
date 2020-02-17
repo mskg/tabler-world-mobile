@@ -6,7 +6,7 @@ import React from 'react';
 import { Image } from 'react-native';
 import Assets from '../Assets';
 import { Categories, Logger } from '../helper/Logger';
-import { loadLanguageFiles } from '../i18n/loadLanguageFiles';
+import { bootstrapLanguage } from '../i18n/bootstrapLanguage';
 
 const logger = new Logger(Categories.UIComponents.Cache);
 
@@ -75,7 +75,7 @@ export function withPreCached(WrappedComponent) {
                     }),
                     ...imageAssets,
                     ...fileAssets,
-                    loadLanguageFiles(),
+                    bootstrapLanguage(),
                 ]);
 
                 logger.log('Done.');
