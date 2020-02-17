@@ -140,7 +140,10 @@ provider:
   region: eu-west-1
 
   deploymentBucket:
+    name: tabler-world-deployments
+    maxPreviousDeploymentArtifacts: 5
     blockPublicAccess: true
+    serverSideEncryption: AES256
 
   runtime: nodejs10.x
 
