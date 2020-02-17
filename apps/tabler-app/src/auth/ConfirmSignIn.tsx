@@ -1,8 +1,9 @@
 import Auth from '@aws-amplify/auth';
+import { Ionicons } from '@expo/vector-icons';
 import { Linking } from 'expo';
 import React from 'react';
 import { Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
-import { Button, Text, Theme, withTheme } from 'react-native-paper';
+import { Banner, Button, Text, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
@@ -149,6 +150,19 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="position">
+                            <Banner
+                                visible={true}
+                                actions={[
+                                ]}
+                                image={({ size }) =>
+                                    <Ionicons name="md-alert" size={size} color={'red'} />
+                                }
+                            >
+                                <Text style={{ color: 'red' }}>
+                                    {I18N.SignIn.warning}
+                                </Text>
+                            </Banner>
+
                             <Logo />
                             <Greeting
                                 title={I18N.SignIn.confirmTitle}
