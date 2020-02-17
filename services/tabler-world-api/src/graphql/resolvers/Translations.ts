@@ -1,152 +1,75 @@
-import { removeEmptySlots } from '@mskg/tabler-world-common';
-import { request } from 'https';
-import querystring from 'querystring';
+import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
+import { POEditorApi } from '../dataSources/POEditorApi';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const TranslationsResolver = {
     Query: {
-        Languages: async (_root: any, _params: any, _context: IApolloContext) => {
-            const answer: any = await new Promise(
-                (resolve, reject) => {
-                    const postData = querystring.stringify({
-                        api_token: 'baba19bf83fbfc606eee6649a7c3cd30',
-                        id: 317857,
-                    });
-
-                    const req = request(
-                        {
-                            host: 'api.poeditor.com',
-                            port: 443,
-                            method: 'POST',
-                            path: '/v2/languages/list',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'Content-Length': postData.length,
-                            },
-                        },
-                        (res) => {
-                            if (res.statusCode !== 200) {
-                                return reject(new Error(`${res.statusCode} ${res.statusMessage}`));
-                            }
-
-                            let data = '';
-                            res.setEncoding('utf8');
-                            res.on('data', (chunk) => {
-                                data += chunk;
-                            });
-
-                            res.on('end', async () => {
-                                try {
-                                    const json = JSON.parse(data);
-                                    return resolve(json);
-                                } catch (eEnd) {
-                                    return reject(eEnd);
-                                }
-                            });
-                        },
-                    );
-
-                    req.on('error', (requestFail) => {
-                        console.error('[API] on error', requestFail);
-                        return reject(requestFail);
-                    });
-
-                    req.write(postData);
-                    req.end();
-                },
+        Languages: async (_root: any, _params: any, context: IApolloContext) => {
+            const response = await cachedLoad(
+                context,
+                makeCacheKey('Resource', ['i18n', 'languages']),
+                () => POEditorApi.call('/v2/languages/list'),
+                'I18N',
             );
 
-            return answer.result.languages.map((l: any) => {
+            return response.result.languages.map((l: any) => {
                 return l.code;
             });
         },
 
         Translations: async (_root: any, { language }: any, _context: IApolloContext) => {
-            // tslint:disable-next-line: no-unnecessary-local-variable
-            const answer: any = await new Promise(
-                (resolve, reject) => {
-                    const postData = querystring.stringify({
-                        language: language || 'en',
-                        api_token: 'baba19bf83fbfc606eee6649a7c3cd30',
-                        id: 317857,
-                    });
-
-                    const req = request(
-                        {
-                            host: 'api.poeditor.com',
-                            port: 443,
-                            method: 'POST',
-                            path: '/v2/terms/list',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'Content-Length': postData.length,
-                            },
-                        },
-                        (res) => {
-                            if (res.statusCode !== 200) {
-                                return reject(new Error(`${res.statusCode} ${res.statusMessage}`));
-                            }
-
-                            let data = '';
-                            res.setEncoding('utf8');
-                            res.on('data', (chunk) => {
-                                data += chunk;
-                            });
-
-                            res.on('end', async () => {
-                                try {
-                                    const json = JSON.parse(data);
-                                    return resolve(json);
-                                } catch (eEnd) {
-                                    return reject(eEnd);
-                                }
-                            });
-                        },
-                    );
-
-                    req.on('error', (requestFail) => {
-                        console.error('[API] on error', requestFail);
-                        return reject(requestFail);
-                    });
-
-                    req.write(postData);
-                    req.end();
+            const response = await POEditorApi.call(
+                '/v2/terms/list',
+                {
+                    language,
                 },
             );
 
+            // await cachedLoad(
+            //     context,
+            //     makeCacheKey('Resource', ['i18n', 'language', language]),
+            //     () => POEditorApi.call(
+            //         '/v2/terms/list',
+            //         {
+            //             language,
+            //         },
+            //     ),
+            //     'I18N',
+            // );
+
             const translations: any = {};
 
-            for (const term of answer.result.terms) {
+            for (const term of response.result.terms) {
                 let newValue;
 
+                // no content
                 if (term.translation.content === '' || term.translation.content === null) {
                     continue;
                 }
 
-                if (typeof (term.translation.content) === 'object') {
-                    newValue = removeEmptySlots(term.translation.content);
-
-                    if (Object.keys(newValue).length === 0) {
-                        continue;
-                    }
+                // no plural content
+                if (typeof (term.translation.content) === 'object' && Object.keys(term.translation.content).length === 0) {
+                    continue;
                 } else {
                     newValue = term.translation.content;
                 }
 
                 let v: any;
 
-                term.context.split('.').forEach((c: string) => {
-                    // tslint:disable-next-line: no-parameter-reassignment
-                    c = c.substring(1, c.length - 1);
+                if (term.context) {
+                    term.context.split('.').forEach((c: string) => {
+                        // key is surounded by "
+                        const key = c.substring(1, c.length - 1);
 
-                    if (!translations[c]) {
-                        translations[c] = {};
-                    }
+                        if (!translations[key]) {
+                            translations[key] = {};
+                        }
 
-                    v = translations[c];
-                });
+                        v = translations[key];
+                    });
+                }
 
                 v[term.term] = newValue;
             }

@@ -18,6 +18,7 @@ type ParameterNames =
     | 'app/android'
     | 'cachettl'
     | 'chat'
+    | 'i18n'
     ;
 
 type MapType = {

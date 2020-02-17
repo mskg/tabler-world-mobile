@@ -36,3 +36,10 @@ where id = 'rti_ro_22'
 
 select * From
 usersettings where id = 14225
+
+
+select * from assets
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles

@@ -1,5 +1,5 @@
 import { lookupPrincipal, resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
-import { cachedLoad } from '@mskg/tabler-world-cache';
+import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import crypto from 'crypto';
 import { OperationMessage } from 'subscriptions-transport-ws';
@@ -29,7 +29,7 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
                         logger: context.logger,
                         cache: cacheInstance,
                     },
-                    `principal::${hash(email)}`,
+                    makeCacheKey('Principal', [hash(email)]),
                     () => useDataService(
                         context,
                         (client) => lookupPrincipal(client, email),
