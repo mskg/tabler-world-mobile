@@ -21,6 +21,7 @@ BEGIN;
 \i '01 families.pgsql'
 \i '01 groups.pgsql'
 \i '01 assets.pgsql'
+\i '01 userroles.pgsql'
 \i '02 helper.pgsql'
 \i '02 roles.pgsql'
 COMMIT;

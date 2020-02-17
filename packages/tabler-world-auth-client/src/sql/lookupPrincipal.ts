@@ -8,7 +8,21 @@ export async function lookupPrincipal(client: IDataService, email: string): Prom
     }
 
     const res = await client.query(
-        'select id, club, area, association, family from profiles where rtemail = $1 and removed = false',
+        `
+select
+    profiles.id,
+    profiles.club,
+    profiles.area,
+    profiles.association,
+    profiles.family,
+    userroles.roles
+from
+    profiles, userroles
+where
+        profiles.id = userroles.id
+    and rtemail = $1
+    and removed = false
+`,
         [email.toLowerCase()],
     );
 
@@ -16,7 +30,9 @@ export async function lookupPrincipal(client: IDataService, email: string): Prom
         throw new Error(MSG);
     }
 
-    const { id, club, area, association, family } = res.rows[0];
+    const { id, club, area, association, family, roles } = res.rows[0];
+
+    // tslint:disable: object-shorthand-properties-first
     return {
         // hardcoded for now
         version: '1.2',
@@ -27,5 +43,7 @@ export async function lookupPrincipal(client: IDataService, email: string): Prom
         area,
         association,
         email: email.toLowerCase(),
+
+        roles,
     } as IPrincipal;
 }

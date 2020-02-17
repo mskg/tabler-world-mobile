@@ -5,7 +5,7 @@ export * from './cognito/AuthPolicy';
 export * from './cognito/downloadPems';
 export { Token } from './cognito/types';
 export * from './cognito/validateToken';
-export * from './helper/isAdmin';
+export * from './roles/hasRole';
 export * from './sql/lookupPrincipal';
 export * from './types/Family';
 export * from './types/IPrincipal';

@@ -19,7 +19,7 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
         console.warn(`********* AUTHENTICATION DEBUG MODE *********`);
         resolvedPrincipal = resolveDebugPrincipal(event.headers);
     } else {
-        const { version, area, club, association, id, email, family } = authorizer;
+        const { version, area, club, association, id, email, family, roles } = authorizer;
 
         // tslint:disable: triple-equals
         if (area == null || area == '') { throw new AuthenticationError('Authorizer missing (area)'); }
@@ -39,6 +39,7 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
             association,
             area,
             club,
+            roles,
             id: parseInt(id, 10),
         };
     }

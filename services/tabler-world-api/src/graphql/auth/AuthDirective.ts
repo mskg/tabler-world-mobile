@@ -1,4 +1,4 @@
-import { isAdmin } from '@mskg/tabler-world-auth-client';
+import { hasRole } from '@mskg/tabler-world-auth-client';
 import { SchemaDirectiveVisitor } from 'apollo-server-lambda';
 import { defaultFieldResolver, GraphQLField, GraphQLInterfaceType, GraphQLObjectType } from 'graphql';
 import { IApolloContext } from '../types/IApolloContext';
@@ -47,7 +47,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
                 }
 
                 const context = args[2] as IApolloContext;
-                if (!isAdmin(context.principal)) {
+                if (!hasRole(context.principal, requiredRole)) {
                     throw new Error('You are not authorized to view this resource.');
                 }
 

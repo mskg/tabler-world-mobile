@@ -12,4 +12,6 @@ export interface IPrincipal {
     association: string;
     area: string;
     club: string;
+
+    roles?: string[];
 }

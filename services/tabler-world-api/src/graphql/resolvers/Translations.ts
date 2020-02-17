@@ -27,18 +27,6 @@ export const TranslationsResolver = {
                 },
             );
 
-            // await cachedLoad(
-            //     context,
-            //     makeCacheKey('Resource', ['i18n', 'language', language]),
-            //     () => POEditorApi.call(
-            //         '/v2/terms/list',
-            //         {
-            //             language,
-            //         },
-            //     ),
-            //     'I18N',
-            // );
-
             const translations: any = {};
 
             for (const term of response.result.terms) {
@@ -56,22 +44,23 @@ export const TranslationsResolver = {
                     newValue = term.translation.content;
                 }
 
-                let v: any;
+                let node = translations;
 
                 if (term.context) {
                     term.context.split('.').forEach((c: string) => {
                         // key is surounded by "
                         const key = c.substring(1, c.length - 1);
+                        console.log('>', key);
 
-                        if (!translations[key]) {
-                            translations[key] = {};
+                        if (!node[key]) {
+                            node[key] = {};
                         }
 
-                        v = translations[key];
+                        node = node[key];
                     });
                 }
 
-                v[term.term] = newValue;
+                node[term.term] = newValue;
             }
 
             return translations;
