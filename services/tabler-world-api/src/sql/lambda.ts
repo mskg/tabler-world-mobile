@@ -30,6 +30,8 @@ const fileNames = [
 export async function handler(_event: any[], context: Context, _callback: (error: any, success?: any) => void) {
     try {
         await withClient(context, async (client) => {
+            let dml = 'BEGIN;\n';
+
             for (const fn of fileNames) {
                 console.log('Processing', fn);
 
@@ -37,12 +39,13 @@ export async function handler(_event: any[], context: Context, _callback: (error
                 let content = readFileSync(fn, 'utf8');
                 content = content.replace('tw_read_dev', process.env.db_role || 'tw_read_dev');
 
-                // await withTransaction(client,
-                //     async () => await client.query(content));
-
-                await client.query(content);
-                console.log('done.');
+                dml += content;
             }
+
+            dml += 'COMMIT;\n';
+
+            await client.query(dml);
+            console.log('done.');
 
             await writeJobLog(client, 'update::database');
             console.log('finished');
