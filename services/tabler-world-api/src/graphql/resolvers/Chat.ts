@@ -6,7 +6,6 @@ import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
 import { ConversationManager } from '../subscriptions/services/ConversationManager';
 import { pubsub } from '../subscriptions/services/pubsub';
-import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../subscriptions/types/Constants';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
