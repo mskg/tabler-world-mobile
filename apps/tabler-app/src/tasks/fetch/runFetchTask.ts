@@ -1,3 +1,4 @@
+import { FetchParameters } from '@mskg/tabler-world-config-app';
 import * as BackgroundFetch from 'expo-background-fetch';
 import { AsyncStorage } from 'react-native';
 import { Audit } from '../../analytics/Audit';
@@ -5,12 +6,12 @@ import { AuditEventName } from '../../analytics/AuditEventName';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { bootstrapApollo, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
 import { isDemoModeEnabled } from '../../helper/demoMode';
-import { FetchParameters } from '../../helper/parameters/Fetch';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { getReduxPersistor, persistorRehydrated } from '../../redux/getRedux';
 import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN } from '../Constants';
 import { isSignedIn } from '../helper/isSignedIn';
+import { isLocationTaskEnabled } from '../location/isLocationTaskEnabled';
 import { updateLocation } from '../location/updateLocation';
 import { logger } from './logger';
 import { runDataUpdates } from './runDataUpdates';
@@ -41,10 +42,14 @@ export async function runFetchTask() {
 
         if (minutesElapsed > parameters.dataUpdateInterval) {
             try {
-                Promise.all([
-                    runDataUpdates(),
-                    updateLocation(false, true),
-                ]);
+                const promises: Promise<any>[] = [runDataUpdates()];
+
+                const locationEnabled = await isLocationTaskEnabled();
+                if (locationEnabled) {
+                    promises.push(updateLocation(false, true));
+                }
+
+                await Promise.all(promises);
             } finally {
                 await AsyncStorage.setItem(FETCH_LAST_DATA_RUN, Date.now().toString());
             }

@@ -56,19 +56,16 @@ export interface NearbyMembers_nearbyMembers_member {
   availableForChat: boolean | null;
 }
 
-export interface NearbyMembers_nearbyMembers_address_location {
+export interface NearbyMembers_nearbyMembers_location {
   __typename: "GeoPoint";
   longitude: number;
   latitude: number;
 }
 
-export interface NearbyMembers_nearbyMembers_address {
-  __typename: "Address";
-  location: NearbyMembers_nearbyMembers_address_location | null;
-  postal_code: string | null;
-  city: string | null;
-  country: string | null;
-  region: string | null;
+export interface NearbyMembers_nearbyMembers_locationName {
+  __typename: "LocationName";
+  name: string;
+  country: string;
 }
 
 export interface NearbyMembers_nearbyMembers {
@@ -77,8 +74,11 @@ export interface NearbyMembers_nearbyMembers {
   lastseen: any;
   state: NearbyMemberState;
   distance: number;
-  canshowonmap: boolean;
-  address: NearbyMembers_nearbyMembers_address;
+  /**
+   * Can be null if member does not allow map display
+   */
+  location: NearbyMembers_nearbyMembers_location | null;
+  locationName: NearbyMembers_nearbyMembers_locationName;
 }
 
 export interface NearbyMembers {

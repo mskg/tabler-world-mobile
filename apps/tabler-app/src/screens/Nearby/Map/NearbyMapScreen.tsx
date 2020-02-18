@@ -35,7 +35,6 @@ type OwnProps = {
 
 type StateProps = {
     location?: Location.LocationData,
-    address?: Location.Address,
     members?: NearbyMembers_nearbyMembers[],
     nearbyMap: boolean,
 };
@@ -156,11 +155,11 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                                     backgroundColor: this.props.theme.colors.surface,
                                 }}
                             >
-                                {(this.props.members || []).filter((f) => f.canshowonmap).map((n) => (
+                                {(this.props.members || []).filter((f) => f.location).map((n) => (
                                     <Marker
                                         key={n.member.id.toString()}
                                         identifier={n.member.id.toString()}
-                                        coordinate={n.address.location as LatLng}
+                                        coordinate={n.location as LatLng}
                                         tracksViewChanges={false}
                                         title={`${n.member.firstname} ${n.member.lastname}\n${n.member.club.name}, ${n.member.association.name}`}
                                         onCalloutPress={() => this.props.showProfile(n.member.id)}
@@ -189,7 +188,6 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
 export const NearbyMapScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
         location: state.location.location,
-        address: state.location.address,
         members: state.location.nearbyMembers,
         nearbyMap: state.settings.nearbyMembersMap || false,
     }),

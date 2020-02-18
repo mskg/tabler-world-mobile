@@ -1,0 +1,21 @@
+{
+    "name": "@mskg/tabler-world-geo-bigdata",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "postinstall": "tsc"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "peerDependencies": {
+        "lodash": "*"
+    },
+    "devDependencies": {
+        "lodash": "*",
+        "typescript": "3.7.4"
+    }
+}

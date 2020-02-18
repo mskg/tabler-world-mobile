@@ -9,6 +9,7 @@ import { InternalMeListItemBase } from '../../../components/MeListItem';
 import { formatTimespan } from '../../../helper/formatting/formatTimespan';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
+import { GeoCityLocation } from '../../../model/GeoCityLocation';
 import { Me } from '../../../model/graphql/Me';
 import { IAppState } from '../../../model/IAppState';
 import { GetMeQuery } from '../../../queries/Member/GetMeQuery';
@@ -25,7 +26,7 @@ type OwnProps = {
 };
 
 type StateProps = {
-    address?: Location.Address,
+    address?: GeoCityLocation,
     timestamp?: number,
     now: number,
 };
@@ -39,7 +40,7 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 class MeLocationBase extends React.Component<Props, State> {
     getLocation(): string {
         if (!this.props.address) { return I18N.Screen_NearbyMembers.unknown; }
-        return this.props.address.city || this.props.address.region || I18N.Screen_NearbyMembers.unknown;
+        return this.props.address.name || this.props.address.country || I18N.Screen_NearbyMembers.unknown;
     }
 
     _update = () => {

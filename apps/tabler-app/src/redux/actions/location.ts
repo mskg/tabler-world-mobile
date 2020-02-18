@@ -1,11 +1,12 @@
 import * as Location from 'expo-location';
+import { GeoCityLocation } from '../../model/GeoCityLocation';
 import { NearbyMembers_nearbyMembers } from '../../model/graphql/NearbyMembers';
 import { createAction } from './action';
 
 // tslint:disable-next-line: export-name
 export const setLocation = createAction<'@@location/track/setLocation', {
     location?: Location.LocationData,
-    address?: Location.Address,
+    address?: GeoCityLocation,
 }>(
     '@@location/track/setLocation',
 );

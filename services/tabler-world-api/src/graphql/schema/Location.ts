@@ -1,7 +1,8 @@
 
 import { gql } from 'apollo-server-lambda';
 
-export const Geo = gql`
+// tslint:disable-next-line: variable-name
+export const Location = gql`
     extend type Address {
         location: GeoPoint
     }
@@ -30,7 +31,6 @@ export const Geo = gql`
 
     extend type Mutation {
         putLocation(location: MyLocationInput!): Boolean
-        updateLocationAddress(corrections: [AddressUpdateInput!]!): Boolean
         disableLocationServices: Boolean
     }
 
@@ -65,12 +65,20 @@ export const Geo = gql`
         accuracy: Float!
     }
 
+    type LocationName {
+        name: String!
+        country: String!
+    }
+
     type NearbyMember {
         member: Member!
-        canshowonmap: Boolean!
         distance: Int!
         lastseen: Date!
         state: NearbyMemberState!
-        address: Address!
+
+        "Can be null if member does not allow map display"
+        location: GeoPoint
+
+        locationName: LocationName!
     }
 `;

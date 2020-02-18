@@ -1,17 +1,14 @@
+import { GeoParameters } from '@mskg/tabler-world-config-app';
 import { ApolloQueryResult } from 'apollo-client';
 import { LocationData } from 'expo-location';
 import { cancel, cancelled, delay, fork, put, select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
-import { GeoParameters } from '../../helper/parameters/Geo';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
-import { AddressUpdateInput, ParameterName } from '../../model/graphql/globalTypes';
+import { ParameterName } from '../../model/graphql/globalTypes';
 import { NearbyMembers, NearbyMembersVariables } from '../../model/graphql/NearbyMembers';
-import { UpdateLocationAddress, UpdateLocationAddressVariables } from '../../model/graphql/UpdateLocationAddress';
 import { IAppState } from '../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../queries/Location/GetNearbyMembersQuery';
-import { UpdateLocationAddressMutation } from '../../queries/Location/UpdateLocationAddressMutation';
 import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
-import { geocodeMissing } from './geocodeMissing';
 import { logger } from './logger';
 
 function* bgSync() {
@@ -57,32 +54,29 @@ function* bgSync() {
                     // best effort
                     yield put(setNearby(members));
 
-                    if (members) {
-                        const corrections: AddressUpdateInput[] = yield geocodeMissing(members);
+                    // if (members) {
+                    //     const corrections: AddressUpdateInput[] = yield geocodeMissing(members);
 
-                        if (corrections) {
-                            yield client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
-                                mutation: UpdateLocationAddressMutation,
-                                variables: {
-                                    corrections,
-                                },
-                            });
+                    //     if (corrections) {
+                    //         yield client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
+                    //             mutation: UpdateLocationAddressMutation,
+                    //             variables: {
+                    //                 corrections,
+                    //             },
+                    //         });
 
-                            // update adresses
-                            corrections.forEach((c) => {
-                                const existing = members.find((m) => m.member.id === c.member);
-                                if (existing != null && c.address != null) {
-                                    existing.address = {
-                                        ...existing.address,
-                                        ...c.address,
-                                    };
-                                }
-                            });
+                    //         // update adresses
+                    //         corrections.forEach((c) => {
+                    //             const existing = members.find((m) => m.member.id === c.member);
+                    //             if (existing != null && c.address != null) {
+                    //                 existing.address = c.address;
+                    //             }
+                    //         });
 
-                            // updated
-                            yield put(setNearby(members));
-                        }
-                    }
+                    //         // updated
+                    //         yield put(setNearby(members));
+                    //     }
+                    // }
                 } else {
                     yield put(setNearby([]));
                     logger.debug('no location or disabled');

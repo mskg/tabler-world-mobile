@@ -1,4 +1,3 @@
-import NetInfo from '@react-native-community/netinfo';
 import * as Location from 'expo-location';
 import _ from 'lodash';
 import { Audit } from '../../analytics/Audit';
@@ -33,34 +32,17 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             return false;
         }
 
-        const ci = await NetInfo.fetch();
-
-        // we ignore unkown network state and try in that case
-        const offline = ci.type === 'none';
-
-        if (offline) {
-            logger.log('Network seems to be offline', ci);
-
-            getReduxStore().dispatch(setLocation({
-                location,
-            }));
-
-            return false;
-        }
-
         Audit.trackEvent(AuditEventName.LocationUpdate);
 
         // can be undefined
-        const address = await reverseGeocode(location.coords);
-
-        // const address = await Location.reverseGeocodeAsync(location.coords);
+        const encodedAddress = await reverseGeocode(location.coords);
         getReduxStore().dispatch(setLocation({
             location,
-            address,
+            address: encodedAddress?.address,
         }));
 
         const locationVariables = {
-            address,
+            address: encodedAddress?.raw,
             longitude: location.coords.longitude,
             latitude: location.coords.latitude,
             accuracy: location.coords.accuracy,

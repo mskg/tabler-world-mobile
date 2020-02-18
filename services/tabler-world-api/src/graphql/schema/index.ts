@@ -3,8 +3,8 @@ import { Albums } from './Albums';
 import { Auth } from './Auth';
 import { Chat } from './Chat';
 import { Deprecated } from './Deprecated';
-import { Geo } from './Geo';
 import { Jobs } from './Jobs';
+import { Location } from './Location';
 import { Member } from './Member';
 import { Mutation } from './Mutation';
 import { News } from './News';
@@ -32,7 +32,7 @@ export const schema = [
     Albums,
     // Documents,
     News,
-    Geo,
+    Location,
     Parameters,
     Chat,
     Deprecated,

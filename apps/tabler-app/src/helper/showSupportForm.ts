@@ -1,3 +1,4 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import Constants from 'expo-constants';
 import * as MailComposer from 'expo-mail-composer';
 import { Alert, Platform } from 'react-native';
@@ -6,7 +7,6 @@ import { Audit } from '../analytics/Audit';
 import { AuditScreenName } from '../analytics/AuditScreenName';
 import { cachedAolloClient } from '../apollo/bootstrapApollo';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
-import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { Me } from '../model/graphql/Me';

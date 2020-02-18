@@ -1,6 +1,7 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import { getParameters, Param_Nearby } from '@mskg/tabler-world-config';
+import { BigDataResult, convertToCityLocation } from '@mskg/tabler-world-geo-bigdata';
 import { useDataService } from '@mskg/tabler-world-rds-client';
+import { getNearByParams } from '../helper/getNearByParams';
 import { IApolloContext } from '../types/IApolloContext';
 
 type MyLocationInput = {
@@ -49,14 +50,67 @@ export const LocationResolver = {
         state: (root: any, _args: {}, _context: IApolloContext) => {
             return !root.speed || root.speed < 8 ? 'Steady' : 'Traveling';
         },
+
+        location: (root: any, _args: {}, _context: IApolloContext) => {
+            return root.canshowonmap ? {
+                longitude: root.longitude,
+                latitude: root.latitude,
+            } : null;
+        },
+
+        locationName: async (root: any, _args: {}, _context: IApolloContext) => {
+            // old data, leave like it is
+            if (root.address.city || root.address.region) {
+                return {
+                    name: root.address.city || root.address.region,
+                    country: root.address.country,
+                };
+            }
+
+            const bigData: BigDataResult = root.address;
+            const nearBy = await getNearByParams();
+
+            return convertToCityLocation(bigData, nearBy.administrativePreferences);
+        },
+
+        // TODO: deprecated
+        address: ({ address, canshowonmap, longitude, latitude }: any, _args: {}, _context: IApolloContext) => {
+            // old data, leave like it is
+            if (address.city || address.region) {
+                return {
+                    // backward compatibility
+                    location: canshowonmap
+                        ? {
+                            longitude,
+                            latitude,
+                        } : null,
+
+                    city: address.city,
+                    region: address.region,
+                    country: address.isoCountryCode || address.country,
+                };
+            }
+
+            return {
+                postal_code: address.postcode,
+                city: address.locality || address.principalSubdivision || address.countryName || address.continent,
+                country: address.countryCode || address.continent || address.countryName,
+
+                // backward compatibility
+                location: canshowonmap
+                    ? {
+                        longitude,
+                        latitude,
+                    } : null,
+            };
+        },
     },
 
     Query: {
         nearbyMembers: async (_root: any, args: NearMembersInput, context: IApolloContext) => {
             context.logger.log('nearby', args);
 
-            const params = await getParameters('nearby');
-            const nearBy = JSON.parse(params.nearby) as Param_Nearby;
+            const nearBy = await getNearByParams();
 
             return useDataService(
                 context,
@@ -69,6 +123,8 @@ SELECT
     lastseen,
     speed,
     canshowonmap,
+    ST_X (point::geometry) AS longitude,
+    ST_Y (point::geometry) AS latitude,
     CAST(ST_Distance(
         locations.point,
         $1::geography
@@ -80,7 +136,8 @@ WHERE
 
     and exists (
         select 1
-        from usersettings u
+        from
+            usersettings u
         where
                 u.id = $2
             and (u.settings->>'nearbymembers')::boolean = TRUE
@@ -89,6 +146,8 @@ WHERE
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
     ${args.query && args.query.excludeOwnTable ? 'and club <> $3' : ''}
+
+    and address is not null
 ORDER BY
     locations.point <-> $1::geography
 LIMIT 20
@@ -169,29 +228,32 @@ DO UPDATE
             );
         },
 
-        updateLocationAddress: (_root: any, args: UpdateLocationAddress, context: IApolloContext) => {
-            context.logger.log('updateLocationAddress', args);
+        updateLocationAddress: (_root: any, _args: UpdateLocationAddress, _context: IApolloContext) => {
+            // deprecated
+            return;
 
-            return useDataService(
-                context,
-                async (client) => {
-                    for (const update of args.corrections) {
-                        await client.query(
-                            `
-UPDATE userlocations
-SET address = $2
-WHERE id = $1 and address is null
-`,
-                            [
-                                update.member,
-                                JSON.stringify(update.address),
-                            ],
-                        );
-                    }
+            //             context.logger.log('updateLocationAddress', args);
 
-                    return true;
-                },
-            );
+            //             return useDataService(
+            //                 context,
+            //                 async (client) => {
+            //                     for (const update of args.corrections) {
+            //                         await client.query(
+            //                             `
+            // UPDATE userlocations
+            // SET address = $2
+            // WHERE id = $1 and address is null
+            // `,
+            //                             [
+            //                                 update.member,
+            //                                 JSON.stringify(update.address),
+            //                             ],
+            //                         );
+            //                     }
+
+            //                     return true;
+            //                 },
+            //             );
         },
 
         disableLocationServices: (_root: any, _args: {}, context: IApolloContext) => {

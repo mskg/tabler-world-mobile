@@ -1,13 +1,17 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
-import { getConfigValue } from '../../helper/getConfigValue';
+import { getParameterValue } from '../../helper/parameters/getParameterValue';
+import { ParameterName } from '../../model/graphql/globalTypes';
 import { logger } from './logger';
 
 export async function refreshLanguageFile(lang: string): Promise<boolean> {
     logger.log('refreshLanguageFile', lang);
 
     try {
-        const baseUrl = getConfigValue<string>('translations');
+        const urls = await getParameterValue<UrlParameters>(ParameterName.urls);
+
+        const baseUrl = urls.translations;
         if (!baseUrl) {
             return false;
         }

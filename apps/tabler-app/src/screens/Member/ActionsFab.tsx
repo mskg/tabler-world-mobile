@@ -1,3 +1,4 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import * as Contacts from 'expo-contacts';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
@@ -8,7 +9,6 @@ import { Action, FABGroup } from '../../components/FABGroup';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
-import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { ParameterName } from '../../model/graphql/globalTypes';

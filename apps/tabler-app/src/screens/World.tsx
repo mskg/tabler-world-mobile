@@ -1,7 +1,7 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import React from 'react';
 import { WebScreen } from '../components/WebScreen';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
-import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
 

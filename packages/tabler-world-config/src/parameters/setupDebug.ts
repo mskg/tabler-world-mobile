@@ -28,6 +28,11 @@ export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('nearby'), JSON.stringify({
         radius: parseInt(process.env.NEARBY_RADIUS || '100000', 10),
         days: parseInt(process.env.NEARBY_DAYSBACK || '365', 10),
+        administrativePreferences: {
+            DE: {
+                preferLevel: 8,
+            },
+        },
     } as Param_Nearby));
 
     const HOUR = 60 * 60;

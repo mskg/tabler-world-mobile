@@ -24,22 +24,22 @@ group by area, club
 order by 3
 
 
-select data->>'uname' as uname
-from
-    tabler
-where
-    data->>'rt_generic_email' = 'markus.kling@129-de.roundtable.world'
+BEGIN;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups;
 
-select distinct data->>'rt_status'
-From clubs
-where id = 'rti_ro_22'
+-- dependent on groups
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
 
-select * From
-usersettings where id = 14225
+-- dependent on groups, and roles
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings;
 
+-- dependent data
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_families;
 
-select * from assets
-
-REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations
-
-REFRESH MATERIALIZED VIEW CONCURRENTLY profiles
+-- indexes
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search;
+COMMIT;

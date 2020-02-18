@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import { Accelerometer } from 'expo-sensors';
 import React from 'react';
 import { Animated, Dimensions, Easing, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
@@ -10,7 +11,6 @@ import { AuditScreenName } from '../analytics/AuditScreenName';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
-import { UrlParameters } from '../helper/parameters/Urls';
 import { showSupportForm } from '../helper/showSupportForm';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';

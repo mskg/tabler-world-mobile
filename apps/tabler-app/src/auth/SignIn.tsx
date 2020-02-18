@@ -1,4 +1,5 @@
 import Auth from '@aws-amplify/auth';
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import { Updates } from 'expo';
 import React from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
@@ -12,7 +13,6 @@ import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
-import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
@@ -58,7 +58,7 @@ class SignInBase extends AuditedScreen<Props, State> {
         try {
             this.audit.trackAction(ActionNames.SignIn);
             const user = await Auth.signIn(
-                username as string
+                username as string,
             );
 
             logger.debug('signIn response', user);

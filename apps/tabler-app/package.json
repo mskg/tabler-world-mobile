@@ -21,7 +21,13 @@
     "workspaces": {
         "packages": [
             "../../packages/tabler-world-tslint-rules",
-            "../../packages/tabler-world-yarn-tools"
+            "../../packages/tabler-world-yarn-tools",
+            "../../packages/tabler-world-geo-bigdata",
+            "../../packages/tabler-world-config-app"
+        ],
+        "nohoist": [
+            "lodash",
+            "**/lodash"
         ]
     },
     "dependencies": {
@@ -30,6 +36,8 @@
         "@aws-amplify/core": "^2.2.2",
         "@callstack/react-theme-provider": "^1.0.7",
         "@expo/react-native-action-sheet": "^3.4.1",
+        "@mskg/tabler-world-config-app": "0.0.1",
+        "@mskg/tabler-world-geo-bigdata": "0.0.1",
         "@react-native-community/masked-view": "0.1.5",
         "@react-native-community/netinfo": "^4.6.0",
         "@redux-offline/redux-offline": "^2.5.1",

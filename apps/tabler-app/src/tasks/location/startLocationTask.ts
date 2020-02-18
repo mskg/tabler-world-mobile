@@ -1,6 +1,6 @@
+import { GeoParameters } from '@mskg/tabler-world-config-app';
 import * as Location from 'expo-location';
 import { AsyncStorage } from 'react-native';
-import { GeoParameters } from '../../helper/parameters/Geo';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { LOCATION_TASK_NAME } from '../Constants';

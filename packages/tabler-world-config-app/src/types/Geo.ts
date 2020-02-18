@@ -1,14 +1,30 @@
-import * as Location from 'expo-location';
+
+export enum LocationAccuracy {
+    Lowest = 1,
+    Low = 2,
+    Balanced = 3,
+    High = 4,
+    Highest = 5,
+    BestForNavigation = 6,
+}
+
+export enum LocationActivityType {
+    Other = 1,
+    AutomotiveNavigation = 2,
+    Fitness = 3,
+    OtherNavigation = 4,
+    Airborne = 5,
+}
 
 interface ILocationTaskOptions {
-    accuracy?: Location.Accuracy;
+    accuracy?: LocationAccuracy;
     timeInterval?: number;
     distanceInterval?: number;
     showsBackgroundLocationIndicator?: boolean;
     deferredUpdatesDistance?: number;
     deferredUpdatesTimeout?: number;
     deferredUpdatesInterval?: number;
-    activityType?: Location.ActivityType;
+    activityType?: LocationActivityType;
     pausesUpdatesAutomatically?: boolean;
     foregroundService?: {
         notificationTitle: string;
@@ -22,12 +38,4 @@ export type GeoParameters = {
     reverseGeocodeTimeout: number,
 } & ILocationTaskOptions;
 
-// https://docs.expo.io/versions/latest/sdk/location/
-export const GeoParametersDefaults: GeoParameters = {
-    pollInterval: 10 * 1000, // ms
-    reverseGeocodeTimeout: 10 * 1000, // ms
 
-    accuracy: Location.Accuracy.Low,
-    distanceInterval: 500,
-    pausesUpdatesAutomatically: false,
-};

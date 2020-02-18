@@ -1,3 +1,4 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
@@ -7,7 +8,6 @@ import { AuditScreenName } from '../../../analytics/AuditScreenName';
 import Assets from '../../../Assets';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { getParameterValue } from '../../../helper/parameters/getParameterValue';
-import { UrlParameters } from '../../../helper/parameters/Urls';
 import { I18N } from '../../../i18n/translation';
 import { ParameterName } from '../../../model/graphql/globalTypes';
 import { NextScreen } from './Action';

@@ -12,16 +12,6 @@ type Key =
     | 'sentry'
     | 'cognitoAnalytics'
     | 'amplitudeAnalytics'
-    | 'profile'
-    | 'world'
-    | 'world_whitelist'
-    | 'feedback'
-    | 'translate'
-    | 'join'
-    | 'support'
-    | 'imprint'
-    | 'dataprotection'
-    | 'translations'
     ;
 
 type ConfigTypes = string | string[] | {

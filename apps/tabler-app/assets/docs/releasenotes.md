@@ -4,6 +4,7 @@
 - Prepare App to add more and dynamic language support. [Help translating?](https://poeditor.com/join/project/yn5eIXR07r)
 - Live translation preview for people helping translating the App
 - Conversations now shows latest message time
+- Changed client geocoding provider to bigdatacloud
 
 # v1.2 - Update 1
 

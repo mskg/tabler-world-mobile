@@ -62,6 +62,7 @@ export enum NearbyMemberState {
 export enum ParameterName {
   fetch = "fetch",
   geo = "geo",
+  geocoding = "geocoding",
   timeouts = "timeouts",
   urls = "urls",
 }
@@ -92,11 +93,6 @@ export enum UserRole {
   developer = "developer",
   i18n = "i18n",
   jobs = "jobs",
-}
-
-export interface AddressUpdateInput {
-  member: number;
-  address?: any | null;
 }
 
 export interface MyCurrentLocationInput {

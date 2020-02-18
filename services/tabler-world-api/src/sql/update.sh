@@ -24,10 +24,6 @@ BEGIN;
 \i '01 userroles.pgsql'
 \i '02 helper.pgsql'
 \i '02 roles.pgsql'
-COMMIT;
-
-BEGIN;
-
 \i '04 profiles.pgsql'
 \i '04 privacy.pgsql'
 \i '05 structure.pgsql'

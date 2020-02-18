@@ -18,6 +18,7 @@ import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
 import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { NearbyMemberItem } from './NearbyMemberItem';
+import { GeoCityLocation } from '../../../model/GeoCityLocation';
 
 type State = {
 };
@@ -28,7 +29,7 @@ type OwnProps = {
 
 type StateProps = {
     location?: Location.LocationData,
-    address?: Location.Address,
+    address?: GeoCityLocation,
     members: NearbyMembers_nearbyMembers[],
 };
 
