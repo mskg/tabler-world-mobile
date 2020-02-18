@@ -17,10 +17,9 @@ select
     profiles.family,
     userroles.roles
 from
-    profiles, userroles
+    profiles left join userroles on profiles.id = userroles.id
 where
-        profiles.id = userroles.id
-    and rtemail = $1
+        rtemail = $1
     and removed = false
 `,
         [email.toLowerCase()],
