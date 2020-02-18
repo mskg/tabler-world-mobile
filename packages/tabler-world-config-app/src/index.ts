@@ -11,7 +11,7 @@ export * from './types/Timeouts';
 export * from './types/Urls';
 
 // tslint:disable-next-line: export-name
-export const defaultParamters = {
+export const defaultParameters = {
     geo: Geo,
     fetch: Fetch,
     timeouts: Timeouts,

@@ -8,6 +8,7 @@
         "@mskg/tabler-world-auth-client": "0.0.1",
         "@mskg/tabler-world-aws": "0.0.1",
         "@mskg/tabler-world-cache": "0.0.1",
+        "@mskg/tabler-world-config-app": "0.0.1",
         "@mskg/tabler-world-geo": "0.0.1",
         "@mskg/tabler-world-geo-bigdata": "0.0.1",
         "@mskg/tabler-world-jobs": "0.0.1",

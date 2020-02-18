@@ -1,4 +1,5 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { defaultParameters } from '@mskg/tabler-world-config-app';
 import { BigDataResult, convertToCityLocation } from '@mskg/tabler-world-geo-bigdata';
 import { useDataService } from '@mskg/tabler-world-rds-client';
 import { getNearByParams } from '../helper/getNearByParams';
@@ -70,7 +71,7 @@ export const LocationResolver = {
             const bigData: BigDataResult = root.address;
             const nearBy = await getNearByParams();
 
-            return convertToCityLocation(bigData, nearBy.administrativePreferences);
+            return convertToCityLocation(bigData, nearBy.administrativePreferences || defaultParameters.geocoding.bigData);
         },
 
         // TODO: deprecated

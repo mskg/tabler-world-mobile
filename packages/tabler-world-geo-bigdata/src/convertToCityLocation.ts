@@ -6,7 +6,7 @@ import { Preferences } from './Preferences';
 export function convertToCityLocation(result: BigDataResult, preferences?: Preferences): GeoCityLocation {
     let name = result.locality || result.principalSubdivision || result.countryName || result.continent;
     const preference = result.countryCode && preferences
-        ? preferences[result.countryCode]?.preferLevel
+        ? preferences[result.countryCode.toUpperCase()]?.preferLevel
         : undefined;
 
     if (preference) {

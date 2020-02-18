@@ -1,13 +1,13 @@
-import { defaultParamters, FetchParameters, GeocodingParameters, GeoParameters, TimeoutParameters, UrlParameters } from '@mskg/tabler-world-config-app';
+import { defaultParameters, FetchParameters, GeocodingParameters, GeoParameters, TimeoutParameters, UrlParameters } from '@mskg/tabler-world-config-app';
 import { AsyncStorage } from 'react-native';
 import { ParameterName } from '../../model/graphql/globalTypes';
 
 const defaults = {
-    [ParameterName.geo]: defaultParamters.geo,
-    [ParameterName.fetch]: defaultParamters.fetch,
-    [ParameterName.timeouts]: defaultParamters.timeouts,
-    [ParameterName.urls]: defaultParamters.urls,
-    [ParameterName.geocoding]: defaultParamters.geocoding,
+    [ParameterName.geo]: defaultParameters.geo,
+    [ParameterName.fetch]: defaultParameters.fetch,
+    [ParameterName.timeouts]: defaultParameters.timeouts,
+    [ParameterName.urls]: defaultParameters.urls,
+    [ParameterName.geocoding]: defaultParameters.geocoding,
 };
 
 type AllParameterTypes =

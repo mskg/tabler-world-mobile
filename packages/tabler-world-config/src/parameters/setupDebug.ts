@@ -29,6 +29,9 @@ export function setupDebug(memoryCache: LRU<string, string>) {
         radius: parseInt(process.env.NEARBY_RADIUS || '100000', 10),
         days: parseInt(process.env.NEARBY_DAYSBACK || '365', 10),
         administrativePreferences: {
+            SE: {
+                preferLevel: 8,
+            },
             DE: {
                 preferLevel: 8,
             },
