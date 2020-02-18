@@ -79,12 +79,13 @@ export const LocationResolver = {
             // old data, leave like it is
             if (address.city || address.region) {
                 return {
-                    // backward compatibility
+                    // if we don't this, the address is resolved via geocoder
                     location: canshowonmap
                         ? {
                             longitude,
                             latitude,
-                        } : null,
+                        }
+                        : { longitude: 0, latitude: 0 },
 
                     city: address.city,
                     region: address.region,
@@ -97,12 +98,13 @@ export const LocationResolver = {
                 city: address.locality || address.principalSubdivision || address.countryName || address.continent,
                 country: address.countryCode || address.continent || address.countryName,
 
-                // backward compatibility
+                // if we don't this, the address is resolved via geocoder
                 location: canshowonmap
                     ? {
                         longitude,
                         latitude,
-                    } : null,
+                    }
+                    : { longitude: 0, latitude: 0 },
             };
         },
     },

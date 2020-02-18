@@ -64,8 +64,8 @@ export interface NearbyMembers_nearbyMembers_location {
 
 export interface NearbyMembers_nearbyMembers_locationName {
   __typename: "LocationName";
-  name: string;
-  country: string;
+  name: string | null;
+  country: string | null;
 }
 
 export interface NearbyMembers_nearbyMembers {

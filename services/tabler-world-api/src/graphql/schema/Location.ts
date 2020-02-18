@@ -66,8 +66,8 @@ export const Location = gql`
     }
 
     type LocationName {
-        name: String!
-        country: String!
+        name: String
+        country: String
     }
 
     type NearbyMember {
