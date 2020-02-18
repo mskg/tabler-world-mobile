@@ -29,7 +29,7 @@ where
         throw new Error(MSG);
     }
 
-    const { id, club, area, association, family, roles } = res.rows[0];
+    const { id, club, area, association, family /*roles*/ } = res.rows[0];
 
     // tslint:disable: object-shorthand-properties-first
     return {
@@ -43,6 +43,6 @@ where
         association,
         email: email.toLowerCase(),
 
-        roles,
+        // roles,
     } as IPrincipal;
 }
