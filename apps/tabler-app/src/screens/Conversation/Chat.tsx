@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import * as ExpoImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, Image, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, Image, KeyboardAvoidingView, LayoutAnimation, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
@@ -431,7 +431,7 @@ class ChatBase extends React.Component<Props, State> {
                 />
 
                 <Modal
-                    animationType="none"
+                    animationType="slide"
                     transparent={false}
                     visible={this.state.imagePickerOpen}
                     onRequestClose={this._closePicker}

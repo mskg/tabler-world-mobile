@@ -65,7 +65,6 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                     updateQuery: (previousResult, { fetchMoreResult }) => {
                                         // Don't do anything if there weren't any new items
                                         if (!fetchMoreResult || fetchMoreResult.SearchDirectory.nodes.length === 0) {
-
                                             logger.log('no new data');
                                             return previousResult;
                                         }

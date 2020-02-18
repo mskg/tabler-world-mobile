@@ -52,8 +52,8 @@ export class StructureSearchListBase extends React.Component<Props> {
 
     _onPress = (item: SearchDirectory_SearchDirectory_nodes) => {
         if (this.props.onItemSelected != null) {
-            // @ts-ignore
             requestAnimationFrame(
+                // @ts-ignore
                 () => this.props.onItemSelected(item));
         }
     }
@@ -108,7 +108,7 @@ export class StructureSearchListBase extends React.Component<Props> {
                         >
                             <CardTitle
                                 title={item.name}
-                                subtitle={`${item.association.name}`}
+                                subtitle={`${item.shortname}, ${item.association.name}`}
                                 avatar={<FlagAvatar name={item.association.id} flag={item.association.flag} />}
                             />
                         </TouchableRipple>
