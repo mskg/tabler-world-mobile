@@ -26,14 +26,6 @@ export const SearchDirectoryResolver = {
         SearchDirectory: async (_root: any, args: SearchInput, context: IApolloContext) => {
             const PAGE_SIZE = 20;
 
-            const terms = (args.query.text || '')
-                .split(' ')
-                .map((r) => r.trim())
-                .filter((r) => r !== '')
-                .map((r) => `%${r}%`);
-
-            context.logger.log('Terms', terms, 'Args', args);
-
             const parameters: any[] = [
                 PAGE_SIZE + 1,
                 parseInt(args.after || '0', 10),
@@ -43,7 +35,18 @@ export const SearchDirectoryResolver = {
                 'cursor_name > $2',
             ];
 
-            if (terms.length !== 0) {
+            const terms = (args.query.text || '')
+                .split(' ')
+                .map((r) => r.trim())
+                .filter((r) => r !== '')
+                .map((r) => `%${r}%`);
+
+            context.logger.log('Terms', terms, 'Args', args);
+
+            if (args.query.text && args.query.text.match(/:/)) {
+                parameters.push(args.query.text.replace(/\*/, '%'));
+                filters.push(`number ilike $${parameters.length}`);
+            } else if (terms.length !== 0) {
                 terms.forEach((t) => {
                     parameters.push(t);
                     filters.push(`f_unaccent(name) ILIKE f_unaccent($${parameters.length})`);
