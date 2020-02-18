@@ -93,6 +93,7 @@ export enum UserRole {
   developer = "developer",
   i18n = "i18n",
   jobs = "jobs",
+  locationhistory = "locationhistory",
 }
 
 export interface MyCurrentLocationInput {

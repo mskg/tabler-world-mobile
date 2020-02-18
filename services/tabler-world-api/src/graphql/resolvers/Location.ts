@@ -43,6 +43,31 @@ export const LocationResolver = {
         },
     },
 
+    // TOOD: duplicated code
+    LocationHistory: {
+        location: (root: any, _args: {}, _context: IApolloContext) => {
+            return {
+                longitude: root.longitude,
+                latitude: root.latitude,
+            };
+        },
+
+        locationName: async (root: any, _args: {}, _context: IApolloContext) => {
+            // old data, leave like it is
+            if (root.address.city || root.address.region) {
+                return {
+                    name: root.address.city || root.address.region,
+                    country: root.address.country,
+                };
+            }
+
+            const bigData: BigDataResult = root.address;
+            const nearBy = await getNearByParams();
+
+            return convertToCityLocation(bigData, nearBy.administrativePreferences || defaultParameters.geocoding.bigData);
+        },
+    },
+
     NearbyMember: {
         member: (root: any, _args: {}, context: IApolloContext) => {
             return context.dataSources.members.readOne(root.member);
@@ -163,16 +188,14 @@ LIMIT 20
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
             context.logger.log('locationHistory', args);
 
-            return useDataService(
+            return await useDataService(
                 context,
                 async (client) => {
                     const result = await client.query(
                         `
 select
     lastseen,
-    address->>'city' as city,
-    address->>'street' as street,
-    coalesce(address->>'country', address->>'countryISOCode') as country,
+    address,
     accuracy,
     ST_X(point::geometry) as longitude,
     ST_Y(point::geometry) as latitude

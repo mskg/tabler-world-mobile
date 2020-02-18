@@ -40,7 +40,7 @@ export const Location = gql`
 
     extend type Query {
         nearbyMembers(location: MyCurrentLocationInput!, query: NearbyMembersQueryInput): [NearbyMember!]
-        LocationHistory: [LocationHistory!]
+        LocationHistory: [LocationHistory!] @auth(requires: locationhistory)
     }
 
     type GeoPoint {
@@ -56,12 +56,9 @@ export const Location = gql`
     type LocationHistory {
         lastseen: Date!
 
-        city: String
-        street: String
-        country: String
+        location: GeoPoint
+        locationName: LocationName!
 
-        longitude: Float!
-        latitude: Float!
         accuracy: Float!
     }
 
@@ -78,7 +75,6 @@ export const Location = gql`
 
         "Can be null if member does not allow map display"
         location: GeoPoint
-
         locationName: LocationName!
     }
 `;

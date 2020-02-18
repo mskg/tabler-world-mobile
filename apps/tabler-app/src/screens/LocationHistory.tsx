@@ -4,11 +4,12 @@ import { Query } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 import { Banner, Card, DataTable, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
-import { FullScreenLoading } from '../../components/Loading';
-import { ScreenWithHeader } from '../../components/Screen';
-import { OpenLink } from '../../helper/OpenLink';
-import { GetLocationHistory } from '../../model/graphql/GetLocationHistory';
-import { GetLocationHistoryQuery } from '../../queries/Location/GetLocationHistoryQuery';
+import { FullScreenLoading } from '../components/Loading';
+import { ScreenWithHeader } from '../components/Screen';
+import { OpenLink } from '../helper/OpenLink';
+import { GetLocationHistory } from '../model/graphql/GetLocationHistory';
+import { GetLocationHistoryQuery } from '../queries/Location/GetLocationHistoryQuery';
+import { isFeatureEnabled, Features } from '../model/Features';
 
 type State = {
 };
@@ -34,15 +35,17 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                     title: 'Location History',
                 }}
             >
-                <Banner
-                    visible={true}
-                    actions={[]}
-                    image={({ size }) =>
-                        <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
-                    }
-                >
-                    This is only enabled during testing to allow you check and validate your location history.
-                </Banner>
+                {isFeatureEnabled(Features.LocationHistory) && (
+                    <Banner
+                        visible={true}
+                        actions={[]}
+                        image={({ size }) =>
+                            <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                        }
+                    >
+                        This is only enabled during testing to allow you check and validate your location history.
+                    </Banner>
+                )}
 
                 <Query<GetLocationHistory>
                     query={GetLocationHistoryQuery}
@@ -61,7 +64,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                             <ScrollView horizontal={true} contentContainerStyle={styles.content}>
                                 <ScrollView nestedScrollEnabled={true}>
                                     <Card>
-                                        <DataTable style={{ width: 900 }}>
+                                        <DataTable style={{ width: 700 }}>
                                             <DataTable.Header>
                                                 <DataTable.Title style={{ width: 160, flex: 0 }}>Timestamp</DataTable.Title>
                                                 <DataTable.Title>Location</DataTable.Title>
@@ -74,10 +77,12 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                                             {data.LocationHistory.map((l, i) => (
                                                 <DataTable.Row key={i.toString()}>
                                                     <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.lastseen).toLocaleString()}</DataTable.Cell>
-                                                    <DataTable.Cell onPress={() => OpenLink.url(`https://maps.google.com/?q=${l.latitude},${l.longitude}`)}>{l.street}, {l.city} ({l.country})</DataTable.Cell>
+                                                    <DataTable.Cell onPress={() => OpenLink.url(`https://maps.google.com/?q=${l.location?.latitude},${l.location?.longitude}`)}>
+                                                        {l.locationName?.name},({l.locationName?.country})
+                                                    </DataTable.Cell>
 
-                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.latitude}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.longitude}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.location?.latitude}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.location?.longitude}</DataTable.Cell>
                                                     <DataTable.Cell style={{ width: 60, flex: 0 }} numeric={true}>{Math.round(l.accuracy)}m</DataTable.Cell>
                                                 </DataTable.Row>))
                                             }

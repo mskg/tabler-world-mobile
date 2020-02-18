@@ -66,7 +66,7 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
             return I18N.format(I18N.Screen_NearbyMembers.near, { location: `${location}, ${I18N.countryName(country)}` });
         }
 
-        return I18N.format(I18N.Screen_NearbyMembers.near, { location });
+        return I18N.format(I18N.Screen_NearbyMembers.near, { location: location || I18N.Screen_NearbyMembers.unknown });
     }
 
     render() {

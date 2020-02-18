@@ -10,5 +10,6 @@ export const Auth = gql`
         jobs
         developer
         i18n
+        locationhistory
     }
 `;

@@ -5,8 +5,8 @@ import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMember
  */
 export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     let group = {
-        title: data[0].locationName.name,
-        country: data[0].locationName.country,
+        title: data[0].locationName?.name,
+        country: data[0].locationName?.country,
         members: [] as NearbyMembers_nearbyMembers[],
     };
 
@@ -36,12 +36,12 @@ export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     // });
 
     for (const member of data) {
-        const title = member.locationName.name;
+        const title = member.locationName?.name;
         if (title !== group.title) {
             result.push(group);
             group = {
                 title: title as string,
-                country: member.locationName.country,
+                country: member.locationName?.country,
                 members: [member],
             };
         } else {

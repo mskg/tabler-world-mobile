@@ -24,7 +24,7 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.LocationHistory) {
-        return Constants.manifest.releaseChannel == null || Constants.manifest.releaseChannel.endsWith('-test');
+        return Constants.manifest.releaseChannel == null /*dev*/ || Constants.manifest.releaseChannel.endsWith('-test');
     }
 
     if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {

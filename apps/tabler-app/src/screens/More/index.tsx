@@ -3,7 +3,7 @@ import { AlbumsScreen } from './Albums';
 import { DevelopmentScreen } from './Developer';
 import { FeedbackScreen } from './Feedback';
 import { JobsHistoryScreen } from './JobHistory';
-import { LocationHistoryScreen } from './LocationHistory';
+import { LocationHistoryScreen } from '../LocationHistory';
 import { MenuScreen } from './Menu';
 import { NewsScreen } from './News';
 import { Routes } from './Routes';
@@ -18,7 +18,6 @@ const Navigator = createStackNavigator(
         [Routes.Settings]: { screen: MainSettingsScreen },
         [Routes.World]: { screen: WorldScreen },
         [Routes.Feedback]: { screen: FeedbackScreen },
-        [Routes.LocationHistory]: { screen: LocationHistoryScreen },
         [Routes.JobHistory]: { screen: JobsHistoryScreen },
 
         [Routes.Albums]: { screen: AlbumsScreen },

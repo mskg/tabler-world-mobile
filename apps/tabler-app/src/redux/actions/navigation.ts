@@ -87,8 +87,8 @@ export const showNotificationSettings = () => NavigationActions.navigate({
 });
 
 export const showLocationHistory = () => NavigationActions.navigate({
-    routeName: MoreRoutes.LocationHistory,
-    key: MoreRoutes.LocationHistory,
+    routeName: HomeRoutes.LocationHistory,
+    key: HomeRoutes.LocationHistory,
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({
