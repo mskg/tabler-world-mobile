@@ -110,13 +110,16 @@ export const LocationResolver = {
         nearbyMembers: async (_root: any, args: NearMembersInput, context: IApolloContext) => {
             context.logger.log('nearby', args);
 
-            const nearBy = await getNearByParams();
+            const userShares = context.dataSources.location.isMemberSharingLocation(context.principal.id);
+            const nearByQuery = getNearByParams();
 
-            return useDataService(
-                context,
-                async (client) => {
-                    const result = await client.query(
-                        `
+            return await userShares
+                ? useDataService(
+                    context,
+                    async (client) => {
+                        const nearBy = await nearByQuery;
+                        const result = await client.query(
+                            `
 SELECT
     member,
     address,
@@ -133,16 +136,6 @@ FROM
     userlocations_match locations
 WHERE
         member <> $2
-
-    and exists (
-        select 1
-        from
-            usersettings u
-        where
-                u.id = $2
-            and (u.settings->>'nearbymembers')::boolean = TRUE
-    )
-
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
     ${args.query && args.query.excludeOwnTable ? 'and club <> $3' : ''}
@@ -152,15 +145,16 @@ ORDER BY
     locations.point <-> $1::geography
 LIMIT 20
 `,
-                        [
-                            `POINT(${args.location.longitude} ${args.location.latitude})`,
-                            context.principal.id,
-                            args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
-                        ].filter(Boolean));
+                            [
+                                `POINT(${args.location.longitude} ${args.location.latitude})`,
+                                context.principal.id,
+                                args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
+                            ].filter(Boolean));
 
-                    return result.rows.length > 0 ? result.rows : [];
-                },
-            );
+                        return result.rows.length > 0 ? result.rows : [];
+                    },
+                )
+                : [];
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {

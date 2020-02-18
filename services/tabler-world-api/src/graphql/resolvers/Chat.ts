@@ -61,22 +61,6 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
-/**
- * CONV(:1:,:2:)
- * @param members
- */
-function makeConversationKey(members: number[]): string {
-    return `${DIRECT_CHAT_PREFIX}${members.sort().map((m) => `${MEMBER_ENCLOSING}${m}${MEMBER_ENCLOSING}`).join(MEMBER_SEPERATOR)}${DIRECT_CHAT_SUFFIX}`;
-}
-
-/**
- * ALL(:1:)
- * @param member
- */
-function makeAllConversationKey(member: number): string {
-    return `${ALL_CHANNEL_PREFIX}${member}${ALL_CHANNEL_SUFFIX}`;
-}
-
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
 export const ChatResolver = {
@@ -430,7 +414,7 @@ export const ChatResolver = {
             await conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id);
 
             await eventManager.post<string>({
-                triggers: (conversation?.members?.values || []).map((subscriber) => makeAllConversationKey(subscriber)),
+                triggers: (conversation?.members?.values || []).map((subscriber) => ConversationManager.MakeAllConversationKey(subscriber)),
                 // payload is the trigger
                 payload: trigger,
                 pushNotification: undefined,
@@ -452,7 +436,7 @@ export const ChatResolver = {
         conversationUpdate: {
             // tslint:disable-next-line: variable-name
             subscribe: async (root: SubscriptionArgs, _args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
-                const topic = makeAllConversationKey(context.principal.id);
+                const topic = ConversationManager.MakeAllConversationKey(context.principal.id);
 
                 // if we resolve, root is null
                 if (root) {

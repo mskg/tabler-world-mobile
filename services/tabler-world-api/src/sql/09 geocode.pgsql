@@ -106,9 +106,6 @@ drop view if exists userlocations_match cascade;
 CREATE or replace view userlocations_match as
 select
     userlocations.id as member,
-    profiles.association,
-    profiles.club,
-    profiles.area,
     userlocations.point,
     userlocations.accuracy,
     userlocations.speed,
@@ -155,8 +152,6 @@ BEGIN
     END IF;
 
     -- ELSIF TG_OP = 'DELETE' THEN
-    --     INSERT INTO account_audit (operation, account_id, account_name, debt, balance)
-    --     VALUES (TG_OP, OLD.*);
     --     RETURN OLD;
     -- END IF;
 END;

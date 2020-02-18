@@ -45,7 +45,7 @@ export class ConversationManager {
      * @param member
      */
     // tslint:disable-next-line: function-name
-    public static MakeAllConversationsKey(member: number): string {
+    public static MakeAllConversationKey(member: number): string {
         return `${ALL_CHANNEL_PREFIX}${member}${ALL_CHANNEL_SUFFIX}`;
     }
 
