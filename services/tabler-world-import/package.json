@@ -32,6 +32,7 @@
         "@types/lru-cache": "^5.1.0",
         "@types/node": "^12.7.12",
         "@types/node-geocoder": "^3.19.1",
+        "@types/lodash": "4.14.149",
         "@types/pg": "^7.4.13",
         "aws-sdk": "^2.547.0",
         "file-loader": "^5.0.2",

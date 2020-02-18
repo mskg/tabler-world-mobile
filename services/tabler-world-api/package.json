@@ -44,6 +44,7 @@
         "@types/node": "^12.7.12",
         "@types/pg": "^7.4.13",
         "@types/uuid": "^3.4.5",
+        "@types/lodash": "4.14.149",
         "aws-sdk": "^2.547.0",
         "file-loader": "^5.0.2",
         "jest": "^24.9.0",
