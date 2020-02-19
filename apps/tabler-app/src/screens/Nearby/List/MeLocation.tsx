@@ -55,7 +55,7 @@ class MeLocationBase extends React.Component<Props, State> {
             if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.locationhistory)) {
                 this.setState({ history: true });
             }
-        } catch {}
+        } catch { }
     }
 
     getLocation(): string {
@@ -116,8 +116,8 @@ class MeLocationBase extends React.Component<Props, State> {
 
 export const MeLocation = connect(
     (state: IAppState) => ({
-        address: null, //state.location.address,
-        timestamp: null, //state.location.timestamp,
+        address: state.location.address,
+        timestamp: state.location.timestamp,
     }),
     {
         showLocationHistory,
