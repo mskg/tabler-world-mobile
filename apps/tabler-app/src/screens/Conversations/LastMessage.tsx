@@ -18,7 +18,7 @@ export const LastMessage = ({ id, theme }: Props) => {
         },
     );
 
-    if (data?.Conversation?.messages?.nodes == null || data.Conversation.messages.nodes.length === 0) {
+    if (data == null || data?.Conversation?.messages?.nodes == null || data.Conversation.messages.nodes.length === 0) {
         return null;
     }
 

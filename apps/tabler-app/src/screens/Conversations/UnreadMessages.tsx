@@ -17,8 +17,10 @@ export const UnreadMessages = ({ unread, id, theme }: Props) => {
         },
     );
 
-    // @ts-ignore
-    const date = (data?.Conversation?.messages?.nodes || [{ receivedAt: null }])[0].receivedAt;
+    let date = null;
+    if (data != null && data?.Conversation?.messages?.nodes != null && data.Conversation.messages.nodes.length > 0) {
+        date = data.Conversation.messages.nodes[0].receivedAt;
+    }
 
     return (
         <View style={styles.textRow}>
