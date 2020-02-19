@@ -12,18 +12,15 @@ export const GetNearbyMembersQuery = gql`
             lastseen
             state
             distance
-            canshowonmap
 
-            address {
-                location {
-                    longitude
-                    latitude
-                }
+            location {
+                longitude
+                latitude
+            }
 
-                postal_code
-                city
+            locationName {
+                name
                 country
-                region
             }
         }
   }

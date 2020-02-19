@@ -1,9 +1,12 @@
 import Constants from 'expo-constants';
 import * as Sentry from 'sentry-expo';
-import { PRESERVE_CONSOLE } from './PRESERVE_CONSOLE';
 
+export let PRESERVE_CONSOLE = false;
+
+export function enableConsole() {
+    PRESERVE_CONSOLE = true;
+}
 // tslint:disable: max-classes-per-file prefer-template
-
 export class Categories {
     static readonly Audit = 'Audit';
     static readonly App = 'App';

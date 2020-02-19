@@ -4,7 +4,9 @@ import { AlbumScreen } from '../screens/Album';
 import { ClubScreen } from '../screens/Club';
 import { ConversationScreen } from '../screens/Conversation/ConversationScreen';
 import { FilterScreen } from '../screens/Filter';
+import { LocationHistoryScreen } from '../screens/LocationHistory';
 import { MemberScreen } from '../screens/Member';
+import { NearbySettingsScreen } from '../screens/More/Settings/Nearby';
 import { NewsArticleScreen } from '../screens/NewsArticle';
 import PairScreen from '../screens/Pair';
 import { PictureScreen } from '../screens/Picture';
@@ -14,7 +16,6 @@ import { SearchStructureScreen } from '../screens/SearchStructure';
 import StructureScreen from '../screens/Structure';
 import { HomeRoutes } from './HomeRoutes';
 import { MainBottomNavigation } from './MainBottomNavigation';
-import { NearbySettingsScreen } from '../screens/More/Settings/Nearby';
 
 const Navigator = createAppContainer(createStackNavigator(
     {
@@ -32,6 +33,7 @@ const Navigator = createAppContainer(createStackNavigator(
         [HomeRoutes.Structure]: { screen: StructureScreen },
         [HomeRoutes.SearchStructure]: { screen: SearchStructureScreen },
         [HomeRoutes.NearbySettings]: { screen: NearbySettingsScreen },
+        [HomeRoutes.LocationHistory]: { screen: LocationHistoryScreen },
     },
     {
         initialRouteName: HomeRoutes.Home,

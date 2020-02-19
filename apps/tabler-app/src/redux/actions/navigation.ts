@@ -51,7 +51,7 @@ export const showPictureSceen = (pic: string, title?: string) => NavigationActio
     routeName: HomeRoutes.Picture,
     params: {
         picture: pic,
-        title: title || I18N.Image.Member,
+        title: title || I18N.Screen_Image.title_Member,
     },
 });
 
@@ -87,8 +87,8 @@ export const showNotificationSettings = () => NavigationActions.navigate({
 });
 
 export const showLocationHistory = () => NavigationActions.navigate({
-    routeName: MoreRoutes.LocationHistory,
-    key: MoreRoutes.LocationHistory,
+    routeName: HomeRoutes.LocationHistory,
+    key: HomeRoutes.LocationHistory,
 });
 
 export const showClub = (id: string) => NavigationActions.navigate({

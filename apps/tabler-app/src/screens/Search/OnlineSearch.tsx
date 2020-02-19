@@ -48,7 +48,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                     clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
                     roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),
                     sectors: this.props.filterTags.filter((f: FilterTag) => f.type === 'sector').map((f: FilterTag) =>
-                        _(I18N.Search.sectorNames).findKey((v) => v === f.value) as CompanySector,
+                        _(I18N.Sectors).findKey((v) => v === f.value) as CompanySector,
                     ),
                 }}
             >
@@ -80,7 +80,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                         clubs: this.props.filterTags.filter((f: FilterTag) => f.type === 'table').map((f: FilterTag) => f.value),
                                         roles: this.props.filterTags.filter((f: FilterTag) => f.type === 'role').map((f: FilterTag) => f.value),
                                         sectors: this.props.filterTags.filter((f: FilterTag) => f.type === 'sector').map((f: FilterTag) =>
-                                            _(I18N.Search.sectorNames).findKey((v) => v === f.value) as CompanySector,
+                                            _(I18N.Sectors).findKey((v) => v === f.value) as CompanySector,
                                         ),
                                     },
 

@@ -24,7 +24,7 @@ type State = {
 
 class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<StructureParams>, State> {
     state: State = {
-        title: I18N.Structure.title,
+        title: I18N.Screen_Structure.title,
     };
 
     render() {
@@ -80,8 +80,8 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
                                     this.props.navigation.getParam('associationName')
                                         ? this.props.navigation.getParam('associationName')
                                         : this.props.navigation.getParam('association')
-                                            ? I18N.Structure.title
-                                            : I18N.Structure.mytitle
+                                            ? I18N.Screen_Structure.title
+                                            : I18N.Screen_Structure.mytitle
                                 }
                             />
                         ),

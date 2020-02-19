@@ -1,0 +1,19 @@
+{
+    "name": "@mskg/tabler-world-config-app",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "postinstall": "tsc"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "dependencies": {},
+    "peerDependencies": {},
+    "devDependencies": {
+        "typescript": "3.7.5"
+    }
+}

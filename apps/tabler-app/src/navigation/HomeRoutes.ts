@@ -14,6 +14,7 @@ export enum HomeRoutes {
     Structure = 'structure',
     SearchStructure = 'search_structure',
     NearbySettings = 'nearby_settings',
+    LocationHistory = 'location_history',
 }
 
 export const EXPERIMENT_PREFIX = 'EXPERIMENT_';

@@ -1,6 +1,8 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import { getParameters, Param_Nearby } from '@mskg/tabler-world-config';
+import { defaultParameters } from '@mskg/tabler-world-config-app';
+import { BigDataResult, convertToCityLocation } from '@mskg/tabler-world-geo-bigdata';
 import { useDataService } from '@mskg/tabler-world-rds-client';
+import { getNearByParams } from '../helper/getNearByParams';
 import { IApolloContext } from '../types/IApolloContext';
 
 type MyLocationInput = {
@@ -41,6 +43,31 @@ export const LocationResolver = {
         },
     },
 
+    // TOOD: duplicated code
+    LocationHistory: {
+        location: (root: any, _args: {}, _context: IApolloContext) => {
+            return {
+                longitude: root.longitude,
+                latitude: root.latitude,
+            };
+        },
+
+        locationName: async (root: any, _args: {}, _context: IApolloContext) => {
+            // old data, leave like it is
+            if (root.address.city || root.address.region) {
+                return {
+                    name: root.address.city || root.address.region,
+                    country: root.address.country,
+                };
+            }
+
+            const bigData: BigDataResult = root.address;
+            const nearBy = await getNearByParams();
+
+            return convertToCityLocation(bigData, nearBy.administrativePreferences || defaultParameters.geocoding.bigData);
+        },
+    },
+
     NearbyMember: {
         member: (root: any, _args: {}, context: IApolloContext) => {
             return context.dataSources.members.readOne(root.member);
@@ -49,26 +76,86 @@ export const LocationResolver = {
         state: (root: any, _args: {}, _context: IApolloContext) => {
             return !root.speed || root.speed < 8 ? 'Steady' : 'Traveling';
         },
+
+        location: (root: any, _args: {}, _context: IApolloContext) => {
+            return root.canshowonmap ? {
+                longitude: root.longitude,
+                latitude: root.latitude,
+            } : null;
+        },
+
+        locationName: async (root: any, _args: {}, _context: IApolloContext) => {
+            // old data, leave like it is
+            if (root.address.city || root.address.region) {
+                return {
+                    name: root.address.city || root.address.region,
+                    country: root.address.country,
+                };
+            }
+
+            const bigData: BigDataResult = root.address;
+            const nearBy = await getNearByParams();
+
+            return convertToCityLocation(bigData, nearBy.administrativePreferences || defaultParameters.geocoding.bigData);
+        },
+
+        // TODO: deprecated
+        address: ({ address, canshowonmap, longitude, latitude }: any, _args: {}, _context: IApolloContext) => {
+            // old data, leave like it is
+            if (address.city || address.region) {
+                return {
+                    // if we don't this, the address is resolved via geocoder
+                    location: canshowonmap
+                        ? {
+                            longitude,
+                            latitude,
+                        }
+                        : { longitude: 0, latitude: 0 },
+
+                    city: address.city,
+                    region: address.region,
+                    country: address.isoCountryCode || address.country,
+                };
+            }
+
+            return {
+                postal_code: address.postcode,
+                city: address.locality || address.principalSubdivision || address.countryName || address.continent,
+                country: address.countryCode || address.continent || address.countryName,
+
+                // if we don't this, the address is resolved via geocoder
+                location: canshowonmap
+                    ? {
+                        longitude,
+                        latitude,
+                    }
+                    : { longitude: 0, latitude: 0 },
+            };
+        },
     },
 
     Query: {
         nearbyMembers: async (_root: any, args: NearMembersInput, context: IApolloContext) => {
             context.logger.log('nearby', args);
 
-            const params = await getParameters('nearby');
-            const nearBy = JSON.parse(params.nearby) as Param_Nearby;
+            const userShares = context.dataSources.location.isMemberSharingLocation(context.principal.id);
+            const nearByQuery = getNearByParams();
 
-            return useDataService(
-                context,
-                async (client) => {
-                    const result = await client.query(
-                        `
+            return await userShares
+                ? useDataService(
+                    context,
+                    async (client) => {
+                        const nearBy = await nearByQuery;
+                        const result = await client.query(
+                            `
 SELECT
     member,
     address,
     lastseen,
     speed,
     canshowonmap,
+    ST_X (point::geometry) AS longitude,
+    ST_Y (point::geometry) AS latitude,
     CAST(ST_Distance(
         locations.point,
         $1::geography
@@ -77,46 +164,38 @@ FROM
     userlocations_match locations
 WHERE
         member <> $2
-
-    and exists (
-        select 1
-        from usersettings u
-        where
-                u.id = $2
-            and (u.settings->>'nearbymembers')::boolean = TRUE
-    )
-
     and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
     ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
     ${args.query && args.query.excludeOwnTable ? 'and club <> $3' : ''}
+
+    and address is not null
 ORDER BY
     locations.point <-> $1::geography
 LIMIT 20
 `,
-                        [
-                            `POINT(${args.location.longitude} ${args.location.latitude})`,
-                            context.principal.id,
-                            args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
-                        ].filter(Boolean));
+                            [
+                                `POINT(${args.location.longitude} ${args.location.latitude})`,
+                                context.principal.id,
+                                args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
+                            ].filter(Boolean));
 
-                    return result.rows.length > 0 ? result.rows : [];
-                },
-            );
+                        return result.rows.length > 0 ? result.rows : [];
+                    },
+                )
+                : [];
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
             context.logger.log('locationHistory', args);
 
-            return useDataService(
+            return await useDataService(
                 context,
                 async (client) => {
                     const result = await client.query(
                         `
 select
     lastseen,
-    address->>'city' as city,
-    address->>'street' as street,
-    coalesce(address->>'country', address->>'countryISOCode') as country,
+    address,
     accuracy,
     ST_X(point::geometry) as longitude,
     ST_Y(point::geometry) as latitude
@@ -169,29 +248,32 @@ DO UPDATE
             );
         },
 
-        updateLocationAddress: (_root: any, args: UpdateLocationAddress, context: IApolloContext) => {
-            context.logger.log('updateLocationAddress', args);
+        updateLocationAddress: (_root: any, _args: UpdateLocationAddress, _context: IApolloContext) => {
+            // deprecated
+            return;
 
-            return useDataService(
-                context,
-                async (client) => {
-                    for (const update of args.corrections) {
-                        await client.query(
-                            `
-UPDATE userlocations
-SET address = $2
-WHERE id = $1 and address is null
-`,
-                            [
-                                update.member,
-                                JSON.stringify(update.address),
-                            ],
-                        );
-                    }
+            //             context.logger.log('updateLocationAddress', args);
 
-                    return true;
-                },
-            );
+            //             return useDataService(
+            //                 context,
+            //                 async (client) => {
+            //                     for (const update of args.corrections) {
+            //                         await client.query(
+            //                             `
+            // UPDATE userlocations
+            // SET address = $2
+            // WHERE id = $1 and address is null
+            // `,
+            //                             [
+            //                                 update.member,
+            //                                 JSON.stringify(update.address),
+            //                             ],
+            //                         );
+            //                     }
+
+            //                     return true;
+            //                 },
+            //             );
         },
 
         disableLocationServices: (_root: any, _args: {}, context: IApolloContext) => {

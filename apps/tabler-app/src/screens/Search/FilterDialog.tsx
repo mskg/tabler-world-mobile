@@ -63,7 +63,7 @@ class FilterDialogBase extends React.Component<Props> {
                                 marginRight: 4,
                             }}
                         >
-                            <ListSubheader>{I18N.Search.filter}</ListSubheader>
+                            <ListSubheader>{I18N.Screen_Search.filter}</ListSubheader>
                             <Appbar.Action color={this.props.theme.colors.accent} icon={'clear'} onPress={this.props.clear} />
                         </View>
                         <ScrollView style={{ minHeight: '100%' }}>

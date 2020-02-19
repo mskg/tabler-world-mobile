@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import * as ExpoImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, Image, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, Image, KeyboardAvoidingView, LayoutAnimation, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
@@ -174,7 +174,7 @@ class ChatBase extends React.Component<Props, State> {
         return (
             <Composer
                 {...props}
-                placeholder={I18N.Conversations.placeholder}
+                placeholder={I18N.Screen_Conversations.placeholder}
                 textInputStyle={{
                     fontFamily: this.props.theme.fonts.regular,
                     lineHeight: 20,
@@ -243,10 +243,10 @@ class ChatBase extends React.Component<Props, State> {
 
     _onLongPress = (context: any, currentMessage: IChatMessage) => {
         if (currentMessage) {
-            const options = [I18N.Conversations.copy];
+            const options = [I18N.Screen_Conversations.copy];
 
             if (currentMessage.failedSend) {
-                options.push(I18N.Conversations.retry);
+                options.push(I18N.Screen_Conversations.retry);
             }
 
             options.push('Cancel');
@@ -431,7 +431,7 @@ class ChatBase extends React.Component<Props, State> {
                 />
 
                 <Modal
-                    animationType="none"
+                    animationType="slide"
                     transparent={false}
                     visible={this.state.imagePickerOpen}
                     onRequestClose={this._closePicker}
@@ -464,7 +464,7 @@ class ChatBase extends React.Component<Props, State> {
                     showUserAvatar={false}
                     showAvatarForEveryMessage={false}
 
-                    label={I18N.Conversations.loadEarlier}
+                    label={I18N.Screen_Conversations.loadEarlier}
 
                     loadEarlier={this.props.loadEarlier}
                     isLoadingEarlier={this.props.isLoadingEarlier}

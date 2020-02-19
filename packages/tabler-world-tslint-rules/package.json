@@ -6,7 +6,7 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
-        "tslint": "^5.20.1",
+        "tslint": "^6.0.0",
         "tslint-config-airbnb": "^5.11.1",
         "tslint-microsoft-contrib": "^6.2.0",
         "typescript-tslint-plugin": "^0.5.5"

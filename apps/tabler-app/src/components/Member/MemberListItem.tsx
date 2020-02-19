@@ -46,7 +46,7 @@ export class MemberListItem extends React.PureComponent<{ margin?; } & MemberIte
                 onPress={this.props.onPress}
                 height={this.props.height}
                 title={<MemberTitle member={this.props.member} />}
-                subtitle={<Embedded flag={this.props.member.association.flag} name={this.props.member.club.name} />}
+                subtitle={<Embedded flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
                 right={this.props.right || this._right}
                 bottom={this.props.bottom}
             />

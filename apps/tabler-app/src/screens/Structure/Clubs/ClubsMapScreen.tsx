@@ -223,7 +223,7 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
                     <Searchbar
                         style={[styles.searchbar]}
                         selectionColor={this.props.theme.colors.accent}
-                        placeholder={I18N.Search.search}
+                        placeholder={I18N.Screen_Search.search}
                         autoCorrect={false}
 
                         value={this.state.search}

@@ -69,7 +69,7 @@ class MemberBase extends AuditedScreen<Props> {
         return (
             <ProfileHeader
                 avatar={member ?
-                    <AvatarPopup title={I18N.Image.Member} pic={member.pic}>
+                    <AvatarPopup title={I18N.Screen_Image.title_Member} pic={member.pic}>
                         <AnimatedAvatar
                             member={member}
                             containerStyle={{

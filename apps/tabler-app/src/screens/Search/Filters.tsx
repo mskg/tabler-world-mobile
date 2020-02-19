@@ -50,7 +50,7 @@ class FiltersBase extends React.Component<Props> {
                     return (
                         <>
                             <FilterSection
-                                title={I18N.Search.associations(data.Associations.length)}
+                                title={I18N.pluralize(I18N.Screen_Search.associations, data.Associations.length)}
                                 type="association"
                                 filter={this.props.filterTags}
                                 data={sortBy(data.Associations, (a) => a.id === data?.Me.association.id ? 'A' : a.name)}
@@ -65,7 +65,7 @@ class FiltersBase extends React.Component<Props> {
                             />
 
                             <FilterSection
-                                title={I18N.Search.roles(data.Roles.length)}
+                                title={I18N.pluralize(I18N.Screen_Search.roles, data.Roles.length)}
                                 type="role"
                                 filter={this.props.filterTags}
                                 data={data.Roles}
@@ -75,10 +75,10 @@ class FiltersBase extends React.Component<Props> {
                             <Divider />
 
                             <FilterSection
-                                title={I18N.Search.sectors(Object.keys(I18N.Search.sectorNames).length)}
+                                title={I18N.pluralize(I18N.Screen_Search.sectors, Object.keys(I18N.Sectors).length)}
                                 type="sector"
                                 filter={this.props.filterTags}
-                                data={values(I18N.Search.sectorNames).sort()}
+                                data={values(I18N.Sectors).sort()}
                                 onToggle={this.props.toggleTag}
                                 theme={this.props.theme}
                             />

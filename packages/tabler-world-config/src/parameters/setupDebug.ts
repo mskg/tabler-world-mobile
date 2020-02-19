@@ -3,6 +3,7 @@ import { mapName } from './mapName';
 import { Param_Api } from './types/Param_Api';
 import { Param_Database } from './types/Param_Database';
 import { Param_Nearby } from './types/Param_Nearby';
+import { Param_Translations } from './types/Param_Translation';
 import { Param_TTLS } from './types/Param_TTLS';
 
 export function setupDebug(memoryCache: LRU<string, string>) {
@@ -27,6 +28,14 @@ export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('nearby'), JSON.stringify({
         radius: parseInt(process.env.NEARBY_RADIUS || '100000', 10),
         days: parseInt(process.env.NEARBY_DAYSBACK || '365', 10),
+        administrativePreferences: {
+            SE: {
+                preferLevel: 8,
+            },
+            DE: {
+                preferLevel: 8,
+            },
+        },
     } as Param_Nearby));
 
     const HOUR = 60 * 60;
@@ -41,6 +50,7 @@ export function setupDebug(memoryCache: LRU<string, string>) {
         Documents: hours(4),
         News: hours(4),
         Principal: hours(1),
+        I18N: hours(24),
     } as Param_TTLS));
 
     memoryCache.set(mapName('app'), JSON.stringify({
@@ -59,4 +69,12 @@ export function setupDebug(memoryCache: LRU<string, string>) {
             profile: 'https://www.google.de/search?q=profile-ios',
         },
     }));
+
+    memoryCache.set(mapName('i18n'), JSON.stringify({
+        poeditor: {
+            host: process.env.POEEDITOR_HOST,
+            id: process.env.POEEDITOR_ID,
+            token: process.env.POEEDITOR_TOKEN,
+        },
+    } as Param_Translations));
 }

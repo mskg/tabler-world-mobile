@@ -22,7 +22,7 @@ class ElementBase extends React.Component<ActionProps> {
     _onLongPress = () => {
         Clipboard.setString(this.props.text as string);
         this.props.addSnack({
-            message: I18N.Member.Actions.clipboard,
+            message: I18N.Screen_Member.Actions.clipboard,
             duration: 1000,
         });
     }

@@ -92,7 +92,7 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
         const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
 
         if (status !== 'granted' && Constants.isDevice) {
-            Alert.alert(I18N.Notifications.Settings.push.permissions);
+            Alert.alert(I18N.Component_Notifications.Settings.push.permissions);
             return false;
         }
 
@@ -121,13 +121,13 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
     render() {
         return (
             <>
-                <ScreenWithHeader header={{ title: I18N.Notifications.Settings.title, showBack: true }}>
+                <ScreenWithHeader header={{ title: I18N.Component_Notifications.Settings.title, showBack: true }}>
                     <ScrollView>
-                        <List.Section title={I18N.Notifications.Settings.birthday.title}>
+                        <List.Section title={I18N.Component_Notifications.Settings.birthday.title}>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.Notifications.Settings.birthday.field}
+                                field={I18N.Component_Notifications.Settings.birthday.field}
                                 text={(
                                     <Switch
                                         color={this.props.theme.colors.accent}
@@ -141,12 +141,12 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
                         </List.Section>
 
                         {isFeatureEnabled(Features.Chat) && (
-                            <List.Section title={I18N.Notifications.Settings.onetoone.title}>
-                                <Text style={styles.text}>{I18N.Notifications.Settings.onetoone.text}</Text>
+                            <List.Section title={I18N.Component_Notifications.Settings.onetoone.title}>
+                                <Text style={styles.text}>{I18N.Component_Notifications.Settings.onetoone.text}</Text>
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}
-                                    field={I18N.Notifications.Settings.onetoone.field}
+                                    field={I18N.Component_Notifications.Settings.onetoone.field}
                                     text={(
                                         <Switch
                                             color={this.props.theme.colors.accent}
@@ -160,9 +160,9 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         )}
 
-                        <List.Section title={I18N.Notifications.Settings.push.title}>
+                        <List.Section title={I18N.Component_Notifications.Settings.push.title}>
                             <Divider />
-                            <Action theme={this.props.theme} text={I18N.Notifications.Settings.push.action} onPress={this._registerPushNotifications} />
+                            <Action theme={this.props.theme} text={I18N.Component_Notifications.Settings.push.action} onPress={this._registerPushNotifications} />
                         </List.Section>
 
                         <View style={{ height: 50 }} />

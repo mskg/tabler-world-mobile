@@ -99,19 +99,19 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                 )}
 
                 {item.board.length > 0 && (
-                    <Accordion style={styles.accordeon} title={I18N.Structure.president} expanded={index === 0}>
+                    <Accordion style={styles.accordeon} title={I18N.Screen_Structure.president} expanded={index === 0}>
                         <RoleAvatarGrid roles={item.board.filter((r) => r.role === RoleNames.President)} items={1} />
                     </Accordion>
                 )}
 
                 {item.board.length > 0 && (
-                    <Accordion style={styles.accordeon} title={I18N.Structure.board} expanded={false}>
+                    <Accordion style={styles.accordeon} title={I18N.Screen_Structure.board} expanded={false}>
                         <RoleAvatarGrid roles={item.board.filter((r) => r.role !== RoleNames.President)} items={2} />
                     </Accordion>
                 )}
 
                 {item.boardassistants.length > 0 && (
-                    <Accordion style={styles.accordeon} title={I18N.Structure.assist} expanded={false}>
+                    <Accordion style={styles.accordeon} title={I18N.Screen_Structure.assist} expanded={false}>
                         <RoleAvatarGrid roles={item.boardassistants} items={2} />
                     </Accordion>
                 )}

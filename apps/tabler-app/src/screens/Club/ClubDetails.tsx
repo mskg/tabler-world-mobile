@@ -9,8 +9,10 @@ import { Square } from '../../components/Placeholder/Square';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
 import { SectionPlaceholder, SectionSquarePlaceholder } from '../../components/Profile/SectionPlaceholder';
-import { formatAddress, showAddress } from '../../helper/addressHelpers';
-import { formatBank } from '../../helper/formatBank';
+import { showAddress } from "../../helper/showAddress";
+import { formatAddress } from "../../helper/formatting/formatAddress";
+import { formatBank } from '../../helper/formatting/formatBank';
+import { formatAnniversary } from '../../helper/formatting/formatAnniversary';
 import { OpenLink } from '../../helper/OpenLink';
 import { I18N } from '../../i18n/translation';
 import { Club_Club } from '../../model/graphql/Club';
@@ -95,7 +97,7 @@ class ClubDetailsBase extends React.Component<Props> {
             <>
                 <View style={styles.actions}>
                     <ActionButton
-                        text={I18N.Club.Actions.web}
+                        text={I18N.Screen_Club.Actions.web}
                         size={32}
                         onPress={() => OpenLink.url(club.website as string)}
                         icon="md-globe"
@@ -105,7 +107,7 @@ class ClubDetailsBase extends React.Component<Props> {
                     />
 
                     <ActionButton
-                        text={I18N.Club.Actions.facebook}
+                        text={I18N.Screen_Club.Actions.facebook}
                         size={32}
                         onPress={() => OpenLink.url(club.facebook as string)}
                         icon="logo-facebook"
@@ -115,7 +117,7 @@ class ClubDetailsBase extends React.Component<Props> {
                     />
 
                     <ActionButton
-                        text={I18N.Club.Actions.instagram}
+                        text={I18N.Screen_Club.Actions.instagram}
                         size={32}
                         onPress={() => OpenLink.url(club.instagram as string)}
                         icon="logo-instagram"
@@ -125,7 +127,7 @@ class ClubDetailsBase extends React.Component<Props> {
                     />
 
                     <ActionButton
-                        text={I18N.Club.Actions.twitter}
+                        text={I18N.Screen_Club.Actions.twitter}
                         size={32}
                         onPress={() => OpenLink.url(club.twitter as string)}
                         icon="logo-twitter"
@@ -139,13 +141,13 @@ class ClubDetailsBase extends React.Component<Props> {
                 <Placeholder ready={!this.props.loading} previewComponent={<SectionSquarePlaceholder />}>
                     {((place1 && place1 !== '') || (place2 && place2 !== '') || first_meeting || second_meeting) && (
                         <Section theme={this.props.theme} icon={'md-calendar'} highlight={true}>
-                            <Element field={I18N.Club.meetings} text={[first_meeting, second_meeting].filter(Boolean).join('\n')} />
+                            <Element field={I18N.Screen_Club.meetings} text={[first_meeting, second_meeting].filter(Boolean).join('\n')} />
                             {/* <Element field={I18N.Club.second} text={second_meeting} /> */}
 
-                            <Element onPress={this.handleAddress(club.meetingplace1)} field={I18N.Club.place(places, 1)} text={place1} />
+                            <Element onPress={this.handleAddress(club.meetingplace1)} field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 1 })} text={place1} />
 
                             {places === 2 &&
-                                <Element onPress={this.handleAddress(club.meetingplace2)} field={I18N.Club.place(places, 2)} text={place2} />
+                                <Element onPress={this.handleAddress(club.meetingplace2)} field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 2 })} text={place2} />
                             }
                         </Section>
                     )}
@@ -155,18 +157,18 @@ class ClubDetailsBase extends React.Component<Props> {
                     {(international_godparent || national_godparent || charter_date || !members.isEmpty()) && (
                         <Section theme={this.props.theme} icon={'md-school'}>
                             <Element
-                                field={I18N.Club.international}
+                                field={I18N.Screen_Club.international}
                                 text={international_godparent}
                             />
 
                             <Element
-                                field={I18N.Club.national}
+                                field={I18N.Screen_Club.national}
                                 text={national_godparent}
                             />
 
-                            <Element field={I18N.Club.charter} text={I18N.Member.Formats.date(charter_date)} />
+                            <Element field={I18N.Screen_Club.charter} text={formatAnniversary(charter_date)} />
 
-                            <Element field={I18N.Club.members} text={members.isEmpty() ? null : members.size().toString()} />
+                            <Element field={I18N.Screen_Club.members} text={members.isEmpty() ? null : members.size().toString()} />
                         </Section>
                     )}
                 </Placeholder>
@@ -176,7 +178,7 @@ class ClubDetailsBase extends React.Component<Props> {
                         <>
                             <Section theme={this.props.theme} icon={'md-medal'} disableRipple={true}>
                                 <ExpandableElement
-                                    field={I18N.Club.board}
+                                    field={I18N.Screen_Club.board}
                                     text={
                                         <RoleScrollView roles={board.value()} />}
                                     disabled={board.size() < 3}
@@ -191,7 +193,7 @@ class ClubDetailsBase extends React.Component<Props> {
                         <>
                             <Section theme={this.props.theme} icon={'md-medkit'} disableRipple={true}>
                                 <ExpandableElement
-                                    field={I18N.Club.assist}
+                                    field={I18N.Screen_Club.assist}
                                     text={
                                         <RoleScrollView roles={assist.value()} />}
                                     disabled={assist.size() < 3}
@@ -206,10 +208,10 @@ class ClubDetailsBase extends React.Component<Props> {
                         <>
                             <Section theme={this.props.theme} icon={'md-contacts'} disableRipple={true}>
                                 <ExpandableElement
-                                    field={`${I18N.Club.members} (${members.size()})`}
+                                    field={`${I18N.Screen_Club.members} (${members.size()})`}
                                     text={(
                                         <RoleScrollView
-                                           roles={
+                                            roles={
                                                 members
                                                     .map((m) => ({
                                                         role: 'Member',
@@ -231,7 +233,7 @@ class ClubDetailsBase extends React.Component<Props> {
                     {(account) && (
                         <Section theme={this.props.theme} icon={'md-cash'}>
                             <Element
-                                field={I18N.Club.account}
+                                field={I18N.Screen_Club.account}
                                 text={account}
                             />
                         </Section>

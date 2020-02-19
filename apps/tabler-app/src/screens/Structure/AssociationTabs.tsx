@@ -30,21 +30,21 @@ export const AssociationTabs = createMaterialTopTabNavigator(
         [Routes.Associations]: {
             screen: AssociationsScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.title} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Structure.title} />,
             },
         },
 
         [Routes.Areas]: {
             screen: AreasScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.areas} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Structure.areas} />,
             },
         },
 
         [Routes.Clubs]: {
             screen: ClubsScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Structure.clubs} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Structure.clubs} />,
             },
         },
     },

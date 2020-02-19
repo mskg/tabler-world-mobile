@@ -1,7 +1,8 @@
 import { getReduxStore } from '../../redux/getRedux';
-import { MS_PER_MINUTE } from '../parameters/Timeouts';
 import { logger } from './logger';
 import { MaxTTL } from './MaxTTL';
+
+const MS_PER_MINUTE = 60000;
 
 /**
  * Returns truee of the timestamp of a result is valid against the TTL for a given type.

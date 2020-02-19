@@ -64,7 +64,7 @@ class NearbyScreenBase extends React.Component<Props> {
                         showBack={false}
 
                         content={([
-                            <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.NearbyMembers.title} />,
+                            <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Screen_NearbyMembers.title} />,
                             // <Appbar.Action key="filter" icon="filter-list" onPress={() => {}} />,
                             <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showNearbySettings()} />,
                         ])}

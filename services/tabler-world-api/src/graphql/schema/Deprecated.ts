@@ -22,4 +22,17 @@ export const Deprecated = gql`
         "Deprecated, don't use"
         success: Boolean!
     }
+
+    extend type NearbyMember {
+        "Deprecated, don't use"
+        canshowonmap: Boolean!
+
+        "Deprecated, don't use"
+        address: Address!
+    }
+
+    extend type Mutation {
+        "Deprecated, don't use"
+        updateLocationAddress(corrections: [AddressUpdateInput!]!): Boolean
+    }
 `;

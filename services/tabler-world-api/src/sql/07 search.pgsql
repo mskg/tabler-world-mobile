@@ -35,21 +35,44 @@ select
     type
     ,id
     ,name
+    ,number
     ,row_number() over(order by searchorder, name) as cursor_name
 from
 (
-    select 3 as searchorder, 'club' as type, id, name
-    from structure_clubs
+    select
+        3 as searchorder
+        ,'club' as type
+        ,structure_clubs.id, structure_clubs.name || ', ' || structure_areas.name || ', ' || structure_associations.name as name
+        ,'club:' || clubnumber as number
+    from structure_clubs, structure_areas, structure_associations
+    where
+            structure_clubs.association = structure_associations.id
+        and structure_clubs.area = structure_areas.id
+
     union all
-    select 2 as searchorder, 'area' as type, id, name
-    from structure_areas
+
+    select
+        2
+        ,'area'
+        ,structure_areas.id, structure_areas.name || ', ' || structure_associations.name
+        ,'area:' || coalesce(nullif(regexp_replace(structure_areas.shortname, '[^0-9]', '', 'g'), ''), '-1')
+    from structure_areas, structure_associations
+    where structure_areas.association = structure_associations.id
+
     union all
-    select 1 as searchorder, 'assoc' as type, id, name
+
+    select
+        1
+        ,'assoc'
+        ,id
+        ,name
+        ,'assoc:' || name
     from structure_associations
 ) aggregated;
 
 CREATE UNIQUE INDEX idx_structure_search_type_id
 ON structure_search USING btree (type, id);
+
 ------------------------------
 -- INDEXES
 ------------------------------
@@ -82,4 +105,10 @@ DROP INDEX if EXISTS structure_search_text;
 CREATE INDEX structure_search_text ON structure_search USING gin (
     cursor_name,
     f_unaccent(name) gin_trgm_ops
+);
+
+DROP INDEX if EXISTS structure_search_number;
+CREATE INDEX structure_search_number ON structure_search USING gin (
+    cursor_name,
+    number gin_trgm_ops
 );

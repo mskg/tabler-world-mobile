@@ -8,6 +8,7 @@ export const Parameters = gql`
         fetch
         urls
         timeouts
+        geocoding
     }
 
     enum ParameterPlatform {

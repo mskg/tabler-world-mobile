@@ -1,3 +1,4 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import * as Contacts from 'expo-contacts';
 import * as Permissions from 'expo-permissions';
 import * as React from 'react';
@@ -8,7 +9,6 @@ import { Action, FABGroup } from '../../components/FABGroup';
 import { mapMemberToContact } from '../../helper/contacts/mapMemberToContact';
 import { OpenLink } from '../../helper/OpenLink';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
-import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { ParameterName } from '../../model/graphql/globalTypes';
@@ -62,7 +62,7 @@ class ActionsFabBase extends React.Component<Props> {
         const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
         if (status !== 'granted') {
-            Alert.alert(I18N.Settings.contactpermissions);
+            Alert.alert(I18N.Screen_Settings.contactpermissions);
         } else {
             const contact = await mapMemberToContact(this.props.member);
             Contacts.presentFormAsync(
@@ -93,7 +93,7 @@ class ActionsFabBase extends React.Component<Props> {
                 actions={[
                     {
                         icon: 'star',
-                        label: isFav ? I18N.Member.Actions.remfav : I18N.Member.Actions.favadd,
+                        label: isFav ? I18N.Screen_Member.Actions.remfav : I18N.Screen_Member.Actions.favadd,
                         onPress: this._toggle,
                         color: isFav ? this.props.theme.colors.accent : undefined,
                     },
@@ -101,7 +101,7 @@ class ActionsFabBase extends React.Component<Props> {
                     isFeatureEnabled(Features.SendToAdressbook)
                         ? {
                             icon: 'contacts',
-                            label: I18N.Member.Actions.contact,
+                            label: I18N.Screen_Member.Actions.contact,
                             onPress: this._contact,
                         }
                         : undefined,
@@ -109,7 +109,7 @@ class ActionsFabBase extends React.Component<Props> {
                     OpenLink.canOpenUrl()
                         ? {
                             icon: 'web',
-                            label: I18N.Member.Actions.openweb,
+                            label: I18N.Screen_Member.Actions.openweb,
                             onPress: this._handleWeb,
                         }
                         : undefined,

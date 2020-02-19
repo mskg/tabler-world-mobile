@@ -1,10 +1,10 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { LegalScreen } from './Legal';
 import { MainSettingsScreen } from './Main';
+import { NotificationsSettingsScreen } from './Notifications';
 import { Routes } from './Routes';
 import { ShowExternalScreen } from './ShowExternalScreen';
 import { ShowMDScreen } from './ShowMDScreen';
-import { NotificationsSettingsScreen } from './Notifications';
 
 const Navigator = createStackNavigator(
     {

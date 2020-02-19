@@ -5,7 +5,7 @@ import { Card, DataTable, Theme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
 import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
-import { timespan } from '../../helper/timespan';
+import { formatTimespan } from '../../helper/formatting/formatTimespan';
 import { GetJobs, GetJobs_Jobs_data } from '../../model/graphql/GetJobs';
 import { GetJobsQuery } from '../../queries/Admin/GetJobs';
 
@@ -38,7 +38,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
         }
 
         if (data.__typename === 'JobSync') {
-            return `Count: ${data.records || 0}, Modified: ${data.modified || 0}, Read: ${data.readTime ? timespan(data.readTime) : '?'}, Refresh: ${data.refreshTime ? timespan(data.refreshTime) : '?'}`;
+            return `Count: ${data.records || 0}, Modified: ${data.modified || 0}, Read: ${data.readTime ? formatTimespan(data.readTime) : '?'}, Refresh: ${data.refreshTime ? formatTimespan(data.refreshTime) : '?'}`;
         }
 
         return null;

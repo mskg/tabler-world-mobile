@@ -1,16 +1,12 @@
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
 
-function makeDisplayString(member: NearbyMembers_nearbyMembers) {
-    return (member.address.city || member.address.region);
-}
-
 /**
  * Apollo reuses instances, so we create new ones every time
  */
 export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     let group = {
-        title: makeDisplayString(data[0]),
-        country: data[0].address.country,
+        title: data[0].locationName?.name,
+        country: data[0].locationName?.country,
         members: [] as NearbyMembers_nearbyMembers[],
     };
 
@@ -40,12 +36,12 @@ export function makeGroups(data: NearbyMembers_nearbyMembers[]) {
     // });
 
     for (const member of data) {
-        const title = makeDisplayString(member);
+        const title = member.locationName?.name;
         if (title !== group.title) {
             result.push(group);
             group = {
                 title: title as string,
-                country: member.address.country,
+                country: member.locationName?.country,
                 members: [member],
             };
         } else {

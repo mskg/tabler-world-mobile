@@ -1,4 +1,4 @@
-import { getParameters } from '@mskg/tabler-world-config';
+import { getParameters, Param_Nearby } from '@mskg/tabler-world-config';
 import { IApolloContext } from '../types/IApolloContext';
 
 type ParameterArgs = {
@@ -14,13 +14,22 @@ export const ParametersResolver = {
     Query: {
         getParameters: async (_root: any, args: ParameterArgs, context: IApolloContext) => {
             try {
-                const appParam = await getParameters(['app', 'app/ios', 'app/android'], false);
+                const appParam = await getParameters(
+                    [
+                        'app',
+                        'app/ios',
+                        'app/android',
+                        'nearby',
+                    ],
+                    false,
+                );
 
                 const app = JSON.parse(appParam.app || '{}') as any;
                 const ios = JSON.parse(appParam['app/ios'] || '{}') as any;
                 const android = JSON.parse(appParam['app/android'] || '{}') as any;
+                const nearby = JSON.parse(appParam.nearby || '{}') as Param_Nearby;
 
-                return Object.keys(app).map((k) => ({
+                const overrides: any = Object.keys(app).map((k) => ({
                     name: k,
                     value: {
                         ...app[k],
@@ -30,6 +39,14 @@ export const ParametersResolver = {
                         ) || {}),
                     },
                 }));
+
+                if (nearby.administrativePreferences) {
+                    overrides.geocoding = {
+                        bigData: nearby.administrativePreferences,
+                    };
+                }
+
+                return overrides;
             } catch (e) {
                 context.logger.error('Failed to getParameters', e);
                 return null;
