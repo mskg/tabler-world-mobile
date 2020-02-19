@@ -49,6 +49,7 @@ export const withFilter = (asyncIteratorFn: ResolverFn, filterFn: FilterFn): Res
                 return asyncIterator.throw(error);
             },
 
+            // @ts-ignore
             // tslint:disable-next-line: function-name
             [$$asyncIterator]() {
                 return this;

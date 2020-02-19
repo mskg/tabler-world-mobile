@@ -12,30 +12,30 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "devDependencies": {
-        "@types/jest": "^24.0.18",
-        "@types/jsonwebtoken": "^8.3.2",
-        "@types/node": "^12.7.12",
+        "@types/jest": "^25.1.2",
+        "@types/jsonwebtoken": "^8.3.7",
+        "@types/node": "^13.7.2",
         "@types/request": "^2.48.1",
         "@types/websocket": "^1.0.0",
         "@types/zen-observable": "^0.8.0",
         "apollo-server-core": "^2.9.6",
         "aws-lambda": "^0.1.2",
         "aws-lambda-graphql": "^0.13.0",
-        "jest": "^24.9.0",
-        "ts-jest": "^24.0.2",
-        "typescript": "3.7.4"
+        "jest": "^25.1.0",
+        "ts-jest": "^25.2.1",
+        "typescript": "3.7.5",
+        "@types/backo2": "*"
     },
     "peerDependencies": {
         "apollo-server-core": "*",
         "aws-lambda": "*",
-        "aws-lambda-graphql": "*",
-        "subscriptions-transport-ws": "*"
+        "aws-lambda-graphql": "*"
     },
     "dependencies": {
         "@mskg/tabler-world-aws": "0.0.1",
         "@mskg/tabler-world-rds-client": "0.0.1",
         "jsonwebtoken": "^8.5.1",
-        "jwk-to-pem": "^2.0.1",
-        "request": "^2.88.0"
+        "jwk-to-pem": "^2.0.3",
+        "request": "^2.88.2"
     }
 }

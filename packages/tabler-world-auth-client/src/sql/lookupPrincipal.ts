@@ -1,8 +1,15 @@
 import { IDataService } from '@mskg/tabler-world-rds-client';
+import { AuthenticationError } from 'apollo-server-core';
 import { IPrincipal } from '../types/IPrincipal';
 
 const MSG = 'Principal not found';
 
+/**
+ * Searches for the given principal in the database.
+ *
+ * @param client
+ * @param email
+ */
 export async function lookupPrincipal(client: IDataService, email: string): Promise<IPrincipal> {
     if (email == null || email === '') {
         throw new Error(MSG);
@@ -27,7 +34,7 @@ where
     );
 
     if (res.rowCount !== 1) {
-        throw new Error(MSG);
+        throw new AuthenticationError(MSG);
     }
 
     const { id, club, area, association, family, roles } = res.rows[0];
@@ -44,6 +51,6 @@ where
         association,
         email: email.toLowerCase(),
 
-        roles: roles ? roles.join(',') : '',
+        roles,
     } as IPrincipal;
 }

@@ -21,7 +21,7 @@
         ]
     },
     "devDependencies": {
-        "concurrently": "^5.0.0"
+        "concurrently": "^5.1.0"
     },
     "dependencies": {
         "@mskg/tabler-world-tslint-rules": "0.0.1"
