@@ -6,11 +6,13 @@ import { isDemoKey } from '../helper/isDemoKey';
 const UNAUTHORIZED = 'Unauthorized'; // should result in 401
 
 // tslint:disable-next-line: export-name
-export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'Unauthorized'> = async (event, context) => {
+export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | void> = async (event, context) => {
     const token = event.authorizationToken;
     if (!token) {
         console.log('No token provided');
-        return UNAUTHORIZED;
+
+        context.fail(UNAUTHORIZED);
+        return;
     }
 
     // Get AWS AccountId and API Options
@@ -49,7 +51,9 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'U
         email = result.email;
     } catch (e) {
         console.error(e);
-        return UNAUTHORIZED;
+
+        context.fail(UNAUTHORIZED);
+        return;
     }
 
     // may result in 500 if DB fails - which is ok
@@ -59,7 +63,9 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'U
             principal = await lookupPrincipal(client, email);
         } catch (e) {
             console.error(e);
-            return UNAUTHORIZED; // should result in 401
+
+            context.fail(UNAUTHORIZED);
+            return;
         }
 
         const policy = new AuthPolicy(principalId, awsAccountId, apiOptions);
