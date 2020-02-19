@@ -190,8 +190,11 @@ class TranslationSectionBase extends React.Component<Props, State> {
                             onChange={this._changeLanguage}
                             onClose={this._setLanguage}
                         />
+                        <Divider />
 
                         <Action theme={this.props.theme} text={'Refresh Current Translations'} onPress={this._refreshCurrentLanguage} />
+                        <Divider />
+
                         <Action theme={this.props.theme} text={'Reset Translations to Default'} onPress={this._resetLanguages} />
                         <Divider />
 

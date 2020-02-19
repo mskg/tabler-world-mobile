@@ -5,11 +5,10 @@ import { Categories, Logger } from '../helper/Logger';
 import { countryName, CountryNameFunc } from './countryName';
 import { format, FormatFunc } from './format';
 import { formatDate, FormatDateFunc } from './formatDate';
-import { getAppLanguage } from './getAppLanguage';
+import { getAppLanguage, Languages } from './getAppLanguage';
 import { I18NType } from './I18NType';
 import { pluralize, PluralizeFunc } from './pluralize';
 import DEFAULT_LANGUAGE from './translations/defaultLanguage';
-import { loadLanguage } from './translations/loadLanguage';
 
 const logger = new Logger(Categories.App);
 
@@ -33,6 +32,27 @@ export function replaceCurrentLanguage(otherLang: any) {
     currentLanguage.pluralize = pluralize;
     currentLanguage.formatDate = formatDate;
     currentLanguage.countryName = countryName((currentLanguage as I18NType).Countries);
+}
+
+/**
+ * This loads the build-in translations and internationalization options
+ *
+ * @param lang
+ */
+function loadLanguage(lang: Languages) {
+    // tslint:disable: no-var-requires
+    if (lang === 'de') {
+        replaceCurrentLanguage(require('./translations/de').default);
+    } else if (lang === 'fi') {
+        replaceCurrentLanguage(require('./translations/fi').default);
+    } else if (lang === 'is') {
+        replaceCurrentLanguage(require('./translations/is').default);
+    } else if (lang === 'nl') {
+        replaceCurrentLanguage(require('./translations/nl').default);
+    } else {
+        // default
+        replaceCurrentLanguage({});
+    }
 }
 
 loadLanguage(getAppLanguage());
