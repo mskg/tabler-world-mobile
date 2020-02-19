@@ -18,23 +18,7 @@
             "apidemo": "",
             "sentry": "",
             "cognitoAnalytics": "",
-            "amplitudeAnalytics": "",
-            "profile": "https://rti.roundtable.world/#lang#/members/#id#/",
-            "world": "https://rti.roundtable.world/#lang#/",
-            "world_whitelist": [
-                "*.roundtable.world"
-            ],
-            "join": "https://rtinternational.org/about-us/about-round-table/how-to-join/",
-            "support": {
-                "global": "support@roundtable.world"
-            },
-            "feedback": "http://feedback.app.roundtable.world/",
-            "imprint": {
-                "en": "https://tabler.app/en/legal-notice/"
-            },
-            "dataprotection": {
-                "en": "https://tabler.app/en/privacy-policy/"
-            }
+            "amplitudeAnalytics": ""
         },
         "orientation": "portrait",
         "icon": "./assets/images/logo_iOS.png",

@@ -100,7 +100,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                 value: !this.props.settings.nearbyMembersMap,
             });
         } catch (e) {
-            Alert.alert(I18N.Settings.mapfailed);
+            Alert.alert(I18N.Screen_Settings.mapfailed);
         }
     }
 
@@ -108,7 +108,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
         const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
         if (status !== 'granted') {
-            Alert.alert(I18N.Settings.locationpermission);
+            Alert.alert(I18N.Screen_Settings.locationpermission);
             this.updateSetting({ name: 'nearbyMembers', value: false });
         } else {
             this.setState({ wait: true }, async () => {
@@ -129,7 +129,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                         try { disableNearbyTablers(); } catch { }
                     }
 
-                    Alert.alert(I18N.Settings.locationfailed);
+                    Alert.alert(I18N.Screen_Settings.locationfailed);
                 }
 
                 this.setState({ wait: false });
@@ -141,7 +141,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
     render() {
         return (
             <>
-                <ScreenWithHeader header={{ title: I18N.NearbyMembers.Settings.title, showBack: true }}>
+                <ScreenWithHeader header={{ title: I18N.Screen_NearbyMembers.Settings.title, showBack: true }}>
                     <ScrollView>
                         {/* {this.state.demoMode &&
                             <Banner
@@ -161,12 +161,12 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                             </Banner>
                         } */}
 
-                        <List.Section title={I18N.NearbyMembers.Settings.on.title}>
-                            <Text style={styles.text}>{I18N.NearbyMembers.Settings.on.text}</Text>
+                        <List.Section title={I18N.Screen_NearbyMembers.Settings.on.title}>
+                            <Text style={styles.text}>{I18N.Screen_NearbyMembers.Settings.on.text}</Text>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.NearbyMembers.Settings.on.field}
+                                field={I18N.Screen_NearbyMembers.Settings.on.field}
                                 text={(
                                     <Switch
                                         color={this.props.theme.colors.accent}
@@ -179,12 +179,12 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        <List.Section title={I18N.NearbyMembers.Settings.map.title}>
-                            <Text style={styles.text}>{I18N.NearbyMembers.Settings.map.text}</Text>
+                        <List.Section title={I18N.Screen_NearbyMembers.Settings.map.title}>
+                            <Text style={styles.text}>{I18N.Screen_NearbyMembers.Settings.map.text}</Text>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.NearbyMembers.Settings.map.field}
+                                field={I18N.Screen_NearbyMembers.Settings.map.field}
                                 text={(
                                     <Switch
                                         color={this.props.theme.colors.accent}
@@ -198,11 +198,11 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                         </List.Section>
 
-                        <List.Section title={I18N.NearbyMembers.Settings.filter.title}>
+                        <List.Section title={I18N.Screen_NearbyMembers.Settings.filter.title}>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.NearbyMembers.Settings.filter.field}
+                                field={I18N.Screen_NearbyMembers.Settings.filter.field}
                                 text={(
                                     <Switch
                                         color={this.props.theme.colors.accent}

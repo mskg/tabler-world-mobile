@@ -17,8 +17,8 @@
     "pg": "*"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.31",
-    "@types/pg": "*",
-    "typescript": "3.7.4"
+    "@types/aws-lambda": "^8.10.42",
+    "@types/pg": "7.14.1",
+    "typescript": "3.7.5"
   }
 }

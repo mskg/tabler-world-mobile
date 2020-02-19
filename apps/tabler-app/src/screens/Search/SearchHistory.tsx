@@ -44,7 +44,7 @@ class SearchHistoryBase extends React.Component<Props, State> {
         if (this.props.history == null || this.props.history.length === 0) return null;
 
         return (
-            <List.Section style={{ flex: 1, flexBasis: 1 }} title={I18N.Search.history}>
+            <List.Section style={{ flex: 1, flexBasis: 1 }} title={I18N.Screen_Search.history}>
                 <Divider />
                 <FlatList
                     data={take(this.props.history, this.props.limit || 20)}

@@ -6,6 +6,8 @@ export const S3 = new xAWS.S3({
     secretAccessKey: EXECUTING_OFFLINE ? 'S3RVER' : undefined,
     endpoint: EXECUTING_OFFLINE ? 'http://localhost:8005' : undefined,
     signatureVersion: 'v4',
+    useAccelerateEndpoint: true,
+    useDualstack: true,
 });
 
 export const UPLOAD_BUCKET = process.env.UPLOAD_BUCKET as string;

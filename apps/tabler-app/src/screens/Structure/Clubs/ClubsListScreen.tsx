@@ -128,11 +128,11 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                     </Paragraph>
                 </Card.Content> */}
 
-                <RoleAccordionSection group={I18N.Structure.board} groupDetails="board" club={item.id} />
-                <RoleAccordionSection group={I18N.Structure.assist} groupDetails="boardassistants" club={item.id} />
+                <RoleAccordionSection group={I18N.Screen_Structure.board} groupDetails="board" club={item.id} />
+                <RoleAccordionSection group={I18N.Screen_Structure.assist} groupDetails="boardassistants" club={item.id} />
 
                 <Card.Actions style={styles.action}>
-                    <Button color={this.props.theme.colors.accent} onPress={showClubFunc}>{I18N.Structure.details}</Button>
+                    <Button color={this.props.theme.colors.accent} onPress={showClubFunc}>{I18N.Screen_Structure.details}</Button>
                 </Card.Actions>
             </Card>
         );
@@ -198,7 +198,7 @@ Wir sind derzeit 20 "Tabler" und treffen uns zweimal im Monat zum Tischabend. Mi
                             <Searchbar
                                 style={[styles.searchbar]}
                                 selectionColor={this.props.theme.colors.accent}
-                                placeholder={I18N.Search.search}
+                                placeholder={I18N.Screen_Search.search}
                                 autoCorrect={false}
 
                                 value={this.state.search}

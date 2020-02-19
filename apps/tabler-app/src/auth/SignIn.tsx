@@ -1,4 +1,5 @@
 import Auth from '@aws-amplify/auth';
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import { Updates } from 'expo';
 import React from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
@@ -12,7 +13,6 @@ import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
-import { UrlParameters } from '../helper/parameters/Urls';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
@@ -58,7 +58,7 @@ class SignInBase extends AuditedScreen<Props, State> {
         try {
             this.audit.trackAction(ActionNames.SignIn);
             const user = await Auth.signIn(
-                username as string
+                username as string,
             );
 
             logger.debug('signIn response', user);
@@ -78,15 +78,15 @@ class SignInBase extends AuditedScreen<Props, State> {
 
     _demo = async () => {
         Alert.alert(
-            I18N.SignIn.demo.title,
-            I18N.SignIn.demo.text,
+            I18N.Screen_SignIn.demo.title,
+            I18N.Screen_SignIn.demo.text,
             [
                 {
-                    text: I18N.SignIn.cancel,
+                    text: I18N.Screen_SignIn.cancel,
                     style: 'cancel',
                 },
                 {
-                    text: I18N.SignIn.confirm,
+                    text: I18N.Screen_SignIn.confirm,
                     style: 'destructive',
                     onPress: async () => {
                         await enableDemoMode();
@@ -142,12 +142,12 @@ class SignInBase extends AuditedScreen<Props, State> {
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="padding" >
                             <Logo />
-                            <Greeting title={I18N.SignIn.welcomeBack} subtitle={I18N.SignIn.signin} />
+                            <Greeting title={I18N.Screen_SignIn.welcomeBack} subtitle={I18N.Screen_SignIn.signin} />
 
 
                             <View style={styles.inputContainer}>
                                 <Input
-                                    placeholder={I18N.SignIn.placeholderEMail}
+                                    placeholder={I18N.Screen_SignIn.placeholderEMail}
                                     value={this.state.username}
                                     onChangeText={(text) => this.setState({ username: (text || '').toLowerCase() })}
                                     placeholderTextColor={this.props.theme.colors.placeholder}
@@ -161,7 +161,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                     mode="contained"
                                     onPress={this._signInOrUp}
                                     loading={this.state.working}
-                                    disabled={!this.state.username || this.state.working}>{I18N.SignIn.continue}</Button>
+                                    disabled={!this.state.username || this.state.working}>{I18N.Screen_SignIn.continue}</Button>
                             </View>
 
                             {this.state.error && (
@@ -172,11 +172,11 @@ class SignInBase extends AuditedScreen<Props, State> {
 
                             <View style={styles.demo}>
                                 <TouchableWithoutFeedback onPress={this._demo}>
-                                    <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.demoMode}</Text>
+                                    <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.Screen_SignIn.demoMode}</Text>
                                 </TouchableWithoutFeedback>
 
                                 <TouchableWithoutFeedback onPress={this._lauchJoin}>
-                                    <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.SignIn.join}</Text>
+                                    <Text style={[styles.demoText, { color: this.props.theme.colors.accent }]}>{I18N.Screen_SignIn.join}</Text>
                                 </TouchableWithoutFeedback>
                             </View>
                         </KeyboardAvoidingView>

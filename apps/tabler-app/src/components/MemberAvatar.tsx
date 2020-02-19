@@ -20,10 +20,10 @@ export class MemberAvatar extends React.PureComponent<MemberAvatarProps> {
 
         return (
             <TextImageAvatar
-                source={member.pic}
+                source={member?.pic}
                 size={size != null ? size : 38}
                 label={(
-                    (member.firstname || '').substr(0, 1) + (member.lastname || '').substr(0, 1)
+                    (member?.firstname || '').substr(0, 1) + (member?.lastname || '').substr(0, 1)
                 ).toUpperCase()}
                 {...others}
             />
@@ -42,9 +42,9 @@ export const MeAvatar = (props: MeAvatarProps) => {
     return (
         <TextImageAvatar
             size={size != null ? size : 38}
-            source={me.pic}
+            source={me?.pic}
             label={(
-                (me.firstname || '').substr(0, 1) + (me.lastname || '').substr(0, 1)
+                (me?.firstname || '').substr(0, 1) + (me?.lastname || '').substr(0, 1)
             ).toUpperCase()}
             {...others}
         />

@@ -3,27 +3,38 @@ import { uniq } from 'lodash';
 import React from 'react';
 import { Platform, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { logger } from '../../analytics/logger';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
 import { SectionsPlaceholder } from '../../components/Profile/SectionPlaceholder';
-import { formatAddress, formatCompany, formatEducation, formatRoutableAddress, showAddress } from '../../helper/addressHelpers';
 import { collectEMails, collectPhones } from '../../helper/collect';
+import { formatAddress } from '../../helper/formatting/formatAddress';
+import { formatAnniversary } from '../../helper/formatting/formatAnniversary';
+import { formatCallApp } from '../../helper/formatting/formatCallApp';
+import { formatCompany } from '../../helper/formatting/formatCompany';
+import { formatEducation } from '../../helper/formatting/formatEducation';
+import { formatMailApp } from '../../helper/formatting/formatMailApp';
+import { formatMembership } from '../../helper/formatting/formatMembership';
+import { formatMessagingApp } from '../../helper/formatting/formatMessagingApp';
+import { formatRoutableAddress } from '../../helper/formatting/formatRoutableAddress';
+import { formatSector } from '../../helper/formatting/formatSector';
+import { formatWebApp } from '../../helper/formatting/formatWebApp';
 import { LinkingHelper } from '../../helper/LinkingHelper';
 import { OpenLink } from '../../helper/OpenLink';
+import { showAddress } from '../../helper/showAddress';
 import { I18N } from '../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { Member_Member } from '../../model/graphql/Member';
 import { IAddress } from '../../model/IAddress';
 import { IAppState } from '../../model/IAppState';
-import { startConversation, IProfileParams } from '../../redux/actions/navigation';
+import { IProfileParams, startConversation } from '../../redux/actions/navigation';
 import { LinkType, openLinkWithApp, openLinkWithDefaultApp } from './openLink';
 import { Organization } from './Organization';
 import { Roles } from './Roles';
 import { Social } from './Social';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type State = {
     numbers: string[],
@@ -71,6 +82,45 @@ type Section = {
 
 type Sections = Section[];
 
+function formatEMail(short: string) {
+    switch (short) {
+        case 'rt':
+            return I18N.EMailNames.rt;
+
+        case 'home':
+            return I18N.EMailNames.home;
+
+        case 'work':
+            return I18N.EMailNames.work;
+
+        case 'other':
+            return I18N.EMailNames.other;
+
+        default:
+            return short;
+    }
+}
+
+function formatPhone(short: string) {
+    switch (short) {
+        case 'mobile':
+            return I18N.PhoneNames.mobile;
+
+        case 'home':
+            return I18N.PhoneNames.home;
+
+        case 'work':
+            return I18N.PhoneNames.work;
+
+        case 'other':
+            return I18N.PhoneNames.other;
+
+        default:
+            return short;
+    }
+}
+
+
 class ProfileBase extends React.Component<Props, State> {
 
     constructor(props: Props) {
@@ -97,7 +147,7 @@ class ProfileBase extends React.Component<Props, State> {
             return;
         }
 
-        const filteredOptions = [...reduced, I18N.Member.Menu.cancel];
+        const filteredOptions = [...reduced, I18N.Screen_Member.Menu.cancel];
 
         // https://github.com/expo/react-native-action-sheet/issues/112
         setTimeout(
@@ -134,9 +184,9 @@ class ProfileBase extends React.Component<Props, State> {
                     ...(await LinkingHelper.mailApps())
                         .filter((app) => app !== this.props.emailApp)
                         .map((app) => ({
-                            text: `${I18N.Settings.apps.mail(app)} >`,
+                            text: `${formatMailApp(app)} >`,
                             action: () => this.buildSingleAppMenu(
-                                I18N.Settings.apps.mail(app),
+                                formatMailApp(app),
                                 original,
                                 LinkType.EMail,
                                 app,
@@ -150,9 +200,9 @@ class ProfileBase extends React.Component<Props, State> {
                     ...(await LinkingHelper.messagingApps())
                         .filter((app) => app !== this.props.messagingApp)
                         .map((app) => ({
-                            text: `${I18N.Settings.apps.messaging(app)} >`,
+                            text: `${formatMessagingApp(app)} >`,
                             action: () => this.buildSingleAppMenu(
-                                I18N.Settings.apps.messaging(app),
+                                formatMessagingApp(app),
                                 original,
                                 LinkType.Message,
                                 app,
@@ -165,9 +215,9 @@ class ProfileBase extends React.Component<Props, State> {
                     ...(await LinkingHelper.callApps())
                         .filter((app) => app !== this.props.phoneApp)
                         .map((app) => ({
-                            text: `${I18N.Settings.apps.call(app)} >`,
+                            text: `${formatCallApp(app)} >`,
                             action: () => this.buildSingleAppMenu(
-                                I18N.Settings.apps.call(app),
+                                formatCallApp(app),
                                 original,
                                 LinkType.Phone,
                                 app,
@@ -180,9 +230,9 @@ class ProfileBase extends React.Component<Props, State> {
                     ...(await LinkingHelper.webApps())
                         .filter((app) => app !== this.props.browserApp)
                         .map((app) => ({
-                            text: `${I18N.Settings.apps.web(app)} >`,
+                            text: `${formatWebApp(app)} >`,
                             action: () => this.buildSingleAppMenu(
-                                I18N.Settings.apps.web(app),
+                                formatWebApp(app),
                                 original,
                                 LinkType.Internet,
                                 app,
@@ -195,7 +245,7 @@ class ProfileBase extends React.Component<Props, State> {
 
         if (reduced.length > 1) {
             reduced.push({
-                text: I18N.Member.Menu.cancel,
+                text: I18N.Screen_Member.Menu.cancel,
                 // tslint:disable-next-line: no-empty
                 action: () => { },
             });
@@ -216,21 +266,21 @@ class ProfileBase extends React.Component<Props, State> {
 
     _handleCall = () => {
         this.buildMenu(
-            I18N.Member.Menu.tel,
+            I18N.Screen_Member.Menu.tel,
             this.state.numbers,
             LinkType.Phone);
     }
 
     _handleSMS = () => {
         this.buildMenu(
-            I18N.Member.Menu.sms,
+            I18N.Screen_Member.Menu.sms,
             this.state.numbers,
             LinkType.Message);
     }
 
     _handleEmail = () => {
         this.buildMenu(
-            I18N.Member.Menu.email,
+            I18N.Screen_Member.Menu.email,
             this.state.emails,
             LinkType.EMail);
     }
@@ -287,9 +337,7 @@ class ProfileBase extends React.Component<Props, State> {
                     <Placeholder
                         ready={false}
                         previewComponent={
-                            <>
-                                <SectionsPlaceholder count={7} />
-                            </>
+                            <SectionsPlaceholder count={7} />
                         }
                     />
                 </View>
@@ -298,16 +346,16 @@ class ProfileBase extends React.Component<Props, State> {
 
         const canChat = member.availableForChat && this.props.user !== member.rtemail
             && isFeatureEnabled(Features.Chat) && this.props.chatEnabled;
-            // && !this.props.navigation.getParam('preventChat');
+        // && !this.props.navigation.getParam('preventChat');
 
         const sections: Sections = [
             {
                 icon: 'md-chatbubbles',
                 values: [
                     {
-                        field: I18N.Member.Fields.chat,
-                        text: !canChat ? undefined : I18N.Member.chat(member.firstname),
-                    }
+                        field: I18N.Screen_Member.Fields.chat,
+                        text: !canChat ? undefined : I18N.format(I18N.Screen_Member.Actions.chat, { name: member.firstname }),
+                    },
                 ],
                 onPress: this._startChat,
             },
@@ -315,7 +363,7 @@ class ProfileBase extends React.Component<Props, State> {
                 icon: 'md-call',
                 values: (collectPhones(member)).map(
                     (p) => ({
-                        field: I18N.Member.telephone(p.type),
+                        field: formatPhone(p.type),
                         text: p.value,
                     }),
                 ),
@@ -328,7 +376,7 @@ class ProfileBase extends React.Component<Props, State> {
                 icon: 'md-mail',
                 values: (collectEMails(member)).map(
                     (p) => ({
-                        field: I18N.Member.email(p.type),
+                        field: formatEMail(p.type),
                         text: p.value,
                     }),
                 ),
@@ -349,12 +397,12 @@ class ProfileBase extends React.Component<Props, State> {
                 disableRipple: true,
                 values: [
                     {
-                        field: I18N.Member.Fields.rtorg,
+                        field: I18N.Screen_Member.Fields.rtorg,
                         text: <Organization member={member} />,
                     },
                     {
-                        field: I18N.Member.Fields.joined,
-                        text: I18N.Member.Formats.membership(member.datejoined),
+                        field: I18N.Screen_Member.Fields.joined,
+                        text: formatMembership(member.datejoined),
                     },
                 ],
             },
@@ -363,7 +411,7 @@ class ProfileBase extends React.Component<Props, State> {
                 disableRipple: true,
                 values: [
                     {
-                        field: I18N.Member.Fields.roles,
+                        field: I18N.Screen_Member.Fields.roles,
                         text: member.roles && member.roles.length > 0 ? <Roles roles={member.roles} /> : undefined,
                     },
                 ],
@@ -373,7 +421,7 @@ class ProfileBase extends React.Component<Props, State> {
                 highlight: OpenLink.canOpenUrl() && this.checkAddress(),
                 values: [
                     {
-                        field: I18N.Member.Fields.home,
+                        field: I18N.Screen_Member.Fields.home,
                         text: formatAddress(member.address),
                     },
                 ],
@@ -385,7 +433,7 @@ class ProfileBase extends React.Component<Props, State> {
                 disableRipple: true,
                 values: (member.companies || []).map(
                     (p) => ({
-                        field: I18N.Member.Fields.companies + (p.sector ? ` (${I18N.Search.sectorNames[p.sector]})` : ''),
+                        field: I18N.Screen_Member.Fields.companies + (p.sector ? ` (${formatSector(p.sector)})` : ''),
                         text: formatCompany(p),
                         onPress: OpenLink.canOpenUrl() ? this.handleAddress(p.address) : undefined,
                     }),
@@ -395,7 +443,7 @@ class ProfileBase extends React.Component<Props, State> {
                 icon: 'md-school',
                 values: (member.educations || []).map(
                     (p) => ({
-                        field: I18N.Member.Fields.educations,
+                        field: I18N.Screen_Member.Fields.educations,
                         text: formatEducation(p),
                     }),
                 ),
@@ -404,7 +452,7 @@ class ProfileBase extends React.Component<Props, State> {
                 icon: 'md-heart',
                 values: [
                     {
-                        field: I18N.Member.Fields.partner,
+                        field: I18N.Screen_Member.Fields.partner,
                         text: member.partner,
                     },
                 ],
@@ -413,8 +461,8 @@ class ProfileBase extends React.Component<Props, State> {
                 icon: 'md-gift',
                 values: [
                     {
-                        field: I18N.Member.Fields.birthday,
-                        text: I18N.Member.Formats.date(member.birthdate),
+                        field: I18N.Screen_Member.Fields.birthday,
+                        text: formatAnniversary(member.birthdate),
                     },
                 ],
             },
@@ -422,12 +470,12 @@ class ProfileBase extends React.Component<Props, State> {
                 icon: 'md-pin',
                 values: [
                     {
-                        field: I18N.NearbyMembers.title,
+                        field: I18N.Screen_NearbyMembers.title,
                         text:
                             this.props.nearBy
                                 ? member.sharesLocation
-                                    ? I18N.NearbyMembers.sharesLocation.true
-                                    : I18N.NearbyMembers.sharesLocation.false
+                                    ? I18N.Screen_NearbyMembers.sharesLocation.true
+                                    : I18N.Screen_NearbyMembers.sharesLocation.false
                                 : undefined,
                     },
                 ],

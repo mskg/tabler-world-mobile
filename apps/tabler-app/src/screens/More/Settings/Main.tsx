@@ -16,6 +16,10 @@ import Assets from '../../../Assets';
 import CacheManager from '../../../components/Image/CacheManager';
 import { ScreenWithHeader } from '../../../components/Screen';
 import { isDemoModeEnabled } from '../../../helper/demoMode';
+import { formatCallApp } from '../../../helper/formatting/formatCallApp';
+import { formatMailApp } from '../../../helper/formatting/formatMailApp';
+import { formatMessagingApp } from '../../../helper/formatting/formatMessagingApp';
+import { formatWebApp } from '../../../helper/formatting/formatWebApp';
 import { LinkingHelper } from '../../../helper/LinkingHelper';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
@@ -28,7 +32,6 @@ import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { logoutUser } from '../../../redux/actions/user';
 import { Routes as ParentRoutes } from '../Routes';
 import { Action, NextScreen } from './Action';
-import { DeveloperSection } from './DeveloperSection';
 import { Element } from './Element';
 import { Routes } from './Routes';
 import { SelectionList } from './SelectionList';
@@ -64,11 +67,6 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
-function formatDate(nbr: string | null) {
-    if (!nbr) return null;
-    return new Date(parseInt(nbr || '0', 10));
-}
-
 class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     state: State = {
         smsOptions: [{ label: '', value: '' }],
@@ -96,15 +94,15 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
     _clearSyncFlags = () => {
         Alert.alert(
-            I18N.Settings.sync.title,
-            I18N.Settings.sync.text,
+            I18N.Screen_Settings.sync.title,
+            I18N.Screen_Settings.sync.text,
             [
                 {
-                    text: I18N.Settings.cancel,
+                    text: I18N.Screen_Settings.cancel,
                     style: 'cancel',
                 },
                 {
-                    text: I18N.Settings.confirm,
+                    text: I18N.Screen_Settings.confirm,
                     style: 'destructive',
                     onPress: async () => {
                         this.audit.trackAction(ActionNames.RemoveData);
@@ -144,21 +142,21 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         }
 
         Alert.alert(
-            I18N.Settings.cache.title,
+            I18N.Screen_Settings.cache.title,
         );
     }
 
     _confirmUnload = () => {
         Alert.alert(
-            I18N.Settings.logout.title,
-            I18N.Settings.logout.text,
+            I18N.Screen_Settings.logout.title,
+            I18N.Screen_Settings.logout.text,
             [
                 {
-                    text: I18N.Settings.cancel,
+                    text: I18N.Screen_Settings.cancel,
                     style: 'cancel',
                 },
                 {
-                    text: I18N.Settings.confirm,
+                    text: I18N.Screen_Settings.confirm,
                     style: 'destructive',
                     onPress: () => {
                         this.audit.trackAction(ActionNames.Logout);
@@ -173,7 +171,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
         if (status !== 'granted') {
-            Alert.alert(I18N.Settings.contactpermissions);
+            Alert.alert(I18N.Screen_Settings.contactpermissions);
             this.updateSetting({ name: 'syncFavorites', value: false });
         } else {
             this.updateSetting({ name: 'syncFavorites', value: !this.props.settings.syncFavorites });
@@ -188,15 +186,15 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         this.updateSetting({ name: 'experiments', value: !this.props.settings.experiments });
 
         Alert.alert(
-            I18N.Settings.reload.title,
-            I18N.Settings.reload.text,
+            I18N.Screen_Settings.reload.title,
+            I18N.Screen_Settings.reload.text,
             [
                 {
-                    text: I18N.Settings.cancel,
+                    text: I18N.Screen_Settings.cancel,
                     style: 'cancel',
                 },
                 {
-                    text: I18N.Settings.confirm,
+                    text: I18N.Screen_Settings.confirm,
                     style: 'destructive',
                     onPress: async () => {
                         await getApolloCachePersistor().persist();
@@ -211,7 +209,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
         const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
         if (status !== 'granted') {
-            Alert.alert(I18N.Settings.contactpermissions);
+            Alert.alert(I18N.Screen_Settings.contactpermissions);
             this.updateSetting({ name: 'syncOwnTable', value: false });
         } else {
             this.updateSetting({ name: 'syncOwnTable', value: !this.props.settings.syncOwnTable });
@@ -239,7 +237,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
         for (const app of await LinkingHelper.messagingApps()) {
             result.push({
-                label: I18N.Settings.apps.messaging(app),
+                label: formatMessagingApp(app),
                 value: app,
             });
         }
@@ -252,7 +250,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
         for (const app of await LinkingHelper.mailApps()) {
             result.push({
-                label: I18N.Settings.apps.mail(app),
+                label: formatMailApp(app),
                 value: app,
             });
         }
@@ -265,7 +263,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
         for (const app of await LinkingHelper.webApps()) {
             result.push({
-                label: I18N.Settings.apps.web(app),
+                label: formatWebApp(app),
                 value: app,
             });
         }
@@ -278,7 +276,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
 
         for (const app of await LinkingHelper.callApps()) {
             result.push({
-                label: I18N.Settings.apps.call(app),
+                label: formatCallApp(app),
                 value: app,
             });
         }
@@ -295,15 +293,15 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
     render() {
         return (
             <>
-                <ScreenWithHeader header={{ title: I18N.Settings.title, showBack: true }}>
+                <ScreenWithHeader header={{ title: I18N.Screen_Settings.title, showBack: true }}>
                     <ScrollView>
-                        {this.state.demoMode &&
+                        {this.state.demoMode && (
                             <Banner
                                 visible={true}
                                 actions={[
                                     {
                                         // @ts-ignore We provide a Text to color it
-                                        label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Settings.logout.button}</NativeText>,
+                                        label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Screen_Settings.logout.button}</NativeText>,
                                         onPress: this._confirmUnload,
                                     },
                                 ]}
@@ -311,39 +309,39 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
                                 }
                             >
-                                {I18N.Settings.logout.demo}
+                                {I18N.Screen_Settings.logout.demo}
                             </Banner>
-                        }
+                        )}
 
-                        <List.Section title={I18N.Settings.sections.about}>
+                        <List.Section title={I18N.Screen_Settings.sections.about}>
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.version}
+                                field={I18N.Screen_Settings.fields.version}
                                 text={Constants.manifest.revisionId || '0.0.0'}
                             />
 
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.channel}
+                                field={I18N.Screen_Settings.fields.channel}
                                 text={Constants.manifest.releaseChannel || 'dev'}
                             />
 
                             <Divider />
                             <Element
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.subscription}
-                                text={I18N.Settings.fields.subscription_valid}
+                                field={I18N.Screen_Settings.fields.subscription}
+                                text={I18N.Screen_Settings.fields.subscription_valid}
                             />
 
                             <Divider />
                             <NextScreen
                                 theme={this.props.theme}
-                                text={I18N.Settings.ReleaseNotes}
+                                text={I18N.Screen_Settings.ReleaseNotes}
                                 onPress={
                                     () => this.props.navigation.navigate(Routes.MD, {
-                                        title: I18N.Settings.ReleaseNotes,
+                                        title: I18N.Screen_Settings.ReleaseNotes,
                                         source: Assets.files.releasenotes,
                                     })}
                             />
@@ -351,7 +349,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                             <NextScreen
                                 theme={this.props.theme}
-                                text={I18N.Settings.Legal.title}
+                                text={I18N.Screen_Settings.Legal.title}
                                 onPress={
                                     () => this.props.navigation.navigate(Routes.Legal)}
                             />
@@ -359,11 +357,11 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         </List.Section>
 
                         {isFeatureEnabled(Features.DarkModeSwitch) &&
-                            <List.Section title={I18N.Settings.sections.colors}>
+                            <List.Section title={I18N.Screen_Settings.sections.colors}>
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}
-                                    field={I18N.Settings.fields.dark}
+                                    field={I18N.Screen_Settings.fields.dark}
                                     text={
                                         <Switch
                                             color={this.props.theme.colors.accent}
@@ -377,13 +375,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
-                        <List.Section title={I18N.Settings.sections.apps}>
+                        <List.Section title={I18N.Screen_Settings.sections.apps}>
                             {this.state.callOptions.length > 0 &&
                                 <>
                                     <Divider />
                                     <SelectionList
                                         theme={this.props.theme}
-                                        field={I18N.Settings.fields.phone}
+                                        field={I18N.Screen_Settings.fields.phone}
                                         items={this.state.callOptions}
                                         value={this.props.settings.phoneApp}
                                         onChange={(value: string) => {
@@ -401,7 +399,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     <Divider />
                                     <SelectionList
                                         theme={this.props.theme}
-                                        field={I18N.Settings.fields.sms}
+                                        field={I18N.Screen_Settings.fields.sms}
                                         items={this.state.smsOptions}
                                         value={this.props.settings.messagingApp}
                                         onChange={(value: string) => {
@@ -419,7 +417,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     <Divider />
                                     <SelectionList
                                         theme={this.props.theme}
-                                        field={I18N.Settings.fields.web}
+                                        field={I18N.Screen_Settings.fields.web}
                                         items={this.state.browserOptions}
                                         value={this.props.settings.browserApp}
                                         onChange={(value: string) => {
@@ -437,7 +435,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     <Divider />
                                     <SelectionList
                                         theme={this.props.theme}
-                                        field={I18N.Settings.fields.mail}
+                                        field={I18N.Screen_Settings.fields.mail}
                                         items={this.state.emailOptions}
                                         value={this.props.settings.emailApp}
                                         onChange={(value: string) => {
@@ -452,7 +450,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             }
                         </List.Section>
 
-                        <List.Section title={I18N.Settings.sections.contacts}>
+                        <List.Section title={I18N.Screen_Settings.sections.contacts}>
                             {/* <Divider />
                         <Element
                             theme={this.props.theme}
@@ -461,10 +459,10 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                             <SelectionList
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.displayOrder}
+                                field={I18N.Screen_Settings.fields.displayOrder}
                                 items={[
-                                    { label: I18N.Settings.firstlast, value: '1' },
-                                    { label: I18N.Settings.lastfirst, value: '0' },
+                                    { label: I18N.Screen_Settings.firstlast, value: '1' },
+                                    { label: I18N.Screen_Settings.lastfirst, value: '0' },
                                 ]}
                                 value={this.props.settings.diplayFirstNameFirst ? '1' : '0'}
                                 onChange={value => {
@@ -476,10 +474,10 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             <Divider />
                             <SelectionList
                                 theme={this.props.theme}
-                                field={I18N.Settings.fields.sortOrder}
+                                field={I18N.Screen_Settings.fields.sortOrder}
                                 items={[
-                                    { label: I18N.Settings.firstlast, value: '0' },
-                                    { label: I18N.Settings.lastfirst, value: '1' },
+                                    { label: I18N.Screen_Settings.firstlast, value: '0' },
+                                    { label: I18N.Screen_Settings.lastfirst, value: '1' },
                                 ]}
                                 value={this.props.settings.sortByLastName ? '1' : '0'}
                                 onChange={value => {
@@ -492,13 +490,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         </List.Section>
 
                         {isFeatureEnabled(Features.ContactSync) &&
-                            <List.Section title={I18N.Settings.sections.sync}>
-                                <Text style={styles.text}>{I18N.Settings.texts.contacts}</Text>
+                            <List.Section title={I18N.Screen_Settings.sections.sync}>
+                                <Text style={styles.text}>{I18N.Screen_Settings.texts.contacts}</Text>
 
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}
-                                    field={I18N.Settings.fields.syncFavorites}
+                                    field={I18N.Screen_Settings.fields.syncFavorites}
                                     text={
                                         <Switch
                                             color={this.props.theme.colors.accent}
@@ -511,7 +509,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}
-                                    field={I18N.Settings.fields.syncOwnTable}
+                                    field={I18N.Screen_Settings.fields.syncOwnTable}
                                     text={
                                         <Switch
                                             color={this.props.theme.colors.accent}
@@ -524,22 +522,22 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
-                        <List.Section title={I18N.Notifications.Settings.title}>
+                        <List.Section title={I18N.Component_Notifications.Settings.title}>
                             <Divider />
                             <NextScreen
                                 theme={this.props.theme}
-                                text={I18N.Settings.fields.notifications}
+                                text={I18N.Screen_Settings.fields.notifications}
                                 onPress={
                                     () => this.props.showNotificationSettings()}
                             />
                             <Divider />
                         </List.Section>
 
-                        <List.Section title={I18N.Settings.sections.locationservices}>
+                        <List.Section title={I18N.Screen_Settings.sections.locationservices}>
                             <Divider />
                             <NextScreen
                                 theme={this.props.theme}
-                                text={I18N.Settings.fields.nearby}
+                                text={I18N.Screen_Settings.fields.nearby}
                                 onPress={
                                     () => this.props.navigation.navigate(ParentRoutes.NearbySettings)
                                 }
@@ -548,12 +546,12 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                         </List.Section>
 
                         {this.state.showExperiments &&
-                            <List.Section title={I18N.Settings.sections.experiments}>
-                                <Text style={styles.text}>{I18N.Settings.texts.experiments}</Text>
+                            <List.Section title={I18N.Screen_Settings.sections.experiments}>
+                                <Text style={styles.text}>{I18N.Screen_Settings.texts.experiments}</Text>
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}
-                                    field={I18N.Settings.fields.experiments}
+                                    field={I18N.Screen_Settings.fields.experiments}
                                     text={
                                         <Switch
                                             color={this.props.theme.colors.accent}
@@ -567,15 +565,13 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             </List.Section>
                         }
 
-                        <DeveloperSection />
-
-                        <List.Section title={I18N.Settings.sections.reset}>
+                        <List.Section title={I18N.Screen_Settings.sections.reset}>
                             <Divider />
-                            <Action theme={this.props.theme} text={I18N.Settings.fields.clear} onPress={this._clearSyncFlags} />
+                            <Action theme={this.props.theme} text={I18N.Screen_Settings.fields.clear} onPress={this._clearSyncFlags} />
                             <Divider />
-                            <Action theme={this.props.theme} text={I18N.Settings.fields.cache} onPress={this._clearCache} />
+                            <Action theme={this.props.theme} text={I18N.Screen_Settings.fields.cache} onPress={this._clearCache} />
                             <Divider />
-                            <Action theme={this.props.theme} text={I18N.Settings.fields.logout} onPress={this._confirmUnload} />
+                            <Action theme={this.props.theme} text={I18N.Screen_Settings.fields.logout} onPress={this._confirmUnload} />
                             <Divider />
                         </List.Section>
 

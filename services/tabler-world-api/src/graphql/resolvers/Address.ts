@@ -60,8 +60,6 @@ export const AddressResolver = {
             }
 
             const hash = addressHash(root);
-            // context.logger.log(root, hash);
-
             if (hash == null) { return null; }
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);

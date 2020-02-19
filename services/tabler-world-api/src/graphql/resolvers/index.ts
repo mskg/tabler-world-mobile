@@ -13,6 +13,7 @@ import { SearchMemberResolver } from './SearchMember';
 import { SettingsResolver } from './Settings';
 import { StructureResolver } from './Structure';
 import { TokenResolver } from './Token';
+import { TranslationsResolver } from './Translations';
 import { UserResolver } from './User';
 import { UserRolesResolver } from './UserRoles';
 
@@ -35,5 +36,6 @@ export const resolvers = merge(
     ParametersResolver,
     UserRolesResolver,
     ChatResolver,
+    TranslationsResolver,
     // DocumentsResolver,
 );

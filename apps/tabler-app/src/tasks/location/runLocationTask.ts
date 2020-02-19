@@ -28,9 +28,10 @@ export async function runLocationTask({ data, error }) {
         const locations: Location.LocationData[] = (data as any)?.locations;
         if (locations) {
             await persistorRehydrated();
+            const demoMode = await isDemoModeEnabled();
 
             // we only run in demo mode or if we are signed in
-            if (!isSignedIn() && !(await isDemoModeEnabled())) {
+            if (!isSignedIn() && !demoMode) {
                 logger.debug('Not signed in, stopping location services');
 
                 try {

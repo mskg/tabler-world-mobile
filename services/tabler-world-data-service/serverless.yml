@@ -69,7 +69,10 @@ provider:
   runtime: nodejs10.x
 
   deploymentBucket:
+    name: tabler-world-deployments
+    maxPreviousDeploymentArtifacts: 5
     blockPublicAccess: true
+    serverSideEncryption: AES256
 
   memorySize: 128
   versionFunctions: false
@@ -141,7 +144,7 @@ functions:
   #
   api:
     handler: src/lambda.handler
-    timeout: 30
+    timeout: 60
     tracing: Active
 
     environment:

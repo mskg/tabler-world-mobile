@@ -56,7 +56,7 @@ class ClubBase extends AuditedScreen<Props> {
         return (
             <ProfileHeader
                 avatar={club ? (
-                    <AvatarPopup title={I18N.Image.Club} pic={club.logo}>
+                    <AvatarPopup title={I18N.Screen_Image.title_Club} pic={club.logo}>
                         <AnimatedAvatar
                             label={club.clubnumber}
                             source={club.logo}

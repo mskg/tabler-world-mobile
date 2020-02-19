@@ -50,9 +50,9 @@ class AssociationsListBase extends React.Component<Props> {
                 <View
                     style={styles.container}
                 >
-                    <List.Subheader>{I18N.Structure.associations}</List.Subheader>
+                    <List.Subheader>{I18N.Screen_Structure.associations}</List.Subheader>
                     <TouchableRipple onPress={this._toggle}>
-                        <Caption style={{ color: this.props.theme.colors.accent }}>{this.state.expanded ? I18N.Search.collapse : I18N.Search.expand}</Caption>
+                        <Caption style={{ color: this.props.theme.colors.accent }}>{this.state.expanded ? I18N.Screen_Search.collapse : I18N.Screen_Search.expand}</Caption>
                     </TouchableRipple>
                 </View>
                 <ScrollView

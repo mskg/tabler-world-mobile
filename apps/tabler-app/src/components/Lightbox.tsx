@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as React from 'react';
-import { Dimensions, Image, ImageResizeMode, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Dimensions, Image, ImageResizeMode, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableWithoutFeedback, View, LayoutAnimation } from 'react-native';
 import TransformableImage from 'react-native-image-gallery/src/libraries/TransformableImage';
 import { IconButton, Portal, Theme, withTheme } from 'react-native-paper';
 import { isIphoneX } from '../helper/isIphoneX';
@@ -43,6 +43,7 @@ class LightboxBase extends React.Component<Props, State> {
         Image.getSize(
             path as string,
             (width, height) => {
+                LayoutAnimation.easeInEaseOut();
                 this.setState({ open: true, uri: path, dimensions: { width, height } });
             },
             (error) => {
@@ -52,8 +53,11 @@ class LightboxBase extends React.Component<Props, State> {
     }
 
     _close = () => {
-        requestAnimationFrame(() =>
-            this.setState({ open: false }),
+        requestAnimationFrame(
+            () => {
+                LayoutAnimation.spring();
+                this.setState({ open: false });
+            },
         );
     }
 

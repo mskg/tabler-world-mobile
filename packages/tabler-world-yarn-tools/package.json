@@ -17,12 +17,12 @@
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
         "@types/cross-spawn": "^6.0.0",
-        "@types/webpack-node-externals": "^1.7.0",
+        "@types/webpack-node-externals": "^1.7.1",
         "child_process": "^1.0.2",
         "cross-spawn": "^7.0.0",
         "fs": "^0.0.1-security",
         "path": "^0.12.7",
-        "tslint": "^5.20.1",
+        "tslint": "^6.0.0",
         "tslint-config-airbnb": "^5.11.1",
         "tslint-microsoft-contrib": "^6.2.0",
         "typescript-tslint-plugin": "^0.5.5",
@@ -32,6 +32,6 @@
         "serverless-webpack": "*"
     },
     "devDependencies": {
-        "typescript": "3.7.4"
+        "typescript": "3.7.5"
     }
 }

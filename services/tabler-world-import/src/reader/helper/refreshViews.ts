@@ -7,21 +7,28 @@ export const refreshViews = async () => {
     await useDatabase({ logger: console }, async (client) => {
         console.log('Updating views');
 
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups');
+        const dml = `
+BEGIN;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_groups;
 
-        // dependent on groups
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles');
+-- dependent on groups
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_tabler_roles;
 
-        // dependent on groups, and roles
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY profiles');
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings');
+-- dependent on groups, and roles
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles;
+REFRESH MATERIALIZED VIEW CONCURRENTLY profiles_privacysettings;
 
-        // dependent data
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs');
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas');
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations');
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_families');
+-- dependent data
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_clubs;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_areas;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_associations;
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_families;
 
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search');
+-- indexes
+REFRESH MATERIALIZED VIEW CONCURRENTLY structure_search;
+COMMIT;
+`;
+
+        await client.query(dml);
     });
 };

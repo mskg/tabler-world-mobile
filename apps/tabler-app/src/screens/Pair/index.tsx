@@ -29,14 +29,14 @@ const Navigator = createMaterialTopTabNavigator(
         [Routes.Scan]: {
             screen: ScanScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Pair.scan} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Pair.scan} />,
             },
         },
 
         [Routes.Me]: {
             screen: CodeScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Pair.me} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Pair.me} />,
             },
         },
     },

@@ -67,9 +67,9 @@ class ClubQueryWithPreview extends PureComponent<{
                         throw error;
                     } else if (error && preview) {
                         setTimeout(() => this.props.addSnack({
-                            message: I18N.Whoops.partialData,
+                            message: I18N.Component_Whoops.partialData,
                             action: {
-                                label: I18N.Whoops.refresh,
+                                label: I18N.Component_Whoops.refresh,
                                 onPress: () => refetch({
                                     id: this.props.id,
                                 }),

@@ -4,8 +4,8 @@ import { S3, UPLOAD_BUCKET } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
+import { ConversationManager } from '../subscriptions/services/ConversationManager';
 import { pubsub } from '../subscriptions/services/pubsub';
-import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../subscriptions/types/Constants';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
@@ -60,27 +60,6 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
-/**
- * CONV(:1:,:2:)
- * @param members
- */
-function makeConversationKey(members: number[]): string {
-    return `${DIRECT_CHAT_PREFIX}${members.sort().map((m) => `${MEMBER_ENCLOSING}${m}${MEMBER_ENCLOSING}`).join(MEMBER_SEPERATOR)}${DIRECT_CHAT_SUFFIX}`;
-}
-
-// this is a very simple security check that is now sufficient in the 1:1 test
-function checkChannelAccess(channel: string, member: number): boolean {
-    return decodeIdentifier(channel).match(new RegExp(`${MEMBER_ENCLOSING}${member}${MEMBER_ENCLOSING}`, 'g'));
-}
-
-/**
- * ALL(:1:)
- * @param member
- */
-function makeAllConversationKey(member: number): string {
-    return `${ALL_CHANNEL_PREFIX}${member}${ALL_CHANNEL_SUFFIX}`;
-}
-
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
 export const ChatResolver = {
@@ -105,9 +84,14 @@ export const ChatResolver = {
         },
 
         // tslint:disable-next-line: variable-name
-        Conversation: (_root: {}, args: IdArgs, context: IApolloContext) => {
-            if (!checkChannelAccess(args.id as string, context.principal.id)) {
-                throw new Error(`Access denied (${args.id}, ${context.principal.id})`);
+        Conversation: async (_root: {}, args: IdArgs, context: IApolloContext) => {
+            const hasAccess = await conversationManager.checkAccess(
+                decodeIdentifier(args.id as string),
+                context.principal.id,
+            );
+
+            if (!hasAccess) {
+                throw new Error('Access denied');
             }
 
             return {
@@ -261,7 +245,12 @@ export const ChatResolver = {
     Mutation: {
         // tslint:disable-next-line: variable-name
         prepareFileUpload: async (_root: {}, args: { conversationId: string }, context: IApolloContext) => {
-            if (!checkChannelAccess(args.conversationId, context.principal.id)) {
+            const hasAccess = await conversationManager.checkAccess(
+                decodeIdentifier(args.conversationId),
+                context.principal.id,
+            );
+
+            if (!hasAccess) {
                 throw new Error('Access denied.');
             }
 
@@ -297,7 +286,12 @@ export const ChatResolver = {
         leaveConversation: async (_root: {}, { id }: IdArgs, context: IApolloContext) => {
             context.logger.log('leaveConverstaion', id);
 
-            if (!checkChannelAccess(id as string, context.principal.id)) {
+            const hasAccess = await conversationManager.checkAccess(
+                decodeIdentifier(id as string),
+                context.principal.id,
+            );
+
+            if (!hasAccess) {
                 throw new Error('Access denied.');
             }
 
@@ -325,7 +319,7 @@ export const ChatResolver = {
                 throw new Error('You cannot chat with yourself.');
             }
 
-            const id = makeConversationKey([context.principal.id, args.member]);
+            const id = ConversationManager.MakeConversationKey(context.principal.id, args.member);
 
             const existing = await context.dataSources.conversations.readConversation(id);
             if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
@@ -353,7 +347,12 @@ export const ChatResolver = {
             context.logger.log('sendMessage', context.principal.id);
             const principalId = context.principal.id;
 
-            if (!checkChannelAccess(message.conversationId, principalId)) {
+            const hasAccess = await conversationManager.checkAccess(
+                decodeIdentifier(message.conversationId),
+                principalId,
+            );
+
+            if (!hasAccess) {
                 throw new Error('Access denied.');
             }
 
@@ -414,7 +413,7 @@ export const ChatResolver = {
             await conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id);
 
             await eventManager.post<string>({
-                triggers: (conversation?.members?.values || []).map((subscriber) => makeAllConversationKey(subscriber)),
+                triggers: (conversation?.members?.values || []).map((subscriber) => ConversationManager.MakeAllConversationKey(subscriber)),
                 // payload is the trigger
                 payload: trigger,
                 pushNotification: undefined,
@@ -436,7 +435,7 @@ export const ChatResolver = {
         conversationUpdate: {
             // tslint:disable-next-line: variable-name
             subscribe: async (root: SubscriptionArgs, _args: ChatMessageSubscriptionArgs, context: ISubscriptionContext, image: any) => {
-                const topic = makeAllConversationKey(context.principal.id);
+                const topic = ConversationManager.MakeAllConversationKey(context.principal.id);
 
                 // if we resolve, root is null
                 if (root) {
@@ -490,7 +489,12 @@ export const ChatResolver = {
                 if (root) {
                     context.logger.log('subscribe', root.id, args.conversation);
 
-                    if (!checkChannelAccess(args.conversation, context.principal.id)) {
+                    const hasAccess = await conversationManager.checkAccess(
+                        decodeIdentifier(args.conversation),
+                        context.principal.id,
+                    );
+
+                    if (!hasAccess) {
                         throw new Error('Access denied.');
                     }
 

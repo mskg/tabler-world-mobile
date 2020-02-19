@@ -34,7 +34,7 @@ class ExpandableElementBase extends React.Component<ActionProps, State> {
                         <Caption>{field}</Caption>
                         {!this.props.disabled && !this.state.expanded &&
                             <TouchableRipple onPress={this._toggle}>
-                                <Caption style={{ color: this.props.theme.colors.accent }}>{I18N.Club.expand}</Caption>
+                                <Caption style={{ color: this.props.theme.colors.accent }}>{I18N.Screen_Club.expand}</Caption>
                             </TouchableRipple>
                         }
                     </View>

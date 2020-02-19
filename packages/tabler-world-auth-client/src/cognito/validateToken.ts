@@ -1,3 +1,4 @@
+import { AuthenticationError } from 'apollo-server-core';
 import jwt from 'jsonwebtoken';
 import { downloadPems } from './downloadPems';
 import { Token } from './types';
@@ -19,19 +20,19 @@ export async function validateToken(
     const decodedJwt = jwt.decode(token, { complete: true }) as Token;
     if (!decodedJwt) {
         console.log('Not a valid JWT token');
-        throw new Error('Unauthorized (jwt)');
+        throw new AuthenticationError('Unauthorized (jwt)');
     }
 
     // Fail if token is not from your UserPool
     if (decodedJwt.payload.iss !== iss) {
         console.log('invalid issuer');
-        throw new Error('Unauthorized (iss)');
+        throw new AuthenticationError('Unauthorized (iss)');
     }
 
     // Reject the jwt if it's not an 'ID Token'
     if (decodedJwt.payload.token_use !== 'id') {
         console.log('Not an id token');
-        throw new Error(`Unauthorized (${decodedJwt.payload.token_use})`);
+        throw new AuthenticationError(`Unauthorized (${decodedJwt.payload.token_use})`);
     }
 
     // Get the kid from the token and retrieve corresponding PEM
@@ -39,7 +40,7 @@ export async function validateToken(
     const pem = pems[kid];
     if (!pem) {
         console.log('Invalid access token');
-        throw new Error('Unauthorized (invalid)');
+        throw new AuthenticationError('Unauthorized (invalid)');
     }
 
     const payload: any = jwt.verify(token as string, pem, { issuer: iss });

@@ -56,7 +56,7 @@ class ScreenWithBarBase extends React.Component<Props> {
                     showBack={true}
                     showLine={false}
                     showAppBar={true}
-                    title={I18N.Pair.title}
+                    title={I18N.Screen_Pair.title}
 
                 // content={(
                 //     <View style={[styles.top]}>

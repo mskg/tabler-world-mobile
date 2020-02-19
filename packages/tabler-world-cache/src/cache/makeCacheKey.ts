@@ -10,6 +10,9 @@ type CacheTypes =
     | 'Association'
 
     | 'Family'
+
+    | 'Resource'
+    | 'Principal'
     ;
 
 export function makeCacheKey(type: CacheTypes, ids: (string | number)[]) {

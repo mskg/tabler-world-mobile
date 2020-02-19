@@ -81,7 +81,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
         this.props.startWatchNearby();
 
         if (!await Location.isBackgroundLocationAvailableAsync()) {
-            this.setState({ message: I18N.NearbyMembers.notsupported, canSet: false });
+            this.setState({ message: I18N.Screen_NearbyMembers.notsupported, canSet: false });
             return;
         }
 
@@ -89,7 +89,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
 
         if (result.status !== 'granted') {
             this.setState({
-                message: I18N.NearbyMembers.permissions,
+                message: I18N.Screen_NearbyMembers.permissions,
                 canSet: Platform.OS === 'ios',
             });
 
@@ -98,7 +98,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
 
         if (Platform.OS === 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
             this.setState({
-                message: I18N.NearbyMembers.always,
+                message: I18N.Screen_NearbyMembers.always,
                 canSet: Platform.OS === 'ios',
             });
 
@@ -131,7 +131,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
             try { disableNearbyTablers(); } catch { }
             // this.props.stopWatchNearby();
 
-            Alert.alert(I18N.Settings.locationfailed);
+            Alert.alert(I18N.Screen_Settings.locationfailed);
         }
 
         this.setState({ enabling: false });
@@ -178,8 +178,8 @@ class NearbyOptInBase extends PureComponent<Props, State> {
                 {!this.state.enabling && !this.props.nearbyMembersEnabled && !this.props.isOffline && (
                     <Message
                         theme={this.props.theme}
-                        text={I18N.NearbyMembers.off}
-                        button={I18N.NearbyMembers.on}
+                        text={I18N.Screen_NearbyMembers.off}
+                        button={I18N.Screen_NearbyMembers.on}
                         onPress={this._enable}
                     />
                 )}
@@ -188,7 +188,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
                     <Message
                         theme={this.props.theme}
                         text={this.state.message}
-                        button={this.state.canSet ? I18N.NearbyMembers.setlocation : undefined}
+                        button={this.state.canSet ? I18N.Screen_NearbyMembers.setlocation : undefined}
                         onPress={this._tryopen}
                     />
                 )}

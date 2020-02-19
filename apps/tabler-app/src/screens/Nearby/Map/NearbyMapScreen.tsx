@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import _ from 'lodash';
+import _, { remove } from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
-import MapView, { LatLng, Marker, Region } from 'react-native-maps';
+import MapView, { AnimatedRegion, MarkerAnimated, Region } from 'react-native-maps';
 import { FAB, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -27,6 +27,11 @@ type State = {
     centerOn?: Region,
     marginBottom: number,
     regionChanged: boolean,
+
+    members: {
+        member: NearbyMembers_nearbyMembers,
+        coordinates: AnimatedRegion,
+    }[],
 };
 
 type OwnProps = {
@@ -35,7 +40,6 @@ type OwnProps = {
 
 type StateProps = {
     location?: Location.LocationData,
-    address?: Location.Address,
     members?: NearbyMembers_nearbyMembers[],
     nearbyMap: boolean,
 };
@@ -56,7 +60,10 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
         this.state = {
             marginBottom: 1,
             regionChanged: false,
+            members: [],
         };
+
+        this.mergeMembers(this.props.members);
     }
 
     componentDidMount() {
@@ -98,7 +105,57 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
         this._fitMap();
     }
 
+    mergeMembers(members?: NearbyMembers_nearbyMembers[]) {
+        const newMembers = (members || []).filter((f) => f.location);
+        newMembers.forEach(this.mergeMember.bind(this));
+
+        if (this.props.members) {
+            remove(
+                this.state.members,
+                // @ts-ignore
+                (state) => newMembers.find((props) => props.member.id === state.member.member.id) === null,
+            );
+        }
+    }
+
+    mergeMember(member: NearbyMembers_nearbyMembers) {
+        const existing = this.state.members.find((m) => m.member.member.id === member.member.id);
+
+        if (existing) {
+            if (existing.member.location!.latitude !== member.location!.latitude
+                || existing.member.location!.longitude !== member.location!.longitude
+            ) {
+                existing.coordinates.timing({
+                    ...member.location,
+                    duration: 2000,
+                }).start();
+            } else if (__DEV__) {
+                existing.coordinates.timing({
+                    ...member.location,
+                    latitude: member.location!.latitude + Math.random() / 100,
+                    duration: 2000,
+                }).start();
+            }
+
+            Object.assign(existing.member, member);
+        } else {
+            this.state.members.push({
+                member,
+                // @ts-ignore
+                coordinates: new AnimatedRegion({
+                    ...member.location,
+                    latitudeDelta: 0,
+                    longitudeDelta: 0,
+                }),
+            });
+        }
+    }
+
     componentDidUpdate(prevProps: Props) {
+        if (prevProps.members !== this.props.members) {
+            this.mergeMembers(this.props.members);
+        }
+
         if (!prevProps.nearbyMap && this.props.nearbyMap) {
             this._fitMap();
         } else if ((!prevProps.members || prevProps.members.length === 0) && (this.props.members && this.props.members.length > 0)) {
@@ -124,8 +181,8 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                     {!this.props.nearbyMap && (
                         <Message
                             theme={this.props.theme}
-                            text={I18N.NearbyMembers.mapOff}
-                            button={I18N.NearbyMembers.on}
+                            text={I18N.Screen_NearbyMembers.mapOff}
+                            button={I18N.Screen_NearbyMembers.on}
                             onPress={() => this.props.showNearbySettings()}
                         />
                     )}
@@ -156,20 +213,20 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                                     backgroundColor: this.props.theme.colors.surface,
                                 }}
                             >
-                                {(this.props.members || []).filter((f) => f.canshowonmap).map((n) => (
-                                    <Marker
-                                        key={n.member.id.toString()}
-                                        identifier={n.member.id.toString()}
-                                        coordinate={n.address.location as LatLng}
-                                        tracksViewChanges={false}
-                                        title={`${n.member.firstname} ${n.member.lastname}\n${n.member.club.name}, ${n.member.association.name}`}
-                                        onCalloutPress={() => this.props.showProfile(n.member.id)}
+                                {this.state.members.map((n) => (
+                                    <MarkerAnimated
+                                        key={n.member.member.id.toString()}
+                                        identifier={n.member.member.id.toString()}
+                                        coordinate={n.coordinates}
+                                        tracksViewChanges={true}
+                                        title={`${n.member.member.firstname} ${n.member.member.lastname}\n${n.member.member.club.name}, ${n.member.member.association.name}`}
+                                        onCalloutPress={() => this.props.showProfile(n.member.member.id)}
                                     >
                                         <Pin
                                             color={this.props.theme.colors.accent}
-                                            member={n.member}
+                                            member={n.member.member}
                                         />
-                                    </Marker>
+                                    </MarkerAnimated>
                                 ))}
                             </MapView>
 
@@ -189,7 +246,6 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
 export const NearbyMapScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
         location: state.location.location,
-        address: state.location.address,
         members: state.location.nearbyMembers,
         nearbyMap: state.settings.nearbyMembersMap || false,
     }),

@@ -16,11 +16,11 @@ export class ReloaderBase extends React.Component<{showReloadDialog, checkAppSta
 
         if (showReloadDialog === true && showReloadDialog !== prevProps.showReloadDialog) {
             Alert.alert(
-                I18N.Loader.title,
-                I18N.Loader.text,
+                I18N.Component_Loader.title,
+                I18N.Component_Loader.text,
                 [
                     {
-                        text: I18N.Loader.accept,
+                        text: I18N.Component_Loader.accept,
                         onPress: () => {
                             Updates.reloadFromCache();
                         },

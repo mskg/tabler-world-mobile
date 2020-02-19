@@ -17,7 +17,7 @@ export const Social = ({ social, theme }: { social: Member_Member_socialmedia | 
     return (
         <View style={styles.actions}>
             <ActionButton
-                text={I18N.Member.Actions.facebook}
+                text={I18N.Screen_Member.Actions.facebook}
                 size={32}
                 onPress={() => OpenLink.url(social.facebook as string)}
                 icon="logo-facebook"
@@ -26,7 +26,7 @@ export const Social = ({ social, theme }: { social: Member_Member_socialmedia | 
                 disabledColor={theme.colors.disabled} />
 
             <ActionButton
-                text={I18N.Member.Actions.instagram}
+                text={I18N.Screen_Member.Actions.instagram}
                 size={32}
                 onPress={() => OpenLink.url(social.instagram as string)}
                 icon="logo-instagram"
@@ -36,7 +36,7 @@ export const Social = ({ social, theme }: { social: Member_Member_socialmedia | 
             />
 
             <ActionButton
-                text={I18N.Member.Actions.twitter}
+                text={I18N.Screen_Member.Actions.twitter}
                 size={32}
                 onPress={() => OpenLink.url(social.twitter as string)}
                 icon="logo-twitter"
@@ -45,7 +45,7 @@ export const Social = ({ social, theme }: { social: Member_Member_socialmedia | 
                 disabledColor={theme.colors.disabled} />
 
             <ActionButton
-                text={I18N.Member.Actions.linkedin}
+                text={I18N.Screen_Member.Actions.linkedin}
                 size={32}
                 onPress={() => OpenLink.url(social.linkedin as string)}
                 icon="logo-linkedin"

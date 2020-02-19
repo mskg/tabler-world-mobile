@@ -13,18 +13,18 @@ export class MemberTitleBase extends React.PureComponent<{
         return diplayFirstNameFirst
             ? sortByLastName
                 ? [
-                    <Text key="1">{member.firstname}</Text>,
+                    <Text key="1">{member?.firstname}</Text>,
                     <Title style={styles.title} key="2">
                         {' '}
-                        {member.lastname}
+                        {member?.lastname}
                     </Title>,
                     // <CountryFlag key="3" />,
                 ]
                 : [
                     <Title style={styles.title} key="1">
-                        {member.firstname}
+                        {member?.firstname}
                     </Title>,
-                    <Text key="2"> {member.lastname}</Text>,
+                    <Text key="2"> {member?.lastname}</Text>,
                     // <CountryFlag key="3" />,
                 ]
             : sortByLastName
@@ -32,14 +32,14 @@ export class MemberTitleBase extends React.PureComponent<{
                     <Title style={styles.title} key="1">
                         {member.lastname}
                     </Title>,
-                    <Text key="2"> {member.firstname}</Text>,
+                    <Text key="2"> {member?.firstname}</Text>,
                     // <CountryFlag key="3"  />,
                 ]
                 : [
-                    <Text key="1">{member.lastname}</Text>,
+                    <Text key="1">{member?.lastname}</Text>,
                     <Title style={styles.title} key="2">
                         {' '}
-                        {member.firstname}
+                        {member?.firstname}
                     </Title>,
                     // <CountryFlag key="3" />,
                 ];

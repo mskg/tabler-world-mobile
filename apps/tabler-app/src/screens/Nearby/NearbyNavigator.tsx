@@ -29,14 +29,14 @@ export const NearbyNavigator = createMaterialTopTabNavigator(
         [Routes.List]: {
             screen: NearbyListScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.NearbyMembers.Tabs.list} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_NearbyMembers.Tabs.list} />,
             },
         },
 
         [Routes.Map]: {
             screen: NearbyMapScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.NearbyMembers.Tabs.map} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_NearbyMembers.Tabs.map} />,
             },
         },
     },

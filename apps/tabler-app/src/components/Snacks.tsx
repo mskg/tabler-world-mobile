@@ -81,7 +81,7 @@ export class SnacksBase extends React.Component<Props, State> {
                         : snack.hideAction
                             ? undefined
                             : {
-                                label: I18N.SnackBar.dismiss,
+                                label: I18N.Component_SnackBar.dismiss,
                                 onPress: () => { },
                             }}>
 

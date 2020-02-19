@@ -6,6 +6,9 @@ import { resolveDebugPrincipal } from '../debug/resolveDebugPrincipal';
 import { lookupPrincipal } from '../sql/lookupPrincipal';
 import { Family } from '../types/Family';
 import { IPrincipal } from '../types/IPrincipal';
+import { transportToPrincipal } from './transportToPrincipal';
+
+const isNullOrEmpty = (str: any) => !str || str === '';
 
 export async function resolvePrincipal(client: IDataService, event: APIGatewayProxyEvent): Promise<IPrincipal> {
     const authorizer = event.requestContext.authorizer;
@@ -13,24 +16,13 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
         throw new AuthenticationError('Authorizer missing');
     }
 
-    let resolvedPrincipal: IPrincipal;
+    let resolvedPrincipal: any;
 
     if (isDebugMode(event)) {
         console.warn(`********* AUTHENTICATION DEBUG MODE *********`);
         resolvedPrincipal = resolveDebugPrincipal(event.headers);
     } else {
-        const { version, area, club, association, id, email, family } = authorizer;
-
-        // tslint:disable: triple-equals
-        if (area == null || area == '') { throw new AuthenticationError('Authorizer missing (area)'); }
-        if (club == null || club == '') { throw new AuthenticationError('Authorizer missing (club)'); }
-        if (association == null || association == '') { throw new AuthenticationError('Authorizer missing (association)'); }
-        if (id == null || id == '') { throw new AuthenticationError('Authorizer missing (id)'); }
-        if (email == null || email == '') { throw new AuthenticationError('Authorizer missing (email)'); }
-
-        if (version === '1.2') {
-            if (family == null || family == '') { throw new AuthenticationError('Authorizer missing (family)'); }
-        }
+        const { version, area, club, association, id, email, family, roles } = transportToPrincipal(authorizer);
 
         resolvedPrincipal = {
             version,
@@ -39,20 +31,27 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
             association,
             area,
             club,
-            id: parseInt(id, 10),
-        };
+            roles,
+            id: parseInt(id as any, 10),
+        } as IPrincipal;
     }
 
     if (
-        typeof (resolvedPrincipal.association) != 'string'
-        || typeof (resolvedPrincipal.email) != 'string'
-        || typeof (resolvedPrincipal.area) != 'string'
-        || typeof (resolvedPrincipal.club) != 'string'
-        || typeof (resolvedPrincipal.id) != 'number'
+        typeof (resolvedPrincipal.email) !== 'string'
+
+        || typeof (resolvedPrincipal.id) !== 'number'
+        || isNaN(resolvedPrincipal.id)
         || resolvedPrincipal.id <= 0
-        || resolvedPrincipal.area === ''
-        || resolvedPrincipal.club === '') {
-        throw new AuthenticationError('Context not complete');
+
+        || typeof (resolvedPrincipal.association) !== 'string'
+        || typeof (resolvedPrincipal.area) !== 'string'
+        || typeof (resolvedPrincipal.club) !== 'string'
+
+        || isNullOrEmpty(resolvedPrincipal.association)
+        || isNullOrEmpty(resolvedPrincipal.area)
+        || isNullOrEmpty(resolvedPrincipal.club)
+    ) {
+        throw new AuthenticationError('Authorizer: Context not complete');
     }
 
     // 1.2 checks
@@ -61,7 +60,7 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
             resolvedPrincipal.version !== '1.2'
             || resolvedPrincipal.family !== Family.RTI
         ) {
-            throw new AuthenticationError('Context not complete');
+            throw new AuthenticationError('Authorizer: Context (v1.2) not complete');
         }
     }
 
@@ -72,5 +71,5 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
         return await lookupPrincipal(client, resolvedPrincipal.email);
     }
 
-    return resolvedPrincipal;
+    return resolvedPrincipal as IPrincipal;
 }

@@ -1,25 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
+import color from 'color';
 import React from 'react';
-import { IconButton, withTheme, Chip } from 'react-native-paper';
+import { IconButton, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import { CachedImage } from '../../../components/Image/CachedImage';
 import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
+import { InternalMemberListItemFooter } from '../../../components/Member/InternalMemberListItemFooter';
 import { MemberTitle } from '../../../components/Member/MemberTitle';
-import { distance } from '../../../helper/distance';
-import { timespan } from '../../../helper/timespan';
+import { RoleChip } from '../../../components/Member/RoleChip';
+import { RoleChips } from '../../../components/Member/RoleChips';
+import { formatDistance } from '../../../helper/formatting/formatDistance';
+import { formatTimespan } from '../../../helper/formatting/formatTimespan';
 import { I18N } from '../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../model/Features';
+import { MemberOverviewFragment, MemberOverviewFragment_roles } from '../../../model/graphql/MemberOverviewFragment';
 import { NearbyMembers_nearbyMembers_member } from '../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../model/IAppState';
 import { showProfile, startConversation } from '../../../redux/actions/navigation';
-import { isFeatureEnabled, Features } from '../../../model/Features';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { MemberOverviewFragment, MemberOverviewFragment_roles } from '../../../model/graphql/MemberOverviewFragment';
-import { InternalMemberListItemFooter } from '../../../components/Member/InternalMemberListItemFooter';
-import { RoleChips } from '../../../components/Member/RoleChips';
-import { styles } from '../../../components/Member/Styles';
-import { View } from 'react-native';
-import { CachedImage } from '../../../components/Image/CachedImage';
-import { RoleChip } from '../../../components/Member/RoleChip';
-import color from 'color';
 
 type OwnProps = {
     member: NearbyMembers_nearbyMembers_member,
@@ -64,7 +62,7 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                     level={
                         this.props.member.association.flag ? (
                             <CachedImage
-                                containerStyle={{paddingRight: 5}}
+                                containerStyle={{ paddingRight: 5 }}
                                 style={{ width: 12, height: 12, borderRadius: 12 }}
                                 cacheGroup={'other'}
                                 uri={this.props.member.association.flag}
@@ -94,11 +92,17 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                 title={<MemberTitle member={this.props.member} />}
                 subtitle={
                     // tslint:disable-next-line: prefer-template
-                    distance(this.props.distance) + ', ' + I18N.NearbyMembers.ago(
-                        timespan(
-                            Date.now(),
-                            new Date(this.props.lastseen).getTime(),
-                        ))
+                    formatDistance(this.props.distance)
+                    + ', '
+                    + I18N.format(
+                        I18N.Screen_NearbyMembers.ago,
+                        {
+                            timespan: formatTimespan(
+                                Date.now(),
+                                new Date(this.props.lastseen).getTime(),
+                            ),
+                        },
+                    )
                 }
 
                 bottom={this._renderFooter}
@@ -109,7 +113,7 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                             <IconButton
                                 style={{ marginRight: 32 }}
                                 size={size}
-                                icon={({ size: iconSize, color }) => (<Ionicons name="md-chatboxes" color={color} size={iconSize} />)}
+                                icon={({ size: iconSize, color: c }) => (<Ionicons name="md-chatboxes" color={c} size={iconSize} />)}
                                 color={this.props.theme.colors.accent}
                                 onPress={this._startConversation}
                             />

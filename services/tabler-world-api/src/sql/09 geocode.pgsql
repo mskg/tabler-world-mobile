@@ -106,46 +106,15 @@ drop view if exists userlocations_match cascade;
 CREATE or replace view userlocations_match as
 select
     userlocations.id as member,
-    profiles.association,
-    profiles.club,
-    profiles.area,
     userlocations.point,
     userlocations.accuracy,
     userlocations.speed,
     userlocations.lastseen,
     cast(coalesce(usersettings.settings->>'nearbymembersMap', 'false') as boolean) as canshowonmap,
-    jsonb_strip_nulls(jsonb_build_object(
-        'location',
-        jsonb_build_object(
-            'longitude',
-            ST_X (point::geometry),
-
-            'latitude',
-            ST_Y (point::geometry)
-        ),
-
-        'city',
-        nullif(coalesce(userlocations.address->>'city', userlocations.address->0->>'city'), ''),
-
-        'region',
-        nullif(userlocations.address->>'region', ''),
-
-        'country',
-        nullif(coalesce(userlocations.address->>'isoCountryCode', userlocations.address->>'country'), ''),
-
-        'street1',
-        nullif(userlocations.address->>'street1', ''),
-
-        'street2',
-        nullif(userlocations.address->>'street2', ''),
-
-        'postal_code',
-        nullif(userlocations.address->>'postalCode', '')
-    )) as address,
-    userlocations
+    userlocations.address
 from
     userlocations
-    inner join profiles on profiles.id = userlocations.id
+    inner join profiles on (profiles.id = userlocations.id and profiles.removed = false)
     left join usersettings on userlocations.id = usersettings.id
 ;
 
@@ -183,8 +152,6 @@ BEGIN
     END IF;
 
     -- ELSIF TG_OP = 'DELETE' THEN
-    --     INSERT INTO account_audit (operation, account_id, account_name, debt, balance)
-    --     VALUES (TG_OP, OLD.*);
     --     RETURN OLD;
     -- END IF;
 END;

@@ -27,8 +27,6 @@ export async function updateParameters() {
             },
         });
 
-        // await getPersistor().persist();
-
         if (result.data.getParameters != null) {
             const keys = Object.keys(ParameterName).map(
                 (k) => `Parameter_${ParameterName[k as ParameterName]}`);

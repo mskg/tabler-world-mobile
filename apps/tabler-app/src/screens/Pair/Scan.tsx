@@ -82,11 +82,11 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                 />
 
                 {hasCameraPermission === null &&
-                    <EmptyComponent title={I18N.Pair.request} />
+                    <EmptyComponent title={I18N.Screen_Pair.request} />
                 }
 
                 {hasCameraPermission === false
-                    ? <EmptyComponent title={I18N.Pair.permission} />
+                    ? <EmptyComponent title={I18N.Screen_Pair.permission} />
                     : this.state.visible
                         ? (
                             <Camera
@@ -117,9 +117,9 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
             this.props.addFavorite({ id: parseInt(queryParams.id, 10) });
             this.props.showProfile(parseInt(queryParams.id, 10));
             this.props.addSnack({
-                message: I18N.Pair.remove,
+                message: I18N.Screen_Pair.remove,
                 action: {
-                    label: I18N.Pair.undo,
+                    label: I18N.Screen_Pair.undo,
                     onPress: () => this.props.removeFavorite({ id: parseInt(queryParams.id || '0', 10) }),
                 },
             });

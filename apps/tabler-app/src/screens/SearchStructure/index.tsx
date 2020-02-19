@@ -14,7 +14,7 @@ import { I18N } from '../../i18n/translation';
 import { SearchDirectory_SearchDirectory_nodes } from '../../model/graphql/SearchDirectory';
 import { IAppState } from '../../model/IAppState';
 import { addStructureSearch } from '../../redux/actions/history';
-import { showAssociation, showClub } from '../../redux/actions/navigation';
+import { showAssociation, showClub, showArea } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
 import { AssociationsList } from './AssociationsList';
 import { logger } from './logger';
@@ -40,13 +40,14 @@ type StateProps = {
 
 type DispatchPros = {
     showClub: typeof showClub;
+    showArea: typeof showArea;
     showAssociation: typeof showAssociation;
     addStructureSearch: typeof addStructureSearch;
 };
 
 type NavigationParams = {
     expandAssociations?: boolean,
-}
+};
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<NavigationParams>;
 
@@ -137,7 +138,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
         }
 
         if (item.__typename === 'Area') {
-            this.props.showAssociation(item.association.id, item.association.name);
+            this.props.showArea(item.id);
         }
         // this.props.showProfile(item.id);
     }
@@ -173,7 +174,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
                                     ref={(fl) => this._searchBar = fl}
                                     style={[styles.searchbar]}
                                     selectionColor={this.props.theme.colors.accent}
-                                    placeholder={I18N.Search.search}
+                                    placeholder={I18N.Screen_Search.search}
                                     autoCorrect={false}
 
                                     value={this.state.query}
@@ -196,6 +197,7 @@ export const SearchStructureScreen = connect(
     {
         showClub,
         showAssociation,
+        showArea,
         addStructureSearch,
     },
 )(

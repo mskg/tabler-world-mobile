@@ -18,8 +18,12 @@ provider:
   stackName: tabler-world-auth-redirect
   stage: prod
   region: eu-west-1
+
   deploymentBucket:
+    name: tabler-world-deployments
+    maxPreviousDeploymentArtifacts: 5
     blockPublicAccess: true
+    serverSideEncryption: AES256
 
 resources:
   Resources:

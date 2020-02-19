@@ -80,7 +80,7 @@ class ImagePickerBase extends React.Component<Props, State> {
         const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
         if (status !== 'granted') {
-            alert(I18N.ImagePicker.nogallery);
+            alert(I18N.Component_ImagePicker.nogallery);
             return;
         }
 
@@ -109,7 +109,7 @@ class ImagePickerBase extends React.Component<Props, State> {
 
         if (hasPermission === false) {
             return (
-                <EmptyComponent title={I18N.ImagePicker.nocamera} />
+                <EmptyComponent title={I18N.Component_ImagePicker.nocamera} />
             );
         }
 

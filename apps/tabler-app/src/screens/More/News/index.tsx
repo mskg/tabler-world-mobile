@@ -85,7 +85,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
                         </View>
 
                         <Text style={styles.button} onPress={showArticle}>
-                            {I18N.ReadMore.more}
+                            {I18N.Component_ReadMore.more}
                         </Text>
                     </Card.Content>
                 )}
@@ -94,7 +94,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
 
                 {false && item.album && (
                     <Card.Actions style={styles.action}>
-                        <Button color={this.props.theme.colors.accent} onPress={_showAlbum}>{I18N.Albums.details}</Button>
+                        <Button color={this.props.theme.colors.accent} onPress={_showAlbum}>{I18N.Screen_Albums.details}</Button>
                     </Card.Actions>
                 )}
             </Card>
@@ -107,7 +107,7 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
 
     render() {
         return (
-            <ScreenWithHeader header={{ showBack: true, title: I18N.News.title }}>
+            <ScreenWithHeader header={{ showBack: true, title: I18N.Screen_News.title }}>
                 <Query<TopNews> query={GetNewsQuery} fetchPolicy={this.props.fetchPolicy}>
                     {({ loading, error, data, refetch }) => {
                         if (error) throw error;

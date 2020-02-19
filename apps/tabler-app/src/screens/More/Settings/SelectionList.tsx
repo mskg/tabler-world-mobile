@@ -4,7 +4,9 @@ import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../../theme/colors';
 import { Element } from './Element';
 import { styles } from './Styles';
 
-export const SelectionList = ({ theme, field, items, value, onChange }) => {
+type Props = { theme, field, items, value, onChange, onClose?};
+
+export const SelectionList = ({ theme, field, items, value, onChange, onClose }: Props) => {
     return <Element
         theme={theme}
         field={field}
@@ -14,6 +16,7 @@ export const SelectionList = ({ theme, field, items, value, onChange }) => {
                 placeholder={{}}
                 value={value || ''}
                 onValueChange={onChange}
+                onClose={onClose}
                 textInputProps={{
                     style: {
                         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,

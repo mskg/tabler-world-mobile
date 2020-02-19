@@ -1,3 +1,4 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import * as Contacts from 'expo-contacts';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
@@ -5,7 +6,6 @@ import { Member_Member } from '../../model/graphql/Member';
 import { collectEMails, collectPhones } from '../collect';
 import { makeMemberLink } from '../linking/makeMemberLink';
 import { getParameterValue } from '../parameters/getParameterValue';
-import { UrlParameters } from '../parameters/Urls';
 import { downloadPic } from './downloadPic';
 import { logger } from './logger';
 import { removeNulls } from './removeNulls';
@@ -50,7 +50,7 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
                 street: [member.address.street1, member.address.street2].filter(Boolean).join('\n'),
                 city: member.address.city,
                 postalCode: member.address.postal_code,
-                isoCountryCode: I18N.Countries.translate(member.address.country || 'de'),
+                isoCountryCode: I18N.countryName(member.address.country || 'de'),
             }],
         };
 

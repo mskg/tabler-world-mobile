@@ -120,7 +120,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 this.audit.trackAction(ActionNames.LogonConfirmFailed);
 
                 this.setState({
-                    error: I18N.SignIn.accessDenied,
+                    error: I18N.Screen_SignIn.accessDenied,
                     noretry: true,
                     working: false,
                 });
@@ -130,7 +130,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
             if (err.code === 'NotAuthorizedException') {
                 this.setState({
-                    error: I18N.SignIn.codeWrong,
+                    error: I18N.Screen_SignIn.codeWrong,
                     noretry: true,
                     working: false,
                 });
@@ -138,7 +138,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 this.setState({
                     tries: this.state.tries - 1,
                     working: false,
-                    error: I18N.SignIn.codeVerify(this.state.tries),
+                    error: I18N.format(I18N.Screen_SignIn.codeVerify, { tries: this.state.tries }),
                 });
             }
         }
@@ -159,19 +159,19 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                 }
                             >
                                 <Text style={{ color: 'red' }}>
-                                    {I18N.SignIn.warning}
+                                    {I18N.Screen_SignIn.warning}
                                 </Text>
                             </Banner>
 
                             <Logo />
                             <Greeting
-                                title={I18N.SignIn.confirmTitle}
+                                title={I18N.Screen_SignIn.confirmTitle}
                                 subtitle={this.props.authState.challengeParam.email}
                             />
 
                             <View style={styles.inputContainer}>
                                 <Input
-                                    placeholder={I18N.SignIn.placeholderCode}
+                                    placeholder={I18N.Screen_SignIn.placeholderCode}
                                     value={this.state.code}
                                     secureTextEntry={true}
                                     textContentType="password"
@@ -191,7 +191,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                     loading={this.state.working}
                                     onPress={this._confirm}
                                 >
-                                    {I18N.SignIn.confirm}
+                                    {I18N.Screen_SignIn.confirm}
                                 </Button>
 
                                 <Button
@@ -200,7 +200,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                     mode="contained"
                                     onPress={() => this.props.signin()}
                                 >
-                                    {I18N.SignIn.cancel}
+                                    {I18N.Screen_SignIn.cancel}
                                 </Button>
                             </View>
 

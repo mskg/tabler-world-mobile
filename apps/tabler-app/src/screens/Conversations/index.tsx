@@ -26,6 +26,7 @@ import { WaitingForNetwork } from '../Conversation/WaitingForNetwork';
 import { updateBadgeFromConversations } from './chatHelpers';
 import { ConversationListItem } from './ConversationListItem';
 import { MemberListPlaceholder } from './MemberListPlaceholder';
+import { Ionicons } from '@expo/vector-icons';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -120,12 +121,19 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                                 <Appbar.Content
                                     key="cnt"
                                     titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
-                                    title={I18N.Conversations.title}
+                                    title={I18N.Screen_Conversations.title}
                                 />
                             )
                             : <WaitingForNetwork key="network" />
                         ,
-                        <Appbar.Action key="new" icon="add" disabled={!this.props.chatEnabled} onPress={() => this.props.startConversation()} />,
+                        (
+                            <Appbar.Action
+                                key="new"
+                                icon={({ color, size }) => <Ionicons size={size} color={color} name="md-create" />}
+                                disabled={!this.props.chatEnabled}
+                                onPress={() => this.props.startConversation()}
+                            />
+                        ),
                     ],
                 }}
             >
@@ -158,7 +166,7 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                                                 renderItem={this._renderItem}
                                                 getItemLayout={this._getItemLayout}
 
-                                                ListEmptyComponent={loading ? undefined : <EmptyComponent title={I18N.Members.noresults} />}
+                                                ListEmptyComponent={loading ? undefined : <EmptyComponent title={I18N.Screen_Members.noresults} />}
 
                                                 data={data && data.Conversations ? data.Conversations.nodes : []}
 

@@ -8,4 +8,5 @@ export type Param_TTLS = {
     Documents: number;
     News: number;
     Principal: number;
+    I18N: number;
 };

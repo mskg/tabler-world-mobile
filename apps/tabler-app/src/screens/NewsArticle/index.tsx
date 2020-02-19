@@ -63,7 +63,7 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
                         <ScreenWithHeader
                             header={{
                                 // title: data != null && data.NewsArticle != null ? data.NewsArticle.name : I18N.News.title,
-                                title: I18N.News.title,
+                                title: I18N.Screen_News.title,
                                 showBack: true,
                             }}
                         >

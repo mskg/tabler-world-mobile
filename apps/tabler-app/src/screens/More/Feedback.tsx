@@ -1,9 +1,9 @@
+import { UrlParameters } from '@mskg/tabler-world-config-app';
 import React from 'react';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { WebScreen } from '../../components/WebScreen';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
-import { UrlParameters } from '../../helper/parameters/Urls';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
 
@@ -31,7 +31,7 @@ export class FeedbackScreen extends AuditedScreen {
             <WebScreen
                 showBack={true}
                 url={this.state.url}
-                title={I18N.Feedback.title}
+                title={I18N.Screen_Feedback.title}
             />
         );
     }

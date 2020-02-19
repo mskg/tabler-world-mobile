@@ -1,6 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ScreenOrientation } from 'expo';
 import React from 'react';
+import { UIManager } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { bootstrapAnalytics } from './analytics/bootstrapAnalytics';
 import { withApollo } from './apollo/withApollo';
@@ -58,6 +59,12 @@ logger.log('Bootstrapping background-location');
 registerLocationTask();
 
 fix2940();
+
+try {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+} catch { }
 
 // problems with navigation on 36.0.0++
 // useScreens();
