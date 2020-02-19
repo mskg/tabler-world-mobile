@@ -1,14 +1,16 @@
-import { AuthPolicy, HttpVerb, IPrincipal, lookupPrincipal, validateToken } from '@mskg/tabler-world-auth-client';
+import { AuthPolicy, HttpVerb, IPrincipal, lookupPrincipal, principalToTransport, validateToken } from '@mskg/tabler-world-auth-client';
 import { withClient } from '@mskg/tabler-world-rds-client';
 import { CustomAuthorizerEvent, CustomAuthorizerResult, Handler } from 'aws-lambda';
 import { isDemoKey } from '../helper/isDemoKey';
+
+const UNAUTHORIZED = 'Unauthorized'; // should result in 401
 
 // tslint:disable-next-line: export-name
 export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'Unauthorized'> = async (event, context) => {
     const token = event.authorizationToken;
     if (!token) {
         console.log('No token provided');
-        return 'Unauthorized'; // should result in 401
+        return UNAUTHORIZED;
     }
 
     // Get AWS AccountId and API Options
@@ -40,35 +42,37 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | 'U
         const result = await validateToken(
             process.env.AWS_REGION as string,
             process.env.UserPoolId as string,
-            token);
+            token,
+        );
 
         principalId = result.principalId;
         email = result.email;
     } catch (e) {
         console.error(e);
-        return 'Unauthorized'; // should result in 401
+        return UNAUTHORIZED;
     }
 
+    // may result in 500 if DB fails - which is ok
     return await withClient(context, async (client) => {
         let principal: IPrincipal;
         try {
             principal = await lookupPrincipal(client, email);
         } catch (e) {
             console.error(e);
-            return 'Unauthorized'; // should result in 401
+            return UNAUTHORIZED; // should result in 401
         }
 
         const policy = new AuthPolicy(principalId, awsAccountId, apiOptions);
 
-        policy.allowMethod(HttpVerb.OPTIONS, '/graphql');
+        // GET with short urls
         policy.allowMethod(HttpVerb.GET, '/graphql');
+
+        // Standard
+        policy.allowMethod(HttpVerb.OPTIONS, '/graphql');
         policy.allowMethod(HttpVerb.POST, '/graphql');
 
         const result = policy.build();
-        result.context = {
-            ...principal,
-            principalId,
-        };
+        result.context = principalToTransport(principal, principalId);
 
         // this enforces rate throtteling on the API
         result.usageIdentifierKey = `tabler-world-api-lambda-authorizer-${stage}`;

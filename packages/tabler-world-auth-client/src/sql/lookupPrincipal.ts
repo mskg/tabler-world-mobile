@@ -2,6 +2,7 @@ import { IDataService } from '@mskg/tabler-world-rds-client';
 import { IPrincipal } from '../types/IPrincipal';
 
 const MSG = 'Principal not found';
+
 export async function lookupPrincipal(client: IDataService, email: string): Promise<IPrincipal> {
     if (email == null || email === '') {
         throw new Error(MSG);
@@ -29,7 +30,7 @@ where
         throw new Error(MSG);
     }
 
-    const { id, club, area, association, family /*roles*/ } = res.rows[0];
+    const { id, club, area, association, family, roles } = res.rows[0];
 
     // tslint:disable: object-shorthand-properties-first
     return {
@@ -43,6 +44,6 @@ where
         association,
         email: email.toLowerCase(),
 
-        // roles,
+        roles: roles ? roles.join(',') : '',
     } as IPrincipal;
 }

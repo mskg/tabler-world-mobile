@@ -4,6 +4,7 @@ import { OperationMessage } from 'subscriptions-transport-ws';
 import { validateToken } from '../cognito/validateToken';
 import { isDebugMode } from '../debug/isDebugMode';
 import { resolveDebugPrincipal } from '../debug/resolveDebugPrincipal';
+import { Environment } from '../Environment';
 import { lookupPrincipal } from '../sql/lookupPrincipal';
 import { IPrincipal } from '../types/IPrincipal';
 
@@ -28,7 +29,7 @@ export async function resolvePrincipal(
             throw new AuthenticationError('Unauthorized (token)');
         }
 
-        const { email } = await validateToken(process.env.AWS_REGION as string, process.env.UserPoolId as string, token);
+        const { email } = await validateToken(Environment.AWS_REGION as string, Environment.USERPOOL_ID as string, token);
 
         // we don't need additional validations here this is already the original function
         principal = typeof (client) === 'function'

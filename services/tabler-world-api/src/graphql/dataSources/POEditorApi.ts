@@ -1,5 +1,5 @@
+import { xHttps } from '@mskg/tabler-world-aws';
 import { removeEmptySlots } from '@mskg/tabler-world-common';
-import { request } from 'https';
 import querystring from 'querystring';
 import { getI18NParameters } from '../helper/getI18NParameters';
 
@@ -54,7 +54,7 @@ export class POEditorApi {
                 id: config.poeditor.id,
             });
 
-            const req = request(
+            const req = xHttps.request(
                 {
                     host: config.poeditor.host,
                     port: 443,

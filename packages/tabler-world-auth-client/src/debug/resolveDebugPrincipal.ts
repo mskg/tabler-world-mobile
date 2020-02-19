@@ -1,3 +1,4 @@
+import { Environment } from '../Environment';
 import { IPrincipal } from '../types/IPrincipal';
 
 function envToJSON(val: string) {
@@ -14,8 +15,8 @@ export function resolveDebugPrincipal(authInfo: { [key: string]: string }): IPri
     let deviceConfig = null;
 
     // allow device specific configuration
-    if (deviceId && process.env.API_DEBUG_DEVICES) {
-        const devicesConfig = envToJSON(process.env.API_DEBUG_DEVICES);
+    if (deviceId && Environment.DEBUG_DEVICES) {
+        const devicesConfig = envToJSON(Environment.DEBUG_DEVICES);
         deviceConfig = devicesConfig[deviceId];
 
         if (deviceConfig != null) {
@@ -24,7 +25,7 @@ export function resolveDebugPrincipal(authInfo: { [key: string]: string }): IPri
         }
     }
 
-    const debugUserEnv = process.env.API_DEBUG_USER;
+    const debugUserEnv = Environment.DEBUG_USER;
     if (!deviceConfig && !debugUserEnv) {
         throw new Error('API_DEBUG_USER is not defined');
     }

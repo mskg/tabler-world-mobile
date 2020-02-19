@@ -1,8 +1,14 @@
 import { Family } from './Family';
 
-export interface IPrincipal {
+/**
+ * Serialized version for Lambda Context
+ */
+export interface ITransportPrincipal {
     version?: '1.2';
     family?: Family;
+
+    // cognito id
+    principalId?: string;
 
     id: number;
     email: string;
@@ -11,5 +17,5 @@ export interface IPrincipal {
     area: string;
     club: string;
 
-    roles?: string[];
+    roles?: string;
 }
