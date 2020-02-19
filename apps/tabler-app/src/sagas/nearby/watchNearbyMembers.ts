@@ -9,13 +9,13 @@ import { NearbyMembers, NearbyMembersVariables } from '../../model/graphql/Nearb
 import { IAppState } from '../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../queries/Location/GetNearbyMembersQuery';
 import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
+import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
 
 function* bgSync() {
     logger.debug('start');
 
     try {
-        // yield put(setNearby([]));
         const setting = yield getParameterValue<GeoParameters>(ParameterName.geo);
 
         // tslint:disable-next-line: no-constant-condition
@@ -23,14 +23,19 @@ function* bgSync() {
             const client = cachedAolloClient();
 
             try {
-                const location: LocationData | null = yield select(
-                    (state: IAppState) => state.location.location);
+                let location: LocationData | null = null;
 
                 const enabled: boolean = yield select(
                     (state: IAppState) => state.settings.nearbyMembers);
 
                 const offline: boolean = yield select(
                     (state: IAppState) => state.connection.offline);
+
+                // we update location
+                if (enabled && !offline) {
+                    yield updateLocation(false, false);
+                    location = yield select((state: IAppState) => state.location.location);
+                }
 
                 if (location && enabled && !offline) {
                     const hideOwnTable: boolean = yield select(
@@ -51,32 +56,7 @@ function* bgSync() {
                     const members = result.data?.nearbyMembers || [];
                     logger.debug('found', members.length, 'members');
 
-                    // best effort
                     yield put(setNearby(members));
-
-                    // if (members) {
-                    //     const corrections: AddressUpdateInput[] = yield geocodeMissing(members);
-
-                    //     if (corrections) {
-                    //         yield client.mutate<UpdateLocationAddress, UpdateLocationAddressVariables>({
-                    //             mutation: UpdateLocationAddressMutation,
-                    //             variables: {
-                    //                 corrections,
-                    //             },
-                    //         });
-
-                    //         // update adresses
-                    //         corrections.forEach((c) => {
-                    //             const existing = members.find((m) => m.member.id === c.member);
-                    //             if (existing != null && c.address != null) {
-                    //                 existing.address = c.address;
-                    //             }
-                    //         });
-
-                    //         // updated
-                    //         yield put(setNearby(members));
-                    //     }
-                    // }
                 } else {
                     yield put(setNearby([]));
                     logger.debug('no location or disabled');

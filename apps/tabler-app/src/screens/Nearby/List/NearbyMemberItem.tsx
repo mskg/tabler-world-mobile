@@ -81,8 +81,9 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
         );
     }
 
-    // tslint:disable-next-line: max-func-body-length
     render() {
+        if (!this.props.member) { return null; }
+
         return (
             <InternalMemberListItem
                 theme={this.props.theme}

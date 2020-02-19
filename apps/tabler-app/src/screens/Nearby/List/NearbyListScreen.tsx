@@ -1,4 +1,3 @@
-import * as Location from 'expo-location';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider, List, Text, Theme, withTheme } from 'react-native-paper';
@@ -10,6 +9,7 @@ import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { I18N } from '../../../i18n/translation';
+import { GeoCityLocation } from '../../../model/GeoCityLocation';
 import { NearbyMembers_nearbyMembers } from '../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../model/IAppState';
 import { showLocationHistory, showProfile } from '../../../redux/actions/navigation';
@@ -18,7 +18,6 @@ import { makeGroups } from './makeGroups';
 import { MeLocation } from './MeLocation';
 import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { NearbyMemberItem } from './NearbyMemberItem';
-import { GeoCityLocation } from '../../../model/GeoCityLocation';
 
 type State = {
 };
@@ -28,7 +27,6 @@ type OwnProps = {
 };
 
 type StateProps = {
-    location?: Location.LocationData,
     address?: GeoCityLocation,
     members: NearbyMembers_nearbyMembers[],
 };
@@ -89,7 +87,7 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
                                         {
                                             s.members.map((m) =>
                                                 (
-                                                    <React.Fragment key={m.member.id}>
+                                                    <React.Fragment key={m.member?.id}>
                                                         <NearbyMemberItem member={m.member} lastseen={m.lastseen} distance={m.distance} />
                                                         <Divider inset={true} />
                                                     </React.Fragment>
@@ -109,7 +107,6 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
 
 export const NearbyListScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
-        location: state.location.location,
         address: state.location.address,
         members: state.location.nearbyMembers || [],
     }),
