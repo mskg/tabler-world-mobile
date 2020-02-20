@@ -28,13 +28,17 @@ export async function useDatabase<T>(
         });
     }
 
+    // tslint:disable: object-shorthand-properties-first
     const client = new Client({
         host: connection.host,
         port: connection.port || 5432,
         user: connection.user,
-        database: connection.database,
-        ssl: connection.ssl == null ? true : connection.ssl,
         password,
+        database: connection.database,
+
+        // ssl mode = require
+        // https://github.com/brianc/node-postgres/issues/2089s
+        ssl: connection.ssl === false ? false : { rejectUnauthorized: false },
     });
 
     try {
