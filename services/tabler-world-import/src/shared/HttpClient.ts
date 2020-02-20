@@ -73,14 +73,17 @@ export class HttpClient {
 
             return new Promise<T>((resolve, reject) => {
                 try {
-                    const req = xHttps.request(options, async (res) => {
+                    const req = xHttps.request(options, (res) => {
                         if (res.statusCode === 429 && tryCount < maxTries - 1) {
                             const newTry = tryCount + 1;
 
                             console.log('[API] Got 429, sleeping ', newTry, 's');
-                            // tslint:disable-next-line: no-string-based-set-timeout
-                            await new Promise((r) => setTimeout(r, newTry * waitTime));
-                            return run(url, method, postdata, newTry);
+                            setTimeout(
+                                () => resolve(run(url, method, postdata, newTry)),
+                                newTry * waitTime,
+                            );
+
+                            return;
                         }
 
                         if (res.statusCode !== 200) {
