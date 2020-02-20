@@ -1,7 +1,7 @@
 import { xHttps } from '@mskg/tabler-world-aws';
 import { StopWatch } from '@mskg/tabler-world-common';
 import { RequestOptions } from 'https';
-import HttpsProxyAgent from 'https-proxy-agent';
+import createHttpsProxyAgent from 'https-proxy-agent';
 
 export class HttpClient {
     private _maxTries = 3;
@@ -46,7 +46,7 @@ export class HttpClient {
 
         const proxy = process.env.http_proxy;
         if (proxy != null) {
-            options.agent = new HttpsProxyAgent(proxy);
+            options.agent = createHttpsProxyAgent(proxy);
         }
 
         return {
@@ -68,7 +68,7 @@ export class HttpClient {
 
             const maxTries = this._maxTries;
             const waitTime = this._waitTime;
-            const run = this.run;
+            const run = this.run.bind(this);
             const stopWatch = new StopWatch();
 
             return new Promise<T>((resolve, reject) => {
