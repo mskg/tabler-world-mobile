@@ -683,6 +683,7 @@
         "NSCalendarsUsageDescription": "TABLER.APP update je agenda met evenementen en verjaardagen.",
         "NSLocationWhenInUseUsageDescription": "TABLER.APP laat andere leden en clubs in je omgeving zien.",
         "NSLocationAlwaysUsageDescription": "TABLER.APP gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen.",
+        "NSPhotoLibraryUsageDescription": "U kunt foto's naar andere leden sturen in TABLER.APP."
     }
 }
