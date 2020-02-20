@@ -14,7 +14,7 @@ If you like TABLER.APP and want to help make it better, that's great. We appreci
 The [Contributor License Agreement (CLA)](./docs/cla/fiduciary-license-license-agreement-2.0-2020-02-20-13_07_54.pdf) document is available for review as a PDF.
 
 ### Sign the CLA
-When you contribute to this source project with a new pull request, a bot will evaluate whether you have signed the CLA. If required, the bot will comment on the pull request, including a link to this system to accept the agreement.
+When you contribute to this source project with a new pull request, a [bot](https://cla-assistant.io) will evaluate whether you have signed the CLA. If required, the bot will comment on the pull request, including a link to this system to accept the agreement.
 
 ## Internationalization
 
