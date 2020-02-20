@@ -5,7 +5,8 @@
         "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
         "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
         "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
+        "NSPhotoLibraryUsageDescription": "You can send pictures to other members in TABLER.APP."
     },
     "Component_Whoops": {
         "title": "Whoops?",
@@ -44,7 +45,7 @@
         "signin": "please sign in with your TABLER.WORLD public e-mail address",
         "confirmTitle": "Enter Password",
         "codeWrong": "Verification failed, you have to restart.",
-        "accessDenied": "You cannot use this app with your login. If you feel that this is wrong, please member the TABLER.WORLD team via e-mail.",
+        "accessDenied": "You cannot use this app with your login. If you feel that this is wrong, please contact the TABLER.WORLD team via e-mail.",
         "codeVerify": "Could not verify password, {tries} tries left.",
         "demoMode": "Try the App",
         "join": "How to join Round Table?",

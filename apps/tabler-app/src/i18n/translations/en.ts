@@ -6,6 +6,7 @@ const en = {
         NSLocationWhenInUseUsageDescription: 'TABLER.APP shows other members and clubs arround your current location.',
         NSLocationAlwaysUsageDescription: 'TABLER.APP tracks your position to allow other members to get in touch with you.',
         NSLocationAlwaysAndWhenInUseUsageDescription: 'TABLER.APP tracks your position to allow other members to get in touch with you.',
+        NSPhotoLibraryUsageDescription: 'You can send pictures to other members in TABLER.APP.',
     },
 
     Component_Whoops: {
