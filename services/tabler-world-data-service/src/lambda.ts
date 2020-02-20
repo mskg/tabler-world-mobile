@@ -11,7 +11,7 @@ export const handler: Handler<IDataQuery, any> = (event, context, callback) => {
         } else {
             console.log(
                 logExecutableSQL(
-                    context.awsRequestId.replace(/[^A-Za-z0-9]/ig, ''),
+                    `SQL${context.awsRequestId.replace(/[^A-Za-z0-9]/ig, '')}`,
                     event,
                 ),
             );

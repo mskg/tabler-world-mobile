@@ -6,6 +6,9 @@
 - Conversations now shows latest message time
 - Changed client geocoding provider to bigdatacloud
 
+## Fixes
+- Fixed an issue that prevented locale-based formatting from beeing applied
+
 # v1.2 - Update 1
 
 ## Improvements

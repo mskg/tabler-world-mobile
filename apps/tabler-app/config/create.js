@@ -55,6 +55,45 @@ const patch = [
     { op: "add", path: "/expo/ios/config/googleMapsApiKey", value: process.env.API_KEY_GOOGLE_MAPS_IOS },
 ];
 
+// Write permission strings
+const en = require('../src/i18n/translations/en_strings.json');
+Object.keys(en.Permissions).forEach((p) => {
+    patch.push({
+        op: 'replace',
+        path: `/expo/ios/infoPlist/${p}`,
+        value: en.Permissions[p],
+    })
+});
+
+// Write permission strings for other languages
+const additionalLocales = (process.env.APP_LANGUAGES || 'de')
+    .split(',')
+    .filter((l) => l !== 'en');
+
+// write supported languages for getAppLanguage
+patch.push({
+    op: 'replace',
+    path: `/expo/extra/appLanguages`,
+    value: ['en', ...additionalLocales],
+});
+
+for (const loc of additionalLocales) {
+    const lang = require(`../src/i18n/translations/${loc}_strings.json`);
+    const perm = {
+        ...en.Permissions,
+        ... (lang.Permissions || {})
+    };
+
+    writeFileSync(__dirname + `/../src/i18n/permissions/${loc}.json`, JSON.stringify(perm, null, 4));
+
+    patch.push({
+        op: 'add',
+        path: `/expo/locales/${loc}`,
+        value: `./src/i18n/permissions/${loc}.json`,
+    });
+}
+
+// validate
 patch.forEach(v => {
     if ((v.value === "" || v.value == null) && !v.path.match(/Analytics/)) {
         console.error(`Check env '${v.path}' not available`);
@@ -62,5 +101,6 @@ patch.forEach(v => {
     }
 });
 
+// Write final file
 document = jsonpatch.applyPatch(document, patch).newDocument;
 writeFileSync(__dirname + "/../app.json", JSON.stringify(document, null, 4));

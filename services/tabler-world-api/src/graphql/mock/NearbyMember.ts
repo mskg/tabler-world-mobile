@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { randomLocation } from './randomLocation';
 
 export const NearbyMember = (_root: any, _args: any, context: any, _info: any) => {
     context.memberId = faker.random.number({
@@ -23,5 +24,11 @@ export const NearbyMember = (_root: any, _args: any, context: any, _info: any) =
 
         lastseen: () => faker.date.recent().getTime(),
         state: () => 'Steady',
+
+        location: randomLocation,
+        locationName: () => ({
+            name: () => faker.address.city(),
+            country: () => faker.address.countryCode(),
+        }),
     };
 };

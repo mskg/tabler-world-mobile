@@ -12,6 +12,7 @@ type Key =
     | 'sentry'
     | 'cognitoAnalytics'
     | 'amplitudeAnalytics'
+    | 'appLanguages'
     ;
 
 type ConfigTypes = string | string[] | {
