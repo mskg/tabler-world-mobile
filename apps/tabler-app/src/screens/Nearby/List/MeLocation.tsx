@@ -21,8 +21,6 @@ import { showLocationHistory } from '../../../redux/actions/navigation';
 import { handleLocationUpdate } from '../../../tasks/location/handleLocationUpdate';
 
 type State = {
-    message?: string,
-    canSet?: boolean,
     history?: boolean,
 };
 
@@ -43,6 +41,9 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class MeLocationBase extends React.Component<Props, State> {
+    state: State = {
+    };
+
     async componentDidMount() {
         try {
             const client = cachedAolloClient();
@@ -75,6 +76,7 @@ class MeLocationBase extends React.Component<Props, State> {
             >
                 {({ data: medata, error }) => {
                     if (error || medata == null || medata.Me == null) return null;
+
                     return (
                         <List.Section title={I18N.Screen_NearbyMembers.location} key={'me'}>
                             <InternalMeListItemBase
