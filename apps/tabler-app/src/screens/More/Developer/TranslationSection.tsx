@@ -1,7 +1,7 @@
 import { Updates } from 'expo';
 import _ from 'lodash';
 import React from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { Divider, List, Portal, Theme, withTheme } from 'react-native-paper';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { FullScreenLoading } from '../../../components/Loading';
@@ -130,7 +130,12 @@ class TranslationSectionBase extends React.Component<Props, State> {
     }
 
     _changeLanguage = (language: string) => {
-        this.setState({ language });
+        this.setState({ language }, () => {
+            // android does not fire OnClose
+            if (Platform.OS === 'android') {
+                this._setLanguage();
+            }
+        });
     }
 
     _setLanguage = () => {
