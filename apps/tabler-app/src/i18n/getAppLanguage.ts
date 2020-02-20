@@ -1,4 +1,5 @@
 import * as Localization from 'expo-localization';
+import { getConfigValue } from '../helper/getConfigValue';
 
 export type Languages = 'de' | 'fi' | 'is' | 'nl' | 'en';
 
@@ -16,21 +17,12 @@ export function getAppLanguage(): Languages {
         // tslint:disable-next-line: no-empty
     } catch { }
 
-    if (lang.startsWith('de')) {
-        return 'de';
+    const appLanguages = getConfigValue<string[]>('appLanguages');
+    const match = appLanguages.find((l) => lang.startsWith(l));
+
+    if (match) {
+        return match as Languages;
     }
-
-    // if (lang.startsWith('fi')) {
-    //     return 'fi';
-    // }
-
-    // if (lang.startsWith('is')) {
-    //     return 'is';
-    // }
-
-    // if (lang.startsWith('nl')) {
-    //     return 'nl';
-    // }
 
     return 'en';
 }

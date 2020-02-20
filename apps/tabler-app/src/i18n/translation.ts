@@ -1,5 +1,5 @@
 
-import _ from 'lodash';
+import { merge } from 'lodash';
 import moment from 'moment';
 import { Categories, Logger } from '../helper/Logger';
 import { countryName, CountryNameFunc } from './countryName';
@@ -19,13 +19,13 @@ export function replaceCurrentLanguage(otherLang: any) {
     // we must not touch the instance, replace properties
     Object.assign(
         currentLanguage,
-        _.merge(
-            // deep clone en
+        merge(
             JSON.parse(JSON.stringify(DEFAULT_LANGUAGE)),
             otherLang,
         ),
     );
 
+    // moment is loaded with all available locales
     moment.locale((currentLanguage as I18NType).id);
 
     currentLanguage.format = format;
@@ -35,7 +35,8 @@ export function replaceCurrentLanguage(otherLang: any) {
 }
 
 /**
- * This loads the build-in translations and internationalization options
+ * This loads the build-in translations and internationalization options. This method
+ * cannot be externalized due to cycling dependencies.
  *
  * @param lang
  */

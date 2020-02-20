@@ -34,6 +34,7 @@
         "deploy": "service deploy",
         "package": "service package",
         "remove": "service remove",
+        "ssh": "run-env ssh -N -L 5432:\\$SSH_PGBOUNCER:5432 \\$SSH_GATEWAY",
         "dev": "service dev --port 3002",
         "start": "ntl"
     }

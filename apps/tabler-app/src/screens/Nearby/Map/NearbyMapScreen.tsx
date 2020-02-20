@@ -217,7 +217,7 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                                         key={n.member.member.id.toString()}
                                         identifier={n.member.member.id.toString()}
                                         coordinate={n.coordinates}
-                                        tracksViewChanges={false}
+                                        tracksViewChanges={true}
                                         title={`${n.member.member.firstname} ${n.member.member.lastname}\n${n.member.member.club.name}, ${n.member.member.association.name}`}
                                         onCalloutPress={() => this.props.showProfile(n.member.member.id)}
                                     >
