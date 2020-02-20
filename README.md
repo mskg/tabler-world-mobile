@@ -8,11 +8,11 @@
 
 ## Contribution
 
-If you like TABLER.APP and want to help make it better then please contact us from inside the App.
+If you like TABLER.APP and want to help make it better, that's great. Please contact us from inside the App. We'll be right with you.
 
 ## Internationalization
 
-If want TABLER.APP in your language, no problem. Please follow the steps described [here](apps/tabler-app/src/i18n/translations/README.md).
+If you want TABLER.APP in your language, that's awesome. Please follow the steps described [in this guide](apps/tabler-app/src/i18n/translations/README.md).
 
 ## License
 
