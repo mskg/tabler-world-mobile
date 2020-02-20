@@ -683,6 +683,7 @@
         "NSCalendarsUsageDescription": "TABLER.APP aktualisiert deinen Kalender mit Event- und Geburtstagsdetails.",
         "NSLocationWhenInUseUsageDescription": "TABLER.APP zeigt andere Mitglieder und Clubs rund um deinen aktuellen Standort.",
         "NSLocationAlwaysUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
+        "NSPhotoLibraryUsageDescription": "Du kannst anderen Mitgliedern Bilder in TABLER.APP senden."
     }
 }
