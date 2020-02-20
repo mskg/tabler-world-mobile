@@ -22,6 +22,31 @@ function getSortKey(shortname: string) {
     return shortname;
 }
 
+type Role = {
+    role: string,
+    member: number,
+};
+
+/**
+ * We lookup all members as they have to be loaded anyway
+ *
+ * @param context
+ * @param roles
+ */
+async function ensureActiveMember(context: IApolloContext, roles?: Role[]) {
+    if (!roles) { return []; }
+
+    const result = await Promise.all(roles.map(async (r) => {
+        return {
+            ...r,
+            // returns null if the user is no longer valid
+            member: await context.dataSources.members.readOne(r.member),
+        };
+    }));
+
+    return result.filter((r) => r.member);
+}
+
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const StructureResolver = {
@@ -59,6 +84,7 @@ export const StructureResolver = {
             context.logger.log('Clubs', args);
             return context.dataSources.structure.allClubs(args.association || context.principal.association);
         },
+
 
         Club: (_root: any, args: ById, context: IApolloContext) => {
             context.logger.log('Club', args);
@@ -98,12 +124,12 @@ export const StructureResolver = {
             return context.dataSources.structure.allAreas(root.association);
         },
 
-        board: (root: any, _args: any, _context: IApolloContext) => {
-            return root.board || [];
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
         },
 
-        boardassistants: (root: any, _args: any, _context: IApolloContext) => {
-            return root.boardassistants || [];
+        boardassistants: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.boardassistants);
         },
     },
 
@@ -165,8 +191,12 @@ export const StructureResolver = {
             );
         },
 
-        board: (root: any, _args: any, _context: IApolloContext) => {
-            return root.board || [];
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
+        },
+
+        boardassistants: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.boardassistants);
         },
     },
 
@@ -186,7 +216,10 @@ export const StructureResolver = {
 
     AssociationRole: {
         member: (root: any, _args: any, context: IApolloContext) => {
-            return context.dataSources.members.readOne(root.member);
+            return typeof root.member === 'number'
+                ? context.dataSources.members.readOne(root.member)
+                // already loaded
+                : root.member;
         },
     },
 
@@ -215,8 +248,8 @@ export const StructureResolver = {
             return context.dataSources.structure.getAssociation(root.association);
         },
 
-        board: (root: any, _args: any, _context: IApolloContext) => {
-            return root.board || [];
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
         },
     },
 };

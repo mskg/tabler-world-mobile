@@ -266,7 +266,7 @@ select
         select array_agg(id)
         from structure_areas
         where
-                association = id
+                association = associations.id
     ) as areas
 from associations
 order by 2, 3;
