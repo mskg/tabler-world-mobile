@@ -85,60 +85,65 @@ class DeveloperSectionBase extends React.Component<Props, State> {
         return (
             <>
                 {this.state.isDeveloper && (
-                    <List.Section title={'Internal Information'}>
-                        <Element
-                            theme={this.props.theme}
-                            field={'Push Token'}
-                            text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
-                        />
-                        <Divider />
+                    <>
+                        <List.Section title={'Internal Information'}>
+                            <Element
+                                theme={this.props.theme}
+                                field={'Push Token'}
+                                text={(this.state.token || '-').replace('ExponentPushToken[', '').replace(']', '')}
+                            />
+                            <Divider />
 
-                        <Element
-                            theme={this.props.theme}
-                            field={'Device ID'}
-                            text={Constants.deviceId}
-                        />
-                        <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={'Device ID'}
+                                text={Constants.deviceId}
+                            />
+                            <Divider />
 
-                        <Element
-                            theme={this.props.theme}
-                            field={'Lasts Fetch Run'}
-                            text={I18N.formatDate(this.state.lastFetchRun, 'Date_Short_Time')}
-                        />
-                        <Divider />
+                            <Action theme={this.props.theme} text={'Copy Parameters'} onPress={() => Clipboard.setString(this.state.params || 'null')} />
+                            <Divider />
+                        </List.Section>
 
-                        <Element
-                            theme={this.props.theme}
-                            field={'Last Data Sync'}
-                            text={I18N.formatDate(this.state.lastDataRun, 'Date_Short_Time')}
-                        />
-                        <Divider />
+                        <List.Section title={'Fetch Task'}>
+                            <Element
+                                theme={this.props.theme}
+                                field={'Lasts Fetch Run'}
+                                text={I18N.formatDate(this.state.lastFetchRun, 'Date_Short_Time') ?? '-'}
+                            />
+                            <Divider />
 
-                        <Action theme={this.props.theme} text={'Run Fetch Task'} onPress={async () => { await runFetchTask(); await this.fetchData(); }} />
-                        <Divider />
+                            <Element
+                                theme={this.props.theme}
+                                field={'Last Data Sync'}
+                                text={I18N.formatDate(this.state.lastDataRun, 'Date_Short_Time') ?? '-'}
+                            />
+                            <Divider />
 
-                        {false && PRESERVE_CONSOLE && (
-                            <>
-                                <Element
-                                    theme={this.props.theme}
-                                    field={'Console Log'}
-                                    text={PRESERVE_CONSOLE.toString()}
-                                />
-                                <Divider />
-                            </>
-                        )}
+                            <Action theme={this.props.theme} text={'Run Fetch Task'} onPress={async () => { await runFetchTask(); await this.fetchData(); }} />
+                            <Divider />
+                        </List.Section>
 
-                        {false && !PRESERVE_CONSOLE && (
-                            <>
-                                <Action theme={this.props.theme} text={'Enable Console Log'} onPress={() => enableConsole()} />
-                                <Divider />
-                            </>
-                        )}
+                        <List.Section title={'Console Log'}>
+                            {PRESERVE_CONSOLE && (
+                                <>
+                                    <Element
+                                        theme={this.props.theme}
+                                        field={'Console Log'}
+                                        text={PRESERVE_CONSOLE.toString()}
+                                    />
+                                    <Divider />
+                                </>
+                            )}
 
-                        <Action theme={this.props.theme} text={'Copy Parameters'} onPress={() => Clipboard.setString(this.state.params || 'null')} />
-                        <Divider />
-
-                    </List.Section>
+                            {!PRESERVE_CONSOLE && (
+                                <>
+                                    <Action theme={this.props.theme} text={'Enable Console Log'} onPress={() => enableConsole()} />
+                                    <Divider />
+                                </>
+                            )}
+                        </List.Section>
+                    </>
                 )}
             </>
         );

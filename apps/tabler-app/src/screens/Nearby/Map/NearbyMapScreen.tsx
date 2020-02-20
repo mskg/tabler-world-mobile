@@ -39,7 +39,6 @@ type OwnProps = {
 };
 
 type StateProps = {
-    location?: Location.LocationData,
     members?: NearbyMembers_nearbyMembers[],
     nearbyMap: boolean,
 };
@@ -63,7 +62,7 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
             members: [],
         };
 
-        this.mergeMembers(this.props.members);
+        this.mergeMembers(this.props.members, true);
     }
 
     componentDidMount() {
@@ -105,20 +104,23 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
         this._fitMap();
     }
 
-    mergeMembers(members?: NearbyMembers_nearbyMembers[]) {
-        const newMembers = (members || []).filter((f) => f.location);
-        newMembers.forEach(this.mergeMember.bind(this));
+    mergeMembers(members?: NearbyMembers_nearbyMembers[], init = false) {
+        const membersWithLocation = (members || []).filter((f) => f.location);
 
-        if (this.props.members) {
-            remove(
-                this.state.members,
-                // @ts-ignore
-                (state) => newMembers.find((props) => props.member.id === state.member.member.id) === null,
-            );
-        }
+        remove(
+            this.state.members,
+
+            (s) => membersWithLocation.find(
+                (p) => p.member.id === s.member.member.id) == null,
+        );
+
+        membersWithLocation.forEach(this._updateOrAddMember);
+
+        // new additions and removales are not detected otherwise
+        if (!init) { this.forceUpdate(); }
     }
 
-    mergeMember(member: NearbyMembers_nearbyMembers) {
+    _updateOrAddMember = (member: NearbyMembers_nearbyMembers): boolean => {
         const existing = this.state.members.find((m) => m.member.member.id === member.member.id);
 
         if (existing) {
@@ -129,26 +131,23 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                     ...member.location,
                     duration: 2000,
                 }).start();
-            } else if (__DEV__) {
-                existing.coordinates.timing({
-                    ...member.location,
-                    latitude: member.location!.latitude + Math.random() / 100,
-                    duration: 2000,
-                }).start();
             }
 
             Object.assign(existing.member, member);
-        } else {
-            this.state.members.push({
-                member,
-                // @ts-ignore
-                coordinates: new AnimatedRegion({
-                    ...member.location,
-                    latitudeDelta: 0,
-                    longitudeDelta: 0,
-                }),
-            });
+            return false;
         }
+
+        this.state.members.push({
+            member,
+            // @ts-ignore
+            coordinates: new AnimatedRegion({
+                ...member.location,
+                latitudeDelta: 0,
+                longitudeDelta: 0,
+            }),
+        });
+
+        return true;
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -167,7 +166,7 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
         () => {
             if (this.mapRef && this.props.members) {
                 this.mapRef.fitToSuppliedMarkers(
-                    this.props.members.map((d) => d.member.id.toString()),
+                    this.state.members.map((d) => d.member.member.id.toString()),
                 );
             }
         },
@@ -218,7 +217,7 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
                                         key={n.member.member.id.toString()}
                                         identifier={n.member.member.id.toString()}
                                         coordinate={n.coordinates}
-                                        tracksViewChanges={true}
+                                        tracksViewChanges={false}
                                         title={`${n.member.member.firstname} ${n.member.member.lastname}\n${n.member.member.club.name}, ${n.member.member.association.name}`}
                                         onCalloutPress={() => this.props.showProfile(n.member.member.id)}
                                     >
@@ -245,7 +244,6 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
 
 export const NearbyMapScreen = connect<StateProps, DispatchPros, OwnProps, IAppState>(
     (state) => ({
-        location: state.location.location,
         members: state.location.nearbyMembers,
         nearbyMap: state.settings.nearbyMembersMap || false,
     }),

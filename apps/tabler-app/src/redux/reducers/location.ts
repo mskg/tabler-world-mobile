@@ -12,7 +12,7 @@ export function locationReducer(
         case actions.setNearby.type:
             return {
                 ...state,
-                nearbyMembers: action.payload,
+                nearbyMembers: action.payload ? [...action.payload] : [],
             };
 
         case actions.setLocation.type:
