@@ -83,7 +83,8 @@
                 "VIBRATE",
                 "CAMERA",
                 "ACCESS_COARSE_LOCATION",
-                "ACCESS_FINE_LOCATION"
+                "ACCESS_FINE_LOCATION",
+                "CAMERA_ROLL"
             ],
             "adaptiveIcon": {
                 "foregroundImage": "./assets/images/logo_Android.png",
