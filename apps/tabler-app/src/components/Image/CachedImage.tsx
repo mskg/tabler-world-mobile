@@ -85,17 +85,25 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
                 useNativeDriver: true,
             }).start(() => {
                 if (this.mounted && request === this.requestId) {
-                    this.setState({ hidePreview: true });
+                    this.setState(
+                        { hidePreview: true },
+                    );
                 }
             });
         } else {
             logger.debug('No transitionDuration');
             if (this.mounted && request === this.requestId) {
-                this.setState({ hidePreview: true });
+                this.setState(
+                    { hidePreview: true },
+                );
             }
         }
 
         this.forceUpdate();
+    }
+
+    _onError = () => {
+        this.setState({ uri: undefined });
     }
 
     componentWillUnmount() {
@@ -123,6 +131,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
                         source={{ uri }}
                         style={flattened || styles.imageStyles}
                         onLoadEnd={this._startAnimation}
+                        onError={this._onError}
                         fadeDuration={hasPreview ? 0 : undefined}
                         resizeMode={this.props.resizeMode || flattened?.resizeMode || 'contain'}
                     />
@@ -132,7 +141,7 @@ export class CachedImage extends React.PureComponent<ImageProps, ImageState> {
                     <Animated.View style={[styles.container, { opacity }]}>
                         {preview}
                     </Animated.View>
-               )}
+                )}
             </View>
         );
     }
