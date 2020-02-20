@@ -38,13 +38,17 @@ export const styles = StyleSheet.create({
     },
 
     row: {
-        flex: 0,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         // paddingVertical: 8,
         paddingHorizontal: 16,
         height: HEIGHT,
+    },
+
+    rowLabel: {
+        flex: 1,
     },
 
     rowValue: {

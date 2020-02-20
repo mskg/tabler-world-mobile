@@ -6,7 +6,7 @@ import { styles } from './Styles';
 
 export const Element = ({ theme, field, text }) => (
     <View style={[styles.row, { backgroundColor: theme.colors.surface }]}>
-        <Text>{field}</Text>
+        <Text numberOfLines={1} style={styles.rowLabel}>{field}</Text>
         {typeof (text) === 'string' && <Text selectable={Platform.OS === 'ios'} numberOfLines={1} style={styles.rowValue}>{text}</Text>}
         {typeof (text) !== 'string' && text}
     </View>
