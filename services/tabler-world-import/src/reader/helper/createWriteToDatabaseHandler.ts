@@ -39,6 +39,7 @@ DO UPDATE
   SET
     data = excluded.data,
     modifiedon = case
+        when ${table}.data is null then excluded.modifiedon
         when ${table}.data::text <> excluded.data::text then excluded.modifiedon
         else ${table}.modifiedon
     end,
@@ -49,7 +50,8 @@ RETURNING modifiedon, lastseen
                 );
 
                 // if they are identical, the row has been modified
-                if (result.rows[0].modifiedon === result.rows[0].lastseen) {
+                // They do not equal without conversion to String?
+                if (String(result.rows[0].modifiedon) === String(result.rows[0].lastseen)) {
                     console.log('Changed', recordType, id);
                     return { id, type: recordType } as ChangePointer;
                 }
