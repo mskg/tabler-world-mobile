@@ -62,6 +62,10 @@ export async function setupJobContext(rawEvent: ImportEvent | ContinueEvent | Co
             url: activeConfiguration.url,
             method: activeConfiguration.method,
             payload: activeConfiguration.payload(),
+            workflow: activeConfiguration.workflow,
+
+            defaultPagination: activeConfiguration.defaultPagination,
+            maxPagination: activeConfiguration.maxPagination,
         },
     };
 }

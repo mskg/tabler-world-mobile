@@ -28,8 +28,8 @@ custom:
   # import schedule
   cron_rate:
     dev: rate(24 hours)
-    test: rate(12 hours)
-    prod: rate(4 hours)
+    test: cron(30 09 * * ? *)
+    prod: rate(1 hours)
 
   cron_enabled:
     dev: false
@@ -200,23 +200,23 @@ functions:
 
     events:
       - schedule:
-          name: ${self:service}-tabler-${self:custom.stage}
-          description: Updates contact data from TABLER.WORLD
+          name: ${self:service}-members-${self:custom.stage}
+          description: Update members from TABLER.WORLD
 
           rate: ${self:custom.cron_rate.${self:custom.stage}}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
-            type: tabler
+            type: members
             mode: incremental
             offset: 0
             maxRecords: 5000
 
       - schedule:
           name: ${self:service}-clubs-${self:custom.stage}
-          description: Updates contact data from TABLER.WORLD
+          description: Update clubs from TABLER.WORLD
 
-          rate: rate(24 hours)
+          rate: cron(59 23 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -226,17 +226,29 @@ functions:
             maxRecords: 5000
 
       - schedule:
-          name: ${self:service}-groups-${self:custom.stage}
-          description: Updates groups from TABLER.WORLD
+          name: ${self:service}-structure-${self:custom.stage}
+          description: Updates structure from TABLER.WORLD
 
-          rate: rate(24 hours)
+          rate: cron(00 23 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
             mode: full
-            type: groups
+            type: structure
             noRefreshViews: true
             noUpdateCache: true
+
+      - schedule:
+          name: ${self:service}-members-archived-${self:custom.stage}
+          description: Remove archived members from TABLER.WORLD
+
+          rate: cron(00 02 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            mode: incremental
+            type: archivedMembers
+
   #
   # Cache update
   #

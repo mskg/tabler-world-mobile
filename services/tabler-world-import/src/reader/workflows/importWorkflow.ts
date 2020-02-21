@@ -1,15 +1,16 @@
 import { ChangePointer } from '../types/ChangePointer';
 import { JobType } from '../types/JobType';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
-import { createWriteToDatabaseHandler } from './createWriteToDatabaseHandler';
-import { downloadChunk } from './downloadChunk';
-import { fetchParallel } from './fetchParallel';
+import { createWriteToDatabaseHandler } from '../helper/createWriteToDatabaseHandler';
+import { downloadChunk } from '../helper/downloadChunk';
+import { fetchParallel } from '../helper/fetchParallel';
+import { WorkflowResult } from './workflowType';
 
 export async function importWorkflow(
     type: JobType,
     url: string, method: string, postData: any,
-    offset: number = 0, maxRecords: number = Infinity.valueOf(),
-) {
+    limit: number, offset: number = 0, maxRecords: number = Infinity.valueOf(),
+): Promise<WorkflowResult> {
     let totalRecords = 0;
     let processedRecords = 0;
     const modifications: ChangePointer[] = [];
@@ -26,7 +27,7 @@ export async function importWorkflow(
     const urlWithOffset = `${url}offset=${offset}`;
 
     // read data
-    const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(urlWithOffset, method, postData);
+    const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(urlWithOffset, limit, method, postData);
     if (firstChunk != null) {
         // we preserve the total
         totalRecords = firstChunk.total;
@@ -38,7 +39,7 @@ export async function importWorkflow(
             firstChunk.total = offset + maxRecords;
         }
 
-        await fetchParallel(firstChunk, modificationTracker, method, postData);
+        await fetchParallel(firstChunk, modificationTracker, limit, method, postData);
     }
 
     return { processedRecords, modifications, totalRecords };

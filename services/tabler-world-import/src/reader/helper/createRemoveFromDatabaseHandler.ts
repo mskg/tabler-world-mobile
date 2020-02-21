@@ -1,4 +1,3 @@
-import { removeEmptySlots } from '@mskg/tabler-world-common';
 import { useDatabasePool } from '@mskg/tabler-world-rds-client';
 import { recordTypeToPrimaryKey } from '../database/recordTypeToPrimaryKey';
 import { typeToTable } from '../database/typeToTable';
@@ -15,42 +14,33 @@ import { getConfiguration } from './getConfiguration';
  * @param client The database connection
  * @param type The record type to process
  */
-export const createWriteToDatabaseHandler = (type: JobType): DataHandler => {
+export const createRemoveFromDatabaseHandler = (type: JobType): DataHandler => {
 
     return async (records: any[]): Promise<ChangePointer[]> => {
         const api = await getConfiguration();
 
         return useDatabasePool({ logger: console }, api.concurrency.write, async (pool) => {
-            console.log('Writing chunk of', records.length, type, 'records');
+            console.log('Removing chunk of', records.length, type, 'records');
 
             const inserts = await Promise.all(records.map(async (record) => {
                 const recordType = determineRecordType(type, record);
+
+                // it's also a {id} object
                 const pkFunction = recordTypeToPrimaryKey(recordType);
                 const id = pkFunction(record);
                 const table = typeToTable(recordType);
 
-                console.log('Trying to update', recordType, id);
+                console.log('Trying to remove', recordType, id);
                 const result = await pool.query(
                     `
-INSERT INTO ${table}(id, data, modifiedon, lastseen)
-VALUES($1, $2, now(), now())
-ON CONFLICT (id)
-DO UPDATE
-  SET
-    data = excluded.data,
-    modifiedon = case
-        when ${table}.data::text <> excluded.data::text then excluded.modifiedon
-        else ${table}.modifiedon
-    end,
-    lastseen = excluded.lastseen
-RETURNING modifiedon, lastseen
+DELETE FROM ${table}
+WHERE id = $1
 `,
-                    [id, JSON.stringify(removeEmptySlots(record))],
+                    [id],
                 );
 
-                // if they are identical, the row has been modified
-                if (result.rows[0].modifiedon === result.rows[0].lastseen) {
-                    console.log('Changed', recordType, id);
+                if (result.rowCount === 1) {
+                    console.log('Removed', recordType, id);
                     return { id, type: recordType } as ChangePointer;
                 }
 

@@ -8,7 +8,7 @@ export function validateImportEvent(payload: any) {
         throw new Error('Payload must not be null');
     }
 
-    if (payload.type !== JobType.tabler && payload.type !== JobType.clubs && payload.type !== JobType.groups) {
+    if (payload.type !== JobType.members && payload.type !== JobType.clubs && payload.type !== JobType.structure && payload.type !== JobType.archivedMembers) {
         throw new Error(`Invalid type ${payload.type}`);
     }
 

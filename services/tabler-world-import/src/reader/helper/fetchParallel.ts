@@ -1,12 +1,12 @@
 import { AsyncPool, AsyncThrottle } from '@mskg/tabler-world-common';
-import { DataHandler } from '../types/DataHandler';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
 import { downloadChunk } from './downloadChunk';
 import { getConfiguration } from './getConfiguration';
 import { pushChanges } from './pushChanges';
 
 // 60*1000 / 100
-const throttledDownload = AsyncThrottle(downloadChunk, 800, 1);
+type downlodChunkType = typeof downloadChunk;
+const throttledDownload: downlodChunkType = AsyncThrottle(downloadChunk, 800, 1);
 
 /**
  * We download all chunks for a given root API. The API allows max of 100 calls per minute.
@@ -19,7 +19,8 @@ const throttledDownload = AsyncThrottle(downloadChunk, 800, 1);
  */
 export async function fetchParallel(
     chunk: TablerWorldApiChunk,
-    handler: DataHandler,
+    handler: (data: any[]) => Promise<any>,
+    limit: number,
     method?: string,
     payload?: string,
 ) {
@@ -34,10 +35,10 @@ export async function fetchParallel(
         ? 0
         : chunk.offset;
 
-    const downloadFunc = (nextUrl: string): Promise<TablerWorldApiChunk<any>> => throttledDownload(nextUrl, method, payload);
+    const downloadFunc = (nextUrl: string): Promise<TablerWorldApiChunk<any>> => throttledDownload(nextUrl, limit, method, payload);
 
     do {
-        start += api.read_batch;
+        start += limit;
         end = start > chunk.total;
 
         // last segment?
@@ -49,7 +50,7 @@ export async function fetchParallel(
         }
 
         // other batches waiting?
-        if (batch.length >= api.batch / api.read_batch) {
+        if (batch.length >= api.batch / limit) {
             console.log('waiting for batch');
 
             const resultChunks = await AsyncPool(api.concurrency.read, batch, downloadFunc);
