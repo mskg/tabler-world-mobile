@@ -27,8 +27,8 @@ limit 20`);
                         jobstatus: r.success,
 
                         // timespan is based on ms, we convert the data
-                        refreshTime: r.refreshTime ? r.refreshTime * 1000 : undefined,
-                        readTime: r.readTime ? r.readTime * 1000 : undefined,
+                        refreshTime: r.data?.refreshTime ? Math.round(r.data.refreshTime * 1000) : undefined,
+                        readTime: r.data?.readTime ? Math.round(r.data.readTime * 1000) : undefined,
                     },
                 }));
             });
