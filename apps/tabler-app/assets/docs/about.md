@@ -11,7 +11,7 @@ The whole TABLER.WORLD team is always looking forward to your feedback. Suggesti
 We're no longer hard to reach now. Just skake your device :)
 
 Yours in Table
-Markus Kling
+[Markus Kling](tablerworld:/member?id=14225)
 
 RT129 Böblingen / Sindelfingen
 Round Table Germany

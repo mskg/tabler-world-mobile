@@ -1,3 +1,16 @@
+# v1.4
+
+## Improvements
+- TABLER.APP now speaks Dutch, thanks to [Aart de Boer](tablerworld:/member?id=144504)
+- TABLER.APP now speaks Finnish, thanks to [Teemu Keski-Valkama](tablerworld:/member?id=121983)
+
+## Fixes
+- Fixed an issue with cameral roll permissions on Android
+- Fixed some issues with directory data, where board- and boardassistants where no longer members
+- Archived members are now gone forever. Farewell!
+
+---
+
 # v1.2 - Update 2
 
 ## Improvements
@@ -9,7 +22,9 @@
 ## Fixes
 - Fixed an issue that prevented locale-based formatting from beeing applied
 
-# v1.2 - Update 1
+---
+
+# v1.2 - Update 1 (v1.3)
 
 ## Improvements
 - You can now login with your TABLER.WORLD email and corresponding password
@@ -37,6 +52,8 @@
 - Fixed an issue with last opened members not being associated correctly (fixes #128)
 - When exporting contacts, the url now correctly display the language
 
+---
+
 # v1.2
 
 ## Improvements
@@ -50,6 +67,8 @@
 - Oppted-in nearby members can now be displayed on a map
 - 1:1 chat with other members
 - Reworked navigation to give focus on new functionalities
+
+---
 
 # v1.1
 
@@ -73,6 +92,8 @@
 - App does not present downloaded documents from TABLER.WORLD #78
 - RTI roles were not displayed #76
 
+---
+
 # v1.0.1
 
 ## Fixes
@@ -89,6 +110,8 @@
 - When scanning a tabler-world QR code outside the App, the member's profile is now opened correctly
 - Added extended logging to authentication challenge
 - Updated texts for permission requests
+
+---
 
 # v1.0
 
