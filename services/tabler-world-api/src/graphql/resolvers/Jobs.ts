@@ -25,6 +25,10 @@ limit 20`);
                         ...(r.data || {}),
                         jobname: r.name,
                         jobstatus: r.success,
+
+                        // timespan is based on ms, we convert the data
+                        refreshTime: r.refreshTime ? r.refreshTime * 1000 : undefined,
+                        readTime: r.readTime ? r.readTime * 1000 : undefined,
                     },
                 }));
             });
