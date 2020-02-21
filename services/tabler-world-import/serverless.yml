@@ -29,7 +29,7 @@ custom:
   cron_rate:
     dev: rate(24 hours)
     test: cron(30 09 * * ? *)
-    prod: rate(1 hours)
+    prod: rate(1 hour)
 
   cron_enabled:
     dev: false
