@@ -11,6 +11,7 @@ export function bootStrapSentry() {
         Sentry.init({
             dsn: sentry,
             debug: __DEV__,
+            attachStacktrace: true,
         });
 
         if (Constants.manifest.revisionId) {
