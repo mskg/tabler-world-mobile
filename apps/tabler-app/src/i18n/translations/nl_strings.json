@@ -599,7 +599,7 @@
         }
     },
     "Date": {
-        "date": "D MMMM JJJJ"
+        "date": "D MMMM YYYY"
     },
     "Timespan": {
         "now": "Nu",
