@@ -25,7 +25,7 @@ variables:
   - name: EXPO_RELEASE_CHANNEL
     value: '1.4-r1'
   - name: APP_LANGUAGES
-    value: 'en,de,nl,fi'
+    value: 'en,de,nl,fi,is'
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'

@@ -3,6 +3,7 @@
 ## Improvements
 - TABLER.APP now speaks Dutch, thanks to [Aart de Boer](tablerworld:/member?id=144504)
 - TABLER.APP now speaks Finnish, thanks to [Teemu Keski-Valkama](tablerworld:/member?id=121983)
+- TABLER.APP now speaks Icelandic, thanks to [Daníel Sigurður Eðvaldsson](tablerworld:/member?id=128546)
 
 ## Fixes
 - Fixed an issue with cameral roll permissions on Android
