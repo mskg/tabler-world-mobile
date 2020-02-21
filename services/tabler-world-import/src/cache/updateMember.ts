@@ -15,14 +15,13 @@ export async function updateMember(client: IDataService, id: number) {
         if (staleCacheData != null) {
             // we update the memberlist here
             const oldMember = JSON.parse(staleCacheData);
-            const clubKey = makeCacheKey('Club', [oldMember.club]);
 
-            console.log('Removing', clubKey);
-            cacheInstance.delete(clubKey);
+            // member list could have changed
+            await updateClub(client, oldMember.club);
         }
 
         console.log('Removing', key);
-        cacheInstance.delete(key);
+        await cacheInstance.delete(key);
     } else {
         if (staleCacheData != null) {
             // we update the memberlist here
@@ -33,7 +32,7 @@ export async function updateMember(client: IDataService, id: number) {
         }
 
         console.log('Updating', key);
-        cacheInstance.set(key, JSON.stringify(newMember));
+        await cacheInstance.set(key, JSON.stringify(newMember));
 
         const addresses = [
             newMember.address,
