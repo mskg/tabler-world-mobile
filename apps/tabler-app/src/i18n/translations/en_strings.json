@@ -1,13 +1,4 @@
 {
-    "Permissions": {
-        "NSCameraUsageDescription": "TABLER.APP uses the camera to scan barcodes of other members.",
-        "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
-        "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
-        "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
-        "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
-        "NSPhotoLibraryUsageDescription": "You can send pictures to other members in TABLER.APP."
-    },
     "Component_Whoops": {
         "title": "Whoops?",
         "try": "Try Again",
@@ -20,10 +11,10 @@
         "text": "Your feedback helps us improve TABLER.APP.",
         "report": "Something isn't working?",
         "feedback": "Some functionality is missing? You have an idea?",
-        "language": "Typo? Wrong terms? Translation is really bad?",
         "subject": "TABLER.APP Issue",
         "noMail": "You seem to have no mail client installed?",
-        "template": "Please describe what happened:"
+        "template": "Please describe what happened:",
+        "language": "Typo? Wrong terms? Translation is really bad?"
     },
     "Screen_Image": {
         "title_Member": "Member Info",
@@ -685,5 +676,14 @@
     "Component_ImagePicker": {
         "nocamera": "No camera permissions granted.",
         "nogallery": "Sorry, we need camera roll permissions to make this work."
+    },
+    "Permissions": {
+        "NSCameraUsageDescription": "TABLER.APP uses the camera to scan barcodes of other members.",
+        "NSContactsUsageDescription": "TABLER.APP updates your phonebook with member details.",
+        "NSCalendarsUsageDescription": "TABLER.APP updates your calendar with event and birthday details.",
+        "NSLocationWhenInUseUsageDescription": "TABLER.APP shows other members and clubs arround your current location.",
+        "NSLocationAlwaysUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP tracks your position to allow other members to get in touch with you.",
+        "NSPhotoLibraryUsageDescription": "You can send pictures to other members in TABLER.APP."
     }
 }
