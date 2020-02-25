@@ -65,7 +65,7 @@ class MeLocationBase extends React.Component<Props, State> {
 
     _update = () => {
         requestAnimationFrame(async () =>
-            await handleLocationUpdate([await Location.getCurrentPositionAsync()]),
+            await handleLocationUpdate([await Location.getCurrentPositionAsync()], false, true),
         );
     }
 

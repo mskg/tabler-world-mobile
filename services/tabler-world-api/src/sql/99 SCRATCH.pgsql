@@ -106,8 +106,9 @@ COMMIT;
 
 
 
+
 INSERT INTO tabler(id, data, modifiedon, lastseen)
-VALUES(-1, '{}', now(), now())
+VALUES(-1, '{"a": "c"}', now(), now())
 ON CONFLICT (id)
 DO UPDATE
   SET
@@ -118,3 +119,36 @@ DO UPDATE
     end,
     lastseen = excluded.lastseen
 RETURNING modifiedon, lastseen
+
+delete from tabler
+where id = -1
+
+
+update tabler
+set data = '{}'
+where lastseen > now() - interval '1 hour'
+
+
+select id from
+tabler
+where modifiedon > now() - interval '1 hour'
+
+
+select id, modifiedon, lastseen, data
+from tabler
+where lastseen > now() - interval '1 hour'
+
+
+select * From userlocations
+
+
+PREPARE sql1582553237507 (integer[]) AS
+select *
+from profiles
+where
+    id = ANY($1)
+and removed = FALSE
+;
+explain
+EXECUTE sql1582553237507(ARRAY[222195]);
+DEALLOCATE sql1582553237507;

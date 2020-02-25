@@ -1,5 +1,5 @@
 import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { flatMap } from 'lodash';
@@ -46,7 +46,7 @@ export class MembersDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey('Member', [k]),
                 (r) => makeCacheKey('Member', [r.id]),
-                (ids) => useDataService(
+                (ids) => useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('DB reading members', ids);
@@ -75,7 +75,7 @@ and removed = FALSE`,
     public async readFavorites(): Promise<any[] | null> {
         this.context.logger.log('readFavorites');
 
-        return await useDataService(
+        return await useDatabase(
             this.context,
             async (client) => {
                 this.context.logger.log('executing readFavorites');
@@ -117,7 +117,7 @@ where id = $1`,
             cachedLoad(
                 this.context,
                 makeCacheKey('Members', [this.context.principal.association, 'area', a]),
-                async () => await useDataService(
+                async () => await useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('executing readByTableAndAreas');
@@ -149,7 +149,7 @@ where
         return await cachedLoad(
             this.context,
             makeCacheKey('Members', [this.context.principal.association, 'all']),
-            async () => await useDataService(
+            async () => await useDatabase(
                 this.context,
                 async (client) => {
                     this.context.logger.log('executing readAll');

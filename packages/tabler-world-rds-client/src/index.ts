@@ -1,9 +1,10 @@
-export * from './rds/IDataQuery';
-export * from './rds/IDataService';
+export * from './helper/logExecutableSQL';
 export * from './rds/useDatabase';
 export * from './rds/useDatabasePool';
 export * from './rds/useDataService';
 export * from './rds/withClient';
 export * from './rds/withDatabase';
 export * from './rds/withTransaction';
-
+export * from './types/IDataQuery';
+export * from './types/IDataService';
+export * from './types/IPooledDataService';

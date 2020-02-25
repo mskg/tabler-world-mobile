@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
 import { byVersion, v12Check } from '../helper/byVersion';
@@ -154,7 +154,7 @@ where
 
             // context.logger.log("Query is", filters.join(' AND '));
 
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const res = await client.query(

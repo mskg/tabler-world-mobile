@@ -85,12 +85,7 @@ provider:
     ${file(serverless.env.yml):${self:custom.stage}}
 
   vpc:
-    securityGroupIds:
-      - Fn::ImportValue: DatabaseSecurityGroupId
-    subnetIds:
-      - Fn::ImportValue: DatabaseSubnetAId
-      - Fn::ImportValue: DatabaseSubnetBId
-      - Fn::ImportValue: DatabaseSubnetCId
+    ${file(../devops/vpc.yml):lambda}
 
   # global role definition
   iamRoleStatements:

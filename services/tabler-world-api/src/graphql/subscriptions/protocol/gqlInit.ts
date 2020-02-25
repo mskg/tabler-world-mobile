@@ -1,6 +1,5 @@
-import { lookupPrincipal, resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
+import { resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
 import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
-import { useDataService } from '@mskg/tabler-world-rds-client';
 import crypto from 'crypto';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
@@ -10,7 +9,9 @@ import { connectionManager } from '../services';
 import { ClientLostError } from '../types/ClientLostError';
 import { ProtocolContext } from './ProtocolContext';
 
-function hash(address: string) {
+function hash(address?: string) {
+    if (!address) return null;
+
     return crypto
         .createHash('md5')
         .update(address.toLocaleLowerCase())
@@ -21,21 +22,17 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
     context.logger.log('gqlInit');
 
     try {
-        const principal = await resolveWebsocketPrincipal(
-            operation,
-            (email: string) =>
-                cachedLoad(
-                    {
-                        logger: context.logger,
-                        cache: cacheInstance,
-                    },
-                    makeCacheKey('Principal', [hash(email)]),
-                    () => useDataService(
-                        context,
-                        (client) => lookupPrincipal(client, email),
-                    ),
-                    'Principal',
-                ),
+        // @ts-ignore
+        const { Authorization: token } = operation.payload;
+
+        const principal = await cachedLoad(
+            {
+                logger: context.logger,
+                cache: cacheInstance,
+            },
+            makeCacheKey('Principal', [hash(token) || context.connectionId]),
+            () => resolveWebsocketPrincipal(operation),
+            'Principal',
         );
 
         context.logger.log('resolved', principal);

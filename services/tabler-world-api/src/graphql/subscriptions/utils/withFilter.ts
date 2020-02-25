@@ -24,12 +24,13 @@ export const withFilter = (asyncIteratorFn: ResolverFn, filterFn: FilterFn): Res
                     return Promise.resolve(filterFn(payload.value, args, context, info))
                         .catch(() => false)
                         .then((filterResult) => {
+
                             if (filterResult) {
                                 return payload;
                             }
 
                             // we return null that means skip for our publish lambda
-                            return null;
+                            return { done: true, value: null };
                         });
                 });
         };
@@ -49,7 +50,6 @@ export const withFilter = (asyncIteratorFn: ResolverFn, filterFn: FilterFn): Res
                 return asyncIterator.throw(error);
             },
 
-            // @ts-ignore
             // tslint:disable-next-line: function-name
             [$$asyncIterator]() {
                 return this;

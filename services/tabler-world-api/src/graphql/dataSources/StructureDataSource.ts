@@ -1,5 +1,5 @@
 import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { IApolloContext } from '../types/IApolloContext';
@@ -75,7 +75,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey('Family', [k]),
                 (r) => makeCacheKey('Family', [r.id]),
-                (ids) => useDataService(
+                (ids) => useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('DB reading families', ids);
@@ -102,7 +102,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey('Association', [k]),
                 (r) => makeCacheKey('Association', [r.id]),
-                (ids) => useDataService(
+                (ids) => useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('DB reading associations', ids);
@@ -129,7 +129,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey('Area', [k]),
                 (r) => makeCacheKey('Area', [r.id]),
-                (ids) => useDataService(
+                (ids) => useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('DB reading areas', ids);
@@ -157,7 +157,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 // we use the same format for the key that can be extracted during read
                 (k) => makeCacheKey('Club', [k]),
                 (r) => makeCacheKey('Club', [r.id]),
-                (ids) => useDataService(
+                (ids) => useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('DB reading clubs', ids);
@@ -184,7 +184,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
         return await cachedLoad(
             this.context,
             makeCacheKey('Structure', [association, 'clubs', 'all']),
-            async () => await useDataService(
+            async () => await useDatabase(
                 this.context,
                 async (client) => {
                     this.context.logger.log('DB reading allClubs');
@@ -207,7 +207,7 @@ where
         return await cachedLoad(
             this.context,
             makeCacheKey('Structure', [assoc, 'areas', 'all']),
-            async () => await useDataService(
+            async () => await useDatabase(
                 this.context,
                 async (client) => {
                     this.context.logger.log('DB reading allAreas');
@@ -233,7 +233,7 @@ where
         return await cachedLoad(
             this.context,
             makeCacheKey('Structure', ['associations', 'all']),
-            async () => await useDataService(
+            async () => await useDatabase(
                 this.context,
                 async (client) => {
                     this.context.logger.log('DB reading allAssociations');
@@ -256,7 +256,7 @@ from structure_associations
         return await cachedLoad(
             this.context,
             makeCacheKey('Structure', ['families', 'all']),
-            async () => await useDataService(
+            async () => await useDatabase(
                 this.context,
                 async (client) => {
                     this.context.logger.log('DB reading allFamilies');

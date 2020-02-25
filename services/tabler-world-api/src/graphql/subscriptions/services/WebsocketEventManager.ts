@@ -145,7 +145,7 @@ export class WebsocketEventManager {
                         },
                     })),
                 }),
-                2000,
+                1000,
             );
         }
 

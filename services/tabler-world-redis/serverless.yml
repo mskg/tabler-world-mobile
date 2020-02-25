@@ -1,0 +1,64 @@
+service: tabler-world-redis
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: eu-west-1
+
+  deploymentBucket:
+    name: tabler-world-deployments
+    maxPreviousDeploymentArtifacts: 5
+    blockPublicAccess: true
+    serverSideEncryption: AES256
+
+  stage: dev
+  stackName: tabler-world-redis
+
+resources:
+  Resources:
+    CacheSubnetGroup:
+      Type: AWS::ElastiCache::SubnetGroup
+      Properties:
+        Description: ${self:provider.stackName}-sng
+        SubnetIds:
+          ${file(../devops/vpc.yml):lambdaSubnetIds}
+
+    ElasticacheClusterReplicationGroup:
+      Type: AWS::ElastiCache::ReplicationGroup
+      Properties:
+        ReplicationGroupDescription: ${self:provider.stackName}
+        Engine: redis
+
+        NumCacheClusters: 1
+        AutomaticFailoverEnabled: false # does not work with only one node
+
+        CacheNodeType: 'cache.t3.micro'
+
+        SecurityGroupIds:
+          ${file(../devops/vpc.yml):lambdaSecurityGroupIds}
+
+        CacheSubnetGroupName:
+          Ref: CacheSubnetGroup
+
+        AutoMinorVersionUpgrade: true
+        AtRestEncryptionEnabled: true
+        TransitEncryptionEnabled: true
+
+  Outputs:
+    Address:
+      Value:
+        Fn::GetAtt:
+          - ElasticacheClusterReplicationGroup
+          - PrimaryEndPoint.Address
+
+      Export:
+        Name: RedisEndpointAddress
+
+    Port:
+      Value:
+        Fn::GetAtt:
+          - ElasticacheClusterReplicationGroup
+          - PrimaryEndPoint.Port
+
+      Export:
+        Name: RedisEndpointPort

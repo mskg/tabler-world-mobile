@@ -1,4 +1,4 @@
-import { ILogger } from '@mskg/tabler-world-common';
+    import { ILogger } from '@mskg/tabler-world-common';
 import { Param_TTLS } from '@mskg/tabler-world-config';
 import { KeyValueCache } from 'apollo-server-core';
 import { TTLs } from '../cache/TTLs';
@@ -9,7 +9,13 @@ export async function cachedLoad<T>(
     resolver: () => Promise<T>,
     ttl: keyof Param_TTLS,
 ): Promise<T> {
-    const cached = await cache.get(key);
+    let cached;
+
+    try {
+        cached = await cache.get(key);
+    } catch (e) {
+        logger.error('cache failed', e);
+    }
 
     if (cached != null && typeof (cached) === 'string') {
         logger.log('cache hit', key);
@@ -19,18 +25,21 @@ export async function cachedLoad<T>(
     }
 
     const result = await resolver();
-    // console.log("Result", key, result);
 
-    const resultSerialized = typeof (result) === 'string' ? ('raw:' + result) : JSON.stringify(result);
-    logger.log(key, 'cache size', resultSerialized.length);
+    try {
+        const resultSerialized = typeof (result) === 'string' ? ('raw:' + result) : JSON.stringify(result);
+        logger.log(key, 'cache size', resultSerialized.length);
 
-    const ttls = await TTLs();
+        const ttls = await TTLs();
 
-    cache.set(
-        key,
-        resultSerialized,
-        ttl ? { ttl: ttls[ttl] } : undefined,
-    );
+        cache.set(
+            key,
+            resultSerialized,
+            ttl ? { ttl: ttls[ttl] } : undefined,
+        );
+    } catch (e) {
+        logger.error('cache set failed', e);
+    }
 
     return result;
 }

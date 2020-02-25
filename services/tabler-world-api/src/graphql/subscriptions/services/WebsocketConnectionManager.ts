@@ -4,70 +4,48 @@ import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { awsGatewayClient } from '../aws/awsGatewayClient';
-import { dynamodb as client } from '../aws/dynamodb';
 import { ClientLostError } from '../types/ClientLostError';
 import { IConnection, IConnectionContext } from '../types/IConnection';
 import { getWebsocketParams } from '../utils/getWebsocketParams';
-import { CONNECTIONS_TABLE, FieldNames } from './Constants';
+import { FieldNames } from './Constants';
+import { IConnectionStorage } from './IConnectionStorage';
 
 const logger = new ConsoleLogger('Connection');
 
 export class WebsocketConnectionManager {
-    public async get(connectionId: string): Promise<IConnection> {
-        logger.log(`[${connectionId}]`, 'get');
+    constructor(private storage: IConnectionStorage) {
+    }
 
-        const { Item: details } = await client.get({
-            TableName: CONNECTIONS_TABLE,
-            Key: {
-                [FieldNames.connectionId]: connectionId,
-            },
-        }).promise();
-
-        return details as IConnection;
+    public async get(connectionId: string): Promise<IConnection | undefined> {
+        return await this.storage.get(connectionId);
     }
 
     public async connect(connectionId: string): Promise<void> {
-        logger.log(`[${connectionId}]`, 'connect');
-
         const params = getWebsocketParams();
-        await client.put({
-            TableName: CONNECTIONS_TABLE,
-
-            Item: {
-                [FieldNames.connectionId]: connectionId,
-                ttl: Math.floor(Date.now() / 1000) + (await params).ttlConnection,
-            },
-
-        }).promise();
+        return await this.storage.put(
+            { connectionId },
+            (await params).ttlConnection,
+        );
     }
 
     public async authorize(connectionId: string, member: IPrincipal, details: IConnectionContext): Promise<void> {
         logger.log(`[${connectionId}]`, 'authorize', member);
 
         const params = getWebsocketParams();
-        await client.put({
-            TableName: CONNECTIONS_TABLE,
-
-            Item: {
-                [FieldNames.connectionId]: connectionId,
+        return await this.storage.put(
+            {
+                connectionId,
                 [FieldNames.member]: member.id,
                 [FieldNames.principal]: member,
                 [FieldNames.context]: details,
-                ttl: Math.floor(Date.now() / 1000) + (await params).ttlConnection,
-            } as IConnection,
-
-        }).promise();
+            },
+            (await params).ttlConnection,
+        );
     }
 
     public async disconnect(connectionId: string): Promise<void> {
         logger.log(`[${connectionId}]`, 'disconnect');
-
-        await client.delete({
-            TableName: CONNECTIONS_TABLE,
-            Key: {
-                [FieldNames.connectionId]: connectionId,
-            },
-        }).promise();
+        await this.storage.remove(connectionId);
     }
 
     public async sendACK(connectionId: string) {

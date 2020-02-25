@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { IApolloContext } from '../types/IApolloContext';
 
 type TokenArgs = {
@@ -10,7 +10,7 @@ type TokenArgs = {
 export const TokenResolver = {
     Mutation: {
         addToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     // merges the token with all existing tokens
@@ -28,7 +28,7 @@ ON CONFLICT (id) DO UPDATE
     );
 `,
                         // @ts-ignore
-                                       [context.principal.id, args.token]);
+                        [context.principal.id, args.token]);
 
                     // remove token from any other entry as devices can switch users
                     await client.query(`
@@ -42,7 +42,7 @@ SET tokens =
 WHERE id <> $1 and tokens @> ARRAY[$2]
 `,
                         // @ts-ignore
-                                       [context.principal.id, args.token]);
+                        [context.principal.id, args.token]);
 
                     return true;
                 },
@@ -52,7 +52,7 @@ WHERE id <> $1 and tokens @> ARRAY[$2]
         removeToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
             if (args == null) { return; }
 
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     // merges the token with all existing tokens
@@ -67,7 +67,7 @@ SET tokens =
 )
 WHERE id = $1 and tokens @> ARRAY[$2]`,
                         // @ts-ignore
-                                       [context.principal.id, args.token]);
+                        [context.principal.id, args.token]);
 
                     return true;
                 },

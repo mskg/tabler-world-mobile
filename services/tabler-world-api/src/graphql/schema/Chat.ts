@@ -85,7 +85,7 @@ export const Chat = gql`
 		sendMessage(message: SendMessageInput!): ChatMessage!
 	}
 
-	type Subscription {
+	extend type Subscription {
 		newChatMessage(conversation: ID!): ChatMessage!
         conversationUpdate: Conversation!
 	}

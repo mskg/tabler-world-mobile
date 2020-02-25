@@ -87,7 +87,7 @@ export class Categories {
 }
 
 console.disableYellowBox = true;
-let FILTER: RegExp | undefined; // /Chat|API/ig;
+let FILTER: RegExp | undefined = /NearbyMembers/ig; // /Chat|API/ig;
 const MAX = 24;
 
 // safety
@@ -96,7 +96,8 @@ if (!__DEV__) {
 }
 
 export class Logger {
-    private category;
+    private disabled;
+    private category: string;
 
     constructor(cat: string) {
         if (cat == null) {
@@ -104,10 +105,12 @@ export class Logger {
         } else {
             this.category = cat;
         }
+
+        this.disabled = !FILTER || this.category.match(FILTER) == null;
     }
 
     debug(...args: any[]): void {
-        if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
+        if (this.disabled) { return; }
 
         if (!__DEV__ && !PRESERVE_CONSOLE) {
             const message = args != null ? args[0] : null;
@@ -139,7 +142,7 @@ export class Logger {
     }
 
     log(...args: any[]): void {
-        if (FILTER != null && this.category != null && !this.category.match(FILTER)) { return; }
+        if (this.disabled) { return; }
 
         if (!__DEV__ && !PRESERVE_CONSOLE) {
             const message = args != null ? args[0] : null;

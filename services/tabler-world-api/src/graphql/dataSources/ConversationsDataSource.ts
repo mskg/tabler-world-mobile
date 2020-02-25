@@ -1,9 +1,11 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import { IDataService, useDataService } from '@mskg/tabler-world-rds-client';
+import { cachedDataLoader, makeCacheKey } from '@mskg/tabler-world-cache';
+import { IDataService, useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { conversationManager } from '../subscriptions';
-import { Conversation, UserConversation } from '../subscriptions/services/ConversationManager';
+import { Conversation } from '../subscriptions/types/Conversation';
+import { UserConversation } from '../subscriptions/types/UserConversation';
 import { IApolloContext } from '../types/IApolloContext';
 
 export async function isChatEnabled(client: IDataService, ids: ReadonlyArray<number>): Promise<boolean[]> {
@@ -52,7 +54,17 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
         );
 
         this.chatProperties = new DataLoader<number, any>(
-            (ids: ReadonlyArray<number>) => useDataService(this.context, async (client) => isChatEnabled(client, ids)),
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', ['chat', k]),
+                // tslint:disable-next-line: variable-name
+                (_r, id) => makeCacheKey('Member', ['chat', id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => isChatEnabled(client, ids),
+                ),
+                'ChatEnabled', // TODO: changeme
+            ),
             {
                 cacheKeyFn: (k: number) => k,
             },

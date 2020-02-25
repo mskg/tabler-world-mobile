@@ -16,5 +16,5 @@ type CacheTypes =
     ;
 
 export function makeCacheKey(type: CacheTypes, ids: (string | number)[]) {
-    return `tw::${type}::${ids.join(':')}`;
+    return `${type.toLowerCase()}:${ids.join(':')}`;
 }

@@ -1,78 +1,96 @@
 import { GeoParameters } from '@mskg/tabler-world-config-app';
-import { ApolloQueryResult } from 'apollo-client';
 import { LocationData } from 'expo-location';
-import { cancel, cancelled, delay, fork, put, select, take } from 'redux-saga/effects';
+import { cancel, delay, fork, put, select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
+import { LocationUpdate, LocationUpdateVariables } from '../../model/graphql/LocationUpdate';
 import { NearbyMembers, NearbyMembersVariables } from '../../model/graphql/NearbyMembers';
 import { IAppState } from '../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../queries/Location/GetNearbyMembersQuery';
+import { LocationUpdateSubscription } from '../../queries/Location/LocationUpdateSubscription';
 import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
 import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
 
-function* bgSync() {
+function subscribe(location: LocationData, enabled: boolean) {
     logger.debug('start');
 
-    try {
-        const setting = yield getParameterValue<GeoParameters>(ParameterName.geo);
+    const variables: LocationUpdateVariables = {
+        hideOwnTable: enabled == null ? false : enabled,
+        location: {
+            longitude: location.coords.longitude,
+            latitude: location.coords.latitude,
+        },
+    };
 
+    const client = cachedAolloClient();
+    const initial = client.query<NearbyMembers, NearbyMembersVariables>({
+        query: GetNearbyMembersQuery,
+        fetchPolicy: 'network-only',
+        // tslint:disable-next-line: object-shorthand-properties-first
+        variables,
+    });
+
+    initial
+        .then((result) => {
+            if (result?.data?.nearbyMembers) {
+                logger.debug('Setting initial list');
+                put(setNearby(result.data.nearbyMembers));
+            }
+        })
+        .catch((e) => logger.error(e, 'failed to run query'));
+
+    const query = client.subscribe<LocationUpdate, LocationUpdateVariables>({
+        query: LocationUpdateSubscription,
+        // tslint:disable-next-line: object-shorthand-properties-first
+        variables,
+    });
+
+    const subscription = query.subscribe(
+        (nextVal) => {
+            const members = nextVal.data?.locationUpdate || [];
+
+            logger.debug('Received', members?.length, 'members');
+            put(setNearby(members));
+        },
+        (e) => { logger.error(e, 'Failed to subscribe to conversationUpdate'); },
+    );
+
+    logger.log('subscribed');
+    return subscription;
+}
+
+function* watch() {
+    let subscription: ZenObservable.Subscription | null = null;
+    const setting = yield getParameterValue<GeoParameters>(ParameterName.geo);
+
+    try {
         // tslint:disable-next-line: no-constant-condition
         while (true) {
-            const client = cachedAolloClient();
+            const location: LocationData | null = yield select(
+                (state: IAppState) => state.location.location);
 
-            try {
-                let location: LocationData | null = null;
+            const { nearbyMembers, offline, hideOwnClubWhenNearby } = yield select(
+                (state: IAppState) => state.settings);
 
-                const enabled: boolean = yield select(
-                    (state: IAppState) => state.settings.nearbyMembers);
-
-                const offline: boolean = yield select(
-                    (state: IAppState) => state.connection.offline);
-
-                // we update location
-                if (enabled && !offline) {
-                    yield updateLocation(false, false);
-                    location = yield select((state: IAppState) => state.location.location);
-                }
-
-                if (location && enabled && !offline) {
-                    const hideOwnTable: boolean = yield select(
-                        (state: IAppState) => state.settings.hideOwnClubWhenNearby);
-
-                    const result: ApolloQueryResult<NearbyMembers> = yield client.query<NearbyMembers, NearbyMembersVariables>({
-                        query: GetNearbyMembersQuery,
-                        variables: {
-                            hideOwnTable: hideOwnTable || false,
-                            location: {
-                                longitude: location.coords.longitude,
-                                latitude: location.coords.latitude,
-                            },
-                        },
-                        fetchPolicy: 'network-only',
-                    });
-
-                    const members = result.data?.nearbyMembers || [];
-                    logger.debug('found', members.length, 'members');
-
-                    yield put(setNearby(members));
-                } else {
-                    yield put(setNearby([]));
-                    logger.debug('no location or disabled');
-                }
-            } catch (e) {
-                logger.error(e, 'Fetch nearby members');
+            if (nearbyMembers && !offline) {
+                yield updateLocation(false, false);
             }
 
-            logger.debug('sleeping');
+            // try to subscribe if not already done
+            if ((!subscription || subscription.closed) && location && nearbyMembers && !offline) {
+                subscription = subscribe(location, hideOwnClubWhenNearby);
+            }
+
             yield delay(setting.pollInterval);
         }
     } catch (ex) {
         logger.error(ex, 'Fetch nearby members unhandeled exception');
     } finally {
-        if (yield cancelled()) {
-            logger.debug('cancelled');
+        if (subscription) {
+            logger.log('Unsubscribe');
+            subscription.unsubscribe();
         }
     }
 }
@@ -82,7 +100,7 @@ export function* watchNearbyMembers() {
         logger.debug('startWatchNearby');
 
         // starts the task in the background
-        const bgSyncTask = yield fork(bgSync);
+        const bgSyncTask = yield fork(watch);
 
         // wait for the user stop action
         const result = yield take(stopWatchNearby.type);

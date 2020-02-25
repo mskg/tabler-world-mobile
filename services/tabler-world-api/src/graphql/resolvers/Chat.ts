@@ -101,11 +101,13 @@ export const ChatResolver = {
     },
 
     Member: {
-        availableForChat: (root: { id: number }, _args: {}, context: IApolloContext) => {
+        availableForChat: (root: { id: number, availableForChat?: boolean }, _args: {}, context: IApolloContext) => {
             if (EXECUTING_OFFLINE) { return root.id !== context.principal.id; }
 
             return root.id !== context.principal.id
-                ? context.dataSources.conversations.isMemberAvailableForChat(root.id)
+                ? root.availableForChat != null
+                    ? root.availableForChat
+                    : context.dataSources.conversations.isMemberAvailableForChat(root.id)
                 : false;
         },
     },

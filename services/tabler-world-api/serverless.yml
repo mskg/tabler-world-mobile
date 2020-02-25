@@ -193,6 +193,12 @@ provider:
       Resource:
         Fn::ImportValue: DataArn-${self:custom.stage}
 
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        Fn::ImportValue: ValidateTokenArn-${self:custom.stage}
+
     # read parameters from SSM
     - Effect: Allow
       Action:
@@ -264,6 +270,9 @@ functions:
 
     environment:
       ${file(serverless.env.yml):api}
+
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -364,8 +373,12 @@ functions:
   websocket:
     handler: src/graphql/websocketLambda.handler
     tracing: Active
+
     environment:
       ${file(serverless.env.yml):api}
+
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
 
     events:
       - websocket:
@@ -440,8 +453,12 @@ functions:
   publish:
     handler: src/graphql/publishMessageLambda.handler
     tracing: Active
+
     environment:
       ${file(serverless.env.yml):api}
+
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
 
     events:
       - stream:

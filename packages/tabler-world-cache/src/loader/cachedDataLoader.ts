@@ -2,13 +2,12 @@ import { ILogger } from '@mskg/tabler-world-common';
 import { Param_TTLS } from '@mskg/tabler-world-config';
 import { remove } from 'lodash';
 import { TTLs } from '../cache/TTLs';
-import { DefaultCacheType } from '../cache/types';
+import { CacheValues, DefaultCacheType } from '../cache/types';
 
 type CacheKeyType = string;
 
 type MakeKeyFunc<K> = (key: K) => CacheKeyType;
-type KeyFromRecordFunc = (record: any) => CacheKeyType;
-
+type KeyFromRecordFunc<K> = (record: any, id: K) => CacheKeyType;
 type LoadFunc<K> = (ids: ReadonlyArray<K>) => Promise<any[]>;
 
 /**
@@ -21,17 +20,23 @@ type LoadFunc<K> = (ids: ReadonlyArray<K>) => Promise<any[]>;
 export function cachedDataLoader<K>(
     { cache, logger }: { cache: DefaultCacheType, logger: ILogger },
     keyFunc: MakeKeyFunc<K>,
-    keyRecordFunc: KeyFromRecordFunc,
+    keyRecordFunc: KeyFromRecordFunc<K>,
     loadFunc: LoadFunc<K>,
     ttl: keyof Param_TTLS,
 ): LoadFunc<K> {
-
     return async (ids: ReadonlyArray<K>) => {
         logger.log('[cachedDataLoader]', 'loading', ids);
 
-        const cached = await cache.getMany(
-            ids.map((id) => keyFunc(id)),
-        );
+        let cached: CacheValues<string>;
+
+        try {
+            cached = await cache.getMany(
+                ids.map((id) => keyFunc(id)),
+            );
+        } catch (e) {
+            cached = {};
+            logger.error('cache failed', e);
+        }
 
         const existing = Object.keys(cached);
         const missing = [...ids];
@@ -41,19 +46,26 @@ export function cachedDataLoader<K>(
             logger.log('[cachedDataLoader]', 'missing keys', missing);
 
             const loadFromDb: any[] = await loadFunc(missing);
-            const ttls = await TTLs();
+            if (loadFromDb && loadFromDb.length > 0) {
+                loadFromDb.forEach((row, i) => {
+                    cached[keyRecordFunc(row, missing[i])] = row;
+                });
 
-            // update cache with fresh data
-            await cache.setMany(
-                loadFromDb.map((r) => ({
-                    id: keyRecordFunc(r),
-                    data: JSON.stringify(r),
-                    options: { ttl: ttls[ttl] },
-                })),
-            );
+                try {
+                    const ttls = await TTLs();
 
-            for (const row of loadFromDb) {
-                cached[keyRecordFunc(row)] = row;
+                    // update cache with fresh data
+                    await cache.setMany(
+                        loadFromDb.map((r, i) => ({
+                            id: keyRecordFunc(r, missing[i]),
+                            data: JSON.stringify(r),
+                            options: { ttl: ttls[ttl] },
+                        })),
+                    );
+
+                } catch (e) {
+                    logger.error('cache set failed', e);
+                }
             }
         }
 

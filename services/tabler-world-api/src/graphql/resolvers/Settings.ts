@@ -1,5 +1,5 @@
 import { PushNotificationService } from '@mskg/tabler-world-push-client';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { keys, remove, uniq } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
@@ -20,7 +20,7 @@ type SettingInput = {
 export const SettingsResolver = {
     Query: {
         Setting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const result = await client.query(
@@ -36,7 +36,7 @@ WHERE id = $1`,
         },
 
         Settings: async (_root: any, _args: any, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const result = await client.query(
@@ -78,7 +78,7 @@ WHERE id = $1`,
         },
 
         removeSetting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     await client.query(
@@ -109,7 +109,7 @@ WHERE id = $1
                         },
 
                         old: async () => {
-                            const mapping = await useDataService(context, async (client) => await client.query(
+                            const mapping = await useDatabase(context, async (client) => await client.query(
                                 `select * from profile_mapping where oldid = ANY($1)`,
                                 [modifiedArgs.setting.value],
                             ));
@@ -133,7 +133,7 @@ WHERE id = $1
                 });
             }
 
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     await client.query(

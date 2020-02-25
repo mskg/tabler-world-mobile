@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
@@ -13,7 +13,7 @@ export const JobsResolver = {
 
     Query: {
         Jobs: async (_root: any, _args: any, context: IApolloContext) => {
-            return useDataService(context, async (client) => {
+            return useDatabase(context, async (client) => {
                 const res = await client.query(`
 select * from jobhistory
 order by runon desc

@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -55,7 +55,7 @@ export const SearchDirectoryResolver = {
 
             // context.logger.log("Query is", filters.join(' AND '));
 
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const res = await client.query(

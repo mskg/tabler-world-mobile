@@ -43,6 +43,10 @@ export const Location = gql`
         LocationHistory: [LocationHistory!] @auth(requires: locationhistory)
     }
 
+    type Subscription {
+        locationUpdate (location: MyCurrentLocationInput!, query: NearbyMembersQueryInput): [NearbyMember!]
+    }
+
     type GeoPoint {
         longitude: Float!
         latitude: Float!

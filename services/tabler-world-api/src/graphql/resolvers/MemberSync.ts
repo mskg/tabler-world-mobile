@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { QueryResult } from 'pg';
 import { filter } from '../privacy/filter';
 import { IApolloContext } from '../types/IApolloContext';
@@ -44,7 +44,7 @@ export const MemberSyncResolver = {
 
     Query: {
         Members: async (_root: any, args: MembersArgs, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const { cursor, limit: strLimit, state: ts } = args;

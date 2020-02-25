@@ -3,6 +3,10 @@ import { EarthLocation } from './EarthLocation';
 import { logger } from './logger';
 
 export async function bigdata(location: EarthLocation): Promise<BigDataResult | undefined> {
+    if (__DEV__) {
+        return undefined;
+    }
+
     try {
         const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${location.latitude}&longitude=${location.longitude}&localityLanguage=en`;
         logger.debug('bigdata', url);
@@ -16,7 +20,7 @@ export async function bigdata(location: EarthLocation): Promise<BigDataResult | 
         });
 
         const col: BigDataResult = await result.json();
-        if (col == null) {
+        if (result.status !== 200 || col == null) {
             logger.debug('Location', location, 'undefined');
             return undefined;
         }

@@ -1,58 +1,24 @@
 
-import { Client, RDS } from '@mskg/tabler-world-aws';
-import { getParameters, Param_Database } from '@mskg/tabler-world-config';
-import { Client as PGClient } from 'pg';
-import { ILogger } from './ILogger';
+import { ILogger } from '@mskg/tabler-world-common';
+import { LazyPGClient } from '../clients/LazyPGClient';
+import { IDataService } from '../types/IDataService';
 
-// const KEY = "__db";
 export async function useDatabase<T>(
     context: {
-        logger: ILogger, // requestCache: { [key: string]: any }
+        logger: ILogger,
     },
-    func: (client: PGClient) => Promise<T>,
+
+    func: (client: IDataService) => Promise<T>,
 ): Promise<T> {
-    const params = await getParameters('database');
-    const connection = JSON.parse(params.database) as Param_Database;
 
-    let password = connection.password;
-    // tslint:disable-next-line: possible-timing-attack
-    if (password == null || password === '') {
-        context.logger.log('[DB]', '-> with token');
-
-        const sign = new RDS.Signer();
-        password = sign.getAuthToken({
-            region: process.env.AWS_REGION,
-            hostname: connection.host,
-            port: connection.port || 5432,
-            username: connection.user,
-        });
-    }
-
-    // tslint:disable: object-shorthand-properties-first
-    const client = new Client({
-        host: connection.host,
-        port: connection.port || 5432,
-        user: connection.user,
-        password,
-        database: connection.database,
-
-        // ssl mode = require
-        // https://github.com/brianc/node-postgres/issues/2089s
-        ssl: connection.ssl === false ? false : { rejectUnauthorized: false },
-    });
-
+    const client = new LazyPGClient(context.logger);
     try {
-        context.logger.log('[DB] connect');
-
-        await client.connect();
-        client.on('error', (...args: any[]) => context.logger.error('[SQL]', ...args));
-
         return await func(client);
     } finally {
         try {
-            await client.end();
+            await client.close();
         } catch (e) {
-            context.logger.error('[DB]', 'Failed to close connection', e);
+            context.logger.error('[SQL]', 'Failed to close connection', e);
         }
     }
 }

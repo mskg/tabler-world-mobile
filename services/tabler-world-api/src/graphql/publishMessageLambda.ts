@@ -1,112 +1,56 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { useDataService } from '@mskg/tabler-world-rds-client';
 import { DynamoDBStreamEvent } from 'aws-lambda';
 import DynamoDB from 'aws-sdk/clients/dynamodb';
-import { filter } from 'lodash';
-import { isChatEnabled } from './dataSources/ConversationsDataSource';
-import { eventManager, pushSubscriptionManager, subscriptionManager } from './subscriptions';
-import { encodeIdentifier } from './subscriptions/encodeIdentifier';
-import { publishToActiveSubscriptions } from './subscriptions/publishToActiveSubscriptions';
-import { publishToPassiveSubscriptions } from './subscriptions/publishToPassiveSubscriptions';
+import { groupBy, keys } from 'lodash';
+import { eventManager } from './subscriptions';
+import { publishEvent } from './subscriptions/publishEvent';
 import { EncodedWebsocketEvent } from './subscriptions/types/EncodedWebsocketEvent';
+import { WebsocketEvent } from './subscriptions/types/WebsocketEvent';
 
 const logger = new ConsoleLogger('publish');
 
-// tslint:disable-next-line: export-name
-export async function handler(event: DynamoDBStreamEvent) {
-    for (const subscruptionEvent of event.Records) {
-        if (subscruptionEvent.eventName !== 'INSERT' || !subscruptionEvent.dynamodb || !subscruptionEvent.dynamodb.NewImage) {
-            logger.error('Ignoring event', subscruptionEvent.eventName);
-            continue;
-        }
-
-        try {
-            const encodedImage: EncodedWebsocketEvent = EXECUTING_OFFLINE
-                ? subscruptionEvent.dynamodb.NewImage as EncodedWebsocketEvent
-                : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
-
-            const image = await eventManager.unMarshall<any>(encodedImage);
-            logger.log(image);
-
-            const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];
-
-            let failedDeliveries: number[] = [];
-            if (subscriptions.length > 0) {
-                failedDeliveries = await publishToActiveSubscriptions(subscriptions, image);
-            }
-
-            const markDeliveredFunc = async () => {
-                if (!image.trackDelivery) { return; }
-                logger.log('Marking image as delivered', image.id);
-
-                const remainingSubscriptions = subscriptions.filter(
-                    (s) => failedDeliveries.find((f) => f === s.connection.memberId) == null);
-
-                // @ts-ignore
-                await Promise.all([
-                    eventManager.markDelivered(image),
-                    remainingSubscriptions.length > 0 ? publishToActiveSubscriptions(remainingSubscriptions, image, true) : undefined,
-                ].filter(Boolean));
-            };
-
-            if (image.pushNotification) {
-                const subscribers = await pushSubscriptionManager.getSubscribers(image.eventName) || [];
-
-                // all principals without a subscription, we need to send a push message to those
-                const missingPrincipals = filter(
-                    subscribers,
-                    (p) => true
-                        && image.sender !== p // not sender
-                        && (
-                            subscriptions.find((c) => c.connection.memberId === p) == null // not already sent via socket
-                            || failedDeliveries.find((c) => c === p) != null // delivery failed
-                        ),
-                );
-
-                if (missingPrincipals.length > 0) {
-                    const available = await useDataService({ logger }, (client) => isChatEnabled(client, missingPrincipals));
-
-                    const resolved = missingPrincipals.filter((_p, i) => available[i]);
-                    if (resolved.length > 0) {
-                        await publishToPassiveSubscriptions(
-                            missingPrincipals,
-                            {
-                                ...image.pushNotification,
-                                options: {
-                                    ...image.pushNotification.options || { sound: 'default' },
-                                    badge: 1,
-                                },
-                            },
-                            {
-                                ...image.payload,
-
-                                // this is really bad. Needs a better place to
-                                // be independent of the transporting here
-                                eventId: image.id,
-                                conversationId: encodeIdentifier(image.eventName),
-                            },
-                        );
-                    }
-
-                    // delivered to all (but ok for 1:1 chat here)
-                    if (missingPrincipals.length === resolved.length && image.trackDelivery) {
-                        await markDeliveredFunc();
-                    } else {
-                        if (image.trackDelivery) {
-                            logger.log('Message not delivered to all recipient.', missingPrincipals, available);
-                        }
-                    }
-                } else {
-                    await markDeliveredFunc();
-                }
-            } else {
-                await markDeliveredFunc();
-            }
-        } catch (e) {
-            logger.error(e);
-        }
+async function submit(events: WebsocketEvent<any>[]) {
+    for (const event of events) {
+        // this will not fail
+        await publishEvent(event);
     }
 }
 
+// tslint:disable: max-func-body-length
+// tslint:disable-next-line: export-name
+export async function handler(event: DynamoDBStreamEvent) {
+    const encodedEvents = event.Records.filter((record) => {
+        if (record.eventName !== 'INSERT' || !record.dynamodb || !record.dynamodb.NewImage) {
+            logger.error('Ignoring event', record.eventName);
+            return false;
+        }
 
+        return true;
+    });
+
+    // unmarshall everything
+    const events = await Promise.all(
+        encodedEvents.map((subscruptionEvent) => {
+            try {
+                const encodedImage: EncodedWebsocketEvent = EXECUTING_OFFLINE
+                    ? subscruptionEvent.dynamodb!.NewImage as EncodedWebsocketEvent
+                    // @ts-ignore
+                    : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
+
+                return eventManager.unMarshall<any>(encodedImage);
+            } catch (e) {
+                logger.error('Could not unmarshal', e, subscruptionEvent);
+                return null;
+            }
+        }),
+    );
+
+    // group by eventName and submit in parallel
+    const grouped = groupBy(events.filter(Boolean), (e: WebsocketEvent<any>) => e.eventName);
+    await Promise.all(
+        keys(grouped).map(
+            (eventName) => submit(grouped[eventName] as WebsocketEvent<any>[]),
+        ),
+    );
+}

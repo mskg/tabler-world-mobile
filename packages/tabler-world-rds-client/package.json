@@ -1,24 +1,26 @@
 {
-  "name": "@mskg/tabler-world-rds-client",
-  "version": "0.0.1",
-  "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch"
-  },
-  "author": "Markus Kling",
-  "license": "Copyright 2019-present Markus Kling",
-  "dependencies": {},
-  "peerDependencies": {
-    "@mskg/tabler-world-aws": "0.0.1",
-    "@mskg/tabler-world-config": "0.0.1",
-    "pg": "*"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.42",
-    "@types/pg": "7.14.1",
-    "typescript": "3.7.5"
-  }
+    "name": "@mskg/tabler-world-rds-client",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "dependencies": {
+        "@mskg/tabler-world-common": "0.0.1",
+        "@mskg/tabler-world-aws": "0.0.1",
+        "@mskg/tabler-world-config": "0.0.1"
+    },
+    "peerDependencies": {
+        "pg": "*"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.42",
+        "@types/pg": "7.14.1",
+        "typescript": "3.7.5"
+    }
 }

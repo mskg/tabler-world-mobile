@@ -4,4 +4,5 @@ export const Environment = {
     DEBUG_USER: process.env.API_DEBUG_USER,
     AWS_REGION: process.env.AWS_REGION,
     USERPOOL_ID: process.env.UserPoolId,
+    VALIDATE_ARN: process.env.validate_arn,
 };

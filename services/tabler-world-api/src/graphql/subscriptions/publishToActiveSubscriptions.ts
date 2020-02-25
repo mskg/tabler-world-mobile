@@ -1,7 +1,7 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
-import { keys } from 'lodash';
+import { keys, remove } from 'lodash';
 import { cacheInstance } from '../cache/cacheInstance';
 import { dataSources } from '../dataSources';
 import { executableSchema } from '../executableSchema';
@@ -16,7 +16,7 @@ export const logger = new ConsoleLogger('publish/ws');
 export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>, delivered = false): Promise<number[]> {
     const failedDeliveries: number[] = [];
 
-    const promises = subscriptions.map(async ({ connection: { connectionId, payload, principal, context: connectionContext }, subscriptionId }) => {
+    const promises = subscriptions.map(async ({ connection: { connectionId, principal, context: connectionContext }, subscriptionId, payload }) => {
         try {
             logger.log(`[${connectionId}] [${subscriptionId}]`, 'working');
 
@@ -57,6 +57,7 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
 
             if (!isAsyncIterable(iterable)) {
                 logger.error(`[${connectionId}] [${subscriptionId}]`, 'result not asyncIterable', iterable);
+                failedDeliveries.push(principal.id);
                 return;
             }
 
@@ -78,14 +79,18 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
             if (result.value != null) {
                 try {
                     await subscriptionManager.sendData(connectionId, subscriptionId, result.value);
+
+                    // can be a stale connction for thre same user
+                    remove(failedDeliveries, (p) => p === principal.id);
                 } catch (err) {
-                    logger.error(`[${connectionId}] [${subscriptionId}]`, err);
+                    logger.error(`[${connectionId}] [${subscriptionId}]`, 'failed to sendData', err);
                     failedDeliveries.push(principal.id);
                 }
             } else {
-                logger.log('value is null');
+                logger.log(`[${connectionId}] [${subscriptionId}]`, 'withFilter === false');
             }
         } catch (err) {
+            failedDeliveries.push(principal.id);
             logger.error(`[${connectionId}] [${subscriptionId}]`, err);
         }
     });
