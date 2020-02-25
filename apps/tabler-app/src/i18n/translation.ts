@@ -50,6 +50,8 @@ function loadLanguage(lang: Languages) {
         replaceCurrentLanguage(require('./translations/is').default);
     } else if (lang === 'nl') {
         replaceCurrentLanguage(require('./translations/nl').default);
+    } else if (lang === 'it') {
+        replaceCurrentLanguage(require('./translations/it').default);
     } else {
         // default
         replaceCurrentLanguage({});
