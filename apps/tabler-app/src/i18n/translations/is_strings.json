@@ -1,67 +1,68 @@
 {
     "Component_Whoops": {
-        "title": "Úff?",
+        "title": "Obbosí?",
         "try": "Reyndu aftur",
-        "partialData": "Mistókst að hlaða gögn frá netþjóninum, sýna niðurstöðu að hluta",
-        "refresh": "Endurnærðu",
+        "partialData": "Mistókst að sækja gögn af netþjóninum. Birti niðurstöður að hluta",
+        "refresh": "Endurglæða",
         "offline": "Þú ert ótengdur."
     },
     "Component_ErrorReport": {
-        "title": "Tilkynntu um vandamál",
+        "title": "Tilkynntu vandamál",
         "text": "Athugasemdir þínar hjálpa okkur að bæta TABLER.APP.",
-        "report": "Eitthvað er ekki að virka?",
-        "feedback": "Einhverja virkni vantar? Þú hefur hugmynd?",
-        "subject": "TABLER.APP Útgáfa",
-        "noMail": "Þú virðist ekki hafa sett upp neinn póstforritara?",
-        "template": "Vinsamlegast lýsið hvað gerðist:"
+        "report": "Er eitthvað ekki að virka?",
+        "feedback": "Hefur þú góða hugmynd að einhverju sem vantar í appið?",
+        "subject": "TABLER.APP Vandamálalýsing",
+        "noMail": "Þú ert ekki með neitt póstforrit sett upp",
+        "template": "Segðu okkur hvað gerðist:",
+        "language": "Stafsetningavilla? Rangir skilmálar? Þýðingin alveg skelfileg?"
     },
     "Screen_Image": {
         "title_Member": "Meðlimaupplýsingar",
-        "title_Club": "Klúbbupplýsingar"
+        "title_Club": "Klúbbaupplýsingar"
     },
     "Component_Loader": {
         "title": "Uppfæra",
-        "text": "Ný forrit uppfærsla fannst, endurræsa verður að krefjast.",
-        "accept": "Taka"
+        "text": "Ný uppfærsla fannst. Til að setja hana upp þarftu að endurræsa forritið.",
+        "accept": "Samþykja"
     },
     "Screen_SignIn": {
         "placeholderEMail": "fornafn.nafnorð@123-is.roundtable.world",
-        "placeholderCode": "Lykilorð þitt",
+        "placeholderCode": "Lykilorðið þitt",
         "continue": "Skrá inn",
         "confirm": "Staðfesta",
         "cancel": "Hætta við",
-        "warning": "MIKILVÆGT! Þú getur núna skráð þig inn með TABLER.WORLD lykilorðinu þínu. Tölvupóstur verður ekki lengur sendur.",
+        "warning": "MIKILVÆGT! Þú getur núna skráð þig inn með TABLER.WORLD lykilorðinu þínu. Sendum ekki út tölvupóst lengur.",
         "welcomeBack": "Velkominn aftur,",
-        "signin": "vinsamlegast skráðu þig inn með TABLER.WORLD almenna netfanginu þínu",
+        "signin": "vinsamlegast skráðu þig inn með TABLER.WORLD netfanginu þínu",
         "confirmTitle": "Sláðu inn lykilorð",
         "codeWrong": "Staðfesting mistókst, þú verður að endurræsa.",
-        "accessDenied": "Þú getur ekki notað þetta forrit við innskráningu þína. Ef þér finnst að þetta sé rangt, vinsamlegast farðu í TABLER.WORLD teymið með tölvupósti.",
-        "codeVerify": "Gat ekki staðfest lykilorð, {reynir} reynir eftir.",
+        "accessDenied": "Þú getur ekki notað þetta forrit fyrir innskráningu þína. Ef þér finnst að þetta sé rangt vinsamlegast farðu í TABLER.WORLD teymið með tölvupósti.",
+        "codeVerify": "Gat ekki staðfest lykilorð. {tries} tilraun(ir) eftir.",
         "demoMode": "Prófaðu forritið",
-        "join": "Hvernig á að taka þátt í Round Table?",
+        "join": "Hvernig get ég tekið þátt í Round Table?",
         "demo": {
-            "title": "Demo Mode",
-            "text": "Eftir staðfestingu munum við endurræsa forritið. Til að hætta í kynningu, farðu í Stillingar | Að skrá þig út."
+            "title": "Prufuhamur",
+            "text": "Eftir staðfestingu munum við endurræsa forritið. Til að fara út úr kynningu, farðu í Stillingar | Að skrá þig út."
         }
     },
     "Screen_Pair": {
-        "action": "Skiptu um upplýsingar um tengiliði",
-        "title": "Exchange upplýsingar um tengiliði",
-        "scan": "Skannakóða",
+        "action": "Skiptast á upplýsingum",
+        "title": "Skiptast á upplýsingum",
+        "scan": "Skanna kóða",
         "me": "Kóðinn minn",
         "request": "Biður um leyfi fyrir myndavél",
         "permission": "Enginn aðgangur að myndavél",
-        "remove": "Meðlimur hefur verið settur í uppáhald þinn",
+        "remove": "Meðlimur hefur verið bættur við í uppáhald hjá þér",
         "undo": "Afturkalla"
     },
     "Screen_Structure": {
         "navigation": "Skrá",
         "title": "Félag",
-        "mytitle": "Félag mitt",
+        "mytitle": "Mitt félag",
         "associations": "Félög",
         "clubs": "Klúbbar",
         "areas": "Svæði",
-        "president": "Forseta",
+        "president": "Forseti",
         "board": "Stjórn",
         "assist": "Aðstoðarmenn stjórnar",
         "details": "Sýna klúbb"
@@ -73,29 +74,29 @@
         "members": "Félagar",
         "member": "Meðlimur",
         "Actions": {
-            "web": "vefur",
+            "web": "heimasíða",
             "facebook": "facebook",
             "instagram": "instagram",
-            "twitter": "kvak"
+            "twitter": "twitter"
         },
         "web": "Vefsíða",
-        "charter": "Stofnskrá dagsetning",
-        "national": "Þjóðviljinn",
-        "international": "Alþjóðlegt Guð foreldri",
+        "charter": "Stofndagsetning",
+        "national": "Guðforeldri",
+        "international": "Alþjóðlegur guðforeldri",
         "account": "Bankareikning",
         "place": {
             "one": "Fundarstaður",
-            "other": ""
+            "other": "Fundarstaður {place}"
         },
-        "meetings": "Mánaðarfundir kl",
+        "meetings": "Fundartími er",
         "expand": "Sjá allt"
     },
     "Screen_World": {
         "title": "TABLER.WORLD",
-        "tab": "Online"
+        "tab": "Tengdur"
     },
     "Screen_Albums": {
-        "title": "Plötur",
+        "title": "Myndaalbúm",
         "details": "Sýna albúm"
     },
     "Screen_News": {
@@ -120,70 +121,69 @@
             "chat": "TABLER.APP Spjall",
             "home": "Heimilisfangið",
             "birthday": "Afmælisdagur",
-            "partner": "Félagi",
-            "roles": "RT aðgerðir (á þessu ári)",
+            "partner": "Maki",
+            "roles": "RT embætti (á yfirstandandi ári)",
             "rtorg": "Skipulag RT",
-            "companies": "Fyrirtæki",
+            "companies": "Atvinna",
             "educations": "Menntun",
-            "joined": "Dagsetning gengin"
+            "joined": "Félagi síðan"
         },
         "Actions": {
             "message": "skilaboð",
             "call": "hringja",
             "mail": "póstur",
-            "web": "tabler.world",
-            "chat": "Sendu skilaboð til {name}",
+            "chat": "Sendu {name} skilaboð",
             "openweb": "Sýna á TABLER.WORLD",
-            "favadd": "Bæta við Uppáhalds",
-            "remfav": "Fjarlægðu úr eftirlæti",
-            "contact": "Uppfærðu símaskrá",
-            "linkedin": "tengd",
+            "favadd": "Bæta við í uppáhalds",
+            "remfav": "Fjarlægja úr uppáhalds",
+            "contact": "Uppfæra símaskrá",
+            "linkedin": "linkedin",
             "facebook": "facebook",
             "instagram": "instagram",
-            "twitter": "kvak",
+            "twitter": "twitter",
             "clipboard": "Afritaður texti"
         }
     },
     "EMailNames": {
         "rt": "TABLER.WORLD",
-        "home": "Einkamál",
+        "home": "Persónulegt",
         "work": "Vinna",
         "other": "Annað"
     },
     "PhoneNames": {
-        "home": "Heim",
+        "home": "Símanúmer",
         "mobile": "Farsími",
-        "work": "Vinna",
+        "work": "Vinnusími",
         "other": "Annað"
     },
     "Screen_Search": {
         "title": "Leitaðu",
         "history": "Leitarsaga",
-        "favorites": "Eftirlæti",
-        "search": "Leitaðu ...",
-        "lru": "Nýlega opnaður",
+        "favorites": "Uppáhalds",
+        "search": "Leitaorð ...",
+        "lru": "Nýlega skoðað",
         "filter": "Sía",
         "expand": "Sjá allt",
         "collapse": "Sjá minna",
         "associations": {
             "one": "Félag",
-            "other": ""
+            "other": "Félag ({number})"
         },
         "roles": {
-            "one": "Hlutverk",
-            "other": ""
+            "one": "Embætti",
+            "other": "Embætti ({number})"
         },
         "areas": {
             "one": "Svæði",
-            "other": ""
+            "other": "Svæði ({number})"
         },
         "tables": {
             "one": "Klúbbur",
-            "other": ""
+            "other": "Klúbbur ({number})"
         },
         "sectors": {
-            "one": "Geiri",
-            "other": ""
+            "one": "Atvinna",
+            "other": "Atvinna ({number})"
         }
     },
     "Sectors": {
@@ -199,27 +199,27 @@
         "communitysocialservicesnonprofit": "Samfélag, félagsþjónusta og félagasamtök",
         "constructiontradesmining": "Framkvæmdir, viðskipti og námuvinnslu",
         "consultingservices": "Ráðgjafaþjónusta",
-        "customerservicecallcenter": "Þjónustudeild og símaver",
+        "customerservicecallcenter": "Þjónusta og símaver",
         "design": "Hönnun",
         "educationtraininglibrary": "Menntun, þjálfun og bókasafn",
-        "employmentrecruitmentagency": "Atvinnumálaráðuneytið",
+        "employmentrecruitmentagency": "Atvinnu og ráðningar þjónusta",
         "engineering": "Verkfræði",
         "financeeconomics": "Fjármál og hagfræði",
-        "governmentpolicy": "Ríkisstjórn og stefna",
-        "healthsocialcarepractitionertechnician": "Heilsa og félagsleg umönnun, iðkandi og tæknimaður",
-        "hospitalitytourism": "Gestrisni og ferðaþjónusta",
+        "governmentpolicy": "Stjórnsýsla",
+        "healthsocialcarepractitionertechnician": "Heilsa & umönnun",
+        "hospitalitytourism": "Gisting og ferðaþjónusta",
         "humanresources": "Mannauður",
         "industry": "Iðnaður",
         "informationtechnology": "Upplýsingatækni",
         "installationmaintenancerepair": "Uppsetning, viðhald og viðgerðir",
         "insurance": "Tryggingar",
         "lawenforcementsecurity": "Löggæsla og öryggi",
-        "legal": "Löglegt",
-        "manufacturingproduction": "Framleiðsla og framleiðsla",
+        "legal": "Skilmálar",
+        "manufacturingproduction": "Framleiðsla",
         "other": "Annað",
         "personalcare": "Persónuleg umönnun",
-        "realestate": "Fasteign",
-        "restaurantfoodservice": "Veitingastaður og matarþjónusta",
+        "realestate": "Fasteignir",
+        "restaurantfoodservice": "Veitingastaðir og framreiðsla",
         "retailwholesale": "Smásala og heildsala",
         "sales": "Sala",
         "scienceresearch": "Vísindi og rannsóknir",
@@ -228,15 +228,15 @@
         "warehousingdistribution": "Vörugeymsla og dreifing"
     },
     "Screen_Filter": {
-        "title": "Aðlagaðu aðilasíur",
-        "area": "Héruð samtaka minna",
-        "showAll": "Sýna öllum félagsmönnum mínum",
+        "title": "Stilla síur",
+        "area": "Svæði innan félagsins",
+        "showAll": "Sýna alla teiblara í landsstarfinu",
         "hideAll": "Fela alla félaga mína í félaginu",
-        "favorites": "Eftirlæti",
+        "favorites": "Uppáhalds",
         "toggleFavorits": "Allt uppáhald",
-        "toggleOwnTable": "Mitt eigið borð",
-        "toggleAssociationBoard": "Stjórn Félags míns og -aðstoðarmenn",
-        "toggleAreaBoard": "Ráðgjafaráð Félags míns"
+        "toggleOwnTable": "Minn eigin klúbbur",
+        "toggleAssociationBoard": "Stjórn og aðstoðarmenn í félaginu mínu",
+        "toggleAreaBoard": "Ráðgjafaráð í félaginu mínu"
     },
     "Screen_Settings": {
         "title": "Stillingar",
@@ -244,10 +244,10 @@
             "title": "Vinsamlegast staðfestu útskráninguna þína!",
             "text": "Við munum fjarlægja öll gögnin þín. Ekki er hægt að afturkalla þessa aðgerð.",
             "button": "AÐ SKRÁ ÞIG ÚT",
-            "demo": "Þú ert að nota forritið í sýnikennslu. Vinsamlegast skráðu þig út til að hætta í þessum ham."
+            "demo": "Þú ert að nota forritið í prufuhami. Vinsamlegast skráðu þig út til að hætta í þessum hami."
         },
         "reload": {
-            "title": "Endurhlaða krafist",
+            "title": "Verður að endurglæða",
             "text": "Til að virkja þann eiginleika verðum við að endurræsa forritið."
         },
         "sync": {
@@ -257,59 +257,59 @@
         "confirm": "Staðfesta",
         "cancel": "Hætta við",
         "sections": {
-            "about": "Um það bil",
-            "sync": "Uppfærðu heimilisfangaskrá símans",
+            "about": "Upplýsingar",
+            "sync": "Uppfærða heimilisfangaskrá símans",
             "reset": "Endurstilla",
             "apps": "Sjálfgefin forrit",
             "contacts": "Félagar",
             "colors": "Litir",
             "experiments": "Tilraunir",
-            "locationservices": "Staðsetningar þjónustur"
+            "locationservices": "Staðsetningaþjónustur"
         },
         "texts": {
-            "contacts": "Hægt er að samstilla meðlimi við reikning sjálfgefinna tengiliða símans. Ef meðlimir eru fjarlægðir úr TABLER.WORLD, eru tengiliðir þínir áfram. Eiginleikum tengiliðanna er framhjá öllum breytingum á TABLER.WORLD.",
-            "experiments": "Þetta eru tilraunakenndir og óstuddir eiginleikar TABLER.APP og geta hverfa hvenær sem er."
+            "contacts": "Hægt er að samræma meðlimi við tengiliði í símanum þínum. Ef meðlimir eru fjarlægðir úr TABLER.WORLD, eru tengiliðirnir þínir áfram þar. Verða breytingar á eiginleikum tengiliðanna breytast þeir ekki í símanum sjálfkrafa.",
+            "experiments": "Þetta eru tilraunakenndir og óstöðugir eiginleikar TABLER.APP og geta horfið hvenær sem er."
         },
         "contactpermissions": "Staðsetningarheimildir eru nauðsynlegar til að nota þennan eiginleika. Vinsamlegast veittu leyfi í gegnum stillingasvæði símans.",
         "locationpermission": "Get ekki fengið aðgang að staðsetningu þinni. Vinsamlegast veittu leyfi í gegnum stillingasvæði símans.",
         "locationfailed": "Mistókst að uppfæra staðsetningarstillingar",
         "mapfailed": "Mistókst að uppfæra kortastillingar",
-        "firstlast": "Fyrstur síðastur",
-        "lastfirst": "Síðast, fyrst",
+        "firstlast": "Fornafn, eftirnafn",
+        "lastfirst": "Eftirnafn, Fornafn",
         "fields": {
-            "mail": "Búðu til nýjan póst í",
+            "mail": "Búðu til nýjan tölvupóst í",
             "web": "Opnaðu vafra í",
             "sms": "Senda skilaboð með",
             "phone": "Hringdu með",
-            "dark": "Myrkur háttur",
-            "logout": "Núllstilla allar stillingar og Útskrá",
+            "dark": "Dökt útlit",
+            "logout": "Núllstilla allar stillingar og skrá mig út",
             "clear": "Eyða öllu efni",
-            "cache": "Hreinsa myndskyndiminni",
+            "cache": "Hreinsa skyndiminni mynda",
             "version": "Útgáfa",
-            "lastSync": "Síðasta samstilling",
+            "lastSync": "Síðasta samræming",
             "channel": "Dreifingarrás",
-            "syncFavorites": "Samstilla eftirlæti",
+            "syncFavorites": "Samræma uppáhalds",
             "syncOwnTable": "Samstilla meðlimi eigin töflu",
             "sortOrder": "Flokkun",
             "displayOrder": "Sýna röð",
-            "experiments": "Plötur og fréttir",
+            "experiments": "Albúm og fréttir",
             "nearby": "Meðlimir í grenndinni",
             "notifications": "Tilkynningar",
             "subscription": "Árleg áskrift",
             "subscription_valid": "Gildir"
         },
-        "ReleaseNotes": "Útgáfubréf",
+        "ReleaseNotes": "Nýjungar",
         "Legal": {
-            "title": "Löglegt",
-            "thirdparty": "Hugbúnaðartilkynningar og upplýsingar þriðja aðila",
-            "about": "Um þetta forrit",
+            "title": "Skilmálar",
+            "thirdparty": "Upplýsingar um forritin sem notuð eru í appinu",
+            "about": "Um forritið",
             "docs": {
-                "dataprotection": "Stefna um gagnavernd",
-                "imprint": "Mark"
+                "dataprotection": "Persónuverndarstefna",
+                "imprint": "Lagalegar upplýsingar"
             }
         },
         "cache": {
-            "title": "Skyndiminni hefur verið hreinsað"
+            "title": "Skyndiminnið hefur verið hreinsað"
         }
     },
     "Screen_Members": {
@@ -370,12 +370,12 @@
         "CO": "Kólumbíu",
         "KM": "Kómoreyjar",
         "CG": "Kongó",
-        "CD": "Kongó, Lýðveldið",
+        "CD": "Alþýðulýðveldið Kongó",
         "CK": "Cook Islands",
         "CR": "Kosta Ríka",
         "CI": "Cote D'Ivoire",
         "HR": "Króatía",
-        "CU": "Kúbu",
+        "CU": "Kúba",
         "CY": "Kýpur",
         "CZ": "Tékkland",
         "DK": "Danmörku",
@@ -390,7 +390,7 @@
         "EE": "Eistland",
         "ET": "Eþíópía",
         "FK": "Falklandseyjar (Malvinas)",
-        "FO": "Færeyjum",
+        "FO": "Færeyjar",
         "FJ": "Fídjieyjar",
         "FI": "Finnland",
         "FR": "Frakkland",
@@ -421,14 +421,14 @@
         "IS": "Ísland",
         "IN": "Indland",
         "ID": "Indónesía",
-        "IR": "Íran, Íslamska Lýðveldið",
+        "IR": "Íran",
         "IQ": "Írak",
         "IE": "Írland",
         "IL": "Ísrael",
-        "IT": "Ítalíu",
+        "IT": "Ítalía",
         "JM": "Jamaíka",
         "JP": "Japan",
-        "JO": "Jórdaníu",
+        "JO": "Jórdanía",
         "KZ": "Kasakstan",
         "KE": "Kenía",
         "KI": "Kiribati",
@@ -451,15 +451,15 @@
         "MY": "Malasía",
         "MV": "Maldíveyjar",
         "ML": "Malí",
-        "MT": "Möltu",
+        "MT": "Malta",
         "MH": "Marshall-eyjar",
         "MQ": "Martinique",
         "MR": "Máritanía",
         "MU": "Máritíus",
         "YT": "Mayotte",
         "MX": "Mexíkó",
-        "FM": "Míkrónesía, Federated States of",
-        "MD": "Moldóva, Lýðveldið",
+        "FM": "Míkrónesía",
+        "MD": "Moldóva",
         "MC": "Mónakó",
         "MN": "Mongólía",
         "MS": "Montserrat",
@@ -476,14 +476,14 @@
         "NE": "Níger",
         "NG": "Nígería",
         "NU": "Niue",
-        "NF": "Norfolk eyja",
-        "MK": "Norður Makedónía, Lýðveldið",
+        "NF": "Norfolk eyjar",
+        "MK": "Norður Makedónía",
         "MP": "Norður Maríanaeyjar",
-        "NO": "Noregi",
+        "NO": "Noregur",
         "OM": "Óman",
         "PK": "Pakistan",
         "PW": "Palau",
-        "PS": "Palestínusvæði, hernumið",
+        "PS": "Palestína",
         "PA": "Panama",
         "PG": "Papúa Nýja-Gínea",
         "PY": "Paragvæ",
@@ -514,7 +514,7 @@
         "SK": "Slóvakía",
         "SI": "Slóvenía",
         "SB": "Salómonseyjar",
-        "SO": "Sómalíu",
+        "SO": "Sómalía",
         "ZA": "Suður-Afríka",
         "GS": "Suður-Georgía og Suður-Sandwicheyjar",
         "ES": "Spánn",
@@ -525,13 +525,13 @@
         "SZ": "Svasíland",
         "SE": "Svíþjóð",
         "CH": "Sviss",
-        "SY": "Sýrlenska arabíska lýðveldið",
+        "SY": "Sýrland",
         "TW": "Taívan",
         "TJ": "Tadsjikistan",
-        "TZ": "Tansanía, Sameinuðu lýðveldið",
+        "TZ": "Tansanía",
         "TH": "Tæland",
         "TL": "Tímor-Leste",
-        "TG": "Að fara",
+        "TG": "Tógó",
         "TK": "Tokelau",
         "TO": "Tonga",
         "TT": "Trínidad og Tóbagó",
@@ -544,15 +544,15 @@
         "UA": "Úkraína",
         "AE": "Sameinuðu arabísku furstadæmin",
         "GB": "Bretland",
-        "US": "Bandaríki Norður Ameríku",
-        "UM": "Minniháttar ytri eyjar í Bandaríkjunum",
+        "US": "Bandaríkin",
+        "UM": "Smáeyjar Bandaríkjanna",
         "UY": "Úrúgvæ",
         "UZ": "Úsbekistan",
         "VU": "Vanúatú",
         "VE": "Venesúela",
         "VN": "Víetnam",
-        "VG": "Jómfrúaeyjar, Bretar",
-        "VI": "Jómfrúaeyjar, Bandaríkin",
+        "VG": "Bresku jómfrúaeyjarnar",
+        "VI": "Bandarísku jómfrúaeyjarnar",
         "WF": "Wallis og Futuna",
         "EH": "Vestur-Sahara",
         "YE": "Jemen",
@@ -566,9 +566,9 @@
         "JE": "Jersey",
         "ME": "Svartfjallaland",
         "BL": "Saint Barthélemy",
-        "MF": "Saint Martin (franskur hluti)",
+        "MF": "Saint Martin (franski hluti)",
         "RS": "Serbía",
-        "SX": "Sint Maarten (hollenskur hluti)",
+        "SX": "Sint Maarten (hollenski hluti)",
         "SS": "Suður-Súdan",
         "XK": "Kosovo"
     },
@@ -577,38 +577,38 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Þú slökktir á tilkynningum vegna spjallsamtala. Þú verður ekki sýnilegur fyrir aðra meðlimi og þú getur ekki sent og tekið á móti skilaboðum.",
+            "text": "Þú slökktir á tilkynningum varðandi samtöl. Þú verður ekki sýnilegur fyrir aðra meðlimi og þú getur ekki sent og tekið á móti skilaboðum.",
             "button": "Breyting"
         },
         "Settings": {
             "title": "Tilkynningar",
             "push": {
-                "title": "Ýttu tilkynningar",
-                "action": "Nýskráðu þig fyrir tilkynningar um ýtt",
+                "title": "Símatilkynningar",
+                "action": "Endurglæða símatilkynningar",
                 "permissions": "Ekki hægt að sýna tilkynningar. Vinsamlegast veittu leyfi í gegnum stillingasvæði símans."
             },
             "birthday": {
-                "title": "Afmælis minningar",
-                "field": "Fyrir eigin klúbbfélaga og uppáhald"
+                "title": "Áminningar um afmælisdaga",
+                "field": "Fyrir eigin klúbbfélaga og uppáhalds"
             },
             "onetoone": {
                 "title": "Samtöl",
-                "text": "Ef þú slekkur á þessari stillingu afþakkarðu spjallvirkni.",
-                "field": "Eitt til eitt spjall"
+                "text": "Ef þú slekkur á þessari stillingu geturu ekki notað spjallvirknina í appinu.",
+                "field": "Einkaspjall"
             }
         }
     },
     "Date": {
-        "date": "D MMMM ÁÁÁÁ"
+        "date": "D MMMM YYYY"
     },
     "Timespan": {
-        "now": "Nú",
-        "seconds": "sekúndur",
-        "minutes": "mínútur",
-        "hours": "tíma",
+        "now": "Núna",
+        "seconds": "sekúndum",
+        "minutes": "mínútum",
+        "hours": "tímum",
         "days": "daga",
         "weeks": "vikur",
-        "months": "mánuðum",
+        "months": "mánuðir",
         "years": "ár"
     },
     "Distance": {
@@ -622,19 +622,19 @@
         "navigation": "Nálægt",
         "title": "Meðlimir í grenndinni",
         "location": "Staðsetning þín",
-        "near": "Nálægt {staðsetning}",
+        "near": "Nálægt {location}",
         "unknown": "Staðsetning óþekkt",
-        "ago": "{tímalengd} síðan",
+        "ago": "{timespan} síðan",
         "notsupported": "Bakgrunnsstaðsetning er ekki tiltæk í þessu forriti.",
-        "permissions": "Staðsetningarheimildir eru nauðsynlegar til að nota þennan eiginleika. Þú getur virkjað þau handvirkt hvenær sem er í Stillingarforrit símans.",
+        "permissions": "Staðsetningarheimildir eru nauðsynlegar til að nota þennan eiginleika. Þú getur virkjað þau handvirkt hvenær sem er í stillingum símans.",
         "always": "Meðlimir í grenndinni þurfa 'alltaf' staðsetningaraðgang.",
         "setlocation": "Stilltu staðsetningu á alltaf",
         "on": "Kveikja á",
-        "off": "Slökkt er á meðlimum í nágrenninu. Ef þú kveikir á því geta aðrir meðlimir séð í hvaða borg þú ert. Við geymum ekki staðsetningarferil þinn, aðeins þinn síðast þekkta staðsetningu.",
+        "off": "Slökkt er á meðlimum í nágrenninu. Ef þú kveikir á því geta aðrir meðlimir séð í hvaða borg þú ert. Við geymum ekki staðsetningarferil þinn, aðeins síðustu þekktu staðsetningu.",
         "mapOff": "Þú hefur valið að nota til að sýna kortið sjálfur.",
         "sharesLocation": {
-            "true": "Deilir staðsetningu hans með þér",
-            "false": "Deilir ekki staðsetningu hans"
+            "true": "Deilir staðsetningu sinni með þér",
+            "false": "Deilir ekki staðsetningu sinni"
         },
         "Tabs": {
             "list": "Listi",
@@ -644,13 +644,13 @@
             "title": "Meðlimir í grenndinni",
             "on": {
                 "title": "Meðlimir í grenndinni",
-                "text": "Ef þú kveikir á því geta aðrir meðlimir séð í hvaða borg þú ert. Við geymum ekki staðsetningarferil þinn, aðeins þinn síðast þekkta staðsetningu.",
-                "field": "Deildu staðsetningu þinni"
+                "text": "Ef þú kveikir á því geta aðrir meðlimir séð í hvaða borg þú ert. Við geymum ekki staðsetningarferil þinn, aðeins síðustu þekktu staðsetningu.",
+                "field": "Deila staðsetingu minni"
             },
             "map": {
                 "title": "Kortaskjár",
                 "text": "Ef þú kveikir á þessu geta aðrir meðlimir séð nákvæmlega hvar þú ert.",
-                "field": "Leyfa öðrum að skoða staðsetningu þína á korti"
+                "field": "Leyfa öðrum að sjá staðsetningu þína á kortinu"
             },
             "filter": {
                 "title": "Sía",
@@ -665,7 +665,7 @@
         "title": "Endurgjöf"
     },
     "Screen_Conversations": {
-        "title": "Spjall",
+        "title": "Skilaboð",
         "network": "Bíður eftir neti ...",
         "photo": "Ljósmynd",
         "copy": "Afrita",
@@ -676,5 +676,14 @@
     "Component_ImagePicker": {
         "nocamera": "Engar heimildir fyrir myndavél veittar.",
         "nogallery": "Því miður, við þurfum heimildir á myndavélarrúllum til að þetta virki."
+    },
+    "Permissions": {
+        "NSCameraUsageDescription": "TABLER.APP notar myndavélina á símanum til að skanna barkóða annara félaga.",
+        "NSContactsUsageDescription": "TABLER.APP uppfærir símaskrá þína með upplýsingum um valda félaga.",
+        "NSCalendarsUsageDescription": "TABLER.APP færir afmælisdaga og viðburði inn í dagatalið þitt.",
+        "NSLocationWhenInUseUsageDescription": "TABLER.APP sýnir aðrar félaga og klúbba nálægt staðsetningu þinni",
+        "NSLocationAlwaysUsageDescription": "TABLER.APP fylgist með staðsetningu þinni svo aðrir félagar geta haft samband við þig.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP fylgist með staðsetningu þinni svo aðrir félagar geta haft samband við þig.",
+        "NSPhotoLibraryUsageDescription": "Þú getur sent myndir til annara félaga í TABLER.APP"
     }
 }
