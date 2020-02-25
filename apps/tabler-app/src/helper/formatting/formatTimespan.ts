@@ -8,9 +8,9 @@ export function formatTimespan(time1: number, time2?: number) {
         time2 = 0;
     }
 
-    const period = Math.abs(time1 - time2) / 1000;
+    const period = Math.round(Math.abs(time1 - time2) / 1000);
 
-    let ts = 1;
+    let ts = period;
     let format = 'seconds';
 
     if (period > 31556926) {
