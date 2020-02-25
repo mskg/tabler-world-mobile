@@ -5,7 +5,7 @@ import { Environment } from '../Environment';
 
 export const dynamoDB = new DynamoDBCache(
     {
-        region: Environment.AWS.Region,
+        region: process.env.AWS_REGION,
         endpoint:
             EXECUTING_OFFLINE
                 ? 'http://localhost:8000'
@@ -13,7 +13,6 @@ export const dynamoDB = new DynamoDBCache(
     },
     {
         tableName: EXECUTING_OFFLINE ? 'tabler-world-cache-dev' : Environment.DynamoDB.table as string,
-        ttl: Environment.DynamoDB.defautTTL,
     },
     EXECUTING_OFFLINE ? 'dev' : Environment.Caching.version,
     new ConsoleLogger('DynamoDBCache'),

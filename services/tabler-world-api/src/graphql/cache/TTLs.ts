@@ -5,5 +5,3 @@ export const TTLs = async () => {
     return JSON.parse(p.cachettl) as Param_TTLS;
 };
 
-// s
-export const DEFAULT_TTL = parseInt(process.env.TTL_DEFAULT || (60 * 60 * 24 * 2).toString(), 10);
