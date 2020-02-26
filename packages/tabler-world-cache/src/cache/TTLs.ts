@@ -2,7 +2,7 @@ import { defaultTTLs, getParameters, Param_TTLS } from '@mskg/tabler-world-confi
 
 // tslint:disable-next-line: variable-name
 export const TTLs = async () => {
-    const p = await getParameters('cachettl');
+    const p = await getParameters('cachettl', false);
     const ttls = p.cachettl ? JSON.parse(p.cachettl) : {};
 
     return {
