@@ -112,7 +112,7 @@ provider:
         - sqs:SendMessageBatch
       Resource:
         Fn::GetAtt:
-          - PushQueue
+          - FifoPushQueue
           - Arn
 
     # tracing AWSXrayWriteOnlyAccess
@@ -162,7 +162,7 @@ functions:
       - sqs:
           arn:
             Fn::GetAtt:
-              - PushQueue
+              - FifoPushQueue
               - Arn
   #
   # Check push notifications
@@ -201,11 +201,14 @@ resources:
       Properties:
         RetentionInDays: "7"
 
-    PushQueue:
+    FifoPushQueue:
       Type: AWS::SQS::Queue
+      UpdateReplacePolicy: Delete
       Properties:
-        QueueName: ${self:custom.sqs_push}
+        QueueName: ${self:custom.sqs_push}.fifo
         MessageRetentionPeriod: 1209600
+        ContentBasedDeduplication: true
+        FifoQueue: true
         # 6 times lambda timeout
         VisibilityTimeout: 4320
         RedrivePolicy:
@@ -218,21 +221,23 @@ resources:
     PushQueueDeadLetters:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:custom.sqs_push}-dead
+        QueueName: ${self:custom.sqs_push}-dead.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
         MessageRetentionPeriod: 1209600
         VisibilityTimeout: 0
 
   Outputs:
-    PushQueueArn:
+    FifoPushQueueArn:
       Value:
         Fn::GetAtt:
-          - PushQueue
+          - FifoPushQueue
           - Arn
       Export:
-        Name: PushQueueArn-${self:custom.stage}
+        Name: FifoPushQueueArn-${self:custom.stage}
 
-    PushQueueUrl:
+    FifoPushQueueUrl:
       Value:
-        Ref: PushQueue
+        Ref: FifoPushQueue
       Export:
-        Name: PushQueueUrl-${self:custom.stage}
+        Name: FifoPushQueueUrl-${self:custom.stage}

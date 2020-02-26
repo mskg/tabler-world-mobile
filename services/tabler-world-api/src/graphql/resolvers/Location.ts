@@ -23,11 +23,6 @@ type MyLocationInput = {
 };
 
 type NearMembersQueryInput = {
-    location: {
-        longitude: number,
-        latitude: number,
-    },
-
     query?: {
         excludeOwnTable?: boolean,
     },
@@ -50,7 +45,9 @@ type Payload = {
     member: number,
 };
 
-async function convertAddressToLocation(address: any): Promise<GeoCityLocation> {
+async function convertAddressToLocation(address: any): Promise<GeoCityLocation | undefined> {
+    if (!address) { return undefined; }
+
     // old data, leave like it is
     if (address.city || address.region) {
         return {
@@ -102,10 +99,12 @@ export const LocationResolver = {
         },
 
         location: (root: any, _args: {}, _context: IApolloContext) => {
-            return root.canshowonmap ? {
-                longitude: root.longitude,
-                latitude: root.latitude,
-            } : null;
+            return root.canshowonmap
+                ? root.location || {
+                    longitude: root.longitude,
+                    latitude: root.latitude,
+                }
+                : null;
         },
 
         locationName: (root: any, _args: {}, _context: IApolloContext) => {
@@ -151,51 +150,13 @@ export const LocationResolver = {
         nearbyMembers: async (_root: any, args: NearMembersQueryInput, context: IApolloContext) => {
             context.logger.log('nearby', args);
 
-            const userShares = context.dataSources.location.isMemberSharingLocation(context.principal.id);
-            const nearByQuery = getNearByParams();
+            const userShares = await context.dataSources.location.isMemberSharingLocation(context.principal.id);
+            if (!userShares) {
+                context.logger.log('member does not share location');
+                return [];
+            }
 
-            return await userShares
-                ? useDatabase(
-                    context,
-                    async (client) => {
-                        const nearBy = await nearByQuery;
-                        const result = await client.query(
-                            `
-SELECT
-    member,
-    address,
-    lastseen,
-    speed,
-    canshowonmap,
-    ST_X (point::geometry) AS longitude,
-    ST_Y (point::geometry) AS latitude,
-    CAST(ST_Distance(
-        locations.point,
-        $1::geography
-    ) as integer) AS distance
-FROM
-    userlocations_match locations
-WHERE
-        member <> $2
-    and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
-    ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
-    ${args.query && args.query.excludeOwnTable ? 'and club <> $3' : ''}
-
-    and address is not null
-ORDER BY
-    locations.point <-> $1::geography
-LIMIT 20
-`,
-                            [
-                                `POINT(${args.location.longitude} ${args.location.latitude})`,
-                                context.principal.id,
-                                args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
-                            ].filter(Boolean));
-
-                        return result.rows.length > 0 ? result.rows : [];
-                    },
-                )
-                : [];
+            return context.dataSources.location.query();
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
@@ -232,33 +193,10 @@ LIMIT 10
     Mutation: {
         putLocation: async (_root: any, args: MyLocationInput, context: IApolloContext) => {
             context.logger.log('putLocation', args);
+            const db = context.dataSources.location.putLocation(args.location);
 
-            const db = useDatabase(
-                context,
-                async (client) => {
-                    await client.query(
-                        `
-INSERT INTO userlocations(id, point, accuracy, speed, address, lastseen)
-VALUES($1, $2, $3, $4, $5, now())
-ON CONFLICT (id)
-DO UPDATE
-    SET point = excluded.point,
-        accuracy = excluded.accuracy,
-        address = excluded.address,
-        lastseen = excluded.lastseen,
-        speed = excluded.speed
-`,
-                        [
-                            context.principal.id,
-                            `POINT(${args.location.longitude} ${args.location.latitude})`,
-                            args.location.accuracy,
-                            Math.round(args.location.speed),
-                            args.location.address ? JSON.stringify(args.location.address) : null,
-                        ],
-                    );
-                    return true;
-                },
-            );
+            // events are sent directy offline, we have to wait for the db first in this case
+            if (EXECUTING_OFFLINE) { await db; }
 
             // const canShowOnMap = await context.dataSources.location.isMemberVisibleOnMap(context.principal.id);
             const geo = Geohash.encode(args.location.longitude, args.location.latitude, 4);
@@ -308,10 +246,17 @@ WHERE id = $1
     Subscription: {
         locationUpdate: {
             subscribe: async (root: SubscriptionArgs, args: NearMembersQueryInput, context: ISubscriptionContext, image: any) => {
-                const hash = Geohash.encode(args.location.longitude, args.location.latitude, 4);
+                const loc = await context.dataSources.location.userLocation();
+                if (!loc) {
+                    context.logger.log('location unkown??');
+                    throw new Error('Location unkonwn');
+                }
+
+                const hash = Geohash.encode(loc.longitude, loc.latitude, 4);
 
                 // we only subscribe to our circle
                 const names = [`nearby:${hash}`];
+                context.logger.log('subscribe', loc, names);
 
                 if (root) {
                     context.logger.log('subscribe', names);
@@ -328,14 +273,14 @@ WHERE id = $1
                 return withFilter(
                     () => pubsub.asyncIterator(names),
                     (event: WebsocketEvent<Payload>, _args: any, ctx: ISubscriptionContext): boolean => {
-                        return ctx.principal.id !== event.payload.member;
+                        // we want to receive our own location updates
+                        return EXECUTING_OFFLINE ? true : ctx.principal.id !== event.payload.member;
                     },
                 )(root, args, context, image);
             },
 
             // tslint:disable-next-line: variable-name
-            resolve: (_channelMessage: WebsocketEvent<GeoCityLocation>, _args: {}, context: ISubscriptionContext, image: any) => {
-                context.logger.log('resolve');
+            resolve: async (_channelMessage: WebsocketEvent<GeoCityLocation>, _args: {}, context: ISubscriptionContext, image: any) => {
                 return LocationResolver.Query.nearbyMembers({}, image.variableValues, context);
             },
         },

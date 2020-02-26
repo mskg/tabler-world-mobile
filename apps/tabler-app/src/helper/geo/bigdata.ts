@@ -1,10 +1,12 @@
 import { BigDataResult } from '@mskg/tabler-world-geo-bigdata';
+import Constants from 'expo-constants';
 import { EarthLocation } from './EarthLocation';
 import { logger } from './logger';
 
+// tslint:disable-next-line: max-func-body-length
 export async function bigdata(location: EarthLocation): Promise<BigDataResult | undefined> {
-    if (__DEV__) {
-        return undefined;
+    if (__DEV__ && !Constants.isDevice) {
+        return require('./bigdata-result.json') as BigDataResult;
     }
 
     try {

@@ -1,5 +1,5 @@
 import { RDS } from '@mskg/tabler-world-aws';
-import { ILogger } from '@mskg/tabler-world-common';
+import { ILogger, StopWatch } from '@mskg/tabler-world-common';
 import { getParameters, Param_Database } from '@mskg/tabler-world-config';
 import { Pool, QueryConfig, QueryResult } from 'pg';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
@@ -63,13 +63,19 @@ export class LazyPGPool implements IPooledDataService {
     async query<T = any, I extends any[] = any[]>(text: string | QueryConfig<I>, parameters?: I): Promise<QueryResult<T>> {
         await this.connect();
 
+        const id = `SQL${Date.now().toString()}`;
         logExecutableSQL(
             this.logger,
-            Date.now().toString(),
+            id,
             typeof (text) === 'string' ? text : text.text,
             parameters,
         );
 
-        return this.pool!.query(text, parameters);
+        const sw = new StopWatch();
+        try {
+            return await this.pool!.query(text, parameters);
+        } finally {
+            this.logger.log('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+        }
     }
 }

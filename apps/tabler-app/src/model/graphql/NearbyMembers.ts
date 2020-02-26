@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MyCurrentLocationInput, RoleType, NearbyMemberState } from "./globalTypes";
+import { RoleType, NearbyMemberState } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: NearbyMembers
@@ -87,6 +87,5 @@ export interface NearbyMembers {
 }
 
 export interface NearbyMembersVariables {
-  location: MyCurrentLocationInput;
   hideOwnTable: boolean;
 }

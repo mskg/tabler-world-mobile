@@ -1,10 +1,10 @@
 import { Environment } from '../Environment';
-import { dynamoDB } from './dynamoDB';
+import { createDynamoDBCache } from './dynamoDBCache';
 import { NoCache } from './NoCache';
-import { redisCache } from './redisCache';
+import { createRedisCache } from './redisCache';
 
 export const cacheInstance = Environment.Caching.disabled
     ? new NoCache()
     : Environment.Caching.useRedis
-        ? redisCache
-        : dynamoDB;
+        ? createRedisCache()
+        : createDynamoDBCache();

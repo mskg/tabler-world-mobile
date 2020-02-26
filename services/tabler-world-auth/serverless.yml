@@ -107,7 +107,7 @@ functions:
     tracing: Active
 
     environment:
-      UserPoolId:
+      USERPOOL_ID:
         Ref: CognitoUserPoolMyUserPool
 
   validate:
@@ -115,7 +115,7 @@ functions:
     tracing: Active
 
     environment:
-      UserPoolId:
+      USERPOOL_ID:
         Ref: CognitoUserPoolMyUserPool
 
   #

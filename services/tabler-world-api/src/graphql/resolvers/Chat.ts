@@ -1,6 +1,7 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import * as crypto from 'crypto';
-import { S3, UPLOAD_BUCKET } from '../helper/S3';
+import { Environment } from '../Environment';
+import { S3 } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
 import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
 import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
@@ -218,7 +219,7 @@ export const ChatResolver = {
 
             const params = await getChatParams();
             const url = S3.getSignedUrl('getObject', {
-                Bucket: UPLOAD_BUCKET,
+                Bucket: Environment.S3.bucket,
                 Key: root.image,
                 Expires: params.attachmentsTTL,
             });
@@ -259,9 +260,9 @@ export const ChatResolver = {
             const filename = crypto.randomBytes(24).toString('hex');
 
             const result = S3.createPresignedPost({
-                Bucket: UPLOAD_BUCKET,
+                Bucket: Environment.S3.bucket,
                 Conditions: [
-                    ['content-length-range', 100, 3 * 1000 * 1000],
+                    ['content-length-range', 100, Environment.S3.maxSize],
                     ['eq', '$Content-Type', 'image/jpeg'],
                 ],
                 Expires: 600, // 10 minutes

@@ -10,7 +10,7 @@ export function logExecutableSQL(logger: ILogger, id: string, text: string, para
 PREPARE ${id} (${parameters.map(getSQLType).join(',')}) AS
   ${text}
 ${needsSemicolon ? ';' : ''}
-EXECUTE SQL${id}(${parameters.map(encodeType).join(',')});
+EXECUTE ${id}(${parameters.map(encodeType).join(',')});
 DEALLOCATE ${id};
 `);
     } else {

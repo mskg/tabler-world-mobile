@@ -75,6 +75,8 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
     }
 
     async delete(key: string): Promise<any> {
+        if (!key) { return; }
+
         this.logger.log('delete', key);
         if (!(await this.isConnected())) {
             this.logger.log('not ready');
@@ -85,6 +87,8 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
     }
 
     async getMany(keys: string[]): Promise<CacheValues<string>> {
+        if (!keys || keys.length === 0) { return {}; }
+
         this.logger.log('getMany', keys);
         if (!(await this.isConnected())) {
             this.logger.log('not ready');
@@ -104,6 +108,8 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
     }
 
     async setMany(data: CacheData<string>[]): Promise<any> {
+        if (!data || data.length === 0) { return; }
+
         this.logger.log('setMany', data.map((d) => d.id));
         if (!(await this.isConnected())) {
             this.logger.log('not ready');

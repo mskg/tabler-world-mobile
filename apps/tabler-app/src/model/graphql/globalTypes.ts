@@ -97,11 +97,6 @@ export enum UserRole {
   locationhistory = "locationhistory",
 }
 
-export interface MyCurrentLocationInput {
-  longitude: number;
-  latitude: number;
-}
-
 export interface MyLocationInput {
   longitude: number;
   latitude: number;

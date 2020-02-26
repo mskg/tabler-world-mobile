@@ -23,13 +23,15 @@ export const redisConfig: ClientOpts = {
         },
 };
 
-export const redisCache = new RedisCache(
-    redisConfig,
-    {
-        prefix: `${Environment.stageName}:${Environment.Caching.version}:`,
-        maxTTL: Environment.Redis.maxTTL
-            ? parseInt(Environment.Redis.maxTTL, 10)
-            : Infinity,
-    },
-    new ConsoleLogger('RedisCache'),
-);
+export function createRedisCache() {
+    return new RedisCache(
+        redisConfig,
+        {
+            prefix: `${Environment.stageName}:${Environment.Caching.version}:`,
+            maxTTL: Environment.Redis.maxTTL
+                ? parseInt(Environment.Redis.maxTTL, 10)
+                : Infinity,
+        },
+        new ConsoleLogger('RedisCache'),
+    );
+}

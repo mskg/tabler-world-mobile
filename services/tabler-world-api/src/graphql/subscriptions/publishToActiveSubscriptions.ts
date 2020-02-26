@@ -41,10 +41,13 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
 
             keys(context.dataSources).forEach((k) => {
                 // @ts-ignore
-                context.dataSources[k].initialize({
-                    context,
-                    cache: cacheInstance,
-                });
+                const ds: DataSource<IApolloContext> = context.dataSources[k];
+                if (ds.initialize) {
+                    ds.initialize({
+                        context,
+                        cache: cacheInstance,
+                    });
+                }
             });
 
             const iterable = await subscribe({

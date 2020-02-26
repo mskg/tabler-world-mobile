@@ -1,6 +1,6 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { Environment } from '../../../Environment';
-import { RedisStorage } from '../../aws/RedisStorage';
+import { RedisStorage } from '../../../helper/RedisStorage';
 import { IConnection } from '../../types/IConnection';
 import { ConnectionDetails, IConnectionStorage } from '../IConnectionStorage';
 

@@ -13,18 +13,15 @@ import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/action
 import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
 
-function subscribe(location: LocationData, enabled: boolean) {
+function subscribe(enabled: boolean) {
     logger.debug('start');
 
     const variables: LocationUpdateVariables = {
         hideOwnTable: enabled == null ? false : enabled,
-        location: {
-            longitude: location.coords.longitude,
-            latitude: location.coords.latitude,
-        },
     };
 
     const client = cachedAolloClient();
+
     const initial = client.query<NearbyMembers, NearbyMembersVariables>({
         query: GetNearbyMembersQuery,
         fetchPolicy: 'network-only',
@@ -54,7 +51,7 @@ function subscribe(location: LocationData, enabled: boolean) {
             logger.debug('Received', members?.length, 'members');
             put(setNearby(members));
         },
-        (e) => { logger.error(e, 'Failed to subscribe to conversationUpdate'); },
+        (e) => { logger.error(e, 'Failed to subscribe to locationUpdate'); },
     );
 
     logger.log('subscribed');
@@ -80,7 +77,7 @@ function* watch() {
 
             // try to subscribe if not already done
             if ((!subscription || subscription.closed) && location && nearbyMembers && !offline) {
-                subscription = subscribe(location, hideOwnClubWhenNearby);
+                subscription = subscribe(hideOwnClubWhenNearby);
             }
 
             yield delay(setting.pollInterval);

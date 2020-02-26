@@ -7,7 +7,11 @@ export const Environment = {
     Caching: {
         disabled: process.env.DISABLE_CACHE === 'true',
         useRedis: process.env.USE_REDIS !== 'false',
-        version: process.env.cache_version,
+        version: process.env.CACHE_VERSION,
+    },
+
+    Location: {
+        useRedis: process.env.USE_REDIS_LOCATION === 'true',
     },
 
     stageName: process.env.STAGE,
@@ -20,7 +24,12 @@ export const Environment = {
     },
 
     DynamoDB: {
-        table: process.env.cache_table,
+        table: process.env.CACHE_TABLE,
         defautTTL: parseInt(process.env.TTL_DEFAULT || (60 * 60 * 24 * 2).toString(), 10),
+    },
+
+    S3: {
+        bucket: process.env.UPLOAD_BUCKET as string,
+        maxSize: 3 * 1000 * 1000,
     },
 };

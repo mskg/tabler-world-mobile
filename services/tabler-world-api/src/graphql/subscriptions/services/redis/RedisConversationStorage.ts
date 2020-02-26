@@ -1,5 +1,5 @@
 import { Environment } from '../../../Environment';
-import { RedisStorage } from '../../aws/RedisStorage';
+import { RedisStorage } from '../../../helper/RedisStorage';
 import { Conversation } from '../../types/Conversation';
 import { IConversationStorage } from '../../types/IConversationStorage';
 import { PaggedResponse } from '../../types/PaggedResponse';

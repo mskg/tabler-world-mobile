@@ -10,7 +10,7 @@ export async function findAndAuthorizeConnetion(context: ProtocolContext): Promi
     if (!details || !details.principal) {
         context.logger.error('Unkown client', context.connectionId);
 
-        await connectionManager.sendError(context.connectionId, { message: 'Unknown client' }, MessageTypes.GQL_ERROR);
+        await connectionManager.sendError(context.connectionId, undefined, { message: 'Unknown client' }, MessageTypes.GQL_ERROR);
         await connectionManager.forceDisconnect(context.connectionId);
 
         return null;

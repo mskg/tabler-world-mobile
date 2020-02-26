@@ -50,7 +50,7 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
         // if we haven't lost the client, we drop it
         if (!(e instanceof ClientLostError)) {
             Promise.all([
-                connectionManager.sendError(context.connectionId, { message: e.message }, MessageTypes.GQL_CONNECTION_ERROR),
+                connectionManager.sendError(context.connectionId, undefined, { message: e.message }, MessageTypes.GQL_CONNECTION_ERROR),
                 connectionManager.forceDisconnect(context.connectionId),
             ]);
         }

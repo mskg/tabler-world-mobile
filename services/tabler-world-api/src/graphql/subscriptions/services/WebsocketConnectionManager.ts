@@ -55,10 +55,11 @@ export class WebsocketConnectionManager {
         );
     }
 
-    public async sendError(connectionId: string, payload: any, type: string = MessageTypes.GQL_ERROR): Promise<void> {
+    public async sendError(connectionId: string, id: string | undefined, payload: any, type: string = MessageTypes.GQL_ERROR): Promise<void> {
         await this.sendMessage(
             connectionId,
             {
+                id,
                 payload,
                 type,
             },

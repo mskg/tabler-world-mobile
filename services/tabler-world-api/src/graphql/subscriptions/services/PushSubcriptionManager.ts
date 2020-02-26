@@ -1,12 +1,14 @@
 import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { dynamodb as client } from '../aws/dynamodb';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { DIRECT_CHAT_PREFIX } from '../types/Constants';
 import { FieldNames, PUSH_SUBSCRIPTIONS_TABLE } from './Constants';
 
 const logger = new ConsoleLogger('PushSubscriptions');
 
 export class PushSubcriptionManager {
+    constructor(private client: DocumentClient) { }
+
     public async subscribe(conversation: string, member: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'subscribe', conversation, member);
 
@@ -27,7 +29,7 @@ export class PushSubcriptionManager {
             },
         ]));
 
-        for await (const item of new BatchWrite(client, items)) {
+        for await (const item of new BatchWrite(this.client, items)) {
             logger.log('Updated', item[0], item[1].PutRequest?.Item[FieldNames.member]);
         }
     }
@@ -52,7 +54,7 @@ export class PushSubcriptionManager {
             },
         ]));
 
-        for await (const item of new BatchWrite(client, items)) {
+        for await (const item of new BatchWrite(this.client, items)) {
             logger.log('Deleted', item[0], item[1].DeleteRequest?.Key[FieldNames.member]);
         }
     }
@@ -69,7 +71,7 @@ export class PushSubcriptionManager {
             return [parseInt(a, 10), parseInt(b, 10)];
         }
 
-        const { Items: members, ConsumedCapacity } = await client.query({
+        const { Items: members, ConsumedCapacity } = await this.client.query({
             TableName: PUSH_SUBSCRIPTIONS_TABLE,
 
             ExpressionAttributeValues: {

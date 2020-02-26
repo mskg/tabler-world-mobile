@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MyCurrentLocationInput, RoleType, NearbyMemberState } from "./globalTypes";
+import { RoleType, NearbyMemberState } from "./globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: LocationUpdate
@@ -87,6 +87,5 @@ export interface LocationUpdate {
 }
 
 export interface LocationUpdateVariables {
-  location: MyCurrentLocationInput;
   hideOwnTable: boolean;
 }

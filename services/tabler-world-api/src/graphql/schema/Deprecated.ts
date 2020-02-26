@@ -35,4 +35,10 @@ export const Deprecated = gql`
         "Deprecated, don't use"
         updateLocationAddress(corrections: [AddressUpdateInput!]!): Boolean
     }
+
+    "Deprecated, not longer required"
+    input MyCurrentLocationInput {
+        longitude: Float!
+        latitude: Float!
+    }
 `;

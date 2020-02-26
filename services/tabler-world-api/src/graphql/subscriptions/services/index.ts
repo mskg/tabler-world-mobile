@@ -1,8 +1,6 @@
-import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { redisConfig } from '../../cache/redisCache';
 import { Environment } from '../../Environment';
-import { dynamodb } from '../aws/dynamodb';
-import { RedisStorage } from '../aws/RedisStorage';
+import { createDynamoDBInstance } from '../../helper/createDynamoDBInstance';
+import { createRedisInstance } from '../../helper/createRedisInstance';
 import { ConversationManager } from './ConversationManager';
 import { DynamoDBConnectionStore } from './dynamodb/DynamoDBConnectionStore';
 import { DynamoDBConversationStorage } from './dynamodb/DynamoDBConversationStorage';
@@ -20,36 +18,37 @@ let subscriptionManager: WebsocketSubscriptionManager;
 let conversationManager: ConversationManager;
 
 if (Environment.Caching.useRedis) {
-    const redis = new RedisStorage(
-        redisConfig,
-        new ConsoleLogger('RedisStorage'),
+    connectionManager = new WebsocketConnectionManager(
+        new RedisConnectionStorage(createRedisInstance()),
     );
 
-    connectionManager = new WebsocketConnectionManager(new RedisConnectionStorage(redis));
     subscriptionManager = new WebsocketSubscriptionManager(
         connectionManager,
-        new RedisSubscriptionStorage(redis),
+        new RedisSubscriptionStorage(createRedisInstance()),
     );
 
     conversationManager = new ConversationManager(
         new RedisConversationStorage(
-            new DynamoDBConversationStorage(dynamodb),
-            redis,
+            new DynamoDBConversationStorage(createDynamoDBInstance()),
+            createRedisInstance(),
         ),
     );
 
 } else {
-    connectionManager = new WebsocketConnectionManager(new DynamoDBConnectionStore(dynamodb));
-    subscriptionManager = new WebsocketSubscriptionManager(
-        connectionManager,
-        new DynamoDBSubcriptionStorage(dynamodb),
+    connectionManager = new WebsocketConnectionManager(
+        new DynamoDBConnectionStore(createDynamoDBInstance()),
     );
 
-    conversationManager = new ConversationManager(new DynamoDBConversationStorage(dynamodb));
+    subscriptionManager = new WebsocketSubscriptionManager(
+        connectionManager,
+        new DynamoDBSubcriptionStorage(createDynamoDBInstance()),
+    );
+
+    conversationManager = new ConversationManager(new DynamoDBConversationStorage(createDynamoDBInstance()));
 }
 
-const eventManager = new WebsocketEventManager();
-const pushSubscriptionManager = new PushSubcriptionManager();
+const eventManager = new WebsocketEventManager(createDynamoDBInstance());
+const pushSubscriptionManager = new PushSubcriptionManager(createDynamoDBInstance());
 
 export { pushSubscriptionManager, connectionManager, subscriptionManager, conversationManager, eventManager };
 

@@ -43,7 +43,7 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | vo
     try {
         const result = await validateToken(
             process.env.AWS_REGION as string,
-            process.env.UserPoolId as string,
+            process.env.USERPOOL_ID as string,
             token,
         );
 

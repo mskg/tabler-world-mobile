@@ -1,5 +1,5 @@
 import { writeJobLog } from '@mskg/tabler-world-jobs';
-import { withClient } from '@mskg/tabler-world-rds-client';
+import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { Context } from 'aws-lambda';
 import { readFileSync } from 'fs';
 
@@ -29,7 +29,7 @@ const fileNames = [
 // tslint:disable-next-line: export-name variable-name
 export async function handler(_event: any[], context: Context, _callback: (error: any, success?: any) => void) {
     try {
-        await withClient(context, async (client) => {
+        await withDatabase(context, async (client) => {
             let dml = 'BEGIN;\n';
 
             for (const fn of fileNames) {
@@ -54,7 +54,7 @@ export async function handler(_event: any[], context: Context, _callback: (error
         return true;
     } catch (e) {
         try {
-            await withClient(context, async (client) => {
+            await withDatabase(context, async (client) => {
                 await writeJobLog(client, 'update::database', false, {
                     error: e,
                 });

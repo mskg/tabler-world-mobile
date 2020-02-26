@@ -1,0 +1,87 @@
+{
+    "latitude": 48.89091110229492,
+    "longitude": 9.201519966125488,
+    "localityLanguageRequested": "en",
+    "continent": "Europe",
+    "continentCode": "EU",
+    "countryName": "Germany",
+    "countryCode": "DE",
+    "principalSubdivision": "Baden-Württemberg",
+    "locality": "Ludwigsburg-Mitte",
+    "postcode": "71638",
+    "localityInfo": {
+        "administrative": [
+            {
+                "order": 1,
+                "adminLevel": 2,
+                "name": "Germany",
+                "description": "country in central Europe",
+                "isoName": "Germany",
+                "isoCode": "DE",
+                "wikidataId": "Q183"
+            },
+            {
+                "order": 2,
+                "adminLevel": 4,
+                "name": "Baden-Württemberg",
+                "description": "federal state in the South-West of Germany",
+                "isoName": "Baden-Württemberg",
+                "isoCode": "DE-BW",
+                "wikidataId": "Q985"
+            },
+            {
+                "order": 3,
+                "adminLevel": 5,
+                "name": "Stuttgart Government Region",
+                "description": "government region of Baden-Württemberg, Germany",
+                "wikidataId": "Q8172"
+            },
+            {
+                "order": 5,
+                "adminLevel": 6,
+                "name": "Ludwigsburg",
+                "description": "district in Baden-Württemberg, Germany",
+                "wikidataId": "Q8541"
+            },
+            {
+                "order": 7,
+                "adminLevel": 8,
+                "name": "Ludwigsburg",
+                "description": "city in Baden-Württemberg, Germany",
+                "wikidataId": "Q622"
+            },
+            {
+                "order": 8,
+                "adminLevel": 10,
+                "name": "Ludwigsburg-Mitte",
+                "description": "Stadtteil"
+            }
+        ],
+        "informative": [
+            {
+                "order": 0,
+                "name": "Europe",
+                "description": "continent on Earth, mainly on the northeastern quadrant, i.e. north-western Eurasia",
+                "isoCode": "EU",
+                "wikidataId": "Q46"
+            },
+            {
+                "order": 4,
+                "name": "Stuttgart Region",
+                "description": "human settlement",
+                "wikidataId": "Q694028"
+            },
+            {
+                "order": 6,
+                "name": "Ludwigsburg",
+                "description": "federal electoral district of Germany",
+                "wikidataId": "Q1008367"
+            },
+            {
+                "order": 9,
+                "name": "71638",
+                "description": "postal code"
+            }
+        ]
+    }
+}

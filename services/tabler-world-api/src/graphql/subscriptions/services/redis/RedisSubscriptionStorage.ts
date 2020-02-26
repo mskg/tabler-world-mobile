@@ -1,7 +1,7 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { filter, keys, map, remove, uniq, values } from 'lodash';
 import { Environment } from '../../../Environment';
-import { RedisStorage } from '../../aws/RedisStorage';
+import { RedisStorage } from '../../../helper/RedisStorage';
 import { ISubscription } from '../../types/ISubscription';
 import { ISubscriptionStorage, SubscriptionDetails } from '../ISubscriptionStorage';
 

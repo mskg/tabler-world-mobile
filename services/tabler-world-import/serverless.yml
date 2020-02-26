@@ -255,7 +255,7 @@ functions:
     tracing: Active
 
     environment:
-      cache_table: ${self:custom.cache_table}
+      CACHE_TABLE: ${self:custom.cache_table}
       XRAY_DISABLED: false
       geocode_queue:
         Ref: EncodeAddressQueue

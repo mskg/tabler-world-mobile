@@ -4,7 +4,6 @@ import { PushNotificationBase } from '@mskg/tabler-world-push-client';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { ulid } from 'ulid';
 import { handler as publish } from '../../publishMessageLambda';
-import { dynamodb as client } from '../aws/dynamodb';
 import { EncodedWebsocketEvent } from '../types/EncodedWebsocketEvent';
 import { WebsocketEvent } from '../types/WebsocketEvent';
 import { EVENTS_TABLE, FieldNames } from './Constants';
@@ -27,6 +26,8 @@ const logger = new ConsoleLogger('Event');
 // const ulid = monotonicFactory();
 
 export class WebsocketEventManager {
+    constructor(private client: DocumentClient) { }
+
     public async marshall<T>(message: WebsocketEvent<T>): Promise<EncodedWebsocketEvent> {
         const em = new EncryptionManager(message.eventName);
 
@@ -55,7 +56,7 @@ export class WebsocketEventManager {
         logger.log('event', trigger);
         const em = new EncryptionManager(trigger);
 
-        const { Items: messages, LastEvaluatedKey: nextKey, ConsumedCapacity } = await client.query({
+        const { Items: messages, LastEvaluatedKey: nextKey, ConsumedCapacity } = await this.client.query({
             TableName: EVENTS_TABLE,
             ExclusiveStartKey: options.token,
             Limit: options.pageSize,
@@ -79,7 +80,7 @@ export class WebsocketEventManager {
     public async markDelivered({ eventName, id }: WebsocketEvent<any>) {
         logger.log('markDelivered', id);
 
-        await client.update({
+        await this.client.update({
             TableName: EVENTS_TABLE,
 
             Key: {
@@ -158,7 +159,7 @@ export class WebsocketEventManager {
             },
         ]));
 
-        for await (const item of new BatchWrite(client, items)) {
+        for await (const item of new BatchWrite(this.client, items)) {
             logger.log('Updated', item[0], item[1].PutRequest?.Item[FieldNames.id]);
         }
 

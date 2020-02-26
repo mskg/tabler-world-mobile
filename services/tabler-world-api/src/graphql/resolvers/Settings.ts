@@ -1,3 +1,4 @@
+import { makeCacheKey } from '@mskg/tabler-world-cache';
 import { PushNotificationService } from '@mskg/tabler-world-push-client';
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { keys, remove, uniq } from 'lodash';
@@ -78,6 +79,12 @@ WHERE id = $1`,
         },
 
         removeSetting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
+            // TODO: this is code duplication
+            await Promise.all([
+                context.cache.delete(makeCacheKey('Member', ['location', context.principal.id])),
+                context.cache.delete(makeCacheKey('Member', ['chat', context.principal.id])),
+            ]);
+
             return useDatabase(
                 context,
                 async (client) => {
@@ -132,6 +139,12 @@ WHERE id = $1
                     },
                 });
             }
+
+            // TODO: this is code duplication
+            await Promise.all([
+                context.cache.delete(makeCacheKey('Member', ['location', context.principal.id])),
+                context.cache.delete(makeCacheKey('Member', ['chat', context.principal.id])),
+            ]);
 
             return useDatabase(
                 context,

@@ -1,5 +1,5 @@
 import { EXECUTING_OFFLINE, xAWS } from '@mskg/tabler-world-aws';
-import { ILogger } from '@mskg/tabler-world-common';
+import { ILogger, StopWatch } from '@mskg/tabler-world-common';
 import { QueryConfig, QueryResult } from 'pg';
 import { Environment } from '../Environment';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
@@ -34,14 +34,20 @@ export class LambdaClient implements IDataService {
             } as IDataQuery),
         };
 
+        const id = `SQL${Date.now().toString()}`;
         logExecutableSQL(
             this.logger,
-            Date.now().toString(),
+            id,
             typeof (text) === 'string' ? text : text.text,
             parameters,
         );
 
-        const result = await lambda.invoke(lambdaParams).promise();
-        return JSON.parse(result.Payload as string);
+        const sw = new StopWatch();
+        try {
+            const result = await lambda.invoke(lambdaParams).promise();
+            return JSON.parse(result.Payload as string);
+        } finally {
+            this.logger.log('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+        }
     }
 }
