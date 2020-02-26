@@ -12,9 +12,12 @@ import { LocationUpdateSubscription } from '../../queries/Location/LocationUpdat
 import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
 import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
+import { getReduxStore } from '../../redux/getRedux';
 
 function subscribe(enabled: boolean) {
     logger.debug('start');
+
+    const store = getReduxStore();
 
     const variables: LocationUpdateVariables = {
         hideOwnTable: enabled == null ? false : enabled,
@@ -33,7 +36,7 @@ function subscribe(enabled: boolean) {
         .then((result) => {
             if (result?.data?.nearbyMembers) {
                 logger.debug('Setting initial list');
-                put(setNearby(result.data.nearbyMembers));
+                store.dispatch(setNearby(result.data.nearbyMembers));
             }
         })
         .catch((e) => logger.error(e, 'failed to run query'));
@@ -49,7 +52,7 @@ function subscribe(enabled: boolean) {
             const members = nextVal.data?.locationUpdate || [];
 
             logger.debug('Received', members?.length, 'members');
-            put(setNearby(members));
+            store.dispatch(setNearby(members));
         },
         (e) => { logger.error(e, 'Failed to subscribe to locationUpdate'); },
     );
