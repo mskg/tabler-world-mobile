@@ -5,7 +5,7 @@ import { Handler } from 'aws-lambda';
 const UNAUTHORIZED = 'Unauthorized';
 
 // tslint:disable-next-line: export-name
-export const handler: Handler<string, string> = async (event, context) => {
+export const handler: Handler<string, any> = async (event, context) => {
     const token = event;
     if (!token) {
         console.log('No token provided');
@@ -38,6 +38,6 @@ export const handler: Handler<string, string> = async (event, context) => {
             throw UNAUTHORIZED;
         }
 
-        return JSON.stringify(principal);
+        return principal;
     });
 };

@@ -16,6 +16,6 @@ export async function findAndAuthorizeConnetion(context: ProtocolContext): Promi
         return null;
     }
 
-    context.logger.log('findAndAuthorize ok');
+    context.logger.log('findAndAuthorize ok', details);
     return details;
 }
