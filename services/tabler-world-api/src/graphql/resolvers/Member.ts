@@ -75,8 +75,10 @@ export const MemberResolver = {
 
         // only deliver it, if it contains usable data
         address: (root: any, _args: {}, _context: IApolloContext) => {
-            if (root.city || root.postal_code || root.street1 || root.street2) {
-                return root;
+            const { address } = root;
+
+            if (address?.city || address?.postal_code || address?.street1 || address?.street2) {
+                return root.address;
             }
 
             return null;
