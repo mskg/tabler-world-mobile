@@ -4,6 +4,7 @@ import { updateSetting } from '../../redux/actions/settings';
 import { getReduxStore } from '../../redux/getRedux';
 import { startLocationTask } from '../../tasks/location/startLocationTask';
 import { logger } from './logger';
+import { updateLocation } from '../../tasks/location/updateLocation';
 
 // tslint:disable-next-line: export-name
 export async function enableNearbyTablers() {
@@ -19,6 +20,8 @@ export async function enableNearbyTablers() {
 
     // tslint:disable-next-line: no-empty
     if (isFeatureEnabled(Features.LocationWithoutBackground)) {
+        await updateLocation(true, true);
+
         getReduxStore().dispatch(
             updateSetting({ name: 'nearbyMembers', value: true }),
         );
