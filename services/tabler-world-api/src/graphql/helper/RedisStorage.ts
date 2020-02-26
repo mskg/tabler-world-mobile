@@ -39,11 +39,11 @@ class MultiCommand {
         return this;
     }
 
-    public georadiusbymember(set: string, key: string, distance: number, store: string) {
+    public georadiusbymember(set: string, key: string, distance: number, unit: string, store: string) {
         this.logger.log('multi:georadiusbymember', set, key, distance, store);
         this.cmds += 1;
 
-        this.multi = this.multi.georadiusbymember(set, key, distance, 'km', 'STOREDIST', store);
+        this.multi = this.multi.georadiusbymember(set, key, distance, unit, 'STOREDIST', store);
         return this;
     }
 

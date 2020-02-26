@@ -12,6 +12,9 @@ export enum Features {
     LocationHistory,
     DarkModeSwitch,
     Chat,
+
+    LocationWithoutAlways,
+    LocationWithoutBackground,
 }
 
 export function isFeatureEnabled(feature: Features) {
@@ -37,6 +40,10 @@ export function isFeatureEnabled(feature: Features) {
 
     if (feature === Features.DarkModeSwitch) {
         return Appearance.getColorScheme() === 'no-preference';
+    }
+
+    if (feature === Features.LocationWithoutAlways || feature === Features.LocationWithoutBackground) {
+        return Constants.manifest.releaseChannel == null && Constants.isDevice;
     }
 
     return false;

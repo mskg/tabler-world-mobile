@@ -1,4 +1,3 @@
-import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { cachedDataLoader, makeCacheKey } from '@mskg/tabler-world-cache';
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
@@ -93,7 +92,7 @@ export class LocationDataSource extends DataSource<IApolloContext> {
             this.context.principal.id,
             nearByQuery.radius,
             20,
-            EXECUTING_OFFLINE ? undefined : nearByQuery.days,
+            nearByQuery.days,
         );
     }
 

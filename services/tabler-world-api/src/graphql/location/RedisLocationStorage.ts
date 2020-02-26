@@ -41,7 +41,8 @@ export class RedisLocationStorage implements ILocationStorage {
             multi.georadiusbymember(
                 `${Environment.stageName}:nearby:geo`,
                 memberToMatch.toString(),
-                radius,
+                radius * 1000,
+                'm',
                 `${Environment.stageName}:nearby:temp_search`,
             );
 
@@ -126,7 +127,7 @@ export class RedisLocationStorage implements ILocationStorage {
             return take(
                 filter(
                     values(result),
-                    (m) => m.member !== memberToMatch,
+                    (m) => m.member !== memberToMatch && m.address,
                 ),
                 count,
             );
