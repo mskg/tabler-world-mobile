@@ -80,8 +80,8 @@ export class RedisLocationStorage implements ILocationStorage {
                 0,
 
                 // we query double the size to be able to exclude those without
-                // and address
-                count * 2,
+                // a lost update and a valid address
+                count * 3,
             );
 
             let raw = await multi.exec();
