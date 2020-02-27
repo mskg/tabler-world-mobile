@@ -9,6 +9,7 @@
 ## Fixes
 - Fixed an issue with cameral roll permissions on Android
 - Fixed some issues with directory data, where board- and boardassistants where no longer members
+- Fixed an issue with address not beeing available
 - Archived members are now gone forever. Farewell!
 
 ---
