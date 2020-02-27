@@ -2,7 +2,7 @@ import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { Environment } from '../Environment';
 import { CombinedLocationStore } from '../location/CombinedLocationStore';
 import { RedisLocationStorage } from '../location/RedisLocationStorage';
-import { SqlLocationStorage } from '../location/SQLLocationStorage';
+import { SqlLocationStorage } from '../location/SqlLocationStorage';
 import { IApolloContext } from '../types/IApolloContext';
 import { ConversationsDataSource } from './ConversationsDataSource';
 import { GeocoderDataSource } from './GeocoderDataSource';

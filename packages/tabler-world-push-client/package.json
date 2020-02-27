@@ -11,7 +11,8 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
-        "lodash": "^4.17.15"
+        "lodash": "^4.17.15",
+        "uuid4": "^1.1.4"
     },
     "peerDependencies": {
         "@mskg/tabler-world-aws": "0.0.1"
