@@ -63,7 +63,7 @@ This must only be called once in the lifecyle!
                 attempts: {
                     retryIf: (error, _operation) => {
                         // in case of timeout, just retry the operation
-                        return error && error.statusCode === 502;
+                        return error && (error.statusCode === 502 || error.statusCode === 429);
                     },
                 },
             }),
