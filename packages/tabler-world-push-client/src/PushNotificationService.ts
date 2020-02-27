@@ -1,6 +1,7 @@
 import { xAWS } from '@mskg/tabler-world-aws';
 import { SendMessageBatchRequestEntry } from 'aws-sdk/clients/sqs';
 import { chunk } from 'lodash';
+import uuid4 from 'uuid4';
 import { Environment } from './Environment';
 import { PushNotification } from './PushNotification';
 
@@ -9,11 +10,11 @@ export class PushNotificationService {
     }
 
     public async send(messages: PushNotification<any>[]) {
-        let batchId: number = 1;
         const requests = messages.map((m) => ({
             // tslint:disable-next-line: no-increment-decrement
-            Id: `id:${++batchId}`,
+            Id: uuid4(),
             MessageGroupId: `member:${m.member}`,
+            MessageDeduplicationId: uuid4(),
 
             // service expects an array
             MessageBody: JSON.stringify([m]),
