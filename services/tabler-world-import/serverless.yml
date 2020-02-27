@@ -293,6 +293,15 @@ functions:
               - ReadUpdatesQueue
               - Arn
 
+  warmup:
+    handler: src/warmup/lambda.handler
+    timeout: 300
+    memorySize: 128
+
+    environment:
+      CACHE_TABLE: ${self:custom.cache_table}
+      XRAY_DISABLED: true
+
   #
   # Cache update
   #
@@ -407,6 +416,10 @@ resources:
         RetentionInDays: "7"
 
     ReaderLogGroup:
+      Properties:
+        RetentionInDays: "7"
+
+    WarmupLogGroup:
       Properties:
         RetentionInDays: "7"
 
