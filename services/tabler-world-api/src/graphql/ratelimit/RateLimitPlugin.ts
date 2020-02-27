@@ -31,10 +31,12 @@ export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
                     // @ts-ignore
                     return {
                         http: {
-                            status: 509,
+                            status: 429,
                         },
                         errors: [{
-                            message: 'Too many requests',
+                            // @ts-ignore
+                            status: 429,
+                            message: 'Too Many Requests',
                         }],
                     };
                 }
