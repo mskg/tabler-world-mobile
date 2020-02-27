@@ -5,6 +5,7 @@ import { useDatabase } from '@mskg/tabler-world-rds-client';
 import Geohash from 'latlon-geohash';
 import { values } from 'lodash';
 import { getNearByParams } from '../helper/getNearByParams';
+import { throw429 } from '../ratelimit/throw429';
 import { eventManager, subscriptionManager } from '../subscriptions';
 import { pubsub } from '../subscriptions/services/pubsub';
 import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
@@ -192,13 +193,21 @@ LIMIT 10
 
     Mutation: {
         putLocation: async (_root: any, args: MyLocationInput, context: IApolloContext) => {
+            const limit = context.getLimiter('location');
+            const result = await limit.use(context.principal.id);
+
+            if (result.rejected) {
+                context.logger.log('too many putLocation');
+                throw429();
+            }
+
             context.logger.log('putLocation', args);
             const db = context.dataSources.location.putLocation(args.location);
 
             // events are sent directy offline, we have to wait for the db first in this case
             if (EXECUTING_OFFLINE) { await db; }
 
-            // const canShowOnMap = await context.dataSources.location.isMemberVisibleOnMap(context.principal.id);
+            // const canShowOnMap = await contextaph.dataSources.location.isMemberVisibleOnMap(context.principal.id);
             const geo = Geohash.encode(args.location.longitude, args.location.latitude, 4);
             const neighBors = values(Geohash.neighbours(geo));
 

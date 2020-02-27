@@ -10,6 +10,7 @@ import { subscriptionManager } from './services';
 import { pubsub } from './services/pubsub';
 import { ISubscription } from './types/ISubscription';
 import { WebsocketEvent } from './types/WebsocketEvent';
+import { createLimiter } from '../ratelimit/createLimiter';
 
 export const logger = new ConsoleLogger('publish/ws');
 
@@ -37,6 +38,7 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                 logger: new ConsoleLogger('publish', connectionId, principal.id),
                 cache: cacheInstance,
                 requestCache: {},
+                getLimiter: createLimiter,
             } as ISubscriptionContext;
 
             keys(context.dataSources).forEach((k) => {

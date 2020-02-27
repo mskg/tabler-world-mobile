@@ -1,29 +1,34 @@
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { bool } from 'aws-sdk/clients/signer';
 import { RedisStorage } from '../helper/RedisStorage';
+import { IRateLimiter, LimitResult } from './IRateLimiter';
 import luaScript from './limit.json';
 
 type Options = {
+    redis: RedisStorage,
+
+    /**
+     * Prefix
+     */
     name?: string,
+
     limit: number,
     intervalMS: number;
 
-    redis: RedisStorage,
+    /**
+     * Accept request but drain limit
+     */
     force?: boolean,
 };
 
-export type LimitResult = {
-    limit: number,
-    remaining: number
-    rejected: boolean
-    retryDelta: number
-    forced: boolean,
-};
+const logger = new ConsoleLogger('rate');
 
 /**
  * Credits to https://github.com/BitMEX/node-redis-token-bucket-ratelimiter
  * Rewritten for ioredit, typescript
  */
-export class RollingLimit {
+export class RollingLimit implements IRateLimiter {
     name?: string;
     force: bool;
     interval: number;
@@ -39,14 +44,14 @@ export class RollingLimit {
         this.name = options.name ? options.name + ':' : '';
     }
 
-    use(id: string, amount: number = 1): Promise<LimitResult> {
+    use(id: string | number, amount: number = 1): Promise<LimitResult> {
         return Promise.resolve()
             .then(() => {
                 if (amount < 0) throw new Error('amount must be >= 0');
                 if (amount > this.limit) throw new Error(`amount must be < limit (${this.limit})`);
 
                 // Note extra curly braces (hash tag) which are needed for Cluster hash slotting
-                const keyBase = `ratelimit:${this.name}{${id}}`;
+                const keyBase = `ratelimit:{${this.name}${id}}`;
                 const valueKey = `${keyBase}:v`;
                 const timestampKey = `${keyBase}:t`;
 
@@ -69,7 +74,7 @@ export class RollingLimit {
                     this.limit,             // ARGV[1]
                     this.interval,          // ARGV[2]
                     amount,                 // ARGV[3]
-                    this.force.toString(),  // ARGV[54]
+                    this.force.toString(),  // ARGV[4]
                 ];
 
                 // @ ts-ignore
@@ -83,13 +88,19 @@ export class RollingLimit {
                         throw err;
                     })
                     .then((res) => {
-                        return {
+                        const result = {
                             limit: this.limit,
                             remaining: res[0],
                             rejected: Boolean(res[1]),
                             retryDelta: res[2],
                             forced: Boolean(res[3]),
                         };
+
+                        if (result.rejected || EXECUTING_OFFLINE) {
+                            logger.log(this.name, id, result);
+                        }
+
+                        return result;
                     });
             });
     }

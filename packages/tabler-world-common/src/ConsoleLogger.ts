@@ -21,6 +21,6 @@ export class ConsoleLogger implements ILogger {
 
     public error(...args: any[]) {
         // tslint:disable-next-line: prefer-template
-        console.log(`[ERR] ${this.category}`, ...args);
+        console.error(`[ERR] ${this.category}`, ...args);
     }
 }

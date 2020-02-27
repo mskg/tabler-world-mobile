@@ -14,6 +14,7 @@ import { connectionManager, subscriptionManager } from '../services';
 import { ClientLostError } from '../types/ClientLostError';
 import { findAndAuthorizeConnetion } from './findAndAuthorizeConnetion';
 import { ProtocolContext } from './ProtocolContext';
+import { createLimiter } from '../../ratelimit/createLimiter';
 
 export async function gqlOperation(context: ProtocolContext, operation: OperationMessage) {
     const connection = await findAndAuthorizeConnetion(context);
@@ -55,6 +56,7 @@ export async function gqlOperation(context: ProtocolContext, operation: Operatio
             connectionId: context.connectionId,
             principal: connection.principal,
             logger: new ConsoleLogger(context.route, context.connectionId, connection.principal.id),
+            getLimiter: createLimiter,
         } as ISubscriptionContext;
 
         keys(aCtx.dataSources).forEach((k) => {

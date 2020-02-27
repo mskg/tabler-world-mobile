@@ -13,14 +13,14 @@ local prevTokens
 redis.replicate_commands()
 
 local time = redis.call('TIME')
+-- time elapsed [1] s, [2] ms elapsed in [1]
 local nowMS = math.floor((time[1] * 1000) + (time[2] / 1000))
 local initialTokens = redis.call('GET',valueKey)
 local initialUpdateMS = false
 
-
 if initialTokens == false then
    -- If we found no record, we temporarily rewind the clock to refill
-   -- via addTokens below 
+   -- via addTokens below
    prevTokens = 0
    lastUpdateMS = nowMS - intervalMS
 else
@@ -74,7 +74,6 @@ end
 -- rejected requests don't cost anything, we'll wait for a costly request to update our values
 -- forced requests show up here as !rejected, but with netTokens = 0 (drained)
 if rejected == false then
-
    redis.call('PSETEX',valueKey,intervalMS,netTokens)
 
    if addTokens > 0 or initialUpdateMS == false then

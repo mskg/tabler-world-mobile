@@ -5,9 +5,6 @@ import { Client as PGClient, QueryConfig, QueryResult } from 'pg';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
 import { IDataService } from '../types/IDataService';
 
-// prevent multiple connection establishments
-let globalClient: PGClient | null = null;
-
 export class LazyPGClient implements IDataService {
     client: PGClient | undefined;
 
@@ -29,10 +26,6 @@ export class LazyPGClient implements IDataService {
     }
 
     async connect() {
-        if (EXECUTING_OFFLINE && globalClient) {
-            return;
-        }
-
         if (!this.client) {
             const params = await getParameters('database');
             const connection = JSON.parse(params.database) as Param_Database;
@@ -65,10 +58,6 @@ export class LazyPGClient implements IDataService {
             this.logger.log('[SQL]', 'connect');
             await this.client.connect();
             this.client.on('error', (...args: any[]) => this.logger.error('[SQL]', ...args));
-
-            if (EXECUTING_OFFLINE) {
-                globalClient = this.client;
-            }
         }
     }
 
@@ -85,7 +74,7 @@ export class LazyPGClient implements IDataService {
 
         const sw = new StopWatch();
         try {
-            return await (globalClient || this.client)!.query(text, parameters);
+            return await this.client!.query(text, parameters);
         } finally {
             this.logger.log('[SQL]', id, 'took', sw.elapsedYs, 'ys');
         }

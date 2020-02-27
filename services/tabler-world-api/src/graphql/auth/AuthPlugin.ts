@@ -8,7 +8,7 @@ import { IApolloContext } from '../types/IApolloContext';
 export class AuthPlugin implements ApolloServerPlugin<IApolloContext> {
     public requestDidStart(_outer: GraphQLRequestContext<IApolloContext>): any {
         return {
-            responseForOperation: async (requestContext: GraphQLRequestContext<IApolloContext>): Promise<GraphQLResponse | void> => {
+            responseForOperation: async (requestContext: GraphQLRequestContext<IApolloContext>): Promise<GraphQLResponse | null> => {
                 let principal: IPrincipal;
                 try {
                     principal = await useDatabase(
@@ -30,6 +30,9 @@ export class AuthPlugin implements ApolloServerPlugin<IApolloContext> {
 
                 // @ts-ignore
                 requestContext.context.logger = new ConsoleLogger(requestContext.context.lambdaContext?.awsRequestId, principal.id);
+
+                // required!
+                return null;
             },
         };
     }

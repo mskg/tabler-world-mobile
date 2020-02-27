@@ -1,38 +1,34 @@
-import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { GraphQLRequestContext, GraphQLResponse, HttpQueryError } from 'apollo-server-core';
+import { GraphQLRequestContext, GraphQLResponse } from 'apollo-server-core';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
-import { RedisStorage } from '../helper/RedisStorage';
 import { IApolloContext } from '../types/IApolloContext';
-import { RollingLimit } from './RollingLimit';
-
-const logger = new ConsoleLogger('rate');
+import { throw429 } from './throw429';
 
 export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
-    limiter: RollingLimit;
-
-    constructor(redis: RedisStorage, limit: number) {
-        this.limiter = new RollingLimit({
-            redis,
-            name: 'global',
-            limit,
-            intervalMS: 1000,
-        });
-    }
-
     // need to save variables
     public requestDidStart(_outer: GraphQLRequestContext<IApolloContext>): any {
         return {
-            responseForOperation: async (requestContext: GraphQLRequestContext<IApolloContext>): Promise<GraphQLResponse | void> => {
-                const result = await this.limiter.use(`principal:${requestContext.context.principal.id.toString()}`);
+            responseForOperation: async (requestContext: GraphQLRequestContext<IApolloContext>): Promise<GraphQLResponse | null> => {
+                const limiter = requestContext.context.getLimiter('requests');
+                const result = await limiter.use(requestContext.context.principal.id);
 
                 if (result.rejected) {
-                    logger.log(`[${requestContext.context.principal.id}]`, 'rejected', result);
+                    throw429();
+                }
 
-                    throw new HttpQueryError(
-                        429,
-                        '{"text": "Too Many Requests"}',
-                        false,
-                    );
+                // required!
+                return null;
+            },
+
+            /**
+             * This is a trick to be able to throw 429 from inside resolvers
+             */
+            willSendResponse: async (requestContext: GraphQLRequestContext<IApolloContext>) => {
+                // @ts-ignore
+                if (requestContext.response?.errors?.length > 0) {
+                    // @ts-ignore
+                    if (requestContext.response.errors[0].extensions?.exception?.statusCode === 429) {
+                        throw429();
+                    }
                 }
             },
         };

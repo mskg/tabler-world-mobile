@@ -1,6 +1,7 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { cacheInstance } from '../cache/cacheInstance';
+import { createLimiter } from '../ratelimit/createLimiter';
 import { IApolloContext } from '../types/IApolloContext';
 import { extractPlatform, extractVersion } from './extractVersion';
 
@@ -25,6 +26,8 @@ export const constructContext = async ({ event, context }: Params): Promise<IApo
         // @ts-ignore
         // this is set by AuthPlugin
         principal: undefined,
+
+        getLimiter: createLimiter,
     });
 };
 

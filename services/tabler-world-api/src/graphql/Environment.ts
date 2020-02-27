@@ -6,9 +6,13 @@ export const Environment = {
 
     Throtteling: {
         disabled: process.env.THROTTELING_DISABLED === 'true',
-        rateLimit: process.env.THROTTELING_RATE
+        requestRateLimit: process.env.THROTTELING_RATE
             ? parseInt(process.env.THROTTELING_RATE, 10)
-            : 2,
+            : 100,
+
+        geoRateLimit: process.env.THROTTELING_GEORATE
+            ? parseInt(process.env.THROTTELING_GEORATE, 10)
+            : 10,
     },
 
     Caching: {

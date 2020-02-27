@@ -8,13 +8,13 @@ export class CombinedLocationStore implements ILocationStorage {
     constructor(private store1: ILocationStorage, private store2: ILocationStorage) {
     }
 
-    public async initialize(config: DataSourceConfig<IApolloContext>) {
+    public initialize(config: DataSourceConfig<IApolloContext>) {
         if (this.store1.initialize) {
-            await this.store1.initialize(config);
+            this.store1.initialize(config);
         }
 
         if (this.store2.initialize) {
-            await this.store2.initialize(config);
+            this.store2.initialize(config);
         }
     }
 
