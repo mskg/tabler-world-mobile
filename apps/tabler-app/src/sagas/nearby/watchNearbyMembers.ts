@@ -1,7 +1,8 @@
 import { GeoParameters } from '@mskg/tabler-world-config-app';
 import { LocationData } from 'expo-location';
-import { cancel, delay, fork, put, select, take } from 'redux-saga/effects';
+import { cancel, delay, fork, select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { isDemoModeEnabled } from '../../helper/demoMode';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { LocationUpdate, LocationUpdateVariables } from '../../model/graphql/LocationUpdate';
@@ -10,11 +11,37 @@ import { IAppState } from '../../model/IAppState';
 import { GetNearbyMembersQuery } from '../../queries/Location/GetNearbyMembersQuery';
 import { LocationUpdateSubscription } from '../../queries/Location/LocationUpdateSubscription';
 import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
+import { getReduxStore } from '../../redux/getRedux';
 import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
-import { getReduxStore } from '../../redux/getRedux';
 
-function subscribe(enabled: boolean) {
+function refreshByQuery(enabled: boolean) {
+    const store = getReduxStore();
+
+    const variables: LocationUpdateVariables = {
+        hideOwnTable: enabled == null ? false : enabled,
+    };
+
+    const client = cachedAolloClient();
+
+    const initial = client.query<NearbyMembers, NearbyMembersVariables>({
+        query: GetNearbyMembersQuery,
+        fetchPolicy: 'network-only',
+        // tslint:disable-next-line: object-shorthand-properties-first
+        variables,
+    });
+
+    initial
+        .then((result) => {
+            if (result?.data?.nearbyMembers) {
+                logger.debug('Setting initial list');
+                store.dispatch(setNearby(result.data.nearbyMembers));
+            }
+        })
+        .catch((e) => logger.error(e, 'failed to run query'));
+}
+
+function subscribeToUpdates(enabled: boolean) {
     logger.debug('start');
 
     const store = getReduxStore();
@@ -64,6 +91,7 @@ function subscribe(enabled: boolean) {
 function* watch() {
     let subscription: ZenObservable.Subscription | null = null;
     const setting = yield getParameterValue<GeoParameters>(ParameterName.geo);
+    const isDemo: boolean = yield isDemoModeEnabled();
 
     try {
         // tslint:disable-next-line: no-constant-condition
@@ -78,9 +106,13 @@ function* watch() {
                 yield updateLocation(false, false);
             }
 
-            // try to subscribe if not already done
-            if ((!subscription || subscription.closed) && location && nearbyMembers && !offline) {
-                subscription = subscribe(hideOwnClubWhenNearby);
+            if (isDemo) {
+                refreshByQuery(hideOwnClubWhenNearby);
+            } else {
+                // try to subscribe if not already done
+                if ((!subscription || subscription.closed) && location && nearbyMembers && !offline) {
+                    subscription = subscribeToUpdates(hideOwnClubWhenNearby);
+                }
             }
 
             yield delay(setting.pollInterval);
