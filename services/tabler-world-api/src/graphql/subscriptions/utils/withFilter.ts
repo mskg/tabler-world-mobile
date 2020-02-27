@@ -51,6 +51,7 @@ export const withFilter = (asyncIteratorFn: ResolverFn, filterFn: FilterFn): Res
             },
 
             // tslint:disable-next-line: function-name
+            // @ts-ignore
             [$$asyncIterator]() {
                 return this;
             },

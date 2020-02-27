@@ -2,6 +2,7 @@ import { EXECUTING_OFFLINE, isXrayEnabled } from '@mskg/tabler-world-aws';
 import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
+import depthLimit from 'graphql-depth-limit';
 import { AuthPlugin } from './auth/AuthPlugin';
 import { cacheInstance } from './cache/cacheInstance';
 import { dataSources } from './dataSources';
@@ -53,6 +54,10 @@ const server = new ApolloServer({
     persistedQueries: {
         cache: cacheInstance,
     },
+
+    validationRules: [
+        depthLimit(5)
+    ],
 
     dataSources: dataSources as unknown as () => DataSources<IApolloContext>,
 
