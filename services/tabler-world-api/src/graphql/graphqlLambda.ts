@@ -1,14 +1,18 @@
 import { EXECUTING_OFFLINE, isXrayEnabled } from '@mskg/tabler-world-aws';
+import { PluginDefinition } from 'apollo-server-core';
 import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
 import { cacheInstance } from './cache/cacheInstance';
 import { constructContext } from './constructContext';
 import { dataSources } from './dataSources';
+import { Environment } from './Environment';
 import { executableSchema } from './executableSchema';
+import { createRedisStorage } from './helper/createRedisStorage';
 import { XRayRequestExtension } from './helper/XRayRequestExtension';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
+import { RateLimitPlugin } from './ratelimit/RateLimitPlugin';
 import { IApolloContext } from './types/IApolloContext';
 
 const extensions: any[] = [
@@ -31,6 +35,16 @@ if (isXrayEnabled && process.env.XRAY_GRAPHQL_DISABLED !== 'true') {
     );
 }
 
+const plugins: PluginDefinition[] = [];
+if (Environment.Caching.useRedis && !Environment.Throtteling.disabled) {
+    plugins.push(
+        new RateLimitPlugin(
+            createRedisStorage(),
+            Environment.Throtteling.rateLimit,
+        ),
+    );
+}
+
 const server = new ApolloServer({
     schema: executableSchema,
 
@@ -40,6 +54,8 @@ const server = new ApolloServer({
     //   calculateHttpHeaders: false,
     // },
 
+    // tslint:disable-next-line: object-shorthand-properties-first
+    plugins,
     cache: cacheInstance,
 
     persistedQueries: {

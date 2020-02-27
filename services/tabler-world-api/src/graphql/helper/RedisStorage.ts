@@ -223,4 +223,15 @@ export class RedisStorage extends IORedisBaseClient {
         this.logger.log('del', hash);
         return this.client.del(hash);
     }
+
+    public evalsha(scriptSha: string, numKeys: number, ...args: (string | number)[]): Promise<any> {
+        this.logger.log('evalsha', scriptSha);
+        return this.client.evalsha(scriptSha, numKeys.toString(), args);
+    }
+
+    // tslint:disable-next-line: no-banned-terms
+    public eval(script: string, numKeys: number, ...args: (string | number)[]): Promise<any> {
+        this.logger.log('eval');
+        return this.client.eval(script, numKeys, args);
+    }
 }

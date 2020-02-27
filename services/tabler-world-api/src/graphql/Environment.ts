@@ -4,6 +4,13 @@ export const Environment = {
         Region: process.env.AWS_REGION,
     },
 
+    Throtteling: {
+        disabled: process.env.THROTTELING_DISABLED === 'true',
+        rateLimit: process.env.THROTTELING_RATE
+            ? parseInt(process.env.THROTTELING_RATE, 10)
+            : 2,
+    },
+
     Caching: {
         disabled: process.env.DISABLE_CACHE === 'true',
         useRedis: process.env.USE_REDIS !== 'false',
