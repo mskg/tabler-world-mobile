@@ -22,7 +22,7 @@ type QueryOptions = {
 
 const EMPTY_RESULT = { result: [] };
 
-const logger = new ConsoleLogger('Event');
+const logger = new ConsoleLogger('ws:event');
 // const ulid = monotonicFactory();
 
 export class WebsocketEventManager {

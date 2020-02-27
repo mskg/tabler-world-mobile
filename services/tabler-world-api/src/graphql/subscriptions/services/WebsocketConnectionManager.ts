@@ -10,7 +10,7 @@ import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { FieldNames } from './Constants';
 import { IConnectionStorage } from './IConnectionStorage';
 
-const logger = new ConsoleLogger('Connection');
+const logger = new ConsoleLogger('ws:connection');
 
 export class WebsocketConnectionManager {
     constructor(private storage: IConnectionStorage) {

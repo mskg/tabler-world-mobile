@@ -4,7 +4,7 @@ import { IConnection } from '../../types/IConnection';
 import { CONNECTIONS_TABLE, FieldNames } from '../Constants';
 import { ConnectionDetails, IConnectionStorage } from '../IConnectionStorage';
 
-const logger = new ConsoleLogger('DynamoDB');
+const logger = new ConsoleLogger('dynamodb');
 
 export class DynamoDBConnectionStore implements IConnectionStorage {
     constructor(private client: DocumentClient) {

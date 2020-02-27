@@ -1,8 +1,8 @@
 import { StopWatch } from '@mskg/tabler-world-common';
 import { DataSourceConfig } from 'apollo-datasource';
 import { chunk, filter, keys, take, values } from 'lodash';
+import { createRedisStorage } from '../helper/createRedisStorage';
 import { RedisStorage } from '../helper/RedisStorage';
-import { createRedisInstance } from '../helper/createRedisInstance';
 import { IApolloContext } from '../types/IApolloContext';
 import { ILocationStorage, Location, PutLocation, QueryResult } from './ILocationStorage';
 
@@ -11,7 +11,7 @@ export class RedisLocationStorage implements ILocationStorage {
     private context!: IApolloContext;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
-        this.client = createRedisInstance();
+        this.client = createRedisStorage();
         this.context = config.context;
     }
 
@@ -88,7 +88,7 @@ export class RedisLocationStorage implements ILocationStorage {
             raw = raw.slice(multi.numerOfCommands - 1);
             const memberWithDistance: any = {};
 
-            chunk(raw[0] as string[], 2).forEach((c: string[]) => {
+            chunk(raw[0][1] as string[], 2).forEach((c: string[]) => {
                 // [0] is key
                 const member = parseInt(c[0], 10);
                 // [1] is score = distance

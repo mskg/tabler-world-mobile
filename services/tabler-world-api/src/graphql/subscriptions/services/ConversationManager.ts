@@ -7,7 +7,7 @@ import { QueryOptions } from '../types/QueryOptions';
 import { UserConversation } from '../types/UserConversation';
 import { WebsocketEvent } from '../types/WebsocketEvent';
 
-const logger = new ConsoleLogger('Conversation');
+const logger = new ConsoleLogger('chat:conversation');
 
 export class ConversationManager {
     /**

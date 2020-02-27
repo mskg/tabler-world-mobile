@@ -9,7 +9,7 @@ import { UserConversation } from '../../types/UserConversation';
 import { CONVERSATIONS_TABLE, FieldNames } from '../Constants';
 import { IConversationStorage } from '../../types/IConversationStorage';
 
-const logger = new ConsoleLogger('DynamoDB');
+const logger = new ConsoleLogger('dynamodb');
 
 const EMPTY_RESULT = { result: [] };
 

@@ -1,10 +1,17 @@
 import { ILogger } from './ILogger';
 
 export class ConsoleLogger implements ILogger {
-    private category: string;
+    // tslint:disable-next-line: function-name
+    public static extend(logger: ILogger, newCategory: string) {
+        return new ConsoleLogger(logger.category, newCategory);
+    }
+
+    public category: string;
 
     constructor(...categories: any[]) {
-        this.category = (categories || []).map((c: any) => `[${c}]`).join(' ');
+        this.category = (categories || [])
+            .filter(Boolean)
+            .map((c: string) => c.startsWith('[') ? c : `[${c}]`).join(' ');
     }
 
     public log(...args: any[]) {

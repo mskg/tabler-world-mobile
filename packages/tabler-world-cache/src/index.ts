@@ -6,5 +6,5 @@ export * from './cache/types';
 export { IManyKeyValueCache } from './cache/types';
 export * from './loader/cachedDataLoader';
 export * from './loader/cachedLoad';
-export * from './redis/RedisBaseClient';
+export * from './redis/IORedisBaseClient';
 

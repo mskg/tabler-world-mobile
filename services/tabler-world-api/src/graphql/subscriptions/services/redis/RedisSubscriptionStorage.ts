@@ -4,7 +4,7 @@ import { RedisStorage } from '../../../helper/RedisStorage';
 import { ISubscription } from '../../types/ISubscription';
 import { ISubscriptionStorage, SubscriptionDetails } from '../ISubscriptionStorage';
 
-const logger = new ConsoleLogger('RedisSS');
+const logger = new ConsoleLogger('redis');
 
 const makeTriggerKey = (trigger: string) => `ws:trigger:${trigger}`;
 const makeConnectionKey = (connectionId: string) => `ws:subscription:${connectionId}`;

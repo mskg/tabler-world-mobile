@@ -1,5 +1,5 @@
 import { BatchGet, BatchWrite, DocumentClient, WriteRequest } from '@mskg/tabler-world-aws';
-import { ILogger } from '@mskg/tabler-world-common';
+import { ConsoleLogger, ILogger } from '@mskg/tabler-world-common';
 import { KeyValueCache } from 'apollo-server-core';
 import { CacheData, CacheValues, ICacheOptions, IManyKeyValueCache } from './types';
 
@@ -14,6 +14,7 @@ const CHUNKS_PREFIX = 'chunks:';
 
 export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<string> {
     private client: AWS.DynamoDB.DocumentClient;
+    private logger: ILogger;
 
     constructor(
         serviceConfigOptions: AWS.DynamoDB.Types.ClientConfiguration,
@@ -22,9 +23,10 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             ttl?: number,
         },
         private version?: string,
-        private logger: ILogger = console,
+        logger: ILogger = console,
     ) {
         this.client = new DocumentClient(serviceConfigOptions);
+        this.logger = ConsoleLogger.extend(logger, 'dynamodb');
     }
 
     public async set(

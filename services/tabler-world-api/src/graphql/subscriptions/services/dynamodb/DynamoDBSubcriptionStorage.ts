@@ -6,7 +6,7 @@ import { FieldNames, SUBSCRIPTIONS_TABLE } from '../Constants';
 import { ISubscriptionStorage, SubscriptionDetails } from '../ISubscriptionStorage';
 
 
-const logger = new ConsoleLogger('DynamoDB');
+const logger = new ConsoleLogger('dynamodb');
 
 function makeKey(connectionId: string, subscriptionId: string, trigger: string) {
     return `${connectionId}:${subscriptionId}:${trigger}`;

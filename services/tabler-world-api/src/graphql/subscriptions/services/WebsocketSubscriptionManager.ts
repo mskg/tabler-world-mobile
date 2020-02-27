@@ -7,7 +7,7 @@ import { getWebsocketParams } from '../utils/getWebsocketParams';
 import { ISubscriptionStorage } from './ISubscriptionStorage';
 import { WebsocketConnectionManager } from './WebsocketConnectionManager';
 
-const logger = new ConsoleLogger('Subscription');
+const logger = new ConsoleLogger('ws:subscription');
 
 export class WebsocketSubscriptionManager {
     constructor(

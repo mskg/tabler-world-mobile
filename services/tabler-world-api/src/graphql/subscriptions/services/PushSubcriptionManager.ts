@@ -4,7 +4,7 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { DIRECT_CHAT_PREFIX } from '../types/Constants';
 import { FieldNames, PUSH_SUBSCRIPTIONS_TABLE } from './Constants';
 
-const logger = new ConsoleLogger('PushSubscriptions');
+const logger = new ConsoleLogger('ws:push');
 
 export class PushSubcriptionManager {
     constructor(private client: DocumentClient) { }

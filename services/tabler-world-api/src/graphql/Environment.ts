@@ -19,7 +19,10 @@ export const Environment = {
     Redis: {
         host: process.env.REDIS_DEBUG_HOST || process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT || '6379', 10),
-        timeout: 2147483647,
+
+        cacheTimeout: process.env.REDIS_CACHE_TIMEOUT ? parseInt(process.env.REDIS_CACHE_TIMEOUT, 10) : undefined,
+        retries: process.env.REDIS_MAX_REQUESTRETRIES ? parseInt(process.env.REDIS_MAX_REQUESTRETRIES, 10) : 5,
+
         maxTTL: process.env.REDIS_MAXTTL,
     },
 

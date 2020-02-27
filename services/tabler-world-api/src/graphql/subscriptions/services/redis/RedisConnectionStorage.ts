@@ -3,7 +3,7 @@ import { RedisStorage } from '../../../helper/RedisStorage';
 import { IConnection } from '../../types/IConnection';
 import { ConnectionDetails, IConnectionStorage } from '../IConnectionStorage';
 
-const logger = new ConsoleLogger('RedisCS');
+const logger = new ConsoleLogger('redis');
 
 const makeKey = (connectionId: string) => `ws:connection:${connectionId}`;
 

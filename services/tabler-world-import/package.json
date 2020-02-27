@@ -22,8 +22,8 @@
         "node-geocoder": "^3.23.0",
         "node-gzip": "^1.1.2",
         "pg": "^7.18.1",
-        "redis": "^3.0.2",
-        "zlib": "^1.0.5"
+        "zlib": "^1.0.5",
+        "ioredis": "^4.16.0"
     },
     "devDependencies": {
         "@mskg/tabler-world-yarn-tools": "0.0.1",
@@ -35,10 +35,10 @@
         "@types/node": "^13.7.2",
         "@types/node-geocoder": "^3.19.1",
         "@types/pg": "^7.14.1",
-        "@types/redis": "^2.8.16",
         "aws-sdk": "^2.621.0",
         "file-loader": "^5.0.2",
         "ntl": "^5.0.0",
+        "@types/ioredis": "^4.14.8",
         "serverless": "^1.64.0",
         "serverless-dynamodb-local": "^0.2.39",
         "serverless-iam-roles-per-function": "^2.0.1",

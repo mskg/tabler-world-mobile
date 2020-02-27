@@ -32,7 +32,7 @@ export async function cachedLoad<T>(
 
         const ttls = await TTLs();
 
-        cache.set(
+        await cache.set(
             key,
             resultSerialized,
             ttl ? { ttl: ttls[ttl] } : undefined,

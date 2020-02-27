@@ -1,33 +1,33 @@
 {
-  "name": "@mskg/tabler-world-cache",
-  "version": "0.0.1",
-  "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch"
-  },
-  "author": "Markus Kling",
-  "license": "Copyright 2019-present Markus Kling",
-  "dependencies": {
-    "@mskg/tabler-world-common": "0.0.1",
-    "redis": "^3.0.2",
-    "util": "^0.12.1"
-  },
-  "peerDependencies": {
-    "@mskg/tabler-world-aws": "0.0.1",
-    "@mskg/tabler-world-config": "0.0.1",
-    "apollo-server-caching": "*",
-    "apollo-server-core": "*",
-    "lodash": "*"
-  },
-  "devDependencies": {
-    "@types/lodash": "4.14.149",
-    "@types/node": "^13.7.2",
-    "@types/node-fetch": "^2.5.4",
-    "@types/redis": "^2.8.16",
-    "lodash": "*",
-    "typescript": "3.7.5"
-  }
+    "name": "@mskg/tabler-world-cache",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2019-present Markus Kling",
+    "dependencies": {
+        "@mskg/tabler-world-common": "0.0.1",
+        "ioredis": "^4.16.0",
+        "util": "^0.12.1"
+    },
+    "peerDependencies": {
+        "@mskg/tabler-world-aws": "0.0.1",
+        "@mskg/tabler-world-config": "0.0.1",
+        "apollo-server-caching": "*",
+        "apollo-server-core": "*",
+        "lodash": "*"
+    },
+    "devDependencies": {
+        "@types/ioredis": "^4.14.8",
+        "@types/lodash": "4.14.149",
+        "@types/node": "^13.7.2",
+        "@types/node-fetch": "^2.5.4",
+        "lodash": "*",
+        "typescript": "3.7.5"
+    }
 }
