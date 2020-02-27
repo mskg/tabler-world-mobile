@@ -1,8 +1,8 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { filter, keys, map, remove, uniq, values } from 'lodash';
-import { RedisStorage } from '../../../helper/RedisStorage';
 import { ISubscription } from '../../types/ISubscription';
 import { ISubscriptionStorage, SubscriptionDetails } from '../ISubscriptionStorage';
+import { IORedisClient } from '@mskg/tabler-world-cache';
 
 const logger = new ConsoleLogger('redis');
 
@@ -11,7 +11,7 @@ const makeConnectionKey = (connectionId: string) => `ws:subscription:${connectio
 const makeSubscriptionKey = (connectionId: string, subscriptionId: string) => `${connectionId}:${subscriptionId}`;
 
 export class RedisSubscriptionStorage implements ISubscriptionStorage {
-    constructor(private client: RedisStorage) {
+    constructor(private client: IORedisClient) {
     }
 
     public async cleanup(trigger: string): Promise<void> {

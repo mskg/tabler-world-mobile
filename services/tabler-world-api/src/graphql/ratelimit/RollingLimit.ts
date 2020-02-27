@@ -1,12 +1,12 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
+import { IORedisClient } from '@mskg/tabler-world-cache';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { bool } from 'aws-sdk/clients/signer';
-import { RedisStorage } from '../helper/RedisStorage';
 import { IRateLimiter, LimitResult } from './IRateLimiter';
 import luaScript from './limit.json';
 
 type Options = {
-    redis: RedisStorage,
+    redis: IORedisClient,
 
     /**
      * Prefix
@@ -33,7 +33,7 @@ export class RollingLimit implements IRateLimiter {
     force: bool;
     interval: number;
     limit: number;
-    redis: RedisStorage;
+    redis: IORedisClient;
 
     constructor(options: Options) {
         this.interval = options.intervalMS;

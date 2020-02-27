@@ -1,17 +1,17 @@
+import { IORedisClient } from '@mskg/tabler-world-cache';
 import { StopWatch } from '@mskg/tabler-world-common';
 import { DataSourceConfig } from 'apollo-datasource';
 import { chunk, filter, keys, take, values } from 'lodash';
-import { createRedisStorage } from '../helper/createRedisStorage';
-import { RedisStorage } from '../helper/RedisStorage';
+import { createIORedisClient } from '../helper/createIORedisClient';
 import { IApolloContext } from '../types/IApolloContext';
 import { ILocationStorage, Location, PutLocation, QueryResult } from './ILocationStorage';
 
 export class RedisLocationStorage implements ILocationStorage {
-    private client!: RedisStorage;
+    private client!: IORedisClient;
     private context!: IApolloContext;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
-        this.client = createRedisStorage();
+        this.client = createIORedisClient();
         this.context = config.context;
     }
 

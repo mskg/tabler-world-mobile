@@ -1,12 +1,12 @@
+import { IORedisClient } from '@mskg/tabler-world-cache';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { createIORedisConnection } from './createIORedisConnection';
-import { RedisStorage } from './RedisStorage';
 
-let instance: RedisStorage;
+let instance: IORedisClient;
 
-export function createRedisStorage() {
+export function createIORedisClient() {
     if (!instance) {
-        instance = new RedisStorage(
+        instance = new IORedisClient(
             createIORedisConnection(),
             new ConsoleLogger('redis:store'),
         );

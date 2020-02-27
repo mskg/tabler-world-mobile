@@ -1,5 +1,5 @@
 import { Environment } from '../Environment';
-import { createRedisStorage } from '../helper/createRedisStorage';
+import { createIORedisClient } from '../helper/createIORedisClient';
 import { IRateLimiter } from './IRateLimiter';
 import { NoLimit } from './NoLimit';
 import { RollingLimit } from './RollingLimit';
@@ -20,7 +20,7 @@ export function createLimiter(name: Limiters): IRateLimiter {
 
     if (name === 'requests') {
         limiters[name] = new RollingLimit({
-            redis: createRedisStorage(),
+            redis: createIORedisClient(),
             limit: Environment.Throtteling.requestRateLimit,
             name: 'global',
             intervalMS: MINUTE,
@@ -31,7 +31,7 @@ export function createLimiter(name: Limiters): IRateLimiter {
 
     if (name === 'location') {
         limiters[name] = new RollingLimit({
-            redis: createRedisStorage(),
+            redis: createIORedisClient(),
             limit: Environment.Throtteling.geoRateLimit,
             name: 'location',
             intervalMS: MINUTE,

@@ -1,6 +1,6 @@
 import { Environment } from '../../Environment';
 import { createDynamoDBInstance } from '../../helper/createDynamoDBInstance';
-import { createRedisStorage } from '../../helper/createRedisStorage';
+import { createIORedisClient } from '../../helper/createIORedisClient';
 import { ConversationManager } from './ConversationManager';
 import { DynamoDBConnectionStore } from './dynamodb/DynamoDBConnectionStore';
 import { DynamoDBConversationStorage } from './dynamodb/DynamoDBConversationStorage';
@@ -19,18 +19,18 @@ let conversationManager: ConversationManager;
 
 if (Environment.Caching.useRedis) {
     connectionManager = new WebsocketConnectionManager(
-        new RedisConnectionStorage(createRedisStorage()),
+        new RedisConnectionStorage(createIORedisClient()),
     );
 
     subscriptionManager = new WebsocketSubscriptionManager(
         connectionManager,
-        new RedisSubscriptionStorage(createRedisStorage()),
+        new RedisSubscriptionStorage(createIORedisClient()),
     );
 
     conversationManager = new ConversationManager(
         new RedisConversationStorage(
             new DynamoDBConversationStorage(createDynamoDBInstance()),
-            createRedisStorage(),
+            createIORedisClient(),
         ),
     );
 

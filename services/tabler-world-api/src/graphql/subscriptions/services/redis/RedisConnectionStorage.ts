@@ -1,5 +1,5 @@
+import { IORedisClient } from '@mskg/tabler-world-cache';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { RedisStorage } from '../../../helper/RedisStorage';
 import { IConnection } from '../../types/IConnection';
 import { ConnectionDetails, IConnectionStorage } from '../IConnectionStorage';
 
@@ -8,7 +8,7 @@ const logger = new ConsoleLogger('redis');
 const makeKey = (connectionId: string) => `ws:connection:${connectionId}`;
 
 export class RedisConnectionStorage implements IConnectionStorage {
-    constructor(private client: RedisStorage) {
+    constructor(private client: IORedisClient) {
     }
 
     public async get(connectionId: string): Promise<IConnection | undefined> {
