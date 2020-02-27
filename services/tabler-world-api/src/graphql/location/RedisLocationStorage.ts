@@ -1,9 +1,8 @@
 import { StopWatch } from '@mskg/tabler-world-common';
 import { DataSourceConfig } from 'apollo-datasource';
 import { chunk, filter, keys, take, values } from 'lodash';
-import { Environment } from '../Environment';
-import { createRedisInstance } from '../helper/createRedisInstance';
 import { RedisStorage } from '../helper/RedisStorage';
+import { createRedisInstance } from '../helper/createRedisInstance';
 import { IApolloContext } from '../types/IApolloContext';
 import { ILocationStorage, Location, PutLocation, QueryResult } from './ILocationStorage';
 
@@ -17,7 +16,7 @@ export class RedisLocationStorage implements ILocationStorage {
     }
 
     public locationOf(member: number): Promise<Location | undefined> {
-        return this.client.geopos(`${Environment.stageName}:nearby:geo`, member.toString());
+        return this.client.geopos('nearby:geo', member.toString());
     }
 
     /*
@@ -39,19 +38,18 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // search by geolocation in radius, store in temp_search
             multi.georadiusbymember(
-                `${Environment.stageName}:nearby:geo`,
+                'nearby:geo',
                 memberToMatch.toString(),
                 radius * 1000,
                 'm',
-                `${Environment.stageName}:nearby:temp_search`,
+                'nearby:temp_search',
             );
 
             // intersect search with ttl -> temp_ttl
             multi.zinterstore(
-                `${Environment.stageName}:nearby:temp_ttl`,
-
-                `${Environment.stageName}:nearby:temp_search`,
-                `${Environment.stageName}:nearby:ttl`,
+                'nearby:temp_ttl',
+                'nearby:temp_search',
+                'nearby:ttl',
                 0,
                 1,
             );
@@ -59,7 +57,7 @@ export class RedisLocationStorage implements ILocationStorage {
             if (age) {
                 // remove all older than x days
                 multi.zremrangebyscore(
-                    `${Environment.stageName}:nearby:temp_ttl`,
+                    'nearby:temp_ttl',
                     '-inf',
                     Date.now() - age * 1000 * 60 * 60 * 24,
                 );
@@ -67,16 +65,16 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // get radius for not oldest members
             multi.zinterstore(
-                `${Environment.stageName}:nearby:temp_radius`,
-                `${Environment.stageName}:nearby:temp_search`,
-                `${Environment.stageName}:nearby:temp_ttl`,
+                'nearby:temp_radius',
+                'nearby:temp_search',
+                'nearby:temp_ttl',
                 1,
                 0,
             );
 
             // get nearest 20 elements
             multi.zrange(
-                `${Environment.stageName}:nearby:temp_radius`,
+                'nearby:temp_radius',
                 0,
 
                 // we query double the size to be able to exclude those without
@@ -96,7 +94,7 @@ export class RedisLocationStorage implements ILocationStorage {
                 // [1] is score = distance
                 const distance = parseFloat(c[1]);
 
-                memberWithDistance[`${Environment.stageName}:nearby:${c[0]}`] = {
+                memberWithDistance[`nearby:${c[0]}`] = {
                     member,
                     distance,
                 };
@@ -144,7 +142,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
         // point
         multi.geoadd(
-            `${Environment.stageName}:nearby:geo`,
+            'nearby:geo',
             longitude,
             latitude,
             member.toString(),
@@ -152,7 +150,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
         // details of last location
         multi.set(
-            `${Environment.stageName}:nearby:${member}`,
+            `nearby:${member}`,
             {
                 speed,
                 address,
@@ -164,7 +162,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
         // newest members first
         multi.zadd(
-            `${Environment.stageName}:nearby:ttl`,
+            'nearby:ttl',
             lastseen.valueOf(),
             member.toString(),
         );

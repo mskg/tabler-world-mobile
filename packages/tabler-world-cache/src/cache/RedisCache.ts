@@ -7,12 +7,9 @@ import { CacheData, CacheValues, ICacheOptions, IManyKeyValueCache } from './typ
 
 type Opts = {
     maxTTL: number,
-    prefix: string,
 };
 
 export class RedisCache extends RedisBaseClient implements KeyValueCache<string>, IManyKeyValueCache<string> {
-    cacheOpts: Opts;
-
     clientMulti!: () => Multi;
     clientGet!: (arg: string) => Promise<string>;
     clientDel!: (arg: string) => Promise<number>;
@@ -22,18 +19,12 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
 
     constructor(
         opts?: ClientOpts,
-        cacheOpts: Opts = {
+        private cacheOpts: Opts = {
             maxTTL: Infinity,
-            prefix: '',
         },
         logger: ILogger = console,
     ) {
         super(opts, logger);
-
-        this.cacheOpts = {
-            ...cacheOpts,
-            prefix: cacheOpts.prefix ?? '',
-        };
     }
 
     initClient() {
@@ -58,7 +49,7 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
             return undefined;
         }
 
-        return this.clientGet(`${this.cacheOpts.prefix}${key}`);
+        return this.clientGet(key);
     }
 
     async set(key: string, value: string, options?: ICacheOptions): Promise<any> {
@@ -69,7 +60,7 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
         }
 
         return this.clientSet(
-            `${this.cacheOpts.prefix}${key}`, value,
+            key, value,
             'EX', this.getTTL(options),
         );
     }
@@ -83,7 +74,7 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
             return Promise.resolve(undefined);
         }
 
-        return await this.clientDel(`${this.cacheOpts.prefix}${key}`) === 1;
+        return await this.clientDel(key) === 1;
     }
 
     async getMany(keys: string[]): Promise<CacheValues<string>> {
@@ -95,7 +86,7 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
             return Promise.resolve({});
         }
 
-        const values: any[] = await this.clientMGet(keys.map((key) => `${this.cacheOpts.prefix}${key}`));
+        const values: any[] = await this.clientMGet(keys);
 
         const result: any = {};
         keys.forEach((k, i) => {
@@ -116,12 +107,12 @@ export class RedisCache extends RedisBaseClient implements KeyValueCache<string>
             return Promise.resolve(undefined);
         }
 
-        await this.clientMSet(data.map((d) => [`${this.cacheOpts.prefix}${d.id}`, d.data]).flat());
+        await this.clientMSet(data.map((d) => [d.id, d.data]).flat());
 
         const multi = this.clientMulti();
         data.forEach((d) => {
             multi.expire(
-                `${this.cacheOpts.prefix}${d.id}`,
+                d.id,
                 this.getTTL(d.options),
             );
         });

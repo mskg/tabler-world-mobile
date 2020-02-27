@@ -1,4 +1,4 @@
--- docker run -i --network host --rm redis redis-cli -h localhost < out.txt
+-- docker run -i --network host --rm redis redis-cli -h host.docker.internal -p 6380 < out.txt
 
 \pset tuples_only
 \pset format unaligned

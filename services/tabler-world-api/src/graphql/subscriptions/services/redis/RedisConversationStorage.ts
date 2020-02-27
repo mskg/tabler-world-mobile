@@ -1,4 +1,3 @@
-import { Environment } from '../../../Environment';
 import { RedisStorage } from '../../../helper/RedisStorage';
 import { Conversation } from '../../types/Conversation';
 import { IConversationStorage } from '../../types/IConversationStorage';
@@ -6,8 +5,8 @@ import { PaggedResponse } from '../../types/PaggedResponse';
 import { QueryOptions } from '../../types/QueryOptions';
 import { UserConversation } from '../../types/UserConversation';
 
-const conversationKey = (conversation: string) => `${Environment.stageName}:chat:${conversation}`;
-const userKey = (conversation: string, member: number) => `${Environment.stageName}:chat:${conversation}:${member}`;
+const conversationKey = (conversation: string) => `chat:${conversation}`;
+const userKey = (conversation: string, member: number) => `chat:${conversation}:${member}`;
 const TTL = 10 * 60;
 
 export class RedisConversationStorage implements IConversationStorage {

@@ -1,14 +1,13 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { filter, keys, map, remove, uniq, values } from 'lodash';
-import { Environment } from '../../../Environment';
 import { RedisStorage } from '../../../helper/RedisStorage';
 import { ISubscription } from '../../types/ISubscription';
 import { ISubscriptionStorage, SubscriptionDetails } from '../ISubscriptionStorage';
 
 const logger = new ConsoleLogger('RedisSS');
 
-const makeTriggerKey = (trigger: string) => `${Environment.stageName}:ws:trigger:${trigger}`;
-const makeConnectionKey = (connectionId: string) => `${Environment.stageName}:ws:subscription:${connectionId}`;
+const makeTriggerKey = (trigger: string) => `ws:trigger:${trigger}`;
+const makeConnectionKey = (connectionId: string) => `ws:subscription:${connectionId}`;
 const makeSubscriptionKey = (connectionId: string, subscriptionId: string) => `${connectionId}:${subscriptionId}`;
 
 export class RedisSubscriptionStorage implements ISubscriptionStorage {

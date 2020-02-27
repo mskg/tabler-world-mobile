@@ -5,6 +5,8 @@ import { ClientOpts } from 'redis';
 import { Environment } from '../Environment';
 
 export const redisConfig: ClientOpts = {
+    prefix: `${Environment.stageName}:${Environment.Caching.version}:`,
+
     host: Environment.Redis.host,
     port: Environment.Redis.port,
 
@@ -27,7 +29,6 @@ export function createRedisCache() {
     return new RedisCache(
         redisConfig,
         {
-            prefix: `${Environment.stageName}:${Environment.Caching.version}:`,
             maxTTL: Environment.Redis.maxTTL
                 ? parseInt(Environment.Redis.maxTTL, 10)
                 : Infinity,

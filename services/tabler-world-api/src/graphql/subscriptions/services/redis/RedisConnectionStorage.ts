@@ -1,12 +1,11 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { Environment } from '../../../Environment';
 import { RedisStorage } from '../../../helper/RedisStorage';
 import { IConnection } from '../../types/IConnection';
 import { ConnectionDetails, IConnectionStorage } from '../IConnectionStorage';
 
 const logger = new ConsoleLogger('RedisCS');
 
-const makeKey = (connectionId: string) => `${Environment.stageName}:ws:connection:${connectionId}`;
+const makeKey = (connectionId: string) => `ws:connection:${connectionId}`;
 
 export class RedisConnectionStorage implements IConnectionStorage {
     constructor(private client: RedisStorage) {
