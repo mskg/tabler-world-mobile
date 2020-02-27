@@ -6,19 +6,19 @@ import { IDataSources } from '../dataSources';
 import { IPrincipal } from './IPrincipal';
 
 export interface IApolloContext {
-    clientInfo: {
+    readonly clientInfo: {
         version: string;
         os?: 'android' | 'ios',
     };
 
-    lambdaEvent?: APIGatewayProxyEvent;
-    lambdaContext?: Context;
+    readonly lambdaEvent?: APIGatewayProxyEvent;
+    readonly lambdaContext?: Context;
 
-    logger: ILogger;
-    principal: IPrincipal;
+    readonly logger: ILogger;
+    readonly principal: IPrincipal;
 
-    cache: KeyValueCache<string> & IManyKeyValueCache<string>;
+    readonly cache: KeyValueCache<string> & IManyKeyValueCache<string>;
 
-    requestCache: { [key: string]: any };
-    dataSources: IDataSources;
+    readonly requestCache: { [key: string]: any };
+    readonly dataSources: IDataSources;
 }

@@ -1,5 +1,5 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { GraphQLRequestContext, GraphQLResponse } from 'apollo-server-core';
+import { GraphQLRequestContext, GraphQLResponse, HttpQueryError } from 'apollo-server-core';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import { RedisStorage } from '../helper/RedisStorage';
 import { IApolloContext } from '../types/IApolloContext';
@@ -28,17 +28,11 @@ export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
                 if (result.rejected) {
                     logger.log(`[${requestContext.context.principal.id}]`, 'rejected', result);
 
-                    // @ts-ignore
-                    return {
-                        http: {
-                            status: 429,
-                        },
-                        errors: [{
-                            // @ts-ignore
-                            status: 429,
-                            message: 'Too Many Requests',
-                        }],
-                    };
+                    throw new HttpQueryError(
+                        429,
+                        '{"text": "Too Many Requests"}',
+                        false,
+                    );
                 }
             },
         };

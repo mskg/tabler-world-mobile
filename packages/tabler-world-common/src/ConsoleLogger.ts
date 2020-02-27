@@ -11,7 +11,7 @@ export class ConsoleLogger implements ILogger {
     constructor(...categories: any[]) {
         this.category = (categories || [])
             .filter(Boolean)
-            .map((c: string) => c.startsWith('[') ? c : `[${c}]`).join(' ');
+            .map((c: string) => c.toString().startsWith('[') ? c : `[${c}]`).join(' ');
     }
 
     public log(...args: any[]) {

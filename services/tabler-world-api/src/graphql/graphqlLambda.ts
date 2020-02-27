@@ -3,8 +3,9 @@ import { PluginDefinition } from 'apollo-server-core';
 import { DataSources } from 'apollo-server-core/dist/graphqlOptions';
 import { ApolloServer } from 'apollo-server-lambda';
 import { ProxyHandler } from 'aws-lambda';
+import { AuthPlugin } from './auth/AuthPlugin';
 import { cacheInstance } from './cache/cacheInstance';
-import { constructContext } from './constructContext';
+import { constructContext } from './helper/constructContext';
 import { dataSources } from './dataSources';
 import { Environment } from './Environment';
 import { executableSchema } from './executableSchema';
@@ -35,7 +36,10 @@ if (isXrayEnabled && process.env.XRAY_GRAPHQL_DISABLED !== 'true') {
     );
 }
 
-const plugins: PluginDefinition[] = [];
+const plugins: PluginDefinition[] = [
+    new AuthPlugin(),
+];
+
 if (Environment.Caching.useRedis && !Environment.Throtteling.disabled) {
     plugins.push(
         new RateLimitPlugin(
