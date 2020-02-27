@@ -23,14 +23,14 @@ variables:
   #  1.2-r, r1, r2, ...
 
   - name: EXPO_RELEASE_CHANNEL
-    value: '1.4-r1'
+    value: '1.4-test'
   - name: APP_LANGUAGES
     value: 'en,de,nl,fi,is,it'
   - group: 'expo'
   - group: 'git-crypt'
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
-  - group: 'ENV Germany PROD'
+  - group: 'ENV Germany TEST'
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
 
