@@ -17,7 +17,7 @@ pr:
 trigger:
   branches:
     include:
-      - manualonly
+      - release/v1.4
 
   paths:
     include:
