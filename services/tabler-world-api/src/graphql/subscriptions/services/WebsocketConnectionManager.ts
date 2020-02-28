@@ -90,7 +90,7 @@ export class WebsocketConnectionManager {
      * @param message
      */
     public async sendMessage(connectionId: string, message: OperationMessage): Promise<void> {
-        logger.log(`[${connectionId}]`, 'send', JSON.stringify(message));
+        logger.log(`[${connectionId}]`, 'send', message.type, message.id, JSON.stringify(message).substr(0, 200), '...');
 
         try {
             await awsGatewayClient.postToConnection({

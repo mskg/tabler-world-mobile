@@ -45,30 +45,6 @@ const logger = new ConsoleLogger('ws:event');
 export class WebsocketEventManager {
     constructor(private client: DocumentClient) { }
 
-    public async marshall<T>(message: WebsocketEvent<T>): Promise<EncodedWebsocketEvent> {
-        const em = new EncryptionManager(message.eventName);
-
-        return {
-            id: message.id,
-            eventName: message.eventName,
-
-            sender: message.sender,
-
-            payload: await em.encrypt(message.payload),
-            pushNotification: message.pushNotification
-                ? await em.encrypt(message.pushNotification)
-                : undefined,
-
-            delivered: message.delivered,
-            trackDelivery: message.trackDelivery,
-
-            volatile: message.volatile,
-            plain: message.plain,
-
-            timestamp: message.timestamp,
-        };
-    }
-
     public async unMarshall<T>(message: EncodedWebsocketEvent): Promise<WebsocketEvent<T>> {
         if (message.plain) {
             return this.unMarshallUnecrypted(message);
@@ -150,20 +126,28 @@ export class WebsocketEventManager {
         } as WebsocketEvent<T>;
 
         const messages = await Promise.all(triggers.map(async (t) => {
-            const message = await this.marshall<T>({
+            const sendPayload = {
                 // need a full copy
                 ...JSON.parse(JSON.stringify(baseMessage)),
                 id: ulid(),
                 eventName: t,
-            });
+            };
+
+            let transportMessage;
+            if (encrypted) {
+                const em = new EncryptionManager(t);
+                transportMessage = await this.marshallEncrypted<T>(em, sendPayload);
+            } else {
+                transportMessage = this.marshallUnencrypted<T>(sendPayload);
+            }
 
             // we don't care about the little drift
             if (ttl) {
                 // @ts-ignore
-                message.ttl = Math.floor(Date.now() / 1000) + ttl;
+                transportMessage.ttl = Math.floor(Date.now() / 1000) + ttl;
             }
 
-            return message;
+            return transportMessage;
         }));
 
         // dynamodb streams are not working offline so invoke lambda directly
@@ -220,6 +204,48 @@ export class WebsocketEventManager {
         for await (const item of new BatchWrite(this.client, items)) {
             logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.id]);
         }
+    }
+
+    private async marshallEncrypted<T>(em: EncryptionManager, message: WebsocketEvent<T>): Promise<EncodedWebsocketEvent> {
+        return {
+            id: message.id,
+            eventName: message.eventName,
+
+            sender: message.sender,
+
+            payload: await em.encrypt(message.payload),
+            pushNotification: message.pushNotification
+                ? await em.encrypt(message.pushNotification)
+                : undefined,
+
+            delivered: message.delivered,
+            trackDelivery: message.trackDelivery,
+
+            volatile: message.volatile,
+            plain: message.plain,
+
+            timestamp: message.timestamp,
+        };
+    }
+
+    private marshallUnencrypted<T>(message: WebsocketEvent<T>): EncodedWebsocketEvent {
+        return {
+            id: message.id,
+            eventName: message.eventName,
+
+            sender: message.sender,
+
+            payload: message.payload,
+            pushNotification: message.pushNotification,
+
+            delivered: message.delivered,
+            trackDelivery: message.trackDelivery,
+
+            volatile: message.volatile,
+            plain: message.plain,
+
+            timestamp: message.timestamp,
+        };
     }
 
     private unMarshallUnecrypted<T>(message: EncodedWebsocketEvent): WebsocketEvent<T> {

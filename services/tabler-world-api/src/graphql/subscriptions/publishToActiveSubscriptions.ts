@@ -79,10 +79,10 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
 
             // run resolver
             const result: IteratorResult<ExecutionResult> = await nextValue;
-            logger.log(`[${connectionId}] [${subscriptionId}]`, 'result', JSON.stringify(result.value));
 
             if (result.value != null) {
                 try {
+                    // will log data anyway
                     await subscriptionManager.sendData(connectionId, subscriptionId, result.value);
 
                     // can be a stale connction for thre same user

@@ -1,4 +1,4 @@
-import { Client, EXECUTING_OFFLINE, RDS } from '@mskg/tabler-world-aws';
+import { Client, RDS } from '@mskg/tabler-world-aws';
 import { ILogger, StopWatch } from '@mskg/tabler-world-common';
 import { getParameters, Param_Database } from '@mskg/tabler-world-config';
 import { Client as PGClient, QueryConfig, QueryResult } from 'pg';
@@ -12,8 +12,6 @@ export class LazyPGClient implements IDataService {
     }
 
     async close() {
-        if (EXECUTING_OFFLINE) { return; }
-
         if (this.client) {
             try {
                 this.client.removeAllListeners();

@@ -119,7 +119,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // can show on map?
             const mapEnabled = await this.context.dataSources.location.isMembersVisibleOnMap(
-                ids.map((i) => parseInt(i, 10)));
+                values(memberWithDistance).map((i: any) => parseInt(i.member, 10)));
 
             keys(result).forEach((k, i) => {
                 const md = memberWithDistance[k];
