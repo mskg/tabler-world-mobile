@@ -56,11 +56,16 @@ export class LocationDataSource extends DataSource<IApolloContext> {
         );
 
         this.map = new DataLoader<number, any>(
-            (ids) => useDatabase(
+            cachedDataLoader<number>(
                 this.context,
-                async (client) => {
-                    const res = await client.query(
-                        `
+                (k) => makeCacheKey('Member', ['location:map', k]),
+                // tslint:disable-next-line: variable-name
+                (_r, id) => makeCacheKey('Member', ['location:map', id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => {
+                        const res = await client.query(
+                            `
  select
     id
  from
@@ -69,11 +74,13 @@ export class LocationDataSource extends DataSource<IApolloContext> {
     id = ANY($1)
     and (settings->>'nearbymembersMap')::boolean = TRUE
  `,
-                        [ids],
-                    );
+                            [ids],
+                        );
 
-                    return ids.map((id) => res.rows.find((r) => r.id === id) != null);
-                },
+                        return ids.map((id) => res.rows.find((r) => r.id === id) != null);
+                    },
+                ),
+                'LocationEnabled', // TODO: changeme
             ),
             {
                 cacheKeyFn: (k: number) => k,
