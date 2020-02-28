@@ -25,7 +25,7 @@ SELECT
                 speed,
                 'address',
                 address,
-                'position',
+                'location',
                 jsonb_build_object(
                     'longitude',
                     ST_X (point::geometry),

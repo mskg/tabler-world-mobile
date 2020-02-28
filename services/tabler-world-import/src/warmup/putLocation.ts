@@ -13,7 +13,7 @@ export async function putLocation({ longitude, latitude, member, lastseen, speed
         address,
         accuracy,
         lastseen: lastseen.valueOf(),
-        position: { longitude, latitude },
+        location: { longitude, latitude },
     });
 
     // newest members first

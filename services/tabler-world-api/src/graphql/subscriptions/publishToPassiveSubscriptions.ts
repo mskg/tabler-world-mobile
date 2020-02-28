@@ -2,7 +2,7 @@ import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { PushNotification, PushNotificationBase, PushNotificationService } from '@mskg/tabler-world-push-client';
 
-export const logger = new ConsoleLogger('publish/push');
+export const logger = new ConsoleLogger('ws:publish:passive');
 
 export async function publishToPassiveSubscriptions(members: number[], event: PushNotificationBase<any>, payload: any) {
     const messages: PushNotification<any>[] = members.map((m) => {

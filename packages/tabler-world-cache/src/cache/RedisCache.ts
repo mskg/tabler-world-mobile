@@ -1,9 +1,8 @@
-import { ConsoleLogger, ILogger } from '@mskg/tabler-world-common';
+import { ConsoleLogger, ILogger, immediate } from '@mskg/tabler-world-common';
 import { KeyValueCache } from 'apollo-server-core';
 import { Redis } from 'ioredis';
 import { IORedisBaseClient } from '../redis/IORedisBaseClient';
 import { CacheData, CacheValues, ICacheOptions, IManyKeyValueCache } from './types';
-import { immediate } from '@mskg/tabler-world-common';
 
 type Opts = {
     prefix?: string,

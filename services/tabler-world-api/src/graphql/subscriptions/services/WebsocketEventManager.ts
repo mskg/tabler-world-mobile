@@ -20,6 +20,23 @@ type QueryOptions = {
     token?: DocumentClient.Key,
 };
 
+type WebsocketMessage<T> = {
+    sender?: number,
+    triggers: string[],
+    payload: T,
+
+    pushNotification?: {
+        sender?: number,
+        message: PushNotificationBase<T>,
+    },
+
+    encrypted: boolean,
+    volatile?: boolean,
+    trackDelivery?: boolean,
+
+    ttl?: number,
+};
+
 const EMPTY_RESULT = { result: [] };
 
 const logger = new ConsoleLogger('ws:event');
@@ -44,10 +61,19 @@ export class WebsocketEventManager {
 
             delivered: message.delivered,
             trackDelivery: message.trackDelivery,
+
+            volatile: message.volatile,
+            plain: message.plain,
+
+            timestamp: message.timestamp,
         };
     }
 
     public async unMarshall<T>(message: EncodedWebsocketEvent): Promise<WebsocketEvent<T>> {
+        if (message.plain) {
+            return this.unMarshallUnecrypted(message);
+        }
+
         const em = new EncryptionManager(message.eventName);
         return this.unMarshallWithEncryptionManager<T>(em, message);
     }
@@ -73,7 +99,15 @@ export class WebsocketEventManager {
 
         // @ts-ignore
         return messages
-            ? { nextKey, result: await Promise.all(messages.map((m) => this.unMarshallWithEncryptionManager(em, m as EncodedWebsocketEvent))) }
+            ? {
+                nextKey,
+                result: await Promise.all(
+                    messages.map((m) => {
+                        if (m.plain) { return this.unMarshallUnecrypted(m as EncodedWebsocketEvent); }
+                        return this.unMarshallWithEncryptionManager(em, m as EncodedWebsocketEvent);
+                    }),
+                ),
+            }
             : EMPTY_RESULT;
     }
 
@@ -95,25 +129,23 @@ export class WebsocketEventManager {
         }).promise();
     }
 
-    public async post<T = any>({ triggers, payload, pushNotification, ttl, trackDelivery = true }: {
-        triggers: string[];
-        payload: T;
-        pushNotification?: {
-            sender?: number;
-            message: PushNotificationBase<T>;
-        };
-        trackDelivery?: boolean,
-        ttl?: number;
-    }): Promise<WebsocketEvent<T>[]> {
+    public async post<T = any>(
+        { triggers, payload, pushNotification, ttl, sender, trackDelivery = true, encrypted, volatile = false }: WebsocketMessage<T>,
+    ): Promise<WebsocketEvent<T>[]> {
         logger.log('postMessage', triggers, payload);
 
         const baseMessage = {
             trackDelivery,
             payload,
-            // eventName: trigger,
-            // id: ulid(),
+            volatile,
+            sender,
+            timestamp: Date.now(),
+
+            // we have to invert the condition to be compatible
+            // with old messages
+            plain: !encrypted,
+
             pushNotification: pushNotification ? pushNotification.message : undefined,
-            sender: pushNotification ? pushNotification.sender : undefined,
             delivered: false,
         } as WebsocketEvent<T>;
 
@@ -170,6 +202,45 @@ export class WebsocketEventManager {
         }));
     }
 
+    public async remove(eventName: string, ids: string[]): Promise<void> {
+        logger.log('remove', ids);
+
+        const items: [string, WriteRequest][] = ids.map((id) => ([
+            EVENTS_TABLE,
+            {
+                DeleteRequest: {
+                    Key: {
+                        [FieldNames.trigger]: eventName,
+                        [FieldNames.id]: id,
+                    },
+                },
+            },
+        ]));
+
+        for await (const item of new BatchWrite(this.client, items)) {
+            logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.id]);
+        }
+    }
+
+    private unMarshallUnecrypted<T>(message: EncodedWebsocketEvent): WebsocketEvent<T> {
+        return {
+            id: message.id,
+            eventName: message.eventName,
+            sender: message.sender,
+
+            payload: message.payload,
+            pushNotification: message.pushNotification,
+
+            plain: message.plain,
+            volatile: message.volatile,
+
+            delivered: message.delivered,
+            trackDelivery: message.trackDelivery,
+
+            timestamp: message.timestamp,
+        };
+    }
+
     private async unMarshallWithEncryptionManager<T>(em: EncryptionManager, message: EncodedWebsocketEvent): Promise<WebsocketEvent<T>> {
         return {
             id: message.id,
@@ -183,6 +254,11 @@ export class WebsocketEventManager {
 
             delivered: message.delivered,
             trackDelivery: message.trackDelivery,
+
+            plain: message.plain,
+            volatile: message.volatile,
+
+            timestamp: message.timestamp,
         };
     }
 }

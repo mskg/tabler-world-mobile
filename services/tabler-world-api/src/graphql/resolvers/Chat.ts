@@ -399,11 +399,13 @@ export const ChatResolver = {
                             priority: 'high',
                         },
                     },
-
                     sender: principalId,
                 },
+
                 ttl: params.messageTTL,
                 trackDelivery: true,
+                encrypted: true,
+                sender: principalId,
             });
 
             const [, conversation] = await Promise.all([
@@ -418,10 +420,13 @@ export const ChatResolver = {
             await eventManager.post<string>({
                 triggers: (conversation?.members?.values || []).map((subscriber) => ConversationManager.MakeAllConversationKey(subscriber)),
                 // payload is the trigger
+                sender: principalId,
                 payload: trigger,
                 pushNotification: undefined,
                 ttl: params.messageTTL,
                 trackDelivery: false,
+                encrypted: false,
+                volatile: true,
             });
 
             return {

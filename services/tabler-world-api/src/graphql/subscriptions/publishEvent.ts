@@ -8,7 +8,7 @@ import { publishToActiveSubscriptions } from './publishToActiveSubscriptions';
 import { publishToPassiveSubscriptions } from './publishToPassiveSubscriptions';
 import { WebsocketEvent } from './types/WebsocketEvent';
 
-const logger = new ConsoleLogger('publishEvent');
+const logger = new ConsoleLogger('ws:publish');
 
 export async function publishEvent(image: WebsocketEvent<any>) {
     try {

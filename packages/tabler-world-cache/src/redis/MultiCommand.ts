@@ -39,12 +39,21 @@ export class MultiCommand {
         return this;
     }
 
-    public georadiusbymember(set: string, key: string, distance: number, unit: string, store: string) {
+    public georadiusbymemberStoreDistance(set: string, key: string, distance: number, unit: string, store: string) {
         this.logger.log('multi:georadiusbymember', set, key, distance, store);
         this.cmds += 1;
 
         // @ts-ignore Error in types, and an error preventing the key from beeing prefixed
         this.pipeline = this.pipeline.georadiusbymember(set, key, distance, unit, 'STOREDIST', `${this.pipeline.options.keyPrefix}${store}`);
+        return this;
+    }
+
+    public georadiusbymemberStoreLocation(set: string, key: string, distance: number, unit: string, store: string) {
+        this.logger.log('multi:georadiusbymember', set, key, distance, store);
+        this.cmds += 1;
+
+        // @ts-ignore Error in types, and an error preventing the key from beeing prefixed
+        this.pipeline = this.pipeline.georadiusbymember(set, key, distance, unit, 'STORE', `${this.pipeline.options.keyPrefix}${store}`);
         return this;
     }
 

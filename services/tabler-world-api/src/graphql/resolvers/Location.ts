@@ -221,8 +221,11 @@ LIMIT 10
                     payload: {
                         member: context.principal.id,
                     },
+                    sender: context.principal.id,
                     trackDelivery: false,
                     ttl: 60 * 60, // 1h
+                    encrypted: false,
+                    volatile:  true,
                 });
             }
 

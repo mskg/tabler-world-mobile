@@ -15,8 +15,13 @@ export class RedisLocationStorage implements ILocationStorage {
         this.context = config.context;
     }
 
-    public locationOf(member: number): Promise<Location | undefined> {
-        return this.client.geopos('nearby:geo', member.toString());
+    public async locationOf(member: number): Promise<Location | undefined> {
+        const result = await this.client.geopos('nearby:geo', [member.toString()]);
+        if (result.length === 1) {
+            return result[0];
+        }
+
+        return undefined;
     }
 
     /*
@@ -36,19 +41,19 @@ export class RedisLocationStorage implements ILocationStorage {
             // we need to neglect connection setup
             sw.start();
 
-            // search by geolocation in radius, store in temp_search
-            multi.georadiusbymember(
+            // search by geolocation in radius, store in temp_radius
+            multi.georadiusbymemberStoreDistance(
                 'nearby:geo',
                 memberToMatch.toString(),
                 radius * 1000,
                 'm',
-                'nearby:temp_search',
+                'nearby:temp_radius',
             );
 
             // intersect search with ttl -> temp_ttl
             multi.zinterstore(
                 'nearby:temp_ttl',
-                'nearby:temp_search',
+                'nearby:temp_radius',
                 'nearby:ttl',
                 0,
                 1,
@@ -65,8 +70,8 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // get radius for not oldest members
             multi.zinterstore(
+                'nearby:result_radius',
                 'nearby:temp_radius',
-                'nearby:temp_search',
                 'nearby:temp_ttl',
                 1,
                 0,
@@ -74,7 +79,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // get nearest 20 elements
             multi.zrange(
-                'nearby:temp_radius',
+                'nearby:result_radius',
                 0,
 
                 // we query double the size to be able to exclude those without
@@ -86,8 +91,8 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // we have to slize by 4 commands
             raw = raw.slice(multi.numerOfCommands - 1);
-            const memberWithDistance: any = {};
 
+            const memberWithDistance: any = {};
             chunk(raw[0][1] as string[], 2).forEach((c: string[]) => {
                 // [0] is key
                 const member = parseInt(c[0], 10);
@@ -108,17 +113,28 @@ export class RedisLocationStorage implements ILocationStorage {
                 return [];
             }
 
+            // We take the location from the mget, not the georadius.
+            // Such, there can/will be a drift in the position, but only the distance will be wrong.
             const result = await this.client.mget(ids);
-            keys(result).forEach((k) => {
+
+            // can show on map?
+            const mapEnabled = await this.context.dataSources.location.isMembersVisibleOnMap(
+                ids.map((i) => parseInt(i, 10)));
+
+            keys(result).forEach((k, i) => {
                 const md = memberWithDistance[k];
                 const r = result[k];
 
+                this.context.logger.log(r);
+
                 result[k] = {
                     ...r,
+                    location: r.location || r.position, // compat
                     lastseen: new Date(r.lastseen),
                     accuracy: Math.round(r.accuracy),
                     distance: Math.round(md.distance),
                     member: md.member,
+                    canshowonmap: mapEnabled[i],
                 };
             });
 
@@ -156,7 +172,7 @@ export class RedisLocationStorage implements ILocationStorage {
                 address,
                 accuracy,
                 lastseen: lastseen.valueOf(),
-                position: { longitude, latitude },
+                location: { longitude, latitude },
             },
         );
 

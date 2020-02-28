@@ -36,17 +36,20 @@ export class IORedisClient extends IORedisBaseClient {
         return this.client.hlen(hash);
     }
 
-    public async geopos(key: string, member: string): Promise<{ longitude: number, latitude: number } | undefined> {
+    public async geopos(key: string, member: string[]): Promise<({ longitude: number, latitude: number } | undefined)[]> {
         this.logger.log('geopos', key, member);
 
         // @ts-ignore Wrong types
-        const val = await this.client.geopos(key, member);
-        return val && val.length === 1
-            ? {
-                longitude: val[0][0],
-                latitude: val[0][1],
-            }
-            : undefined;
+        const vals = await this.client.geopos(key, ...member);
+        return vals.map(
+            (val: string[]) =>
+                val
+                    ? {
+                        longitude: parseFloat(val[0]),
+                        latitude: parseFloat(val[1]),
+                    }
+                    : undefined,
+        );
     }
 
     public async get<T>(key: string): Promise<T | undefined> {

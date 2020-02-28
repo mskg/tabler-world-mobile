@@ -12,7 +12,7 @@ import { ISubscription } from './types/ISubscription';
 import { WebsocketEvent } from './types/WebsocketEvent';
 import { createLimiter } from '../ratelimit/createLimiter';
 
-export const logger = new ConsoleLogger('publish/ws');
+export const logger = new ConsoleLogger('ws:publish:active');
 
 export async function publishToActiveSubscriptions(subscriptions: ISubscription[], event: WebsocketEvent<any>, delivered = false): Promise<number[]> {
     const failedDeliveries: number[] = [];

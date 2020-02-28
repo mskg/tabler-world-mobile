@@ -15,6 +15,15 @@ async function submit(events: WebsocketEvent<any>[]) {
         // this will not fail
         await publishEvent(event);
     }
+
+    const volatiles = events.filter((e) => e.volatile).map((e) => e.id);
+    try {
+        if (volatiles && volatiles.length > 0) {
+            await eventManager.remove(events[0].eventName, volatiles);
+        }
+    } catch (e) {
+        logger.error('Could not remove messages', volatiles, e);
+    }
 }
 
 // tslint:disable: max-func-body-length

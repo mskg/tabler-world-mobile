@@ -12,6 +12,7 @@ export type QueryResult = {
 
     position: Location,
     distance: number,
+    canshowonmap: boolean,
 }[];
 
 export type PutLocation = {
