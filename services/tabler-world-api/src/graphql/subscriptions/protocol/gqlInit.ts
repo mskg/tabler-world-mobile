@@ -18,7 +18,7 @@ function hash(address?: string) {
 }
 
 export async function gqlInit(context: ProtocolContext, operation: OperationMessage) {
-    context.logger.log('gqlInit');
+    context.logger.debug('gqlInit');
 
     try {
         // @ts-ignore

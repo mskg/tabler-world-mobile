@@ -12,13 +12,13 @@ export class RedisConnectionStorage implements IConnectionStorage {
     }
 
     public async get(connectionId: string): Promise<IConnection | undefined> {
-        logger.log(`[${connectionId}]`, 'get');
+        logger.debug(`[${connectionId}]`, 'get');
 
         return await this.client.get(makeKey(connectionId));
     }
 
     public async put(data: ConnectionDetails, ttl: number): Promise<void> {
-        logger.log(`[${data.connectionId}]`, 'put', data);
+        logger.debug(`[${data.connectionId}]`, 'put', data);
 
         await this.client.set(
             makeKey(data.connectionId),
@@ -28,7 +28,7 @@ export class RedisConnectionStorage implements IConnectionStorage {
     }
 
     public async remove(connectionId: string): Promise<void> {
-        logger.log(`[${connectionId}]`, 'disconnect');
+        logger.debug(`[${connectionId}]`, 'disconnect');
         await this.client.del(makeKey(connectionId));
     }
 }

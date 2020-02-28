@@ -6,7 +6,7 @@ export function logExecutableSQL(logger: ILogger, id: string, text: string, para
     if (parameters) {
         const needsSemicolon = !text.trim().endsWith(';');
 
-        logger.log('[SQL]', `
+        logger.debug('[SQL]', `
 PREPARE ${id} (${parameters.map(getSQLType).join(',')}) AS
   ${text}
 ${needsSemicolon ? ';' : ''}
@@ -14,6 +14,6 @@ EXECUTE ${id}(${parameters.map(encodeType).join(',')});
 DEALLOCATE ${id};
 `);
     } else {
-        logger.log('[SQL]', text);
+        logger.debug('[SQL]', text);
     }
 }

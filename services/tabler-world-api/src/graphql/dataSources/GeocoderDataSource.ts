@@ -30,7 +30,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
     }
 
     public readOne(hash: string): Promise<any | null> {
-        this.context.logger.log('readOne', hash);
+        this.context.logger.debug('readOne', hash);
         return this.data.load(hash);
     }
 }

@@ -31,7 +31,7 @@ export class DynamoDBSubcriptionStorage implements ISubscriptionStorage {
     }
 
     public async list(trigger: string, test = false): Promise<ISubscription[]> {
-        logger.log('getSubscriptions', trigger);
+        logger.debug('getSubscriptions', trigger);
 
         const { Items: clients } = await this.client.query({
             TableName: SUBSCRIPTIONS_TABLE,
@@ -65,7 +65,7 @@ export class DynamoDBSubcriptionStorage implements ISubscriptionStorage {
     }
 
     public async put(triggers: string[], detail: SubscriptionDetails, ttl: number): Promise<void> {
-        logger.log(`[${detail.connection.connectionId}] [${detail.subscriptionId}]`, 'subscribe', triggers, detail.payload);
+        logger.debug(`[${detail.connection.connectionId}] [${detail.subscriptionId}]`, 'subscribe', triggers, detail.payload);
 
         const items: [string, WriteRequest][] = triggers.map((trigger) => ([
             SUBSCRIPTIONS_TABLE,
@@ -92,12 +92,12 @@ export class DynamoDBSubcriptionStorage implements ISubscriptionStorage {
         );
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.subscription]);
+            logger.debug('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.subscription]);
         }
     }
 
     public async remove(connectionId: string, subscriptionId?: string): Promise<void> {
-        logger.log(`[${connectionId}] [${subscriptionId}]`, 'remove');
+        logger.debug(`[${connectionId}] [${subscriptionId}]`, 'remove');
 
         if (subscriptionId) { await this.unsubcribe(connectionId, subscriptionId); }
         else { await this.unsubscribeAll(connectionId); }
@@ -131,7 +131,7 @@ export class DynamoDBSubcriptionStorage implements ISubscriptionStorage {
         ]));
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.subscription]);
+            logger.debug('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.subscription]);
         }
     }
 
@@ -160,7 +160,7 @@ export class DynamoDBSubcriptionStorage implements ISubscriptionStorage {
         ]));
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.subscription]);
+            logger.debug('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.subscription]);
         }
     }
 }

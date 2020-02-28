@@ -1,5 +1,5 @@
 import { Client, RDS } from '@mskg/tabler-world-aws';
-import { ILogger, StopWatch } from '@mskg/tabler-world-common';
+import { ILogger, Metric, StopWatch } from '@mskg/tabler-world-common';
 import { getParameters, Param_Database } from '@mskg/tabler-world-config';
 import { Client as PGClient, QueryConfig, QueryResult } from 'pg';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
@@ -8,7 +8,10 @@ import { IDataService } from '../types/IDataService';
 export class LazyPGClient implements IDataService {
     client: PGClient | undefined;
 
-    constructor(private logger: ILogger) {
+    constructor(
+        private logger: ILogger,
+        private metrics?: Metric,
+    ) {
     }
 
     async close() {
@@ -31,7 +34,7 @@ export class LazyPGClient implements IDataService {
 
             // tslint:disable-next-line: possible-timing-attack
             if (password == null || password === '') {
-                this.logger.log('[SQL]', '-> with token');
+                this.logger.debug('[SQL]', '-> with token');
                 const sign = new RDS.Signer();
                 password = sign.getAuthToken({
                     region: process.env.AWS_REGION,
@@ -53,7 +56,7 @@ export class LazyPGClient implements IDataService {
                 ssl: connection.ssl === false ? false : { rejectUnauthorized: false },
             });
 
-            this.logger.log('[SQL]', 'connect');
+            this.logger.debug('[SQL]', 'connect');
             await this.client.connect();
             this.client.on('error', (...args: any[]) => this.logger.error('[SQL]', ...args));
         }
@@ -74,7 +77,11 @@ export class LazyPGClient implements IDataService {
         try {
             return await this.client!.query(text, parameters);
         } finally {
-            this.logger.log('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            if (this.metrics) {
+                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs });
+            }
+
+            this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
         }
     }
 }

@@ -405,6 +405,7 @@ export const ChatResolver = {
                 ttl: params.messageTTL,
                 trackDelivery: true,
                 encrypted: true,
+                volatile: false,
                 sender: principalId,
             });
 

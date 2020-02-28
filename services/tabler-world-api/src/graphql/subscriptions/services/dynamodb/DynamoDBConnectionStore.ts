@@ -11,7 +11,7 @@ export class DynamoDBConnectionStore implements IConnectionStorage {
     }
 
     public async get(connectionId: string): Promise<IConnection> {
-        logger.log(`[${connectionId}]`, 'get');
+        logger.debug(`[${connectionId}]`, 'get');
 
         const { Item: details } = await this.client.get({
             TableName: CONNECTIONS_TABLE,
@@ -24,7 +24,7 @@ export class DynamoDBConnectionStore implements IConnectionStorage {
     }
 
     public async put(data: ConnectionDetails, ttl: number): Promise<void> {
-        logger.log(`[${data.connectionId}]`, 'put', data);
+        logger.debug(`[${data.connectionId}]`, 'put', data);
 
         await this.client.put({
             TableName: CONNECTIONS_TABLE,
@@ -38,7 +38,7 @@ export class DynamoDBConnectionStore implements IConnectionStorage {
     }
 
     public async remove(connectionId: string): Promise<void> {
-        logger.log(`[${connectionId}]`, 'disconnect');
+        logger.debug(`[${connectionId}]`, 'disconnect');
 
         await this.client.delete({
             TableName: CONNECTIONS_TABLE,

@@ -18,9 +18,9 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     }
 
     public async getConversations(member: number, options: QueryOptions = { pageSize: 10 }): Promise<PaggedResponse<string>> {
-        logger.log('getConversations', member);
+        logger.debug('getConversations', member);
 
-        const { Items: channels, LastEvaluatedKey: nextKey, ConsumedCapacity } = await this.client.query({
+        const { Items: channels, LastEvaluatedKey: nextKey } = await this.client.query({
             TableName: CONVERSATIONS_TABLE,
             ExclusiveStartKey: options.token,
             Limit: options.pageSize,
@@ -37,7 +37,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             ScanIndexForward: false,
         }).promise();
 
-        logger.log('getConversations', member, ConsumedCapacity);
+        logger.debug('getConversations', member);
 
         return channels
             ? {
@@ -58,7 +58,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     }
 
     public async getConversation(conversation: string): Promise<Conversation> {
-        logger.log(`[${conversation}]`, 'get');
+        logger.debug(`[${conversation}]`, 'get');
 
         const { Item } = await this.client.get({
             TableName: CONVERSATIONS_TABLE,
@@ -85,7 +85,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     }
 
     public async getUserConversation(conversation: string, member: number): Promise<UserConversation> {
-        logger.log(`[${conversation}]`, 'getUserConversation', member);
+        logger.debug(`[${conversation}]`, 'getUserConversation', member);
 
         const { Item } = await this.client.get({
             TableName: CONVERSATIONS_TABLE,
@@ -96,12 +96,12 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             },
         }).promise();
 
-        logger.log(Item);
+        logger.debug(Item);
         return Item as UserConversation;
     }
 
     public async updateLastSeen(conversation: string, member: number, lastSeen: string) {
-        logger.log(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
+        logger.debug(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
 
         // preserve existing data
         await this.client.update({
@@ -120,7 +120,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     }
 
     public async update(conversation: string, eventId: string): Promise<void> {
-        logger.log(`[${conversation}]`, 'update', eventId);
+        logger.debug(`[${conversation}]`, 'update', eventId);
 
         const { Attributes: result } = await this.client.update({
             TableName: CONVERSATIONS_TABLE,
@@ -161,13 +161,13 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             ]));
 
             for await (const item of new BatchWrite(this.client, items)) {
-                logger.log('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+                logger.debug('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
             }
         }
     }
 
     public async removeMembers(conversation: string, members: number[]): Promise<void> {
-        logger.log(`[${conversation}]`, 'removeMembers', members);
+        logger.debug(`[${conversation}]`, 'removeMembers', members);
 
         const items: [string, WriteRequest][] = members.map((member) => ([
             CONVERSATIONS_TABLE,
@@ -182,7 +182,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
         );
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Wrote', item[0], item[1].DeleteRequest?.Key[FieldNames.member]);
+            logger.debug('Wrote', item[0], item[1].DeleteRequest?.Key[FieldNames.member]);
         }
 
         await this.client.update({
@@ -201,7 +201,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     }
 
     public async addMembers(conversation: string, members: number[]): Promise<void> {
-        logger.log(`[${conversation}]`, 'addMembers', members);
+        logger.debug(`[${conversation}]`, 'addMembers', members);
 
         const items: [string, WriteRequest][] = members.map((member) => ([
             CONVERSATIONS_TABLE,
@@ -219,7 +219,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
         ]));
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+            logger.debug('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
         }
 
         await this.client.update({

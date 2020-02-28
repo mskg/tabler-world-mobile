@@ -1,4 +1,4 @@
-import { ConsoleLogger } from '@mskg/tabler-world-common';
+import { ConsoleLogger, Audit, Metric } from '@mskg/tabler-world-common';
 import { ExecutionResult, parse, subscribe } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
 import { keys, remove } from 'lodash';
@@ -39,6 +39,8 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                 cache: cacheInstance,
                 requestCache: {},
                 getLimiter: createLimiter,
+                auditor: new Audit(event.id, `${principal.email}:${principal.id}`),
+                metrics: new Metric(),
             } as ISubscriptionContext;
 
             keys(context.dataSources).forEach((k) => {
@@ -79,6 +81,9 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
 
             // run resolver
             const result: IteratorResult<ExecutionResult> = await nextValue;
+
+            context.auditor.dump();
+            context.metrics.dump();
 
             if (result.value != null) {
                 try {

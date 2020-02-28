@@ -78,7 +78,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 (ids) => useDatabase(
                     this.context,
                     async (client) => {
-                        this.context.logger.log('DB reading families', ids);
+                        this.context.logger.debug('DB reading families', ids);
 
                         const res = await client.query(`
     select *
@@ -105,7 +105,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 (ids) => useDatabase(
                     this.context,
                     async (client) => {
-                        this.context.logger.log('DB reading associations', ids);
+                        this.context.logger.debug('DB reading associations', ids);
 
                         const res = await client.query(`
     select *
@@ -132,7 +132,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 (ids) => useDatabase(
                     this.context,
                     async (client) => {
-                        this.context.logger.log('DB reading areas', ids);
+                        this.context.logger.debug('DB reading areas', ids);
 
                         const res = await client.query(`
     select *
@@ -160,7 +160,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
                 (ids) => useDatabase(
                     this.context,
                     async (client) => {
-                        this.context.logger.log('DB reading clubs', ids);
+                        this.context.logger.debug('DB reading clubs', ids);
 
                         const res = await client.query(`
     select *
@@ -187,7 +187,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.log('DB reading allClubs');
+                    this.context.logger.debug('DB reading allClubs');
 
                     const res = await client.query(`
 select *
@@ -210,7 +210,7 @@ where
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.log('DB reading allAreas');
+                    this.context.logger.debug('DB reading allAreas');
 
                     const res = await client.query(`
 select *
@@ -236,7 +236,7 @@ where
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.log('DB reading allAssociations');
+                    this.context.logger.debug('DB reading allAssociations');
 
                     const res = await client.query(`
 select *
@@ -259,7 +259,7 @@ from structure_associations
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.log('DB reading allFamilies');
+                    this.context.logger.debug('DB reading allFamilies');
 
                     const res = await client.query(`
 select *

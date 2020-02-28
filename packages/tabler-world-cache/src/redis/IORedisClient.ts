@@ -9,14 +9,14 @@ export class IORedisClient extends IORedisBaseClient {
     }
 
     public set(key: string, val: any, ttl: number) {
-        this.logger.log('set', key);
+        this.logger.debug('set', key);
         return this.client.set(key, JSON.stringify(val), 'EX', ttl);
     }
 
     public async mget(keys: string[]): Promise<{
         [key: string]: any,
     }> {
-        this.logger.log('mget', keys);
+        this.logger.debug('mget', keys);
 
         const val = await this.client.mget(...keys);
         const result: any = {};
@@ -32,12 +32,12 @@ export class IORedisClient extends IORedisBaseClient {
     }
 
     public hlen(hash: string): Promise<number> {
-        this.logger.log('hlen', hash);
+        this.logger.debug('hlen', hash);
         return this.client.hlen(hash);
     }
 
     public async geopos(key: string, member: string[]): Promise<({ longitude: number, latitude: number } | undefined)[]> {
-        this.logger.log('geopos', key, member);
+        this.logger.debug('geopos', key, member);
 
         // @ts-ignore Wrong types
         const vals = await this.client.geopos(key, ...member);
@@ -53,14 +53,14 @@ export class IORedisClient extends IORedisBaseClient {
     }
 
     public async get<T>(key: string): Promise<T | undefined> {
-        this.logger.log('get', key);
+        this.logger.debug('get', key);
 
         const val = await this.client.get(key);
         return val ? JSON.parse(val) : undefined;
     }
 
     public hmset(hash: string, val: { field: string, value: any }[], ttl?: number) {
-        this.logger.log('hmset', hash, val.map((v) => v.field));
+        this.logger.debug('hmset', hash, val.map((v) => v.field));
         return new MultiCommand(this.client.multi(), this.logger)
             .hmset(hash, val, ttl)
             .exec();
@@ -69,7 +69,7 @@ export class IORedisClient extends IORedisBaseClient {
     public async hgetall(hash: string): Promise<{
         [key: string]: any,
     }> {
-        this.logger.log('hgetall', hash);
+        this.logger.debug('hgetall', hash);
 
         const values = await this.client.hgetall(hash);
         loadashKeys(values).forEach((k) => {
@@ -87,7 +87,7 @@ export class IORedisClient extends IORedisBaseClient {
     public async hmget(hash: string, keys: string[]): Promise<{
         [key: string]: any,
     }> {
-        this.logger.log('hmget', hash, keys);
+        this.logger.debug('hmget', hash, keys);
         const values = await this.client.hmget(hash, ...keys);
 
         const result: any = {};
@@ -99,23 +99,23 @@ export class IORedisClient extends IORedisBaseClient {
     }
 
     public hdel(hash: string, fields: string[]) {
-        this.logger.log('hdel', hash, fields);
+        this.logger.debug('hdel', hash, fields);
         return this.client.hdel(hash, ...fields);
     }
 
     public del(hash: string) {
-        this.logger.log('del', hash);
+        this.logger.debug('del', hash);
         return this.client.del(hash);
     }
 
     public evalsha(scriptSha: string, numKeys: number, ...args: (string | number)[]): Promise<any> {
-        this.logger.log('evalsha', scriptSha);
+        this.logger.debug('evalsha', scriptSha);
         return this.client.evalsha(scriptSha, numKeys.toString(), args);
     }
 
     // tslint:disable-next-line: no-banned-terms
     public eval(script: string, numKeys: number, ...args: (string | number)[]): Promise<any> {
-        this.logger.log('eval');
+        this.logger.debug('eval');
         return this.client.eval(script, numKeys, args);
     }
 }

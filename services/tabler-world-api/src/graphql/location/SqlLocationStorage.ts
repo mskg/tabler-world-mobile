@@ -3,6 +3,7 @@ import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSourceConfig } from 'apollo-datasource';
 import { IApolloContext } from '../types/IApolloContext';
 import { ILocationStorage, Location, PutLocation, QueryResult } from './ILocationStorage';
+import { Metrics } from '../logging/Metrics';
 
 // tslint:disable-next-line: export-name
 export class SqlLocationStorage implements ILocationStorage {
@@ -46,7 +47,7 @@ WHERE
                 async (client) => {
                     const point = await this.locationOf(memberToMatch);
                     if (!point) {
-                        this.context.logger.log('no point found');
+                        this.context.logger.debug('no point found');
                         return [];
                     }
 
@@ -87,7 +88,7 @@ LIMIT ${count}
                 },
             );
         } finally {
-            this.context.logger.log('[SqlLocationStorage]', 'took', sw.elapsedYs, 'ys');
+            this.context.metrics.set({ id: Metrics.QueryLocation, value: sw.elapsedYs });
         }
     }
 

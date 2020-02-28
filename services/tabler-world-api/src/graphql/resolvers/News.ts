@@ -25,7 +25,7 @@ export const NewsResolver = {
                 .filter((f) => f.is_published_start_date == null || Date.now() > new Date(f.is_published_start_date).getTime())
                 .filter((f) => f.is_published_end_date == null || Date.now() < new Date(f.is_published_end_date).getTime())
                 .orderBy((f) => f.id * - 1)
-                // .tap(e => context.logger.log(e))
+                // .tap(e => context.logger.debug(e))
                 .value();
         },
     },

@@ -4,7 +4,7 @@ import { IConnection } from '../types/IConnection';
 import { ProtocolContext } from './ProtocolContext';
 
 export async function findAndAuthorizeConnetion(context: ProtocolContext): Promise<IConnection | null> {
-    context.logger.log('findAndAuthorize');
+    context.logger.debug('findAndAuthorize');
 
     const details = await connectionManager.get(context.connectionId);
     if (!details || !details.principal) {

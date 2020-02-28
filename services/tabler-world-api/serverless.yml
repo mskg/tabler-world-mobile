@@ -8,6 +8,7 @@ plugins:
   - serverless-webpack
   - serverless-dynamodb-local
   - serverless-s3-local
+  - serverless-plugin-metric
 
 custom:
   # Our stage is based on what is passed in when running serverless
@@ -136,6 +137,52 @@ custom:
     # website: relative/path/to/your/website.xml
     # Uncomment only if you already have a S3 server running locally
     # noStart: true
+
+  metrics:
+    - name: throttle-location
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="throttle-location", value]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: throttle-global
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="throttle-global", value]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: graphql-error
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="graphql-error", value]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: query-location
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="query-location", value]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: sql-latency
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="sql-latency", value]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
 
 # we want seperate files to minimize depenencies in files
 package:

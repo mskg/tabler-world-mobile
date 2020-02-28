@@ -52,17 +52,17 @@ async function ensureActiveMember(context: IApolloContext, roles?: Role[]) {
 export const StructureResolver = {
     Query: {
         Families: (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log('Families');
+            context.logger.debug('Families');
             return context.dataSources.structure.allFamilies();
         },
 
         Family: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Family', args);
+            context.logger.debug('Family', args);
             return context.dataSources.structure.getFamily(args.id || context.principal.family as string);
         },
 
         Associations: async (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log('Associations');
+            context.logger.debug('Associations');
 
             return byVersion({
                 context,
@@ -76,29 +76,29 @@ export const StructureResolver = {
         },
 
         Association: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Association', args);
+            context.logger.debug('Association', args);
             return context.dataSources.structure.getAssociation(args.id || context.principal.association);
         },
 
         Clubs: (_root: any, args: ByAssociation, context: IApolloContext) => {
-            context.logger.log('Clubs', args);
+            context.logger.debug('Clubs', args);
             return context.dataSources.structure.allClubs(args.association || context.principal.association);
         },
 
 
         Club: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Club', args);
+            context.logger.debug('Club', args);
             return context.dataSources.structure.getClub(args.id);
         },
 
         Areas: async (_root: any, args: ByAssociation, context: IApolloContext) => {
-            context.logger.log('Areas', args);
+            context.logger.debug('Areas', args);
             const areas = await context.dataSources.structure.allAreas(args.association || context.principal.association);
             return sortBy(areas, (a) => getSortKey(a.shortname));
         },
 
         Area: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Area', args);
+            context.logger.debug('Area', args);
             return context.dataSources.structure.getArea(args.id);
         },
     },
@@ -151,10 +151,10 @@ export const StructureResolver = {
 
             const hash = addressHash(address);
             if (hash == null) { return null; }
-            // context.logger.log(root, hash);
+            // context.logger.debug(root, hash);
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            // context.logger.log(root, hash, coordinates);
+            // context.logger.debug(root, hash, coordinates);
 
             return coordinates && coordinates.latitude
                 ? {
@@ -165,21 +165,21 @@ export const StructureResolver = {
         },
 
         area: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log("C.Area Loading", root);
+            // context.logger.debug("C.Area Loading", root);
             return context.dataSources.structure.getArea(
                 root.area,
             );
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log("C.Association Loading", root);
+            // context.logger.debug("C.Association Loading", root);
             return context.dataSources.structure.getAssociation(
                 root.association,
             );
         },
 
         family: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log("C.Association Loading", root);
+            // context.logger.debug("C.Association Loading", root);
             return context.dataSources.structure.getFamily(
                 root.family,
             );

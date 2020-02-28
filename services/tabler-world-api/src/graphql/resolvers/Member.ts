@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
+import { AuditAction } from '@mskg/tabler-world-common';
 
 // type MembersArgs = {
 //     state?: string,
@@ -36,6 +37,11 @@ export const MemberResolver = {
     // we know which fields are selected from the client
     // needs to be changed probably
     Member: {
+        id: ({ id }: any, _args: any, context: IApolloContext) => {
+            context.auditor.add({ id, action: AuditAction.Read, type: 'member' });
+            return id;
+        },
+
         area: (root: any, _args: {}, _context: IApolloContext) => {
             return {
                 id: root.area,
@@ -128,20 +134,20 @@ export const MemberResolver = {
             // the optional filters only make sense if we don't retrieve all
             if (args.filter != null && (args.filter.areas != null || args.filter.byArea != null || args.filter.areaBoard != null || args.filter.nationalBoard != null)) {
                 if (args.filter.areas != null && args.filter.areas.length > 0) {
-                    context.logger.log('areas', args.filter.areas);
+                    context.logger.debug('areas', args.filter.areas);
                     const areaMembers = await context.dataSources.members.readAreas(args.filter.areas.map((a) => `${Family.RTI}_de_d${a}`));
                     result.push(... (areaMembers || []));
                 }
 
                 if (args.filter.byArea != null && args.filter.byArea.length > 0) {
-                    context.logger.log('byArea', args.filter.byArea);
+                    context.logger.debug('byArea', args.filter.byArea);
                     const areaMembers = await context.dataSources.members.readAreas(args.filter.byArea);
                     result.push(... (areaMembers || []));
                 }
 
                 // we make this sync
                 if (args.filter.areaBoard === true) {
-                    context.logger.log('areaBoard', args.filter);
+                    context.logger.debug('areaBoard', args.filter);
                     const areas = await context.dataSources.structure.allAreas(context.principal.association);
 
                     for (const area of areas) {
@@ -157,7 +163,7 @@ export const MemberResolver = {
                 }
 
                 if (args.filter.nationalBoard === true) {
-                    context.logger.log('nationalBoard', args.filter);
+                    context.logger.debug('nationalBoard', args.filter);
                     const associations = [await context.dataSources.structure.getAssociation(context.principal.association)];
 
                     for (const assoc of associations) {

@@ -60,7 +60,7 @@ export class PushSubcriptionManager {
     }
 
     public async getSubscribers(conversation: string): Promise<number[]> {
-        logger.log(`[${conversation}]`, 'getSubscribers');
+        logger.debug(`[${conversation}]`, 'getSubscribers');
 
         // this is a one:one conversation
         if (conversation.startsWith(DIRECT_CHAT_PREFIX)) {
@@ -71,7 +71,7 @@ export class PushSubcriptionManager {
             return [parseInt(a, 10), parseInt(b, 10)];
         }
 
-        const { Items: members, ConsumedCapacity } = await this.client.query({
+        const { Items: members } = await this.client.query({
             TableName: PUSH_SUBSCRIPTIONS_TABLE,
 
             ExpressionAttributeValues: {
@@ -81,7 +81,6 @@ export class PushSubcriptionManager {
             ProjectionExpression: `${FieldNames.member}`,
         }).promise();
 
-        logger.log(`[${conversation}]`, 'getSubscribers', ConsumedCapacity);
         return members
             ? members.map((m) => m[FieldNames.member] as number).filter((m) => m !== 0)
             : [];

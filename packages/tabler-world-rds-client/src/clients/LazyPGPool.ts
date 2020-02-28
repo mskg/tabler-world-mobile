@@ -1,5 +1,5 @@
 import { RDS } from '@mskg/tabler-world-aws';
-import { ILogger, StopWatch } from '@mskg/tabler-world-common';
+import { ILogger, StopWatch, Metric } from '@mskg/tabler-world-common';
 import { getParameters, Param_Database } from '@mskg/tabler-world-config';
 import { Pool, QueryConfig, QueryResult } from 'pg';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
@@ -8,7 +8,11 @@ import { IPooledDataService } from '../types/IPooledDataService';
 export class LazyPGPool implements IPooledDataService {
     pool: Pool | undefined;
 
-    constructor(private logger: ILogger, private poolSize: number) {
+    constructor(
+        private poolSize: number,
+        private logger: ILogger,
+        private metrics?: Metric,
+    ) {
     }
 
     async close() {
@@ -30,7 +34,7 @@ export class LazyPGPool implements IPooledDataService {
 
             // tslint:disable-next-line: possible-timing-attack
             if (password == null || password === '') {
-                this.logger.log('-> with token');
+                this.logger.debug('-> with token');
                 const sign = new RDS.Signer();
                 password = sign.getAuthToken({
                     region: process.env.AWS_REGION,
@@ -52,11 +56,11 @@ export class LazyPGPool implements IPooledDataService {
                 max: this.poolSize,
             });
 
-            this.logger.log('[SQL]', 'connect');
+            this.logger.debug('[SQL]', 'connect');
             await this.pool.connect();
 
             this.pool.on('error', (...args: any[]) => this.logger.error('[SQL]', ...args));
-            this.pool.on('connect', () => this.logger.log('[SQL]', 'connect'));
+            this.pool.on('connect', () => this.logger.debug('[SQL]', 'connect'));
         }
     }
 
@@ -75,7 +79,11 @@ export class LazyPGPool implements IPooledDataService {
         try {
             return await this.pool!.query(text, parameters);
         } finally {
-            this.logger.log('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            if (this.metrics) {
+                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs });
+            }
+
+            this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
         }
     }
 }

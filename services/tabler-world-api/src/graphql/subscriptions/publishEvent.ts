@@ -12,7 +12,7 @@ const logger = new ConsoleLogger('ws:publish');
 
 export async function publishEvent(image: WebsocketEvent<any>) {
     try {
-        logger.log(image);
+        logger.debug(image);
 
         const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];
         let cleanUp: Promise<void> | undefined;

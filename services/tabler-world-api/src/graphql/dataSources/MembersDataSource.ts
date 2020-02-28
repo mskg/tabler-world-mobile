@@ -78,7 +78,7 @@ and removed = FALSE`,
         return await useDatabase(
             this.context,
             async (client) => {
-                this.context.logger.log('executing readFavorites');
+                this.context.logger.debug('executing readFavorites');
 
                 const res = await client.query(
                     `
@@ -120,7 +120,7 @@ where id = $1`,
                 async () => await useDatabase(
                     this.context,
                     async (client) => {
-                        this.context.logger.log('executing readByTableAndAreas');
+                        this.context.logger.debug('executing readByTableAndAreas');
 
                         const res = await client.query(
                             `
@@ -152,7 +152,7 @@ where
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.log('executing readAll');
+                    this.context.logger.debug('executing readAll');
 
                     const res = await client.query(
                         `
@@ -173,7 +173,7 @@ and removed = FALSE`,
     }
 
     public async readClub(club: string): Promise<any[] | null> {
-        this.context.logger.log('readClub', club);
+        this.context.logger.debug('readClub', club);
         const clubDetails = await this.context.dataSources.structure.getClub(club);
 
         return this.readMany(clubDetails.members);
@@ -182,7 +182,7 @@ and removed = FALSE`,
     public async readMany(ids: number[]): Promise<any[]> {
         if (ids == null || ids.length === 0) return [];
 
-        this.context.logger.log('readMany', ids);
+        this.context.logger.debug('readMany', ids);
         return (await this.memberLoader.loadMany(ids)).map((member: any) => {
             if (member == null) { return member; }
 
@@ -194,7 +194,7 @@ and removed = FALSE`,
     }
 
     public async readOne(id: number): Promise<any | null> {
-        this.context.logger.log('readOne', id);
+        this.context.logger.debug('readOne', id);
 
         const member = await this.memberLoader.load(id);
         if (member == null) { return member; }

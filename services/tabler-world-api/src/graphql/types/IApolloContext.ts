@@ -1,5 +1,5 @@
 import { IManyKeyValueCache } from '@mskg/tabler-world-cache';
-import { ILogger } from '@mskg/tabler-world-common';
+import { ILogger, Audit, Metric } from '@mskg/tabler-world-common';
 import { KeyValueCache } from 'apollo-server-core';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { IDataSources } from '../dataSources';
@@ -13,6 +13,9 @@ export interface IApolloContext {
         version: string;
         os?: 'android' | 'ios',
     };
+
+    readonly auditor: Audit;
+    readonly metrics: Metric;
 
     readonly lambdaEvent?: APIGatewayProxyEvent;
     readonly lambdaContext?: Context;

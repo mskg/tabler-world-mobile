@@ -45,7 +45,7 @@ export const SearchMemberResolver = {
                 .filter((r) => r !== '')
                 .map((r) => `%${r}%`);
 
-            context.logger.log('Terms', terms, 'Args', args);
+            context.logger.debug('Terms', terms, 'Args', args);
 
             const parameters: any[] = [
                 PAGE_SIZE + 1,
@@ -152,7 +152,7 @@ where
             }
 
 
-            // context.logger.log("Query is", filters.join(' AND '));
+            // context.logger.debug("Query is", filters.join(' AND '));
 
             return useDatabase(
                 context,
@@ -168,7 +168,7 @@ limit $1`,
                     );
 
                     const end = Math.min(PAGE_SIZE, res.rows.length);
-                    context.logger.log('Size', end);
+                    context.logger.debug('Size', end);
 
                     return {
                         nodes: res.rows.length > 0 ? _(res.rows).take(end).map(

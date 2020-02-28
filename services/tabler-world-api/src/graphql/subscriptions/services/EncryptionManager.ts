@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import { createHash } from 'crypto';
 import { randomBytes, secretbox } from 'tweetnacl';
 import { decodeBase64, decodeUTF8, encodeBase64, encodeUTF8 } from 'tweetnacl-util';
 import { getChatParams } from '../utils/getChatParams';
@@ -41,8 +41,7 @@ export class EncryptionManager {
     private static async getEncryptionKey(conversation: string): Promise<string> {
         const params = await getChatParams();
 
-        const hash = crypto
-            .createHash('sha256')
+        const hash = createHash('sha256')
             .update(conversation + params.masterKey)
             .digest();
 

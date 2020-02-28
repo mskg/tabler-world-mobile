@@ -21,12 +21,12 @@ export class WebsocketSubscriptionManager {
     }
 
     public async hasSubscribers(triggers: string[]): Promise<string[]> {
-        logger.log('hasSubscribers', triggers);
+        logger.debug('hasSubscribers', triggers);
         return await this.storage.hasSubscribers(triggers);
     }
 
     public async getSubscriptions(trigger: string): Promise<ISubscription[]> {
-        logger.log('getSubscriptions', trigger);
+        logger.debug('getSubscriptions', trigger);
         return await this.storage.list(trigger);
     }
 

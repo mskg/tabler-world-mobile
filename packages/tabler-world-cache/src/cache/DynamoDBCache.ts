@@ -34,7 +34,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         data: string,
         options?: ICacheOptions,
     ) {
-        this.logger.log('set', id, options);
+        this.logger.debug('set', id, options);
         await this.setMany([{
             id,
             data,
@@ -43,7 +43,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async setMany(data: CacheData<string>[]) {
-        this.logger.log('setMany', data.map((d) => d.id));
+        this.logger.debug('setMany', data.map((d) => d.id));
 
         const mapped: [string, WriteRequest][][] = data.map((rawData) => {
             const chunks = this.chunkSubstr(rawData.data, 350 * 1024);
@@ -96,13 +96,13 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         });
 
         for await (const item of new BatchWrite(this.client, mapped.flat())) {
-            this.logger.log('Updated', item[0], item[1].PutRequest?.Item.id);
+            this.logger.debug('Updated', item[0], item[1].PutRequest?.Item.id);
         }
     }
 
     // chunks are cleandup automatically, we ignore that here
     public async delete(id: string): Promise<boolean | void> {
-        this.logger.log('delete', id);
+        this.logger.debug('delete', id);
 
         await this.client.delete({
             TableName: this.tableOptions.tableName,
@@ -112,7 +112,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async getMany(ids: string[]): Promise<CacheValues<string>> {
-        this.logger.log('getMany', ids);
+        this.logger.debug('getMany', ids);
 
         const items: [string, AWS.DynamoDB.DocumentClient.AttributeMap][] = ids.map((id) => ([
             this.tableOptions.tableName,
@@ -130,13 +130,13 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
         const result: CacheValues<string> = {};
         for await (const item of getRequest) {
             const [table, cachedItem] = item as [string, VersionedCacheData<string>];
-            this.logger.log('Received', table, cachedItem.id);
+            this.logger.debug('Received', table, cachedItem.id);
 
             // chedk if it's valid
             if (this.checkTTLAndVersion(cachedItem as any)) {
                 if ((cachedItem.data as string).startsWith(CHUNKS_PREFIX)) {
                     const count = parseInt(cachedItem.data.substr(CHUNKS_PREFIX.length), 10);
-                    this.logger.log('found chunk', cachedItem.id, cachedItem.data, count);
+                    this.logger.debug('found chunk', cachedItem.id, cachedItem.data, count);
 
                     // recursion
                     const chunkedResult = await this.getMany(
@@ -164,7 +164,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
     }
 
     public async get(id: string): Promise<string | undefined> {
-        this.logger.log('get', id);
+        this.logger.debug('get', id);
 
         const reply = await this.getMany([id]);
         return reply[id] || undefined;
@@ -177,7 +177,7 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
             : (this.tableOptions.ttl || 0);
 
         if (ttl !== 0) {
-            this.logger.log(
+            this.logger.debug(
                 'item', item.id, 'valid for',
                 Math.round(ttl / 60 / 60 * 100) / 100,
                 'h', 'version', this.version);
@@ -194,22 +194,22 @@ export class DynamoDBCache implements KeyValueCache<string>, IManyKeyValueCache<
 
     private checkTTLAndVersion({ ttl, id, version }: VersionedCacheData<string>): boolean {
         if (this.version != null && this.version !== version) {
-            this.logger.log('item', id, 'version different', 'Old:', version, 'New:', this.version);
+            this.logger.debug('item', id, 'version different', 'Old:', version, 'New:', this.version);
             return false;
         }
 
         // never expires
         if (ttl === 0 || ttl == null) {
-            this.logger.log('item', id, 'never expires.');
+            this.logger.debug('item', id, 'never expires.');
             return true;
         }
 
         if (ttl < Math.floor(Date.now() / 1000)) {
-            this.logger.log('item', id, 'was expired.');
+            this.logger.debug('item', id, 'was expired.');
             return false;
         }
 
-        this.logger.log(
+        this.logger.debug(
             'item', id, 'valid for',
             Math.round((ttl - Math.floor(Date.now() / 1000)) / 60 / 60 * 100) / 100,
             'h');

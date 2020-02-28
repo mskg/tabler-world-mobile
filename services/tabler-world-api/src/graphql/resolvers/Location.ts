@@ -12,6 +12,7 @@ import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { withFilter } from '../subscriptions/utils/withFilter';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
+import { Metrics} from '../logging/Metrics';
 
 type MyLocationInput = {
     location: {
@@ -149,7 +150,7 @@ export const LocationResolver = {
 
     Query: {
         nearbyMembers: async (_root: any, args: NearMembersQueryInput, context: IApolloContext) => {
-            context.logger.log('nearby', args);
+            context.logger.debug('nearby', args);
 
             const userShares = await context.dataSources.location.isMemberSharingLocation(context.principal.id);
             if (!userShares) {
@@ -161,7 +162,7 @@ export const LocationResolver = {
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
-            context.logger.log('locationHistory', args);
+            context.logger.debug('locationHistory', args);
 
             return await useDatabase(
                 context,
@@ -198,10 +199,11 @@ LIMIT 10
 
             if (result.rejected) {
                 context.logger.log('too many putLocation');
+                context.metrics.increment(Metrics.ThrottleLocation);
                 throw429();
             }
 
-            context.logger.log('putLocation', args);
+            context.logger.debug('putLocation', args);
             const db = context.dataSources.location.putLocation(args.location);
 
             // events are sent directy offline, we have to wait for the db first in this case
@@ -225,7 +227,7 @@ LIMIT 10
                     trackDelivery: false,
                     ttl: 60 * 60, // 1h
                     encrypted: false,
-                    volatile:  true,
+                    volatile: true,
                 });
             }
 
@@ -268,10 +270,10 @@ WHERE id = $1
 
                 // we only subscribe to our circle
                 const names = [`nearby:${hash}`];
-                context.logger.log('subscribe', loc, names);
+                context.logger.debug('subscribe', loc, names);
 
                 if (root) {
-                    context.logger.log('subscribe', names);
+                    context.logger.debug('create subscription', names);
 
                     await subscriptionManager.subscribe(
                         context,

@@ -113,7 +113,7 @@ WHERE id = $1
                     mapVersion: v12Check,
                     versions: {
                         default: async () => {
-                            context.logger.log('No change necessary, new client');
+                            context.logger.debug('No change necessary, new client');
                         },
 
                         old: async () => {
@@ -127,14 +127,14 @@ WHERE id = $1
 
                             if (oldIds.length !== 0) {
                                 const arr = modifiedArgs.setting.value as number[];
-                                context.logger.log('Replacing', oldIds, 'with', newIds);
+                                context.logger.debug('Replacing', oldIds, 'with', newIds);
 
                                 remove(arr, (f) => oldIds.indexOf(f) !== -1);
                                 modifiedArgs.setting.value = uniq([...arr, ...newIds]);
 
-                                context.logger.log('Old', args.setting.value, 'result', modifiedArgs.setting.value);
+                                context.logger.debug('Old', args.setting.value, 'result', modifiedArgs.setting.value);
                             } else {
-                                context.logger.log('No mapping necessary');
+                                context.logger.debug('No mapping necessary');
                             }
                         },
                     },

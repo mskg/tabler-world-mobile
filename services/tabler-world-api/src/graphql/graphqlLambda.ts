@@ -9,12 +9,14 @@ import { dataSources } from './dataSources';
 import { executableSchema } from './executableSchema';
 import { constructContext } from './helper/constructContext';
 import { XRayRequestExtension } from './helper/XRayRequestExtension';
+import { AuditExtension } from './logging/AuditExtension';
 import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
 import { RateLimitPlugin } from './ratelimit/RateLimitPlugin';
 import { IApolloContext } from './types/IApolloContext';
 
 const extensions: any[] = [
+    () => new AuditExtension(),
     () => new LogErrorsExtension(),
 ];
 
@@ -56,7 +58,7 @@ const server = new ApolloServer({
     },
 
     validationRules: [
-        depthLimit(5)
+        depthLimit(5),
     ],
 
     dataSources: dataSources as unknown as () => DataSources<IApolloContext>,

@@ -1,5 +1,5 @@
 import { IPrincipal, resolveWebPrincipal } from '@mskg/tabler-world-auth-client';
-import { ConsoleLogger } from '@mskg/tabler-world-common';
+import { Audit, ConsoleLogger } from '@mskg/tabler-world-common';
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { GraphQLRequestContext, GraphQLResponse, HttpQueryError } from 'apollo-server-core';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
@@ -30,6 +30,9 @@ export class AuthPlugin implements ApolloServerPlugin<IApolloContext> {
 
                 // @ts-ignore
                 requestContext.context.logger = new ConsoleLogger(principal.id);
+
+                // @ts-ignore
+                requestContext.context.auditor = new Audit(requestContext.context.lambdaContext?.awsRequestId, `${principal.id}:${principal.email}`);
 
                 // required!
                 return null;

@@ -14,11 +14,11 @@ export async function cachedLoad<T>(
     try {
         cached = await cache.get(key);
     } catch (e) {
-        logger.error('cache failed', e);
+        logger.warn('cache failed', e);
     }
 
     if (cached != null && typeof (cached) === 'string') {
-        logger.log('cache hit', key);
+        logger.debug('cache hit', key);
 
         if (cached.startsWith('raw:')) { return cached.substr(4) as unknown as T; }
         return JSON.parse(cached);
@@ -28,7 +28,7 @@ export async function cachedLoad<T>(
 
     try {
         const resultSerialized = typeof (result) === 'string' ? ('raw:' + result) : JSON.stringify(result);
-        logger.log(key, 'cache size', resultSerialized.length);
+        logger.debug(key, 'cache size', resultSerialized.length);
 
         const ttls = await TTLs();
 
@@ -38,7 +38,7 @@ export async function cachedLoad<T>(
             ttl ? { ttl: ttls[ttl] } : undefined,
         );
     } catch (e) {
-        logger.error('cache set failed', e);
+        logger.warn('cache set failed', e);
     }
 
     return result;

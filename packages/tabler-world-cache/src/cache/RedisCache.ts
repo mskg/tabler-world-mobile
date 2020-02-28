@@ -39,7 +39,7 @@ export class RedisCache extends IORedisBaseClient implements KeyValueCache<strin
     }
 
     async get(key: string): Promise<string | undefined> {
-        this.logger.log('get', key);
+        this.logger.debug('get', key);
         if (!key) { return; }
 
         const waitOrTimeout = this.client.get(this.mapKey(key));
@@ -52,7 +52,7 @@ export class RedisCache extends IORedisBaseClient implements KeyValueCache<strin
     }
 
     async set(key: string, value: string, options?: ICacheOptions): Promise<void> {
-        this.logger.log('set', key, options);
+        this.logger.debug('set', key, options);
         await this.client.set(
             this.mapKey(key),
             value,
@@ -62,13 +62,13 @@ export class RedisCache extends IORedisBaseClient implements KeyValueCache<strin
     }
 
     async delete(key: string): Promise<void> {
-        this.logger.log('delete', key);
+        this.logger.debug('delete', key);
         if (!key) { return; }
         await this.client.del(this.mapKey(key));
     }
 
     async getMany(keys: string[]): Promise<CacheValues<string>> {
-        this.logger.log('getMany', keys);
+        this.logger.debug('getMany', keys);
         if (!keys || keys.length === 0) { return {}; }
 
         const mappedKeys = keys.map((k) => this.mapKey(k));
@@ -96,7 +96,7 @@ export class RedisCache extends IORedisBaseClient implements KeyValueCache<strin
     }
 
     async setMany(data: CacheData<string>[]): Promise<void> {
-        this.logger.log('setMany', data.map((d) => d.id));
+        this.logger.debug('setMany', data.map((d) => d.id));
         if (!data || data.length === 0) { return; }
 
         const pipeline = this.client.multi().mset(data.map((d) => [this.mapKey(d.id), d.data]).flat());

@@ -2,6 +2,7 @@ import { GraphQLResponse } from 'apollo-server-core';
 import { GraphQLExtension } from 'apollo-server-lambda';
 import { print } from 'graphql';
 import { IApolloContext } from '../types/IApolloContext';
+import { Metrics } from './Metrics';
 
 export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
     // need to save variables
@@ -21,8 +22,11 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
     }) {
         try {
             const { context, graphqlResponse } = o;
+            context.logger.debug('LogErrorsExtension');
 
             if (graphqlResponse.errors) {
+                context.metrics.increment(Metrics.GraphQLError);
+
                 const query = context.requestCache.queryString || print(context.requestCache.queryString);
                 const variables = context.requestCache.variables;
 

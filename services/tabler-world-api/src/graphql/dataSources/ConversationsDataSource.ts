@@ -72,17 +72,17 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
     }
 
     public async isMembersAvailableForChat(ids: number[]): Promise<boolean[]> {
-        this.context.logger.log('isMembersAvailableForChat', ids);
+        this.context.logger.debug('isMembersAvailableForChat', ids);
         return this.chatProperties.loadMany(ids);
     }
 
     public async isMemberAvailableForChat(id: number): Promise<boolean> {
-        this.context.logger.log('isMemberAvailableForChat', id);
+        this.context.logger.debug('isMemberAvailableForChat', id);
         return this.chatProperties.load(id);
     }
 
     public async readConversation(id: string): Promise<Conversation | null> {
-        this.context.logger.log('readOne', id);
+        this.context.logger.debug('readOne', id);
 
         // because queue/delivery runs in the same thread, using cached data would corrupt reality
         if (EXECUTING_OFFLINE) {
@@ -93,7 +93,7 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
     }
 
     public async readUserConversation(id: string, member: number): Promise<UserConversation | null> {
-        this.context.logger.log('readOne', id);
+        this.context.logger.debug('readOne', id);
 
         // because queue/delivery runs run in the same thread, using cached data would corrupt reality
         if (EXECUTING_OFFLINE) {

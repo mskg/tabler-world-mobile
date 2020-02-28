@@ -80,10 +80,13 @@ export class RollingLimit implements IRateLimiter {
                 // @ ts-ignore
                 return this.redis.evalsha(luaScript.sha1, 2, ...redisKeysAndArgs)
                     .catch((err: any) => {
+                        logger.warn(err);
+
                         if (err instanceof Error && err.message.includes('NOSCRIPT')) {
                             // Script is missing, invoke again while providing the entire script
                             return this.redis.eval(luaScript.script, 2, ...redisKeysAndArgs);
                         }
+
                         // Other error
                         throw err;
                     })

@@ -1,5 +1,5 @@
 import { EXECUTING_OFFLINE, xAWS } from '@mskg/tabler-world-aws';
-import { ILogger, StopWatch } from '@mskg/tabler-world-common';
+import { ILogger, Metric, StopWatch } from '@mskg/tabler-world-common';
 import { QueryConfig, QueryResult } from 'pg';
 import { Environment } from '../Environment';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
@@ -16,7 +16,10 @@ const lambda: AWS.Lambda = new xAWS.Lambda(
 );
 
 export class LambdaClient implements IDataService {
-    constructor(private logger: ILogger) {
+    constructor(
+        private logger: ILogger,
+        private metrics?: Metric,
+    ) {
     }
 
     public async query<T = any, I extends any[] = any[]>(text: string | QueryConfig<I>, parameters?: I): Promise<QueryResult<T>> {
@@ -47,7 +50,11 @@ export class LambdaClient implements IDataService {
             const result = await lambda.invoke(lambdaParams).promise();
             return JSON.parse(result.Payload as string);
         } finally {
-            this.logger.log('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            if (this.metrics) {
+                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs });
+            }
+
+            this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
         }
     }
 }

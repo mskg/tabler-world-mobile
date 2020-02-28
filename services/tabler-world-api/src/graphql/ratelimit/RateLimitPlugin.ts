@@ -2,6 +2,7 @@ import { GraphQLRequestContext, GraphQLResponse } from 'apollo-server-core';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import { IApolloContext } from '../types/IApolloContext';
 import { throw429 } from './throw429';
+import { Metrics } from '../logging/Metrics';
 
 export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
     // need to save variables
@@ -12,6 +13,7 @@ export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
                 const result = await limiter.use(requestContext.context.principal.id);
 
                 if (result.rejected) {
+                    requestContext.context.metrics.increment(Metrics.ThrottleGlobal);
                     throw429();
                 }
 

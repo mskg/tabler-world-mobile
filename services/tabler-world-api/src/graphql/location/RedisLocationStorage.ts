@@ -3,6 +3,7 @@ import { StopWatch } from '@mskg/tabler-world-common';
 import { DataSourceConfig } from 'apollo-datasource';
 import { chunk, filter, keys, take, values } from 'lodash';
 import { createIORedisClient } from '../helper/createIORedisClient';
+import { Metrics } from '../logging/Metrics';
 import { IApolloContext } from '../types/IApolloContext';
 import { ILocationStorage, Location, PutLocation, QueryResult } from './ILocationStorage';
 
@@ -106,7 +107,7 @@ export class RedisLocationStorage implements ILocationStorage {
             });
 
             const ids = keys(memberWithDistance);
-            this.context.logger.log('ids', ids);
+            this.context.logger.debug('ids', ids);
 
             // should never happen as we are always there
             if (ids.length === 0) {
@@ -144,7 +145,7 @@ export class RedisLocationStorage implements ILocationStorage {
                 count,
             );
         } finally {
-            this.context.logger.log('[RedisLocationStorage]', 'took', sw.elapsedYs, 'ys');
+            this.context.metrics.set({ id: Metrics.QueryLocation, value: sw.elapsedYs });
         }
     }
 

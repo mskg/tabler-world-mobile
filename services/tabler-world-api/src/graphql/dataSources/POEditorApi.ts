@@ -1,5 +1,5 @@
 import { xHttps } from '@mskg/tabler-world-aws';
-import { removeEmptySlots } from '@mskg/tabler-world-common';
+import { removeEmptySlots, ConsoleLogger } from '@mskg/tabler-world-common';
 import querystring from 'querystring';
 import { getI18NParameters } from '../helper/getI18NParameters';
 
@@ -42,6 +42,8 @@ export type POETerm = {
     comment?: string,
 };
 
+const logger = new ConsoleLogger('POEditor');
+
 export class POEditorApi {
     // tslint:disable-next-line: function-name
     public static async call(path: string, rawPostData: any = {}): Promise<POEResponse> {
@@ -82,6 +84,7 @@ export class POEditorApi {
                             const json = JSON.parse(data);
                             return resolve(removeEmptySlots(json));
                         } catch (eEnd) {
+                            logger.error(eEnd);
                             return reject(eEnd);
                         }
                     });
@@ -89,7 +92,7 @@ export class POEditorApi {
             );
 
             req.on('error', (requestFail) => {
-                console.error('[API] on error', requestFail);
+                logger.error(requestFail);
                 return reject(requestFail);
             });
 

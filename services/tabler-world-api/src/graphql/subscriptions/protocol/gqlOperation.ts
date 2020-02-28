@@ -1,4 +1,4 @@
-import { ConsoleLogger } from '@mskg/tabler-world-common';
+import { Audit, ConsoleLogger, Metric } from '@mskg/tabler-world-common';
 import { DataSource } from 'apollo-datasource';
 import { getOperationAST, parse, subscribe, validate } from 'graphql';
 import { getAsyncIterator, isAsyncIterable } from 'iterall';
@@ -7,6 +7,7 @@ import { OperationMessage } from 'subscriptions-transport-ws';
 import { cacheInstance } from '../../cache/cacheInstance';
 import { dataSources } from '../../dataSources';
 import { executableSchema } from '../../executableSchema';
+import { createLimiter } from '../../ratelimit/createLimiter';
 import { IApolloContext } from '../../types/IApolloContext';
 import { ISubscriptionContext } from '../../types/ISubscriptionContext';
 import { logger } from '../publishToActiveSubscriptions';
@@ -14,7 +15,6 @@ import { connectionManager, subscriptionManager } from '../services';
 import { ClientLostError } from '../types/ClientLostError';
 import { findAndAuthorizeConnetion } from './findAndAuthorizeConnetion';
 import { ProtocolContext } from './ProtocolContext';
-import { createLimiter } from '../../ratelimit/createLimiter';
 
 export async function gqlOperation(context: ProtocolContext, operation: OperationMessage) {
     const connection = await findAndAuthorizeConnetion(context);
@@ -57,6 +57,8 @@ export async function gqlOperation(context: ProtocolContext, operation: Operatio
             principal: connection.principal,
             logger: new ConsoleLogger(context.route, context.connectionId, connection.principal.id),
             getLimiter: createLimiter,
+            auditor: new Audit(context.lambdaContext.awsRequestId, `${connection.principal.email}:${connection.principal.id}`),
+            metrics: new Metric(),
         } as ISubscriptionContext;
 
         keys(aCtx.dataSources).forEach((k) => {
@@ -80,8 +82,11 @@ export async function gqlOperation(context: ProtocolContext, operation: Operatio
             contextValue: aCtx,
         });
 
+        aCtx.auditor.dump();
+        aCtx.metrics.dump();
+
         if (!isAsyncIterable(iterable)) {
-            logger.log('Not iteratbale', iterable);
+            logger.debug('Not iteratbale', iterable);
 
             await connectionManager.sendError(
                 context.connectionId, operation.id, iterable,

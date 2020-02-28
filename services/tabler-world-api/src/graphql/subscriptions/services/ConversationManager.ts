@@ -34,17 +34,17 @@ export class ConversationManager {
     }
 
     public async getConversations(member: number, options: QueryOptions = { pageSize: 10 }): Promise<PaggedResponse<string>> {
-        logger.log('getConversations', member);
+        logger.debug('getConversations', member);
         return this.storage.getConversations(member, options);
     }
 
     public async getConversation(conversation: string): Promise<Conversation> {
-        logger.log(`[${conversation}]`, 'get');
+        logger.debug(`[${conversation}]`, 'get');
         return this.storage.getConversation(conversation);
     }
 
     public async getUserConversation(conversation: string, member: number): Promise<UserConversation> {
-        logger.log(`[${conversation}]`, 'getUserConversation', member);
+        logger.debug(`[${conversation}]`, 'getUserConversation', member);
         return this.storage.getUserConversation(conversation, member);
     }
 
@@ -88,7 +88,7 @@ export class ConversationManager {
      * @param member
      */
     public async checkAccess(conversation: string, member: number) {
-        logger.log(`[${conversation}]`, 'checkAccess', member);
+        logger.debug(`[${conversation}]`, 'checkAccess', member);
 
         if (conversation.startsWith(DIRECT_CHAT_PREFIX)) {
             return conversation.match(new RegExp(`${MEMBER_ENCLOSING}${member}${MEMBER_ENCLOSING}`, 'g'));

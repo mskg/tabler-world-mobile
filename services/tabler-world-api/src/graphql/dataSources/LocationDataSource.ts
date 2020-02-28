@@ -112,17 +112,17 @@ export class LocationDataSource extends DataSource<IApolloContext> {
     }
 
     public isMemberVisibleOnMap(id: number): Promise<boolean> {
-        this.context.logger.log('isMemberVisibleOnMap', id);
+        this.context.logger.debug('isMemberVisibleOnMap', id);
         return this.map.load(id);
     }
 
     public isMembersVisibleOnMap(ids: number[]): Promise<boolean[]> {
-        this.context.logger.log('isMembersVisibleOnMap', ids);
+        this.context.logger.debug('isMembersVisibleOnMap', ids);
         return this.map.loadMany(ids);
     }
 
     public isMemberSharingLocation(id: number): Promise<boolean> {
-        this.context.logger.log('isMemberSharingLocation', id);
+        this.context.logger.debug('isMemberSharingLocation', id);
         return this.sharing.load(id);
     }
 }

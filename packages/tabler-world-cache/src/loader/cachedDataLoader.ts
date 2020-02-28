@@ -25,7 +25,7 @@ export function cachedDataLoader<K>(
     ttl: keyof Param_TTLS,
 ): LoadFunc<K> {
     return async (ids: ReadonlyArray<K>) => {
-        logger.log('[cachedDataLoader]', 'loading', ids);
+        logger.debug('[cachedDataLoader]', 'loading', ids);
 
         let cached: CacheValues<string>;
 
@@ -35,7 +35,7 @@ export function cachedDataLoader<K>(
             );
         } catch (e) {
             cached = {};
-            logger.error('cache failed', e);
+            logger.warn('cache failed', e);
         }
 
         const existing = Object.keys(cached);
@@ -43,7 +43,7 @@ export function cachedDataLoader<K>(
         remove(missing, (id) => existing.find((e) => e === keyFunc(id)));
 
         if (missing.length > 0) {
-            logger.log('[cachedDataLoader]', 'missing keys', missing);
+            logger.debug('[cachedDataLoader]', 'missing keys', missing);
 
             const loadFromDb: any[] = await loadFunc(missing);
             if (loadFromDb && loadFromDb.length > 0) {
@@ -64,7 +64,7 @@ export function cachedDataLoader<K>(
                     );
 
                 } catch (e) {
-                    logger.error('cache set failed', e);
+                    logger.warn('cache set failed', e);
                 }
             }
         }

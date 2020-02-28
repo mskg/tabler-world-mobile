@@ -35,7 +35,7 @@ export class RedisSubscriptionStorage implements ISubscriptionStorage {
     }
 
     public async list(trigger: string, cleanUp = false): Promise<ISubscription[]> {
-        logger.log('list', trigger);
+        logger.debug('list', trigger);
 
         // get all subscriptions for given trigger
         const query = await this.client.hgetall(
@@ -57,11 +57,11 @@ export class RedisSubscriptionStorage implements ISubscriptionStorage {
                 if (conRecord[trigger]) {
                     activeConnections.push(connectionId);
                 } else {
-                    logger.log('Connection', connectionId, 'is stale');
+                    logger.warn('Connection', connectionId, 'is stale');
                 }
             }
 
-            // logger.log(
+            // logger.debug(
             //     'sub',
             //     subscriptions.map(s => s.connection.connectionId),
             //     'active',
@@ -98,7 +98,7 @@ export class RedisSubscriptionStorage implements ISubscriptionStorage {
     }
 
     public async put(triggers: string[], detail: SubscriptionDetails, ttl: number) {
-        logger.log(`[${detail.connection.connectionId}]`, `[${detail.subscriptionId}]`, 'put', triggers);
+        logger.debug(`[${detail.connection.connectionId}]`, `[${detail.subscriptionId}]`, 'put', triggers);
 
         const multi = await this.client.multi();
 
@@ -131,7 +131,7 @@ export class RedisSubscriptionStorage implements ISubscriptionStorage {
     }
 
     public async remove(connectionId: string, subscriptionId?: string) {
-        logger.log(`[${connectionId}]`, `[${subscriptionId}]`, 'remove');
+        logger.debug(`[${connectionId}]`, `[${subscriptionId}]`, 'remove');
 
         const result = await this.client.hgetall(makeConnectionKey(connectionId));
         const multi = await this.client.multi();

@@ -55,10 +55,10 @@ export class WebsocketEventManager {
     }
 
     public async events<T = any>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
-        logger.log('event', trigger);
+        logger.debug('event', trigger);
         const em = new EncryptionManager(trigger);
 
-        const { Items: messages, LastEvaluatedKey: nextKey, ConsumedCapacity } = await this.client.query({
+        const { Items: messages, LastEvaluatedKey: nextKey } = await this.client.query({
             TableName: EVENTS_TABLE,
             ExclusiveStartKey: options.token,
             Limit: options.pageSize,
@@ -71,7 +71,7 @@ export class WebsocketEventManager {
             ScanIndexForward: options.forward,
         }).promise();
 
-        logger.log('event', trigger, 'consumed', ConsumedCapacity);
+        logger.debug('event', trigger);
 
         // @ts-ignore
         return messages
@@ -88,7 +88,7 @@ export class WebsocketEventManager {
     }
 
     public async markDelivered({ eventName, id }: WebsocketEvent<any>) {
-        logger.log('markDelivered', id);
+        logger.debug('markDelivered', id);
 
         await this.client.update({
             TableName: EVENTS_TABLE,
@@ -176,7 +176,7 @@ export class WebsocketEventManager {
         ]));
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Updated', item[0], item[1].PutRequest?.Item[FieldNames.id]);
+            logger.debug('Updated', item[0], item[1].PutRequest?.Item[FieldNames.id]);
         }
 
         return messages.map((m) => ({
@@ -202,7 +202,7 @@ export class WebsocketEventManager {
         ]));
 
         for await (const item of new BatchWrite(this.client, items)) {
-            logger.log('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.id]);
+            logger.debug('Removed', item[0], item[1].DeleteRequest?.Key[FieldNames.id]);
         }
     }
 

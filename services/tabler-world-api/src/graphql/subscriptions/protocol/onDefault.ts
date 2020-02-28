@@ -8,7 +8,7 @@ import { ProtocolContext } from './ProtocolContext';
 
 // tslint:disable-next-line: max-func-body-length
 export async function onDefault(context: ProtocolContext) {
-    context.logger.log('onDefault', context.body);
+    context.logger.debug('onDefault', context.body);
 
     if (!context.body) {
         context.logger.error('No body');
@@ -16,7 +16,7 @@ export async function onDefault(context: ProtocolContext) {
     }
 
     const operation = JSON.parse(context.body) as OperationMessage;
-    context.logger.log(operation.type);
+    context.logger.debug(operation.type);
 
     if (operation.type === MessageTypes.GQL_CONNECTION_INIT) {
         await gqlInit(context, operation);
