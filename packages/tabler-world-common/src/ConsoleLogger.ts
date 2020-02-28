@@ -16,11 +16,11 @@ export class ConsoleLogger implements ILogger {
 
     public log(...args: any[]) {
         // tslint:disable-next-line: prefer-template
-        console.log(`[LOG] ${this.category}`, ...args);
+        console.log(this.category, ...args);
     }
 
     public error(...args: any[]) {
         // tslint:disable-next-line: prefer-template
-        console.error(`[ERR] ${this.category}`, ...args);
+        console.error(this.category, ...args);
     }
 }

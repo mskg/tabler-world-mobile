@@ -29,7 +29,7 @@ export class AuthPlugin implements ApolloServerPlugin<IApolloContext> {
                 requestContext.context.principal = principal;
 
                 // @ts-ignore
-                requestContext.context.logger = new ConsoleLogger(requestContext.context.lambdaContext?.awsRequestId, principal.id);
+                requestContext.context.logger = new ConsoleLogger(principal.id);
 
                 // required!
                 return null;

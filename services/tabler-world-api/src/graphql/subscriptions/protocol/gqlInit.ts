@@ -1,6 +1,6 @@
 import { resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
 import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { cacheInstance } from '../../cache/cacheInstance';
@@ -12,8 +12,7 @@ import { ProtocolContext } from './ProtocolContext';
 function hash(address?: string) {
     if (!address) return null;
 
-    return crypto
-        .createHash('md5')
+    return createHash('md5')
         .update(address.toLocaleLowerCase())
         .digest('hex');
 }

@@ -20,7 +20,7 @@ export const constructContext = async ({ event, context }: Params): Promise<IApo
         lambdaContext: context,
 
         cache: cacheInstance,
-        logger: new ConsoleLogger(event.requestContext.requestId),
+        logger: new ConsoleLogger(),
         requestCache: {},
 
         // @ts-ignore

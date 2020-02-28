@@ -1,8 +1,7 @@
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 
 export function hash(address: string) {
-    return crypto
-        .createHash('md5')
+    return createHash('md5')
         .update(address.toLocaleLowerCase())
         .digest('hex');
 }
