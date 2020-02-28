@@ -125,8 +125,6 @@ export class RedisLocationStorage implements ILocationStorage {
                 const md = memberWithDistance[k];
                 const r = result[k];
 
-                this.context.logger.log(r);
-
                 result[k] = {
                     ...r,
                     location: r.location || r.position, // compat
