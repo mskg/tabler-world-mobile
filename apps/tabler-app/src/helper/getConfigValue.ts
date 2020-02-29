@@ -19,8 +19,10 @@ type ConfigTypes = string | string[] | {
     [key: string]: string,
 };
 
+const TEST_EXTERNAL = false;
+
 export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
-    if (key === 'api' && __DEV__ && !Constants.isDevice) {
+    if (!TEST_EXTERNAL && key === 'api' && __DEV__ && !Constants.isDevice) {
         if (Platform.OS === 'android') {
             // default redirect to localhost for android emulator
             // tslint:disable-next-line: no-http-string
@@ -30,7 +32,7 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
         }
     }
 
-    if (key === 'wsapi' && __DEV__ && !Constants.isDevice) {
+    if (!TEST_EXTERNAL && key === 'wsapi' && __DEV__ && !Constants.isDevice) {
         if (Platform.OS === 'android') {
             // default redirect to localhost for android emulator
             // tslint:disable-next-line: no-http-string

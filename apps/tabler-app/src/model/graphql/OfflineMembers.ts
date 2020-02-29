@@ -27,6 +27,7 @@ export interface OfflineMembers_OwnTable_association {
   id: string;
   name: string;
   flag: string | null;
+  isocode: string;
 }
 
 export interface OfflineMembers_OwnTable_roles_ref {
@@ -151,6 +152,7 @@ export interface OfflineMembers_FavoriteMembers_association {
   id: string;
   name: string;
   flag: string | null;
+  isocode: string;
 }
 
 export interface OfflineMembers_FavoriteMembers_roles_ref {

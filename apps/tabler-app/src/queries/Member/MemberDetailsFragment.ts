@@ -18,6 +18,10 @@ export const MemberDetailsFragment = gql`
             value
         }
 
+        association {
+            isocode
+        }
+
         phonenumbers {
             type
             value

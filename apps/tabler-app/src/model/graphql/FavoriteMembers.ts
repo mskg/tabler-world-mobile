@@ -27,6 +27,7 @@ export interface FavoriteMembers_FavoriteMembers_association {
   id: string;
   name: string;
   flag: string | null;
+  isocode: string;
 }
 
 export interface FavoriteMembers_FavoriteMembers_roles_ref {

@@ -1,35 +1,31 @@
 import _ from 'lodash';
 import { Member_Member, Member_Member_companies, Member_Member_emails, Member_Member_phonenumbers } from '../model/graphql/Member';
+import { formatPhone } from './formatting/formatPhone';
 
-function normalizePhone(p: string | null): string | undefined {
-    if (p == null) return undefined;
-
-    let nbrs = p.replace(/[^\d]/g, '');
-    nbrs = nbrs.replace(/[^\d]/g, '');
-    nbrs = nbrs.replace(/^(49)/, '');
-    nbrs = nbrs.replace(/^0*/, '');
-
-    return nbrs;
-}
-
-export function collectPhones(member?: Member_Member | null): Member_Member_phonenumbers[] {
-    if (member == null || member.phonenumbers == null) return [];
+export function collectPhones(member?: Member_Member | null): (Member_Member_phonenumbers & { mobile: boolean })[] {
+    if (member == null) { return []; }
 
     return _(member.phonenumbers || [])
+        .map((n) => ({
+            ...n,
+            ...formatPhone(n.value, member.association.isocode),
+        }))
         .concat(
             // @ts-ignore nulls are filtered
             (member.companies || []).map(
-                (c: Member_Member_companies) => c.phone != null && c.phone !== ''
-                    ? ({
+                (c: Member_Member_companies) => {
+                    if (c.phone == null || c.phone === '') { return undefined; }
+
+                    const nbr = formatPhone(c.phone, member.association.isocode);
+                    return ({
                         type: 'work',
-                        value: c.phone || '',
+                        ...nbr,
                         __typename: 'CommunicationElement' as 'CommunicationElement',
-                    }) as Member_Member_phonenumbers
-                    : undefined,
-            ),
+                    });
+                }),
         )
         .filter((v) => v != null)
-        .uniqBy((v) => normalizePhone(v.value))
+        .uniqBy((v) => v.value)
         .toArray()
         .value();
 }
@@ -54,7 +50,7 @@ export function collectEMails(member?: Member_Member | null): Member_Member_emai
             ),
         )
         .filter((r) => r.value != null && r.value !== '')
-        .uniqBy((v) => v.value)
+        .uniqBy((v) => v.value.toLocaleLowerCase())
         .toArray()
         .value();
 }

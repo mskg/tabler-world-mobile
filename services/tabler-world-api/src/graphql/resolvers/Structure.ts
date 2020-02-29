@@ -131,6 +131,10 @@ export const StructureResolver = {
         boardassistants: (root: any, _args: any, context: IApolloContext) => {
             return ensureActiveMember(context, root.boardassistants);
         },
+
+        isocode: (root: any) => {
+            return removeFamily(root.id).toUpperCase();
+        },
     },
 
     Club: {

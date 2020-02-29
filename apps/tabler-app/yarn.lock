@@ -10068,6 +10068,14 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+libphonenumber-js@^1.7.44:
+  version "1.7.44"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.7.44.tgz#361e92a92b218412293e45fec0f34d79da2e643f"
+  integrity sha512-y5qiJTjKfU8gRdyhFodp2TsC/TH4YQwspz2nDMNyWENNKTAQMZ8/C7eo7zltnoXPk2f1OGOw0IwsI+TeRI/nVg==
+  dependencies:
+    minimist "^1.2.0"
+    xml2js "^0.4.17"
+
 license-checker@^25.0.1:
   version "25.0.1"
   resolved "https://registry.yarnpkg.com/license-checker/-/license-checker-25.0.1.tgz#4d14504478a5240a857bb3c21cd0491a00d761fa"
@@ -16792,7 +16800,7 @@ xml2js@0.4.19:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
 
-xml2js@^0.4.5:
+xml2js@^0.4.17, xml2js@^0.4.5:
   version "0.4.23"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.23.tgz#a0c69516752421eb2ac758ee4d4ccf58843eac66"
   integrity sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==

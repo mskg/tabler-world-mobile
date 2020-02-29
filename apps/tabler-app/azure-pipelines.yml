@@ -23,7 +23,7 @@ variables:
   #  1.2-r, r1, r2, ...
 
   - name: EXPO_RELEASE_CHANNEL
-    value: '1.4-test2'
+    value: '1.4-test3'
   - name: APP_LANGUAGES
     value: 'en,de,nl,fi,is,it'
   - group: 'expo'

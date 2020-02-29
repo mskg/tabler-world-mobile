@@ -19,6 +19,7 @@ export const Structure = gql`
 
         logo: String
         flag: String
+        isocode: String!
 
         name: String!
         shortname: String!

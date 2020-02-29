@@ -27,6 +27,7 @@ export interface Member_Member_association {
   id: string;
   name: string;
   flag: string | null;
+  isocode: string;
 }
 
 export interface Member_Member_roles_ref {

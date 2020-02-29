@@ -27,6 +27,7 @@ export interface MemberDetailsFragment_association {
   id: string;
   name: string;
   flag: string | null;
+  isocode: string;
 }
 
 export interface MemberDetailsFragment_roles_ref {
