@@ -4,6 +4,7 @@ import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { flatMap } from 'lodash';
 import { filter } from '../privacy/filter';
+import { filterFormerMember } from '../privacy/filterFormerMember';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable-next-line: variable-name
@@ -216,8 +217,7 @@ and removed = FALSE`,
         const member = await this.anyMemberLoader.load(id);
         if (member == null) { return member; }
 
-        return filter(
-            this.context.principal,
+        return filterFormerMember(
             member,
         );
     }
@@ -229,8 +229,7 @@ and removed = FALSE`,
         return (await this.anyMemberLoader.loadMany(ids)).map((member: any) => {
             if (member == null) { return member; }
 
-            return filter(
-                this.context.principal,
+            return filterFormerMember(
                 member,
             );
         });

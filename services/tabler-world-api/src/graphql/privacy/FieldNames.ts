@@ -29,3 +29,14 @@ export const system_fields = [
 export const standard_fields = [
     'firstname', 'lastname', 'pic', 'rtemail', 'socialmedia', 'datejoined',
 ];
+
+// tslint:disable-next-line: variable-name
+export const former_fields = [
+    'id',
+    'family',
+    'area', 'areaname', 'areashortname',
+    'association', 'associationname', 'associationshortname', 'associationflag',
+    'club', 'clubnumber', 'clubname', 'clubshortname',
+    'firstname', 'lastname',
+    'removed',
+];
