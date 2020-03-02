@@ -49,12 +49,12 @@ export const NewsResolver = {
 
         createdby: (root: any, _args: {}, context: IApolloContext) => {
             if (root.author_id == null) { return null; }
-            return context.dataSources.members.readOne(root.author_id);
+            return context.dataSources.members.readOneManyWithAnyStatus(root.author_id);
         },
 
         modifiedby: (root: any, _args: {}, context: IApolloContext) => {
             if (root.last_modified_by_id == null) { return null; }
-            return context.dataSources.members.readOne(root.last_modified_by_id);
+            return context.dataSources.members.readOneManyWithAnyStatus(root.last_modified_by_id);
         },
 
     },

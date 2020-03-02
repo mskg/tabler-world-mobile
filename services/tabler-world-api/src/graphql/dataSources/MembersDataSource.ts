@@ -210,6 +210,18 @@ and removed = FALSE`,
         return clubDetails ? this.readMany(clubDetails.members) : [];
     }
 
+    public async readOneManyWithAnyStatus(id: number): Promise<any | null> {
+        this.context.logger.debug('readOne', id);
+
+        const member = await this.anyMemberLoader.load(id);
+        if (member == null) { return member; }
+
+        return filter(
+            this.context.principal,
+            member,
+        );
+    }
+
     public async readManyWithAnyStatus(ids: number[]): Promise<any[]> {
         if (ids == null || ids.length === 0) return [];
 
