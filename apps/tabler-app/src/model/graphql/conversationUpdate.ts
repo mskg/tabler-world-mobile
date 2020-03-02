@@ -40,6 +40,9 @@ export interface conversationUpdate_conversationUpdate_members {
 export interface conversationUpdate_conversationUpdate {
   __typename: "Conversation";
   hasUnreadMessages: boolean;
+  /**
+   * Deprecated, don't use
+   */
   members: conversationUpdate_conversationUpdate_members[];
   id: string;
 }

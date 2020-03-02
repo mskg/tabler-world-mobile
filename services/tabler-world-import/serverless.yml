@@ -249,7 +249,7 @@ functions:
   #
   cache:
     handler: src/cache/lambda.handler
-    timeout: 10
+    timeout: 60
     memorySize: 128
     reservedConcurrency: 3
     tracing: Active

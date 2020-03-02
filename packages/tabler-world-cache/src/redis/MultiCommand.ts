@@ -25,6 +25,13 @@ export class MultiCommand {
         return this;
     }
 
+    public hmget(hash: string, keys: string[]): this {
+        this.logger.debug('hmget', hash, keys);
+        this.pipeline = this.pipeline.hmget(hash, ...keys);
+
+        return this;
+    }
+
     public hmset(hash: string, val: { field: string, value: any }[], ttl?: number) {
         this.logger.debug('multi:hmset', hash, val.map((v) => v.field));
         this.cmds += 1;

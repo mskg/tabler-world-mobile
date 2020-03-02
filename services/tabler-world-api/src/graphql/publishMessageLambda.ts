@@ -1,8 +1,9 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { DynamoDBStreamEvent } from 'aws-lambda';
+import { AsyncPool, ConsoleLogger } from '@mskg/tabler-world-common';
+import { DynamoDBRecord, DynamoDBStreamEvent } from 'aws-lambda';
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { groupBy, keys } from 'lodash';
+import { Environment } from './Environment';
 import { eventManager } from './subscriptions';
 import { publishEvent } from './subscriptions/publishEvent';
 import { EncodedWebsocketEvent } from './subscriptions/types/EncodedWebsocketEvent';
@@ -12,17 +13,20 @@ const logger = new ConsoleLogger('publish');
 
 async function submit(events: WebsocketEvent<any>[]) {
     for (const event of events) {
-        // this will not fail
+        // const evt = await eventManager.getEvent(event.id);
+        // if (evt) {
+        //     logger.warn('Event', event.id, 'has already been processed.');
+        // } else {
         await publishEvent(event);
-    }
 
-    const volatiles = events.filter((e) => e.volatile).map((e) => e.id);
-    try {
-        if (volatiles && volatiles.length > 0) {
-            await eventManager.remove(events[0].eventName, volatiles);
+        if (event.volatile) {
+            try {
+                await eventManager.remove(event.eventName, [event.id]);
+            } catch (e) {
+                logger.error('Could not remove messages', event.id, e);
+            }
         }
-    } catch (e) {
-        logger.error('Could not remove messages', volatiles, e);
+        // }
     }
 }
 
@@ -38,28 +42,32 @@ export async function handler(event: DynamoDBStreamEvent) {
         return true;
     });
 
-    // unmarshall everything
-    const events = await Promise.all(
-        encodedEvents.map((subscruptionEvent) => {
+    const events = await AsyncPool<DynamoDBRecord, WebsocketEvent<any> | undefined>(
+        Environment.Throtteling.maxParallelDelivery,
+        encodedEvents,
+        async (subscruptionEvent) => {
             try {
                 const encodedImage: EncodedWebsocketEvent = EXECUTING_OFFLINE
                     ? subscruptionEvent.dynamodb!.NewImage as EncodedWebsocketEvent
                     // @ts-ignore
                     : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
 
-                return eventManager.unMarshall<any>(encodedImage);
+                return await eventManager.unMarshall<any>(encodedImage);
             } catch (e) {
                 logger.error('Could not unmarshal', e, subscruptionEvent);
-                return null;
+                return undefined;
             }
-        }),
-    );
+        });
 
     // group by eventName and submit in parallel
-    const grouped = groupBy(events.filter(Boolean), (e: WebsocketEvent<any>) => e.eventName);
-    await Promise.all(
-        keys(grouped).map(
-            (eventName) => submit(grouped[eventName] as WebsocketEvent<any>[]),
-        ),
+    const grouped = groupBy(
+        events.filter(Boolean),
+        (e: WebsocketEvent<any>) => e.eventName,
+    );
+
+    await AsyncPool<string, void>(
+        Environment.Throtteling.maxParallelDelivery,
+        keys(grouped),
+        (eventName) => submit(grouped[eventName] as WebsocketEvent<any>[]),
     );
 }

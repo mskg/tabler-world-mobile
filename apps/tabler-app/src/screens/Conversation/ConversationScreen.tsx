@@ -13,7 +13,7 @@ import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
 import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
-import { Conversation, ConversationVariables, Conversation_Conversation_members } from '../../model/graphql/Conversation';
+import { Conversation, ConversationVariables, Conversation_Conversation_participants, Conversation_Conversation_participants_member } from '../../model/graphql/Conversation';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
 import { ChatEdits } from '../../model/state/ChatState';
@@ -25,6 +25,7 @@ import { ConversationQuery } from './ConversationQuery';
 import { IChatMessage } from './IChatMessage';
 import { logger } from './logger';
 import { WaitingForNetwork } from './WaitingForNetwork';
+import { first } from 'lodash';
 
 type Props = {
     theme: Theme,
@@ -46,7 +47,9 @@ type Props = {
 };
 
 type State = {
-    member?: Conversation_Conversation_members,
+    member: Conversation_Conversation_participants_member | null,
+
+    subject?: string,
     icon?: any,
 
     lastText?: string,
@@ -58,6 +61,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     constructor(props) {
         super(props, AuditScreenName.Conversation);
         this.state = {
+            member: null,
             lastText: this.props.texts[this.getConversationId()]?.text,
             lastImage: this.props.texts[this.getConversationId()]?.image,
         };
@@ -115,7 +119,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     getTitle() {
-        return this.props.navigation.getParam('title');
+        return this.state.subject || this.props.navigation.getParam('title');
     }
 
     showProfile() {
@@ -131,20 +135,28 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
             });
 
             if (result) {
-                this.props.showProfile(result.Conversation!.members[0].id);
+                const otherMember = first(result.Conversation!.participants.filter((o) => !o.iscallingidentity));
+
+                if (otherMember?.member) {
+                    this.props.showProfile(otherMember.member.id);
+                }
             }
         }
     }
 
-    _assignIcon = (member: Conversation_Conversation_members) => {
-        if (this.state.icon || !member || member.pic == null || member.pic === '') { return; }
+    _assignIcon = (subject: string, members: Conversation_Conversation_participants[]) => {
+        if (this.state.icon || !members) { return; }
+
+        const otherMember = first(members.filter((o) => !o.iscallingidentity));
+        if (otherMember == null) { return; }
 
         this.setState({
-            member,
+            subject,
+            member: otherMember.member,
             icon: (
                 <View key="icon" style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <MemberAvatar member={member} />
-                    <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.medium, fontSize: Platform.OS === 'ios' ? 17 : 20 }}>{this.getTitle()}</Text>
+                    {otherMember.member?.pic && <MemberAvatar member={otherMember.member} />}
+                    <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.medium, fontSize: Platform.OS === 'ios' ? 17 : 20 }}>{subject}</Text>
                 </View>
             ),
         });
@@ -168,7 +180,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     _goBack = () => {
-        this.props.navigation.goBack(this.props.navigation.getParam('key'));
+        this.props.navigation.goBack();
     }
 
     render() {
@@ -179,7 +191,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     content: [
                         <Appbar.BackAction key="back" color={this.props.theme.dark ? 'white' : 'black'} onPress={this._goBack} />,
                         !this.props.websocket ? this.waitingForNetwork() : (this.state.icon || this.defaultIcon()),
-                        <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
+                        this.state.member && <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
                     ],
                 }}
             >
@@ -203,7 +215,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     partiesResolved={this._assignIcon}
                 >
                     <Chat
-                        sendDisabled={!this.props.websocket || !this.props.chatEnabled}
+                        sendDisabled={!this.props.websocket || !this.props.chatEnabled || !this.state.member}
                         sendMessage={this._sendMessage}
                         onTextChanged={this._onTextChanged}
                         onImageChanged={this._onImageChanged}

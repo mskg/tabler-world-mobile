@@ -1,8 +1,9 @@
+import { IORedisClient } from '@mskg/tabler-world-cache';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { filter, keys, map, remove, uniq, values } from 'lodash';
+import { filter, keys, map, values } from 'lodash';
 import { ISubscription } from '../../types/ISubscription';
 import { ISubscriptionStorage, SubscriptionDetails } from '../ISubscriptionStorage';
-import { IORedisClient } from '@mskg/tabler-world-cache';
+import luaScript from './subscriptions.json';
 
 const logger = new ConsoleLogger('redis');
 
@@ -12,10 +13,6 @@ const makeSubscriptionKey = (connectionId: string, subscriptionId: string) => `$
 
 export class RedisSubscriptionStorage implements ISubscriptionStorage {
     constructor(private client: IORedisClient) {
-    }
-
-    public async cleanup(trigger: string): Promise<void> {
-        await this.list(trigger, true);
     }
 
     public async hasSubscribers(triggers: string[]) {
@@ -34,67 +31,30 @@ export class RedisSubscriptionStorage implements ISubscriptionStorage {
         ) as string[];
     }
 
-    public async list(trigger: string, cleanUp = false): Promise<ISubscription[]> {
+    public async list(trigger: string): Promise<ISubscription[]> {
         logger.debug('list', trigger);
 
-        // get all subscriptions for given trigger
-        const query = await this.client.hgetall(
-            makeTriggerKey(trigger),
-        );
+        const args = [
+            makeTriggerKey(trigger), // keys will be correctly substituted
+            makeConnectionKey(''), // with prefix
+            trigger,
+        ];
 
-        const subscriptions: ISubscription[] = values(query);
-
-        if (cleanUp) {
-            const activeConnections: string[] = [];
-
-            for (const connectionId of uniq(subscriptions.map((v) => v.connection.connectionId))) {
-                // cannot query multiple keys at once
-                const conRecord = await this.client.hmget(
-                    makeConnectionKey(connectionId),
-                    [trigger],
-                );
-
-                if (conRecord[trigger]) {
-                    activeConnections.push(connectionId);
-                } else {
-                    logger.warn('Connection', connectionId, 'is stale');
-                }
+        let val: string;
+        try {
+            val = await this.client.evalsha(luaScript.sha1, 2, ...args);
+        } catch (err) {
+            if (err instanceof Error && err.message.includes('NOSCRIPT')) {
+                // Script is missing, invoke again while providing the entire script
+                val = await this.client.eval(luaScript.script, 2, ...args);
             }
 
-            // logger.debug(
-            //     'sub',
-            //     subscriptions.map(s => s.connection.connectionId),
-            //     'active',
-            //     activeConnections,
-            //     'active sub',
-            //     filter(
-            //         subscriptions,
-            //         (sub) => activeConnections.find(
-            //             (active) => active === sub.connection.connectionId,
-            //         ) == null,
-            //     ).map(s => s.connection.connectionId),
-            // );
-
-            // all that are no longer in; can take two roundtrips to remove them
-            const missing = remove(
-                subscriptions,
-                (sub) => activeConnections.find(
-                    (active) => active === sub.connection.connectionId,
-                ) == null,
-            );
-
-            if (missing.length > 0) {
-                logger.log('Removing stale subscriptions');
-
-                // cleanup
-                await this.client.hdel(
-                    makeTriggerKey(trigger),
-                    missing.map((m) => makeSubscriptionKey(m.connection.connectionId, m.subscriptionId)),
-                );
-            }
+            // Other error
+            throw err;
         }
 
-        return subscriptions;
+        return values(JSON.parse(val))
+            .map((v) => JSON.parse(v));
     }
 
     public async put(triggers: string[], detail: SubscriptionDetails, ttl: number) {

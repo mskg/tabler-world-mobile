@@ -8,6 +8,8 @@ export function addMessageToCache(
     cache: DataProxy, { data: { sendMessage } }: any,
     conversation: string,
 ) {
+    logger.debug('Received', sendMessage);
+
     // we always add to the end
     const variables = {
         token: undefined,

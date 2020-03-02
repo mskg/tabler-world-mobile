@@ -1,7 +1,11 @@
 export const LATEST_VESION = '$LATEST';
 
+function isApp(data: { [key: string]: string }): boolean {
+    return data && data['x-client-name'] === 'TABLER.APP';
+}
+
 export function extractVersion(data: { [key: string]: string }): string {
-    if (!data || data['x-client-name'] !== 'TABLER.APP') {
+    if (!isApp(data)) {
         return LATEST_VESION;
     }
 
@@ -9,10 +13,11 @@ export function extractVersion(data: { [key: string]: string }): string {
 }
 
 export function extractPlatform(data: { [key: string]: string }): 'ios' | 'android' | undefined {
-    if (!data || data['x-client-name'] !== 'TABLER.APP') {
-        return undefined;
-    }
-
     // @ts-ignore
-    return data['x-client-os'];
+    return data && data['x-client-os'];
+}
+
+export function extractDeviceID(data: { [key: string]: string }): string | undefined {
+    // @ts-ignore
+    return data && data['x-client-device'];
 }

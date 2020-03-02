@@ -2,6 +2,7 @@ import { xAWS } from '@mskg/tabler-world-aws';
 import { makeCacheKey } from '@mskg/tabler-world-cache';
 import { IDataService } from '@mskg/tabler-world-rds-client';
 import { cacheInstance } from './cacheInstance';
+import { cleanGlobalCaches } from './cleanGlobalCaches';
 import { updateClub } from './updateClub';
 
 export async function updateMember(client: IDataService, id: number) {
@@ -18,6 +19,7 @@ export async function updateMember(client: IDataService, id: number) {
 
             // member list could have changed
             await updateClub(client, oldMember.club);
+            await cleanGlobalCaches(oldMember);
         }
 
         console.log('Removing', key);
@@ -55,5 +57,6 @@ export async function updateMember(client: IDataService, id: number) {
 
         // member list could have changed
         await updateClub(client, newMember.club);
+        await cleanGlobalCaches(newMember);
     }
 }

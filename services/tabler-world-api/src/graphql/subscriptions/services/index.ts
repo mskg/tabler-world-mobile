@@ -34,6 +34,8 @@ if (Environment.Caching.useRedis) {
         ),
     );
 
+    conversationManager = new ConversationManager(new DynamoDBConversationStorage(createDynamoDBInstance()));
+
 } else {
     connectionManager = new WebsocketConnectionManager(
         new DynamoDBConnectionStore(createDynamoDBInstance()),

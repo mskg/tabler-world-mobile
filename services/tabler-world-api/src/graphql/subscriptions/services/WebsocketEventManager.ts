@@ -54,6 +54,19 @@ export class WebsocketEventManager {
         return this.unMarshallWithEncryptionManager<T>(em, message);
     }
 
+    public async getEvent<T>(id: string): Promise<WebsocketEvent<T> | undefined> {
+        const { Item } = await this.client.get({
+            Key: { id },
+            TableName: EVENTS_TABLE,
+        }).promise();
+
+        if (!Item) { return undefined; }
+        if (Item.plain) { return this.unMarshallUnecrypted(Item as EncodedWebsocketEvent); }
+
+        const em = new EncryptionManager(Item.eventName);
+        return this.unMarshallWithEncryptionManager(em, Item as EncodedWebsocketEvent);
+    }
+
     public async events<T = any>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
         logger.debug('event', trigger);
         const em = new EncryptionManager(trigger);
@@ -162,7 +175,7 @@ export class WebsocketEventManager {
                         },
                     })),
                 }),
-                1000,
+                2000,
             );
         }
 

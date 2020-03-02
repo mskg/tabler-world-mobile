@@ -30,7 +30,7 @@ export function isFeatureEnabled(feature: Features) {
         return Constants.manifest.releaseChannel == null /*dev*/ || Constants.manifest.releaseChannel.endsWith('-test');
     }
 
-    if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {
+    if (feature === Features.SendToAdressbook /* && Platform.OS === 'ios'*/) {
         return true;
     }
 

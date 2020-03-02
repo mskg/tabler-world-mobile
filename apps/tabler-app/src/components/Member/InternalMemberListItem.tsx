@@ -1,42 +1,24 @@
 import React from 'react';
 import { View } from 'react-native';
-import { TouchableRipple } from 'react-native-paper';
-import { MemberAvatar } from '../MemberAvatar';
+import { Theme, TouchableRipple } from 'react-native-paper';
 import { CardTitle } from './CardTitle';
-import { InternalMemberListItemFooter } from './InternalMemberListItemFooter';
-import { MemberItemProps } from './MemberItemProps';
-import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
 
-export class InternalMemberListItem extends React.PureComponent<MemberItemProps> {
-    _onPress = () => {
-        requestAnimationFrame(() => {
-            if (this.props.onPress) {
-                this.props.onPress(this.props.member);
-            }
-        });
-    }
+type Props = {
+    theme: Theme,
+    title: any,
+    subtitle: any,
 
-    _avatar = () => {
-        return <MemberAvatar member={this.props.member} />;
-    }
+    left: (props: { size: number; }) => React.ReactNode;
+    right: (props: { size: number; }) => React.ReactNode;
 
-    renderBottom() {
-        if (this.props.bottom) {
-            return this.props.bottom(this.props.member);
-        }
+    bottom: () => React.ReactNode;
+    onPress: () => void;
 
-        if (this.props.member.roles) {
-            return (
-                <InternalMemberListItemFooter>
-                    <RoleChips theme={this.props.theme} roles={this.props.member.roles} />
-                </InternalMemberListItemFooter>
-            );
-        }
+    height?: number,
+};
 
-        return null;
-    }
-
+export class InternalMemberListItem extends React.PureComponent<Props> {
     render() {
         const { title, subtitle } = this.props;
 
@@ -45,32 +27,30 @@ export class InternalMemberListItem extends React.PureComponent<MemberItemProps>
                 style={{
                     height: this.props.height,
                     backgroundColor: this.props.theme.colors.surface,
-                    // width: ITEM_WIDTH
                 }}
             >
                 <TouchableRipple
-                    onPress={this.props.onPress ? this._onPress : undefined}
+                    onPress={this.props.onPress}
                     style={{
                         height: this.props.height,
-                        // width: ITEM_WIDTH,
                         margin: 0,
                         padding: 0,
                     }}
                 >
                     <>
                         <CardTitle
-                            style={styles.cardTitle}
+                            style={styles.cardTitle || ''}
                             title={title}
                             titleStyle={styles.titleContainer}
 
-                            subtitle={subtitle}
+                            subtitle={subtitle || ''}
                             subtitleStyle={styles.subTitleContainer}
 
-                            left={this._avatar}
+                            left={this.props.left}
                             right={this.props.right}
                         />
 
-                        {this.renderBottom()}
+                        {this.props.bottom && this.props.bottom()}
                     </>
                 </TouchableRipple>
             </View>

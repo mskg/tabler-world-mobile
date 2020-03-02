@@ -16,10 +16,6 @@ export class DynamoDBSubcriptionStorage implements ISubscriptionStorage {
     constructor(private client: DocumentClient) {
     }
 
-    public cleanup(): Promise<void> {
-        return Promise.resolve();
-    }
-
     public async hasSubscribers(triggers: string[]) {
         const members = await Promise.all(
             triggers.map((t) => this.list(t, true)),

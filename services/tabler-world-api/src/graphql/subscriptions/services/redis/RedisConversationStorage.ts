@@ -1,9 +1,9 @@
+import { IORedisClient } from '@mskg/tabler-world-cache';
 import { Conversation } from '../../types/Conversation';
 import { IConversationStorage } from '../../types/IConversationStorage';
 import { PaggedResponse } from '../../types/PaggedResponse';
 import { QueryOptions } from '../../types/QueryOptions';
 import { UserConversation } from '../../types/UserConversation';
-import { IORedisClient } from '@mskg/tabler-world-cache';
 
 const conversationKey = (conversation: string) => `chat:${conversation}`;
 const userKey = (conversation: string, member: number) => `chat:${conversation}:${member}`;
@@ -55,12 +55,18 @@ export class RedisConversationStorage implements IConversationStorage {
     }
 
     public async removeMembers(conversation: string, members: number[]): Promise<void> {
-        await this.cache.del(conversationKey(conversation));
+        await this.cache.del(
+            conversationKey(conversation),
+            ...members.map((m) => userKey(conversation, m)),
+        );
         return this.storage.removeMembers(conversation, members);
     }
 
     public async addMembers(conversation: string, members: number[]): Promise<void> {
-        await this.cache.del(conversationKey(conversation));
+        await this.cache.del(
+            conversationKey(conversation),
+            ...members.map((m) => userKey(conversation, m)),
+        );
         return this.storage.addMembers(conversation, members);
     }
 }

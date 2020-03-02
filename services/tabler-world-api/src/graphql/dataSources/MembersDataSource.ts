@@ -36,7 +36,9 @@ export const DefaultMemberColumns = [
 
 export class MembersDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
+
     private memberLoader!: DataLoader<number, any>;
+    private anyMemberLoader!: DataLoader<number, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -58,6 +60,36 @@ from profiles
 where
     id = ANY($1)
 and removed = FALSE`,
+                            [ids],
+                        );
+
+                        return res.rows;
+                    },
+                ),
+                'Member',
+            ),
+            {
+                cacheKeyFn: (k: number) => k,
+            },
+        );
+
+        this.anyMemberLoader = new DataLoader<number, any>(
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', [k]),
+                (r) => makeCacheKey('Member', [r.id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => {
+                        this.context.logger.log('DB reading members', ids);
+
+                        const res = await client.query(
+                            `
+select *
+from profiles
+where
+    id = ANY($1)
+`,
                             [ids],
                         );
 
@@ -177,6 +209,20 @@ and removed = FALSE`,
         const clubDetails = await this.context.dataSources.structure.getClub(club);
 
         return this.readMany(clubDetails.members);
+    }
+
+    public async readManyWithAnyStatus(ids: number[]): Promise<any[]> {
+        if (ids == null || ids.length === 0) return [];
+
+        this.context.logger.debug('readMany', ids);
+        return (await this.anyMemberLoader.loadMany(ids)).map((member: any) => {
+            if (member == null) { return member; }
+
+            return filter(
+                this.context.principal,
+                member,
+            );
+        });
     }
 
     public async readMany(ids: number[]): Promise<any[]> {

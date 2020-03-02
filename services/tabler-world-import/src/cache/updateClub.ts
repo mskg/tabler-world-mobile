@@ -3,6 +3,7 @@ import { makeCacheKey } from '@mskg/tabler-world-cache';
 import { enrichAddress } from '@mskg/tabler-world-geo';
 import { IDataService } from '@mskg/tabler-world-rds-client';
 import { cacheInstance } from './cacheInstance';
+import { cleanGlobalCaches } from './cleanGlobalCaches';
 import { removeFamily } from './removeFamily';
 
 // we keep an im memory hash of the last updated clubs
@@ -53,38 +54,9 @@ export async function updateClub(client: IDataService, club: string) {
             }).promise();
         }
 
-        // member could have been board
-        const areaKey = makeCacheKey('Area', [newClub.area]);
-        console.log('Removing', areaKey);
-        await cacheInstance.delete(areaKey);
-
-        const associationKey = makeCacheKey('Association', [newClub.association]);
-        console.log('Removing', associationKey);
-        await cacheInstance.delete(associationKey);
-
-        const familyKey = makeCacheKey('Family', [newClub.family]);
-        console.log('Removing', familyKey);
-        await cacheInstance.delete(familyKey);
-
-        // Read caches
-        const allAreas = makeCacheKey('Structure', [newClub.association, 'areas', 'all']);
-        console.log('Removing', allAreas);
-        await cacheInstance.delete(allAreas);
-
-        const allClubs = makeCacheKey('Structure', [newClub.association, 'clubs', 'all']);
-        console.log('Removing', allClubs);
-        await cacheInstance.delete(allClubs);
-
-        const allFamilies = makeCacheKey('Structure', ['families', 'all']);
-        console.log('Removing', allFamilies);
-        await cacheInstance.delete(allFamilies);
-
-        const allAssociations = makeCacheKey('Structure', ['associations', 'all']);
-        console.log('Removing', allAssociations);
-        await cacheInstance.delete(allAssociations);
-
+        await cleanGlobalCaches(newClub);
     } else {
         console.log('Removing', key);
-        cacheInstance.delete(key);
+        await cacheInstance.delete(key);
     }
 }

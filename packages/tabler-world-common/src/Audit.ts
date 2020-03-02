@@ -12,14 +12,18 @@ type InternalAuditEntry = {
 
 export enum AuditAction {
     Read = 'read',
+    Write = 'write',
+    Remove = 'remove',
+    Create = 'create',
 }
 
 export class Audit {
     entries: InternalAuditEntry[] = [];
 
     constructor(
-        private requestId: string,
-        private principal: string,
+        private requestId?: string,
+        private principal?: string,
+        private deviceId?: string,
     ) {
     }
 
@@ -42,7 +46,7 @@ export class Audit {
         this.entries.forEach((e) => {
             process.stdout.write(
                 // tslint:disable-next-line: prefer-template
-                format('AUDIT', e.time, this.requestId, this.principal, e.action, e.type, e.id) + '\n',
+                format('AUDIT', e.time, this.requestId, this.deviceId, this.principal, e.action, e.type, e.id) + '\n',
             );
         });
 

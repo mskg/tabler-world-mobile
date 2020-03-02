@@ -87,7 +87,7 @@ export class Categories {
 }
 
 console.disableYellowBox = true;
-let FILTER: RegExp | undefined = /NearbyMembers|API/ig; // /Chat|API/ig;
+let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
 
 // safety
@@ -106,7 +106,7 @@ export class Logger {
             this.category = cat;
         }
 
-        this.disabled = !FILTER || this.category.match(FILTER) == null;
+        this.disabled = FILTER && this.category.match(FILTER) == null;
     }
 
     debug(...args: any[]): void {

@@ -9,7 +9,7 @@ import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { isDemoModeEnabled } from '../../helper/demoMode';
-import { Conversation, ConversationVariables, Conversation_Conversation_members, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
+import { Conversation, ConversationVariables, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes, Conversation_Conversation_participants } from '../../model/graphql/Conversation';
 import { newChatMessage } from '../../model/graphql/newChatMessage';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
@@ -43,7 +43,7 @@ type Props = {
 
     children: React.ReactElement<InjectedProps>;
 
-    partiesResolved: (member: Conversation_Conversation_members) => void;
+    partiesResolved: (subject: string, member: Conversation_Conversation_participants[]) => void;
     setBadge: typeof setBadge;
 };
 
@@ -314,6 +314,8 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                         this.refetch = refetch;
 
                         let messages;
+                        let subject;
+
                         if (error) {
                             // not a connection problem
                             if (this.props.websocket) {
@@ -336,6 +338,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
 
                                 if (cachedConv) {
                                     messages = cachedConv.Conversation?.messages;
+                                    subject = cachedConv.Conversation?.subject;
                                 }
                             }
                         }
@@ -353,10 +356,10 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                             messages = data.Conversation.messages;
                         }
 
-                        if (data?.Conversation?.members) {
+                        if (data?.Conversation?.participants) {
                             requestAnimationFrame(() =>
                                 // @ts-ignore
-                                this.props.partiesResolved(data.Conversation.members[0]),
+                                this.props.partiesResolved(data.Conversation.subject, data.Conversation?.participants),
                             );
                         }
 

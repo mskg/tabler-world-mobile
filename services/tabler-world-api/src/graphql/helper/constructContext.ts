@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { cacheInstance } from '../cache/cacheInstance';
 import { createLimiter } from '../ratelimit/createLimiter';
 import { IApolloContext } from '../types/IApolloContext';
-import { extractPlatform, extractVersion } from './extractVersion';
+import { extractDeviceID, extractPlatform, extractVersion } from './extractVersion';
 
 type Params = { event: APIGatewayProxyEvent, context: Context };
 
@@ -14,6 +14,7 @@ export const constructContext = async ({ event, context }: Params): Promise<IApo
         clientInfo: {
             version: extractVersion(event.headers),
             os: extractPlatform(event.headers),
+            device: extractDeviceID(event.headers),
         },
 
         lambdaEvent: event,

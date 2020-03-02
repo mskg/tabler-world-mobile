@@ -1,5 +1,6 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import * as crypto from 'crypto';
+import { AuditAction } from '@mskg/tabler-world-common';
+import { randomBytes } from 'crypto';
 import { Environment } from '../Environment';
 import { S3 } from '../helper/S3';
 import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
@@ -114,7 +115,8 @@ export const ChatResolver = {
     },
 
     Conversation: {
-        id: (root: { id: string }) => {
+        id: (root: { id: string }, _args: any, context: IApolloContext) => {
+            context.auditor.add({ id: root.id, action: AuditAction.Read, type: 'conversation' });
             return encodeIdentifier(root.id);
         },
 
@@ -194,6 +196,70 @@ export const ChatResolver = {
             return user.lastSeen < global.lastMessage;
         },
 
+        pic: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+
+            const result = await context.dataSources.conversations.readConversation(channel);
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return 'Unknown'; }
+
+            // const values = ;
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values.filter((v) => v !== context.principal.id));
+
+            return anyMembers.length > 0 ? anyMembers[0].pic : null;
+        },
+
+        subject: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+
+            const result = await context.dataSources.conversations.readConversation(channel);
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return 'Unknown'; }
+
+            // const values = ;
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values.filter((v) => v !== context.principal.id));
+
+            return anyMembers.length > 0 ? `${anyMembers[0].firstname} ${anyMembers[0].lastname}` : 'Unkown';
+        },
+
+        participants: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+
+            const result = await context.dataSources.conversations.readConversation(channel);
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return []; }
+
+            // const values = members.values.filter((v) => v !== context.principal.id);
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values);
+
+            return anyMembers.map((m) => {
+                // only in this case, we return
+                if (m.removed) {
+                    context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member-conversation' });
+
+                    return {
+                        id: m.id,
+                        firstname: m.firstname,
+                        lastname: m.lastname,
+                        iscallingidentity: m.id === context.principal.id,
+                    };
+                }
+
+                context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member' });
+                return {
+                    id: m.id,
+                    firstname: m.firstname,
+                    lastname: m.lastname,
+                    iscallingidentity: m.id === context.principal.id,
+                    member: m,
+                };
+            });
+        },
+
+        // Deprecated
         // tslint:disable-next-line: variable-name
         members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
@@ -202,8 +268,40 @@ export const ChatResolver = {
             const members = result ? result.members : null;
             if (!members || members.values.length === 0) { return []; }
 
-            const values = members.values.filter((v) => v !== context.principal.id);
-            return context.dataSources.members.readMany(values);
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values.filter((v) => v !== context.principal.id));
+
+            return anyMembers.map((m) => {
+                // only in this case, we return
+                if (m.removed) {
+                    context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member-conversation' });
+
+                    // this is only a workarround to not stop the old
+                    // app from working
+                    return {
+                        id: m.id,
+                        lastname: 'Past-Member',
+                        firstname: m.firstname,
+
+                        association: m.association,
+                        associationname: m.associationname,
+                        associationflag: m.associationflag,
+
+                        club: m.club,
+                        clubname: m.clubname,
+                        clubnumber: m.clubnumber,
+
+                        area: m.area,
+                        areaname: m.areaname,
+
+                        availableForChat: false,
+                        sharesLocation: false,
+                    };
+                }
+
+                context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member' });
+                return m;
+            });
         },
     },
 
@@ -234,6 +332,11 @@ export const ChatResolver = {
     },
 
     ChatMessage: {
+        id: (root: { id: string }, _args: any, context: IApolloContext) => {
+            context.auditor.add({ id: root.id, action: AuditAction.Read, type: 'chatmessage' });
+            return encodeIdentifier(root.id);
+        },
+
         receivedAt: (root: { receivedAt: number }) => {
             return new Date(root.receivedAt).toISOString();
         },
@@ -257,7 +360,7 @@ export const ChatResolver = {
                 throw new Error('Access denied.');
             }
 
-            const filename = crypto.randomBytes(24).toString('hex');
+            const filename = randomBytes(24).toString('hex');
 
             const result = S3.createPresignedPost({
                 Bucket: Environment.S3.bucket,
@@ -333,6 +436,8 @@ export const ChatResolver = {
                     members: existing?.members?.values.filter((f) => f === context.principal.id),
                 };
             }
+
+            context.auditor.add({ id, action: AuditAction.Create, type: 'conversation' });
 
             await Promise.all([
                 conversationManager.addMembers(id, [context.principal.id, args.member]),
@@ -429,6 +534,8 @@ export const ChatResolver = {
                 encrypted: false,
                 volatile: true,
             });
+
+            context.auditor.add({ id: channelMessage[0].id, action: AuditAction.Create, type: 'chatmessage' });
 
             return {
                 ...channelMessage[0].payload,

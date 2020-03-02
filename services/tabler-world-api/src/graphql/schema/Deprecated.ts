@@ -36,6 +36,11 @@ export const Deprecated = gql`
         updateLocationAddress(corrections: [AddressUpdateInput!]!): Boolean
     }
 
+    extend type Conversation {
+        "Deprecated, don't use"
+        members: [Member!]!
+    }
+
     "Deprecated, not longer required"
     input MyCurrentLocationInput {
         longitude: Float!

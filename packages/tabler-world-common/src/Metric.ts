@@ -1,8 +1,11 @@
 import { format } from 'util';
 
+type MetricUnit = 'pc' | 's' | 'ms' | 'μs' | 'ns';
+
 type MetricEvent = {
     id: string,
     value: number,
+    unit: MetricUnit,
 };
 
 export class Metric {
@@ -35,14 +38,14 @@ export class Metric {
         Object.keys(this.entries).forEach((id) => {
             process.stdout.write(
                 // tslint:disable-next-line: prefer-template
-                format('METRIC', id, this.entries[id]) + '\n',
+                format('METRIC', id, this.entries[id], 'pc') + '\n',
             );
         });
 
         this.list.forEach((metric) => {
             process.stdout.write(
                 // tslint:disable-next-line: prefer-template
-                format('METRIC', metric.id, metric.value) + '\n',
+                format('METRIC', metric.id, metric.value, metric.unit) + '\n',
             );
         });
     }

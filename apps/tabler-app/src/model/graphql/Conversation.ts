@@ -7,34 +7,46 @@
 // GraphQL query operation: Conversation
 // ====================================================
 
-export interface Conversation_Conversation_members_club {
+export interface Conversation_Conversation_participants_member_club {
   __typename: "Club";
   id: string;
   name: string;
 }
 
-export interface Conversation_Conversation_members_area {
+export interface Conversation_Conversation_participants_member_area {
   __typename: "Area";
   id: string;
   name: string;
 }
 
-export interface Conversation_Conversation_members_association {
+export interface Conversation_Conversation_participants_member_association {
   __typename: "Association";
   id: string;
   name: string;
   flag: string | null;
 }
 
-export interface Conversation_Conversation_members {
+export interface Conversation_Conversation_participants_member {
   __typename: "Member";
   id: number;
   firstname: string | null;
   lastname: string | null;
   pic: string | null;
-  club: Conversation_Conversation_members_club;
-  area: Conversation_Conversation_members_area;
-  association: Conversation_Conversation_members_association;
+  club: Conversation_Conversation_participants_member_club;
+  area: Conversation_Conversation_participants_member_area;
+  association: Conversation_Conversation_participants_member_association;
+}
+
+export interface Conversation_Conversation_participants {
+  __typename: "ConversationParticipant";
+  id: string;
+  iscallingidentity: boolean;
+  firstname: string | null;
+  lastname: string | null;
+  /**
+   * Can be archived ore removed already
+   */
+  member: Conversation_Conversation_participants_member | null;
 }
 
 export interface Conversation_Conversation_messages_nodes_payload {
@@ -70,7 +82,9 @@ export interface Conversation_Conversation {
   __typename: "Conversation";
   id: string;
   hasUnreadMessages: boolean;
-  members: Conversation_Conversation_members[];
+  subject: string;
+  pic: string | null;
+  participants: Conversation_Conversation_participants[];
   messages: Conversation_Conversation_messages;
 }
 

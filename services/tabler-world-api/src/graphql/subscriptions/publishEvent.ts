@@ -15,15 +15,10 @@ export async function publishEvent(image: WebsocketEvent<any>) {
         logger.debug(image);
 
         const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];
-        let cleanUp: Promise<void> | undefined;
 
         let failedDeliveries: number[] = [];
         if (subscriptions.length > 0) {
             failedDeliveries = await publishToActiveSubscriptions(subscriptions, image);
-
-            if (failedDeliveries.length > 0) {
-                cleanUp = subscriptionManager.cleanup(image.eventName);
-            }
         }
 
         const markDeliveredFunc = async () => {
@@ -59,6 +54,7 @@ export async function publishEvent(image: WebsocketEvent<any>) {
             if (missingPrincipals.length > 0) {
                 const available = await useDatabase({ logger }, (client) => isChatEnabled(client, missingPrincipals));
 
+                // tslint:disable-next-line: variable-name
                 const resolved = missingPrincipals.filter((_p, i) => available[i]);
                 if (resolved.length > 0) {
                     await publishToPassiveSubscriptions(
@@ -94,10 +90,6 @@ export async function publishEvent(image: WebsocketEvent<any>) {
             }
         } else {
             await markDeliveredFunc();
-        }
-
-        if (cleanUp) {
-            await cleanUp;
         }
     } catch (e) {
         logger.error(e);

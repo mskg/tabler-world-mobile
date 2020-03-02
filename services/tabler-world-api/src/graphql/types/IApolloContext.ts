@@ -1,5 +1,5 @@
 import { IManyKeyValueCache } from '@mskg/tabler-world-cache';
-import { ILogger, Audit, Metric } from '@mskg/tabler-world-common';
+import { Audit, ILogger, Metric } from '@mskg/tabler-world-common';
 import { KeyValueCache } from 'apollo-server-core';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { IDataSources } from '../dataSources';
@@ -11,7 +11,8 @@ type Limiters = 'location' | 'requests';
 export interface IApolloContext {
     readonly clientInfo: {
         version: string;
-        os?: 'android' | 'ios',
+        os: 'android' | 'ios' | undefined,
+        device: string | undefined,
     };
 
     readonly auditor: Audit;

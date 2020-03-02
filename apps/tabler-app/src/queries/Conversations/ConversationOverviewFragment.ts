@@ -5,8 +5,19 @@ export const ConversationOverviewFragment = gql`
     fragment ConversationOverviewFragment on Conversation {
         id
         hasUnreadMessages
-        members {
-            ...MemberAvatarFragment
+
+        subject
+        pic
+
+        participants {
+            id
+            iscallingidentity
+            firstname
+            lastname
+
+            member {
+                ...MemberAvatarFragment
+            }
         }
     }
 

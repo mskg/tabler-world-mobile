@@ -103,9 +103,9 @@ export class IORedisClient extends IORedisBaseClient {
         return this.client.hdel(hash, ...fields);
     }
 
-    public del(hash: string) {
-        this.logger.debug('del', hash);
-        return this.client.del(hash);
+    public del(...hash: string[]) {
+        this.logger.debug('del', ...hash);
+        return this.client.del(...hash);
     }
 
     public evalsha(scriptSha: string, numKeys: number, ...args: (string | number)[]): Promise<any> {

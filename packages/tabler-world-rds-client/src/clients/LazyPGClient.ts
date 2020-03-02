@@ -78,7 +78,7 @@ export class LazyPGClient implements IDataService {
             return await this.client!.query(text, parameters);
         } finally {
             if (this.metrics) {
-                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs });
+                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs, unit: 'μs' });
             }
 
             this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');

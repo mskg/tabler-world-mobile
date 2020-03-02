@@ -88,7 +88,7 @@ LIMIT ${count}
                 },
             );
         } finally {
-            this.context.metrics.set({ id: Metrics.QueryLocation, value: sw.elapsedYs });
+            this.context.metrics.add({ id: Metrics.QueryLocation, value: sw.elapsedYs, unit: 'μs' });
         }
     }
 

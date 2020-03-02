@@ -32,7 +32,11 @@ export class AuthPlugin implements ApolloServerPlugin<IApolloContext> {
                 requestContext.context.logger = new ConsoleLogger(principal.id);
 
                 // @ts-ignore
-                requestContext.context.auditor = new Audit(requestContext.context.lambdaContext?.awsRequestId, `${principal.id}:${principal.email}`);
+                requestContext.context.auditor = new Audit(
+                    requestContext.context.lambdaContext?.awsRequestId as string,
+                    requestContext.context.clientInfo.device as string,
+                    `${principal.id}:${principal.email}`,
+                );
 
                 // required!
                 return null;

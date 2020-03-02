@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 import { OperationMessage } from 'subscriptions-transport-ws';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import { cacheInstance } from '../../cache/cacheInstance';
-import { extractVersion } from '../../helper/extractVersion';
+import { extractVersion, extractPlatform, extractDeviceID } from '../../helper/extractVersion';
 import { connectionManager } from '../services';
 import { ClientLostError } from '../types/ClientLostError';
 import { ProtocolContext } from './ProtocolContext';
@@ -38,7 +38,11 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
         await connectionManager.authorize(
             context.connectionId,
             principal,
-            { version: extractVersion(operation.payload || {}) },
+            {
+                version: extractVersion(operation.payload || {}),
+                os: extractPlatform(operation.payload || {}) as string,
+                device: extractDeviceID(operation.payload || {}),
+            },
         );
 
         context.logger.log('authorized');

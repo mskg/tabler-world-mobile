@@ -1,5 +1,6 @@
 import { UrlParameters } from '@mskg/tabler-world-config-app';
 import * as Contacts from 'expo-contacts';
+import { Platform } from 'react-native';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Member_Member } from '../../model/graphql/Member';
@@ -14,11 +15,20 @@ import { removeNulls } from './removeNulls';
 export async function mapMemberToContact(member: Member_Member): Promise<Contacts.Contact> {
     // @ts-ignore all fields are present
     let contact: Contacts.Contact = {
-        [Contacts.Fields.FirstName]: member.firstname || '',
-        [Contacts.Fields.LastName]: member.lastname || '',
-        [Contacts.Fields.Name]: `${member.firstname} ${member.lastname}`,
+        [Contacts.Fields.FirstName]: Platform.select({
+            ios: member.firstname,
+            android: `${member.firstname} ${member.lastname}`,
+        }),
 
+        [Contacts.Fields.LastName]: member.lastname || '',
         [Contacts.Fields.Company]: member.association.name,
+
+        // android does not display department, we abuse title
+        [Contacts.Fields.JobTitle]: Platform.select({
+            ios: '',
+            android: member.club.name,
+        }),
+
         [Contacts.Fields.Department]: member.club.name,
         [Contacts.Fields.ContactType]: Contacts.ContactTypes.Person,
     };
@@ -51,6 +61,7 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
                 city: member.address.city,
                 postalCode: member.address.postal_code,
                 isoCountryCode: I18N.countryName(member.address.country || 'de'),
+                country: I18N.countryName(member.address.country || 'de'),
             }],
         };
 
@@ -64,6 +75,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
                 [Contacts.Fields.Image]: {
                     uri: fileUri,
                 },
+                
+                [Contacts.Fields.ImageAvailable]: true,
+                [Contacts.Fields.RawImage]: fileUri,
             };
         }
     }
@@ -74,12 +88,21 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
         contact = {
             ...contact,
 
+            // bug in iOS that does not export date
+            // if year is set
             [Contacts.Fields.Birthday]: {
-                day: date.getUTCDate(),
-                month: date.getUTCMonth(),
-                year: date.getUTCFullYear(),
-                format: 'gregorian',
+                day: date.getDate(),
+                month: date.getMonth(),
+                year: date.getFullYear(),
+                calendar: 'gregorian',
             },
+            // {
+            //     label: 'birthday',
+            //     day: date.getUTCDate(),
+            //     month: date.getUTCMonth(),
+            //     year: date.getUTCFullYear(),
+            //     calendar: 'gregorian',
+            // },
         };
     }
 

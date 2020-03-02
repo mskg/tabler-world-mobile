@@ -51,7 +51,7 @@ export class LambdaClient implements IDataService {
             return JSON.parse(result.Payload as string);
         } finally {
             if (this.metrics) {
-                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs });
+                this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs, unit: 'μs' });
             }
 
             this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');

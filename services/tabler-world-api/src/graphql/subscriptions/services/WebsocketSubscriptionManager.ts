@@ -16,10 +16,6 @@ export class WebsocketSubscriptionManager {
     ) {
     }
 
-    public cleanup(trigger: string): Promise<void> {
-        return this.storage.cleanup(trigger);
-    }
-
     public async hasSubscribers(triggers: string[]): Promise<string[]> {
         logger.debug('hasSubscribers', triggers);
         return await this.storage.hasSubscribers(triggers);
