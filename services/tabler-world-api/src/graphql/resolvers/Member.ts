@@ -1,9 +1,9 @@
 import { Family } from '@mskg/tabler-world-auth-client';
+import { AuditAction } from '@mskg/tabler-world-common';
 import _ from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
-import { AuditAction } from '@mskg/tabler-world-common';
 
 // type MembersArgs = {
 //     state?: string,
@@ -191,23 +191,19 @@ export const MemberResolver = {
 
         FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
             const favorites = await context.dataSources.members.readFavorites();
-
-            if (favorites) {
-                // there could be favorites that no longer exist
-                return favorites.filter((f) => f != null);
-            }
-
-            return favorites || [];
+            return favorites ? favorites.filter((f) => f != null) : [];
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
             const members = await context.dataSources.members.readClub(context.principal.club);
-            return members || [];
+            return members ? members.filter((f) => f != null) : [];
         },
 
-        Members: (_root: any, args: IdsArgs, context: IApolloContext) => {
+        Members: async (_root: any, args: IdsArgs, context: IApolloContext) => {
             if (args.ids == null || args.ids.length === 0) { return []; }
-            return context.dataSources.members.readMany(args.ids);
+
+            const members = await context.dataSources.members.readMany(args.ids);
+            return members ? members.filter((f) => f != null) : [];
         },
 
         Member: (_root: any, args: IdArgs, context: IApolloContext) => {
