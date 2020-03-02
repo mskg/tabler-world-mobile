@@ -35,11 +35,11 @@ custom:
   demo_api_key: ${env:DEMO_API_KEY}
 
   push_queue_arn:
-    'arn:aws:sqs:eu-west-1:181860213310:tabler-world-temp-migration.fifo'
-    # Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
+    # 'arn:aws:sqs:eu-west-1:181860213310:tabler-world-temp-migration.fifo'
+    Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
   push_queue_url:
-    'https://sqs.eu-west-1.amazonaws.com/181860213310/tabler-world-temp-migration.fifo'
-    # Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
+    # 'https://sqs.eu-west-1.amazonaws.com/181860213310/tabler-world-temp-migration.fifo'
+    Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
 
   bucket: tabler-world-chat-attachments-${self:custom.stage}
   connections_table: tabler-world-ws-connections-${self:custom.stage}
