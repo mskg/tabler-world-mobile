@@ -22,7 +22,7 @@ custom:
     includeModules:
       forceExclude:
         - aws-sdk
-
+#
   cache_table:
     Fn::ImportValue: CacheTableName-${self:custom.stage}
   cache_version: '1.3#v3'
@@ -514,6 +514,8 @@ functions:
     tracing: Active
     timeout: 600
     memorySize: 256
+    dependsOn:
+      - websocketErrorQueue
 
     environment:
       ${file(serverless.env.yml):api}
@@ -610,6 +612,15 @@ functions:
           - sqs:SendMessageBatch
         Resource:
           ${self:custom.push_queue_arn}
+
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          !GetAtt
+            - websocketErrorQueue
+            - Arn
 
 resources:
   Resources:
