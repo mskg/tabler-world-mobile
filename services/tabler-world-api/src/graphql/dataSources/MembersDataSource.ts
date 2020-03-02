@@ -207,8 +207,7 @@ and removed = FALSE`,
     public async readClub(club: string): Promise<any[] | null> {
         this.context.logger.debug('readClub', club);
         const clubDetails = await this.context.dataSources.structure.getClub(club);
-
-        return this.readMany(clubDetails.members);
+        return clubDetails ? this.readMany(clubDetails.members) : [];
     }
 
     public async readManyWithAnyStatus(ids: number[]): Promise<any[]> {
