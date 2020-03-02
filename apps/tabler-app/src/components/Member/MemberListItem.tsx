@@ -96,7 +96,7 @@ export class MemberListItem extends React.PureComponent<Props> {
         return (
             <InternalMemberListItem
                 theme={this.props.theme}
-                onPress={this.props.onPress || this._onPress}
+                onPress={this._onPress}
                 height={this.props.height}
                 title={this.props.title || <MemberTitle member={this.props.member} />}
                 subtitle={this.props.subtitle || <Embedded flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
