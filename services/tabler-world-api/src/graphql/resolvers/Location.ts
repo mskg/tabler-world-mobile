@@ -5,6 +5,7 @@ import { useDatabase } from '@mskg/tabler-world-rds-client';
 import Geohash from 'latlon-geohash';
 import { values } from 'lodash';
 import { getNearByParams } from '../helper/getNearByParams';
+import { Metrics } from '../logging/Metrics';
 import { throw429 } from '../ratelimit/throw429';
 import { eventManager, subscriptionManager } from '../subscriptions';
 import { pubsub } from '../subscriptions/services/pubsub';
@@ -12,7 +13,6 @@ import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
 import { withFilter } from '../subscriptions/utils/withFilter';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
-import { Metrics} from '../logging/Metrics';
 
 type MyLocationInput = {
     location: {
@@ -114,16 +114,13 @@ export const LocationResolver = {
         },
 
         // TODO: deprecated
-        address: ({ address, canshowonmap, longitude, latitude }: any, _args: {}, _context: IApolloContext) => {
+        address: ({ address, canshowonmap, location }: any, _args: {}, _context: IApolloContext) => {
             // old data, leave like it is
             if (address.city || address.region) {
                 return {
                     // if we don't this, the address is resolved via geocoder
                     location: canshowonmap
-                        ? {
-                            longitude,
-                            latitude,
-                        }
+                        ? location
                         : { longitude: 0, latitude: 0 },
 
                     city: address.city,
@@ -139,10 +136,7 @@ export const LocationResolver = {
 
                 // if we don't this, the address is resolved via geocoder
                 location: canshowonmap
-                    ? {
-                        longitude,
-                        latitude,
-                    }
+                    ? location
                     : { longitude: 0, latitude: 0 },
             };
         },

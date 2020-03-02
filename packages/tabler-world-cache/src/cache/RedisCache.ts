@@ -53,12 +53,21 @@ export class RedisCache extends IORedisBaseClient implements KeyValueCache<strin
 
     async set(key: string, value: string, options?: ICacheOptions): Promise<void> {
         this.logger.debug('set', key, options);
-        await this.client.set(
-            this.mapKey(key),
-            value,
-            'EX',
-            this.getTTL(options),
-        );
+
+        const ttl = this.getTTL(options);
+        if (ttl !== Infinity) {
+            await this.client.set(
+                this.mapKey(key),
+                value,
+                'EX',
+                this.getTTL(options),
+            );
+        } else {
+            await this.client.set(
+                this.mapKey(key),
+                value,
+            );
+        }
     }
 
     async delete(key: string): Promise<void> {
