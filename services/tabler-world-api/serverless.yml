@@ -523,24 +523,24 @@ functions:
     vpc:
       ${file(../devops/vpc.yml):lambda}
 
-    events:
-      - stream:
-          type: dynamodb
-          batchSize: 100
-          batchWindow: 2
-          maximumRetryAttempts: 3
-          # // requires to do deduplication handling, bisectBatchOnFunctionError: true
-          startingPosition: LATEST
-          arn: !GetAtt
-            - eventsTable
-            - StreamArn
-          destinations:
-            onFailure:
-              type: sqs
-              arn:
-                !GetAtt
-                  - websocketErrorQueue
-                  - Arn
+    # events:
+    #   - stream:
+    #       type: dynamodb
+    #       batchSize: 100
+    #       batchWindow: 2
+    #       maximumRetryAttempts: 3
+    #       # // requires to do deduplication handling, bisectBatchOnFunctionError: true
+    #       startingPosition: LATEST
+    #       arn: !GetAtt
+    #         - eventsTable
+    #         - StreamArn
+    #       destinations:
+    #         onFailure:
+    #           type: sqs
+    #           arn:
+    #             !GetAtt
+    #               - websocketErrorQueue
+    #               - Arn
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
