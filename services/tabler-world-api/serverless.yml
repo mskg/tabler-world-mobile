@@ -39,7 +39,7 @@ custom:
     Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
   push_queue_url:
     # 'https://sqs.eu-west-1.amazonaws.com/181860213310/tabler-world-temp-migration.fifo'
-    Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
+    Fn::ImportValue: FifoPushQueueUrl-${self:custom.stage}
 
   bucket: tabler-world-chat-attachments-${self:custom.stage}
   connections_table: tabler-world-ws-connections-${self:custom.stage}
