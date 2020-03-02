@@ -60,7 +60,7 @@ export class RedisCache extends IORedisBaseClient implements KeyValueCache<strin
                 this.mapKey(key),
                 value,
                 'EX',
-                this.getTTL(options),
+                ttl,
             );
         } else {
             await this.client.set(
