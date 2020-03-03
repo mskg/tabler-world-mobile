@@ -23,7 +23,9 @@ export const createWriteToDatabaseHandler = (type: JobType): DataHandler => {
         return useDatabasePool({ logger: console }, api.concurrency.write, async (pool) => {
             console.log('Writing chunk of', records.length, type, 'records');
 
-            const inserts = await Promise.all(records.map(async (record) => {
+            const inserts = [];
+
+            for (const record of records) {
                 const recordType = determineRecordType(type, record);
                 const pkFunction = recordTypeToPrimaryKey(recordType);
                 const id = pkFunction(record);
@@ -53,11 +55,9 @@ RETURNING modifiedon, lastseen
                 // They do not equal without conversion to String?
                 if (String(result.rows[0].modifiedon) === String(result.rows[0].lastseen)) {
                     console.log('Changed', recordType, id);
-                    return { id, type: recordType } as ChangePointer;
+                    inserts.push({ id, type: recordType } as ChangePointer);
                 }
-
-                return null;
-            }));
+            }
 
             return inserts.filter((i) => i != null) as ChangePointer[];
         });

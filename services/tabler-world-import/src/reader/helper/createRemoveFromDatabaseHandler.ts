@@ -22,7 +22,9 @@ export const createRemoveFromDatabaseHandler = (type: JobType): DataHandler => {
         return useDatabasePool({ logger: console }, api.concurrency.write, async (pool) => {
             console.log('Removing chunk of', records.length, type, 'records');
 
-            const inserts = await Promise.all(records.map(async (record) => {
+            const removals = [];
+
+            for (const record of records) {
                 const recordType = determineRecordType(type, record);
 
                 // it's also a {id} object
@@ -41,13 +43,11 @@ WHERE id = $1
 
                 if (result.rowCount === 1) {
                     console.log('Removed', recordType, id);
-                    return { id, type: recordType } as ChangePointer;
+                    removals.push({ id, type: recordType } as ChangePointer);
                 }
+            }
 
-                return null;
-            }));
-
-            return inserts.filter((i) => i != null) as ChangePointer[];
+            return removals.filter((i) => i != null) as ChangePointer[];
         });
     };
 };
