@@ -25,7 +25,7 @@ variables:
     value: '1.4-r'
 
   - name: RELASE_CHANNEL_BUILD
-    value: $[counter(variables['RELASE_VERSION'], 1)]
+    value: $[counter(variables['RELASE_CHANNEL_VERSION'], 1)]
 
   - name: EXPO_RELEASE_CHANNEL
     value: $(RELASE_CHANNEL_VERSION)$(RELASE_CHANNEL_BUILD')
