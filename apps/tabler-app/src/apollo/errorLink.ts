@@ -67,7 +67,8 @@ export const errorLink = onError(({ networkError, graphQLErrors, operation, resp
         context.requestId = requestId;
         tags.requestId = requestId;
 
-        rootMessage += ` (id: ${requestId})`;
+        // if we do this, the messages are unique and no longer grouped by sentry
+        // rootMessage += ` (id: ${requestId})`;
     }
 
     // this is an error that does not serialize right
