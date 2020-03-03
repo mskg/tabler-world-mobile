@@ -28,7 +28,7 @@ variables:
     value: $[counter(variables['RELASE_VERSION'], 1)]
 
   - name: EXPO_RELEASE_CHANNEL
-    value: $(variables['RELASE_CHANNEL_VERSION'])$(variables['RELASE_CHANNEL_BUILD'])
+    value: $[variables['RELASE_CHANNEL_VERSION']]$[variables['RELASE_CHANNEL_BUILD']]
 
   - name: APP_LANGUAGES
     value: 'en,de,nl,fi,is'
