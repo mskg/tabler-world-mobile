@@ -12,12 +12,12 @@ export async function useDatabasePool<T>(
     func: (pool: IPooledDataService) => Promise<T>,
 ): Promise<T> {
 
-    const client = new LazyPGPool(poolSize, context.logger, context.metrics);
+    const pool = new LazyPGPool(poolSize, context.logger, context.metrics);
     try {
-        return await func(client);
+        return await func(pool);
     } finally {
         try {
-            await client.close();
+            await pool.close();
         } catch (e) {
             context.logger.error('[SQL]', 'Failed to close connection', e);
         }

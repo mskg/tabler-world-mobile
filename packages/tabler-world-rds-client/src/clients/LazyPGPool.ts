@@ -1,5 +1,5 @@
 import { RDS } from '@mskg/tabler-world-aws';
-import { ILogger, StopWatch, Metric } from '@mskg/tabler-world-common';
+import { ILogger, Metric, StopWatch } from '@mskg/tabler-world-common';
 import { getParameters, Param_Database } from '@mskg/tabler-world-config';
 import { Pool, QueryConfig, QueryResult } from 'pg';
 import { logExecutableSQL } from '../helper/logExecutableSQL';
@@ -57,7 +57,6 @@ export class LazyPGPool implements IPooledDataService {
             });
 
             this.logger.debug('[SQL]', 'connect');
-            await this.pool.connect();
 
             this.pool.on('error', (...args: any[]) => this.logger.error('[SQL]', ...args));
             this.pool.on('connect', () => this.logger.debug('[SQL]', 'connect'));
