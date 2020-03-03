@@ -9,6 +9,8 @@ import { CompanySector } from '../../model/graphql/globalTypes';
 import { SearchMember, SearchMemberVariables } from '../../model/graphql/SearchMember';
 import { SearchMemberQuery } from '../../queries/Search/SearchMemberQuery';
 import { logger } from './logger';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
@@ -51,9 +53,10 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                         _(I18N.Sectors).findKey((v) => v === f.value) as CompanySector,
                     ),
                 }}
+                context={createApolloContext('OnlineSearchQueryBase')}
             >
                 {({ loading, data, fetchMore, error, refetch }) => {
-                    if (error) throw error;
+                    if (error) throw new QueryFailedError(error);
 
                     const result = data && data.SearchMember != null ? data.SearchMember : null;
                     const newData = result ? result.nodes : [];

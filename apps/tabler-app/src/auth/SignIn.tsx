@@ -71,7 +71,7 @@ class SignInBase extends AuditedScreen<Props, State> {
             this.audit.trackAction(ActionNames.SignInFailed);
             if (doThrow) throw err;
 
-            logger.error(err, 'Error signIn');
+            logger.error('signin', err);
             this.setState({ error: err.message || err, working: false });
         }
     }
@@ -120,11 +120,11 @@ class SignInBase extends AuditedScreen<Props, State> {
                 } catch (signUpError) {
                     this.audit.trackAction(ActionNames.SignUpFailed);
 
-                    logger.error(signUpError, 'Error signUp');
+                    logger.error('signup', new Error(signUpError.code), signUpError);
                     this.setState({ error: signUpError.message || signUpError, working: false });
                 }
             } else {
-                logger.error(err, 'Error signInOrUp');
+                logger.error('signinorup', new Error(err.code), err);
                 this.setState({ error: err.message || err, working: false });
             }
         }

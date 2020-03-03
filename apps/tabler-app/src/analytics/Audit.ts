@@ -20,7 +20,7 @@ export class Audit {
         try {
             Audit.provider.updateUser(id, attributes);
         } catch (e) {
-            logger.error(e, 'updateUser failed');
+            logger.error('audit-user', e);
         }
     }
 
@@ -38,7 +38,7 @@ export class Audit {
         try {
             Audit.provider.trackPageView(screen, attributes, metrics);
         } catch (e) {
-            logger.error(e, 'trackPageView failed');
+            logger.error('audit-pageview', e);
         }
     }
 
@@ -47,7 +47,7 @@ export class Audit {
         try {
             Audit.provider.trackEvent(event, attributes, metrics);
         } catch (e) {
-            logger.error(e, 'trackEvent failed');
+            logger.error('audit-event', e);
         }
     }
 
@@ -57,7 +57,7 @@ export class Audit {
         try {
             Audit.provider.trackAction(screen, action, attributes, metrics);
         } catch (e) {
-            logger.error(e, 'trackAction failed');
+            logger.error('audit-action', e);
         }
     }
 

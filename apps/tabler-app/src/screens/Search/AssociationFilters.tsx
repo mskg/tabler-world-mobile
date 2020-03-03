@@ -8,6 +8,7 @@ import { InlineLoading } from '../../components/Loading';
 import { I18N } from '../../i18n/translation';
 import { AreasAndClubsFilters, AreasAndClubsFiltersVariables, AreasAndClubsFilters_Clubs } from '../../model/graphql/AreasAndClubsFilters';
 import { GetAreasAndClubsFiltersQuery } from '../../queries/Search/GetAreasAndClubsFiltersQuery';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Search);
 
@@ -40,6 +41,7 @@ class AssociationFiltersBase extends React.Component<Props> {
                 query={GetAreasAndClubsFiltersQuery}
                 fetchPolicy={'cache-and-network'}
                 variables={{ association: association[0].id || '' }}
+                context={createApolloContext('AssociationFilterBase')}
             >
                 {({ data, error }) => {
                     // ok for now

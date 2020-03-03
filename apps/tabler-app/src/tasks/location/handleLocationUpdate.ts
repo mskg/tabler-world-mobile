@@ -18,7 +18,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
 
         const location = _(locations).maxBy((l) => l.timestamp) as Location.LocationData;
         if (location == null) {
-            logger.error(new Error('No location found?'));
+            logger.log('No location found?');
             return false;
         }
 
@@ -66,7 +66,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
 
         return true;
     } catch (error) {
-        logger.error(error, 'handleLocationUpdate');
+        logger.error('task-location-update', error);
         return false;
     }
 }

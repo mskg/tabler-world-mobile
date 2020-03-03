@@ -60,7 +60,7 @@ export function* rootSaga() {
                     yield call(saga);
                     break; // stop when done
                 } catch (e) {
-                    logger.error(e);
+                    logger.error('root-saga', e);
                 }
             }
         }),

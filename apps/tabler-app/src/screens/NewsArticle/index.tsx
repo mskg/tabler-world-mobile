@@ -19,6 +19,8 @@ import { NewsArticle, NewsArticleVariables } from '../../model/graphql/NewsArtic
 import { GetNewsArticleQuery } from '../../queries/News/GetNewsArticleQuery';
 import { INewsArticleParams, showAlbum } from '../../redux/actions/navigation';
 import { styles } from '../More/News/Styles';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.News);
 
@@ -55,9 +57,10 @@ class NewsArticleScreenBase extends AuditedScreen<Props, State> {
                 variables={{
                     id,
                 }}
+                context={createApolloContext('NewsArticleScreenBase')}
             >
                 {({ error, data }) => {
-                    if (error) throw error;
+                    if (error) throw new QueryFailedError(error);
 
                     return (
                         <ScreenWithHeader

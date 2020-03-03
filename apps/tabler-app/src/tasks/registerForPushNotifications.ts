@@ -46,6 +46,6 @@ export async function registerForPushNotifications(force = false) {
             logger.log('Token known', existingToken);
         }
     } catch (e) {
-        logger.error(e, 'Failed to acquire push token');
+        logger.error('task-push', e);
     }
 }

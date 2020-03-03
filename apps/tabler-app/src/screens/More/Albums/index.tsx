@@ -20,6 +20,8 @@ import { GetAlbumsOverviewQuery } from '../../../queries/Album/GetAlbumsQuery';
 import { showAlbum } from '../../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
+import { QueryFailedError } from '../../../helper/QueryFailedError';
+import { createApolloContext } from '../../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Albums);
 
@@ -107,9 +109,13 @@ class AlbumsScreenBase extends AuditedScreen<Props & NavigationInjectedProps<Tap
     render() {
         return (
             <ScreenWithHeader header={{ showBack: true, title: I18N.Screen_Albums.title }}>
-                <Query<AlbumsOverview> query={GetAlbumsOverviewQuery} fetchPolicy={this.props.fetchPolicy}>
+                <Query<AlbumsOverview>
+                    query={GetAlbumsOverviewQuery}
+                    fetchPolicy={this.props.fetchPolicy}
+                    context={createApolloContext('AlbumsScreenBase')}
+                >
                     {({ loading, error, data, refetch }) => {
-                        if (error) throw error;
+                        if (error) throw new QueryFailedError(error);
 
                         if (!loading && (data == null || data.Albums == null)) {
                             return <CannotLoadWhileOffline />;

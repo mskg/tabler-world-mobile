@@ -43,6 +43,6 @@ export async function runDataUpdates() {
             associationsPromise,
         ]);
     } catch (error) {
-        logger.error(error, 'runDataUpdates');
+        logger.error('task-fetch-data', error);
     }
 }

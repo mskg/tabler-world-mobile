@@ -12,6 +12,8 @@ import { GetClubQuery } from '../../queries/Structure/GetClubQuery';
 import { addSnack } from '../../redux/actions/snacks';
 import { StateProps } from './index';
 import { logger } from './logger';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 
 class ClubQueryWithPreview extends PureComponent<{
@@ -28,6 +30,7 @@ class ClubQueryWithPreview extends PureComponent<{
                     id: this.props.id,
                 }}
                 fetchPolicy={this.props.fetchPolicy}
+                context={createApolloContext('ClubQueryWithPreview')}
             >
                 {({ client, loading, data, error, refetch }) => {
                     let preview: any;
@@ -64,7 +67,7 @@ class ClubQueryWithPreview extends PureComponent<{
                     }
 
                     if (error && !preview) {
-                        throw error;
+                        throw new QueryFailedError(error);
                     } else if (error && preview) {
                         setTimeout(() => this.props.addSnack({
                             message: I18N.Component_Whoops.partialData,

@@ -34,7 +34,7 @@ async function withCallback<R>(
         if (callback) {
             callback(err);
         } else {
-            logger.error(err);
+            logger.error('encrypted-file', err);
             throw err;
         }
     }

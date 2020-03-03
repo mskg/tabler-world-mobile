@@ -14,6 +14,7 @@ import * as filterActions from '../../redux/actions/filter';
 import * as settingsActions from '../../redux/actions/settings';
 import { logger } from './logger';
 import { NotificationSettings } from './NotificationSettings';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 /**
  * When a favorite is toggled, mark the record as modified
@@ -33,6 +34,7 @@ query GetCloudSettings {
   nearbymembersMap: Setting (name: nearbymembersMap)
 }`,
         fetchPolicy: 'network-only',
+        context: createApolloContext('settings-restore'),
     });
 
     if (result.data.favorites != null) {
@@ -49,13 +51,13 @@ query GetCloudSettings {
             try {
                 yield enableNearbyTablers();
             } catch (e) {
-                logger.error(e, 'failed to enableNearbyTablers');
+                logger.error('setting-restore-nearby-enable', e);
             }
         } else {
             try {
                 yield disableNearbyTablers(false);
             } catch (e) {
-                logger.error(e, 'failed to disableNearbyTablers');
+                logger.error('setting-restore-nearby-disable', e);
             }
         }
     }

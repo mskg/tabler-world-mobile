@@ -10,6 +10,8 @@ import { GetMemberQuery } from '../../queries/Member/GetMemberQuery';
 import { MemberOverviewFragment } from '../../queries/Member/MemberOverviewFragment';
 import { addSnack } from '../../redux/actions/snacks';
 import { logger } from './logger';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 class MemberQueryWithPreview extends PureComponent<{
     children: React.ReactElement<any>;
@@ -23,6 +25,7 @@ class MemberQueryWithPreview extends PureComponent<{
             variables={{
                 id: this.props.id,
             }}
+            context={createApolloContext('MemberQueryWithPreview')}
         >
             {({ client, loading, data, error, refetch }) => {
                 let preview: MemberOverviewFragmentType | null = null;
@@ -41,7 +44,7 @@ class MemberQueryWithPreview extends PureComponent<{
                 }
 
                 if (error && !preview) {
-                    throw error;
+                    throw new QueryFailedError(error);
                 } else if (error && preview) {
                     setTimeout(() => this.props.addSnack({
                         message: I18N.Component_Whoops.partialData,

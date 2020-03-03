@@ -6,6 +6,8 @@ import { SearchDirectory, SearchDirectoryVariables, SearchDirectory_SearchDirect
 import { SearchDirectoryQuery } from '../../queries/Search/SearchDirectoryQuery';
 import { logger } from './logger';
 import { StructureSearchList } from './StructureSearchList';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
@@ -37,9 +39,10 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                     text: this.props.query,
                     after: null,
                 }}
+                context={createApolloContext('OnlineSearchQuerybase')}
             >
                 {({ loading, data, fetchMore, error, refetch }) => {
-                    if (error) throw error;
+                    if (error) throw new QueryFailedError(error);
 
                     const result = data && data.SearchDirectory != null ? data.SearchDirectory : null;
                     const newData = result ? result.nodes : [];
@@ -61,6 +64,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                         text: this.props.query,
                                         after: result ? result.pageInfo.endCursor : null,
                                     },
+                                    context: createApolloContext('OnlineSearchQuerybase-more'),
 
                                     updateQuery: (previousResult, { fetchMoreResult }) => {
                                         // Don't do anything if there weren't any new items

@@ -7,6 +7,7 @@ import { GetConversationQuery } from '../../queries/Conversations/GetConversatio
 import { showConversation } from '../../redux/actions/navigation';
 import { getReduxStore } from '../../redux/getRedux';
 import { INotificationHandler, NotificationHandlerResult } from './INotificationHandler';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 export class ChatMessageHandler implements INotificationHandler<ChatMessageNotification> {
     constructor(private logger: Logger) {
@@ -30,18 +31,23 @@ export class ChatMessageHandler implements INotificationHandler<ChatMessageNotif
         return NotificationHandlerResult.Handeled;
     }
 
-    private updateConversation(notification: ChatMessageNotification) {
+    private async updateConversation(notification: ChatMessageNotification) {
         this.logger.debug('updateConversation', notification.payload.conversationId);
 
-        const client = cachedAolloClient();
-        client.query<Conversation, ConversationVariables>({
-            query: GetConversationQuery,
-            variables: {
-                id: notification.payload.conversationId,
-                dontMarkAsRead: true,
-            },
-            fetchPolicy: 'network-only',
-        });
+        try {
+            const client = cachedAolloClient();
+            client.query<Conversation, ConversationVariables>({
+                query: GetConversationQuery,
+                variables: {
+                    id: notification.payload.conversationId,
+                    dontMarkAsRead: true,
+                },
+                fetchPolicy: 'network-only',
+                context: createApolloContext('ChatMessageHandler'),
+            });
+        } catch (e) {
+            this.logger.log('Could not update conversation', e);
+        }
     }
 
     onClick(el: ChatMessageNotification, received: boolean) {

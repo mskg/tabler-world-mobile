@@ -23,6 +23,8 @@ import { markConversationRead, updateBadgeFromConversations } from '../Conversat
 import { ConversationPlaceholder } from './ConversationPlaceholder';
 import { IChatMessage } from './IChatMessage';
 import { logger } from './logger';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type InjectedProps = {
     extraData: any,
@@ -72,7 +74,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
             try {
                 this._watch();
             } catch (e) {
-                logger.error(e, 'Could not subscribe');
+                logger.error('chat-subscribe', e);
             }
         }
     }
@@ -86,7 +88,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                 this.subscription.unsubscribe();
                 this.subscription = null;
             } catch (e) {
-                logger.error(e, 'Could not unsubscribe');
+                logger.error('chat-unsubscribe', e);
             }
         }
 
@@ -109,7 +111,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
 
                 requestAnimationFrame(() => this.setState({ redraw: {} }));
             } catch (e) {
-                logger.error(e, 'Could not refetch');
+                logger.error('chat-refresh', e);
             }
         }
     }
@@ -232,7 +234,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                     },
                 });
             },
-            (e) => { logger.error(e, 'Failed to subscribe to newChatMessage'); },
+            (e) => { logger.error('chat-watch', e); },
         );
 
         logger.debug('> subscribed');
@@ -309,6 +311,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                         id: this.props.conversationId,
                     }}
                     fetchPolicy="cache-first"
+                    context={createApolloContext('ConversationQueryBase')}
                 >
                     {({ client, loading, data, fetchMore, error, refetch }) => {
                         this.refetch = refetch;
@@ -319,7 +322,7 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                         if (error) {
                             // not a connection problem
                             if (this.props.websocket) {
-                                throw error;
+                                throw new QueryFailedError(error);
                             } else {
                                 let cachedConv;
 

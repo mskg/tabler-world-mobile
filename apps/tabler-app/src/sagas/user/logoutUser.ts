@@ -17,8 +17,8 @@ import { logger } from './logger';
 export function* logoutUser(_: typeof actions.logoutUser.shape) {
     logger.debug('logoutUser');
 
-    try { yield removePushToken(); } catch (e) { logger.error(e, 'Failed to remove token'); }
-    try { yield disableNearbyTablers(); } catch (e) { logger.error(e, 'Failed to disable tracking'); }
+    try { yield removePushToken(); } catch (e) { logger.error('logout-push-token', e); }
+    try { yield disableNearbyTablers(); } catch (e) { logger.error('logout-nearby', e); }
 
     yield AsyncStorage.clear();
     yield SecureStore.deleteItemAsync(FILESTORAGE_KEY);

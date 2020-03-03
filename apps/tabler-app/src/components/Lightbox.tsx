@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as React from 'react';
-import { Dimensions, Image, ImageResizeMode, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableWithoutFeedback, View, LayoutAnimation } from 'react-native';
+import { Dimensions, Image, ImageResizeMode, LayoutAnimation, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import TransformableImage from 'react-native-image-gallery/src/libraries/TransformableImage';
 import { IconButton, Portal, Theme, withTheme } from 'react-native-paper';
 import { isIphoneX } from '../helper/isIphoneX';
@@ -82,7 +82,7 @@ class LightboxBase extends React.Component<Props, State> {
         }
         // })
         // .catch((error) => {
-        //     // logger.error(error);
+        //     // logger.error('ERROR-ID', error);
         // });
     })
 

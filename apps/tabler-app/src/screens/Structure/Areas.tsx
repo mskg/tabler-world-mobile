@@ -23,6 +23,8 @@ import { CardTitle } from './CardTitle';
 import { ClubsSection } from './ClubsSection';
 import { ScreenProps } from './StructureParams';
 import { styles } from './Styles';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -117,9 +119,10 @@ class AreasScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInje
                             variables={{
                                 association: this.props.screenProps?.association,
                             }}
+                            context={createApolloContext('AreasScreenBase')}
                         >
                             {({ loading, error, data, refetch }) => {
-                                if (error) throw error;
+                                if (error) throw new QueryFailedError(error);
 
                                 if (!loading && (data == null || data.Areas == null)) {
                                     if (this.props.offline) {

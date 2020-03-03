@@ -7,6 +7,7 @@ import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { InternalMeListItemBase } from '../../../components/MeListItem';
+import { createApolloContext } from '../../../helper/createApolloContext';
 import { formatTimespan } from '../../../helper/formatting/formatTimespan';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
@@ -50,6 +51,7 @@ class MeLocationBase extends React.Component<Props, State> {
             const roles = await client.query<GetMyRoles>({
                 query: GetMyRolesQuery,
                 fetchPolicy: 'cache-first',
+                context: createApolloContext('me-location-roles'),
             });
 
             if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.locationhistory)) {
@@ -73,6 +75,7 @@ class MeLocationBase extends React.Component<Props, State> {
         return (
             <Query<Me>
                 query={GetMeQuery}
+                context={createApolloContext('MeLocationBase')}
             >
                 {({ data: medata, error }) => {
                     if (error || medata == null || medata.Me == null) return null;

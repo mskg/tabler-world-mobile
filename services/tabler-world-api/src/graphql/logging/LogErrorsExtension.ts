@@ -37,6 +37,10 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
                         'Error', JSON.stringify(err),
                     ),
                 );
+
+                graphqlResponse.errors.forEach((err) => {
+                    err.extensions!.requestId = context.lambdaContext?.awsRequestId;
+                });
             }
         } catch (e) {
             o.context.logger.error('Faild to log error', e);

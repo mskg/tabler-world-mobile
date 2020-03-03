@@ -236,7 +236,7 @@ class ChatBase extends React.Component<Props, State> {
                     }
                 })
                 .catch((error) => {
-                    logger.error(error);
+                    logger.error('chat-export', error);
                 });
         });
     }

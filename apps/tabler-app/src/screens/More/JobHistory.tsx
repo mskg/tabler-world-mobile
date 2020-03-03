@@ -8,6 +8,7 @@ import { ScreenWithHeader } from '../../components/Screen';
 import { formatTimespan } from '../../helper/formatting/formatTimespan';
 import { GetJobs, GetJobs_Jobs_data } from '../../model/graphql/GetJobs';
 import { GetJobsQuery } from '../../queries/Admin/GetJobs';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
@@ -55,6 +56,7 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                 <Query<GetJobs>
                     query={GetJobsQuery}
                     fetchPolicy="network-only"
+                    context={createApolloContext('JobHistoryScreen')}
                 >
                     {({ data, error }) => {
                         if (error) return null;

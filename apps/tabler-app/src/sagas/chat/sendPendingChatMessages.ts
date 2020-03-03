@@ -14,11 +14,20 @@ export async function sendPendingChatMessages() {
     for (const msg of messages.filter((m) => m.numTries == null || m.numTries <= 5)) {
         try {
             await sendMessage(msg);
-
             logger.log('Removing', msg.id);
             getReduxStore().dispatch(removeMessage(msg.id as string));
         } catch (e) {
-            logger.error(e, 'Failed to send', msg.id);
+            logger.error(
+                'chat-send',
+                e,
+                {
+                    id: msg.id,
+                    conversationId: msg.conversationId,
+                    sender: msg.createdAt,
+                    hasImage: msg.image != null,
+                    numTries: msg.numTries,
+                },
+            );
             getReduxStore().dispatch(markFailed(msg.id as string));
         }
     }

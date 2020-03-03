@@ -17,6 +17,7 @@ import { INITIAL_STATE } from '../redux/initialState';
 import { light } from '../theme/light';
 import ConfirmSignIn from './ConfirmSignIn';
 import SignIn from './SignIn';
+import { createApolloContext } from '../helper/createApolloContext';
 
 type Props = {
     authState: typeof INITIAL_STATE.auth.state;
@@ -69,31 +70,29 @@ class AuthenticatorBase extends PureComponent<Props, State> {
             client.query<Me>({
                 query: GetMeQuery,
                 fetchPolicy: 'cache-first',
-            }).then((result) => {
-                if (result.errors) {
-                    result.errors.forEach(e => logger.error(e, 'Could not load me'));
-                    throw new Error('Could not load me');
-                }
+                context: createApolloContext('authenticate-me'),
+            })
+                .then((result) => {
+                    logger.log('Updating user profile');
 
-                logger.log('Updating user profile');
-                Audit.updateUser(
-                    result.data.Me.id.toString(),
-                    {
-                        ...appProps,
-                        [AuditPropertyNames.Association]: result.data.Me.association.id,
-                        [AuditPropertyNames.Area]: result.data.Me.area.id,
-                        [AuditPropertyNames.Club]: result.data.Me.club.id,
-                    },
-                );
+                    Audit.updateUser(
+                        result.data.Me.id.toString(),
+                        {
+                            ...appProps,
+                            [AuditPropertyNames.Association]: result.data.Me.association.id,
+                            [AuditPropertyNames.Area]: result.data.Me.area.id,
+                            [AuditPropertyNames.Club]: result.data.Me.club.id,
+                        },
+                    );
 
-                ExpoSentry.configureScope((scope) => scope.setUser({
-                    id: result.data.Me.id.toString(),
-                }));
-
-            }).catch((e) => {
-                Audit.updateUser(undefined, appProps);
-                logger.error(e, 'Could not load me');
-            });
+                    ExpoSentry.configureScope((scope) => scope.setUser({
+                        id: result.data.Me.id.toString(),
+                    }));
+                })
+                .catch((e) => {
+                    Audit.updateUser(undefined, appProps);
+                    logger.log('authenticate-me', e);
+                });
         }
     }
 

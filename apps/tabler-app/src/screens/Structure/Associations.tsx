@@ -24,6 +24,8 @@ import { styles } from './Styles';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { IAppState } from '../../model/IAppState';
 import { connect } from 'react-redux';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -136,9 +138,10 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
                             variables={{
                                 id: this.props.screenProps?.association,
                             }}
+                            context={createApolloContext('AssocationsScreenBase')}
                         >
                             {({ loading, error, data, refetch }) => {
-                                if (error) throw error;
+                                if (error) throw new QueryFailedError(error);
 
                                 if (!loading && (data == null || data.Association == null)) {
                                     if (this.props.offline) {

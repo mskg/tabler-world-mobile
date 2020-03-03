@@ -7,6 +7,8 @@ import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { RefreshTracker } from '../../components/RefreshTracker';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { QueryFailedError } from '../../helper/QueryFailedError';
 import { MembersByAreas, MembersByAreasVariables } from '../../model/graphql/MembersByAreas';
 import { OfflineMembers } from '../../model/graphql/OfflineMembers';
 import { IAppState } from '../../model/IAppState';
@@ -33,6 +35,7 @@ class MembersQueryBase extends React.Component<Props> {
                         <Query<OfflineMembers>
                             query={GetOfflineMembersQuery}
                             fetchPolicy={this.props.fetchPolicy}
+                            context={createApolloContext('MembersQueryBase')}
                         >
                             {({ loading: oLoading, data: oData, error: oError, refetch: oRefetch }) => {
                                 if (!oLoading && (oData == null || oData.OwnTable == null || oData.FavoriteMembers == null)) {
@@ -52,13 +55,16 @@ class MembersQueryBase extends React.Component<Props> {
                                             board: this.props.areas != null ? this.props.showAssociationBoard : null,
                                             areaBoard: this.props.areas != null ? this.props.showAreaBoard : null,
                                         }}
+                                        context={createApolloContext('MembersQueryBase')}
                                     >
                                         {({ loading, data, error, refetch }) => {
                                             // if (!loading && !oLoading && loadingState.isLoading && !loadingState.isRefreshing) {
                                             //     setTimeout(() => setLoading(false));
                                             // }
 
-                                            if (error || oError) throw (error || oError);
+                                            // @ts-ignore
+                                            if (error || oError) throw new QueryFailedError(error || oError);
+
                                             if (!loading && (data == null || data.MembersOverview == null)) {
                                                 setTimeout(createRunRefresh(refetch));
                                             }

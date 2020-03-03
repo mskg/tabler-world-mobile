@@ -15,11 +15,13 @@ import { FavoriteIcon } from '../FavoriteButton';
 import { SwipableItem, SwipeButtonsContainer } from '../SwipableItem';
 import { MemberListItem } from './MemberListItem';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { logger } from '../../analytics/logger';
 
 type Props = {
     item: IMemberOverviewFragment;
     theme: Theme;
-    onPress?: (item: IMemberOverviewFragment) => void;
+    onPress?: (item: IMemberOverviewFragment | null | undefined) => void;
     margin?: number;
     height?: number;
 
@@ -91,17 +93,22 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
             return;
         }
 
-        const client = cachedAolloClient();
-        const result = await client.query<CanMemberChat>({
-            query: GetCanMemberChatQuery,
-            variables: {
-                id: this.props.item.id,
-            },
-            fetchPolicy: 'cache-first',
-        });
+        try {
+            const client = cachedAolloClient();
+            const result = await client.query<CanMemberChat>({
+                query: GetCanMemberChatQuery,
+                variables: {
+                    id: this.props.item.id,
+                },
+                fetchPolicy: 'cache-first',
+                context: createApolloContext('MemberItemWithSwipe'),
+            });
 
-        if (result.data.Member?.availableForChat) {
-            this.setState({ canChat: true });
+            if (result.data.Member?.availableForChat) {
+                this.setState({ canChat: true });
+            }
+        } catch (e) {
+            logger.log('Failed to get chat status', e);
         }
     }
 

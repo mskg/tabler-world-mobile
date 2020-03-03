@@ -1,7 +1,6 @@
 import { ActionNames } from './ActionNames';
 import { AuditPropertyNames } from './AuditPropertyNames';
 import { IAnalyticsProvider } from './IAuditor';
-import { logger } from './logger';
 import { IAuditor, Metrics, Params } from './Types';
 
 /**
@@ -28,27 +27,21 @@ export class SceenAudit implements IAuditor {
 
     trackAction(action: ActionNames, params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
-
-        try {
-            this.provider.trackAction(this.screen, action, params, metrics);
-        } catch (e) {
-            logger.error(e, 'trackAction failed');
-        }
+        this.provider.trackAction(this.screen, action, params, metrics);
     }
 
     submit(params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
-
-        try {
-            this.provider.trackPageView(this.screen, {
+        this.provider.trackPageView(
+            this.screen,
+            {
                 ...this.params,
                 ...(params || {}),
-            },                          {
+            },
+            {
                 ...this.metrics,
                 ...(metrics || {}),
-            });
-        } catch (e) {
-            logger.error(e, 'trackAction failed');
-        }
+            },
+        );
     }
 }

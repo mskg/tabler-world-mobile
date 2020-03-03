@@ -44,6 +44,6 @@ export async function bootstrapLanguage() {
             });
         }
     } catch (e) {
-        logger.error(e, 'loadLanguageFiles');
+        logger.error('language-bootstrap', e);
     }
 }

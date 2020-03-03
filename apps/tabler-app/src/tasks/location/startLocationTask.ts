@@ -35,7 +35,7 @@ export async function startLocationTask(): Promise<boolean> {
 
             return result;
         } catch (e) {
-            logger.error(e, `Start of ${LOCATION_TASK_NAME} failed`);
+            logger.error('location-start', e);
             return false;
         }
     }

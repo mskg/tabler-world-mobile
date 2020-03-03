@@ -15,6 +15,7 @@ import { GetConversationQuery } from '../../queries/Conversations/GetConversatio
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { setBadge } from '../../redux/actions/chat';
 import { checkBadge } from '../../sagas/chat/checkBadge';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 const logger = new Logger(Categories.Helpers.Chat);
 
@@ -23,7 +24,7 @@ type Props = {
     websocket?: boolean,
     setBadge: typeof setBadge;
     badge: number,
-    activeConversation: string,
+    activeConversation: string | null,
 };
 
 class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
@@ -90,6 +91,7 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                     const temp = await client.query<GetConversations>({
                         query: GetConversationsQuery,
                         fetchPolicy: 'network-only',
+                        context: createApolloContext('chat-conversations-conversations'),
                     });
 
                     conversations = temp.data;
@@ -120,9 +122,10 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                                         dontMarkAsRead: true,
                                     },
                                     fetchPolicy: 'network-only',
+                                    context: createApolloContext('chat-conversations-active'),
                                 });
                             } catch (e) {
-                                logger.error(e, 'Failed to refresh data.');
+                                logger.log('Failed to refresh data.', e);
                             }
                         });
                     }
@@ -144,7 +147,7 @@ class SubscribeToConversationUpdatesBase extends React.PureComponent<Props> {
                     },
                 });
             },
-            (e) => { logger.error(e, 'Failed to subscribe to conversationUpdate'); },
+            (e) => { logger.error('chat-conversations-subscribe', e); },
         );
 
         logger.debug('> subscribed');

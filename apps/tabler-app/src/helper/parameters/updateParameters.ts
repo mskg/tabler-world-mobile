@@ -7,6 +7,7 @@ import { GetParameters, GetParametersVariables } from '../../model/graphql/GetPa
 import { ParameterName, ParameterPlatform } from '../../model/graphql/globalTypes';
 import { GetParametersQuery } from '../../queries/GetParametersQuery';
 import { Categories, Logger } from '../Logger';
+import { createApolloContext } from '../createApolloContext';
 
 const logger = new Logger(Categories.Sagas.Parameters);
 
@@ -25,6 +26,7 @@ export async function updateParameters() {
                     os: Platform.OS === 'android' ? ParameterPlatform.android : ParameterPlatform.ios,
                 },
             },
+            context: createApolloContext('updateParameters'),
         });
 
         if (result.data.getParameters != null) {
@@ -43,6 +45,6 @@ export async function updateParameters() {
             logger.debug('New settings are', await AsyncStorage.multiGet(keys));
         }
     } catch (e) {
-        logger.error(e, 'Failed to load parameters');
+        logger.error('updateParameters', e);
     }
 }

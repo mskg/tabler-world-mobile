@@ -28,6 +28,6 @@ export async function registerFetchTask() {
             }
         }
     } catch (e) {
-        logger.error(e, 'Registering of tasks failed');
+        logger.error('task-fetch-register', e);
     }
 }

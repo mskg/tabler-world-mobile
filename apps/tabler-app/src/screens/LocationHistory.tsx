@@ -10,6 +10,7 @@ import { OpenLink } from '../helper/OpenLink';
 import { GetLocationHistory } from '../model/graphql/GetLocationHistory';
 import { GetLocationHistoryQuery } from '../queries/Location/GetLocationHistoryQuery';
 import { isFeatureEnabled, Features } from '../model/Features';
+import { createApolloContext } from '../helper/createApolloContext';
 
 type State = {
 };
@@ -50,6 +51,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                 <Query<GetLocationHistory>
                     query={GetLocationHistoryQuery}
                     fetchPolicy="network-only"
+                    context={createApolloContext('LocationHistory')}
                 >
                     {({ data, error }) => {
                         if (error) return null;

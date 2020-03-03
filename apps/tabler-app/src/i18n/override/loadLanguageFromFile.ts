@@ -13,7 +13,7 @@ export async function loadLanguageFromFile(fileName: string): Promise<any> {
 
         return null;
     } catch (e) {
-        logger.error(e, 'loadOverridenLanguageFromFile', fileName);
+        logger.error('language-load', e, { fileName });
     }
 
     return null;

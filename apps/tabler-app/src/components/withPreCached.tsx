@@ -80,7 +80,7 @@ export function withPreCached(WrappedComponent) {
 
                 logger.log('Done.');
             } catch (e) {
-                logger.error(e, 'Initial loading');
+                logger.error('pre-cache', e);
             }
 
             this.setState({ isReady: true });

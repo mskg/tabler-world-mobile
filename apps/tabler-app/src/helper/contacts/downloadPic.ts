@@ -14,7 +14,7 @@ export async function downloadPic(picUri: string, id: number) {
         logger.debug('wrote image to', uri);
         return uri;
     } catch (e) {
-        logger.error(e, 'Could not download pic', picUri, id);
+        logger.error('downloadPic', e, { picUri, id });
         return null;
     }
 }

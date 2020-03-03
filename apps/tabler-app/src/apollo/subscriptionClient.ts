@@ -57,7 +57,7 @@ AppState.addEventListener('change', (nextAppState: string) => {
                             try {
                                 subscriptionClient.close(true, true);
                                 closing = undefined;
-                            // tslint:disable-next-line: no-empty
+                                // tslint:disable-next-line: no-empty
                             } catch { }
                         },
                         INACTIVE_TIMEOUT,
@@ -81,7 +81,7 @@ AppState.addEventListener('change', (nextAppState: string) => {
             subscriptionClient.tryReconnect();
         }
     } catch (e) {
-        logger.error(e, 'Failed to change wbsocket state on active/inactive');
+        logger.error('ws-change', e);
     }
 });
 
@@ -92,7 +92,7 @@ subscriptionClient.use([{
             getReduxStore().dispatch(updateWebsocket(true));
             return next();
         } catch (e) {
-            logger.error(e, 'Failed to send to redux');
+            logger.error('ws-middleware', e);
         }
     },
 }]);
@@ -103,7 +103,7 @@ subscriptionClient.onConnecting(() => {
         getReduxStore().dispatch(updateWebsocket(false));
         logger.debug('[WS] connecting');
     } catch (e) {
-        logger.error(e, 'Failed to send to redux');
+        logger.error('ws-connect', e);
     }
 });
 
@@ -112,7 +112,7 @@ subscriptionClient.onConnected(() => {
         getReduxStore().dispatch(updateWebsocket(true));
         logger.debug('[WS] connected');
     } catch (e) {
-        logger.error(e, 'Failed to send to redux');
+        logger.error('ws-connected', e);
     }
 });
 
@@ -121,7 +121,7 @@ subscriptionClient.onReconnecting(() => {
         getReduxStore().dispatch(updateWebsocket(false));
         logger.debug('[WS] econnecting');
     } catch (e) {
-        logger.error(e, 'Failed to send to redux');
+        logger.error('ws-reconnecting', e);
     }
 });
 
@@ -130,7 +130,7 @@ subscriptionClient.onReconnected(() => {
         getReduxStore().dispatch(updateWebsocket(true));
         logger.debug('r[WS] econnected');
     } catch (e) {
-        logger.error(e, 'Failed to send to redux');
+        logger.error('ws-reconnected', e);
     }
 });
 
@@ -139,7 +139,7 @@ subscriptionClient.onDisconnected(() => {
         getReduxStore().dispatch(updateWebsocket(false));
         logger.debug('[WS] disconnected');
     } catch (e) {
-        logger.error(e, 'Failed to send to redux');
+        logger.error('ws-disconnected', e);
     }
 });
 

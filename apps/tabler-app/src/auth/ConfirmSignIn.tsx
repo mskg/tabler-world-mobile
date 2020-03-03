@@ -116,7 +116,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
                 this.props.singedIn();
             } catch (e) {
-                logger.error(e, 'failed to login');
+                logger.error('signin', e);
                 this.audit.trackAction(ActionNames.LogonConfirmFailed);
 
                 this.setState({

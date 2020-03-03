@@ -138,7 +138,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
             await CacheManager.outDateCache('avatar');
             await CacheManager.outDateCache('club');
         } catch (e) {
-            logger.error(e, 'Failed to clear image caches');
+            logger.error('settings-clear-imagecache', e);
         }
 
         Alert.alert(

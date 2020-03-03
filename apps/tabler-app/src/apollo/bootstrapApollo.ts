@@ -57,38 +57,36 @@ This must only be called once in the lifecyle!
 
     const wsLink = isFeatureEnabled(Features.Chat) ? new WebSocketLink(subscriptionClient) : null;
 
-    const links = ApolloLink.from(
-        [
-            new RetryLink({
-                attempts: {
-                    retryIf: (error, _operation) => {
-                        // in case of timeout, just retry the operation
-                        return error && (error.statusCode === 502 || error.statusCode === 429);
-                    },
+    const links = ApolloLink.from([
+        new RetryLink({
+            attempts: {
+                retryIf: (error, _operation) => {
+                    // in case of timeout, just retry the operation
+                    return error && (error.statusCode === 502 || error.statusCode === 429);
                 },
-            }),
+            },
+        }),
 
-            errorLink,
+        errorLink,
 
-            !demoMode
-                ? createPersistedQueryLink({
-                    useGETForHashedQueries: true,
-                })
-                : undefined,
+        !demoMode
+            ? createPersistedQueryLink({
+                useGETForHashedQueries: true,
+            })
+            : undefined,
 
-            wsLink != null && !demoMode && !noWebsocket
-                ? ApolloLink.split(
-                    // split based on operation type
-                    ({ query }) => {
-                        const node = getMainDefinition(query);
-                        return node.kind === 'OperationDefinition' && node.operation === 'subscription';
-                    },
-                    wsLink,
-                    httpLink,
-                )
-                : httpLink,
-        ].filter((f) => f != null) as ApolloLink[],
-    );
+        wsLink != null && !demoMode && !noWebsocket
+            ? ApolloLink.split(
+                // split based on operation type
+                ({ query }) => {
+                    const node = getMainDefinition(query);
+                    return node.kind === 'OperationDefinition' && node.operation === 'subscription';
+                },
+                wsLink,
+                httpLink,
+            )
+            : httpLink,
+    ].filter((f) => f != null) as ApolloLink[]);
 
     client = new ApolloClient({
         cache,

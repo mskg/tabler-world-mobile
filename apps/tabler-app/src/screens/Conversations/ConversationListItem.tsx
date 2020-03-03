@@ -15,6 +15,7 @@ import { showConversation } from '../../redux/actions/navigation';
 import { LastMessage } from './LastMessage';
 import { UnreadMessages } from './UnreadMessages';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type OwnProps = {
     theme: Theme,
@@ -67,6 +68,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                 variables: {
                     id: this.props.conversation.id,
                 },
+                context: createApolloContext('ConversationListItemBase'),
             });
 
             let conversations;
@@ -80,6 +82,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
             if (conversations == null) {
                 const temp = await client.query<GetConversations>({
                     query: GetConversationsQuery,
+                    context: createApolloContext('ConversationListItemBase'),
                 });
 
                 conversations = temp.data;

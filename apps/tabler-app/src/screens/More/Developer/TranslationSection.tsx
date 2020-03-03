@@ -17,6 +17,7 @@ import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { Action } from '../Settings/Action';
 import { Element } from '../Settings/Element';
 import { SelectionList } from '../Settings/SelectionList';
+import { createApolloContext } from '../../../helper/createApolloContext';
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -59,6 +60,7 @@ class TranslationSectionBase extends React.Component<Props, State> {
             const roles = await client.query<GetMyRoles>({
                 query: GetMyRolesQuery,
                 fetchPolicy: 'cache-first',
+                context: createApolloContext('translations-roles'),
             });
 
             if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.i18n)) {
@@ -70,6 +72,7 @@ class TranslationSectionBase extends React.Component<Props, State> {
             const client = cachedAolloClient();
             const data = await client.query<Languages>({
                 query: GetLanguagesQuery,
+                context: createApolloContext('translations-languages'),
             });
 
             if (data.data && data.data.Languages) {
@@ -122,7 +125,7 @@ class TranslationSectionBase extends React.Component<Props, State> {
                 ],
             );
         } catch (e) {
-            logger.error(e, '_refreshLanguage');
+            logger.error('dev-refresh-language', e);
             Alert.alert('Failed');
 
             this.setState({ wait: false, language: I18N.id });

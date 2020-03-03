@@ -15,13 +15,13 @@ export class TimerEvent {
     submit(params?: Params, metrics?: Metrics) {
         if (!this.provider) { return; }
 
-        try {
-            this.provider.trackEvent(this.event, params, {
+        this.provider.trackEvent(
+            this.event,
+            params,
+            {
                 ...(metrics || {}),
                 [MetricNames.Duration]: Date.now() - this.start,
-            });
-        } catch (e) {
-            logger.error(e, 'trackAction failed');
-        }
+            },
+        );
     }
 }

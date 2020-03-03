@@ -64,7 +64,7 @@ export async function runFetchTask() {
         logger.debug('done');
         return BackgroundFetch.Result.NewData;
     } catch (error) {
-        logger.error(error, 'runBackgroundFetch');
+        logger.error('task-fetch-run', error);
 
         timer.submit({
             [AuditPropertyNames.BackgroundFetchResult]: 'Failed',
@@ -73,11 +73,11 @@ export async function runFetchTask() {
         await AsyncStorage.setItem(FETCH_LAST_RUN, Date.now().toString());
 
         try { await getApolloCachePersistor().persist(); } catch (pe) {
-            logger.error(pe, 'Could not persist apollo');
+            logger.error('task-fetch-persist', pe);
         }
 
         try { getReduxPersistor().flush(); } catch (pe) {
-            logger.error(pe, 'Could not persist redux');
+            logger.error('task-fetch-persist', pe);
         }
     }
 

@@ -2,6 +2,7 @@ import { GeoParameters } from '@mskg/tabler-world-config-app';
 import { LocationData } from 'expo-location';
 import { cancel, delay, fork, select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { isDemoModeEnabled } from '../../helper/demoMode';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
@@ -29,6 +30,7 @@ function refreshByQuery(enabled: boolean) {
         fetchPolicy: 'network-only',
         // tslint:disable-next-line: object-shorthand-properties-first
         variables,
+        context: createApolloContext('nearby-retry-query'),
     });
 
     initial
@@ -38,7 +40,7 @@ function refreshByQuery(enabled: boolean) {
                 store.dispatch(setNearby(result.data.nearbyMembers));
             }
         })
-        .catch((e) => logger.error(e, 'failed to run query'));
+        .catch((e) => logger.log('failed to run query', e));
 }
 
 function subscribeToUpdates(enabled: boolean) {
@@ -57,6 +59,7 @@ function subscribeToUpdates(enabled: boolean) {
         fetchPolicy: 'network-only',
         // tslint:disable-next-line: object-shorthand-properties-first
         variables,
+        context: createApolloContext('nearby-initial-query'),
     });
 
     initial
@@ -66,7 +69,7 @@ function subscribeToUpdates(enabled: boolean) {
                 store.dispatch(setNearby(result.data.nearbyMembers));
             }
         })
-        .catch((e) => logger.error(e, 'failed to run query'));
+        .catch((e) => logger.log('failed to run query', e));
 
     const query = client.subscribe<LocationUpdate, LocationUpdateVariables>({
         query: LocationUpdateSubscription,
@@ -81,7 +84,7 @@ function subscribeToUpdates(enabled: boolean) {
             logger.debug('Received', members?.length, 'members');
             store.dispatch(setNearby(members));
         },
-        (e) => { logger.error(e, 'Failed to subscribe to locationUpdate'); },
+        (e) => { logger.error('nearby-subscribe', e); },
     );
 
     logger.log('subscribed');
@@ -118,7 +121,7 @@ function* watch() {
             yield delay(setting.pollInterval);
         }
     } catch (ex) {
-        logger.error(ex, 'Fetch nearby members unhandeled exception');
+        logger.error('nearby-watch', ex);
     } finally {
         if (subscription) {
             logger.log('Unsubscribe');

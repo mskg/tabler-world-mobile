@@ -7,6 +7,7 @@ import { Accordion } from '../Accordion';
 import { Placeholder } from '../Placeholder/Placeholder';
 import { RoleCard } from './RoleCard';
 import { RolesPlaceholder } from './RolesPlaceholder';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type Props = {
     group: string,
@@ -57,7 +58,11 @@ class RoleAccordionSectionBase extends React.Component<Props, State> {
     render() {
         return (
             <Accordion title={this.props.group} expanded={this.props.expanded}>
-                <Query query={RolesQuery} variables={{ id: this.props.club }}>
+                <Query
+                    query={RolesQuery}
+                    variables={{ id: this.props.club }}
+                    context={createApolloContext('RoleAccordionSection')}
+                >
                     {({ loading, data, refetch }) => {
                         if (data && data.Club != null) {
                             if (!isRecordValid('club', data.Club.LastSync)) {

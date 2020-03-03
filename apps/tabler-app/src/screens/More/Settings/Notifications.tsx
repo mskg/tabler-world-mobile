@@ -111,7 +111,7 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
                     mutation: TestPushMutation,
                 });
             } catch (e) {
-                logger.error(e, 'testPushNotifications');
+                logger.error('settings-testpush', e);
             }
         }
 

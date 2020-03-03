@@ -27,6 +27,8 @@ import { updateBadgeFromConversations } from './chatHelpers';
 import { ConversationListItem } from './ConversationListItem';
 import { MemberListPlaceholder } from './MemberListPlaceholder';
 import { Ionicons } from '@expo/vector-icons';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 const logger = new Logger(Categories.UIComponents.Chat);
 
@@ -145,10 +147,11 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                             <Query<GetConversations, GetConversationsVariables>
                                 query={GetConversationsQuery}
                                 fetchPolicy="cache-and-network"
+                                context={createApolloContext('ConversationsScreenBase')}
                             >
                                 {({ data, error, loading, refetch, fetchMore }) => {
                                     this.refetch = createRunRefresh(refetch);
-                                    if (error && !data) throw error;
+                                    if (error && !data) throw new QueryFailedError(error);
 
                                     return (
                                         <Placeholder

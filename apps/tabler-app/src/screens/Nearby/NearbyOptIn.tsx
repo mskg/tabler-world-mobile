@@ -114,13 +114,17 @@ class NearbyOptInBase extends PureComponent<Props, State> {
     }
 
     _tryopen = () => {
-        Linking.canOpenURL('app-settings:').then((supported) => {
-            if (!supported) {
-                logger.log('Can\'t handle settings url');
-            } else {
-                Linking.openURL('app-settings:');
-            }
-        }).catch(logger.error);
+        Linking.canOpenURL('app-settings:')
+            .then((supported) => {
+                if (!supported) {
+                    logger.log('Can\'t handle settings url');
+                } else {
+                    Linking.openURL('app-settings:');
+                }
+            })
+            .catch((err) => {
+                logger.error('linking-app-settings', err);
+            });
     }
 
     _enable = async () => {

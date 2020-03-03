@@ -13,6 +13,7 @@ import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN, TOKEN_KEY } from '../../../tasks/C
 import { runFetchTask } from '../../../tasks/fetch/runFetchTask';
 import { Action } from '../Settings/Action';
 import { Element } from '../Settings/Element';
+import { createApolloContext } from '../../../helper/createApolloContext';
 
 type State = {
     token?: string | null,
@@ -71,6 +72,7 @@ class DeveloperSectionBase extends React.Component<Props, State> {
             const roles = await client.query<GetMyRoles>({
                 query: GetMyRolesQuery,
                 fetchPolicy: 'cache-first',
+                context: createApolloContext('developer-roles'),
             });
 
             if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.developer)) {

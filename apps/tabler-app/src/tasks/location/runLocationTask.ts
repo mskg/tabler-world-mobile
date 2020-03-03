@@ -21,7 +21,7 @@ export async function runLocationTask({ data, error }) {
         Audit.trackEvent(AuditEventName.LocationUpdate);
 
         if (error) {
-            logger.error(error, `Received error runLocationUpdate`);
+            logger.error('task-location', error);
             return;
         }
 
@@ -37,7 +37,7 @@ export async function runLocationTask({ data, error }) {
                 try {
                     await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
                 } catch (e) {
-                    logger.error(e, `failed to stop ${LOCATION_TASK_NAME} task.`);
+                    logger.error('task-location-signed-out', e);
                 } finally {
                     // such we ignore the event
                     AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
@@ -52,7 +52,7 @@ export async function runLocationTask({ data, error }) {
                     logger.log('Persisting');
 
                     try { await getApolloCachePersistor().persist(); } catch (pe) {
-                        logger.error(pe, 'Could not persist apollo');
+                        logger.error('task-location-persist', pe);
                     }
                 } else {
                     logger.log('Not persisting');
@@ -62,10 +62,10 @@ export async function runLocationTask({ data, error }) {
             logger.debug('no locations?');
         }
     } catch (error) {
-        logger.error(error, 'runLocationUpdate');
+        logger.error('task-location', error);
     } finally {
         try { getReduxPersistor().flush(); } catch (pe) {
-            logger.error(pe, 'Could not persist redux');
+            logger.error('task-location-persist', pe);
         }
     }
 }

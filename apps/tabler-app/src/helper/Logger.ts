@@ -1,5 +1,6 @@
 import Constants from 'expo-constants';
 import * as Sentry from 'sentry-expo';
+import { format } from 'util';
 
 export let PRESERVE_CONSOLE = false;
 
@@ -87,7 +88,7 @@ export class Categories {
 }
 
 console.disableYellowBox = true;
-let FILTER: RegExp | undefined; // /Chat|API/ig;
+let FILTER: RegExp | undefined = /API/ig; // /Chat|API/ig;
 const MAX = 24;
 
 // safety
@@ -122,9 +123,8 @@ export class Logger {
             }
 
             Sentry.addBreadcrumb({
-                message,
                 data,
-
+                message: format(message, data),
                 category: this.category,
                 level: Sentry.Severity.Debug,
             });
@@ -154,9 +154,8 @@ export class Logger {
             }
 
             Sentry.addBreadcrumb({
-                message,
                 data,
-
+                message: format(message, data),
                 category: this.category,
                 level: Sentry.Severity.Info,
             });
@@ -173,12 +172,28 @@ export class Logger {
         }
     }
 
-    error(error, ...args: any[]): void {
+    error(id: any, error: Error, context?: Record<string, any>, tags?: Record<string, string>): void {
         if (!__DEV__ && !PRESERVE_CONSOLE) {
             Sentry.withScope((scope) => {
                 scope.setLevel(Sentry.Severity.Error);
-                scope.setExtra('args', args);
                 scope.setTag('category', this.category);
+                scope.setTag('error-code', id);
+
+                if (context) {
+                    Object.keys(context).forEach((k) => {
+                        scope.setExtra(k, context[k]);
+                    });
+                }
+
+                if (tags) {
+                    Object.keys(tags).forEach((k) => {
+                        scope.setTag(k, tags[k]);
+                    });
+                }
+
+                if (error.message && !error.message.match(id)) {
+                    error.message = `${error.message} (cmp: ${id})`;
+                }
 
                 Sentry.captureException(error);
             });
@@ -187,10 +202,21 @@ export class Logger {
         if (__DEV__ || PRESERVE_CONSOLE) {
             if (__DEV__) {
                 // tslint:disable-next-line: no-console
-                console.warn(Constants.deviceId, `[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+                console.warn(
+                    Constants.deviceId,
+                    `[ERROR] [${this.category.padEnd(MAX)}]`,
+                    `[${id}]`,
+                    error,
+                    context,
+                );
             } else {
                 // tslint:disable-next-line: no-console
-                console.warn(`[ERROR] [${this.category.padEnd(MAX)}]`, ...args, error);
+                console.warn(
+                    `[ERROR] [${this.category.padEnd(MAX)}]`,
+                    `[${id}]`,
+                    error,
+                    context,
+                );
             }
         }
     }
