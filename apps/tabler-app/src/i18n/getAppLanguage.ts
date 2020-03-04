@@ -1,7 +1,7 @@
 import * as Localization from 'expo-localization';
 import { getConfigValue } from '../helper/getConfigValue';
 
-export type Languages = 'de' | 'fi' | 'is' | 'nl' | 'en' | 'it';
+export type Languages = 'de' | 'fi' | 'is' | 'nl' | 'en' | 'it' | 'fr';
 
 /**
  * This function returns all the available languages we support natively in the App.
