@@ -14,6 +14,10 @@ export const Environment = {
             ? parseInt(process.env.THROTTELING_GEORATE, 10)
             : 10,
 
+        testPushLimit: process.env.THROTTELING_TESTPUSH
+            ? parseInt(process.env.THROTTELING_TESTPUSH, 10)
+            : 2,
+
         // websocket publish
         maxParallelDecode: parseInt(process.env.THROTTELING_WS_DECODE || '10', 10),
 

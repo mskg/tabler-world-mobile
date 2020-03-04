@@ -3,11 +3,13 @@ import _ from 'lodash';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { extract429Details } from '../../helper/extract429Details';
 import { reverseGeocode } from '../../helper/geo/reverseGeocode';
 import { PutLocation, PutLocationVariables } from '../../model/graphql/PutLocation';
 import { EnableLocationServicesMutation } from '../../queries/Location/EnableLocationServicesMutation';
 import { PutLocationMutation } from '../../queries/Location/PutLocationMutation';
-import { setLocation } from '../../redux/actions/location';
+import { removePending, setLocation, setThrottle } from '../../redux/actions/location';
 import { getReduxStore } from '../../redux/getRedux';
 import { logger } from './logger';
 
@@ -16,13 +18,19 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
     try {
         logger.debug('handleLocationUpdate', locations);
 
+        const { location: existing, throttleUntil } = getReduxStore().getState().location;
+
+        if (throttleUntil && Date.now() < throttleUntil) {
+            logger.log('Ignoringn location, throtteled');
+            return false;
+        }
+
         const location = _(locations).maxBy((l) => l.timestamp) as Location.LocationData;
         if (location == null) {
             logger.log('No location found?');
             return false;
         }
 
-        const existing = getReduxStore().getState().location.location;
         if (existing
             && existing.coords
             && existing.coords.longitude === location.coords.longitude
@@ -56,11 +64,30 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             }
             : { location: locationVariables };
 
-        const client = cachedAolloClient();
-        await client.mutate<PutLocation, PutLocationVariables>({
-            variables,
-            mutation: enable ? EnableLocationServicesMutation : PutLocationMutation,
-        });
+        try {
+            const client = cachedAolloClient();
+            await client.mutate<PutLocation, PutLocationVariables>({
+                variables,
+                mutation: enable ? EnableLocationServicesMutation : PutLocationMutation,
+                context: createApolloContext('handleLocationUpdate', { doNotRetry: true }),
+            });
+
+            getReduxStore().dispatch(removePending());
+        } catch (error) {
+            const details = extract429Details(error);
+
+            if (details.is429) {
+                const until = new Date();
+                until.setMilliseconds(until.getMilliseconds() + (details.retryAfter || 6000));
+
+                logger.log('429: Sleeping until', until, 'due to', details.retryAfter);
+                getReduxStore().dispatch(setThrottle(until.valueOf()));
+            } else {
+                logger.error('task-location-update', error);
+            }
+
+            return false;
+        }
 
         // we don't need to persist the apollo cache, we don't change it
 

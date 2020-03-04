@@ -3,8 +3,8 @@ import { createIORedisClient } from '../helper/createIORedisClient';
 import { IRateLimiter } from './IRateLimiter';
 import { NoLimit } from './NoLimit';
 import { RollingLimit } from './RollingLimit';
+import { Limiters } from '../types/IApolloContext';
 
-type Limiters = 'location' | 'requests';
 const NO_LIMIT = new NoLimit();
 const MINUTE = 60 * 1000;
 
@@ -20,9 +20,9 @@ export function createLimiter(name: Limiters): IRateLimiter {
 
     if (name === 'requests') {
         limiters[name] = new RollingLimit({
+            name,
             redis: createIORedisClient(),
             limit: Environment.Throtteling.requestRateLimit,
-            name: 'global',
             intervalMS: MINUTE,
         });
 
@@ -31,9 +31,20 @@ export function createLimiter(name: Limiters): IRateLimiter {
 
     if (name === 'location') {
         limiters[name] = new RollingLimit({
+            name,
             redis: createIORedisClient(),
             limit: Environment.Throtteling.geoRateLimit,
-            name: 'location',
+            intervalMS: MINUTE,
+        });
+
+        return limiters[name];
+    }
+
+    if (name === 'testpush') {
+        limiters[name] = new RollingLimit({
+            name,
+            redis: createIORedisClient(),
+            limit: Environment.Throtteling.testPushLimit,
             intervalMS: MINUTE,
         });
 

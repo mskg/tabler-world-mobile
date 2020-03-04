@@ -4,6 +4,8 @@ import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { keys, remove, uniq } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
+import { Metrics } from '../logging/Metrics';
+import { throw429 } from '../ratelimit/throw429';
 
 type QuerySettings = {
     name: string,
@@ -64,6 +66,15 @@ WHERE id = $1`,
 
     Mutation: {
         testPushNotifications: async (_root: any, _args: QuerySettings, context: IApolloContext) => {
+            const limit = context.getLimiter('testpush');
+            const result = await limit.use(context.principal.id);
+
+            if (result.rejected) {
+                context.logger.log('too many testPushNotifications');
+                context.metrics.increment(Metrics.ThrottleTestPush);
+                throw429(result.retryDelta);
+            }
+
             const service = new PushNotificationService();
             await service.send([{
                 member: context.principal.id,

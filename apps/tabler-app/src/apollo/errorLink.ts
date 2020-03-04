@@ -113,7 +113,6 @@ export const errorLink = onError(({ networkError, graphQLErrors, operation, resp
         rootCause.stack = networkError.stack;
     }
 
-
     logger.error(
         component ?? 'GraphQL',
         rootCause,

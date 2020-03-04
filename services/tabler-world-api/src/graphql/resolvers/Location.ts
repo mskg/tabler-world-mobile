@@ -194,7 +194,7 @@ LIMIT 10
             if (result.rejected) {
                 context.logger.log('too many putLocation');
                 context.metrics.increment(Metrics.ThrottleLocation);
-                throw429();
+                throw429(result.retryDelta);
             }
 
             context.logger.debug('putLocation', args);

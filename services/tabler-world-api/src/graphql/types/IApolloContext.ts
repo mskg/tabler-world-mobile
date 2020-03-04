@@ -6,7 +6,7 @@ import { IDataSources } from '../dataSources';
 import { IRateLimiter } from '../ratelimit/IRateLimiter';
 import { IPrincipal } from './IPrincipal';
 
-type Limiters = 'location' | 'requests';
+export type Limiters = 'location' | 'requests' | 'testpush';
 
 export interface IApolloContext {
     readonly clientInfo: {

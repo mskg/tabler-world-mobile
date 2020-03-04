@@ -1,8 +1,8 @@
-import { GraphQLRequestContext, GraphQLResponse } from 'apollo-server-core';
+import { GraphQLRequestContext, GraphQLResponse, HttpQueryError } from 'apollo-server-core';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
-import { IApolloContext } from '../types/IApolloContext';
-import { throw429 } from './throw429';
 import { Metrics } from '../logging/Metrics';
+import { IApolloContext } from '../types/IApolloContext';
+import { HEADER_KEY, throw429 } from './throw429';
 
 export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
     // need to save variables
@@ -14,7 +14,7 @@ export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
 
                 if (result.rejected) {
                     requestContext.context.metrics.increment(Metrics.ThrottleGlobal);
-                    throw429();
+                    throw429(result.retryDelta);
                 }
 
                 // required!
@@ -27,9 +27,19 @@ export class RateLimitPlugin implements ApolloServerPlugin<IApolloContext> {
             willSendResponse: async (requestContext: GraphQLRequestContext<IApolloContext>) => {
                 // @ts-ignore
                 if (requestContext.response?.errors?.length > 0) {
+
                     // @ts-ignore
-                    if (requestContext.response.errors[0].extensions?.exception?.statusCode === 429) {
-                        throw429();
+                    const error = requestContext.response.errors[0].extensions?.exception as HttpQueryError;
+
+                    // @ts-ignore
+                    if (error && error.statusCode === 429) {
+                        let timeout = 0;
+
+                        if (error.headers && error.headers[HEADER_KEY]) {
+                            timeout = parseInt(error.headers[HEADER_KEY], 10);
+                        }
+
+                        throw429(timeout);
                     }
                 }
             },

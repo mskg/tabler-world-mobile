@@ -245,7 +245,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                     </View>
                                 </View>
 
-                                {this.state.username !== '' && (
+                                {this.state.username && this.state.username !== '' && (
                                     <View style={{ flexDirection: 'row' }}>
                                         {
                                             loginParts.map((p, i) => (
