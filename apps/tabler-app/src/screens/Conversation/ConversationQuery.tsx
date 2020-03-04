@@ -8,8 +8,10 @@ import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { isDemoModeEnabled } from '../../helper/demoMode';
-import { Conversation, ConversationVariables, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes, Conversation_Conversation_participants } from '../../model/graphql/Conversation';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { Conversation, ConversationVariables, Conversation_Conversation, Conversation_Conversation_messages, Conversation_Conversation_messages_nodes } from '../../model/graphql/Conversation';
 import { newChatMessage } from '../../model/graphql/newChatMessage';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
@@ -23,8 +25,6 @@ import { markConversationRead, updateBadgeFromConversations } from '../Conversat
 import { ConversationPlaceholder } from './ConversationPlaceholder';
 import { IChatMessage } from './IChatMessage';
 import { logger } from './logger';
-import { QueryFailedError } from '../../helper/QueryFailedError';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 type InjectedProps = {
     extraData: any,
@@ -45,7 +45,7 @@ type Props = {
 
     children: React.ReactElement<InjectedProps>;
 
-    partiesResolved: (subject: string, member: Conversation_Conversation_participants[]) => void;
+    conversationResolved: (conversation: Conversation_Conversation) => void;
     setBadge: typeof setBadge;
 };
 
@@ -317,14 +317,13 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                         this.refetch = refetch;
 
                         let messages;
-                        let subject;
+                        let cachedConv: Conversation | null = null;
 
                         if (error) {
                             // not a connection problem
                             if (this.props.websocket) {
                                 throw new QueryFailedError(error);
                             } else {
-                                let cachedConv;
 
                                 // TODO: not sure why this is here as 'cache-first' should aready do this
                                 try {
@@ -338,15 +337,10 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                                         true,
                                     );
                                 } catch { }
-
-                                if (cachedConv) {
-                                    messages = cachedConv.Conversation?.messages;
-                                    subject = cachedConv.Conversation?.subject;
-                                }
                             }
                         }
 
-                        if (loading && (!data || !data.Conversation) && !messages) {
+                        if (loading && (!data || !data.Conversation)) {
                             return (
                                 <Placeholder
                                     ready={false}
@@ -355,20 +349,24 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                             );
                         }
 
-                        if (data?.Conversation?.messages) {
-                            messages = data.Conversation.messages;
+                        if (data?.Conversation?.messages || cachedConv?.Conversation?.messages) {
+                            messages = data?.Conversation?.messages || cachedConv?.Conversation?.messages;
                         }
 
-                        if (data?.Conversation?.participants) {
+                        if (data?.Conversation) {
                             requestAnimationFrame(() =>
                                 // @ts-ignore
-                                this.props.partiesResolved(data.Conversation.subject, data.Conversation?.participants),
+                                this.props.conversationResolved(data?.Conversation || cachedConv?.Conversation),
                             );
                         }
 
                         return React.cloneElement<InjectedProps>(this.props.children, {
                             extraData: this.state.redraw,
-                            userId: data && data.Me ? data.Me.id : -1,
+                            userId: data?.Me
+                                ? data.Me.id
+                                : cachedConv?.Me
+                                    ? cachedConv.Me.id
+                                    : -1,
 
                             isLoadingEarlier: this.state.loadingEarlier,
                             loadEarlier: !this.state.eof,

@@ -1,3 +1,4 @@
+import { StopWatch } from '@mskg/tabler-world-common';
 import { GraphQLExtension } from 'apollo-server-lambda';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -12,12 +13,14 @@ export class TraceRequestExtension extends GraphQLExtension<IApolloContext> {
 
         context.logger.log('Query', queryString);
         if (variables) { context.logger.log('Variables', variables); }
+
+        context.requestCache.timer = new StopWatch();
     }
 
     // willSendResponse({ _context }: {
     //     _context: IApolloContext,
     // }) {
-    public willSendResponse() {
-        console.log('query done');
+    public willSendResponse({ context }: { context: IApolloContext }) {
+        console.log('query done', context.requestCache.timer?.elapsedMs, 'ms');
     }
 }

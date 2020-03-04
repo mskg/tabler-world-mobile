@@ -20,7 +20,7 @@ export class StopWatch {
         return end[1] / 1e3;
     }
 
-    get elapsedMS() {
+    get elapsedMs() {
         const end = this.end || process.hrtime(this.time);
         return end[1] / 1e6;
     }

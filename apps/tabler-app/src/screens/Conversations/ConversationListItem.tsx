@@ -16,6 +16,7 @@ import { LastMessage } from './LastMessage';
 import { UnreadMessages } from './UnreadMessages';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { createApolloContext } from '../../helper/createApolloContext';
+import { SimpleAvatar } from '../../components/SimpleAvatar';
 
 type OwnProps = {
     theme: Theme,
@@ -153,10 +154,10 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                     subtitle={otherParticipant?.member ? undefined : 'Past Member'}
 
                     left={() => (
-                        <TextImageAvatar
-                            source={this.props.conversation.pic}
+                        <SimpleAvatar
+                            pic={this.props.conversation.pic}
                             size={38}
-                            label={this.props.conversation.subject.substr(0, 2).toUpperCase()}
+                            text={this.props.conversation.subject}
                         />
                     )}
 

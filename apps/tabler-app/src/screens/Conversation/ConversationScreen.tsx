@@ -11,9 +11,9 @@ import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
-import { MemberAvatar } from '../../components/MemberAvatar';
+import { SimpleAvatar } from '../../components/SimpleAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
-import { Conversation, ConversationVariables, Conversation_Conversation_participants, Conversation_Conversation_participants_member } from '../../model/graphql/Conversation';
+import { Conversation, ConversationVariables, Conversation_Conversation_participants, Conversation_Conversation_participants_member, Conversation_Conversation } from '../../model/graphql/Conversation';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
 import { ChatEdits } from '../../model/state/ChatState';
@@ -144,19 +144,28 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         }
     }
 
-    _assignIcon = (subject: string, members: Conversation_Conversation_participants[]) => {
-        if (this.state.icon || !members) { return; }
+    _assignIcon = (conversation: Conversation_Conversation) => {
+        if (this.state.icon) { return; }
 
-        const otherMember = first(members.filter((o) => !o.iscallingidentity));
+        const otherMember = first(conversation.participants.filter((o) => !o.iscallingidentity));
         if (otherMember == null) { return; }
 
         this.setState({
-            subject,
+            subject: conversation.subject,
             member: otherMember.member,
             icon: (
                 <View key="icon" style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    {otherMember.member?.pic && <MemberAvatar member={otherMember.member} />}
-                    <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.medium, fontSize: Platform.OS === 'ios' ? 17 : 20 }}>{subject}</Text>
+                    {conversation.pic && <SimpleAvatar text={conversation.subject} pic={conversation.pic} />}
+                    <Text
+                        numberOfLines={1}
+                        style={{
+                            marginLeft: 8,
+                            fontFamily: this.props.theme.fonts.medium,
+                            fontSize: Platform.OS === 'ios' ? 17 : 20
+                        }}
+                    >
+                        {conversation.subject}
+                    </Text>
                 </View>
             ),
         });
@@ -212,7 +221,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                 <ConversationQuery
                     conversationId={this.getConversationId()}
-                    partiesResolved={this._assignIcon}
+                    conversationResolved={this._assignIcon}
                 >
                     <Chat
                         sendDisabled={!this.props.websocket || !this.props.chatEnabled || !this.state.member}

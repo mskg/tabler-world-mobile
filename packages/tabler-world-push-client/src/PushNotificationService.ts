@@ -24,14 +24,14 @@ export class PushNotificationService {
         const sqs = new xAWS.SQS();
 
         for (const msgChunk of messageChunks) {
-            console.log('pushCacheUpdates', msgChunk.length);
+            console.log('Sending batch', msgChunk.length, 'of notifications');
             const sendBatch = await sqs.sendMessageBatch({
                 QueueUrl: this.url,
                 Entries: msgChunk,
             }).promise();
 
             if (sendBatch.Failed && sendBatch.Failed.length > 0) {
-                console.error('pushCacheUpdates failed to send', sendBatch.Failed);
+                console.error('Failed to send notifications', sendBatch.Failed);
             }
         }
     }

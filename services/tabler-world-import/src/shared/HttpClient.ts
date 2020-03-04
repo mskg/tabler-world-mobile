@@ -106,7 +106,7 @@ export class HttpClient {
                                 console.error('[API] on end', eEnd);
                                 return reject(eEnd);
                             } finally {
-                                console.debug('[API] Downloading from', options.host, options.port, options.path, options.method, 'took', stopWatch.elapsedMS, 'ms');
+                                console.debug('[API] Downloading from', options.host, options.port, options.path, options.method, 'took', stopWatch.elapsedMs, 'ms');
                             }
                         });
                     });

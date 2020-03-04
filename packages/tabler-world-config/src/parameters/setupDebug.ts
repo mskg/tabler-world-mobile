@@ -39,6 +39,7 @@ export function setupDebug(memoryCache: LRU<string, string>) {
     } as Param_Nearby));
 
     memoryCache.set(mapName('cachettl'), JSON.stringify(ttls));
+    memoryCache.set(mapName('chat'), JSON.stringify({}));
 
     memoryCache.set(mapName('app'), JSON.stringify({
         urls: {

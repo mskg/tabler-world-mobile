@@ -1,5 +1,5 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import { AuditAction } from '@mskg/tabler-world-common';
+import { AuditAction, StopWatch } from '@mskg/tabler-world-common';
 import { randomBytes } from 'crypto';
 import { Environment } from '../Environment';
 import { S3 } from '../helper/S3';
@@ -68,21 +68,26 @@ export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
         Conversations: async (_root: {}, args: IteratorArgs, context: IApolloContext) => {
-            const params = await getChatParams();
+            const timer = new StopWatch();
+            try {
+                const params = await getChatParams();
 
-            const result = await conversationManager.getConversations(
-                context.principal.id,
-                {
-                    token: decodeIdentifier(args.token),
-                    pageSize: params.conversationsPageSize,
-                },
-            );
+                const result = await conversationManager.getConversations(
+                    context.principal.id,
+                    {
+                        token: decodeIdentifier(args.token),
+                        pageSize: params.conversationsPageSize,
+                    },
+                );
 
-            return {
-                // index is reverse, list is other way round
-                nodes: result.result.map((c) => ({ id: c })),
-                nextToken: encodeIdentifier(result.nextKey),
-            };
+                return {
+                    // index is reverse, list is other way round
+                    nodes: result.result.map((c) => ({ id: c })),
+                    nextToken: encodeIdentifier(result.nextKey),
+                };
+            } finally {
+                context.logger.log('Conversations took', timer.elapsedYs, 'ys');
+            }
         },
 
         // tslint:disable-next-line: variable-name
@@ -201,7 +206,7 @@ export const ChatResolver = {
 
             const result = await context.dataSources.conversations.readConversation(channel);
             const members = result ? result.members : null;
-            if (!members || members.values.length === 0) { return 'Unknown'; }
+            if (!members || members.values.length === 0) { return null; }
 
             // const values = ;
             const anyMembers = await context.dataSources.members.readManyWithAnyStatus(

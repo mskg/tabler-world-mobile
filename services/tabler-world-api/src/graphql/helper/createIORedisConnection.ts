@@ -28,6 +28,10 @@ export function createIORedisConnection() {
                 },
         });
 
+        instance.on('connect', () => {
+            logger.warn('connected');
+        });
+
         instance.on('error', (e) => {
             logger.warn('connection failed', e);
         });

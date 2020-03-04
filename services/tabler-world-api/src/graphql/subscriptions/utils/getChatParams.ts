@@ -1,6 +1,8 @@
 import { getParameters, Param_Chat } from '@mskg/tabler-world-config';
 
-const chatDefaults = {
+const chatDefaults: Param_Chat = {
+    masterKey: 'SOMETHING THAT MUST BE CONFIGURED',
+
     messageTTL: 60 * 60 * 24 * 14,
     attachmentsTTL: 60 * 60 * 24 * 2,
     eventsPageSize: 20,
@@ -11,10 +13,7 @@ const chatDefaults = {
 export const getChatParams = async () => {
     const p = await getParameters('chat', false);
     if (!p.chat) {
-        return {
-            ...chatDefaults,
-            masterKey: 'SOMETHING THAT MUST BE CONFIGURED',
-        } as Param_Chat;
+        return chatDefaults;
     }
 
     return {

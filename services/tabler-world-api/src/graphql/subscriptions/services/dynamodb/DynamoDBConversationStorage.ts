@@ -37,8 +37,6 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             ScanIndexForward: false,
         }).promise();
 
-        logger.debug('getConversations', member);
-
         return channels
             ? {
                 nextKey,

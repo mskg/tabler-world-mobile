@@ -217,7 +217,14 @@ and removed = FALSE`,
         const member = await this.anyMemberLoader.load(id);
         if (member == null) { return member; }
 
-        return filterFormerMember(
+        if (member.removed) {
+            return filterFormerMember(
+                member,
+            );
+        }
+
+        return filter(
+            this.context.principal,
             member,
         );
     }
@@ -229,7 +236,14 @@ and removed = FALSE`,
         return (await this.anyMemberLoader.loadMany(ids)).map((member: any) => {
             if (member == null) { return member; }
 
-            return filterFormerMember(
+            if (member.removed) {
+                return filterFormerMember(
+                    member,
+                );
+            }
+
+            return filter(
+                this.context.principal,
                 member,
             );
         });
