@@ -206,7 +206,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
 
                             {this.state.error && (
                                 <View style={[styles.errorMessage]}>
-                                    <Text>{this.state.error}</Text>
+                                    <Text style={{ color: this.props.theme.colors.error }}>{this.state.error}</Text>
                                 </View>
                             )}
                         </KeyboardAvoidingView>

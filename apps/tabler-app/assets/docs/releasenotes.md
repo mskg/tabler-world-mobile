@@ -1,16 +1,19 @@
 # v1.4
 
 ## Improvements
-- TABLER.APP now speaks Dutch, thanks to [Aart de Boer](tablerworld:/member?id=144504)
-- TABLER.APP now speaks Finnish, thanks to [Teemu Keski-Valkama](tablerworld:/member?id=121983)
-- TABLER.APP now speaks Icelandic, thanks to [Daníel Sigurður Eðvaldsson](tablerworld:/member?id=128546)
-- We now format all phone numbers in international format
+- TABLER.APP now speaks Dutch, thanks to [Aart de Boer](tablerworld:/member?id=144504).
+- TABLER.APP now speaks Finnish, thanks to [Teemu Keski-Valkama](tablerworld:/member?id=121983).
+- TABLER.APP now speaks Icelandic, thanks to [Daníel Sigurður Eðvaldsson](tablerworld:/member?id=128546).
+- We now format all phone numbers in international format.
+- We now better help you to fill your username in the login screen.
 
 ## Fixes
-- Fixed an issue with cameral roll permissions on Android
-- Fixed some issues with directory data, where board- and boardassistants where no longer members
-- Fixed an issue with address not beeing available
+- Fixed an issue with cameral roll permissions on Android.
+- Fixed an issue in chat conversations, when camera permission have not been granted.
+- Fixed some issues with directory data, where board- and boardassistants where no longer members.
+- Fixed an issue with address not beeing available.
 - Archived members are now gone forever. Farewell!
+- Fixed an issue where conversations with past members were not loaded.
 
 ---
 

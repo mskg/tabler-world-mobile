@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../theme/colors';
 
 // tslint:disable-next-line: export-name
 export const styles = StyleSheet.create({
@@ -13,7 +14,7 @@ export const styles = StyleSheet.create({
     },
 
     errorMessage: {
-        marginTop: 20,
+        marginTop: 16,
     },
 
     demo: {
@@ -32,6 +33,15 @@ export const styles = StyleSheet.create({
     inputContainer: {
         // maxHeight: 50,
         marginTop: 20,
+
+        flexDirection: 'column',
+        marginBottom: 16,
+    },
+
+    hint: {
+        marginTop: 8,
+        fontSize: 12,
+        color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
     },
 
     button: {
@@ -50,7 +60,7 @@ export const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        width: '100%',
+        width: Dimensions.get('screen').width,
         justifyContent: 'center',
         paddingHorizontal: 40,
         // paddingBottom: 100,
