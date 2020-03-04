@@ -55,7 +55,7 @@ export async function showSupportForm() {
 Platform: ${Platform.OS} v${Platform.Version}
 App Version: ${Constants.nativeAppVersion}
 Build Version: ${Constants.manifest.version}
-Device Id: ${Constants.deviceId}
+Device Id: ${Constants.installationId}
 Time: ${new Date().toISOString()}
 `.replace(/\n/ig, '<br/>'),
             recipients: [supportUrl],

@@ -1,5 +1,4 @@
 
-import Constants from 'expo-constants';
 import { AppState } from 'react-native';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { getConfigValue } from '../helper/getConfigValue';
@@ -21,7 +20,6 @@ export const subscriptionClient = new SubscriptionClient(
         connectionParams: async () => ({
             ...getClientParameters(),
             Authorization: await getCurrentIdentity(),
-            Device: Constants.deviceId || 'dev',
         }),
     },
 );

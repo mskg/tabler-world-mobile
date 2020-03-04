@@ -133,7 +133,7 @@ export class Logger {
         if (__DEV__ || PRESERVE_CONSOLE) {
             if (__DEV__) {
                 // tslint:disable-next-line: no-console
-                console.debug(Constants.deviceId, `[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
+                console.debug(Constants.installationId, `[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
             } else {
                 // tslint:disable-next-line: no-console
                 console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
@@ -164,7 +164,7 @@ export class Logger {
         if (__DEV__ || PRESERVE_CONSOLE) {
             if (__DEV__) {
                 // tslint:disable-next-line: no-console
-                console.log(Constants.deviceId, `[INFO] [${this.category.padEnd(MAX)}]`, ...args);
+                console.log(Constants.installationId, `[INFO] [${this.category.padEnd(MAX)}]`, ...args);
             } else {
                 // tslint:disable-next-line: no-console
                 console.log(`[INFO] [${this.category.padEnd(MAX)}]`, ...args);
@@ -203,7 +203,7 @@ export class Logger {
             if (__DEV__) {
                 // tslint:disable-next-line: no-console
                 console.warn(
-                    Constants.deviceId,
+                    Constants.installationId,
                     `[ERROR] [${this.category.padEnd(MAX)}]`,
                     `[${id}]`,
                     error,

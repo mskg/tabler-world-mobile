@@ -99,7 +99,7 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                             <Element
                                 theme={this.props.theme}
                                 field={'Device ID'}
-                                text={Constants.deviceId}
+                                text={Constants.installationId}
                             />
                             <Divider />
 
