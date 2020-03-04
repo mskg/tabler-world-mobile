@@ -594,7 +594,7 @@
             "onetoone": {
                 "title": "Keskustelut",
                 "text": "Jos otat asetuksen pois käytöstä, poistut keskustelutoiminnosta.",
-                "field": "Yhdeltä yhdelle keskustelu"
+                "field": "kahdenkeskinen keskustelu"
             }
         }
     },
