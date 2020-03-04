@@ -122,12 +122,19 @@ export class Logger {
                 data = args;
             }
 
-            Sentry.addBreadcrumb({
-                data,
-                message: format(message, data),
-                category: this.category,
-                level: Sentry.Severity.Debug,
-            });
+            if (data) {
+                Sentry.addBreadcrumb({
+                    message: format(message, data),
+                    category: this.category,
+                    level: Sentry.Severity.Debug,
+                });
+            } else {
+                Sentry.addBreadcrumb({
+                    message,
+                    category: this.category,
+                    level: Sentry.Severity.Debug,
+                });
+            }
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
@@ -153,12 +160,19 @@ export class Logger {
                 data = args;
             }
 
-            Sentry.addBreadcrumb({
-                data,
-                message: format(message, data),
-                category: this.category,
-                level: Sentry.Severity.Info,
-            });
+            if (data) {
+                Sentry.addBreadcrumb({
+                    message: format(message, data),
+                    category: this.category,
+                    level: Sentry.Severity.Debug,
+                });
+            } else {
+                Sentry.addBreadcrumb({
+                    message,
+                    category: this.category,
+                    level: Sentry.Severity.Debug,
+                });
+            }
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
