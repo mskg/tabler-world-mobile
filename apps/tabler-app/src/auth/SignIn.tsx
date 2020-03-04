@@ -1,6 +1,8 @@
 import Auth from '@aws-amplify/auth';
+import { Ionicons } from '@expo/vector-icons';
 import { UrlParameters } from '@mskg/tabler-world-config-app';
 import { Updates } from 'expo';
+import _ from 'lodash';
 import React from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
@@ -34,6 +36,47 @@ type State = {
 };
 
 const logger = new Logger(Categories.Screens.SignIn);
+
+let loginParts: string[];
+try {
+    // @ts-ignore
+    loginParts = _(I18N.Screen_SignIn.placeholderEMail || '') // firstname.lastname@129-de.roundtable.world
+        .split('@')
+        .thru((p) => [
+            _(p[0]).split('.') // firstname.lastname
+                .thru(
+                    (f) => [
+                        f[0],
+                        '.',
+                        f[1],
+                    ],
+                )
+                .value(),
+            '@',
+            _(p[1]).split('.') // 129-de.roundtable.world
+                .thru(
+                    (a) => [
+                        _(a[0]).split('-') // 129-de
+                            .thru((d) => [
+                                d[0],
+                                '-',
+                                d[1],
+                            ])
+                            .value(),
+                        '.',
+                        a[1],
+                        '.',
+                        a[2],
+                    ],
+                )
+                .value(),
+        ])
+        .flattenDepth(2)
+        .value();
+} catch {
+    loginParts = [I18N.Screen_SignIn.placeholderEMail];
+}
+
 
 class SignInBase extends AuditedScreen<Props, State> {
     constructor(props: Props) {
@@ -97,6 +140,36 @@ class SignInBase extends AuditedScreen<Props, State> {
         );
     }
 
+    matchingPart = () => {
+        if (!this.state.username) { return -1; }
+
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.roundtable\.world/)) {
+            return 11;
+        }
+
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.roundtable\./)) {
+            return 9;
+        }
+
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\./)) {
+            return 6;
+        }
+
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-/)) {
+            return 5;
+        }
+
+        if (this.state.username.match(/[a-z]+\.[a-z]+@/)) {
+            return 3;
+        }
+
+        if (this.state.username.match(/[a-z]+\./)) {
+            return 2;
+        }
+
+        return 0;
+    }
+
     _signInOrUp = async () => {
         logger.debug('signInOrUp');
         const { username } = this.state;
@@ -135,23 +208,57 @@ class SignInBase extends AuditedScreen<Props, State> {
         OpenLink.url(urls.join);
     }
 
+    // tslint:disable-next-line: max-func-body-length
     render() {
+        const matchingPart = this.matchingPart();
+        const matches = matchingPart >= 11;
+
         return (
             <Background color={'white'}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
-                        <KeyboardAvoidingView behavior="padding" >
+                        <KeyboardAvoidingView behavior="padding">
                             <Logo />
-                            <Greeting title={I18N.Screen_SignIn.welcomeBack} subtitle={I18N.Screen_SignIn.signin} />
-
+                            <Greeting
+                                title={I18N.Screen_SignIn.welcomeBack}
+                                subtitle={I18N.Screen_SignIn.signin}
+                            />
 
                             <View style={styles.inputContainer}>
-                                <Input
-                                    placeholder={I18N.Screen_SignIn.placeholderEMail}
-                                    value={this.state.username}
-                                    onChangeText={(text) => this.setState({ username: (text || '').toLowerCase() })}
-                                    placeholderTextColor={this.props.theme.colors.placeholder}
-                                    style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }} />
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Input
+                                        placeholder={I18N.Screen_SignIn.placeholderEMail}
+                                        value={this.state.username}
+                                        textContentType="emailAddress"
+                                        onChangeText={(text) => this.setState({ username: (text || '').trim().toLowerCase() })}
+                                        placeholderTextColor={this.props.theme.colors.placeholder}
+                                        style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }}
+                                    />
+                                    <View style={{ marginLeft: 4, minWidth: 20 }}>
+                                        {matches && (
+                                            <Ionicons
+                                                size={24}
+                                                style={{ color: this.props.theme.colors.accent }}
+                                                name="md-checkmark-circle"
+                                            />
+                                        )}
+                                    </View>
+                                </View>
+
+                                {this.state.username !== '' && (
+                                    <View style={{ flexDirection: 'row' }}>
+                                        {
+                                            loginParts.map((p, i) => (
+                                                <Text
+                                                    key={i.toString()}
+                                                    style={[styles.hint, { color: i <= matchingPart ? this.props.theme.colors.accent : undefined }]}
+                                                >
+                                                    {p}
+                                                </Text>
+                                            ))
+                                        }
+                                    </View>
+                                )}
                             </View>
 
                             <View style={[styles.buttonContainer]}>
@@ -161,12 +268,15 @@ class SignInBase extends AuditedScreen<Props, State> {
                                     mode="contained"
                                     onPress={this._signInOrUp}
                                     loading={this.state.working}
-                                    disabled={!this.state.username || this.state.working}>{I18N.Screen_SignIn.continue}</Button>
+                                    disabled={!this.state.username || this.state.working}
+                                >
+                                    {I18N.Screen_SignIn.continue}
+                                </Button>
                             </View>
 
                             {this.state.error && (
                                 <View style={[styles.errorMessage]}>
-                                    <Text>{this.state.error}</Text>
+                                    <Text style={{ color: this.props.theme.colors.error }}>{this.state.error}</Text>
                                 </View>
                             )}
 
