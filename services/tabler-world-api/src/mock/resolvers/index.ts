@@ -9,7 +9,7 @@ import { ChatMessagePayload } from './ChatMessagePayload';
 import { BankAccount, Club, ClubInfo } from './Club';
 import { Company } from './Company';
 import { Conversation } from './Conversation';
-import { clubNames, memberNames } from './data';
+import { clubNames, memberNames } from '../data';
 import { Education } from './Education';
 import { Member } from './Member';
 import { NearbyMember } from './NearbyMember';
@@ -19,7 +19,8 @@ import faker = require('faker');
 faker.locale = 'de';
 
 // tslint:disable: object-shorthand-properties-first
-export const mocks = {
+// tslint:disable: export-name
+export const rootResolver = {
     Date: () => faker.date.future(),
 
     Query: () => ({

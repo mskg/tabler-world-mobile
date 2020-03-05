@@ -1,18 +1,19 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ApolloServer } from 'apollo-server-lambda';
 import { addMockFunctionsToSchema, makeExecutableSchema } from 'graphql-tools';
-import { LogErrorsExtension } from './logging/LogErrorsExtension';
-import { mocks } from './mock/mocks';
-import { resolvers } from './mock/resolvers';
-import { schema } from './schema';
+import { LogErrorsExtension } from '../graphql/logging/LogErrorsExtension';
+import { schema } from '../graphql/schema';
+import { rootResolver } from './resolvers';
+import { typeResolvers } from './resolvers/typeResolvers';
+import depthLimit = require('graphql-depth-limit');
 
 const executableSchema = makeExecutableSchema({
-    resolvers,
+    resolvers: typeResolvers,
     typeDefs: schema,
 });
 
 addMockFunctionsToSchema({
-    mocks,
+    mocks: rootResolver,
     schema: executableSchema,
     preserveResolvers: true,
 });
@@ -24,6 +25,12 @@ const server = new ApolloServer({
         () => new LogErrorsExtension(),
     ],
 
+    validationRules: [
+        depthLimit(5),
+    ],
+
+    persistedQueries: false,
+    tracing: EXECUTING_OFFLINE,
     introspection: EXECUTING_OFFLINE,
 
     // required for extensions

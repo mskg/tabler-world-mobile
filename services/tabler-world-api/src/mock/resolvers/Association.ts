@@ -1,7 +1,9 @@
 import { MockList } from 'graphql-tools';
-import { associationNames } from './data';
+import { associationNames } from '../data';
 
-// tslint:disable-next-line: variable-name
+// tslint:disable: variable-name
+// tslint:disable: prefer-template
+
 export const Association = (root?: any, args?: any, context?: any, _info?: any) => {
     // this is a dirty hack to allow generating the list
     const assocId = (root || {}).assoc || (args || {}).id || (context || {}).assoc || 1;

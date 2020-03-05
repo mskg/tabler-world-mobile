@@ -3,7 +3,7 @@ import { MockList } from 'graphql-tools';
 import { Area } from './Area';
 import { Association } from './Association';
 import { Club } from './Club';
-import { clubNames, memberNames } from './data';
+import { clubNames, memberNames } from '../data';
 
 export const Member = (root?: any, args?: any, context?: any, _info?: any) => {
     // this is a dirty hack to allow generating the list
@@ -19,8 +19,8 @@ export const Member = (root?: any, args?: any, context?: any, _info?: any) => {
     return {
         id: memberId,
 
-        firstname: () => member.first,
-        lastname: () => member.last,
+        firstname: member.first,
+        lastname: member.last,
         pic: member.pic,
 
         birthdate: () => faker.random.boolean() ? faker.date.past(30).toISOString() : null,

@@ -1,10 +1,13 @@
 import faker from 'faker';
 import _ from 'lodash';
 import { Area } from './Area';
-import { clubNames, memberNames } from './data';
+import { clubNames, memberNames } from '../data';
 import { Member } from './Member';
 import { randomLocation } from './randomLocation';
 import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
+
+// tslint:disable: variable-name
+// tslint:disable: prefer-template
 
 export const Club = (root: any, args: any, _context: any, _info: any) => {
     const clubId = (root || {}).club || (args || {}).id

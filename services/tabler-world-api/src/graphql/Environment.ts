@@ -32,6 +32,10 @@ export const Environment = {
         version: process.env.CACHE_VERSION,
     },
 
+    Query: {
+        tll: parseInt(process.env.TTL_QUERIES || (60 * 24).toString(), 10),
+    },
+
     Location: {
         useRedis: process.env.USE_REDIS_LOCATION === 'true',
     },

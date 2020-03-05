@@ -15,6 +15,7 @@ import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/action
 import { getReduxStore } from '../../redux/getRedux';
 import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
+import { LocationState } from '../../model/state/LocationState';
 
 function refreshByQuery(enabled: boolean) {
     const store = getReduxStore();
@@ -99,13 +100,20 @@ function* watch() {
     try {
         // tslint:disable-next-line: no-constant-condition
         while (true) {
-            const location: LocationData | null = yield select(
-                (state: IAppState) => state.location.location);
+            const location: LocationState = yield select(
+                (state: IAppState) => state.location);
 
             const { nearbyMembers, offline, hideOwnClubWhenNearby } = yield select(
                 (state: IAppState) => state.settings);
 
-            if (nearbyMembers && !offline) {
+            const hourAgo = new Date();
+            hourAgo.setHours(hourAgo.getHours() - 1);
+
+            if (nearbyMembers && !offline && (
+            !location.location                              // no location at all
+                || !location.timestamp                      // compiler
+                || (location.timestamp < hourAgo.valueOf()) // location is older than 1 hour
+            )) {
                 yield updateLocation(false, false);
             }
 
@@ -113,7 +121,7 @@ function* watch() {
                 refreshByQuery(hideOwnClubWhenNearby);
             } else {
                 // try to subscribe if not already done
-                if ((!subscription || subscription.closed) && location && nearbyMembers && !offline) {
+                if ((!subscription || subscription.closed) && location.location && nearbyMembers && !offline) {
                     subscription = subscribeToUpdates(hideOwnClubWhenNearby);
                 }
             }

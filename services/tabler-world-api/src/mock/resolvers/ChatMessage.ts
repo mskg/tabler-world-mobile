@@ -1,4 +1,8 @@
 import faker from 'faker';
+
+// tslint:disable: variable-name
+// tslint:disable: prefer-template
+
 export const ChatMessage = (root?: any, args?: any, context?: any, _info?: any) => {
     // this is a dirty hack to allow generating the list
     const messageId = (root || {}).messageId || (args || {}).id || (context || {}).messageId || Date.now();

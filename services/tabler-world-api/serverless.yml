@@ -301,7 +301,7 @@ functions:
   # graphql Demo
   #
   graphql-demo:
-    handler: src/graphql/graphqlLambdaMock.handler
+    handler: src/mock/lambda.handler
     timeout: 15
     memorySize: 128
     tracing: Active

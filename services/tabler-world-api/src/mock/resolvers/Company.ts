@@ -1,9 +1,11 @@
 import faker from 'faker';
 import _ from 'lodash';
-import { SECTOR_MAPPING } from '../helper/Sectors';
+import { SECTOR_MAPPING } from '../../graphql/helper/Sectors';
+
+// tslint:disable: variable-name
+// tslint:disable: prefer-template
 
 export const Company = () => {
-
     const name = faker.company.companyName();
 
     return {

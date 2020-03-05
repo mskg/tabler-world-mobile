@@ -20,9 +20,11 @@ import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { GetMeQuery } from '../../../queries/Member/GetMeQuery';
 import { showLocationHistory } from '../../../redux/actions/navigation';
 import { handleLocationUpdate } from '../../../tasks/location/handleLocationUpdate';
+import { TimerLabel } from './TimerLabel';
 
 type State = {
     history?: boolean,
+    refresh?: boolean,
 };
 
 type OwnProps = {
@@ -32,7 +34,6 @@ type OwnProps = {
 type StateProps = {
     address?: GeoCityLocation,
     timestamp?: number,
-    now: number,
 };
 
 type DispatchPros = {
@@ -41,7 +42,9 @@ type DispatchPros = {
 
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
+// tslint:disable-next-line: max-classes-per-file
 class MeLocationBase extends React.Component<Props, State> {
+
     state: State = {
     };
 
@@ -71,6 +74,21 @@ class MeLocationBase extends React.Component<Props, State> {
         );
     }
 
+    _makeText = () => {
+        // tslint:disable-next-line: prefer-template
+        return this.getLocation()
+            + ', '
+            + I18N.format(
+                I18N.Screen_NearbyMembers.ago,
+                {
+                    timespan: formatTimespan(
+                        Date.now(),
+                        this.props.timestamp,
+                    ),
+                },
+            );
+    }
+
     render() {
         return (
             <Query<Me>
@@ -85,20 +103,7 @@ class MeLocationBase extends React.Component<Props, State> {
                             <InternalMeListItemBase
                                 theme={this.props.theme}
                                 title={<Title>{medata.Me.firstname} {medata.Me.lastname}</Title>}
-                                subtitle={
-                                    // tslint:disable-next-line: prefer-template
-                                    this.getLocation()
-                                    + ', '
-                                    + I18N.format(
-                                        I18N.Screen_NearbyMembers.ago,
-                                        {
-                                            timespan: formatTimespan(
-                                                this.props.now,
-                                                this.props.timestamp,
-                                            ),
-                                        },
-                                    )
-                                }
+                                subtitle={<TimerLabel format={this._makeText} />}
                                 me={medata.Me}
                                 onPress={isFeatureEnabled(Features.LocationHistory) || this.state.history ? () => this.props.showLocationHistory() : undefined}
 

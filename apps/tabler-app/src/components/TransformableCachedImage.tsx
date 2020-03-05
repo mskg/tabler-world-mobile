@@ -5,14 +5,10 @@ import { CacheGroup } from './Image/CacheGroup';
 import CacheManager from './Image/CacheManager';
 
 type Props = {
-    // cache
     preview?: React.ReactElement;
 
     cacheGroup?: CacheGroup;
-    changeDetectionOverride?: string;
     uri: string;
-
-    transitionDuration?: number;
     resizeMode?: ImageResizeMode,
 
     style?: any;
@@ -48,6 +44,7 @@ export class TransformableCachedImage extends React.Component<Props, State> {
         return (
             <TransformableImage
                 style={this.props.style}
+                resizeMode={this.props.resizeMode}
                 image={{
                     source: { uri: this.state.uri },
                     dimensions: this.state.dimensions,

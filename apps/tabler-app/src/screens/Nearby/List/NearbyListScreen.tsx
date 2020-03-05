@@ -73,7 +73,7 @@ class NearbyListScreenBase extends AuditedScreen<Props, State> {
                 <View style={{ flex: 1, backgroundColor: this.props.theme.colors.background }}>
                     <ScrollView ref={(r) => this.scrollView = r}>
                         <Placeholder previewComponent={<MemberListPlaceholder />} ready={this.props.members != null}>
-                            <MeLocation now={Date.now()} />
+                            <MeLocation />
 
                             {this.props.members.length === 0 && (
                                 <List.Section title={I18N.Screen_NearbyMembers.title}>

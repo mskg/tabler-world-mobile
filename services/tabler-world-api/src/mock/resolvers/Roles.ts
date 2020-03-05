@@ -1,6 +1,9 @@
 import faker from 'faker';
 import _ from 'lodash';
 
+// tslint:disable: variable-name
+// tslint:disable: prefer-template
+
 export const PresidentRoles = [
     'President',
     'Vice-President',

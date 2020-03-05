@@ -7,6 +7,7 @@
 - We now format all phone numbers in international format.
 - We now better help you to fill your username in the login screen.
 - Basic member export functionality for Android devices. We know it's not complete, still the best we can offer today.
+- We now hide areas without clubs for you automatically.
 
 ## Fixes
 - Fixed an issue with cameral roll permissions on Android.

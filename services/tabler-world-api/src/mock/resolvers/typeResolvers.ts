@@ -1,5 +1,5 @@
 
-export const resolvers = {
+export const typeResolvers = {
     MemberListView: {
         __resolveType: () => 'Member',
     },
@@ -7,8 +7,4 @@ export const resolvers = {
     JobResult: {
         __resolveType: () => 'JobError',
     },
-
-    // SearchDirectoryResult: {
-    //     __resolveType: () => ,
-    // },
 };

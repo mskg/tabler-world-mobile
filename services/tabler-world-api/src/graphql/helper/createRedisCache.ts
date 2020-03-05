@@ -15,7 +15,7 @@ export function createRedisCache() {
                 prefix: `${Environment.Caching.version}:`,
                 maxTTL: Environment.Redis.maxTTL
                     ? parseInt(Environment.Redis.maxTTL, 10)
-                    : Infinity,
+                    : +Infinity,
             },
             new ConsoleLogger('cache'),
         );

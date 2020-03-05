@@ -14,6 +14,7 @@ import { LogErrorsExtension } from './logging/LogErrorsExtension';
 import { TraceRequestExtension } from './logging/TraceRequestExtension';
 import { RateLimitPlugin } from './ratelimit/RateLimitPlugin';
 import { IApolloContext } from './types/IApolloContext';
+import { Environment } from './Environment';
 
 const extensions: any[] = [
     () => new AuditExtension(),
@@ -54,6 +55,7 @@ const server = new ApolloServer({
     cache: cacheInstance,
 
     persistedQueries: {
+        ttl: Environment.Query.tll,
         cache: cacheInstance,
     },
 

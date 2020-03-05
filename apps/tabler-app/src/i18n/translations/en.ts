@@ -637,6 +637,7 @@ const en = {
         date: 'D MMMM YYYY',
     },
 
+    // no longer used
     Timespan: {
         now: 'Now',
         seconds: 'seconds',

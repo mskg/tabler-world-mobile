@@ -1,6 +1,9 @@
 import faker from 'faker';
 import { randomLocation } from './randomLocation';
 
+// tslint:disable: variable-name
+// tslint:disable: prefer-template
+
 export const NearbyMember = (_root: any, _args: any, context: any, _info: any) => {
     context.memberId = faker.random.number({
         min: 2, max: 100,
