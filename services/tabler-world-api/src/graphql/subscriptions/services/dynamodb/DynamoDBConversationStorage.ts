@@ -3,11 +3,11 @@ import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { DIRECT_CHAT_PREFIX } from '../../types/Constants';
 import { Conversation } from '../../types/Conversation';
+import { IConversationStorage } from '../../types/IConversationStorage';
 import { PaggedResponse } from '../../types/PaggedResponse';
 import { QueryOptions } from '../../types/QueryOptions';
 import { UserConversation } from '../../types/UserConversation';
 import { CONVERSATIONS_TABLE, FieldNames } from '../Constants';
-import { IConversationStorage } from '../../types/IConversationStorage';
 
 const logger = new ConsoleLogger('dynamodb');
 
@@ -101,20 +101,31 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     public async updateLastSeen(conversation: string, member: number, lastSeen: string) {
         logger.debug(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
 
-        // preserve existing data
-        await this.client.update({
-            TableName: CONVERSATIONS_TABLE,
+        try {
 
-            Key: {
-                [FieldNames.conversation]: conversation,
-                [FieldNames.member]: member,
-            },
 
-            UpdateExpression: `SET ${FieldNames.lastSeen} = :l`,
-            ExpressionAttributeValues: {
-                ':l': lastSeen,
-            },
-        }).promise();
+            // preserve existing data
+            await this.client.update({
+                TableName: CONVERSATIONS_TABLE,
+
+                Key: {
+                    [FieldNames.conversation]: conversation,
+                    [FieldNames.member]: member,
+                },
+
+                UpdateExpression: `SET ${FieldNames.lastSeen} = :l`,
+                ConditionExpression: `attribute_not_exists(${FieldNames.lastSeen}) or ${FieldNames.lastConversation} <= :l`,
+                ExpressionAttributeValues: {
+                    ':l': lastSeen,
+                },
+            }).promise();
+        } catch (e) {
+            if (e.code === 'ConditionalCheckFailedException') {
+                logger.log('Condition failed', conversation, member, lastSeen);
+            } else {
+                throw e;
+            }
+        }
     }
 
     public async update(conversation: string, eventId: string): Promise<void> {

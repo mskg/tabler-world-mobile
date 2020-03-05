@@ -96,7 +96,6 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         this.setState({ lastImage: image });
     }
 
-
     _onTextChanged = (text) => {
         if (__DEV__) { logger.log('_onTextChanged', text); }
         this.setState({ lastText: text });

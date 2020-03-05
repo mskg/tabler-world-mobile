@@ -33,7 +33,7 @@ export class RedisConversationStorage implements IConversationStorage {
     }
 
     public async updateLastSeen(conversation: string, member: number, lastSeen: string): Promise<void> {
-        await this.cache.set(userKey(conversation, member), lastSeen, TTL);
+        await this.cache.del(userKey(conversation, member));
         return this.storage.updateLastSeen(conversation, member, lastSeen);
     }
 

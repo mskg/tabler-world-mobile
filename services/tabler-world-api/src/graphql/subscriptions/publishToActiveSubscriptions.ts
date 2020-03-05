@@ -8,7 +8,7 @@ import { Environment } from '../Environment';
 import { executableSchema } from '../executableSchema';
 import { createLimiter } from '../ratelimit/createLimiter';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
-import { subscriptionManager } from './services';
+import { subscriptionManager, conversationManager } from './services';
 import { pubsub } from './services/pubsub';
 import { ISubscription } from './types/ISubscription';
 import { WebsocketEvent } from './types/WebsocketEvent';
@@ -99,6 +99,14 @@ export async function publishToActiveSubscriptions(subscriptions: ISubscription[
                     try {
                         // will log data anyway
                         await subscriptionManager.sendData(connectionId, subscriptionId, result.value);
+
+                        if (event.trackDelivery) {
+                            await conversationManager.updateLastSeen(
+                                event.eventName,
+                                principal.id,
+                                event.id,
+                            );
+                        }
 
                         // can be a stale connction for thre same user
                         remove(failedDeliveries, (p) => p === principal.id);
