@@ -208,6 +208,10 @@ class SignInBase extends AuditedScreen<Props, State> {
         OpenLink.url(urls.join);
     }
 
+    _changeText = (text) => {
+        this.setState({ username: (text || '').trim().toLowerCase() });
+    }
+
     // tslint:disable-next-line: max-func-body-length
     render() {
         const matchingPart = this.matchingPart();
@@ -230,7 +234,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                         placeholder={I18N.Screen_SignIn.placeholderEMail}
                                         value={this.state.username}
                                         textContentType="emailAddress"
-                                        onChangeText={(text) => this.setState({ username: (text || '').trim().toLowerCase() })}
+                                        onChangeText={this._changeText}
                                         placeholderTextColor={this.props.theme.colors.placeholder}
                                         style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }}
                                     />
@@ -244,8 +248,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                         )}
                                     </View>
                                 </View>
-
-                                {this.state.username && this.state.username !== '' && (
+                                {this.state.username != null && this.state.username !== '' && (
                                     <View style={{ flexDirection: 'row' }}>
                                         {
                                             loginParts.map((p, i) => (
