@@ -9,6 +9,7 @@ import { getAppLanguage, Languages } from './getAppLanguage';
 import { I18NType } from './I18NType';
 import { pluralize, PluralizeFunc } from './pluralize';
 import DEFAULT_LANGUAGE from './translations/defaultLanguage';
+import { formatNumber, FormatNumberFunc } from './formatNumber';
 
 const logger = new Logger(Categories.App);
 
@@ -32,6 +33,7 @@ export function replaceCurrentLanguage(otherLang: any) {
     currentLanguage.pluralize = pluralize;
     currentLanguage.formatDate = formatDate;
     currentLanguage.countryName = countryName((currentLanguage as I18NType).Countries);
+    currentLanguage.formatNumber = formatNumber(otherLang.id);
 }
 
 /**
@@ -68,4 +70,5 @@ export const I18N: I18NType & {
     formatDate: FormatDateFunc,
     pluralize: PluralizeFunc,
     countryName: CountryNameFunc,
+    formatNumber: FormatNumberFunc,
 } = currentLanguage;

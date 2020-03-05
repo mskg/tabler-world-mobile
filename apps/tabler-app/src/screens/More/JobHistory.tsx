@@ -1,14 +1,16 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native';
 import { Card, DataTable, Theme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
 import { FullScreenLoading } from '../../components/Loading';
 import { ScreenWithHeader } from '../../components/Screen';
-import { formatTimespan } from '../../helper/formatting/formatTimespan';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { formatFullTimespan } from '../../helper/formatting/formatTimespan';
+import { formatDate } from '../../i18n/formatDate';
+import { I18N } from '../../i18n/translation';
 import { GetJobs, GetJobs_Jobs_data } from '../../model/graphql/GetJobs';
 import { GetJobsQuery } from '../../queries/Admin/GetJobs';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
@@ -35,11 +37,18 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
         }
 
         if (data.__typename === 'JobSend') {
-            return `Count: ${data.recipients || 0}, Errors: ${data.errors || 0}`;
+            return `Count: ${I18N.formatNumber(data.recipients || 0)}, Errors: ${I18N.formatNumber(data.errors || 0)}`;
         }
 
         if (data.__typename === 'JobSync') {
-            return `Count: ${data.records || 0}, Modified: ${data.modified || 0}, Read: ${data.readTime ? formatTimespan(data.readTime) : '?'}, Refresh: ${data.refreshTime ? formatTimespan(data.refreshTime) : '?'}`;
+            const values = [
+                { key: 'Count', value: data.records ? I18N.formatNumber(data.records) : undefined },
+                { key: 'Modified', value: I18N.formatNumber(data.modified || 0) },
+                { key: 'Read', value: data.readTime ? formatFullTimespan(data.readTime) : undefined },
+                { key: 'Refresh', value: data.refreshTime ? formatFullTimespan(data.refreshTime) : undefined },
+            ];
+
+            return values.filter((v) => v.value != null).map((v) => `${v.key}: ${v.value}`).join('; ');
         }
 
         return null;
@@ -73,8 +82,8 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
                                     <Card>
                                         <DataTable style={{ width: 900 }}>
                                             <DataTable.Header>
-                                                <DataTable.Title style={{ width: 160, flex: 0 }}>Timestamp</DataTable.Title>
-                                                <DataTable.Title style={{ width: 200, flex: 0 }}>Name</DataTable.Title>
+                                                <DataTable.Title style={{ width: 120, flex: 0 }}>Timestamp</DataTable.Title>
+                                                <DataTable.Title style={{ width: 240, flex: 0 }}>Name</DataTable.Title>
                                                 <DataTable.Title style={{ width: 80, flex: 0 }}>Status</DataTable.Title>
 
                                                 <DataTable.Title>Data</DataTable.Title>
@@ -82,11 +91,13 @@ export class JobsHistoryScreen extends React.Component<Props, State> {
 
                                             {data.Jobs.map((l, i) => (
                                                 <DataTable.Row key={i.toString()}>
-                                                    <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.runon).toLocaleString()}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 200, flex: 0 }}>{l.name}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }}>{formatDate(new Date(l.runon), 'Date_Short_Time')}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 240, flex: 0 }}>{l.name}</DataTable.Cell>
                                                     <DataTable.Cell style={{ width: 80, flex: 0 }}>{l.status}</DataTable.Cell>
 
-                                                    <DataTable.Cell>{this.formatData(l.data)}</DataTable.Cell>
+                                                    <DataTable.Cell onPress={() => Alert.alert('Message', this.formatData(l.data) || '')}>
+                                                        {this.formatData(l.data)}
+                                                    </DataTable.Cell>
                                                 </DataTable.Row>
                                             ))}
                                         </DataTable>

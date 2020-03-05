@@ -23,8 +23,10 @@ limit 20`);
                     ...r,
                     data: {
                         ...(r.data || {}),
+
+                        // duplicated that we can evaluate it in __resolveType
                         jobname: r.name,
-                        jobstatus: r.success,
+                        status: r.status,
 
                         // timespan is based on ms, we convert the data
                         refreshTime: r.data?.refreshTime ? Math.round(r.data.refreshTime * 1000) : undefined,
@@ -37,7 +39,7 @@ limit 20`);
 
     JobResult: {
         __resolveType: (root: any, _context: IApolloContext) => {
-            if (root.jobstatus === false) { return 'JobError'; }
+            if (root.status === 'failed') { return 'JobError'; }
 
             switch (root.jobname) {
                 case 'update::database':
