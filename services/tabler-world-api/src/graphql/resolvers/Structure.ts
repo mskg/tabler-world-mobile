@@ -1,6 +1,6 @@
 import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
-import { sortBy } from 'lodash';
+import { sortBy, filter } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { removeFamily } from '../helper/removeFamily';
 import { IApolloContext } from '../types/IApolloContext';
@@ -94,7 +94,15 @@ export const StructureResolver = {
         Areas: async (_root: any, args: ByAssociation, context: IApolloContext) => {
             context.logger.debug('Areas', args);
             const areas = await context.dataSources.structure.allAreas(args.association || context.principal.association);
-            return sortBy(areas, (a) => getSortKey(a.shortname));
+
+            // there is areas without clubs, which doesn't really make sense
+            return filter(
+                sortBy(
+                    areas,
+                    (a) => getSortKey(a.shortname),
+                ),
+                (a) => (a.clubs && a.clubs.length > 0) || (a.board && a.board.length > 0),
+            );
         },
 
         Area: (_root: any, args: ById, context: IApolloContext) => {
