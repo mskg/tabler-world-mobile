@@ -14,7 +14,7 @@ export async function sendPendingChatMessages() {
     for (const msg of messages.filter((m) => m.numTries == null || m.numTries <= 5)) {
         try {
             await sendMessage(msg);
-            logger.log('Removing', msg.id);
+            logger.log('removing sent message', msg.id);
             getReduxStore().dispatch(removeMessage(msg.id as string));
         } catch (e) {
             logger.error(

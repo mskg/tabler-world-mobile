@@ -25,6 +25,7 @@ import { markConversationRead, updateBadgeFromConversations } from '../Conversat
 import { ConversationPlaceholder } from './ConversationPlaceholder';
 import { IChatMessage } from './IChatMessage';
 import { logger } from './logger';
+import { MemberAvatar } from '../../components/MemberAvatar';
 
 type InjectedProps = {
     extraData: any,
@@ -142,10 +143,13 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
 
     _convertTransportMessage = (m: Conversation_Conversation_messages_nodes) => ({
         _id: m.id,
+        channel: this.props.conversationId,
         createdAt: m.eventId === ChatMessageEventId.Failed ? undefined : new Date(m.receivedAt),
 
         user: {
-            _id: m.senderId,
+            _id: m.sender.id,
+            avatar: () => <MemberAvatar size={34} member={m.sender} />,
+            name: `${m.sender.firstname} ${m.sender.lastname}`,
         },
 
         text: m.payload.text,
@@ -354,10 +358,10 @@ class ConversationQueryBase extends React.PureComponent<Props & NavigationInject
                         }
 
                         if (data?.Conversation) {
-                            requestAnimationFrame(() =>
+                            requestAnimationFrame(() => {
                                 // @ts-ignore
-                                this.props.conversationResolved(data?.Conversation || cachedConv?.Conversation),
-                            );
+                                this.props.conversationResolved(data?.Conversation || cachedConv?.Conversation);
+                            });
                         }
 
                         return React.cloneElement<InjectedProps>(this.props.children, {

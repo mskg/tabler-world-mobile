@@ -13,12 +13,20 @@ export interface SendMessage_sendMessage_payload {
   image: string | null;
 }
 
+export interface SendMessage_sendMessage_sender {
+  __typename: "Member";
+  id: number;
+  firstname: string | null;
+  lastname: string | null;
+  pic: string | null;
+}
+
 export interface SendMessage_sendMessage {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
   payload: SendMessage_sendMessage_payload;
-  senderId: number | null;
+  sender: SendMessage_sendMessage_sender;
   receivedAt: any;
   /**
    * Message was delivered to the recipients

@@ -26,6 +26,7 @@ import { IChatMessage } from './IChatMessage';
 import { logger } from './logger';
 import { WaitingForNetwork } from './WaitingForNetwork';
 import { first } from 'lodash';
+import { User } from 'react-native-gifted-chat';
 
 type Props = {
     theme: Theme,
@@ -48,6 +49,7 @@ type Props = {
 
 type State = {
     member: Conversation_Conversation_participants_member | null,
+    showUserAvatar: boolean,
 
     subject?: string,
     icon?: any,
@@ -62,6 +64,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         super(props, AuditScreenName.Conversation);
         this.state = {
             member: null,
+            showUserAvatar: false,
             lastText: this.props.texts[this.getConversationId()]?.text,
             lastImage: this.props.texts[this.getConversationId()]?.image,
         };
@@ -147,12 +150,13 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     _assignIcon = (conversation: Conversation_Conversation) => {
         if (this.state.icon) { return; }
 
-        const otherMember = first(conversation.participants.filter((o) => !o.iscallingidentity));
-        if (otherMember == null) { return; }
+        const otherMembers = conversation.participants.filter((o) => !o.iscallingidentity);
+        const otherMember = otherMembers.length > 2 ? null : first(otherMembers);
 
         this.setState({
             subject: conversation.subject,
-            member: otherMember.member,
+            member: otherMember?.member ?? null,
+            showUserAvatar: otherMember == null, // only in case more than two members
             icon: (
                 <View key="icon" style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     {conversation.pic && <SimpleAvatar text={conversation.subject} pic={conversation.pic} />}
@@ -190,6 +194,12 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
     _goBack = () => {
         this.props.navigation.goBack();
+    }
+
+    _showProfile = (user: User) => {
+        if (user && user._id) {
+            this.props.showProfile(user._id as number);
+        }
     }
 
     render() {
@@ -230,6 +240,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                         onImageChanged={this._onImageChanged}
                         text={this.state.lastText}
                         image={this.state.lastImage}
+                        onPressAvatar={this._showProfile}
+                        showUserAvatar={this.state.showUserAvatar}
                     />
                 </ConversationQuery>
             </ScreenWithHeader >

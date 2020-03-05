@@ -55,12 +55,20 @@ export interface Conversation_Conversation_messages_nodes_payload {
   image: string | null;
 }
 
+export interface Conversation_Conversation_messages_nodes_sender {
+  __typename: "Member";
+  id: number;
+  firstname: string | null;
+  lastname: string | null;
+  pic: string | null;
+}
+
 export interface Conversation_Conversation_messages_nodes {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
   payload: Conversation_Conversation_messages_nodes_payload;
-  senderId: number | null;
+  sender: Conversation_Conversation_messages_nodes_sender;
   receivedAt: any;
   /**
    * Message was delivered to the recipients

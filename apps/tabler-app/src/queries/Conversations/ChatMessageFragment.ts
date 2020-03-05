@@ -10,7 +10,14 @@ export const ChatMessageFragment = gql`
             image
         }
 
-        senderId
+        sender {
+            id
+            firstname
+            lastname
+            pic
+        }
+
+        # senderId
         receivedAt
 
         delivered

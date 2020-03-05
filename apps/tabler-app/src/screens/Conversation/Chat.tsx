@@ -6,7 +6,7 @@ import * as ExpoImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { Clipboard, Image, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Bubble, Composer, Message, Send } from 'react-native-gifted-chat';
+import { Bubble, Composer, Message, Send, User } from 'react-native-gifted-chat';
 import { IconButton, Theme, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
 import { isIphoneX } from '../../helper/isIphoneX';
@@ -41,6 +41,9 @@ type Props = {
 
     onTextChanged?: (text: string) => void;
     onImageChanged?: (image?: string) => void;
+
+    showUserAvatar?: boolean,
+    onPressAvatar?: (user: User) => void;
 
     text?: string;
     image?: string;
@@ -457,12 +460,15 @@ class ChatBase extends React.Component<Props, State> {
                     timeFormat={'HH:mm'}
 
                     extraData={this.props.extraData}
-                    renderAvatar={null}
+                    // renderAvatar={null}
                     onSend={this._onSend}
                     renderMessage={this._renderMessage}
 
+                    renderAvatar={!this.props.showUserAvatar ? null : undefined}
                     showUserAvatar={false}
                     showAvatarForEveryMessage={false}
+
+                    onPressAvatar={this.props.onPressAvatar}
 
                     label={I18N.Screen_Conversations.loadEarlier}
 

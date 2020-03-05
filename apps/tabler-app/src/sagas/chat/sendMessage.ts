@@ -12,7 +12,7 @@ export async function sendMessage(message: IPendingChatMessage) {
     logger.log('sendMessage', message.conversationId, '->', message.id);
 
     const client = cachedAolloClient();
-    const optimisticMessage = convertToChatMessage(message);
+    const optimisticMessage = await convertToChatMessage(message);
 
     if (await isDemoModeEnabled()) {
         optimisticMessage.eventId = (Date.now() - 5).toString();
@@ -31,7 +31,7 @@ export async function sendMessage(message: IPendingChatMessage) {
 
         optimisticMessage.id = Date.now().toString();
         optimisticMessage.eventId = Date.now().toString();
-        optimisticMessage.senderId = 5;
+        optimisticMessage.sender.id = 5;
         optimisticMessage.payload.text = 'The answer is always 42';
         optimisticMessage.payload.image = null;
 
