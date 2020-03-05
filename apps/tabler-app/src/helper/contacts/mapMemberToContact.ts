@@ -60,24 +60,24 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
                 street: [member.address.street1, member.address.street2].filter(Boolean).join('\n'),
                 city: member.address.city,
                 postalCode: member.address.postal_code,
-                isoCountryCode: I18N.countryName(member.address.country || 'de'),
-                country: I18N.countryName(member.address.country || 'de'),
+                isoCountryCode: member.address.country && member.address.country.length === 2
+                    ? member.address.country
+                    : undefined,
+                country: I18N.countryName(member.address.country || member.association.isocode),
             }],
         };
 
     }
 
+    // currently ignored by android
+    // https://github.com/expo/expo/blob/b8bd30697d4879acac360d6b1c71c9d4910d08f9/packages/expo-contacts/android/src/main/java/expo/modules/contacts/ContactsModule.java#L339
     if (member.pic != null) {
-        const fileUri = await downloadPic(member.pic, member.id);
-        if (fileUri != null) {
+        const uri = await downloadPic(member.pic, member.id);
+
+        if (uri != null) {
             contact = {
                 ...contact,
-                [Contacts.Fields.Image]: {
-                    uri: fileUri,
-                },
-                
-                [Contacts.Fields.ImageAvailable]: true,
-                [Contacts.Fields.RawImage]: fileUri,
+                [Contacts.Fields.RawImage]: { uri },
             };
         }
     }
@@ -93,16 +93,9 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
             [Contacts.Fields.Birthday]: {
                 day: date.getDate(),
                 month: date.getMonth(),
-                year: date.getFullYear(),
+                // year: date.getFullYear(),
                 calendar: 'gregorian',
             },
-            // {
-            //     label: 'birthday',
-            //     day: date.getUTCDate(),
-            //     month: date.getUTCMonth(),
-            //     year: date.getUTCFullYear(),
-            //     calendar: 'gregorian',
-            // },
         };
     }
 

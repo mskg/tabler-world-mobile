@@ -6,6 +6,7 @@
 - TABLER.APP now speaks Icelandic, thanks to [Daníel Sigurður Eðvaldsson](tablerworld:/member?id=128546).
 - We now format all phone numbers in international format.
 - We now better help you to fill your username in the login screen.
+- Basic member export functionality for Android devices. We know it's not complete, still the best we can offer today.
 
 ## Fixes
 - Fixed an issue with cameral roll permissions on Android.
