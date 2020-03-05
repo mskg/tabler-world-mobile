@@ -349,7 +349,7 @@ export const ChatResolver = {
         // could change this to lazy load
         // tslint:disable-next-line: variable-name
         sender: (root: any, _args: {}, context: IApolloContext) => {
-            return context.dataSources.members.readOne(root.senderId);
+            return context.dataSources.members.readOneManyWithAnyStatus(root.senderId);
         },
     },
 

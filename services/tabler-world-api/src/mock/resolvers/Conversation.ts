@@ -17,11 +17,13 @@ export const Conversation = (root: any, args?: any, context?: any, _info?: any) 
 
         subject: () => member.firstname + ' ' + member.lastname,
         pic: () => member.pic,
+
         participants: () => [
             {
                 iscallingidentity: true,
                 firstname: 'not used',
                 lastname: 'not used',
+                member,
             },
             {
                 member,
@@ -32,7 +34,7 @@ export const Conversation = (root: any, args?: any, context?: any, _info?: any) 
         ],
 
         members: () => [
-            Member({ member: conversationId + 20 }),
+            member,
         ],
     };
 };
