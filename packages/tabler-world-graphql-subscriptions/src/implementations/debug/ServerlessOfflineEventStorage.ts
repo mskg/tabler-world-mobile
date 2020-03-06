@@ -1,32 +1,34 @@
-import { EncodedWebsocketEvent } from '../../core/types/EncodedWebsocketEvent';
+import { WebsocketEvent } from '../../core/types';
 import { IEventStorage, QueryOptions } from '../../core/types/IEventStorage';
-import { SubscriptionServer } from '../../server/SubscriptionServer';
 
 export class ServerlessOfflineEventStorage implements IEventStorage {
-    constructor(private context: SubscriptionServer) { }
+    constructor(
+        private delegate: IEventStorage,
+        private publishHandler: (arg: any) => void,
+    ) { }
 
-    public get(id: string) {
-        return this.context.config.services.events.get(id);
+    public get<T>(id: string) {
+        return this.delegate.get<T>(id);
     }
 
-    public list(trigger: string, options: QueryOptions) {
-        return this.context.config.services.events.list(trigger, options);
+    public list<T>(trigger: string, options: QueryOptions) {
+        return this.delegate.list<T>(trigger, options);
     }
 
     public remove(trigger: string, ids: string[]) {
-        return this.context.config.services.events.remove(trigger, ids);
+        return this.delegate.remove(trigger, ids);
     }
 
     public markDelivered(eventName: string, id: string) {
-        return this.context.config.services.events.markDelivered(eventName, id);
+        return this.delegate.markDelivered(eventName, id);
     }
 
-    public async post(events: EncodedWebsocketEvent[]): Promise<void> {
+    public async post<T>(events: WebsocketEvent<T>[]): Promise<void> {
 
         setTimeout(
             () => {
                 console.log('************* DEBUG PUBLISHG *************');
-                this.context.createPublishHandler()({
+                this.publishHandler({
                     // @ts-ignore
                     Records: events.map((message) => ({
                         eventName: 'INSERT',
@@ -39,6 +41,6 @@ export class ServerlessOfflineEventStorage implements IEventStorage {
             2000,
         );
 
-        await this.context.config.services.events.post(events);
+        await this.delegate.post<T>(events);
     }
 }

@@ -2,7 +2,7 @@ import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { IPushSubscriptionManager, PushSubscriber } from '@mskg/tabler-world-graphql-subscriptions';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { DIRECT_CHAT_PREFIX, FieldNames, PUSH_SUBSCRIPTIONS_TABLE } from './Constants';
+import { DIRECT_CHAT_PREFIX, FieldNames, PUSH_SUBSCRIPTIONS_TABLE } from '../Constants';
 
 const logger = new ConsoleLogger('dynamodb');
 

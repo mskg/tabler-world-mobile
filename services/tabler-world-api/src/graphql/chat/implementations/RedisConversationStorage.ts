@@ -1,8 +1,8 @@
 import { IORedisClient } from '@mskg/tabler-world-cache';
 import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-graphql-subscriptions';
-import { Conversation } from './Conversation';
-import { IConversationStorage } from './IConversationStorage';
-import { UserConversation } from './UserConversation';
+import { Conversation } from '../types/Conversation';
+import { IConversationStorage } from '../types/IConversationStorage';
+import { UserConversation } from '../types/UserConversation';
 
 const conversationKey = (conversation: string) => `chat:${conversation}`;
 const userKey = (conversation: string, member: number) => `chat:${conversation}:${member}`;

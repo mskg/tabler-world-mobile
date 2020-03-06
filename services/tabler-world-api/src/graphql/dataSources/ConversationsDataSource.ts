@@ -3,8 +3,8 @@ import { cachedDataLoader, makeCacheKey } from '@mskg/tabler-world-cache';
 import { IDataService, useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
-import { Conversation } from '../chat/Conversation';
-import { UserConversation } from '../chat/UserConversation';
+import { Conversation } from '../chat/types/Conversation';
+import { UserConversation } from '../chat/types/UserConversation';
 import { IApolloContext } from '../types/IApolloContext';
 import { conversationManager } from '../websocketServer';
 

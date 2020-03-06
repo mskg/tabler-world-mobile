@@ -1,8 +1,8 @@
+import { EncryptedValue } from '../types/EncryptedValue';
 import { createHash } from 'crypto';
 import { randomBytes, secretbox } from 'tweetnacl';
 import { decodeBase64, decodeUTF8, encodeBase64, encodeUTF8 } from 'tweetnacl-util';
-import { EncryptedValue } from '../core/types/EncryptedValue';
-import { IEncryptionManager, IEncryptionWorker } from '../core/types/IEncryptionManager';
+import { IEncryptionManager, IEncryptionWorker } from '../types/IEncryptionManager';
 
 async function encrypt(key: Uint8Array, data: string): Promise<EncryptedValue> {
     const nonceBytes = randomBytes(24);

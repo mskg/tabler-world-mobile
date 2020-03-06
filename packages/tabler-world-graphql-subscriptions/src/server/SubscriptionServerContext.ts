@@ -2,9 +2,10 @@ import { IManyKeyValueCache } from '@mskg/tabler-world-cache';
 import { KeyValueCache } from 'apollo-server-core';
 import { GraphQLSchema } from 'graphql';
 import { WebsocketConnectionManager } from '../core/services/WebsocketConnectionManager';
-import { WebsocketEventManager } from '../core/services/WebsocketEventManager';
 import { WebsocketSubscriptionManager } from '../core/services/WebsocketSubscriptionManager';
+import { IEventStorage } from '../core/types/IEventStorage';
 import { IPushSubscriptionManager } from '../core/types/IPushSubscriptionManager';
+import { ITransportEncoder } from '../core/types/ITransportEncoder';
 import { awsGatewayClient } from '../implementations/awsGatewayClient';
 import { AuthenticateFunc, Config, ContextFunc, EndRequestFunc, MessageSentFunc } from './Config';
 
@@ -14,9 +15,10 @@ export class SubscriptionServerContext<TConnectionContext, TResolverContext> {
     public readonly connectionManager: WebsocketConnectionManager<TConnectionContext>;
     public readonly subscriptionManager: WebsocketSubscriptionManager<TConnectionContext>;
 
-    public readonly eventManager: WebsocketEventManager;
+    public readonly eventStorage: IEventStorage;
     public readonly cache: IManyKeyValueCache<string> & KeyValueCache<string>;
     public readonly pushSubscriptionManager: IPushSubscriptionManager;
+    public readonly encoder: ITransportEncoder<any, any>;
 
     public readonly schema: GraphQLSchema;
 
@@ -31,7 +33,7 @@ export class SubscriptionServerContext<TConnectionContext, TResolverContext> {
 
         this.connectionManager = new WebsocketConnectionManager(config.services.connections);
         this.subscriptionManager = new WebsocketSubscriptionManager(this.connectionManager, config.services.subscriptions);
-        this.eventManager = new WebsocketEventManager(config.services.events, config.services.encryption);
+        this.eventStorage = config.services.events;
 
         this.pushSubscriptionManager = config.services.push;
 
@@ -44,5 +46,11 @@ export class SubscriptionServerContext<TConnectionContext, TResolverContext> {
         this.authenticate = config.authenticate;
         this.subscriptionCreated = config.subscriptionCreated;
         this.eventSent = config.eventSent;
+
+        // encoding
+        this.encoder = config.services.encoder || {
+            encode: (e) => Promise.resolve(e),
+            decode: (e) => Promise.resolve(e),
+        };
     }
 }

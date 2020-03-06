@@ -1,9 +1,9 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { PaggedResponse, QueryOptions, WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
-import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from './Constants';
-import { Conversation } from './Conversation';
-import { IConversationStorage } from './IConversationStorage';
-import { UserConversation } from './UserConversation';
+import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../Constants';
+import { Conversation } from '../types/Conversation';
+import { IConversationStorage } from '../types/IConversationStorage';
+import { UserConversation } from '../types/UserConversation';
 
 const logger = new ConsoleLogger('chat:conversation');
 

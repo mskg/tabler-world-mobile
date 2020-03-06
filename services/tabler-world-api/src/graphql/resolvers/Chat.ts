@@ -2,10 +2,10 @@ import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { AuditAction, StopWatch } from '@mskg/tabler-world-common';
 import { pubsub, WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
 import { randomBytes } from 'crypto';
-import { ConversationManager } from '../chat/ConversationManager';
-import { decodeIdentifier } from '../chat/decodeIdentifier';
-import { encodeIdentifier } from '../chat/encodeIdentifier';
-import { getChatParams } from '../chat/getChatParams';
+import { ConversationManager } from '../chat/services/ConversationManager';
+import { decodeIdentifier } from '../chat/helper/decodeIdentifier';
+import { encodeIdentifier } from '../chat/helper/encodeIdentifier';
+import { getChatParams } from '../chat/helper/getChatParams';
 import { Environment } from '../Environment';
 import { S3 } from '../helper/S3';
 import { IApolloContext } from '../types/IApolloContext';
@@ -485,12 +485,17 @@ export const ChatResolver = {
 
             const channelMessage = await eventManager.post<ChatMessage & { conversationId: string }>({
                 triggers: [trigger],
+                sender: principalId,
+
+                trackDelivery: true,
+                volatile: false,
+                ttl: params.messageTTL,
 
                 payload: {
-                    id: message.id,
-                    // we need the encoded identifier for the push notification
                     conversationId: message.conversationId,
                     senderId: principalId,
+                    id: message.id,
+                    // we need the encoded identifier for the push notification
 
                     // @ts-ignore
                     payload: {
@@ -498,28 +503,20 @@ export const ChatResolver = {
                         image: message.image,
                         text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
+
                     receivedAt: Date.now(),
                 },
 
                 pushNotification: {
-                    message: {
-                        title: `${member.firstname} ${member.lastname}`,
-                        body: text.length > 199 ? `${text.substr(0, 197)}...` : text,
-                        reason: 'chatmessage',
-                        options: {
-                            sound: 'default',
-                            ttl: 60 * 60 * 24,
-                            priority: 'high',
-                        },
+                    title: `${member.firstname} ${member.lastname}`,
+                    body: text.length > 199 ? `${text.substr(0, 197)}...` : text,
+                    reason: 'chatmessage',
+                    options: {
+                        sound: 'default',
+                        ttl: 60 * 60 * 24,
+                        priority: 'high',
                     },
-                    sender: principalId,
                 },
-
-                ttl: params.messageTTL,
-                trackDelivery: true,
-                encrypted: true,
-                volatile: false,
-                sender: principalId,
             });
 
             const [, conversation] = await Promise.all([
@@ -531,15 +528,14 @@ export const ChatResolver = {
             // this must be done after update as, as update removes all seen flags
             await conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id);
 
-            await eventManager.post<string>({
+            await eventManager.post({
                 triggers: (conversation?.members?.values || []).map((subscriber) => ConversationManager.MakeAllConversationKey(subscriber)),
-                // payload is the trigger
                 sender: principalId,
-                payload: trigger,
-                pushNotification: undefined,
-                ttl: params.messageTTL,
+                payload: { trigger, plain: true },
+
                 trackDelivery: false,
-                encrypted: false,
+                ttl: params.messageTTL,
+
                 volatile: true,
             });
 
@@ -587,10 +583,10 @@ export const ChatResolver = {
             },
 
             // tslint:disable-next-line: variable-name
-            resolve: (channelMessage: WebsocketEvent<string>, _args: {}, _context: ISubscriptionContext) => {
+            resolve: (channelMessage: WebsocketEvent<{trigger: string}>, _args: {}, _context: ISubscriptionContext) => {
                 return {
                     // eventId: channelMessage.id,
-                    id: channelMessage.payload,
+                    id: channelMessage.payload.trigger,
                 };
             },
         },

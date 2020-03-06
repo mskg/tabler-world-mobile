@@ -1,5 +1,4 @@
-import { PushNotificationBase } from '@mskg/tabler-world-push-client';
-import { EncodedWebsocketEvent } from './EncodedWebsocketEvent';
+import { WebsocketEvent } from './WebsocketEvent';
 
 export type QueryOptions = {
     forward?: boolean,
@@ -12,27 +11,10 @@ export type PaggedResponse<T> = {
     nextKey?: any,
 };
 
-export type WebsocketMessage<T> = {
-    sender?: number,
-    triggers: string[],
-    payload: T,
-
-    pushNotification?: {
-        sender?: number,
-        message: PushNotificationBase<T>,
-    },
-
-    encrypted: boolean,
-    volatile?: boolean,
-    trackDelivery?: boolean,
-
-    ttl?: number,
-};
-
 export interface IEventStorage {
-    get(id: string): Promise<EncodedWebsocketEvent | undefined>;
-    list(trigger: string, options: QueryOptions): Promise<PaggedResponse<EncodedWebsocketEvent>>;
+    get<T>(id: string): Promise<WebsocketEvent<T> | undefined>;
+    list<T>(trigger: string, options: QueryOptions): Promise<PaggedResponse<WebsocketEvent<T>>>;
     remove(trigger: string, ids: string[]): Promise<void>;
-    post(event: EncodedWebsocketEvent[]): Promise<void>;
+    post<T>(event: WebsocketEvent<T>[]): Promise<void>;
     markDelivered(trigger: string, id: string): Promise<void>;
 }

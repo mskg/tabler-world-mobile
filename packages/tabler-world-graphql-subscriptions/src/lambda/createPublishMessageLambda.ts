@@ -3,11 +3,10 @@ import { AsyncPool, ConsoleLogger } from '@mskg/tabler-world-common';
 import { DynamoDBRecord, DynamoDBStreamEvent } from 'aws-lambda';
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { groupBy, keys } from 'lodash';
-import { publishEvent } from './publishEvent';
-import { EncodedWebsocketEvent } from '../core/types/EncodedWebsocketEvent';
 import { WebsocketEvent } from '../core/types/WebsocketEvent';
 import { Environment } from '../server/Environment';
 import { SubscriptionServerContext } from '../server/SubscriptionServerContext';
+import { publishEvent } from './publishEvent';
 
 const logger = new ConsoleLogger('publish');
 
@@ -23,7 +22,7 @@ export function createPublishMessageLambda(context: SubscriptionServerContext<an
 
             if (event.volatile) {
                 try {
-                    await context.eventManager.remove(event.eventName, [event.id]);
+                    await context.eventStorage.remove(event.eventName, [event.id]);
                 } catch (e) {
                     logger.error('Could not remove messages', event.id, e);
                 }
@@ -47,12 +46,12 @@ export function createPublishMessageLambda(context: SubscriptionServerContext<an
             encodedEvents,
             async (subscruptionEvent) => {
                 try {
-                    const encodedImage: EncodedWebsocketEvent = EXECUTING_OFFLINE
-                        ? subscruptionEvent.dynamodb!.NewImage as EncodedWebsocketEvent
+                    const encodedImage: WebsocketEvent<any> = EXECUTING_OFFLINE
+                        ? subscruptionEvent.dynamodb!.NewImage as WebsocketEvent<any>
                         // @ts-ignore
                         : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
 
-                    return await context.eventManager.unMarshall<any>(encodedImage);
+                    return await context.encoder.decode(encodedImage);
                 } catch (e) {
                     logger.error('Could not unmarshal', e, subscruptionEvent);
                     return undefined;

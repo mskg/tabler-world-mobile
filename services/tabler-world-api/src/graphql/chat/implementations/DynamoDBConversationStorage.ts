@@ -2,10 +2,10 @@ import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-graphql-subscriptions';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { CONVERSATIONS_TABLE, DIRECT_CHAT_PREFIX, FieldNames } from './Constants';
-import { Conversation } from './Conversation';
-import { IConversationStorage } from './IConversationStorage';
-import { UserConversation } from './UserConversation';
+import { CONVERSATIONS_TABLE, DIRECT_CHAT_PREFIX, FieldNames } from '../Constants';
+import { Conversation } from '../types/Conversation';
+import { IConversationStorage } from '../types/IConversationStorage';
+import { UserConversation } from '../types/UserConversation';
 
 const logger = new ConsoleLogger('dynamodb');
 

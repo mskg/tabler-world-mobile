@@ -1,14 +1,18 @@
 import { resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
+import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { Audit, ConsoleLogger, Metric } from '@mskg/tabler-world-common';
-import { DynamoDBConnectionStore, DynamoDBEventStorage, DynamoDBSubcriptionStorage, RedisConnectionStorage, RedisSubscriptionStorage, SubscriptionServer, TweetNaClEnryptionManager } from '@mskg/tabler-world-graphql-subscriptions';
+import { DynamoDBConnectionStore, DynamoDBEventStorage, DynamoDBSubcriptionStorage, RedisConnectionStorage, RedisSubscriptionStorage, ServerlessOfflineEventStorage, SubscriptionServer } from '@mskg/tabler-world-graphql-subscriptions';
 import { AuthenticationError } from 'apollo-server-core';
 import { createHash } from 'crypto';
 import { cacheInstance } from './cache/cacheInstance';
-import { ConversationManager } from './chat/ConversationManager';
-import { DynamoDBConversationStorage } from './chat/DynamoDBConversationStorage';
-import { IConversationStorage } from './chat/IConversationStorage';
-import { RedisConversationStorage } from './chat/RedisConversationStorage';
+import { DynamoDBConversationStorage } from './chat/implementations/DynamoDBConversationStorage';
+import { NaClEncryptionEncoder } from './chat/implementations/NaClEncryptionEncoder';
+import { RedisConversationStorage } from './chat/implementations/RedisConversationStorage';
+import { ConversationManager } from './chat/services/ConversationManager';
+import { DynamoDBPushSubscriptionManager } from './chat/services/DynamoDBPushSubscriptionManager';
+import { EncryptedEventManager } from './chat/services/EncryptedEventManager';
+import { IConversationStorage } from './chat/types/IConversationStorage';
 import { dataSources } from './dataSources';
 import { Environment } from './Environment';
 import { executableSchema } from './executableSchema';
@@ -16,10 +20,8 @@ import { createDynamoDBInstance } from './helper/createDynamoDBInstance';
 import { createIORedisClient } from './helper/createIORedisClient';
 import { extractDeviceID, extractPlatform, extractVersion } from './helper/extractVersion';
 import { createLimiter } from './ratelimit/createLimiter';
-import { getChatParams } from './chat/getChatParams';
 import { IConnectionContext } from './types/IApolloContext';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
-import { DynamoDBPushSubscriptionManager } from './chat/DynamoDBPushSubscriptionManager';
 
 let connections;
 let subscriptions;
@@ -38,7 +40,14 @@ if (Environment.Caching.useRedis) {
     conversationStorage = new DynamoDBConversationStorage(createDynamoDBInstance());
 }
 
-const events = new DynamoDBEventStorage(createDynamoDBInstance());
+// this anables the debugHook for serverless offline
+export const eventsStorage = EXECUTING_OFFLINE ?
+    new ServerlessOfflineEventStorage(
+        new DynamoDBEventStorage(createDynamoDBInstance()),
+        (a: any) => { server.createPublishHandler()(a); },
+    )
+    : new DynamoDBEventStorage(createDynamoDBInstance());
+
 export const pushSubscriptionManager = new DynamoDBPushSubscriptionManager(createDynamoDBInstance());
 
 function hash(address: string) {
@@ -48,21 +57,24 @@ function hash(address: string) {
 }
 
 const logger = new ConsoleLogger('ws');
+
+const encoder = new NaClEncryptionEncoder();
 export const conversationManager = new ConversationManager(conversationStorage);
+export const eventManager = new EncryptedEventManager(
+    eventsStorage,
+    encoder,
+);
 
 const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>({
     schema: executableSchema,
 
     services: {
         connections,
-        events,
         subscriptions,
+        encoder,
+        events: eventsStorage,
         push: pushSubscriptionManager,
         cache: cacheInstance,
-        encryption: new TweetNaClEnryptionManager(async () => {
-            const params = await getChatParams();
-            return params.masterKey;
-        }),
     },
 
     authenticate: async (payload) => {
@@ -124,5 +136,4 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
 });
 
 export const websocketServer = server;
-export const eventManager = server.eventManager;
 export const subscriptionManager = server.subscriptionManager;

@@ -15,7 +15,7 @@ export async function publishEvent<TConnection, TResolver extends { dataSources:
     try {
         logger.debug(image);
 
-        const { subscriptionManager, eventManager, pushSubscriptionManager } = context;
+        const { subscriptionManager, eventStorage, pushSubscriptionManager } = context;
 
         const subscriptions = await subscriptionManager.getSubscriptions(image.eventName) || [];
 
@@ -33,7 +33,7 @@ export async function publishEvent<TConnection, TResolver extends { dataSources:
 
             // @ts-ignore
             await Promise.all([
-                eventManager.markDelivered(image),
+                eventStorage.markDelivered(image.eventName, image.id),
                 remainingSubscriptions.length > 0
                     ? publishToActiveSubscriptions(context, remainingSubscriptions, image, true)
                     : undefined,

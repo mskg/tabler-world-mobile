@@ -20,11 +20,6 @@ export type WebsocketEventBase = {
      * Wil be removed after delivery
      */
     volatile?: boolean,
-
-    /**
-     * Not encrypted
-     */
-    plain?: boolean,
 };
 
 export type WebsocketEvent<T> = {

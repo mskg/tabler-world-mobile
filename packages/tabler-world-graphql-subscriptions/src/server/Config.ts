@@ -4,11 +4,11 @@ import { KeyValueCache } from 'apollo-server-core';
 import { GraphQLSchema } from 'graphql';
 import { OperationMessagePayload } from 'subscriptions-transport-ws';
 import { IConnectionStorage } from '../core/types/IConnectionStorage';
-import { IEncryptionManager } from '../core/types/IEncryptionManager';
 import { IEventStorage } from '../core/types/IEventStorage';
 import { IPushSubscriptionManager } from '../core/types/IPushSubscriptionManager';
 import { ISubscriptionStorage } from '../core/types/ISubscriptionStorage';
 import { WebsocketEvent } from '../core/types/WebsocketEvent';
+import { ITransportEncoder } from '../core/types/ITransportEncoder';
 
 export type ContextFuncArgs<TConnectionContext> = {
     eventId: string,
@@ -40,8 +40,8 @@ export interface Config<TConnectionContext, TResolverContext> {
         subscriptions: ISubscriptionStorage;
         events: IEventStorage;
         push: IPushSubscriptionManager;
+        encoder?: ITransportEncoder<any, any>;
 
-        encryption: IEncryptionManager;
         cache: IManyKeyValueCache<string> & KeyValueCache<string>;
     };
 

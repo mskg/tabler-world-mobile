@@ -1,23 +1,22 @@
 import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { EncodedWebsocketEvent } from '../../core/types/EncodedWebsocketEvent';
 import { IEventStorage, PaggedResponse, QueryOptions } from '../../core/types/IEventStorage';
-import { EVENTS_TABLE, FieldNames } from '../Constants';
 import { WebsocketEvent } from '../../core/types/WebsocketEvent';
+import { EVENTS_TABLE, FieldNames } from '../Constants';
 
 const logger = new ConsoleLogger('dynamodb');
 
 export class DynamoDBEventStorage implements IEventStorage {
     constructor(private client: DocumentClient) { }
 
-    public async get(id: string): Promise<EncodedWebsocketEvent | undefined> {
+    public async get<T>(id: string): Promise<WebsocketEvent<T> | undefined> {
         const { Item } = await this.client.get({
             Key: { id },
             TableName: EVENTS_TABLE,
         }).promise();
 
-        return Item as EncodedWebsocketEvent | undefined;
+        return Item as WebsocketEvent<T> | undefined;
     }
 
     public async list<T = any>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
@@ -66,7 +65,7 @@ export class DynamoDBEventStorage implements IEventStorage {
         }).promise();
     }
 
-    public async post(events: EncodedWebsocketEvent[]): Promise<void> {
+    public async post<T>(events: WebsocketEvent<T>[]): Promise<void> {
         const items: [string, WriteRequest][] = events.map((message) => ([
             EVENTS_TABLE,
             {
