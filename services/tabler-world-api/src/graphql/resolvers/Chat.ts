@@ -1,17 +1,16 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { AuditAction, StopWatch } from '@mskg/tabler-world-common';
+import { pubsub, WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
 import { randomBytes } from 'crypto';
+import { ConversationManager } from '../chat/ConversationManager';
+import { decodeIdentifier } from '../chat/decodeIdentifier';
+import { encodeIdentifier } from '../chat/encodeIdentifier';
+import { getChatParams } from '../chat/getChatParams';
 import { Environment } from '../Environment';
 import { S3 } from '../helper/S3';
-import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
-import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
-import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
-import { ConversationManager } from '../subscriptions/services/ConversationManager';
-import { pubsub } from '../subscriptions/services/pubsub';
-import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
-import { getChatParams } from '../subscriptions/utils/getChatParams';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
+import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../websocketServer';
 
 type SendMessageArgs = {
     message: {
@@ -161,7 +160,7 @@ export const ChatResolver = {
 
                 if (otherMember.length > 0) {
                     const conv = await conversationManager.getUserConversation(channel, otherMember[0]);
-                    lastSeen = conv.lastSeen;
+                    lastSeen = conv?.lastSeen;
                 }
 
                 context.logger.log('otherMember', otherMember, 'lastSeen', lastSeen);
@@ -484,19 +483,23 @@ export const ChatResolver = {
                 getChatParams(),
             ]);
 
-            const channelMessage = await eventManager.post<ChatMessage>({
+            const channelMessage = await eventManager.post<ChatMessage & { conversationId: string }>({
                 triggers: [trigger],
 
-                payload: ({
+                payload: {
                     id: message.id,
+                    // we need the encoded identifier for the push notification
+                    conversationId: message.conversationId,
                     senderId: principalId,
+
+                    // @ts-ignore
                     payload: {
-                        image: message.image,
                         type: message.image ? MessageType.image : MessageType.text,
+                        image: message.image,
                         text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
                     receivedAt: Date.now(),
-                } as ChatMessage),
+                },
 
                 pushNotification: {
                     message: {

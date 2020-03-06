@@ -6,7 +6,7 @@
     },
     "scripts": {
         "build-common": "yarn workspace @mskg/tabler-world-common run build && yarn workspace @mskg/tabler-world-aws run build && yarn workspace @mskg/tabler-world-config run build && yarn workspace @mskg/tabler-world-rds-client run build && yarn workspace @mskg/tabler-world-geo run build && yarn workspace @mskg/tabler-world-jobs run build && yarn workspace @mskg/tabler-world-auth-client run build && yarn workspace @mskg/tabler-world-push-client run build",
-        "build-cache": "yarn workspace @mskg/tabler-world-cache run build",
+        "build-cache": "yarn workspace @mskg/tabler-world-cache run build && yarn workspace @mskg/tabler-world-graphql-subscriptions run build",
         "dev-backend": "concurrently --kill-others -n SSH,SQL,DYO,API 'yarn workspace @mskg/tabler-world-data-service ssh' 'yarn workspace @mskg/tabler-world-data-service dev' 'yarn workspace @mskg/tabler-world-import dynamodb' 'yarn workspace @mskg/tabler-world-api dev'",
         "dev-frontend": "yarn --cwd ./apps/tabler-app run config && yarn --cwd ./apps/tabler-app run dev",
         "dev-redis:start": "docker run --name tw-redis --rm -d -p 6379:6379 redis",
