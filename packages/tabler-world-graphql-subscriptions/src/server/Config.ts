@@ -47,9 +47,8 @@ export interface Config<TConnectionContext, TResolverContext> {
 
     schema: GraphQLSchema;
 
-    authenticate: AuthenticateFunc<TConnectionContext>;
-    createContext: ContextFunc<TConnectionContext, TResolverContext>;
-
-    eventSent: MessageSentFunc<TResolverContext>;
-    subscriptionCreated: EndRequestFunc<TResolverContext>;
+    onConnect: AuthenticateFunc<TConnectionContext>;
+    onSubscriptionCreated: EndRequestFunc<TResolverContext>;
+    onCreateContext: ContextFunc<TConnectionContext, TResolverContext>;
+    onEventSent: MessageSentFunc<TResolverContext>;
 }

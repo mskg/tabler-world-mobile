@@ -35,7 +35,7 @@ export async function publishToActiveSubscriptions<TConnection = any, TResolver 
                 }
 
                 const document = parse(payload.query);
-                const context = await serverContext.createContext({
+                const context = await serverContext.onCreateContext({
                     connectionId,
                     principal,
                     eventId: event.id,
@@ -85,13 +85,13 @@ export async function publishToActiveSubscriptions<TConnection = any, TResolver 
                     try {
                         // will log data anyway
                         await subscriptionManager.sendData(connectionId, subscriptionId, result.value);
-                        await serverContext.eventSent({
+                        await serverContext.onEventSent({
                             context,
                             event,
                             principal,
                         });
 
-                        await serverContext.subscriptionCreated(context);
+                        await serverContext.onSubscriptionCreated(context);
 
                         // if (event.trackDelivery) {
                         //     await context.updateLastSeen(

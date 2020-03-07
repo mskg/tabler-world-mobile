@@ -20,7 +20,7 @@ export async function gqlOperation<TConnection = any, TResolver extends { dataSo
         throw new Error('Protocol error: payload and/or query is null');
     }
 
-    const { connectionManager, subscriptionManager, createContext } = context.serverContext;
+    const { connectionManager, subscriptionManager, onCreateContext: createContext } = context.serverContext;
 
     context.logger.log('gqlOperation', operation.payload);
     const { query, variables, operationName } = operation.payload;
@@ -71,7 +71,7 @@ export async function gqlOperation<TConnection = any, TResolver extends { dataSo
             contextValue: aCtx,
         });
 
-        await context.serverContext.subscriptionCreated(aCtx);
+        await context.serverContext.onSubscriptionCreated(aCtx);
 
         if (!isAsyncIterable(iterable)) {
             logger.debug('Not iteratbale', iterable);

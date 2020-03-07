@@ -23,10 +23,10 @@ export class SubscriptionServerContext<TConnectionContext, TResolverContext> {
     public readonly schema: GraphQLSchema;
 
     // events
-    public readonly createContext: ContextFunc<TConnectionContext, TResolverContext>;
-    public readonly authenticate: AuthenticateFunc<TConnectionContext>;
-    public readonly subscriptionCreated: EndRequestFunc<TResolverContext>;
-    public readonly eventSent: MessageSentFunc<TResolverContext>;
+    public readonly onCreateContext: ContextFunc<TConnectionContext, TResolverContext>;
+    public readonly onAuthenticate: AuthenticateFunc<TConnectionContext>;
+    public readonly onSubscriptionCreated: EndRequestFunc<TResolverContext>;
+    public readonly onEventSent: MessageSentFunc<TResolverContext>;
 
     constructor(config: Config<TConnectionContext, TResolverContext>) {
         this.gatewayClient = awsGatewayClient;
@@ -42,10 +42,10 @@ export class SubscriptionServerContext<TConnectionContext, TResolverContext> {
         this.schema = config.schema;
 
         // events
-        this.createContext = config.createContext;
-        this.authenticate = config.authenticate;
-        this.subscriptionCreated = config.subscriptionCreated;
-        this.eventSent = config.eventSent;
+        this.onCreateContext = config.onCreateContext;
+        this.onAuthenticate = config.onConnect;
+        this.onSubscriptionCreated = config.onSubscriptionCreated;
+        this.onEventSent = config.onEventSent;
 
         // encoding
         this.encoder = config.services.encoder || {

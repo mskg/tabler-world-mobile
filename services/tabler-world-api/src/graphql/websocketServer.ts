@@ -77,7 +77,7 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
         cache: cacheInstance,
     },
 
-    authenticate: async (payload) => {
+    onConnect: async (payload) => {
         // @ts-ignore
         const { Authorization: token } = payload;
         if (token == null) throw new AuthenticationError('No token provided');
@@ -104,7 +104,7 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
     },
 
     // we update last seen
-    eventSent: async ({ context, event, principal }) => {
+    onEventSent: async ({ context, event, principal }) => {
         context.metrics.dump();
         context.auditor.dump();
 
@@ -114,12 +114,12 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
     },
 
     // we dump the results
-    subscriptionCreated: async (context) => {
+    onSubscriptionCreated: async (context) => {
         context.metrics.dump();
         context.auditor.dump();
     },
 
-    createContext: async ({ connectionId, context, eventId, principal }) => {
+    onCreateContext: async ({ connectionId, context, eventId, principal }) => {
         return {
             principal,
             connectionId,

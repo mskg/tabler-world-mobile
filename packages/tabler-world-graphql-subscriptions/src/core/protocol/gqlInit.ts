@@ -8,7 +8,7 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
     context.logger.debug('gqlInit');
 
     try {
-        const authContext = await context.serverContext.authenticate(operation.payload);
+        const authContext = await context.serverContext.onAuthenticate(operation.payload);
         context.logger.log('resolved', authContext.principal);
 
         await connectionManager.authorize(
