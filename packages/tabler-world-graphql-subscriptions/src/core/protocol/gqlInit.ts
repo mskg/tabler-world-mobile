@@ -8,9 +8,6 @@ export async function gqlInit(context: ProtocolContext, operation: OperationMess
     context.logger.debug('gqlInit');
 
     try {
-        // @ts-ignore
-        const { Authorization: token } = operation.payload;
-
         const authContext = await context.serverContext.authenticate(operation.payload);
         context.logger.log('resolved', authContext.principal);
 
