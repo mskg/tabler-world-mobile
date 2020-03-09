@@ -84,7 +84,8 @@
                 "CAMERA",
                 "ACCESS_COARSE_LOCATION",
                 "ACCESS_FINE_LOCATION",
-                "CAMERA_ROLL"
+                "READ_EXTERNAL_STORAGE",
+                "WRITE_EXTERNAL_STORAGE"
             ],
             "adaptiveIcon": {
                 "foregroundImage": "./assets/images/logo_Android.png",
