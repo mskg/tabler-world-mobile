@@ -51,7 +51,7 @@ export class TweetNaClEnryptionManager implements IEncryptionManager {
 
     async createWorker(conversation: string): Promise<IEncryptionWorker> {
         const hash = createHash('sha256')
-            .update(conversation + await this.masterKey)
+            .update(conversation + await this.masterKey())
             .digest();
 
         const base64 = Buffer.from(hash).toString('base64');
