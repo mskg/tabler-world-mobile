@@ -4,6 +4,12 @@ export const Environment = {
         Region: process.env.AWS_REGION,
     },
 
+    HttpClient: {
+        proxy: process.env.http_proxy,
+        retries: parseInt(process.env.http_retries || '10', 10),
+        waitTime: parseInt(process.env.http_waittime || '1000', 10),
+    },
+
     Caching: {
         disabled: process.env.DISABLE_CACHE === 'true',
         useRedis: process.env.USE_REDIS !== 'false',
