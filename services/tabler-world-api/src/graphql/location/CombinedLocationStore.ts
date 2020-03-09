@@ -23,9 +23,9 @@ export class CombinedLocationStore implements ILocationStorage {
             || (!EXECUTING_OFFLINE ? this.store2.locationOf(member) : undefined);
     }
 
-    public async query(memberToMatch: number, radius: number, count: number, age?: number) {
-        return await this.store1.query(memberToMatch, radius, count, age)
-            || (!EXECUTING_OFFLINE ? this.store2.query(memberToMatch, radius, count, age) : undefined);
+    public async query(memberToMatch: number, radius: number, count: number, excludeOwnTable: true, age?: number) {
+        return await this.store1.query(memberToMatch, radius, count, excludeOwnTable, age)
+            || (!EXECUTING_OFFLINE ? this.store2.query(memberToMatch, radius, count, excludeOwnTable, age) : undefined);
     }
 
     public async putLocation(loc: PutLocation) {

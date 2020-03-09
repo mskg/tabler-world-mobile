@@ -39,7 +39,7 @@ WHERE
         );
     }
 
-    public async query(memberToMatch: number, radius: number, count: number, age?: number): Promise<QueryResult> {
+    public async query(memberToMatch: number, radius: number, count: number, excludeOwnTable: boolean, age?: number): Promise<QueryResult> {
         const sw = new StopWatch();
         try {
             return await useDatabase(
@@ -71,7 +71,7 @@ WHERE
         member <> $2
     and ST_DWithin(locations.point, $1::geography, ${radius})
     ${age ? `and lastseen > (now() - '${age} day'::interval)` : ''}
-    ${false /*|| args.query.excludeOwnTable*/ ? 'and club <> $3' : ''}
+    ${excludeOwnTable ? 'and club <> $3' : ''}
 
     and address is not null
 ORDER BY
@@ -81,7 +81,7 @@ LIMIT ${count}
                         [
                             `POINT(${point.longitude} ${point.latitude})`,
                             memberToMatch,
-                            // args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
+                            excludeOwnTable ? this.context.principal.club : undefined,
                         ].filter(Boolean));
 
                     return result.rows.length > 0 ? result.rows : [];

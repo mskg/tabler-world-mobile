@@ -92,13 +92,14 @@ export class LocationDataSource extends DataSource<IApolloContext> {
         return this.storage.locationOf(this.context.principal.id);
     }
 
-    public async query(): Promise<QueryResult> {
+    public async query(excludeOwnTable: boolean): Promise<QueryResult> {
         const nearByQuery = await getNearByParams();
 
         return this.storage.query(
             this.context.principal.id,
             nearByQuery.radius,
             20,
+            excludeOwnTable,
             nearByQuery.days,
         );
     }
@@ -106,7 +107,12 @@ export class LocationDataSource extends DataSource<IApolloContext> {
     public putLocation(loc: Pick<PutLocation, 'accuracy' | 'address' | 'latitude' | 'longitude' | 'speed'>): Promise<void> {
         return this.storage.putLocation({
             ...loc,
+
             member: this.context.principal.id,
+            club: this.context.principal.club,
+            association: this.context.principal.association,
+            family: this.context.principal.family as string,
+
             lastseen: new Date(),
         });
     }

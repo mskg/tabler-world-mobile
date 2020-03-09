@@ -151,7 +151,7 @@ export const LocationResolver = {
                 return [];
             }
 
-            return context.dataSources.location.query();
+            return context.dataSources.location.query(args.query?.excludeOwnTable === true);
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {

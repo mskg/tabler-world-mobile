@@ -5,7 +5,7 @@ import { chunk, filter, keys, take, values } from 'lodash';
 import { createIORedisClient } from '../helper/createIORedisClient';
 import { Metrics } from '../logging/Metrics';
 import { IApolloContext } from '../types/IApolloContext';
-import { ILocationStorage, Location, PutLocation, QueryResult } from './ILocationStorage';
+import { ILocationStorage, Location, PutLocation, QueryResult, QueryResultRecord } from './ILocationStorage';
 
 export class RedisLocationStorage implements ILocationStorage {
     private client!: IORedisClient;
@@ -34,7 +34,7 @@ export class RedisLocationStorage implements ILocationStorage {
     exec
     */
     // tslint:disable-next-line: max-func-body-length
-    public async query(memberToMatch: number, radius: number, count: number, age?: number): Promise<QueryResult> {
+    public async query(memberToMatch: number, radius: number, count: number, excludeOwnTable: boolean, age?: number): Promise<QueryResult> {
         const sw = new StopWatch();
         try {
             const multi = await this.client.multi();
@@ -122,11 +122,15 @@ export class RedisLocationStorage implements ILocationStorage {
             const mapEnabled = await this.context.dataSources.location.isMembersVisibleOnMap(
                 values(memberWithDistance).map((i: any) => parseInt(i.member, 10)));
 
-            keys(result).forEach((k, i) => {
+            // we sort them by
+            const resultArray: (QueryResultRecord & { club: string, association: string, family: string })[] = [];
+
+            // we must preserve order
+            ids.forEach((k, i) => {
                 const md = memberWithDistance[k];
                 const r = result[k];
 
-                result[k] = {
+                resultArray.push({
                     ...r,
                     location: r.location || r.position, // compat
                     lastseen: new Date(r.lastseen),
@@ -134,23 +138,31 @@ export class RedisLocationStorage implements ILocationStorage {
                     distance: Math.round(md.distance),
                     member: md.member,
                     canshowonmap: mapEnabled[i],
-                };
+                });
             });
 
             return take(
                 filter(
-                    values(result),
-                    (m) => m.member !== memberToMatch && m.address,
+                    resultArray,
+                    (m) => m.member !== memberToMatch
+                        && m.address
+                        && (excludeOwnTable && m.club !== this.context.principal.club || !excludeOwnTable),
                 ),
                 count,
-            );
+            ) as QueryResult;
         } finally {
             this.context.metrics.add({ id: Metrics.QueryLocation, value: sw.elapsedYs, unit: 'μs' });
         }
     }
 
     public async putLocation(
-        { longitude, latitude, member, lastseen, speed, address, accuracy }: PutLocation,
+        {
+            longitude, latitude,
+            member, club, association, family,
+            lastseen,
+            speed, accuracy,
+            address,
+        }: PutLocation,
     ) {
         // const params = getNearByParams();
         const multi = await this.client.multi();
@@ -170,6 +182,7 @@ export class RedisLocationStorage implements ILocationStorage {
                 speed,
                 address,
                 accuracy,
+                club, association, family,
                 lastseen: lastseen.valueOf(),
                 location: { longitude, latitude },
             },
