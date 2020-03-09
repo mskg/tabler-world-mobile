@@ -5,6 +5,7 @@ import { put, select } from 'redux-saga/effects';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { disableNearbyTablers } from '../../helper/geo/disable';
 import { enableNearbyTablers } from '../../helper/geo/enable';
 import { GetCloudSettings } from '../../model/graphql/GetCloudSettings';
@@ -14,7 +15,6 @@ import * as filterActions from '../../redux/actions/filter';
 import * as settingsActions from '../../redux/actions/settings';
 import { logger } from './logger';
 import { NotificationSettings } from './NotificationSettings';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 /**
  * When a favorite is toggled, mark the record as modified
@@ -73,7 +73,8 @@ query GetCloudSettings {
 
     const notificationSettings: NotificationSettings = result.data?.notifications || {};
 
-    if (settingState.notificationsBirthdays !== notificationSettings.birthdays) {
+    // tslint:disable-next-line: triple-equals
+    if (settingState.notificationsBirthdays != notificationSettings.birthdays) {
         logger.debug('Restoring notificationsBirthdays', notificationSettings.birthdays);
 
         yield put(settingsActions.updateSetting({
@@ -84,7 +85,8 @@ query GetCloudSettings {
         }));
     }
 
-    if (settingState.notificationsOneToOneChat !== notificationSettings.personalChat) {
+    // tslint:disable-next-line: triple-equals
+    if (settingState.notificationsOneToOneChat != notificationSettings.personalChat) {
         logger.debug('Restoring notificationsOneToOneChat', notificationSettings.personalChat);
 
         yield put(settingsActions.updateSetting({

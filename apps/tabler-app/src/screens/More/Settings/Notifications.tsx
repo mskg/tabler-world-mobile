@@ -102,7 +102,9 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
             // forces a value push to server
             this.updateSetting({
                 name: 'notificationsBirthdays',
-                value: this.props.settings.notificationsBirthdays == null ? true : this.props.settings.notificationsBirthdays,
+                value: this.props.settings.notificationsBirthdays == null
+                    ? true
+                    : this.props.settings.notificationsBirthdays,
             });
 
             try {

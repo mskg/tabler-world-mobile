@@ -11,8 +11,8 @@ export function* syncAllSettings() {
     logger.debug('Getting parameters');
 
     const authState: AuthState = yield select((state: IAppState) => state.auth);
-    if (authState.signinState !== 'singedIn') {
-        logger.debug('Not signed in');
+    if (authState.state !== 'singedIn') {
+        logger.debug('Not signed in', authState.state);
         yield take(singedIn.type);
     }
 
