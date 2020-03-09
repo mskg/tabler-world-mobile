@@ -25,7 +25,7 @@ export class SubscriptionServerContext<TConnectionContext, TResolverContext> {
 
     public readonly eventStorage: IEventStorage;
     public readonly cache: IManyKeyValueCache<string> & KeyValueCache<string>;
-    public readonly encoder: ITransportEncoder<any, any>;
+    public readonly encoder: ITransportEncoder<any, any, any, any>;
 
     public readonly schema: GraphQLSchema;
 

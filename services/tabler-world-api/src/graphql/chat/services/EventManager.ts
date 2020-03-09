@@ -2,17 +2,20 @@ import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { IEventStorage, PaggedResponse, QueryOptions, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
 import { ulid } from 'ulid';
 import { EncrytablePayload, WebsocketMessage } from '../types/WebsocketMessage';
+import { PushNotification } from '@mskg/tabler-world-push-client';
 
 const logger = new ConsoleLogger('chat:event');
+
+type EventType<T extends EncrytablePayload> = WebsocketEvent<T, PushNotification<any> | undefined>;
 
 export class EventManager {
     constructor(
         private storage: IEventStorage,
     ) { }
 
-    public events<T>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
+    public events<T, PN = null>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T, PN>>> {
         logger.debug('event', trigger);
-        return this.storage.list<T>(trigger, options);
+        return this.storage.list<T, PN>(trigger, options);
     }
 
     public async post<T extends EncrytablePayload>({
@@ -36,13 +39,13 @@ export class EventManager {
             delivered: false,
         };
 
-        const messages: WebsocketEvent<any>[] = triggers.map((t) => {
+        const messages: EventType<T>[] = triggers.map((t) => {
             const sendPayload = {
                 // need a full copy
                 ...JSON.parse(JSON.stringify(baseMessage)),
                 id: ulid(),
                 eventName: t,
-            } as WebsocketEvent<T>;
+            } as EventType<T>;
 
             // we don't care about the little drift
             if (ttl) {
@@ -59,6 +62,7 @@ export class EventManager {
             ...baseMessage,
             id: m.id,
             eventName: m.eventName,
+            pushNotification: undefined, // not required
         }));
     }
 }

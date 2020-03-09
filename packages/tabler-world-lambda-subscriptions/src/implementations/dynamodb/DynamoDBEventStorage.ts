@@ -10,16 +10,16 @@ const logger = new ConsoleLogger('dynamodb');
 export class DynamoDBEventStorage implements IEventStorage {
     constructor(private tableName: string, private client: DocumentClient) { }
 
-    public async get<T>(id: string): Promise<WebsocketEvent<T> | undefined> {
+    public async get<T, PN>(id: string): Promise<WebsocketEvent<T, PN> | undefined> {
         const { Item } = await this.client.get({
             Key: { id },
             TableName: this.tableName,
         }).promise();
 
-        return Item as WebsocketEvent<T> | undefined;
+        return Item as WebsocketEvent<T, PN> | undefined;
     }
 
-    public async list<T = any>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T>>> {
+    public async list<T, PN>(trigger: string, options: QueryOptions = { forward: false, pageSize: 10 }): Promise<PaggedResponse<WebsocketEvent<T, PN>>> {
         logger.debug('event', trigger);
 
         const { Items: messages, LastEvaluatedKey: nextKey } = await this.client.query({
@@ -65,7 +65,7 @@ export class DynamoDBEventStorage implements IEventStorage {
         }).promise();
     }
 
-    public async post<T>(events: WebsocketEvent<T>[]): Promise<void> {
+    public async post<T, PN>(events: WebsocketEvent<T, PN>[]): Promise<void> {
         const items: [string, WriteRequest][] = events.map((message) => ([
             this.tableName,
             {

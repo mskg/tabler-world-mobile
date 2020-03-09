@@ -1,5 +1,4 @@
 import { ITransportEncoder, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
-import { PushNotification } from '@mskg/tabler-world-push-client';
 import { getChatParams } from '../helper/getChatParams';
 import { EncryptedValue } from '../types/EncryptedValue';
 import { TweetNaClEnryptionManager } from './TweetNaClEnryptionManager';
@@ -12,10 +11,10 @@ const nacl = new TweetNaClEnryptionManager(async () => {
 type EncryptedPayload = {
     version?: string,
     payload: any,
-    pushNotification?: PushNotification<any>,
+    pushNotification?: any,
 };
 
-export class NaClEncryptionEncoder implements ITransportEncoder<any, any | EncryptedValue> {
+export class NaClEncryptionEncoder implements ITransportEncoder<any, any, any | EncryptedValue, any> {
     public async encode(event: WebsocketEvent<any>): Promise<WebsocketEvent<any | EncryptedValue>> {
         if (event.payload?.plain) { return event; }
 

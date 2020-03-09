@@ -1,7 +1,13 @@
-import { PushNotificationBase } from '@mskg/tabler-world-push-client';
 
 export type WebsocketEventBase = {
+    /**
+     * Trigger action
+     */
     eventName: string;
+
+    /**
+     * Unique, sortable id
+     */
     id: string;
 
     /**
@@ -9,12 +15,20 @@ export type WebsocketEventBase = {
      */
     timestamp: number,
 
+    /**
+     * Id of the sender of the message
+     */
     sender?: number,
 
     /**
-     * Read by all users
+     * Read by all users?
      */
     delivered?: boolean,
+
+    /**
+     * Track delivery of the message
+     */
+    trackDelivery: boolean,
 
     /**
      * Wil be removed after delivery
@@ -22,8 +36,16 @@ export type WebsocketEventBase = {
     volatile?: boolean,
 };
 
-export type WebsocketEvent<T> = {
-    pushNotification?: PushNotificationBase<T>,
+export type WebsocketEvent<T, PN = null> = {
+    /**
+     * Optional push notification
+     */
+    pushNotification?: PN,
+
+    /**
+     * Serializable payload
+     */
     payload: T;
-    trackDelivery: boolean,
 } & WebsocketEventBase;
+
+export type AnyWebsocketEvent = WebsocketEvent<any, any>;

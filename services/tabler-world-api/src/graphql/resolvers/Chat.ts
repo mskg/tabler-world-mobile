@@ -537,6 +537,7 @@ export const ChatResolver = {
                 ttl: params.messageTTL,
 
                 volatile: true,
+                pushNotification: undefined,
             });
 
             context.auditor.add({ id: channelMessage[0].id, action: AuditAction.Create, type: 'chatmessage' });

@@ -221,6 +221,7 @@ LIMIT 10
                     trackDelivery: false,
                     ttl: 60 * 60, // 1h
                     volatile: true,
+                    pushNotification: undefined,
                 });
             }
 

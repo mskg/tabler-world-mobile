@@ -1,4 +1,4 @@
-import { WebsocketEvent } from './WebsocketEvent';
+import { AnyWebsocketEvent, WebsocketEvent } from './WebsocketEvent';
 
 export type QueryOptions = {
     forward?: boolean,
@@ -12,9 +12,9 @@ export type PaggedResponse<T> = {
 };
 
 export interface IEventStorage {
-    get<T>(id: string): Promise<WebsocketEvent<T> | undefined>;
-    list<T>(trigger: string, options: QueryOptions): Promise<PaggedResponse<WebsocketEvent<T>>>;
+    get<T, PN>(id: string): Promise<WebsocketEvent<T, PN> | undefined>;
+    list<T, PN>(trigger: string, options: QueryOptions): Promise<PaggedResponse<WebsocketEvent<T, PN>>>;
     remove(trigger: string, ids: string[]): Promise<void>;
-    post<T>(event: WebsocketEvent<T>[]): Promise<void>;
+    post(event: AnyWebsocketEvent[]): Promise<void>;
     markDelivered(trigger: string, id: string): Promise<void>;
 }

@@ -6,7 +6,7 @@ import { keys, remove } from 'lodash';
 import { Environment } from '../server/Environment';
 import { SubscriptionServerContext } from '../server/SubscriptionServerContext';
 import { ISubscription } from '../types/ISubscription';
-import { WebsocketEvent } from '../types/WebsocketEvent';
+import { AnyWebsocketEvent } from '../types/WebsocketEvent';
 import { pubsub } from '../utils/pubsub';
 
 const logger = new ConsoleLogger('ws:publish:active');
@@ -15,7 +15,7 @@ const logger = new ConsoleLogger('ws:publish:active');
 export async function publishToActiveSubscriptions<TConnection = any, TResolver extends { dataSources: DataSource<any>[] } = any>(
     serverContext: SubscriptionServerContext<TConnection, TResolver>,
     subscriptions: ISubscription<TConnection>[],
-    event: WebsocketEvent<any>,
+    event: AnyWebsocketEvent,
     delivered = false,
 ): Promise<number[]> {
     const failedDeliveries: number[] = [];
@@ -78,7 +78,7 @@ export async function publishToActiveSubscriptions<TConnection = any, TResolver 
                 pubsub.publish(event.eventName, {
                     ...event,
                     delivered, // this can be wrong
-                } as WebsocketEvent<any>);
+                } as AnyWebsocketEvent);
 
                 // run resolver
                 const result: IteratorResult<ExecutionResult> = await nextValue;

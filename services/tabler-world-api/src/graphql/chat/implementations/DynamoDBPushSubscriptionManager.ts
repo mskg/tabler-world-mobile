@@ -1,13 +1,44 @@
-import { BatchWrite, WriteRequest } from '@mskg/tabler-world-aws';
+import { BatchWrite, EXECUTING_OFFLINE, WriteRequest } from '@mskg/tabler-world-aws';
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { IPushSubscriptionManager, PushSubscriber } from '@mskg/tabler-world-lambda-subscriptions';
+import { IPushSubscriptionManager, PushSubscriber, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
+import { PushNotification, PushNotificationService } from '@mskg/tabler-world-push-client';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { DIRECT_CHAT_PREFIX, FieldNames, PUSH_SUBSCRIPTIONS_TABLE } from '../Constants';
+import { PartialPushNotification } from '../types/WebsocketMessage';
 
-const logger = new ConsoleLogger('dynamodb');
+const logger = new ConsoleLogger('push');
+const pushClient = new PushNotificationService();
 
 export class DynamoDBPushSubscriptionManager implements IPushSubscriptionManager {
     constructor(private client: DocumentClient) { }
+
+    public async send(event: WebsocketEvent<any, PartialPushNotification>, members: number[]): Promise<void> {
+        if (!event.pushNotification) { return; }
+
+        const messages: PushNotification<any>[] = members.map((m) => {
+            return {
+                ...event.pushNotification!,
+                member: m,
+                payload: {
+                    ...event.payload,
+                    eventId: event.id,
+                },
+            };
+        });
+
+        if (EXECUTING_OFFLINE) {
+            logger.debug('sendingPush', messages);
+            return;
+        }
+
+        await pushClient.send(messages.map((m) => ({
+            ...m,
+            options: {
+                ...m.options || { sound: 'default' },
+                badge: 1,
+            },
+        })));
+    }
 
     public async subscribe(conversation: string, member: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'subscribe', conversation, member);

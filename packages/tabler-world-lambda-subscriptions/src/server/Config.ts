@@ -8,7 +8,7 @@ import { IEventStorage } from '../types/IEventStorage';
 import { IPushSubscriptionManager } from '../types/IPushSubscriptionManager';
 import { ISubscriptionStorage } from '../types/ISubscriptionStorage';
 import { ITransportEncoder } from '../types/ITransportEncoder';
-import { WebsocketEvent } from '../types/WebsocketEvent';
+import { AnyWebsocketEvent } from '../types/WebsocketEvent';
 
 export type ContextFuncArgs<TConnectionContext> = {
     eventId: string,
@@ -30,7 +30,7 @@ export type EndRequestFunc<TResolverContext> = (arg: TResolverContext) => Promis
 
 export type MessageSentFunc<TResolverContext> = (arg: {
     context: TResolverContext,
-    event: WebsocketEvent<any>,
+    event: AnyWebsocketEvent,
     principal: AuthenticatedUser,
 }) => Promise<void>;
 
@@ -43,7 +43,7 @@ export interface Config<TConnectionContext, TResolverContext> {
         events: IEventStorage;
 
         push?: IPushSubscriptionManager;
-        encoder?: ITransportEncoder<any, any>;
+        encoder?: ITransportEncoder<any, any, any, any>;
     };
 
     ttl?: {

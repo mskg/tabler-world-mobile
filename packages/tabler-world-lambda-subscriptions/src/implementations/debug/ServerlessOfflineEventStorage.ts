@@ -1,5 +1,5 @@
-import { WebsocketEvent } from '../../types';
 import { IEventStorage, QueryOptions } from '../../types/IEventStorage';
+import { AnyWebsocketEvent } from '../../types/WebsocketEvent';
 
 export class ServerlessOfflineEventStorage implements IEventStorage {
     constructor(
@@ -7,12 +7,12 @@ export class ServerlessOfflineEventStorage implements IEventStorage {
         private publishHandler: (arg: any) => void,
     ) { }
 
-    public get<T>(id: string) {
-        return this.delegate.get<T>(id);
+    public get<T, PN>(id: string) {
+        return this.delegate.get<T, PN>(id);
     }
 
-    public list<T>(trigger: string, options: QueryOptions) {
-        return this.delegate.list<T>(trigger, options);
+    public list<T, PN>(trigger: string, options: QueryOptions) {
+        return this.delegate.list<T, PN>(trigger, options);
     }
 
     public remove(trigger: string, ids: string[]) {
@@ -23,8 +23,7 @@ export class ServerlessOfflineEventStorage implements IEventStorage {
         return this.delegate.markDelivered(eventName, id);
     }
 
-    public async post<T>(events: WebsocketEvent<T>[]): Promise<void> {
-
+    public async post(events: AnyWebsocketEvent[]): Promise<void> {
         setTimeout(
             () => {
                 console.log('************* DEBUG PUBLISH *************');
@@ -41,6 +40,6 @@ export class ServerlessOfflineEventStorage implements IEventStorage {
             2000,
         );
 
-        await this.delegate.post<T>(events);
+        await this.delegate.post(events);
     }
 }

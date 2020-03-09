@@ -1,6 +1,9 @@
 import { WebsocketEvent } from './WebsocketEvent';
 
-export interface ITransportEncoder<TFrom, TTo> {
-    encode(event: WebsocketEvent<TFrom>): Promise<WebsocketEvent<TTo>>;
-    decode(event: WebsocketEvent<TTo>): Promise<WebsocketEvent<TFrom>>;
+export interface ITransportEncoder<
+    TFrom, TFromPush,
+    TTo, TToPush,
+    > {
+    encode(event: WebsocketEvent<TFrom, TFromPush>): Promise<WebsocketEvent<TTo, TToPush>>;
+    decode(event: WebsocketEvent<TTo, TToPush>): Promise<WebsocketEvent<TFrom, TFromPush>>;
 }

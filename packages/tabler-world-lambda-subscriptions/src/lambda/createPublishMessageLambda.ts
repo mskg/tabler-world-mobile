@@ -3,16 +3,16 @@ import { AsyncPool, ConsoleLogger } from '@mskg/tabler-world-common';
 import { DynamoDBRecord, DynamoDBStreamEvent } from 'aws-lambda';
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { groupBy, keys } from 'lodash';
-import { WebsocketEvent } from '../types/WebsocketEvent';
 import { Environment } from '../server/Environment';
 import { SubscriptionServerContext } from '../server/SubscriptionServerContext';
+import { AnyWebsocketEvent } from '../types/WebsocketEvent';
 import { publishEvent } from './publishEvent';
 
 const logger = new ConsoleLogger('publish');
 
 export function createPublishMessageLambda(context: SubscriptionServerContext<any, any>) {
 
-    async function submit(events: WebsocketEvent<any>[]) {
+    async function submit(events: AnyWebsocketEvent[]) {
         for (const event of events) {
             // const evt = await eventManager.getEvent(event.id);
             // if (evt) {
@@ -41,13 +41,13 @@ export function createPublishMessageLambda(context: SubscriptionServerContext<an
             return true;
         });
 
-        const events = await AsyncPool<DynamoDBRecord, WebsocketEvent<any> | undefined>(
+        const events = await AsyncPool<DynamoDBRecord, AnyWebsocketEvent | undefined>(
             Environment.Throtteling.maxParallelDelivery,
             encodedEvents,
             async (subscruptionEvent) => {
                 try {
-                    const encodedImage: WebsocketEvent<any> = EXECUTING_OFFLINE
-                        ? subscruptionEvent.dynamodb!.NewImage as WebsocketEvent<any>
+                    const encodedImage: AnyWebsocketEvent = EXECUTING_OFFLINE
+                        ? subscruptionEvent.dynamodb!.NewImage as AnyWebsocketEvent
                         // @ts-ignore
                         : DynamoDB.Converter.unmarshall(subscruptionEvent.dynamodb.NewImage) as EncodedWebsocketEvent;
 
@@ -61,13 +61,13 @@ export function createPublishMessageLambda(context: SubscriptionServerContext<an
         // group by eventName and submit in parallel
         const grouped = groupBy(
             events.filter(Boolean),
-            (e: WebsocketEvent<any>) => e.eventName,
+            (e: AnyWebsocketEvent) => e.eventName,
         );
 
         await AsyncPool<string, void>(
             Environment.Throtteling.maxParallelDelivery,
             keys(grouped),
-            (eventName) => submit(grouped[eventName] as WebsocketEvent<any>[]),
+            (eventName) => submit(grouped[eventName] as AnyWebsocketEvent[]),
         );
     };
 }

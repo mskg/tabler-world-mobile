@@ -2,7 +2,7 @@ import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { DataSource } from 'apollo-datasource';
 import { filter } from 'lodash';
 import { SubscriptionServerContext } from '../server/SubscriptionServerContext';
-import { WebsocketEvent } from '../types/WebsocketEvent';
+import { AnyWebsocketEvent } from '../types/WebsocketEvent';
 import { publishToActiveSubscriptions } from './publishToActiveSubscriptions';
 import { publishToPassiveSubscriptions } from './publishToPassiveSubscriptions';
 
@@ -10,7 +10,7 @@ const logger = new ConsoleLogger('ws:publish');
 
 export async function publishEvent<TConnection, TResolver extends { dataSources: DataSource<any>[] } = any>(
     context: SubscriptionServerContext<TConnection, TResolver>,
-    image: WebsocketEvent<any>,
+    image: AnyWebsocketEvent,
 ) {
     try {
         logger.debug(image);
@@ -59,18 +59,9 @@ export async function publishEvent<TConnection, TResolver extends { dataSources:
                 const resolved = missingPrincipals.filter((p) => !p.muted);
                 if (resolved.length > 0) {
                     await publishToPassiveSubscriptions(
+                        pushSubscriptionManager,
                         missingPrincipals.map((p) => p.id),
-                        {
-                            ...image.pushNotification,
-                            options: {
-                                ...image.pushNotification.options || { sound: 'default' },
-                                badge: 1,
-                            },
-                        },
-                        {
-                            ...image.payload,
-                            eventId: image.id,
-                        },
+                        image,
                     );
                 }
 
