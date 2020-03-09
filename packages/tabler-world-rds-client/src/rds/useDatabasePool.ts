@@ -1,18 +1,15 @@
 
-import { ILogger, Metric } from '@mskg/tabler-world-common';
 import { LazyPGPool } from '../clients/LazyPGPool';
+import { IClientOptions } from '../types/IClientOptions';
 import { IPooledDataService } from '../types/IPooledDataService';
 
 export async function useDatabasePool<T>(
-    context: {
-        logger: ILogger,
-        metrics?: Metric,
-    },
+    context: IClientOptions,
     poolSize: number,
     func: (pool: IPooledDataService) => Promise<T>,
 ): Promise<T> {
 
-    const pool = new LazyPGPool(poolSize, context.logger, context.metrics);
+    const pool = new LazyPGPool(poolSize, context.logger, context.logLevel === 'debug', context.metrics);
     try {
         return await func(pool);
     } finally {

@@ -8,12 +8,15 @@ import { IPrincipal } from './IPrincipal';
 
 export type Limiters = 'location' | 'requests' | 'testpush';
 
+export interface IConnectionContext {
+    version: string;
+    os: 'android' | 'ios' | undefined;
+    device: string | undefined;
+}
+
+
 export interface IApolloContext {
-    readonly clientInfo: {
-        version: string;
-        os: 'android' | 'ios' | undefined,
-        device: string | undefined,
-    };
+    readonly clientInfo: IConnectionContext;
 
     readonly auditor: Audit;
     readonly metrics: Metric;

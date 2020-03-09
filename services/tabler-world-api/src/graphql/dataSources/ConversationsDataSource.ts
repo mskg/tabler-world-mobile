@@ -3,10 +3,10 @@ import { cachedDataLoader, makeCacheKey } from '@mskg/tabler-world-cache';
 import { IDataService, useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
-import { conversationManager } from '../subscriptions';
-import { Conversation } from '../subscriptions/types/Conversation';
-import { UserConversation } from '../subscriptions/types/UserConversation';
+import { Conversation } from '../chat/types/Conversation';
+import { UserConversation } from '../chat/types/UserConversation';
 import { IApolloContext } from '../types/IApolloContext';
+import { conversationManager } from '../websocketServer';
 
 export async function isChatEnabled(client: IDataService, ids: ReadonlyArray<number>): Promise<boolean[]> {
     const res = await client.query(
@@ -97,7 +97,7 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
 
         // because queue/delivery runs run in the same thread, using cached data would corrupt reality
         if (EXECUTING_OFFLINE) {
-            return conversationManager.getUserConversation(id, member);
+            return (await conversationManager.getUserConversation(id, member)) ?? null;
         }
 
         return this.userConversations.load({ id, member });

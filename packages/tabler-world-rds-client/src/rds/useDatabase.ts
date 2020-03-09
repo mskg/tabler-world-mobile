@@ -1,18 +1,14 @@
 
-import { ILogger, Metric } from '@mskg/tabler-world-common';
 import { LazyPGClient } from '../clients/LazyPGClient';
+import { IClientOptions } from '../types/IClientOptions';
 import { IDataService } from '../types/IDataService';
 
 export async function useDatabase<T>(
-    context: {
-        logger: ILogger,
-        metrics?: Metric,
-    },
-
+    context: IClientOptions,
     func: (client: IDataService) => Promise<T>,
 ): Promise<T> {
 
-    const client = new LazyPGClient(context.logger, context.metrics);
+    const client = new LazyPGClient(context.logger, context.logLevel === 'debug', context.metrics);
     try {
         return await func(client);
     } finally {

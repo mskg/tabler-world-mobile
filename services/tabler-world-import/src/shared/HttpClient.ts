@@ -2,10 +2,12 @@ import { xHttps } from '@mskg/tabler-world-aws';
 import { StopWatch } from '@mskg/tabler-world-common';
 import { RequestOptions } from 'https';
 import createHttpsProxyAgent from 'https-proxy-agent';
+import { Environment } from '../Environment';
 
 export class HttpClient {
-    private _maxTries = 3;
-    private _waitTime = 5000;
+    // tslint:disable: variable-name
+    private _maxTries = Environment.HttpClient.retries;
+    private _waitTime = Environment.HttpClient.waitTime;
     private _headers: { [key: string]: string } = {};
 
     constructor(
@@ -36,23 +38,23 @@ export class HttpClient {
 
     protected configureOptions(path: string, method: string): RequestOptions {
         const options: RequestOptions = {
-            port: this.port,
             method,
+            port: this.port,
             headers: {
                 'Content-Type': 'application/json',
                 ...this._headers,
             },
         };
 
-        const proxy = process.env.http_proxy;
+        const proxy = Environment.HttpClient.proxy;
         if (proxy != null) {
             options.agent = createHttpsProxyAgent(proxy);
         }
 
         return {
             ...options,
-            host: this.host,
             path,
+            host: this.host,
         };
     }
 
@@ -80,7 +82,8 @@ export class HttpClient {
                             console.log('[API] Got 429, sleeping ', newTry, 's');
                             setTimeout(
                                 () => resolve(run(url, method, postdata, newTry)),
-                                newTry * waitTime,
+                                // tslint:disable-next-line: insecure-random
+                                newTry * waitTime * Math.random(),
                             );
 
                             return;

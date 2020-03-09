@@ -10,6 +10,7 @@ export class LazyPGClient implements IDataService {
 
     constructor(
         private logger: ILogger,
+        private debugLog: boolean,
         private metrics?: Metric,
     ) {
     }
@@ -66,22 +67,35 @@ export class LazyPGClient implements IDataService {
         await this.connect();
 
         const id = `SQL${Date.now().toString()}`;
-        logExecutableSQL(
-            this.logger,
-            id,
-            typeof (text) === 'string' ? text : text.text,
-            parameters,
-        );
+        if (this.debugLog) {
+            logExecutableSQL(
+                this.logger.debug.bind(this.logger),
+                id,
+                typeof (text) === 'string' ? text : text.text,
+                parameters,
+            );
+        }
 
         const sw = new StopWatch();
         try {
             return await this.client!.query(text, parameters);
+        } catch (e) {
+            logExecutableSQL(
+                this.logger.error.bind(this.logger),
+                id,
+                typeof (text) === 'string' ? text : text.text,
+                parameters,
+            );
+
+            throw e;
         } finally {
             if (this.metrics) {
                 this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs, unit: 'μs' });
             }
 
-            this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            if (this.debugLog) {
+                this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            }
         }
     }
 }
