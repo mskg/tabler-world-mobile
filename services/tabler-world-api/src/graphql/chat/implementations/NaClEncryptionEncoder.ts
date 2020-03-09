@@ -1,3 +1,4 @@
+import { ConsoleLogger } from '@mskg/tabler-world-common';
 import { ITransportEncoder, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
 import { getChatParams } from '../helper/getChatParams';
 import { EncryptedValue } from '../types/EncryptedValue';
@@ -14,8 +15,11 @@ type EncryptedPayload = {
     pushNotification?: any,
 };
 
+const logger = new ConsoleLogger('nacl');
+
 export class NaClEncryptionEncoder implements ITransportEncoder<any, any, any | EncryptedValue, any> {
     public async encode(event: WebsocketEvent<any>): Promise<WebsocketEvent<any | EncryptedValue>> {
+        logger.debug('encode', event.id, event.payload?.plain);
         if (event.payload?.plain) { return event; }
 
         const em = await nacl.createWorker(event.eventName);
@@ -36,9 +40,11 @@ export class NaClEncryptionEncoder implements ITransportEncoder<any, any, any | 
 
     public async decode(event: WebsocketEvent<any | EncryptedValue>): Promise<WebsocketEvent<any>> {
         if (!event.payload?.nonce || !event.payload?.ciphertext) {
+            logger.debug('decode', event.id, 'is plain');
             return event;
         }
 
+        logger.debug('decode', event.id);
         const em = await nacl.createWorker(event.eventName);
 
         const newPayload = await em.decrypt<EncryptedPayload>(event.payload);
@@ -49,6 +55,8 @@ export class NaClEncryptionEncoder implements ITransportEncoder<any, any, any | 
                 pushNotification: newPayload.pushNotification,
             };
         }
+
+        logger.debug('decode', event.id, 'is old version');
 
         return {
             ...event,

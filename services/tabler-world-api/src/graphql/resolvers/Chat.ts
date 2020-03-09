@@ -172,7 +172,7 @@ export const ChatResolver = {
                     conversationId: channel,
                     eventId: m.id,
 
-                    // payload
+                    // payload has it's own id which would override the id?
                     ...m.payload,
 
                     accepted: true,
@@ -338,7 +338,7 @@ export const ChatResolver = {
     ChatMessage: {
         id: (root: { id: string }, _args: any, context: IApolloContext) => {
             context.auditor.add({ id: root.id, action: AuditAction.Read, type: 'chatmessage' });
-            return encodeIdentifier(root.id);
+            return root.id;
         },
 
         receivedAt: (root: { receivedAt: number }) => {

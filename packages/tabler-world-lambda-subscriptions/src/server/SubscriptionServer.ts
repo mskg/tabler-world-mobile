@@ -18,6 +18,10 @@ export class SubscriptionServer<TConnectionContext = any, TResolverContext = any
         return this.context.subscriptionManager;
     }
 
+    get eventStorage() {
+        return this.context.eventStorage;
+    }
+
     createWebsocketHandler() {
         return createWebsocketLambda(this.context);
     }

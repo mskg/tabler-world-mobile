@@ -24,20 +24,28 @@ import { createLimiter } from './ratelimit/createLimiter';
 import { IConnectionContext } from './types/IApolloContext';
 import { ISubscriptionContext } from './types/ISubscriptionContext';
 
-let connections;
-let subscriptions;
+const logger = new ConsoleLogger('ws');
+
+function hash(txt: string) {
+    return createHash('md5')
+        .update(txt.toLocaleLowerCase())
+        .digest('hex');
+}
+
+let connectionStorage;
+let subscriptionStorage;
 let conversationStorage: IConversationStorage;
 
 if (Environment.Caching.useRedis) {
-    connections = new RedisConnectionStorage(createIORedisClient());
-    subscriptions = new RedisSubscriptionStorage(createIORedisClient());
+    connectionStorage = new RedisConnectionStorage(createIORedisClient());
+    subscriptionStorage = new RedisSubscriptionStorage(createIORedisClient());
     conversationStorage = new RedisConversationStorage(
         new DynamoDBConversationStorage(createDynamoDBInstance()),
         createIORedisClient(),
     );
 } else {
-    connections = new DynamoDBConnectionStore(CONNECTIONS_TABLE, createDynamoDBInstance());
-    subscriptions = new DynamoDBSubcriptionStorage(SUBSCRIPTIONS_TABLE, createDynamoDBInstance());
+    connectionStorage = new DynamoDBConnectionStore(CONNECTIONS_TABLE, createDynamoDBInstance());
+    subscriptionStorage = new DynamoDBSubcriptionStorage(SUBSCRIPTIONS_TABLE, createDynamoDBInstance());
     conversationStorage = new DynamoDBConversationStorage(createDynamoDBInstance());
 }
 
@@ -51,27 +59,16 @@ export const eventsStorage = EXECUTING_OFFLINE ?
 
 export const pushSubscriptionManager = new DynamoDBPushSubscriptionManager(createDynamoDBInstance());
 
-function hash(address: string) {
-    return createHash('md5')
-        .update(address.toLocaleLowerCase())
-        .digest('hex');
-}
-
-const logger = new ConsoleLogger('ws');
-
 const encoder = new NaClEncryptionEncoder();
 export const conversationManager = new ConversationManager(conversationStorage);
-export const eventManager = new EventManager(
-    eventsStorage,
-);
 
 const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>({
     schema: executableSchema,
 
     services: {
-        connections,
-        subscriptions,
         encoder,
+        connections: connectionStorage,
+        subscriptions: subscriptionStorage,
         events: eventsStorage,
         push: pushSubscriptionManager,
         cache: cacheInstance,
@@ -137,3 +134,8 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
 
 export const websocketServer = server;
 export const subscriptionManager = server.subscriptionManager;
+
+// instances are decorated, we have to use the updated instacne
+export const eventManager = new EventManager(
+    server.eventStorage,
+);
