@@ -1,5 +1,5 @@
 import { IORedisClient } from '@mskg/tabler-world-cache';
-import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-graphql-subscriptions';
+import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-lambda-subscriptions';
 import { Conversation } from '../types/Conversation';
 import { IConversationStorage } from '../types/IConversationStorage';
 import { UserConversation } from '../types/UserConversation';

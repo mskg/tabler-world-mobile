@@ -1,7 +1,7 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { defaultParameters } from '@mskg/tabler-world-config-app';
 import { BigDataResult, convertToCityLocation, GeoCityLocation } from '@mskg/tabler-world-geo-bigdata';
-import { pubsub, WebsocketEvent, withFilter } from '@mskg/tabler-world-graphql-subscriptions';
+import { pubsub, WebsocketEvent, withFilter } from '@mskg/tabler-world-lambda-subscriptions';
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import Geohash from 'latlon-geohash';
 import { values } from 'lodash';

@@ -18,6 +18,7 @@ const lambda: AWS.Lambda = new xAWS.Lambda(
 export class LambdaClient implements IDataService {
     constructor(
         private logger: ILogger,
+        private debugLog: boolean,
         private metrics?: Metric,
     ) {
     }
@@ -38,23 +39,36 @@ export class LambdaClient implements IDataService {
         };
 
         const id = `SQL${Date.now().toString()}`;
-        logExecutableSQL(
-            this.logger,
-            id,
-            typeof (text) === 'string' ? text : text.text,
-            parameters,
-        );
+        if (this.debugLog) {
+            logExecutableSQL(
+                this.logger.debug.bind(this.logger),
+                id,
+                typeof (text) === 'string' ? text : text.text,
+                parameters,
+            );
+        }
 
         const sw = new StopWatch();
         try {
             const result = await lambda.invoke(lambdaParams).promise();
             return JSON.parse(result.Payload as string);
+        } catch (e) {
+            logExecutableSQL(
+                this.logger.error.bind(this.logger),
+                id,
+                typeof (text) === 'string' ? text : text.text,
+                parameters,
+            );
+
+            throw e;
         } finally {
             if (this.metrics) {
                 this.metrics.add({ id: 'sql-latency', value: sw.elapsedYs, unit: 'μs' });
             }
 
-            this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            if (this.debugLog) {
+                this.logger.debug('[SQL]', id, 'took', sw.elapsedYs, 'ys');
+            }
         }
     }
 }

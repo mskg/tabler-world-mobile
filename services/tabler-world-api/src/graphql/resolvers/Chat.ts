@@ -1,11 +1,11 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { AuditAction, StopWatch } from '@mskg/tabler-world-common';
-import { pubsub, WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
+import { pubsub, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
 import { randomBytes } from 'crypto';
-import { ConversationManager } from '../chat/services/ConversationManager';
 import { decodeIdentifier } from '../chat/helper/decodeIdentifier';
 import { encodeIdentifier } from '../chat/helper/encodeIdentifier';
 import { getChatParams } from '../chat/helper/getChatParams';
+import { ConversationManager } from '../chat/services/ConversationManager';
 import { Environment } from '../Environment';
 import { S3 } from '../helper/S3';
 import { IApolloContext } from '../types/IApolloContext';
@@ -583,7 +583,7 @@ export const ChatResolver = {
             },
 
             // tslint:disable-next-line: variable-name
-            resolve: (channelMessage: WebsocketEvent<{trigger: string}>, _args: {}, _context: ISubscriptionContext) => {
+            resolve: (channelMessage: WebsocketEvent<{ trigger: string }>, _args: {}, _context: ISubscriptionContext) => {
                 return {
                     // eventId: channelMessage.id,
                     id: channelMessage.payload.trigger,

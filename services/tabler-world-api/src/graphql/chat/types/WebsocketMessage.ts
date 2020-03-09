@@ -1,8 +1,6 @@
-import { WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
+import { WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
 
-export type WebsocketMessagePayLoad = Record<string, any> & { plain?: boolean };
-
-export type WebsocketMessage<T extends WebsocketMessagePayLoad> = Pick<
+export type WebsocketMessage<T extends EncrytablePayload> = Pick<
     WebsocketEvent<T>,
     | 'sender'
     | 'payload'
@@ -12,4 +10,11 @@ export type WebsocketMessage<T extends WebsocketMessagePayLoad> = Pick<
 > & {
     triggers: string[],
     ttl: number,
+};
+
+export type EncrytablePayload = Record<string, any> & {
+    /***
+     * True, if message is not encrpyted
+     */
+    plain?: boolean,
 };

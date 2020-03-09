@@ -1,17 +1,18 @@
-import { resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
+import { IPrincipal, resolveWebsocketPrincipal } from '@mskg/tabler-world-auth-client';
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
 import { Audit, ConsoleLogger, Metric } from '@mskg/tabler-world-common';
-import { DynamoDBConnectionStore, DynamoDBEventStorage, DynamoDBSubcriptionStorage, RedisConnectionStorage, RedisSubscriptionStorage, ServerlessOfflineEventStorage, SubscriptionServer } from '@mskg/tabler-world-graphql-subscriptions';
+import { DynamoDBConnectionStore, DynamoDBEventStorage, DynamoDBSubcriptionStorage, RedisConnectionStorage, RedisSubscriptionStorage, ServerlessOfflineEventStorage, SubscriptionServer } from '@mskg/tabler-world-lambda-subscriptions';
 import { AuthenticationError } from 'apollo-server-core';
 import { createHash } from 'crypto';
 import { cacheInstance } from './cache/cacheInstance';
+import { CONNECTIONS_TABLE, EVENTS_TABLE, SUBSCRIPTIONS_TABLE } from './chat/Constants';
 import { DynamoDBConversationStorage } from './chat/implementations/DynamoDBConversationStorage';
+import { DynamoDBPushSubscriptionManager } from './chat/implementations/DynamoDBPushSubscriptionManager';
 import { NaClEncryptionEncoder } from './chat/implementations/NaClEncryptionEncoder';
 import { RedisConversationStorage } from './chat/implementations/RedisConversationStorage';
 import { ConversationManager } from './chat/services/ConversationManager';
-import { DynamoDBPushSubscriptionManager } from './chat/services/DynamoDBPushSubscriptionManager';
-import { EncryptedEventManager } from './chat/services/EncryptedEventManager';
+import { EventManager } from './chat/services/EventManager';
 import { IConversationStorage } from './chat/types/IConversationStorage';
 import { dataSources } from './dataSources';
 import { Environment } from './Environment';
@@ -35,18 +36,18 @@ if (Environment.Caching.useRedis) {
         createIORedisClient(),
     );
 } else {
-    connections = new DynamoDBConnectionStore(createDynamoDBInstance());
-    subscriptions = new DynamoDBSubcriptionStorage(createDynamoDBInstance());
+    connections = new DynamoDBConnectionStore(CONNECTIONS_TABLE, createDynamoDBInstance());
+    subscriptions = new DynamoDBSubcriptionStorage(SUBSCRIPTIONS_TABLE, createDynamoDBInstance());
     conversationStorage = new DynamoDBConversationStorage(createDynamoDBInstance());
 }
 
 // this anables the debugHook for serverless offline
 export const eventsStorage = EXECUTING_OFFLINE ?
     new ServerlessOfflineEventStorage(
-        new DynamoDBEventStorage(createDynamoDBInstance()),
+        new DynamoDBEventStorage(EVENTS_TABLE, createDynamoDBInstance()),
         (a: any) => { server.createPublishHandler()(a); },
     )
-    : new DynamoDBEventStorage(createDynamoDBInstance());
+    : new DynamoDBEventStorage(EVENTS_TABLE, createDynamoDBInstance());
 
 export const pushSubscriptionManager = new DynamoDBPushSubscriptionManager(createDynamoDBInstance());
 
@@ -60,9 +61,8 @@ const logger = new ConsoleLogger('ws');
 
 const encoder = new NaClEncryptionEncoder();
 export const conversationManager = new ConversationManager(conversationStorage);
-export const eventManager = new EncryptedEventManager(
+export const eventManager = new EventManager(
     eventsStorage,
-    encoder,
 );
 
 const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>({
@@ -121,8 +121,8 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
 
     onCreateContext: async ({ connectionId, context, eventId, principal }) => {
         return {
-            principal,
             connectionId,
+            principal: principal as IPrincipal,
             getLimiter: createLimiter,
             metrics: new Metric(),
             logger: new ConsoleLogger(eventId, connectionId),

@@ -1,7 +1,7 @@
-import { ITransportEncoder, WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
+import { ITransportEncoder, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
 import { PushNotification } from '@mskg/tabler-world-push-client';
-import { EncryptedValue } from '../types/EncryptedValue';
 import { getChatParams } from '../helper/getChatParams';
+import { EncryptedValue } from '../types/EncryptedValue';
 import { TweetNaClEnryptionManager } from './TweetNaClEnryptionManager';
 
 const nacl = new TweetNaClEnryptionManager(async () => {

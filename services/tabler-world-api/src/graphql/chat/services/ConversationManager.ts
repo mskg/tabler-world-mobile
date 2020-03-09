@@ -1,5 +1,5 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { PaggedResponse, QueryOptions, WebsocketEvent } from '@mskg/tabler-world-graphql-subscriptions';
+import { PaggedResponse, QueryOptions, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
 import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../Constants';
 import { Conversation } from '../types/Conversation';
 import { IConversationStorage } from '../types/IConversationStorage';

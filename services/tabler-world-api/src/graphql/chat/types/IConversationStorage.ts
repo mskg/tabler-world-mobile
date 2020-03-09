@@ -1,4 +1,4 @@
-import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-graphql-subscriptions';
+import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-lambda-subscriptions';
 import { Conversation } from './Conversation';
 import { UserConversation } from './UserConversation';
 
