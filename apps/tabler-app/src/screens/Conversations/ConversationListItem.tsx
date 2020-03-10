@@ -17,6 +17,7 @@ import { UnreadMessages } from './UnreadMessages';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { createApolloContext } from '../../helper/createApolloContext';
 import { SimpleAvatar } from '../../components/SimpleAvatar';
+import { updateBadgeFromConversations } from './chatHelpers';
 
 type OwnProps = {
     theme: Theme,
@@ -62,6 +63,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
     )
 
     _remove = () => {
+        // error is not handeled
         requestAnimationFrame(async () => {
             const client = cachedAolloClient();
             await client.mutate<RemoveConversation, RemoveConversationVariables>({
@@ -101,6 +103,8 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                     },
                 },
             });
+
+            await updateBadgeFromConversations();
 
             if (this.ref) {
                 this.ref.close();

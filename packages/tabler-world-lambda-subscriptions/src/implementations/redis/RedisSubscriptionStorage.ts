@@ -100,7 +100,7 @@ export class RedisSubscriptionStorage implements ISubscriptionStorage {
         for (const key of keys(result)) {
             const val = result[key];
 
-            if (subscriptionId === null || val.subscriptionId === subscriptionId) {
+            if (subscriptionId == null || val.subscriptionId === subscriptionId) {
                 triggers.push(key);
                 multi.hdel(
                     makeTriggerKey(key), [makeSubscriptionKey(connectionId, val.subscriptionId)],

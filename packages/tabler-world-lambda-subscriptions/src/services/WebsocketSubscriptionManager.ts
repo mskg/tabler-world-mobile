@@ -17,23 +17,23 @@ export class WebsocketSubscriptionManager<TConnectionContext> {
     ) {
     }
 
-    public async hasSubscribers(triggers: string[]): Promise<string[]> {
+    public hasSubscribers(triggers: string[]): Promise<string[]> {
         logger.debug('hasSubscribers', triggers);
-        return await this.storage.hasSubscribers(triggers);
+        return this.storage.hasSubscribers(triggers);
     }
 
-    public async getSubscriptions(trigger: string): Promise<ISubscription<TConnectionContext>[]> {
+    public getSubscriptions(trigger: string): Promise<ISubscription<TConnectionContext>[]> {
         logger.debug('getSubscriptions', trigger);
-        return await this.storage.list(trigger);
+        return this.storage.list(trigger);
     }
 
-    public async subscribe(
+    public subscribe(
         context: { connectionId: string, principal: AuthenticatedUser, clientInfo: TConnectionContext },
         subscriptionId: string,
         triggers: string[],
         payload: any,
     ): Promise<void> {
-        return await this.storage.put(
+        return this.storage.put(
             triggers,
             {
                 subscriptionId,
@@ -48,14 +48,14 @@ export class WebsocketSubscriptionManager<TConnectionContext> {
         );
     }
 
-    public async unsubscribe(connectionId: string, subscriptionId: string): Promise<void> {
+    public unsubscribe(connectionId: string, subscriptionId: string): Promise<void> {
         logger.log(`[${connectionId}] [${subscriptionId}]`, 'unsubscribe');
-        await this.storage.remove(connectionId, subscriptionId);
+        return this.storage.remove(connectionId, subscriptionId);
     }
 
     public async unsubscribeAll(connectionId: string): Promise<void> {
         logger.log(`[${connectionId}]`, 'unsubscribeAll');
-        await this.storage.remove(connectionId);
+        return this.storage.remove(connectionId);
     }
 
     public async sendData(connectionId: string, subscriptionId: string, payload: any): Promise<void> {

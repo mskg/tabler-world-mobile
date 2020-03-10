@@ -10,6 +10,7 @@ import * as actions from '../../redux/actions/settings';
 import * as userActions from '../../redux/actions/user';
 import { TOKEN_KEY } from '../../tasks/Constants';
 import { logger } from './logger';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 export function* storePushToken(arg: typeof actions.storePushToken.shape) {
     const state = yield select((state: IAppState) => state.auth.state);
@@ -30,6 +31,8 @@ mutation AddToken($token: String!) {
             variables: {
                 token: arg.payload,
             },
+
+            context: createApolloContext('pushtoken-add'),
         });
 
         // avoid cycling require

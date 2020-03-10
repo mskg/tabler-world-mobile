@@ -611,7 +611,7 @@ const en = {
 
     Component_Notifications: {
         chatDisabled: {
-            text: 'You disabled notifications for chat conversations. You will not be visible for other members and you will not not able to send and receive messages.',
+            text: 'You disabled notifications. You will not be visible for other members and you will not not able to send and receive messages.',
             button: 'Change',
         },
         Settings: {

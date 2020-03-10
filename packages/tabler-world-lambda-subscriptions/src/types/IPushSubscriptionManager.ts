@@ -6,7 +6,7 @@ export type PushSubscriber = {
 };
 
 export interface IPushSubscriptionManager {
-    send(event: AnyWebsocketEvent, members: number[]): Promise<void>;
+    send(event: AnyWebsocketEvent, members: PushSubscriber[]): Promise<void>;
 
     // must filter for chat enabled
     getSubscribers(conversation: string): Promise<PushSubscriber[]>;

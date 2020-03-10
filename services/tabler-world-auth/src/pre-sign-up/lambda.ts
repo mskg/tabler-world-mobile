@@ -18,7 +18,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
         }
     });
 
-    // if (event.request.userAttributes.email.match(/@(\d+)\-de\.roundtable\.world$/i) === null) {
+    // if (event.request.userAttributes.email.match(/@(\d+)\-de\.roundtable\.world$/i) == null) {
     //     throw new Error("You need to be a tabler and you can only sign-in with a 'roundtable.world' e-mail address from Germany.");
     // } else {
     event.response.autoConfirmUser = true;

@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Je hebt meldingen voor chatgesprekken uitgeschakeld. Je bent niet zichtbaar voor andere leden en je kunt geen berichten verzenden en ontvangen.",
+            "text": "Je hebt meldingen uitgeschakeld. Je bent niet zichtbaar voor andere leden en je kunt geen berichten verzenden en ontvangen.",
             "button": "Verandering"
         },
         "Settings": {

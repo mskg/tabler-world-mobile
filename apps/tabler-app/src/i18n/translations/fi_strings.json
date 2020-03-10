@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Poistit käytöstä ilmoitukset keskusteluista. Et näy muille jäsenille etkä voi lähettää tai vastaanottaa viestejä.",
+            "text": "Olet poistanut ilmoitukset käytöstä. Et näy muille jäsenille etkä voi lähettää tai vastaanottaa viestejä.",
             "button": "Muuta"
         },
         "Settings": {

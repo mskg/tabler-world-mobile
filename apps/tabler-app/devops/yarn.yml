@@ -4,9 +4,9 @@ parameters:
 
 steps:
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
-  displayName: 'Use Yarn 1.17.3'
+  displayName: 'Use Yarn 1.22.4'
   inputs:
-    versionSpec: 1.17.3
+    versionSpec: 1.22.4
     checkLatest: true
   condition: ne(variables.CACHE_RESTORED, 'true')
 

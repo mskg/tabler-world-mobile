@@ -102,7 +102,7 @@ class ImagePickerBase extends React.Component<Props, State> {
 
     render() {
         const { hasPermission } = this.state;
-        if (hasPermission === null) {
+        if (hasPermission == null) {
             return (<FullScreenLoading />);
         }
 

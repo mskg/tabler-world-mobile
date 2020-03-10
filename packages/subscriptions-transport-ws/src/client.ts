@@ -144,7 +144,7 @@ export class SubscriptionClient {
     }
 
     public get status() {
-        if (this.client === null) {
+        if (this.client == null) {
             return this.wsImpl.CLOSED;
         }
 
@@ -201,7 +201,7 @@ export class SubscriptionClient {
                 const observer = getObserver(observerOrNext, onError, onComplete);
 
                 opId = executeOperation(request, (error: Error[], result: any) => {
-                    if (error === null && result === null) {
+                    if (error == null && result == null) {
                         if (observer.complete) {
                             observer.complete();
                         }
@@ -317,7 +317,7 @@ export class SubscriptionClient {
     }
 
     private executeOperation(options: OperationOptions, handler: (error: Error[], result?: any) => void): string {
-        if (this.client === null) {
+        if (this.client == null) {
             this.connect();
         }
 

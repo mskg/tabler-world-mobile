@@ -1,4 +1,5 @@
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { Logger } from '../../helper/Logger';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
@@ -7,7 +8,6 @@ import { GetConversationQuery } from '../../queries/Conversations/GetConversatio
 import { showConversation } from '../../redux/actions/navigation';
 import { getReduxStore } from '../../redux/getRedux';
 import { INotificationHandler, NotificationHandlerResult } from './INotificationHandler';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 export class ChatMessageHandler implements INotificationHandler<ChatMessageNotification> {
     constructor(private logger: Logger) {
@@ -23,7 +23,7 @@ export class ChatMessageHandler implements INotificationHandler<ChatMessageNotif
 
     tryHandle(notification: ChatMessageNotification): NotificationHandlerResult {
         const activeConversation = getReduxStore().getState().chat.activeConversation;
-        if (activeConversation === null || notification.payload.conversationId !== activeConversation) {
+        if (activeConversation == null || notification.payload.conversationId !== activeConversation) {
             return NotificationHandlerResult.ShowNotification;
         }
 

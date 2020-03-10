@@ -190,9 +190,10 @@ export const ChatResolver = {
             const user = await context.dataSources.conversations.readUserConversation(channel, context.principal.id);
             const global = await context.dataSources.conversations.readConversation(channel);
 
-            context.logger.log('hasUnreadMessages', global, user);
+            context.logger.log('user', user, 'global', global);
 
-            if (user == null || global == null) { return true; }
+            if (user == null || global == null) { return false; }
+
             if (!user.lastSeen && global.lastMessage) { return true; }
             if (!global.lastMessage) { return false; }
 
@@ -431,15 +432,16 @@ export const ChatResolver = {
 
             const id = ConversationManager.MakeConversationKey(context.principal.id, args.member);
 
-            const existing = await context.dataSources.conversations.readConversation(id);
-            if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
-                return {
-                    id,
+            // // if we read a cached value here we could end up with non conversation
+            // const existing = await conversationManager.getConversation(id);
+            // if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
+            //     return {
+            //         id,
 
-                    // most likely this is wrong as we are also part of the conversation
-                    members: existing?.members?.values.filter((f) => f === context.principal.id),
-                };
-            }
+            //         // most likely this is wrong as we are also part of the conversation
+            //         members: existing?.members?.values.filter((f) => f === context.principal.id),
+            //     };
+            // }
 
             context.auditor.add({ id, action: AuditAction.Create, type: 'conversation' });
 
@@ -519,11 +521,8 @@ export const ChatResolver = {
                 },
             });
 
-            const [, conversation] = await Promise.all([
-                // TOOD: cloud be combined into onewrite
-                conversationManager.update(trigger, channelMessage[0]),
-                context.dataSources.conversations.readConversation(trigger),
-            ]);
+            await conversationManager.update(trigger, channelMessage[0].id);
+            const conversation = await conversationManager.getConversation(trigger);
 
             // this must be done after update as, as update removes all seen flags
             await conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id);

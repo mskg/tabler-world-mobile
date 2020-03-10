@@ -1,5 +1,6 @@
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { IApolloContext } from '../types/IApolloContext';
+import { makeCacheKey } from '@mskg/tabler-world-cache';
 
 type TokenArgs = {
     token: string,
@@ -10,6 +11,9 @@ type TokenArgs = {
 export const TokenResolver = {
     Mutation: {
         addToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
+            await context.cache.delete(makeCacheKey('Member', ['chat', 'enabled', context.principal.id]));
+            await context.cache.delete(makeCacheKey('Member', ['chat', 'muted', context.principal.id]));
+
             return useDatabase(
                 context,
                 async (client) => {
@@ -51,6 +55,9 @@ WHERE id <> $1 and tokens @> ARRAY[$2]
 
         removeToken: async (_root: any, args: TokenArgs, context: IApolloContext) => {
             if (args == null) { return; }
+
+            await context.cache.delete(makeCacheKey('Member', ['chat', 'enabled', context.principal.id]));
+            await context.cache.delete(makeCacheKey('Member', ['chat', 'muted', context.principal.id]));
 
             return useDatabase(
                 context,

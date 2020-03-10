@@ -144,7 +144,7 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
 
                         {isFeatureEnabled(Features.Chat) && (
                             <List.Section title={I18N.Component_Notifications.Settings.onetoone.title}>
-                                <Text style={styles.text}>{I18N.Component_Notifications.Settings.onetoone.text}</Text>
+                                {/* <Text style={styles.text}>{I18N.Component_Notifications.Settings.onetoone.text}</Text> */}
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}

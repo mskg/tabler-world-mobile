@@ -1,5 +1,5 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { IPushSubscriptionManager } from '../types';
+import { IPushSubscriptionManager, PushSubscriber } from '../types';
 import { AnyWebsocketEvent } from '../types/WebsocketEvent';
 
 const logger = new ConsoleLogger('ws:publish:passive');
@@ -7,23 +7,9 @@ const logger = new ConsoleLogger('ws:publish:passive');
 
 export async function publishToPassiveSubscriptions(
     service: IPushSubscriptionManager,
-    members: number[],
+    members: PushSubscriber[],
     event: AnyWebsocketEvent,
 ) {
-    // const messages: PushNotification[] = members.map((m) => {
-    //     return {
-    //         ...event,
-    //         payload,
-    //         member: m,
-    //     };
-    // });
-
-    // image.pushNotification,
-    // {
-    //     ...image.payload,
-    //     eventId: image.id,
-    // },
-
     logger.log('Sending push messages to', event.id, members);
     await service.send(event, members);
 }

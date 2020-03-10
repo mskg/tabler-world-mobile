@@ -253,9 +253,7 @@ export const ConversationScreen =
         connect(
             (state: IAppState) => ({
                 websocket: state.connection.websocket,
-                chatEnabled: state.settings.notificationsOneToOneChat == null
-                    ? true
-                    : state.settings.notificationsOneToOneChat,
+                chatEnabled: state.settings.supportsNotifications,
                 pendingMessages: state.chat.pendingSend,
                 texts: state.chat.lastEdits,
             }),

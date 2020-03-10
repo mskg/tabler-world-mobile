@@ -94,7 +94,6 @@ WHERE id = $1`,
             await Promise.all([
                 context.cache.delete(makeCacheKey('Member', ['location', context.principal.id])),
                 context.cache.delete(makeCacheKey('Member', ['location:map', context.principal.id])),
-                context.cache.delete(makeCacheKey('Member', ['chat', context.principal.id])),
             ]);
 
             return useDatabase(

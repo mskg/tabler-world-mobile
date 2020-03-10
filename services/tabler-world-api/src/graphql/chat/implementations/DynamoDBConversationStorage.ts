@@ -45,7 +45,6 @@ export class DynamoDBConversationStorage implements IConversationStorage {
 
                         // no message has been sent in this channel
                         if (event === '0') { return null; }
-
                         return conversation;
                     })
                     .filter((c) => c != null) as string[],
@@ -65,6 +64,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             },
         }).promise();
 
+        // we override the members, as one cannot leave a 1:1
         if (Item && conversation.startsWith(DIRECT_CHAT_PREFIX)) {
             // this is a one:one conversation
             const [a, b] = conversation
@@ -100,8 +100,6 @@ export class DynamoDBConversationStorage implements IConversationStorage {
         logger.debug(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
 
         try {
-
-
             // preserve existing data
             await this.client.update({
                 TableName: CONVERSATIONS_TABLE,
@@ -112,7 +110,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
                 },
 
                 UpdateExpression: `SET ${FieldNames.lastSeen} = :l`,
-                ConditionExpression: `attribute_not_exists(${FieldNames.lastSeen}) or ${FieldNames.lastConversation} <= :l`,
+                ConditionExpression: `attribute_not_exists(${FieldNames.lastSeen}) or ${FieldNames.lastSeen} <= :l`,
                 ExpressionAttributeValues: {
                     ':l': lastSeen,
                 },
@@ -150,7 +148,20 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             return;
         }
 
-        const members = (result[FieldNames.members] || { values: null }).values;
+        let members = (result[FieldNames.members] || { values: null }).values;
+
+        // if we don't add a lastConversation entry, the users cannot view the conversation
+        if (conversation.startsWith(DIRECT_CHAT_PREFIX)) {
+            const [a, b] = conversation
+                .replace(/CONV\(|\)|:/ig, '')
+                .split(',');
+
+            const [aId, bId] = [parseInt(a, 10), parseInt(b, 10)];
+
+            // we fix that to always be 2 members
+            members = [aId, bId];
+        }
+
         if (members && members.length !== 0) {
             const items: [string, WriteRequest][] = members.map((member: number) => ([
                 CONVERSATIONS_TABLE,
@@ -173,6 +184,7 @@ export class DynamoDBConversationStorage implements IConversationStorage {
         }
     }
 
+    // remove me from the conversation
     public async removeMembers(conversation: string, members: number[]): Promise<void> {
         logger.debug(`[${conversation}]`, 'removeMembers', members);
 
@@ -210,7 +222,37 @@ export class DynamoDBConversationStorage implements IConversationStorage {
     public async addMembers(conversation: string, members: number[]): Promise<void> {
         logger.debug(`[${conversation}]`, 'addMembers', members);
 
-        const items: [string, WriteRequest][] = members.map((member) => ([
+        // this doesn't hurt
+        const { Attributes: oldValues } = await this.client.update({
+            TableName: CONVERSATIONS_TABLE,
+
+            Key: {
+                [FieldNames.conversation]: conversation,
+                [FieldNames.member]: 0,
+            },
+
+            UpdateExpression: `ADD ${FieldNames.members} :m`,
+            ExpressionAttributeValues: {
+                ':m': this.client.createSet(members),
+            },
+
+            ReturnValues: 'ALL_OLD',
+        }).promise();
+
+        // if it doesn't exist, all are new
+        let remainingMembers = members;
+
+        const existingMembersSet = oldValues ? oldValues[FieldNames.members] as DocumentClient.DynamoDbSet : null;
+        if (existingMembersSet && existingMembersSet.values) {
+            const existingMembers = existingMembersSet.values as number[];
+
+            remainingMembers = members.filter(
+                (m) => existingMembers.find(
+                    (e) => e === m) == null);
+        }
+
+        // if we don't filter, we override the seen flag
+        const items: [string, WriteRequest][] = remainingMembers.map((member) => ([
             CONVERSATIONS_TABLE,
             {
                 PutRequest: {
@@ -225,22 +267,11 @@ export class DynamoDBConversationStorage implements IConversationStorage {
             },
         ]));
 
-        for await (const item of new BatchWrite(this.client, items)) {
-            logger.debug('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+        if (remainingMembers.length > 0) {
+            for await (const item of new BatchWrite(this.client, items)) {
+                logger.debug('Wrote', item[0], item[1].PutRequest?.Item[FieldNames.member]);
+            }
         }
 
-        await this.client.update({
-            TableName: CONVERSATIONS_TABLE,
-
-            Key: {
-                [FieldNames.conversation]: conversation,
-                [FieldNames.member]: 0,
-            },
-
-            UpdateExpression: `ADD ${FieldNames.members} :m`,
-            ExpressionAttributeValues: {
-                ':m': this.client.createSet(members),
-            },
-        }).promise();
     }
 }

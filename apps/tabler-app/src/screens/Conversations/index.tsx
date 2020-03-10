@@ -226,7 +226,7 @@ export const ConversationsScreen =
     withWhoopsErrorBoundary(
         withTheme(connect(
             (state: IAppState) => ({
-                chatEnabled: state.settings.notificationsOneToOneChat || state.settings.notificationsOneToOneChat == null,
+                chatEnabled: state.settings.supportsNotifications,
                 websocket: state.connection.websocket,
             }),
             {

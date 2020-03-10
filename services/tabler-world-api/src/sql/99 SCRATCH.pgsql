@@ -22,11 +22,36 @@ where id = (
 select * from usersettings
 where id = 14225
 
+
+update usersettings
+set settings = null
+where id = 14225
+
+select * from usersettings
+where settings->'nearbymembers' = 'true'
+
+select * from usersettings
+where settings->'notifications'->>'personalChat' = 'false'
+
+
+select * from usersettings
+where settings->'notifications'->>'personalChat' = 'true'
+
+
+
+update usersettings
+set tokens = ARRAY['ExponentPushToken[Dxq2kcDvIOpejUFlM1b-dY]']
+where id = 14225
+
 select * From  userroles
 
 
 update usersettings
-set settings = jsonb_set(settings, '{nearbymembers}', 'true')
+set settings = jsonb_set(settings, '{notifications, personalChat}', 'true')
+where settings->'notifications'->>'birthdays' is null
+
+
+
 where id = 14225
 
 
@@ -152,3 +177,8 @@ and removed = FALSE
 explain
 EXECUTE sql1582553237507(ARRAY[222195]);
 DEALLOCATE sql1582553237507;
+
+
+
+select * from profiles
+where id = 126085

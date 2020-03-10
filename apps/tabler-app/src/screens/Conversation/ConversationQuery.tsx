@@ -393,9 +393,7 @@ export const ConversationQuery =
     connect(
         (state: IAppState) => ({
             websocket: state.connection.websocket,
-            chatEnabled: state.settings.notificationsOneToOneChat == null
-                ? true
-                : state.settings.notificationsOneToOneChat,
+            chatEnabled: state.settings.supportsNotifications,
             pendingMessages: state.chat.pendingSend,
         }),
         {

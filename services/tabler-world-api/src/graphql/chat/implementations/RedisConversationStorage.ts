@@ -33,7 +33,7 @@ export class RedisConversationStorage implements IConversationStorage {
 
     public async updateLastSeen(conversation: string, member: number, lastSeen: string): Promise<void> {
         await this.cache.del(userKey(conversation, member));
-        return this.storage.updateLastSeen(conversation, member, lastSeen);
+        await this.storage.updateLastSeen(conversation, member, lastSeen);
     }
 
     public async getUserConversation(conversation: string, member: number): Promise<UserConversation | undefined> {
@@ -48,9 +48,10 @@ export class RedisConversationStorage implements IConversationStorage {
         return newValue;
     }
 
+    // TODO: this should also remove all user keys
     public async update(conversation: string, eventId: string): Promise<void> {
         await this.cache.del(conversationKey(conversation));
-        return this.storage.update(conversation, eventId);
+        await this.storage.update(conversation, eventId);
     }
 
     public async removeMembers(conversation: string, members: number[]): Promise<void> {
@@ -58,7 +59,7 @@ export class RedisConversationStorage implements IConversationStorage {
             conversationKey(conversation),
             ...members.map((m) => userKey(conversation, m)),
         );
-        return this.storage.removeMembers(conversation, members);
+        await this.storage.removeMembers(conversation, members);
     }
 
     public async addMembers(conversation: string, members: number[]): Promise<void> {
@@ -66,6 +67,6 @@ export class RedisConversationStorage implements IConversationStorage {
             conversationKey(conversation),
             ...members.map((m) => userKey(conversation, m)),
         );
-        return this.storage.addMembers(conversation, members);
+        await this.storage.addMembers(conversation, members);
     }
 }

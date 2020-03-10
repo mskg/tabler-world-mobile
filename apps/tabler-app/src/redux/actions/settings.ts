@@ -32,6 +32,10 @@ export const storePushToken = createAction<'@@settings/pushToken', string>(
     '@@settings/pushToken',
 );
 
+export const notificationState = createAction<'@@settings/notificationsAvailable', boolean>(
+    '@@settings/notificationsAvailable',
+);
+
 export const restoreSettings = createAction<'@@settings/restoreSettings'>(
     '@@settings/restoreSettings',
 );

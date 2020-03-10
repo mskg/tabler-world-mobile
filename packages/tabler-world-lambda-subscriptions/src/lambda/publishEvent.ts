@@ -55,15 +55,13 @@ export async function publishEvent<TConnection, TResolver extends { dataSources:
             );
 
             if (missingPrincipals.length > 0) {
-                // tslint:disable-next-line: variable-name
                 const resolved = missingPrincipals.filter((p) => !p.muted);
-                if (resolved.length > 0) {
-                    await publishToPassiveSubscriptions(
-                        pushSubscriptionManager,
-                        missingPrincipals.map((p) => p.id),
-                        image,
-                    );
-                }
+
+                await publishToPassiveSubscriptions(
+                    pushSubscriptionManager,
+                    missingPrincipals,
+                    image,
+                );
 
                 // delivered to all (but ok for 1:1 chat here)
                 if (missingPrincipals.length === resolved.length && image.trackDelivery) {

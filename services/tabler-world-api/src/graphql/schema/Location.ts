@@ -56,7 +56,7 @@ export const Location = gql`
         lastseen: Date!
 
         location: GeoPoint
-        locationName: LocationName!
+        locationName: LocationName
 
         accuracy: Float!
     }

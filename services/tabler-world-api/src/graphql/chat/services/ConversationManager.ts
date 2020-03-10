@@ -1,5 +1,5 @@
 import { ConsoleLogger } from '@mskg/tabler-world-common';
-import { PaggedResponse, QueryOptions, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
+import { PaggedResponse, QueryOptions } from '@mskg/tabler-world-lambda-subscriptions';
 import { ALL_CHANNEL_PREFIX, ALL_CHANNEL_SUFFIX, DIRECT_CHAT_PREFIX, DIRECT_CHAT_SUFFIX, MEMBER_ENCLOSING, MEMBER_SEPERATOR } from '../Constants';
 import { Conversation } from '../types/Conversation';
 import { IConversationStorage } from '../types/IConversationStorage';
@@ -31,17 +31,17 @@ export class ConversationManager {
     ) {
     }
 
-    public async getConversations(member: number, options: QueryOptions = { pageSize: 10 }): Promise<PaggedResponse<string>> {
+    public getConversations(member: number, options: QueryOptions = { pageSize: 10 }): Promise<PaggedResponse<string>> {
         logger.debug('getConversations', member);
         return this.storage.getConversations(member, options);
     }
 
-    public async getConversation(conversation: string): Promise<Conversation> {
+    public getConversation(conversation: string): Promise<Conversation> {
         logger.debug(`[${conversation}]`, 'get');
         return this.storage.getConversation(conversation);
     }
 
-    public async getUserConversation(conversation: string, member: number): Promise<UserConversation | undefined> {
+    public getUserConversation(conversation: string, member: number): Promise<UserConversation | undefined> {
         logger.debug(`[${conversation}]`, 'getUserConversation', member);
         return this.storage.getUserConversation(conversation, member);
     }
@@ -53,7 +53,7 @@ export class ConversationManager {
      * @param member
      * @param lastSeen
      */
-    public async updateLastSeen(conversation: string, member: number, lastSeen: string) {
+    public updateLastSeen(conversation: string, member: number, lastSeen: string) {
         logger.log(`[${conversation}]`, 'updateLastSeen', member, lastSeen);
         return this.storage.updateLastSeen(conversation, member, lastSeen);
     }
@@ -64,17 +64,17 @@ export class ConversationManager {
      * @param conversation
      * @param param1
      */
-    public async update(conversation: string, { id: eventId }: WebsocketEvent<any>): Promise<void> {
+    public update(conversation: string, eventId: string): Promise<void> {
         logger.log(`[${conversation}]`, 'update', eventId);
         return this.storage.update(conversation, eventId);
     }
 
-    public async removeMembers(conversation: string, members: number[]): Promise<void> {
+    public removeMembers(conversation: string, members: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'removeMembers', members);
         return this.storage.removeMembers(conversation, members);
     }
 
-    public async addMembers(conversation: string, members: number[]): Promise<void> {
+    public addMembers(conversation: string, members: number[]): Promise<void> {
         logger.log(`[${conversation}]`, 'addMembers', members);
         return this.storage.addMembers(conversation, members);
     }

@@ -497,9 +497,7 @@ export const Profile = connect(
         emailApp: state.settings.emailApp,
         nearBy: state.settings.nearbyMembers,
         offline: state.connection.offline,
-
-        chatEnabled: state.settings.notificationsOneToOneChat == null
-            ? true : state.settings.notificationsOneToOneChat,
+        chatEnabled: state.settings.supportsNotifications,
         user: state.auth.username,
     }),
     {

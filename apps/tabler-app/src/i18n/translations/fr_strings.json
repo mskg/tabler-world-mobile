@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Vous avez désactivé les notifications pour les conversations de chat. Vous ne serez pas visible pour les autres membres et vous ne pourrez pas envoyer et recevoir de messages.",
+            "text": "Vous avez désactivé les notifications. Vous ne serez pas visible pour les autres membres et vous ne pourrez pas envoyer et recevoir de messages.",
             "button": "Changement"
         },
         "Settings": {

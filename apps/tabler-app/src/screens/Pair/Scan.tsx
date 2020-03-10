@@ -81,7 +81,7 @@ class ScanScreenBase extends AuditedScreen<Props & NavigationInjectedProps> {
                     onFocus={this._focus}
                 />
 
-                {hasCameraPermission === null &&
+                {hasCameraPermission == null &&
                     <EmptyComponent title={I18N.Screen_Pair.request} />
                 }
 

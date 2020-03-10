@@ -1,16 +1,24 @@
 import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { AsyncStorage } from 'react-native';
 import { Categories, Logger } from '../helper/Logger';
-import { storePushToken } from '../redux/actions/settings';
+import { notificationState, storePushToken } from '../redux/actions/settings';
 import { getReduxStore } from '../redux/getRedux';
+import { removePushToken } from '../sagas/tokens/removePushToken';
 import { TOKEN_KEY } from './Constants';
+import { isSignedIn } from './helper/isSignedIn';
 
 const logger = new Logger(Categories.Sagas.Push);
 
 export async function registerForPushNotifications(force = false) {
-    // TODO: dupliacte code with checkPersmissions
     try {
+        // if we are running in debug mode, we enable notifications
+        if (!Constants.isDevice && Constants.manifest.releaseChannel == null) {
+            getReduxStore().dispatch(notificationState(true));
+            return;
+        }
+
         const { status: existingStatus } = await Permissions.getAsync(
             Permissions.NOTIFICATIONS,
         );
@@ -26,14 +34,19 @@ export async function registerForPushNotifications(force = false) {
             finalStatus = status;
         }
 
+        const existingToken = await AsyncStorage.getItem(TOKEN_KEY);
+
         // Stop here if the user did not grant permissions
         if (finalStatus !== 'granted') {
             logger.log('status', finalStatus);
 
+            getReduxStore().dispatch(notificationState(false));
+            if (isSignedIn()) {
+                await removePushToken();
+            }
+
             return;
         }
-
-        const existingToken = await AsyncStorage.getItem(TOKEN_KEY);
 
         // Get the token that uniquely identifies this device
         const token = await Notifications.getExpoPushTokenAsync();
@@ -41,8 +54,11 @@ export async function registerForPushNotifications(force = false) {
         // tslint:disable-next-line: possible-timing-attack
         if (token !== existingToken || force) {
             logger.log('token is', token);
+            getReduxStore().dispatch(notificationState(false));
             getReduxStore().dispatch(storePushToken(token));
+            getReduxStore().dispatch(notificationState(true));
         } else {
+            getReduxStore().dispatch(notificationState(true));
             logger.log('Token known', existingToken);
         }
     } catch (e) {
