@@ -6748,7 +6748,7 @@ expo-camera@^8.0.0:
     lodash "^4.6.0"
     prop-types "^15.6.0"
 
-expo-cli@^3.13.6:
+expo-cli@^3.13.1:
   version "3.13.6"
   resolved "https://registry.yarnpkg.com/expo-cli/-/expo-cli-3.13.6.tgz#63b21b157fd2da283685dad0ca62cc10188b23ce"
   integrity sha512-CK5FcjyP1p15lej40Om8nxxF+BiinpOwOynqF5oOLltg88ZUCv5+Vgwy6e4jhRNRDkeXgeCId77WcqNK77Gzdg==
