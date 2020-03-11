@@ -40,7 +40,7 @@ export async function runLocationTask({ data, error }) {
                     logger.error('task-location-signed-out', e);
                 } finally {
                     // such we ignore the event
-                    AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
+                    await AsyncStorage.removeItem(LOCATION_TASK_NAME);
                 }
             } else {
                 await bootstrapApollo({ noWebsocket: true });

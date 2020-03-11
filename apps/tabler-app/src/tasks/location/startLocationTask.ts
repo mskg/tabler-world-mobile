@@ -1,6 +1,6 @@
 import { GeoParameters } from '@mskg/tabler-world-config-app';
 import * as Location from 'expo-location';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { LOCATION_TASK_NAME } from '../Constants';
@@ -24,13 +24,25 @@ export async function startLocationTask(): Promise<boolean> {
             logger.log('Starting task', LOCATION_TASK_NAME);
 
             const settings = await getParameterValue<GeoParameters>(ParameterName.geo);
-            delete settings.pollInterval;
-            delete settings.reverseGeocodeTimeout;
             logger.debug('settings', settings);
 
             const result = await updateLocation(true, true);
 
-            await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, settings);
+            await Location.startLocationUpdatesAsync(
+                LOCATION_TASK_NAME,
+                Platform.select({
+                    ios: settings.ios,
+                    android: __DEV__
+                        ? {
+                            ...settings.android,
+
+                            // emulator only support high accuracy updates
+                            accuracy: Location.Accuracy.High,
+                        }
+                        : settings.android,
+                }),
+            );
+
             await AsyncStorage.setItem(LOCATION_TASK_NAME, true.toString());
 
             return result;

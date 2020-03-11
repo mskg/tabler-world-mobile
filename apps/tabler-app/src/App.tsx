@@ -20,14 +20,12 @@ import { withPreCached } from './components/withPreCached';
 import { bootStrapSentry } from './helper/bootStrapSentry';
 import { disableFontScaling } from './helper/disableFontScaling';
 import { Categories, Logger } from './helper/Logger';
-import { Features, isFeatureEnabled } from './model/Features';
 import { Navigation } from './navigation/redux';
 import { checkNetwork } from './redux/actions/state';
 import { bootstrapRedux } from './redux/bootstrapRedux';
 import { withStore } from './redux/withStore';
 import { SubscribeToConversationUpdates } from './screens/Conversations/SubscribeToConversationUpdates';
-import { registerFetchTask } from './tasks/registerFetchTask';
-import { registerLocationTask } from './tasks/registerLocationTask';
+import { bootstrapTasks } from './tasks/bootstrapTasks';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
 
@@ -50,13 +48,8 @@ bootstrapAnalytics();
 logger.log('Bootstrapping redux');
 bootstrapRedux();
 
-if (isFeatureEnabled(Features.BackgroundFetch)) {
-    logger.log('Bootstrapping background-fetch');
-    registerFetchTask();
-}
-
-logger.log('Bootstrapping background-location');
-registerLocationTask();
+logger.log('Bootstrapping tasks');
+bootstrapTasks();
 
 fix2940();
 

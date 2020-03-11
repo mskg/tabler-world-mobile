@@ -6,11 +6,13 @@ import { runLocationTask } from './location/runLocationTask';
 import { startLocationTask } from './location/startLocationTask';
 import { stopLocationTaks } from './location/stopLocationTaks';
 
+export function defineLocationTask() {
+    TaskManager.defineTask(LOCATION_TASK_NAME, runLocationTask);
+}
+
 // tslint:disable-next-line: export-name
 export async function registerLocationTask() {
     try {
-        TaskManager.defineTask(LOCATION_TASK_NAME, runLocationTask);
-
         if (await isLocationTaskEnabled()) {
             await startLocationTask();
         } else {

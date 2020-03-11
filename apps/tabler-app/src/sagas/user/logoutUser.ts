@@ -3,6 +3,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { Updates } from 'expo';
 import * as SecureStore from 'expo-secure-store';
+import * as TaskManager from 'expo-task-manager';
 import { AsyncStorage } from 'react-native';
 import { put } from 'redux-saga/effects';
 import { cachedAolloClient, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
@@ -21,6 +22,13 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     try { yield disableNearbyTablers(); } catch (e) { logger.error('logout-nearby', e); }
 
     yield AsyncStorage.clear();
+
+    try {
+        yield TaskManager.unregisterAllTasksAsync();
+    } catch (e) {
+        logger.error('logout-tasks', e);
+    }
+
     yield SecureStore.deleteItemAsync(FILESTORAGE_KEY);
 
     yield put({ type: '__CLEAR__ALL__' });
