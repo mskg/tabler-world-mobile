@@ -2,7 +2,7 @@
 name: $(VERSION).$(rev:r)
 
 pool:
-  name: 'Hosted Ubuntu 1604'
+  name: 'Hosted Ubuntu 1804'
   demands: npm
 
 variables:
