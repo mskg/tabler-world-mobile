@@ -11,6 +11,7 @@ import { GetLocationHistory } from '../model/graphql/GetLocationHistory';
 import { GetLocationHistoryQuery } from '../queries/Location/GetLocationHistoryQuery';
 import { isFeatureEnabled, Features } from '../model/Features';
 import { createApolloContext } from '../helper/createApolloContext';
+import { I18N } from '../i18n/translation';
 
 type State = {
 };
@@ -66,9 +67,9 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                             <ScrollView horizontal={true} contentContainerStyle={styles.content}>
                                 <ScrollView nestedScrollEnabled={true}>
                                     <Card>
-                                        <DataTable style={{ width: 700 }}>
+                                        <DataTable style={{ width: 650 }}>
                                             <DataTable.Header>
-                                                <DataTable.Title style={{ width: 160, flex: 0 }}>Timestamp</DataTable.Title>
+                                                <DataTable.Title style={{ width: 120, flex: 0 }}>Timestamp</DataTable.Title>
                                                 <DataTable.Title>Location</DataTable.Title>
 
                                                 <DataTable.Title style={{ width: 120, flex: 0 }} numeric={true}>Latitude</DataTable.Title>
@@ -78,13 +79,14 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
 
                                             {data.LocationHistory.map((l, i) => (
                                                 <DataTable.Row key={i.toString()}>
-                                                    <DataTable.Cell style={{ width: 160, flex: 0 }}>{new Date(l.lastseen).toLocaleString()}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }}>{I18N.formatDate(l.lastseen, 'Date_Short_Time')}</DataTable.Cell>
+
                                                     <DataTable.Cell onPress={() => OpenLink.url(`https://maps.google.com/?q=${l.location?.latitude},${l.location?.longitude}`)}>
                                                         {l.locationName?.name},({l.locationName?.country})
                                                     </DataTable.Cell>
 
-                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.location?.latitude}</DataTable.Cell>
-                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{l.location?.longitude}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{Math.round(l.location!.latitude * 1e6) / 1e6}</DataTable.Cell>
+                                                    <DataTable.Cell style={{ width: 120, flex: 0 }} numeric={true}>{Math.round(l.location!.longitude * 1e6) / 1e6}</DataTable.Cell>
                                                     <DataTable.Cell style={{ width: 60, flex: 0 }} numeric={true}>{Math.round(l.accuracy)}m</DataTable.Cell>
                                                 </DataTable.Row>))
                                             }

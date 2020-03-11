@@ -126,7 +126,6 @@
         "@types/crypto-js": "^3.1.43",
         "@types/expo": "^33.0.1",
         "@types/expo__vector-icons": "^9.0.1",
-        "@types/i18n-js": "^3.0.1",
         "@types/lodash": "4.14.149",
         "@types/react": "^16.9.17",
         "@types/react-native": "^0.60.31",
