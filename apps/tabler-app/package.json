@@ -136,7 +136,7 @@
         "babel-plugin-import-graphql": "^2.7.0",
         "babel-plugin-module-resolver": "^4.0.0",
         "babel-preset-expo": "^8.0.0",
-        "expo-cli": "^3.13.2",
+        "expo-cli": "^3.13.6",
         "fast-json-patch": "^3.0.0-1",
         "jest-expo": "^36.0.0",
         "license-checker": "^25.0.1",
