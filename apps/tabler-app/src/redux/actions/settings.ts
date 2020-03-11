@@ -19,6 +19,8 @@ export type SettingsType =
 
     | { name: 'notificationsBirthdays', value: boolean }
     | { name: 'notificationsOneToOneChat', value: boolean }
+
+    | { name: 'useForegroundService', value: boolean }
     ;
 
 /**

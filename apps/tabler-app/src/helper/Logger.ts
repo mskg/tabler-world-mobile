@@ -88,7 +88,7 @@ export class Categories {
 }
 
 console.disableYellowBox = true;
-let FILTER: RegExp | undefined = /Push/ig; // /Chat|API/ig;
+let FILTER: RegExp | undefined = /App|Location|Fetch/ig; // /Chat|API/ig;
 const MAX = 24;
 
 // safety

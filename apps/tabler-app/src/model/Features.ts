@@ -1,4 +1,5 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 import { Appearance } from 'react-native-appearance';
 
 export enum Features {
@@ -14,6 +15,8 @@ export enum Features {
 
     LocationWithoutAlways,
     LocationWithoutBackground,
+
+    ToggleForegroundLocation,
 }
 
 export function isFeatureEnabled(feature: Features) {
@@ -30,6 +33,10 @@ export function isFeatureEnabled(feature: Features) {
     }
 
     if (feature === Features.SendToAdressbook) {
+        return true;
+    }
+
+    if (feature === Features.ToggleForegroundLocation && Platform.OS === 'android') {
         return true;
     }
 

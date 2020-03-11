@@ -16,7 +16,6 @@ export async function registerFetchTask() {
     try {
         const status = await BackgroundFetch.getStatusAsync();
         switch (status) {
-            case BackgroundFetch.Status.Restricted:
             case BackgroundFetch.Status.Denied:
                 logger.log('Background execution is disabled');
                 return;

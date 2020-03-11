@@ -687,6 +687,10 @@ const en = {
                 text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
                 field: 'Share Your Location',
             },
+            foreground: {
+                field: 'Foreground Location Updates',
+                text: 'If you turn this on, it will improve the accuracy of location updates in the background.',
+            },
             map: {
                 title: 'Map Display',
                 text: 'If you turn this on additionaly, other members can see exactly where you are.',
