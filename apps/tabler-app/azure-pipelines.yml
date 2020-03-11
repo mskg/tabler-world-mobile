@@ -2,7 +2,7 @@
 name: $(VERSION).$(PATCH)
 
 pool:
-  name: 'Azure Pipelines'
+  name: 'Hosted Ubuntu 1604'
   # name: 'Default'
   demands: npm
   workspace:
