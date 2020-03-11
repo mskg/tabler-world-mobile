@@ -2,7 +2,7 @@
 name: $(VERSION).$(PATCH)
 
 pool:
-  name: 'Hosted Ubuntu 1604'
+  vmImage: 'ubuntu-latest'
   # name: 'Default'
   demands: npm
   workspace:

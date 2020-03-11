@@ -2,7 +2,7 @@
 name: $(VERSION).$(rev:r)
 
 pool:
-  name: 'Hosted Ubuntu 1604'
+  vmImage: 'ubuntu-latest'
   demands: npm
 
 variables:
