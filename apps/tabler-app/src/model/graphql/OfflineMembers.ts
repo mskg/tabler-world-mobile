@@ -57,6 +57,12 @@ export interface OfflineMembers_OwnTable_phonenumbers {
   value: string;
 }
 
+export interface OfflineMembers_OwnTable_address_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
+}
+
 export interface OfflineMembers_OwnTable_address {
   __typename: "Address";
   postal_code: string | null;
@@ -64,6 +70,7 @@ export interface OfflineMembers_OwnTable_address {
   country: string | null;
   street1: string | null;
   street2: string | null;
+  location: OfflineMembers_OwnTable_address_location | null;
 }
 
 export interface OfflineMembers_OwnTable_companies_address {
@@ -182,6 +189,12 @@ export interface OfflineMembers_FavoriteMembers_phonenumbers {
   value: string;
 }
 
+export interface OfflineMembers_FavoriteMembers_address_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
+}
+
 export interface OfflineMembers_FavoriteMembers_address {
   __typename: "Address";
   postal_code: string | null;
@@ -189,6 +202,7 @@ export interface OfflineMembers_FavoriteMembers_address {
   country: string | null;
   street1: string | null;
   street2: string | null;
+  location: OfflineMembers_FavoriteMembers_address_location | null;
 }
 
 export interface OfflineMembers_FavoriteMembers_companies_address {

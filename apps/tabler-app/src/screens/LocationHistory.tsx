@@ -1,17 +1,19 @@
+
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { StyleSheet } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { Banner, Card, DataTable, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
 import { FullScreenLoading } from '../components/Loading';
 import { ScreenWithHeader } from '../components/Screen';
+import { createApolloContext } from '../helper/createApolloContext';
 import { OpenLink } from '../helper/OpenLink';
+import { I18N } from '../i18n/translation';
+import { Features, isFeatureEnabled } from '../model/Features';
 import { GetLocationHistory } from '../model/graphql/GetLocationHistory';
 import { GetLocationHistoryQuery } from '../queries/Location/GetLocationHistoryQuery';
-import { isFeatureEnabled, Features } from '../model/Features';
-import { createApolloContext } from '../helper/createApolloContext';
-import { I18N } from '../i18n/translation';
 
 type State = {
 };
@@ -29,6 +31,14 @@ type DispatchPros = {
 type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps;
 
 class LocationHistoryScreenBase extends React.Component<Props, State> {
+    mapRef: MapView | null = null;
+
+    _fitMap = () => {
+        if (this.mapRef) {
+            this.mapRef.fitToSuppliedMarkers(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+        }
+    }
+
     render() {
         return (
             <ScreenWithHeader
@@ -61,6 +71,8 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                             return (
                                 <FullScreenLoading />
                             );
+                        } else {
+                            setTimeout(this._fitMap, 500);
                         }
 
                         return (
@@ -92,6 +104,27 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                                             }
                                         </DataTable>
                                     </Card>
+
+                                    <Card style={styles.mapCard}>
+                                        <MapView
+                                            ref={(ref) => { this.mapRef = ref; }}
+                                            style={styles.map}
+                                            zoomEnabled={true}
+                                            scrollEnabled={true}
+                                            onMapReady={this._fitMap}
+                                        >
+                                            {
+                                                data.LocationHistory.map((l, i) => (
+                                                    <Marker
+                                                        key={i.toString()}
+                                                        identifier={i.toString()}
+                                                        title={I18N.formatDate(l.lastseen, 'Date_Short_Time')}
+                                                        coordinate={l.location!}
+                                                    />
+                                                ))
+                                            }
+                                        </MapView>
+                                    </Card>
                                 </ScrollView>
                             </ScrollView>
                         );
@@ -106,6 +139,15 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
 export const LocationHistoryScreen = withTheme(LocationHistoryScreenBase);
 
 const styles = StyleSheet.create({
+    mapCard: {
+        marginTop: 16,
+        marginBottom: 100,
+    },
+
+    map: {
+        height: 400,
+    },
+
     container: {
         flex: 1,
     },

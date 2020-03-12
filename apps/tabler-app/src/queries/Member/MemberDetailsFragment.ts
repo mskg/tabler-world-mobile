@@ -37,6 +37,11 @@ export const MemberDetailsFragment = gql`
             country
             street1
             street2
+
+            location {
+                longitude
+                latitude
+            }
         }
 
         companies {

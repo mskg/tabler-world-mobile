@@ -57,6 +57,12 @@ export interface Member_Member_phonenumbers {
   value: string;
 }
 
+export interface Member_Member_address_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
+}
+
 export interface Member_Member_address {
   __typename: "Address";
   postal_code: string | null;
@@ -64,6 +70,7 @@ export interface Member_Member_address {
   country: string | null;
   street1: string | null;
   street2: string | null;
+  location: Member_Member_address_location | null;
 }
 
 export interface Member_Member_companies_address {

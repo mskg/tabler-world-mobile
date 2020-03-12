@@ -33,12 +33,25 @@ export interface Club_Club_info {
   international_godparent: string | null;
 }
 
+export interface Club_Club_meetingplace1_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
+}
+
 export interface Club_Club_meetingplace1 {
   __typename: "Address";
   street1: string | null;
   street2: string | null;
   postal_code: string | null;
   city: string | null;
+  location: Club_Club_meetingplace1_location | null;
+}
+
+export interface Club_Club_meetingplace2_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
 }
 
 export interface Club_Club_meetingplace2 {
@@ -47,6 +60,7 @@ export interface Club_Club_meetingplace2 {
   street2: string | null;
   postal_code: string | null;
   city: string | null;
+  location: Club_Club_meetingplace2_location | null;
 }
 
 export interface Club_Club_account {

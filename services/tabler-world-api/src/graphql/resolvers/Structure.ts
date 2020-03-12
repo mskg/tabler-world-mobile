@@ -151,6 +151,30 @@ export const StructureResolver = {
             return root.clubnumber;
         },
 
+        meetingplace1: async (root: any, _args: any, _context: IApolloContext) => {
+            const address = root.meetingplace1;
+            if (address != null) {
+                return enrichAddress(
+                    address,
+                    removeFamily(root.association),
+                );
+            }
+
+            return null;
+        },
+
+        meetingplace2: async (root: any, _args: any, _context: IApolloContext) => {
+            const address = root.meetingplace2;
+            if (address != null) {
+                return enrichAddress(
+                    address,
+                    removeFamily(root.association),
+                );
+            }
+
+            return null;
+        },
+
         location: async (root: any, _args: any, context: IApolloContext) => {
             // currently there is no country in that address
             let address = root.meetingplace1 || root.meetingplace2;

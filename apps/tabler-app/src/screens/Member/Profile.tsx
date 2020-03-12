@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { logger } from '../../analytics/logger';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Element } from '../../components/Profile/Element';
+import { AddressElement } from '../../components/Profile/AddressElement';
 import { Section } from '../../components/Profile/Section';
 import { SectionsPlaceholder } from '../../components/Profile/SectionPlaceholder';
 import { collectEMails, collectPhones } from '../../helper/collect';
@@ -67,6 +68,7 @@ type Props = OwnProps & StateProps & ActionSheetProps & NavigationInjectedProps<
 type SectionValue = {
     field?: string,
     text?: string | undefined | React.ReactNode,
+    hidden?: boolean,
     onPress?: () => void,
 };
 
@@ -392,7 +394,14 @@ class ProfileBase extends React.Component<Props, State> {
                 values: [
                     {
                         field: I18N.Screen_Member.Fields.home,
-                        text: formatAddress(member.address),
+                        text: (
+                            <AddressElement
+                                text={formatAddress(member.address)}
+                                location={member.address?.location}
+                                onPress={OpenLink.canOpenUrl() ? this.handleAddress(member.address) : undefined}
+                            />
+                        ),
+                        hidden: formatAddress(member.address) == null,
                     },
                 ],
                 onPress: OpenLink.canOpenUrl() ? this.handleAddress(member.address) : undefined,
@@ -453,7 +462,7 @@ class ProfileBase extends React.Component<Props, State> {
         ]
             .map((s: Section) => ({
                 ...s,
-                values: s.values.filter((v) => v.text != null && v.text !== '') as SectionValue[],
+                values: s.values.filter((v) => !v.hidden && v.text != null && v.text !== '') as SectionValue[],
             }))
             .filter((s: Section) => s.values.length > 0);
 

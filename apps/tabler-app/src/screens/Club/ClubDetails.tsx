@@ -9,16 +9,17 @@ import { Square } from '../../components/Placeholder/Square';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
 import { SectionPlaceholder, SectionSquarePlaceholder } from '../../components/Profile/SectionPlaceholder';
-import { showAddress } from "../../helper/showAddress";
-import { formatAddress } from "../../helper/formatting/formatAddress";
-import { formatBank } from '../../helper/formatting/formatBank';
+import { formatAddress } from '../../helper/formatting/formatAddress';
 import { formatAnniversary } from '../../helper/formatting/formatAnniversary';
+import { formatBank } from '../../helper/formatting/formatBank';
 import { OpenLink } from '../../helper/OpenLink';
+import { showAddress } from '../../helper/showAddress';
 import { I18N } from '../../i18n/translation';
 import { Club_Club } from '../../model/graphql/Club';
 import { IAddress } from '../../model/IAddress';
 import { ExpandableElement } from './ExpandableElement';
 import { styles } from './Styles';
+import { AddressElement } from '../../components/Profile/AddressElement';
 
 type Props = {
     theme: Theme,
@@ -65,8 +66,7 @@ class ClubDetailsBase extends React.Component<Props> {
         const place1 = formatAddress(club.meetingplace1);
         const place2 = formatAddress(club.meetingplace2);
         const places = place1 !== place2
-            ?
-            place2 != null
+            ? place2 != null
                 ? 2
                 : 1
             : 1;
@@ -144,11 +144,31 @@ class ClubDetailsBase extends React.Component<Props> {
                             <Element field={I18N.Screen_Club.meetings} text={[first_meeting, second_meeting].filter(Boolean).join('\n')} />
                             {/* <Element field={I18N.Club.second} text={second_meeting} /> */}
 
-                            <Element onPress={this.handleAddress(club.meetingplace1)} field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 1 })} text={place1} />
+                            <Element
+                                onPress={this.handleAddress(club.meetingplace1)}
+                                field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 1 })}
+                                text={(
+                                    <AddressElement
+                                        text={place1}
+                                        location={club.meetingplace1?.location}
+                                        onPress={this.handleAddress(club.meetingplace1)}
+                                    />
+                                )}
+                            />
 
-                            {places === 2 &&
-                                <Element onPress={this.handleAddress(club.meetingplace2)} field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 2 })} text={place2} />
-                            }
+                            {places === 2 && (
+                                <Element
+                                    onPress={this.handleAddress(club.meetingplace2)}
+                                    field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 2 })}
+                                    text={(
+                                        <AddressElement
+                                            text={place2}
+                                            location={club.meetingplace2?.location}
+                                            onPress={this.handleAddress(club.meetingplace2)}
+                                        />
+                                    )}
+                                />
+                            )}
                         </Section>
                     )}
                 </Placeholder>

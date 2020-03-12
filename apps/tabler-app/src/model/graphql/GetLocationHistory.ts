@@ -24,7 +24,7 @@ export interface GetLocationHistory_LocationHistory {
   lastseen: any;
   accuracy: number;
   location: GetLocationHistory_LocationHistory_location | null;
-  locationName: GetLocationHistory_LocationHistory_locationName;
+  locationName: GetLocationHistory_LocationHistory_locationName | null;
 }
 
 export interface GetLocationHistory {

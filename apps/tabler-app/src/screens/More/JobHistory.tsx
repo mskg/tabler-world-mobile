@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { Card, DataTable, Theme } from 'react-native-paper';
 import { NavigationInjectedProps, ScrollView } from 'react-navigation';
 import { FullScreenLoading } from '../../components/Loading';

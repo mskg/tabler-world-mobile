@@ -8,6 +8,7 @@
 - We now better help you to fill your username in the login screen.
 - Basic member export functionality for Android devices. We know it's not complete, still the best we can offer today.
 - We now hide areas without clubs for you automatically.
+- We now show a little map preview of addresses we know. If the map is not correct, just drop us a note.
 
 ## Fixes
 - Fixed an issue with cameral roll permissions on Android.

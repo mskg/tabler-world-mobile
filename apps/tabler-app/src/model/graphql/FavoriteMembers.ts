@@ -57,6 +57,12 @@ export interface FavoriteMembers_FavoriteMembers_phonenumbers {
   value: string;
 }
 
+export interface FavoriteMembers_FavoriteMembers_address_location {
+  __typename: "GeoPoint";
+  longitude: number;
+  latitude: number;
+}
+
 export interface FavoriteMembers_FavoriteMembers_address {
   __typename: "Address";
   postal_code: string | null;
@@ -64,6 +70,7 @@ export interface FavoriteMembers_FavoriteMembers_address {
   country: string | null;
   street1: string | null;
   street2: string | null;
+  location: FavoriteMembers_FavoriteMembers_address_location | null;
 }
 
 export interface FavoriteMembers_FavoriteMembers_companies_address {
