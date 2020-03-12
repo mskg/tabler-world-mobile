@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Je hebt meldingen voor chatgesprekken uitgeschakeld. Je bent niet zichtbaar voor andere leden en je kunt geen berichten verzenden en ontvangen.",
+            "text": "Je hebt meldingen uitgeschakeld. Je bent niet zichtbaar voor andere leden en je kunt geen berichten verzenden en ontvangen.",
             "button": "Verandering"
         },
         "Settings": {
@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Filter",
                 "field": "Verberg je eigen club"
+            },
+            "foreground": {
+                "field": "Voorgrondse locatie-updates",
+                "text": "Als u dit inschakelt, zal het de nauwkeurigheid van de locatie-updates op de achtergrond verbeteren."
             }
         }
     },
