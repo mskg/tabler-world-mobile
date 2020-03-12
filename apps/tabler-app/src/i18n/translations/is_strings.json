@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Þú slökktir á tilkynningum varðandi samtöl. Þú verður ekki sýnilegur fyrir aðra meðlimi og þú getur ekki sent og tekið á móti skilaboðum.",
+            "text": "Þú hefur gert tilkynningar óvirkar. Þú verður ekki sýnilegur fyrir aðra meðlimi og þú getur ekki sent og tekið á móti skilaboðum.",
             "button": "Breyting"
         },
         "Settings": {
@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Sía",
                 "field": "Fela þinn eigin klúbb"
+            },
+            "foreground": {
+                "field": "Uppfærslur í forgrunni",
+                "text": "Ef þú kveikir á þessu mun það bæta nákvæmni staðsetningaruppfærslu í bakgrunni."
             }
         }
     },
