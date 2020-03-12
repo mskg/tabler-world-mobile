@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Filter",
                 "field": "Hide Your own Club"
+            },
+            "foreground": {
+                "field": "Foreground Location Updates",
+                "text": "If you turn this on, it will improve the accuracy of location updates in the background."
             }
         }
     },
