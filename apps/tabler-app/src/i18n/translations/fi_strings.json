@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Suodatta",
                 "field": "Piilota oman klubin jäsenet"
+            },
+            "foreground": {
+                "field": "Etualan sijaintipäivitykset",
+                "text": "Jos otat tämän käyttöön, se parantaa sijaintipäivitysten tarkkuutta taustalla."
             }
         }
     },
