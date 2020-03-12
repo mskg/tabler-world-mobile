@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Sía",
                 "field": "Fela þinn eigin klúbb"
+            },
+            "foreground": {
+                "field": "Uppfærslur í forgrunni",
+                "text": "Ef þú kveikir á þessu mun það bæta nákvæmni staðsetningaruppfærslu í bakgrunni."
             }
         }
     },
