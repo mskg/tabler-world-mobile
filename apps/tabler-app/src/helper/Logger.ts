@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import * as Sentry from 'sentry-expo';
-import { format } from 'util';
+import { format as formatWithOptions, inspect } from 'util';
 
 export let PRESERVE_CONSOLE = false;
 
@@ -88,7 +88,7 @@ export class Categories {
 }
 
 console.disableYellowBox = true;
-let FILTER: RegExp | undefined = /App|Location|Fetch/ig; // /Chat|API/ig;
+let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
 
 // safety
@@ -110,79 +110,76 @@ export class Logger {
         this.disabled = FILTER && this.category.match(FILTER) == null;
     }
 
-    debug(...args: any[]): void {
-        if (this.disabled) { return; }
+    /**
+     * formatWithOptions is not available, such we rebuild the functionality here with one exception,
+     * we don't support %s identifiers for message.
+     */
+    format(message: any, args: any[]) {
+        let result = message;
 
-        if (!__DEV__ && !PRESERVE_CONSOLE) {
-            const message = args != null ? args[0] : null;
-
-            let data: any = null;
-            if (args != null && args.length > 1) {
-                args.shift();
-                data = args;
-            }
-
-            if (data) {
-                Sentry.addBreadcrumb({
-                    message: format(message, data),
-                    category: this.category,
-                    level: Sentry.Severity.Debug,
-                });
-            } else {
-                Sentry.addBreadcrumb({
-                    message,
-                    category: this.category,
-                    level: Sentry.Severity.Debug,
-                });
+        if (args) {
+            for (const arg of args) {
+                result += ' ';
+                if (typeof (arg) === 'string') {
+                    result += arg;
+                } else {
+                    result += inspect(
+                        arg,
+                        {
+                            colors:  false,
+                            maxArrayLength: 10,
+                            depth: 10,
+                            compact: true,
+                        },
+                    );
+                }
             }
         }
 
+        return result;
+    }
+
+    debug(message: any, ...args: any[]): void {
+        if (this.disabled) { return; }
+
+        const formattedMessage: string = this.format(message, args);
+        if (!__DEV__ && !PRESERVE_CONSOLE) {
+            Sentry.addBreadcrumb({
+                message: formattedMessage,
+                category: this.category,
+                level: Sentry.Severity.Debug,
+            });
+        }
+
         if (__DEV__ || PRESERVE_CONSOLE) {
-            if (__DEV__) {
-                // tslint:disable-next-line: no-console
-                console.debug(Constants.installationId, `[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
-            } else {
-                // tslint:disable-next-line: no-console
-                console.debug(`[DEBUG] [${this.category.padEnd(MAX)}]`, ...args);
-            }
+            // tslint:disable-next-line: no-console
+            console.debug(
+                Constants.installationId,
+                `[DEBUG] [${this.category.padEnd(MAX)}]`,
+                formattedMessage,
+            );
         }
     }
 
-    log(...args: any[]): void {
+    log(message: any, ...args: any[]): void {
         if (this.disabled) { return; }
 
+        const formattedMessage: string = this.format(message, args);
         if (!__DEV__ && !PRESERVE_CONSOLE) {
-            const message = args != null ? args[0] : null;
-
-            let data: any = null;
-            if (args != null && args.length > 1) {
-                args.shift();
-                data = args;
-            }
-
-            if (data) {
-                Sentry.addBreadcrumb({
-                    message: format(message, data),
-                    category: this.category,
-                    level: Sentry.Severity.Debug,
-                });
-            } else {
-                Sentry.addBreadcrumb({
-                    message,
-                    category: this.category,
-                    level: Sentry.Severity.Debug,
-                });
-            }
+            Sentry.addBreadcrumb({
+                message: formattedMessage,
+                category: this.category,
+                level: Sentry.Severity.Debug,
+            });
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
-            if (__DEV__) {
-                // tslint:disable-next-line: no-console
-                console.log(Constants.installationId, `[INFO] [${this.category.padEnd(MAX)}]`, ...args);
-            } else {
-                // tslint:disable-next-line: no-console
-                console.log(`[INFO] [${this.category.padEnd(MAX)}]`, ...args);
-            }
+            // tslint:disable-next-line: no-console
+            console.log(
+                Constants.installationId,
+                `[INFO] [${this.category.padEnd(MAX)}]`,
+                formattedMessage,
+            );
         }
     }
 
@@ -214,24 +211,14 @@ export class Logger {
         }
 
         if (__DEV__ || PRESERVE_CONSOLE) {
-            if (__DEV__) {
-                // tslint:disable-next-line: no-console
-                console.warn(
-                    Constants.installationId,
-                    `[ERROR] [${this.category.padEnd(MAX)}]`,
-                    `[${id}]`,
-                    error,
-                    context,
-                );
-            } else {
-                // tslint:disable-next-line: no-console
-                console.warn(
-                    `[ERROR] [${this.category.padEnd(MAX)}]`,
-                    `[${id}]`,
-                    error,
-                    context,
-                );
-            }
+            // we don't use error, das this would result in React to force a crash
+            console.warn(
+                Constants.installationId,
+                `[ERROR] [${this.category.padEnd(MAX)}]`,
+                `[${id}]`,
+                error,
+                context,
+            );
         }
     }
 }

@@ -1,5 +1,7 @@
+import { first } from 'lodash';
 import React from 'react';
 import { Platform, View } from 'react-native';
+import { User } from 'react-native-gifted-chat';
 import { Appbar, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -11,9 +13,9 @@ import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
-import { SimpleAvatar } from '../../components/SimpleAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
-import { Conversation, ConversationVariables, Conversation_Conversation_participants, Conversation_Conversation_participants_member, Conversation_Conversation } from '../../model/graphql/Conversation';
+import { SimpleAvatar } from '../../components/SimpleAvatar';
+import { Conversation, ConversationVariables, Conversation_Conversation, Conversation_Conversation_participants_member } from '../../model/graphql/Conversation';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
 import { ChatEdits } from '../../model/state/ChatState';
@@ -25,8 +27,6 @@ import { ConversationQuery } from './ConversationQuery';
 import { IChatMessage } from './IChatMessage';
 import { logger } from './logger';
 import { WaitingForNetwork } from './WaitingForNetwork';
-import { first } from 'lodash';
-import { User } from 'react-native-gifted-chat';
 
 type Props = {
     theme: Theme,
@@ -164,7 +164,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                         style={{
                             marginLeft: 8,
                             fontFamily: this.props.theme.fonts.medium,
-                            fontSize: Platform.OS === 'ios' ? 17 : 20
+                            fontSize: Platform.OS === 'ios' ? 17 : 20,
                         }}
                     >
                         {conversation.subject}

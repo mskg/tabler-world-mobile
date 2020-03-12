@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
+import { Divider, List, Portal, Switch, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../../analytics/ActionNames';
@@ -22,7 +22,6 @@ import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { registerForPushNotifications } from '../../../tasks/registerForPushNotifications';
 import { Action } from './Action';
 import { Element } from './Element';
-import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Setting);
 
