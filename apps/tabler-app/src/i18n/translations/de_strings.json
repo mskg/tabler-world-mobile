@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Du hast die Benachrichtigungen für Unterhaltungen deaktiviert. Du bist nicht für andere Mitglieder sichtbar und kannst auch keine neuen Nachrichten senden oder empfangen",
+            "text": "Du hast die Benachrichtigungen deaktiviert. Du bist nicht für andere Mitglieder sichtbar und kannst auch keine neuen Nachrichten senden oder empfangen",
             "button": "Ändern"
         },
         "Settings": {
@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Filter",
                 "field": "Verstecke Mitglieder des eigenen Clubs"
+            },
+            "foreground": {
+                "field": "Standortaktualisierung im Vordergrund",
+                "text": "Wenn Du diese Funktion einschaltest, dann wird die Positionsbestimmung im Hintergrund etwas genauer."
             }
         }
     },
