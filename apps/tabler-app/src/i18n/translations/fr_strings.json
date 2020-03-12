@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Vous avez désactivé les notifications pour les conversations de chat. Vous ne serez pas visible pour les autres membres et vous ne pourrez pas envoyer et recevoir de messages.",
+            "text": "Vous avez désactivé les notifications. Vous ne serez pas visible pour les autres membres et vous ne pourrez pas envoyer et recevoir de messages.",
             "button": "Changement"
         },
         "Settings": {
@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Filtre",
                 "field": "Cachez votre propre club"
+            },
+            "foreground": {
+                "field": "Mises à jour des lieux de premier plan",
+                "text": "Si vous l'activez, cela améliorera la précision des mises à jour de localisation en arrière-plan."
             }
         }
     },
@@ -678,12 +682,12 @@
         "nogallery": "Désolé, nous avons besoin des autorisations de pellicule pour que cela fonctionne."
     },
     "Permissions": {
-        "NSCameraUsageDescription": "",
-        "NSContactsUsageDescription": "",
-        "NSCalendarsUsageDescription": "",
-        "NSLocationWhenInUseUsageDescription": "",
-        "NSLocationAlwaysUsageDescription": "",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "",
-        "NSPhotoLibraryUsageDescription": ""
+        "NSCameraUsageDescription": "TABLER.APP utilise la caméra pour scanner les codes-barres des autres membres.",
+        "NSContactsUsageDescription": "TABLER.APP met à jour votre répertoire avec les détails des membres.",
+        "NSCalendarsUsageDescription": "TABLER.APP met à jour votre calendrier avec les détails de l'événement et de l'anniversaire.",
+        "NSLocationWhenInUseUsageDescription": "TABLER.APP affiche d'autres membres et clubs autour de votre position actuelle.",
+        "NSLocationAlwaysUsageDescription": "TABLER.APP suit votre position pour permettre à d'autres membres de vous contacter.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP suit votre position pour permettre à d'autres membres de vous contacter.",
+        "NSPhotoLibraryUsageDescription": "Vous pouvez envoyer des photos à d'autres membres dans TABLER.APP."
     }
 }
