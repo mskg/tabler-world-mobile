@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "You disabled notifications for chat conversations. You will not be visible for other members and you will not not able to send and receive messages.",
+            "text": "You disabled notifications. You will not be visible for other members and you will not not able to send and receive messages.",
             "button": "Change"
         },
         "Settings": {
@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Filter",
                 "field": "Hide Your own Club"
+            },
+            "foreground": {
+                "field": "Foreground Location Updates",
+                "text": "If you turn this on, it will improve the accuracy of location updates in the background."
             }
         }
     },
