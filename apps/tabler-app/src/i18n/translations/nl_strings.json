@@ -655,6 +655,10 @@
             "filter": {
                 "title": "Filter",
                 "field": "Verberg je eigen club"
+            },
+            "foreground": {
+                "field": "Voorgrondse locatie-updates",
+                "text": "Als u dit inschakelt, zal het de nauwkeurigheid van de locatie-updates op de achtergrond verbeteren."
             }
         }
     },
