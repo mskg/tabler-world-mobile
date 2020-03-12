@@ -6,5 +6,6 @@ export const AddressFragment = gql`
         street2
         postal_code
         city
+        country
     }
 `;
