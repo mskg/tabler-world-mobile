@@ -130,7 +130,6 @@ stages:
     - publish: $(System.DefaultWorkingDirectory)/apps/tabler-app
       artifact: app-config
 
-
 - stage: build
   dependsOn: publish
   pool:
@@ -223,10 +222,10 @@ stages:
         - script: |
             sudo xcode-select -s $(XCODE_VERSION)
 
-      - task: Cache@2
-        inputs:
-          key: 'npm | ios | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
-          path: $(npm_config_cache)
+        - task: Cache@2
+          inputs:
+            key: 'npm | ios | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+            path: $(npm_config_cache)
 
         - task: Cache@2
           inputs:
