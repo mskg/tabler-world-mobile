@@ -30,15 +30,6 @@ trigger:
       - services/tabler-world-api/azure-pipelines.yml
 
 stages:
-- stage: prepare
-  jobs:
-  - job: prepare
-    steps:
-    - template: ../devops/yarn.yml
-      parameters:
-        SOURCEDIR: $(PACKAGE_DIR)
-
-
 - stage: deploy
   dependsOn: prepare
   jobs:
