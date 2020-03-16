@@ -17,7 +17,7 @@ steps:
       regionName: ${{ parameters.AWS_DEFAULT_REGION }}
       scriptType: inline
       inlineScript: |
-        npx serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+        sudo npx serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
 
       disableAutoCwd: true
     displayName: Deploying package
