@@ -22,4 +22,9 @@ const strings = {
         title: 'Er is iemand jarig!',
         text: (n: any) => `Help me om ${n} een fantastische dag te bezorgen!`,
     },
+
+    is: {
+        title: 'Afmælisdagur',
+        text: (n: any) => `Sjáum til þess að ${n} eigi frábæran dag!`,
+    },
 };
