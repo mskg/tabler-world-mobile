@@ -43,7 +43,7 @@ stages:
   dependsOn: prepare
   jobs:
   - deployment: dev
-    environment: tabler-world-dev.api
+    environment: tabler-world-dev
     variables:
       - group: ENV Germany DEV
     strategy:
@@ -67,7 +67,7 @@ stages:
 
 
   - deployment: test
-    environment: tabler-world-test.api
+    environment: tabler-world-test
     variables:
       - group: ENV Germany TEST
     dependsOn: dev
@@ -92,7 +92,7 @@ stages:
 
 
   - deployment: prod
-    environment: tabler-world-prod.api
+    environment: tabler-world-prod
     variables:
       - group: ENV Germany PROD
     dependsOn: test
