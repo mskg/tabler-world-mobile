@@ -3,10 +3,16 @@ pool:
   vmImage: "macOS-latest"
 
 variables:
-  - group: "Apple Distribution"
-  - group: "Expo"
-  - group: "Play Store"
   - group: "git-crypt"
+
+  - group: "Expo"
+
+  - group: "Apple Distribution"
+  - group: "Play Store"
+
+  - group: "AWS Germany"
+  - group: "ENV Germany Shared"
+  - group: "ENV Germany PROD"
 
   - name: EXPO_SDK_VERSION
     value: "36.0.0"
