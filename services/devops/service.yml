@@ -10,9 +10,9 @@ steps:
       workingDir: ${{ parameters.PACKAGE_DIR }}
       customCommand: "version $(Build.BuildNumber)"
 
-  - template: ../devops/yarn.yml
+  - template: ./yarn.yml
     parameters:
-      SOURCEDIR: ${{ parameters.PACKAGE_DIR }}
+      SOURCEDIR: $(System.DefaultWorkingDirectory)
 
   - script: |
       yarn build-common
