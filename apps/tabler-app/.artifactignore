@@ -1,0 +1,9 @@
+**/*
+!commit.txt
+!package.json
+!.yarnrc
+!deployment.json
+!devopts/deployment.js
+!devops/setvar.ps1
+!devops/app.js
+!assets/**.*

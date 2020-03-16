@@ -126,7 +126,7 @@ stages:
     # yarn /App
     - template: ./devops/publish-pipeline.yml
 
-- stage: native-apps
+- stage: native_apps
   dependsOn: javascript
   pool:
     vmImage: "macOS-latest"
@@ -216,8 +216,8 @@ stages:
             ArtifactName: "android"
 
 
-- stage: deploy-apps
-  dependsOn: native-apps
+- stage: deploy_apps
+  dependsOn: native_apps
   pool:
     vmImage: "macOS-latest"
     workspace:
