@@ -1,21 +1,10 @@
 parameters:
-  PACKAGE_DIR: $(System.DefaultWorkingDirectory)
   INFRASTRUCTURE_RELEASE_CHANNEL: dev
   AWS_DEFAULT_REGION: eu-west-1
 
 steps:
-  - checkout: self
-    clean: true
-
-  - task: Npm@1
-    inputs:
-      command: custom
-      workingDir: ${{ parameters.PACKAGE_DIR }}
-      customCommand: "version $(Build.BuildNumber)"
-
-  - template: ./yarn.yml
-    parameters:
-      SOURCEDIR: $(System.DefaultWorkingDirectory)
+  - download: current
+    artifact: $(INFRASTRUCTURE_RELEASE_CHANNEL)
 
   - script: |
       yarn build-common
@@ -28,8 +17,7 @@ steps:
       regionName: ${{ parameters.AWS_DEFAULT_REGION }}
       scriptType: inline
       inlineScript: |
-        export NODE_OPTIONS=--max-old-space-size=8096
-        yarn serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+        npm install -g serverless
+        npx serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
 
       disableAutoCwd: true
-      workingDirectory: ${{ parameters.PACKAGE_DIR }}

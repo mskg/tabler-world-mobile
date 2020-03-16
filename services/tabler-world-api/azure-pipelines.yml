@@ -32,7 +32,40 @@ trigger:
       - services/tabler-world-api/azure-pipelines.yml
 
 stages:
+- stage: compile
+  jobs:
+    - job: dev
+      variables:
+        - group: ENV Germany DEV
+      steps:
+        - template: ../devops/package-service.yml
+          parameters:
+            PACKAGE_DIR: $(PACKAGE_DIR)
+            INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+            AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+
+    - job: test
+      variables:
+        - group: ENV Germany TEST
+      steps:
+        - template: ../devops/package-service.yml
+          parameters:
+            PACKAGE_DIR: $(PACKAGE_DIR)
+            INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+            AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+
+    - job: prod
+      variables:
+        - group: ENV Germany PROD
+      steps:
+        - template: ../devops/package-service.yml
+          parameters:
+            PACKAGE_DIR: $(PACKAGE_DIR)
+            INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+            AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+
 - stage: dev
+  dependsOn: compile
   jobs:
   - deployment: aws
     environment: tabler-world-dev
@@ -44,7 +77,6 @@ stages:
           steps:
             - template: ../devops/service.yml
               parameters:
-                PACKAGE_DIR: $(PACKAGE_DIR)
                 INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
                 AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
@@ -71,7 +103,6 @@ stages:
           steps:
             - template: ../devops/service.yml
               parameters:
-                PACKAGE_DIR: $(PACKAGE_DIR)
                 INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
                 AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
@@ -97,7 +128,6 @@ stages:
           steps:
             - template: ../devops/service.yml
               parameters:
-                PACKAGE_DIR: $(PACKAGE_DIR)
                 INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
                 AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
