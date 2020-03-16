@@ -6,13 +6,13 @@ parameters:
 steps:
   - checkout: self
 
+  - template: ./yarn.yml
+    parameters:
+      SOURCEDIR: $(System.DefaultWorkingDirectory)
+
   - download: current
     artifact: ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
     displayName: Downloading package
-
-  - script: |
-      sudo npm install -g serverless
-    displayName: Installing serverless
 
   - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
     inputs:
@@ -20,7 +20,7 @@ steps:
       regionName: ${{ parameters.AWS_DEFAULT_REGION }}
       scriptType: inline
       inlineScript: |
-        sudo npx serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+        yarn serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
 
       disableAutoCwd: true
       workingDirectory: ${{ parameters.PACKAGE_DIR }}
