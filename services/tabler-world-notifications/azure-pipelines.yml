@@ -6,8 +6,13 @@ pool:
   demands: npm
 
 variables:
-  VERSION: 1.4
-  PACKAGE_DIR: 'services/tabler-world-notifications'
+  - name: VERSION
+    value: 1.4
+  - name: PACKAGE_DIR
+    value: $(System.DefaultWorkingDirectory)/services/tabler-world-notifications
+
+  - group: AWS Germany
+  - group: ENV Germany Shared
 
 pr:
   branches:
@@ -25,21 +30,5 @@ trigger:
       - services/tabler-world-notifications/src/*
       - services/tabler-world-notifications/azure-pipelines.yml
 
-steps:
-# - template: ../devops/yarn.yml
-
-- task: Npm@1
-  displayName: 'npm version'
-  inputs:
-    command: custom
-    workingDir: '$(PACKAGE_DIR)'
-    verbose: false
-    customCommand: 'version $(Build.BuildNumber)'
-
-- template: ../devops/publish-defaults.yml
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(PACKAGE_DIR)'
-    ArtifactName: source/services/tabler-world-notifications
-
+stages:
+  - template: ../devops/default-stages.yml
