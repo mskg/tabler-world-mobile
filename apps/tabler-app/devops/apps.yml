@@ -10,10 +10,6 @@ variables:
   - group: "Apple Distribution"
   - group: "Play Store"
 
-  - group: "AWS Germany"
-  - group: "ENV Germany Shared"
-  - group: "ENV Germany PROD"
-
   - name: EXPO_SDK_VERSION
     value: "36.0.0"
   - name: TURTLE_VERSION
@@ -21,28 +17,17 @@ variables:
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
 
+resources:
+  pipelines:
+  - pipeline: app
+    source: tabler-app
+
 steps:
   # prepare node environment
   - template: ./node.yml
 
-  # yarn /
-  - template: ./yarn.yml
-    parameters:
-      SOURCEDIR: $(System.DefaultWorkingDirectory)
-      YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
-
-  # yarn /App
-  - template: ./yarn.yml
-    parameters:
-      SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
-      YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
-
-  # Init expo environment
-  - template: ./init-expo.yml
-    parameters:
-      APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
-      APP_VERSION: $(build.buildNumber)
-      SOURCESDIR: $(System.DefaultWorkingDirectory)
+  # download pipeline artifacts
+  - download: app
 
   - task: DownloadSecureFile@1
     name: mobileprovision
@@ -92,7 +77,7 @@ steps:
 
       echo "File name to publish IOS"
       echo $i
-    workingDirectory: $(System.DefaultWorkingDirectory)/apps/tabler-app
+    workingDirectory: $(PIPELINE.WORKSPACE)/app/app-config
     env:
       APPLE_P12_PASSWORD: $(APPLE_P12_PASSWORD)
       EXPO_PASSWORD: $(EXPO_PASSWORD)

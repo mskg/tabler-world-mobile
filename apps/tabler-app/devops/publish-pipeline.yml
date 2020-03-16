@@ -1,0 +1,31 @@
+parameters:
+  ARTIFACT: 'app-config'
+  PATH: 'apps/tabler-app'
+
+steps:
+- publish: commit.txt
+  artifact: ${{ parameters.ARTIFACT }}
+
+- publish: ${{ parameters.PATH }}/app.json
+  artifact: ${{ parameters.ARTIFACT }}
+
+- publish: apps/tabler-app/package.json
+  artifact: ${{ parameters.ARTIFACT }}
+
+- publish: .yarnrc
+  artifact: ${{ parameters.ARTIFACT }}
+
+- publish: ${{ parameters.PATH }}/deployment.json
+  artifact: ${{ parameters.ARTIFACT }}
+
+- publish: ${{ parameters.PATH }}/devops/deployment.js
+  artifact: ${{ parameters.ARTIFACT }}/config
+
+- publish: ${{ parameters.PATH }}/devops/setvar.ps1
+  artifact: ${{ parameters.ARTIFACT }}/config
+
+- publish: ${{ parameters.PATH }}/devops/app.js
+  artifact: ${{ parameters.ARTIFACT }}/config
+
+- publish: ${{ parameters.PATH }}/assets
+  artifact: ${{ parameters.ARTIFACT }}/assets

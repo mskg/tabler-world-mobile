@@ -112,4 +112,4 @@ steps:
     EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
 
 # yarn /App
-- template: ./devops/publish.yml
+- template: ./devops/publish-pipeline.yml
