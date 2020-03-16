@@ -159,17 +159,17 @@ stages:
 
       - task: Cache@2
         inputs:
-          key: 'npm | android | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+          key: '"npm" | "android" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
           path: $(npm_config_cache)
 
       - task: Cache@2
         inputs:
-          key: 'turtle | android | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+          key: '"turtle" | "android" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
           path: ~/.turtle
 
       - task: Cache@2
         inputs:
-          key: 'gradle | android | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+          key: '"gradle" | "android" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
           path: ~/.gradle/wrapper
 
       # run turtle build
@@ -224,17 +224,17 @@ stages:
 
         - task: Cache@2
           inputs:
-            key: 'npm | ios | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+            key: '"npm" | "ios" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
             path: $(npm_config_cache)
 
         - task: Cache@2
           inputs:
-            key: 'turtle | ios | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+            key: '"turtle" | "ios" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
             path: ~/.turtle
 
         - task: Cache@2
           inputs:
-            key: 'gradle | ios | $(EXPO_SDK_VERSION) | $(TURTLE_VERSION)'
+            key: '"gradle" | "ios" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
             path: ~/.gradle/wrapper
 
         # run turtle build
