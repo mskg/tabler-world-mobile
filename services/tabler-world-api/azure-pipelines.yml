@@ -30,9 +30,9 @@ trigger:
       - services/tabler-world-api/azure-pipelines.yml
 
 stages:
-- stage: deploy
+- stage: dev
   jobs:
-  - deployment: dev
+  - deployment: aws
     environment: tabler-world-dev
     variables:
       - group: ENV Germany DEV
@@ -56,11 +56,13 @@ stages:
                 logResponse: true
 
 
-  - deployment: test
+- stage: test
+  dependsOn: dev
+  jobs:
+  - deployment: aws
     environment: tabler-world-test
     variables:
       - group: ENV Germany TEST
-    dependsOn: dev
     strategy:
       runOnce:
         deploy:
@@ -80,12 +82,13 @@ stages:
                 logRequest: true
                 logResponse: true
 
-
-  - deployment: prod
+- stage: prod
+  dependsOn: test
+  jobs:
+  - deployment: aws
     environment: tabler-world-prod
     variables:
       - group: ENV Germany PROD
-    dependsOn: test
     strategy:
       runOnce:
         deploy:
