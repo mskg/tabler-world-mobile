@@ -134,7 +134,56 @@ stages:
       clean: all
 
   jobs:
-    - job: app
+    - job: android
+      steps:
+      - download: current
+        artifact: app-config
+
+      - template: ./devops/node.yml
+
+      - task: DownloadSecureFile@1
+        name: androidCertificate
+        inputs:
+          secureFile: "mobile-app.jks"
+
+      # select xcode version
+      - script: |
+          sudo xcode-select -s /Applications/Xcode_11.3.1.app/Contents/Developer
+
+      # run turtle build
+      - script: |
+          npm install -g expo-cli
+          npm install -g turtle-cli@$(TURTLE_VERSION)
+
+          turtle setup:android --sdk-version $EXPO_SDK_VERSION
+
+          export EXPO_ANDROID_KEYSTORE_PASSWORD=$(ANDROID_KEYSTORE_PASSWORD)
+          export EXPO_ANDROID_KEY_PASSWORD=$(ANDROID_KEY_PASSWORD)
+          turtle build:android -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --keystore-path $(androidCertificate.secureFilePath) --keystore-alias $(ANDROID_KEYSTORE_ALIAS) -t app-bundle --release-channel $(EXPO_RELEASE_CHANNEL)
+
+          cd /users/vsts/expo-apps
+
+          export A=$(ls *.aab)
+          echo "##vso[task.setvariable variable=androidArtifact]$A"
+
+          echo "File name to publish Android"
+          echo $A
+        workingDirectory: $(PIPELINE.WORKSPACE)/app-config
+        env:
+          TURTLE_VERSION: $(TURTLE_VERSION)
+          EXPO_SDK_VERSION: $(EXPO_SDK_VERSION)
+          EXPO_USERNAME: $(EXPO_USERNAME)
+          EXPO_PASSWORD: $(EXPO_PASSWORD)
+          ANDROID_KEYSTORE_PASSWORD: $(ANDROID_KEYSTORE_PASSWORD)
+          ANDROID_KEY_PASSWORD: $(ANDROID_KEY_PASSWORD)
+          EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: "/users/vsts/expo-apps/$(androidArtifact)"
+          ArtifactName: "android"
+
+    - job: ios
       steps:
         - download: current
           artifact: app-config
@@ -144,21 +193,12 @@ stages:
         - task: DownloadSecureFile@1
           name: mobileprovision
           inputs:
-            secureFile: "worldroundtableapp_AppStore.mobileprovision"
+            secureFile: "mobile-app.mobileprovision"
 
         - task: DownloadSecureFile@1
           name: iosCertificate
           inputs:
-            secureFile: "App_TABLER_APP.p12"
-
-        - task: DownloadSecureFile@1
-          name: androidCertificate
-          inputs:
-            secureFile: "mobile-app.jks"
-
-        # select xcode version
-        - script: |
-            sudo xcode-select -s /Applications/Xcode_11.3.1.app/Contents/Developer
+            secureFile: "mobile-app_dist.p12"
 
         # select xcode version
         - script: |
@@ -174,22 +214,11 @@ stages:
             export EXPO_IOS_DIST_P12_PASSWORD=$(APPLE_P12_PASSWORD)
             turtle build:ios -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --team-id $(APPLE_TEAM_ID) --dist-p12-path $(iosCertificate.secureFilePath) --provisioning-profile-path $(mobileprovision.secureFilePath) --release-channel $(EXPO_RELEASE_CHANNEL)
 
-            turtle setup:android --sdk-version $EXPO_SDK_VERSION
-
-            export EXPO_ANDROID_KEYSTORE_PASSWORD=$(ANDROID_KEYSTORE_PASSWORD)
-            export EXPO_ANDROID_KEY_PASSWORD=$(ANDROID_KEY_PASSWORD)
-            turtle build:android -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --keystore-path $(androidCertificate.secureFilePath) --keystore-alias $(ANDROID_KEYSTORE_ALIAS) -t app-bundle --release-channel $(EXPO_RELEASE_CHANNEL)
-
             cd /users/vsts/expo-apps
 
-            export A=$(ls *.aab)
             export i=$(ls *.ipa)
 
             echo "##vso[task.setvariable variable=iosArtifact]$i"
-            echo "##vso[task.setvariable variable=androidArtifact]$A"
-
-            echo "File name to publish Android"
-            echo $A
 
             echo "File name to publish IOS"
             echo $i
@@ -201,19 +230,12 @@ stages:
             APPLE_P12_PASSWORD: $(APPLE_P12_PASSWORD)
             EXPO_USERNAME: $(EXPO_USERNAME)
             EXPO_PASSWORD: $(EXPO_PASSWORD)
-            ANDROID_KEYSTORE_PASSWORD: $(ANDROID_KEYSTORE_PASSWORD)
-            ANDROID_KEY_PASSWORD: $(ANDROID_KEY_PASSWORD)
             EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
 
         - task: PublishPipelineArtifact@1
           inputs:
             targetPath: "/users/vsts/expo-apps/$(iosArtifact)"
             ArtifactName: "ios"
-
-        - task: PublishPipelineArtifact@1
-          inputs:
-            targetPath: "/users/vsts/expo-apps/$(androidArtifact)"
-            ArtifactName: "android"
 
 
 - stage: deploy_apps
