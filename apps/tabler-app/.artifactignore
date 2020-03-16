@@ -1,6 +1,8 @@
 **/*
 !commit.txt
 !package.json
+!src/i18n/permissions/**.*
+!app.json
 !.yarnrc
 !deployment.json
 !devopts/deployment.js
