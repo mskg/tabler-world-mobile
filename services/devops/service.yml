@@ -8,7 +8,7 @@ steps:
     displayName: Downloading package
 
   - script: |
-      npm install -g serverless
+      sudo npm install -g serverless
     displayName: Installing serverless
 
   - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
