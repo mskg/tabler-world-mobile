@@ -1,7 +1,0 @@
-parameters:
-  ARTIFACT: "app-config"
-  PATH: "apps/tabler-app"
-
-steps:
-  - publish: ${{ parameters.PATH }}
-    artifact: ${{ parameters.ARTIFACT }}

@@ -43,6 +43,8 @@ variables:
     value: "36.0.0"
   - name: TURTLE_VERSION
     value: "0.13.10"
+  - name: XCODE_VERSION
+    value: "/Applications/Xcode_11.3.1.app/Contents/Developer"
 
 pr:
   branches:
@@ -67,13 +69,13 @@ trigger:
       - apps/tabler-app/config/app.json
 
 stages:
-- stage: javascript
+- stage: publish
   pool:
     vmImage: 'ubuntu-latest'
     workspace:
       clean: all
   jobs:
-  - job: publish
+  - job: javascript
     steps:
     # - powershell: |
     #     Write-Host 'Patch# $(PATCH)'
@@ -85,6 +87,9 @@ stages:
     - script: 'echo "$(git log -1 --pretty=%B)" > commit.txt'
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: Save commit message
+
+    - publish: $(System.DefaultWorkingDirectory)/commit.txt
+      artifact: commit
 
     # prepare node environment
     - template: ./devops/node.yml
@@ -123,10 +128,11 @@ stages:
         SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
         EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
 
-    # yarn /App
-    - template: ./devops/publish-pipeline.yml
+    - publish: $(System.DefaultWorkingDirectory)/apps/tabler-app
+      artifact: app-config
 
-- stage: native_apps
+
+- stage: build
   dependsOn: javascript
   pool:
     vmImage: "macOS-latest"
@@ -148,7 +154,7 @@ stages:
 
       # select xcode version
       - script: |
-          sudo xcode-select -s /Applications/Xcode_11.3.1.app/Contents/Developer
+          sudo xcode-select -s $(XCODE_VERSION)
 
       # run turtle build
       - script: |
@@ -159,15 +165,8 @@ stages:
 
           export EXPO_ANDROID_KEYSTORE_PASSWORD=$(ANDROID_KEYSTORE_PASSWORD)
           export EXPO_ANDROID_KEY_PASSWORD=$(ANDROID_KEY_PASSWORD)
-          turtle build:android -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --keystore-path $(androidCertificate.secureFilePath) --keystore-alias $(ANDROID_KEYSTORE_ALIAS) -t app-bundle --release-channel $(EXPO_RELEASE_CHANNEL)
+          turtle build:android -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --keystore-path $(androidCertificate.secureFilePath) --keystore-alias $(ANDROID_KEYSTORE_ALIAS) --type app-bundle --release-channel $(EXPO_RELEASE_CHANNEL) -o app.aab
 
-          cd /users/vsts/expo-apps
-
-          export A=$(ls *.aab)
-          echo "##vso[task.setvariable variable=androidArtifact]$A"
-
-          echo "File name to publish Android"
-          echo $A
         workingDirectory: $(PIPELINE.WORKSPACE)/app-config
         env:
           TURTLE_VERSION: $(TURTLE_VERSION)
@@ -180,8 +179,8 @@ stages:
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: "/users/vsts/expo-apps/$(androidArtifact)"
-          ArtifactName: "android"
+          targetPath: $(PIPELINE.WORKSPACE)/app-config/app.aab
+          ArtifactName: android
 
     - job: ios
       steps:
@@ -202,7 +201,7 @@ stages:
 
         # select xcode version
         - script: |
-            sudo xcode-select -s /Applications/Xcode_11.3.1.app/Contents/Developer
+            sudo xcode-select -s $(XCODE_VERSION)
 
         # run turtle build
         - script: |
@@ -212,16 +211,7 @@ stages:
             turtle setup:ios --sdk-version $EXPO_SDK_VERSION
 
             export EXPO_IOS_DIST_P12_PASSWORD=$(APPLE_P12_PASSWORD)
-            turtle build:ios -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --team-id $(APPLE_TEAM_ID) --dist-p12-path $(iosCertificate.secureFilePath) --provisioning-profile-path $(mobileprovision.secureFilePath) --release-channel $(EXPO_RELEASE_CHANNEL)
-
-            cd /users/vsts/expo-apps
-
-            export i=$(ls *.ipa)
-
-            echo "##vso[task.setvariable variable=iosArtifact]$i"
-
-            echo "File name to publish IOS"
-            echo $i
+            turtle build:ios -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --team-id $(APPLE_TEAM_ID) --dist-p12-path $(iosCertificate.secureFilePath) --provisioning-profile-path $(mobileprovision.secureFilePath) --release-channel $(EXPO_RELEASE_CHANNEL) -o app.ipa
           workingDirectory: $(PIPELINE.WORKSPACE)/app-config
           env:
             APPLE_TEAM_ID: $(APPLE_TEAM_ID)
@@ -234,12 +224,12 @@ stages:
 
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: "/users/vsts/expo-apps/$(iosArtifact)"
+            targetPath: $(PIPELINE.WORKSPACE)/app-config/app.ipa
             ArtifactName: "ios"
 
 
-- stage: deploy_apps
-  dependsOn: native_apps
+- stage: deploy
+  dependsOn: build
   pool:
     vmImage: "macOS-latest"
     workspace:
@@ -251,7 +241,43 @@ stages:
         - download: current
           artifact: ios
 
+        - download: current
+          artifact: commit
+
+        - script: |
+            export i=$(ls *.ipa)
+            echo "##vso[task.setvariable variable=iosArtifact]$i"
+          workingDirectory: $(PIPELINE.WORKSPACE)/ios
+
+        # select xcode version
+        - script: |
+            sudo xcode-select -s $(XCODE_VERSION)
+
+        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+          displayName: 'Publish to the App Store TestFlight track'
+          inputs:
+            serviceEndpoint: 'Store markus...@ovfoundation'
+            appIdentifier: '$(APP_IOS_BUNDLE)'
+            ipaPath: $(PIPELINE.WORKSPACE)/ios/app.ipa
+            releaseNotes: $(PIPELINE.WORKSPACE)/commit/commit.txt
+            shouldSkipWaitingForProcessing: true
+
+
     - job: android
       steps:
         - download: current
           artifact: android
+
+        - download: current
+          artifact: commit
+
+        # select xcode version
+        - script: |
+            sudo xcode-select -s $(XCODE_VERSION)
+
+        - task: ms-vsclient.google-play.google-play-release-bundle.GooglePlayReleaseBundle@3
+          inputs:
+            serviceConnection: 'Google Play Store'
+            applicationId: '$(APP_ANDROID_PACKAGE)'
+            bundleFile: $(PIPELINE.WORKSPACE)/android/app.aab
+            changeLogFile: $(PIPELINE.WORKSPACE)/commit/commit.txt
