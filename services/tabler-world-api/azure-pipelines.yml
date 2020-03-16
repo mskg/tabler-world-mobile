@@ -3,6 +3,8 @@ name: $(VERSION).$(rev:r)
 
 pool:
   vmImage: 'ubuntu-latest'
+  workspace:
+    clean: all
 
 variables:
   - name: VERSION
