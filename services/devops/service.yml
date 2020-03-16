@@ -5,11 +5,11 @@ parameters:
 steps:
   - download: current
     artifact: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+    displayName: Downloading package
 
   - script: |
-      yarn build-common
-      yarn build-cache
-    workingDirectory: $(System.DefaultWorkingDirectory)
+      npm install -g serverless
+    displayName: Installing serverless
 
   - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
     inputs:
@@ -17,7 +17,7 @@ steps:
       regionName: ${{ parameters.AWS_DEFAULT_REGION }}
       scriptType: inline
       inlineScript: |
-        npm install -g serverless
         npx serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
 
       disableAutoCwd: true
+    displayName: Deploying package

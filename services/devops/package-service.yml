@@ -9,15 +9,18 @@ steps:
       command: custom
       workingDir: ${{ parameters.PACKAGE_DIR }}
       customCommand: "version $(Build.BuildNumber)"
+    displayName: Bumping version
 
   - template: ./yarn.yml
     parameters:
       SOURCEDIR: $(System.DefaultWorkingDirectory)
+    displayName: Boostrapping yarn
 
   - script: |
       yarn build-common
       yarn build-cache
     workingDirectory: $(System.DefaultWorkingDirectory)
+    displayName: Build command and cache
 
   - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
     inputs:
@@ -30,6 +33,8 @@ steps:
 
       disableAutoCwd: true
       workingDirectory: ${{ parameters.PACKAGE_DIR }}
+    displayName: Building package
 
   - publish: ${{ parameters.PACKAGE_DIR }}/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
-    artifact: ${{ parameters.PACKAGE_DIR }}
+    artifact: ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+    displayName: Publishing package
