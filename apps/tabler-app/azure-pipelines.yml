@@ -133,7 +133,7 @@ stages:
 
 
 - stage: build
-  dependsOn: javascript
+  dependsOn: publish
   pool:
     vmImage: "macOS-latest"
     workspace:
