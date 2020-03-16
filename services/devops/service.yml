@@ -29,7 +29,7 @@ steps:
       scriptType: inline
       inlineScript: |
         export NODE_OPTIONS=--max-old-space-size=8096
-        yarn serverless deploy --stage ${{ parameters.PACKAGE_DIR }}
+        yarn serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
 
       disableAutoCwd: true
       workingDirectory: ${{ parameters.PACKAGE_DIR }}
