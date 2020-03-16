@@ -79,6 +79,7 @@ stages:
               parameters:
                 INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
                 AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+                PACKAGE_DIR: $(PACKAGE_DIR)
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
@@ -105,6 +106,7 @@ stages:
               parameters:
                 INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
                 AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+                PACKAGE_DIR: $(PACKAGE_DIR)
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
@@ -130,6 +132,7 @@ stages:
               parameters:
                 INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
                 AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+                PACKAGE_DIR: $(PACKAGE_DIR)
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'

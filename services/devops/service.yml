@@ -1,10 +1,13 @@
 parameters:
   INFRASTRUCTURE_RELEASE_CHANNEL: dev
   AWS_DEFAULT_REGION: eu-west-1
+  PACKAGE_DIR: $(System.DefaultWorkingDirectory)
 
 steps:
+  - checkout: self
+
   - download: current
-    artifact: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+    artifact: ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
     displayName: Downloading package
 
   - script: |
@@ -20,4 +23,6 @@ steps:
         sudo npx serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package $(PIPELINE.WORKSPACE)/${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
 
       disableAutoCwd: true
+      workingDirectory: ${{ parameters.PACKAGE_DIR }}
+
     displayName: Deploying package
