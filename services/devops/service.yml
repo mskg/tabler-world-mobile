@@ -4,6 +4,9 @@ parameters:
   AWS_DEFAULT_REGION: eu-west-1
 
 steps:
+  - checkout: self
+    clean: true
+
   - task: Npm@1
     inputs:
       command: custom
