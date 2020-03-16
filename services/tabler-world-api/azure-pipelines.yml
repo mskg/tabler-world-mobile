@@ -31,7 +31,6 @@ trigger:
 
 stages:
 - stage: deploy
-  dependsOn: prepare
   jobs:
   - deployment: dev
     environment: tabler-world-dev
