@@ -20,19 +20,19 @@ steps:
   - template: ./node.yml
 
   # yarn /
-  - template: ./devops/yarn.yml
+  - template: ./yarn.yml
     parameters:
       SOURCEDIR: $(System.DefaultWorkingDirectory)
       YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
   # yarn /App
-  - template: ./devops/yarn.yml
+  - template: ./yarn.yml
     parameters:
       SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
       YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
   # Init expo environment
-  - template: ./devops/init-expo.yml
+  - template: ./init-expo.yml
     parameters:
       APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
       APP_VERSION: $(build.buildNumber)
