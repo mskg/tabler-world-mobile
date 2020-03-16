@@ -35,6 +35,8 @@ variables:
 
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
+  - name: npm_config_cache
+    value: $(Pipeline.Workspace)/.npm
 
   - group: "Apple Distribution"
   - group: "Play Store"
@@ -139,9 +141,6 @@ stages:
 
   jobs:
     - job: android
-      variables:
-        npm_config_cache: $(Pipeline.Workspace)/.npm
-
       steps:
       - download: current
         artifact: app-config
@@ -159,18 +158,18 @@ stages:
 
       - task: Cache@2
         inputs:
-          key: '"npm" | "android" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+          key: '"npm" | "android" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
           path: $(npm_config_cache)
 
       - task: Cache@2
         inputs:
-          key: '"turtle" | "android" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
-          path: ~/.turtle
+          key: '"turtle" | "android" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+          path: /Users/runner/.turtle
 
       - task: Cache@2
         inputs:
-          key: '"gradle" | "android" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
-          path: ~/.gradle/wrapper
+          key: '"gradle" | "android" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+          path: /Users/runner/.gradle/wrapper
 
       # run turtle build
       - script: |
@@ -199,9 +198,6 @@ stages:
           ArtifactName: android
 
     - job: ios
-      variables:
-        npm_config_cache: $(Pipeline.Workspace)/.npm
-
       steps:
         - download: current
           artifact: app-config
@@ -224,18 +220,13 @@ stages:
 
         - task: Cache@2
           inputs:
-            key: '"npm" | "ios" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+            key: '"npm" | "ios" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
             path: $(npm_config_cache)
 
         - task: Cache@2
           inputs:
-            key: '"turtle" | "ios" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
-            path: ~/.turtle
-
-        - task: Cache@2
-          inputs:
-            key: '"gradle" | "ios" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
-            path: ~/.gradle/wrapper
+            key: '"turtle" | "ios" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+            path: /Users/runner/.turtle
 
         # run turtle build
         - script: |
