@@ -8,7 +8,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: 1.5
+    value: '0.1'
   - name: PACKAGE_DIR
     value: $(System.DefaultWorkingDirectory)/services/tabler-world-api
 
@@ -23,7 +23,7 @@ pr:
 trigger:
   branches:
     include:
-      - none
+      - develop
 
   paths:
     include:
@@ -93,6 +93,9 @@ stages:
 
 - stage: test
   dependsOn: dev
+  condition:
+    and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
+
   jobs:
   - deployment: aws
     environment: tabler-world-test
@@ -119,6 +122,9 @@ stages:
 
 - stage: prod
   dependsOn: test
+  condition:
+    and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
+
   jobs:
   - deployment: aws
     environment: tabler-world-prod
