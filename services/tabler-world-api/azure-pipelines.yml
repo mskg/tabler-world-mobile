@@ -8,7 +8,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: 1.4
+    value: 1.5
   - name: PACKAGE_DIR
     value: $(System.DefaultWorkingDirectory)/services/tabler-world-api
 
@@ -23,7 +23,7 @@ pr:
 trigger:
   branches:
     include:
-      - release/v1.4
+      - none
 
   paths:
     include:
