@@ -6,6 +6,7 @@ function state(): IAppState {
     return (getReduxStore().getState() as IAppState);
 }
 
+// tslint:disable: function-name
 export class OpenLink {
 
     static canSendMessage() {
@@ -32,7 +33,8 @@ export class OpenLink {
         if (app != null) {
             LinkingHelper.openUrl(
                 app as WebApps,
-                url);
+                url,
+            );
         }
     }
 
@@ -40,13 +42,14 @@ export class OpenLink {
         return state().settings.phoneApp != null;
     }
 
-    static call(number: string) {
+    static call(nbr: string) {
         const app = state().settings.phoneApp;
 
         if (app != null) {
             LinkingHelper.makeCall(
                 app as CallApps,
-                number);
+                nbr,
+            );
         }
     }
 

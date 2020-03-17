@@ -1,10 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
+import { first } from 'lodash';
 import React from 'react';
 import { Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { MemberListItem } from '../../components/Member/MemberListItem';
 import { SwipableItem, SwipeButtonsContainer } from '../../components/SwipableItem';
+import { TextImageAvatar } from '../../components/TextImageAvatar';
 import { GetConversations, GetConversations_Conversations_nodes } from '../../model/graphql/GetConversations';
 import { RemoveConversation, RemoveConversationVariables } from '../../model/graphql/RemoveConversation';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
@@ -12,6 +14,10 @@ import { RemoveConversationMutation } from '../../queries/Conversations/RemoveCo
 import { showConversation } from '../../redux/actions/navigation';
 import { LastMessage } from './LastMessage';
 import { UnreadMessages } from './UnreadMessages';
+import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { SimpleAvatar } from '../../components/SimpleAvatar';
+import { updateBadgeFromConversations } from './chatHelpers';
 
 type OwnProps = {
     theme: Theme,
@@ -53,10 +59,11 @@ class ConversationListItemBase extends React.PureComponent<Props> {
 
     _onPress = () => this.props.showConversation(
         this.props.conversation.id,
-        `${this.props.conversation.members[0].firstname} ${this.props.conversation.members[0].lastname}`,
+        this.props.conversation.subject,
     )
 
     _remove = () => {
+        // error is not handeled
         requestAnimationFrame(async () => {
             const client = cachedAolloClient();
             await client.mutate<RemoveConversation, RemoveConversationVariables>({
@@ -64,6 +71,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                 variables: {
                     id: this.props.conversation.id,
                 },
+                context: createApolloContext('ConversationListItemBase'),
             });
 
             let conversations;
@@ -77,6 +85,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
             if (conversations == null) {
                 const temp = await client.query<GetConversations>({
                     query: GetConversationsQuery,
+                    context: createApolloContext('ConversationListItemBase'),
                 });
 
                 conversations = temp.data;
@@ -95,6 +104,8 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                 },
             });
 
+            await updateBadgeFromConversations();
+
             if (this.ref) {
                 this.ref.close();
             }
@@ -102,6 +113,9 @@ class ConversationListItemBase extends React.PureComponent<Props> {
     }
 
     render() {
+        // might be null what is ok
+        const otherParticipant = first(this.props.conversation.participants.filter((p) => !p.iscallingidentity));
+
         return (
             <SwipableItem
                 ref={(o) => { this.ref = o; }}
@@ -136,8 +150,20 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                 )}
             >
                 <MemberListItem
+                    // the cast is ok, we can ignore the roles
+                    member={otherParticipant?.member as IMemberOverviewFragment}
                     theme={this.props.theme}
-                    member={this.props.conversation.members[0]}
+
+                    title={this.props.conversation.subject || ''}
+                    subtitle={otherParticipant?.member ? undefined : 'Past Member'}
+
+                    left={() => (
+                        <SimpleAvatar
+                            pic={this.props.conversation.pic}
+                            size={38}
+                            text={this.props.conversation.subject}
+                        />
+                    )}
 
                     right={() => (
                         <UnreadMessages

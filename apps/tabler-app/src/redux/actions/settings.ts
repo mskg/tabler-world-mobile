@@ -19,6 +19,8 @@ export type SettingsType =
 
     | { name: 'notificationsBirthdays', value: boolean }
     | { name: 'notificationsOneToOneChat', value: boolean }
+
+    | { name: 'useForegroundService', value: boolean }
     ;
 
 /**
@@ -30,6 +32,10 @@ export const updateSetting = createAction<'@@settings/update', SettingsType>(
 
 export const storePushToken = createAction<'@@settings/pushToken', string>(
     '@@settings/pushToken',
+);
+
+export const notificationState = createAction<'@@settings/notificationsAvailable', boolean>(
+    '@@settings/notificationsAvailable',
 );
 
 export const restoreSettings = createAction<'@@settings/restoreSettings'>(

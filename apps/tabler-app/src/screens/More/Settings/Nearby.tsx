@@ -15,11 +15,13 @@ import { disableNearbyTablers } from '../../../helper/geo/disable';
 import { enableNearbyTablers } from '../../../helper/geo/enable';
 import { Categories, Logger } from '../../../helper/Logger';
 import { I18N } from '../../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../../model/Features';
 import { SetLocationServicesOnMap, SetLocationServicesOnMapVariables } from '../../../model/graphql/SetLocationServicesOnMap';
 import { IAppState } from '../../../model/IAppState';
 import { SettingsState } from '../../../model/state/SettingsState';
 import { SetLocationServicesOnMapMutation } from '../../../queries/Location/SetLocationServicesOnMapMutation';
 import { SettingsType, updateSetting } from '../../../redux/actions/settings';
+import { removeTasks, runTasks } from '../../../tasks/bootstrapTasks';
 import { Element } from './Element';
 import { styles } from './Styles';
 
@@ -104,6 +106,24 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
         }
     }
 
+    _toggleForeground = async () => {
+        this.updateSetting({
+            name: 'useForegroundService',
+            value: !this.props.settings.useForegroundService,
+        });
+
+        this.setState({ wait: true }, async () => {
+            try {
+                await removeTasks();
+                await runTasks();
+
+                this.setState({ wait: false });
+            } catch {
+                Alert.alert(I18N.Screen_Settings.locationfailed);
+            }
+        });
+    }
+
     _toggleLocationServices = async () => {
         const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
@@ -177,6 +197,28 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                                 )}
                             />
                             <Divider />
+
+                            {isFeatureEnabled(Features.ToggleForegroundLocation) && (
+                                <>
+                                    <View style={{ paddingTop: 16 }} />
+                                    <Text style={styles.text}>{I18N.Screen_NearbyMembers.Settings.foreground.text}</Text>
+                                    <Divider />
+                                    <Element
+                                        theme={this.props.theme}
+                                        field={I18N.Screen_NearbyMembers.Settings.foreground.field}
+                                        text={(
+                                            <Switch
+                                                color={this.props.theme.colors.accent}
+                                                disabled={!this.props.settings.nearbyMembers}
+                                                style={{ marginTop: -4, marginRight: -4 }}
+                                                value={this.props.settings.nearbyMembers && this.props.settings.useForegroundService}
+                                                onValueChange={this._toggleForeground}
+                                            />
+                                        )}
+                                    />
+                                    <Divider />
+                                </>
+                            )}
                         </List.Section>
 
                         <List.Section title={I18N.Screen_NearbyMembers.Settings.map.title}>

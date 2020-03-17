@@ -9,5 +9,3 @@ export const S3 = new xAWS.S3({
     useAccelerateEndpoint: true,
     useDualstack: true,
 });
-
-export const UPLOAD_BUCKET = process.env.UPLOAD_BUCKET as string;

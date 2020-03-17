@@ -11,6 +11,13 @@ export const setLocation = createAction<'@@location/track/setLocation', {
     '@@location/track/setLocation',
 );
 
+export const setThrottle = createAction<'@@location/track/setThrottle', number | undefined>(
+    '@@location/track/setThrottle',
+);
+
+export const removePending = createAction<'@@location/track/removePending'>(
+    '@@location/track/removePending',
+);
 
 export const setNearby = createAction<'@@location/nearby/members', NearbyMembers_nearbyMembers[]>(
     '@@location/nearby/members',

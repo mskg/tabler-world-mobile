@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Text as NativeText, View } from 'react-native';
+import { Linking, Text as NativeText, View } from 'react-native';
 import { Banner, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import { logger } from '../analytics/logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
 import { showNotificationSettings } from '../redux/actions/navigation';
@@ -15,7 +16,7 @@ type OwnProps = {
 };
 
 type StateProps = {
-    notificationsOneToOneChat: boolean,
+    notifications: boolean,
 };
 
 type DispatchPros = {
@@ -26,8 +27,26 @@ type Props = OwnProps & StateProps & DispatchPros;
 
 // tslint:disable-next-line: export-name
 export class ChatDisabledBannerBase extends React.Component<Props, State> {
+    state: State = {
+        notifications: true,
+    };
+
+    _tryopen = () => {
+        Linking.canOpenURL('app-settings:')
+            .then((supported) => {
+                if (!supported) {
+                    logger.log('Can\'t handle settings url');
+                } else {
+                    Linking.openURL('app-settings:');
+                }
+            })
+            .catch((err) => {
+                logger.error('linking-app-settings', err);
+            });
+    }
+
     render() {
-        if (this.props.notificationsOneToOneChat || this.props.notificationsOneToOneChat == null) {
+        if (this.props.notifications) {
             return null;
         }
 
@@ -39,7 +58,7 @@ export class ChatDisabledBannerBase extends React.Component<Props, State> {
                         {
                             // @ts-ignore We provide a Text to color it
                             label: <NativeText style={{ color: this.props.theme.colors.accent }}>{I18N.Component_Notifications.chatDisabled.button.toUpperCase()}</NativeText>,
-                            onPress: () => this.props.showNotificationSettings(),
+                            onPress: this._tryopen,
                         },
                     ]}
                     image={({ size }) =>
@@ -55,7 +74,7 @@ export class ChatDisabledBannerBase extends React.Component<Props, State> {
 
 export const ChatDisabledBanner = connect(
     (state: IAppState) => ({
-        notificationsOneToOneChat: state.settings.notificationsOneToOneChat == null ? true : state.settings.notificationsOneToOneChat,
+        notifications: state.settings.supportsNotifications,
     }),
     {
         showNotificationSettings,

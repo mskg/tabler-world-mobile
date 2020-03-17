@@ -1,3 +1,4 @@
-connect-prod.sh
-connect-test.sh
+connect-*.sh
+!connect-psql.sh
 *SCRATCH.pgsql
+out.txt

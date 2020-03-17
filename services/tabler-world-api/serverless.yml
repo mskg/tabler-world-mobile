@@ -8,11 +8,13 @@ plugins:
   - serverless-webpack
   - serverless-dynamodb-local
   - serverless-s3-local
+  - serverless-plugin-metric
 
 custom:
   # Our stage is based on what is passed in when running serverless
   # commands. Or fallsback to what we have set in the provider section.
   stage: ${opt:stage, self:provider.stage}
+  apiError: ${self:service}-websocket-error-${self:custom.stage}
 
   webpack:
     keepOutputDirectory: true
@@ -20,7 +22,7 @@ custom:
     includeModules:
       forceExclude:
         - aws-sdk
-
+#
   cache_table:
     Fn::ImportValue: CacheTableName-${self:custom.stage}
   cache_version: '1.3#v3'
@@ -31,6 +33,13 @@ custom:
   wsdomainname: ${self:custom.stage}-ws-api.app.roundtable.world
 
   demo_api_key: ${env:DEMO_API_KEY}
+
+  push_queue_arn:
+    # 'arn:aws:sqs:eu-west-1:181860213310:tabler-world-temp-migration.fifo'
+    Fn::ImportValue: FifoPushQueueArn-${self:custom.stage}
+  push_queue_url:
+    # 'https://sqs.eu-west-1.amazonaws.com/181860213310/tabler-world-temp-migration.fifo'
+    Fn::ImportValue: FifoPushQueueUrl-${self:custom.stage}
 
   bucket: tabler-world-chat-attachments-${self:custom.stage}
   connections_table: tabler-world-ws-connections-${self:custom.stage}
@@ -130,6 +139,52 @@ custom:
     # Uncomment only if you already have a S3 server running locally
     # noStart: true
 
+  metrics:
+    - name: throttle-location
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="throttle-location", value, unit]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: throttle-global
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="throttle-global", value, unit]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: graphql-error
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="graphql-error", value, unit]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: query-location
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="query-location", value, unit]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
+    - name: sql-latency
+      namespace: ${self:service}-${self:custom.stage}
+      pattern: '[category=METRIC, name="sql-latency", value, unit]'
+      value: "$value"
+      functions:
+        - graphql
+        - websocket
+        - publish
+
 # we want seperate files to minimize depenencies in files
 package:
   individually: ${self:custom.bundle.${self:custom.stage}}
@@ -193,6 +248,12 @@ provider:
       Resource:
         Fn::ImportValue: DataArn-${self:custom.stage}
 
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        Fn::ImportValue: ValidateTokenArn-${self:custom.stage}
+
     # read parameters from SSM
     - Effect: Allow
       Action:
@@ -229,6 +290,9 @@ functions:
     handler: src/sql/lambda.handler
     timeout: 600
 
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
+
     environment:
       db_role: tw_read_${self:custom.stage}
       XRAY_DISABLED: true
@@ -237,7 +301,7 @@ functions:
   # graphql Demo
   #
   graphql-demo:
-    handler: src/graphql/graphqlLambdaMock.handler
+    handler: src/mock/lambda.handler
     timeout: 15
     memorySize: 128
     tracing: Active
@@ -264,6 +328,9 @@ functions:
 
     environment:
       ${file(serverless.env.yml):api}
+
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -335,7 +402,7 @@ functions:
           - sqs:SendMessage
           - sqs:SendMessageBatch
         Resource:
-          Fn::ImportValue: PushQueueArn-${self:custom.stage}
+          ${self:custom.push_queue_arn}
 
     events:
       - http:
@@ -364,8 +431,13 @@ functions:
   websocket:
     handler: src/graphql/websocketLambda.handler
     tracing: Active
+    timeout: 30
+
     environment:
       ${file(serverless.env.yml):api}
+
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
 
     events:
       - websocket:
@@ -440,17 +512,35 @@ functions:
   publish:
     handler: src/graphql/publishMessageLambda.handler
     tracing: Active
+    timeout: 600
+    memorySize: 256
+    dependsOn:
+      - websocketErrorQueue
+
     environment:
       ${file(serverless.env.yml):api}
+
+    vpc:
+      ${file(../devops/vpc.yml):lambda}
 
     events:
       - stream:
           type: dynamodb
-          batchSize: 1
+          batchSize: 100
+          batchWindow: 2
+          maximumRetryAttempts: 3
+          # // requires to do deduplication handling, bisectBatchOnFunctionError: true
           startingPosition: LATEST
           arn: !GetAtt
             - eventsTable
             - StreamArn
+          destinations:
+            onFailure:
+              type: sqs
+              arn:
+                !GetAtt
+                  - websocketErrorQueue
+                  - Arn
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -521,10 +611,24 @@ functions:
           - sqs:SendMessage
           - sqs:SendMessageBatch
         Resource:
-          Fn::ImportValue: PushQueueArn-${self:custom.stage}
+          ${self:custom.push_queue_arn}
+
+      - Effect: Allow
+        Action:
+          - sqs:SendMessage
+          - sqs:SendMessageBatch
+        Resource:
+          !GetAtt
+            - websocketErrorQueue
+            - Arn
 
 resources:
   Resources:
+    websocketErrorQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.apiError}
+
     bucketAttachments:
       Type: AWS::S3::Bucket
       Properties:
@@ -544,7 +648,7 @@ resources:
         LifecycleConfiguration:
           Rules:
             - Id: removal-${self:custom.bucket}
-              Status: Enabled
+              Status: Disabled # disable for now
               ExpirationInDays: '17'
 
     connectionsTable:
@@ -622,7 +726,7 @@ resources:
 
     pushSubscriptionsTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Delete
+      DeletionPolicy: Retain
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.pushsubscriptions_table}
@@ -652,7 +756,7 @@ resources:
 
     conversationsTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Delete
+      DeletionPolicy: Retain
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.conversations_table}
@@ -694,7 +798,7 @@ resources:
 
     eventsTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Delete
+      DeletionPolicy: Retain
       Properties:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.events_table}
@@ -716,7 +820,7 @@ resources:
 
         TimeToLiveSpecification:
           AttributeName: ttl
-          Enabled: true
+          Enabled: false
 
     PublishLogGroup:
       Properties:

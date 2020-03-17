@@ -10,10 +10,13 @@ import { AssociationsAndRolesFilters } from '../../model/graphql/AssociationsAnd
 import { GetAssociationsAndRolesFiltersQuery } from '../../queries/Search/GetAssociationsAndRolesFiltersQuery';
 import { AssociationFilters } from './AssociationFilters';
 import { logger } from './logger';
+import { WatchQueryFetchPolicy } from 'apollo-client';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type OwnProps = {
     theme: Theme,
     filterTags: FilterTag[],
+    fetchPolicy?: WatchQueryFetchPolicy,
 
     toggleTag: (type: FilterTagType, value: string) => void,
     toggleAssociation: (type: FilterTagType, value: string) => void,
@@ -32,11 +35,15 @@ class FiltersBase extends React.Component<Props> {
     render() {
 
         return (
-            <Query<AssociationsAndRolesFilters> query={GetAssociationsAndRolesFiltersQuery} fetchPolicy={this.props.fetchPolicy}>
+            <Query<AssociationsAndRolesFilters>
+                query={GetAssociationsAndRolesFiltersQuery}
+                fetchPolicy={this.props.fetchPolicy}
+                context={createApolloContext('FiltersBase')}
+            >
                 {({ data, error }) => {
                     // ok for now
                     if (error) {
-                        logger.error(error, 'failed to query filter');
+                        logger.log('failed to query filter', error);
                         return null;
                     }
 

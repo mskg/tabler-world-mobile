@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { logger } from '../../analytics/logger';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Element } from '../../components/Profile/Element';
+import { AddressElement } from '../../components/Profile/AddressElement';
 import { Section } from '../../components/Profile/Section';
 import { SectionsPlaceholder } from '../../components/Profile/SectionPlaceholder';
 import { collectEMails, collectPhones } from '../../helper/collect';
@@ -16,9 +17,11 @@ import { formatAnniversary } from '../../helper/formatting/formatAnniversary';
 import { formatCallApp } from '../../helper/formatting/formatCallApp';
 import { formatCompany } from '../../helper/formatting/formatCompany';
 import { formatEducation } from '../../helper/formatting/formatEducation';
+import { formatEMailName } from '../../helper/formatting/formatEMailName';
 import { formatMailApp } from '../../helper/formatting/formatMailApp';
 import { formatMembership } from '../../helper/formatting/formatMembership';
 import { formatMessagingApp } from '../../helper/formatting/formatMessagingApp';
+import { formatPhoneName } from '../../helper/formatting/formatPhoneName';
 import { formatRoutableAddress } from '../../helper/formatting/formatRoutableAddress';
 import { formatSector } from '../../helper/formatting/formatSector';
 import { formatWebApp } from '../../helper/formatting/formatWebApp';
@@ -37,8 +40,9 @@ import { Roles } from './Roles';
 import { Social } from './Social';
 
 type State = {
-    numbers: string[],
+    numbers: { value: string, mobile: boolean, type: string }[],
     emails: string[],
+    hasMobilePhone: boolean,
 };
 
 type OwnProps = {
@@ -64,6 +68,7 @@ type Props = OwnProps & StateProps & ActionSheetProps & NavigationInjectedProps<
 type SectionValue = {
     field?: string,
     text?: string | undefined | React.ReactNode,
+    hidden?: boolean,
     onPress?: () => void,
 };
 
@@ -82,60 +87,27 @@ type Section = {
 
 type Sections = Section[];
 
-function formatEMail(short: string) {
-    switch (short) {
-        case 'rt':
-            return I18N.EMailNames.rt;
-
-        case 'home':
-            return I18N.EMailNames.home;
-
-        case 'work':
-            return I18N.EMailNames.work;
-
-        case 'other':
-            return I18N.EMailNames.other;
-
-        default:
-            return short;
-    }
-}
-
-function formatPhone(short: string) {
-    switch (short) {
-        case 'mobile':
-            return I18N.PhoneNames.mobile;
-
-        case 'home':
-            return I18N.PhoneNames.home;
-
-        case 'work':
-            return I18N.PhoneNames.work;
-
-        case 'other':
-            return I18N.PhoneNames.other;
-
-        default:
-            return short;
-    }
-}
-
-
 class ProfileBase extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
 
+        const phones = collectPhones(props.member);
+
         this.state = {
-            numbers: collectPhones(props.member).map((n) => n.value),
+            numbers: phones,
+            hasMobilePhone: phones.find((n) => n.mobile) != null,
             emails: collectEMails(props.member).map((n) => n.value),
         };
     }
 
     componentDidUpdate(prevProps: Props) {
         if (this.props.member !== prevProps.member) {
+            const phones = collectPhones(this.props.member);
+
             this.setState({
-                numbers: collectPhones(this.props.member).map((n) => n.value),
+                numbers: phones,
+                hasMobilePhone: phones.find((n) => n.mobile) != null,
                 emails: collectEMails(this.props.member).map((n) => n.value),
             });
         }
@@ -267,14 +239,14 @@ class ProfileBase extends React.Component<Props, State> {
     _handleCall = () => {
         this.buildMenu(
             I18N.Screen_Member.Menu.tel,
-            this.state.numbers,
+            this.state.numbers.map((n) => n.value),
             LinkType.Phone);
     }
 
     _handleSMS = () => {
         this.buildMenu(
             I18N.Screen_Member.Menu.sms,
-            this.state.numbers,
+            this.state.numbers.filter((n) => n.mobile).map((n) => n.value),
             LinkType.Message);
     }
 
@@ -361,22 +333,22 @@ class ProfileBase extends React.Component<Props, State> {
             },
             {
                 icon: 'md-call',
-                values: (collectPhones(member)).map(
+                values: this.state.numbers.map(
                     (p) => ({
-                        field: formatPhone(p.type),
+                        field: formatPhoneName(p.type),
                         text: p.value,
                     }),
                 ),
                 onPress: OpenLink.canCall() ? this._handleCall : undefined,
 
                 secondIcon: 'md-chatbubbles',
-                secondPress: OpenLink.canSendMessage() ? this._handleSMS : undefined,
+                secondPress: this.state.hasMobilePhone && OpenLink.canSendMessage() ? this._handleSMS : undefined,
             },
             {
                 icon: 'md-mail',
                 values: (collectEMails(member)).map(
                     (p) => ({
-                        field: formatEMail(p.type),
+                        field: formatEMailName(p.type),
                         text: p.value,
                     }),
                 ),
@@ -422,7 +394,14 @@ class ProfileBase extends React.Component<Props, State> {
                 values: [
                     {
                         field: I18N.Screen_Member.Fields.home,
-                        text: formatAddress(member.address),
+                        text: (
+                            <AddressElement
+                                text={formatAddress(member.address)}
+                                location={member.address?.location}
+                                onPress={OpenLink.canOpenUrl() ? this.handleAddress(member.address) : undefined}
+                            />
+                        ),
+                        hidden: formatAddress(member.address) == null,
                     },
                 ],
                 onPress: OpenLink.canOpenUrl() ? this.handleAddress(member.address) : undefined,
@@ -483,7 +462,7 @@ class ProfileBase extends React.Component<Props, State> {
         ]
             .map((s: Section) => ({
                 ...s,
-                values: s.values.filter((v) => v.text != null && v.text !== '') as SectionValue[],
+                values: s.values.filter((v) => !v.hidden && v.text != null && v.text !== '') as SectionValue[],
             }))
             .filter((s: Section) => s.values.length > 0);
 
@@ -527,9 +506,7 @@ export const Profile = connect(
         emailApp: state.settings.emailApp,
         nearBy: state.settings.nearbyMembers,
         offline: state.connection.offline,
-
-        chatEnabled: state.settings.notificationsOneToOneChat == null
-            ? true : state.settings.notificationsOneToOneChat,
+        chatEnabled: state.settings.supportsNotifications,
         user: state.auth.username,
     }),
     {

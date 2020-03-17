@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
@@ -13,7 +13,7 @@ export const JobsResolver = {
 
     Query: {
         Jobs: async (_root: any, _args: any, context: IApolloContext) => {
-            return useDataService(context, async (client) => {
+            return useDatabase(context, async (client) => {
                 const res = await client.query(`
 select * from jobhistory
 order by runon desc
@@ -23,8 +23,14 @@ limit 20`);
                     ...r,
                     data: {
                         ...(r.data || {}),
+
+                        // duplicated that we can evaluate it in __resolveType
                         jobname: r.name,
-                        jobstatus: r.success,
+                        status: r.status,
+
+                        // timespan is based on ms, we convert the data
+                        refreshTime: r.data?.refreshTime ? Math.round(r.data.refreshTime * 1000) : undefined,
+                        readTime: r.data?.readTime ? Math.round(r.data.readTime * 1000) : undefined,
                     },
                 }));
             });
@@ -33,7 +39,7 @@ limit 20`);
 
     JobResult: {
         __resolveType: (root: any, _context: IApolloContext) => {
-            if (root.jobstatus === false) { return 'JobError'; }
+            if (root.status === 'failed') { return 'JobError'; }
 
             switch (root.jobname) {
                 case 'update::database':

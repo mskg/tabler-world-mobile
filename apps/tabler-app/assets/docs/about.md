@@ -8,10 +8,12 @@ I hope you have just as much fun with that App as it made me realize the idea.
 
 The whole TABLER.WORLD team is always looking forward to your feedback. Suggestions? Improvements? Just drop us a note.
 
+You want to help use extend this App? It's open source! Go check it out on [GitHub](https://github.com/mskg/tabler-world-mobile).
+
 We're no longer hard to reach now. Just skake your device :)
 
-Yours in Table
-Markus Kling
+Yours in Table\
+[Markus Kling](tablerworld:/member?id=14225)
 
 RT129 Böblingen / Sindelfingen
 Round Table Germany

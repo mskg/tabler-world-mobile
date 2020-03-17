@@ -5,6 +5,8 @@ import { INITIAL_STATE } from '../initialState';
 export function locationReducer(
     state = INITIAL_STATE.location,
     action:
+        | typeof actions.setThrottle.shape
+        | typeof actions.removePending.shape
         | typeof actions.setLocation.shape
         | typeof actions.setNearby.shape,
 ): typeof INITIAL_STATE.location {
@@ -15,11 +17,24 @@ export function locationReducer(
                 nearbyMembers: action.payload ? [...action.payload] : [],
             };
 
+        case actions.setThrottle.type:
+            return {
+                ...state,
+                throttleUntil: action.payload,
+            };
+
+        case actions.removePending.type:
+            return {
+                ...state,
+                pending: undefined,
+            };
+
         case actions.setLocation.type:
             return {
                 ...state,
                 address: action.payload.address,
                 location: action.payload.location,
+                pending: true,
                 timestamp: Date.now(),
             };
 

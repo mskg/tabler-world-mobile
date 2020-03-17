@@ -43,20 +43,30 @@ export const Chat = gql`
         nextToken: String
     }
 
+    type ConversationParticipant {
+        id: ID!
+        iscallingidentity: Boolean!
+
+        #isadmin: Boolean
+        firstname: String
+        lastname: String
+
+        "Can be archived ore removed already"
+        member: Member
+    }
+
     type Conversation {
         id: ID!
         # owners: [Member!]!
 
         hasUnreadMessages: Boolean!
-        members: [Member!]!
 
+        subject: String!,
+        pic: String,
+
+        participants: [ConversationParticipant!]!
         messages(token: String, dontMarkAsRead: Boolean): ChatMessageIterator!
     }
-
-    # type ConversationAndKey {
-    #     key: String!
-    #     conversation: Conversation!
-    # }
 
     input SendMessageInput {
         conversationId: ID!
@@ -85,7 +95,7 @@ export const Chat = gql`
 		sendMessage(message: SendMessageInput!): ChatMessage!
 	}
 
-	type Subscription {
+	extend type Subscription {
 		newChatMessage(conversation: ID!): ChatMessage!
         conversationUpdate: Conversation!
 	}

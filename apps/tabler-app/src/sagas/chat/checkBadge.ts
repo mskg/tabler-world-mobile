@@ -20,6 +20,6 @@ export function* checkBadge() {
             }
         }
     } catch (e) {
-        logger.error(e, 'Failed to checkBadge');
+        logger.error('badge', e);
     }
 }

@@ -577,7 +577,7 @@
     },
     "Component_Notifications": {
         "chatDisabled": {
-            "text": "Hai disabilitato le notifiche per le conversazioni in chat. Non sarai visibile per gli altri membri e non sarai in grado di inviare e ricevere messaggi.",
+            "text": "Hai disabilitato le notifiche. Non sarai visibile per gli altri membri e non sarai in grado di inviare e ricevere messaggi.",
             "button": "Modificare"
         },
         "Settings": {

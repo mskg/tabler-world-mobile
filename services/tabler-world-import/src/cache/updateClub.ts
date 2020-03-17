@@ -3,6 +3,7 @@ import { makeCacheKey } from '@mskg/tabler-world-cache';
 import { enrichAddress } from '@mskg/tabler-world-geo';
 import { IDataService } from '@mskg/tabler-world-rds-client';
 import { cacheInstance } from './cacheInstance';
+import { cleanGlobalCaches } from './cleanGlobalCaches';
 import { removeFamily } from './removeFamily';
 
 // we keep an im memory hash of the last updated clubs
@@ -53,8 +54,9 @@ export async function updateClub(client: IDataService, club: string) {
             }).promise();
         }
 
+        await cleanGlobalCaches(newClub);
     } else {
         console.log('Removing', key);
-        cacheInstance.delete(key);
+        await cacheInstance.delete(key);
     }
 }

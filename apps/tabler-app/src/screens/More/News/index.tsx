@@ -18,6 +18,8 @@ import { GetNewsQuery } from '../../../queries/News/GetNewsQuery';
 import { showAlbum, showNewsArticle } from '../../../redux/actions/navigation';
 import { CardPlaceholder } from './CardPlaceholder';
 import { styles } from './Styles';
+import { QueryFailedError } from '../../../helper/QueryFailedError';
+import { createApolloContext } from '../../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.News);
 
@@ -108,9 +110,13 @@ class NewsScreenBase extends AuditedScreen<Props, State> {
     render() {
         return (
             <ScreenWithHeader header={{ showBack: true, title: I18N.Screen_News.title }}>
-                <Query<TopNews> query={GetNewsQuery} fetchPolicy={this.props.fetchPolicy}>
+                <Query<TopNews>
+                    query={GetNewsQuery}
+                    fetchPolicy={this.props.fetchPolicy}
+                    context={createApolloContext('NewsScreenBase')}
+                >
                     {({ loading, error, data, refetch }) => {
-                        if (error) throw error;
+                        if (error) throw new QueryFailedError(error);
 
                         if (!loading && (data == null || data.TopNews == null)) {
                             return <CannotLoadWhileOffline />;

@@ -113,7 +113,7 @@ class PushNotificationsBase extends PureComponent<Props> {
                 handler.onClick(notification, false);
             }
         } catch (e) {
-            logger.error(e, 'Coud not handle', expoNotification);
+            logger.error('handle-notification', e, { notification: expoNotification });
         }
     }
 

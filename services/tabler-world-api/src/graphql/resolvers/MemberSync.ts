@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { QueryResult } from 'pg';
 import { filter } from '../privacy/filter';
 import { IApolloContext } from '../types/IApolloContext';
@@ -44,12 +44,12 @@ export const MemberSyncResolver = {
 
     Query: {
         Members: async (_root: any, args: MembersArgs, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const { cursor, limit: strLimit, state: ts } = args;
 
-                    context.logger.log('diffMembers', 'ts', ts, 'cursor', cursor, 'limit', strLimit);
+                    context.logger.debug('diffMembers', 'ts', ts, 'cursor', cursor, 'limit', strLimit);
 
                     // the ts that we have been given
                     const state: number = decode(ts, new Date(1979, 0, 30).getTime());
@@ -58,7 +58,7 @@ export const MemberSyncResolver = {
                     const calculatedCursor: number = decode(cursor, 0);
 
                     const limit = tryParseInt(strLimit, DEFAULT, MIN, MAX);
-                    context.logger.log('diffMembers', 'calculatedCursor', calculatedCursor);
+                    context.logger.debug('diffMembers', 'calculatedCursor', calculatedCursor);
 
                     let res: QueryResult;
                     if (calculatedCursor > 0) {
@@ -91,7 +91,7 @@ export const MemberSyncResolver = {
 
                     let stableTs = null;
 
-                    context.logger.log('Found', res.rows.length, 'results');
+                    context.logger.debug('Found', res.rows.length, 'results');
 
                     // next for paging
                     if (res.rows.length > limit) {

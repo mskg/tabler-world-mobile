@@ -23,22 +23,35 @@ type Props<T> = {
  * Keeps track of loading and refresh actions
  */
 export class RefreshTracker<T = void> extends React.PureComponent<Props<T>, State> {
+    mounted = false;
+
     state: State = {
         isRefreshing: false,
     };
 
+    componentDidMount() {
+        this.mounted = true;
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
     createRunLoading<RT>(func: () => Promise<any>): () => Promise<RT> {
         return async () => {
-            this.setState({ isRefreshing: true });
-            try {
-                return await func();
-            } finally {
-                this.setState({ isRefreshing: false });
+            if (this.mounted) {
+                this.setState({ isRefreshing: true });
+
+                try {
+                    return await func();
+                } finally {
+                    if (this.mounted) {
+                        this.setState({ isRefreshing: false });
+                    }
+                }
             }
         };
     }
-
-    // _setIsLoading = (isLoading) => this.setState({ isLoading });
 
     render() {
         return this.props.children({

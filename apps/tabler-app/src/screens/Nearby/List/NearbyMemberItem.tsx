@@ -5,9 +5,8 @@ import { IconButton, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { CachedImage } from '../../../components/Image/CachedImage';
-import { InternalMemberListItem } from '../../../components/Member/InternalMemberListItem';
 import { InternalMemberListItemFooter } from '../../../components/Member/InternalMemberListItemFooter';
-import { MemberTitle } from '../../../components/Member/MemberTitle';
+import { MemberListItem } from '../../../components/Member/MemberListItem';
 import { RoleChip } from '../../../components/Member/RoleChip';
 import { RoleChips } from '../../../components/Member/RoleChips';
 import { formatDistance } from '../../../helper/formatting/formatDistance';
@@ -47,7 +46,7 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
 
     _showProfile = () => this.props.showProfile(this.props.member.id);
 
-    _renderFooter = (member: MemberOverviewFragment) => {
+    _renderFooter = () => {
         const chipColor = color(this.props.theme.colors.text)
             .alpha(0.87)
             .rgb()
@@ -73,8 +72,8 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                     text={this.props.member.club.name}
                 />
 
-                {member.roles && member.roles.length > 0 &&
-                    < RoleChips theme={this.props.theme} roles={member.roles as MemberOverviewFragment_roles[]} />
+                {this.props.member.roles && this.props.member.roles.length > 0 &&
+                    < RoleChips theme={this.props.theme} roles={this.props.member.roles as MemberOverviewFragment_roles[]} />
                 }
 
             </InternalMemberListItemFooter>
@@ -85,12 +84,11 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
         if (!this.props.member) { return null; }
 
         return (
-            <InternalMemberListItem
+            <MemberListItem
                 theme={this.props.theme}
                 member={this.props.member}
                 onPress={this._showProfile}
 
-                title={<MemberTitle member={this.props.member} />}
                 subtitle={
                     // tslint:disable-next-line: prefer-template
                     formatDistance(this.props.distance)
@@ -107,7 +105,6 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                 }
 
                 bottom={this._renderFooter}
-
                 right={
                     ({ size }) => isFeatureEnabled(Features.Chat) && this.props.member.availableForChat
                         ? (

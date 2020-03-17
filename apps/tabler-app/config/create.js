@@ -3,6 +3,18 @@
 const jsonpatch = require("fast-json-patch");
 const { readFileSync, writeFileSync } = require("fs");
 
+const removeEmptySlots = (obj) => {
+    Object.keys(obj).forEach((key) => {
+        if (obj[key] && typeof obj[key] === 'object') {
+            removeEmptySlots(obj[key]);
+        } else if (obj[key] == null || obj[key] === '') {
+            delete obj[key];
+        }
+    });
+
+    return obj;
+};
+
 let channel = process.env.INFRASTRUCTURE_RELEASE_CHANNEL || "dev";
 let version = process.env.APP_VERSION || "0.0.0";
 let aVersion = process.env.ANDROID_VERSION || version;
@@ -81,7 +93,7 @@ for (const loc of additionalLocales) {
     const lang = require(`../src/i18n/translations/${loc}_strings.json`);
     const perm = {
         ...en.Permissions,
-        ... (lang.Permissions || {})
+        ... (removeEmptySlots(lang.Permissions) || {})
     };
 
     writeFileSync(__dirname + `/../src/i18n/permissions/${loc}.json`, JSON.stringify(perm, null, 4));

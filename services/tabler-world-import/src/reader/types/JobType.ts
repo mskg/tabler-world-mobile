@@ -1,5 +1,6 @@
 export enum JobType {
-    tabler = 'tabler',
+    members = 'members',
     clubs = 'clubs',
-    groups = 'groups',
+    structure = 'structure',
+    archivedMembers = 'archivedMembers',
 }

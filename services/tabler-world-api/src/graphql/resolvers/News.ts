@@ -25,7 +25,7 @@ export const NewsResolver = {
                 .filter((f) => f.is_published_start_date == null || Date.now() > new Date(f.is_published_start_date).getTime())
                 .filter((f) => f.is_published_end_date == null || Date.now() < new Date(f.is_published_end_date).getTime())
                 .orderBy((f) => f.id * - 1)
-                // .tap(e => context.logger.log(e))
+                // .tap(e => context.logger.debug(e))
                 .value();
         },
     },
@@ -49,12 +49,12 @@ export const NewsResolver = {
 
         createdby: (root: any, _args: {}, context: IApolloContext) => {
             if (root.author_id == null) { return null; }
-            return context.dataSources.members.readOne(root.author_id);
+            return context.dataSources.members.readOneManyWithAnyStatus(root.author_id);
         },
 
         modifiedby: (root: any, _args: {}, context: IApolloContext) => {
             if (root.last_modified_by_id == null) { return null; }
-            return context.dataSources.members.readOne(root.last_modified_by_id);
+            return context.dataSources.members.readOneManyWithAnyStatus(root.last_modified_by_id);
         },
 
     },

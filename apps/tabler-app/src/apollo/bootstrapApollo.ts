@@ -7,12 +7,15 @@ import { createPersistedQueryLink } from 'apollo-link-persisted-queries';
 import { RetryLink } from 'apollo-link-retry';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
+import { IApolloContext } from '../helper/createApolloContext';
+import { extract429Details } from '../helper/extract429Details';
 import { getConfigValue } from '../helper/getConfigValue';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { DocumentDir, EncryptedFileStorage } from '../redux/persistor/EncryptedFileStorage';
 import { fetchAuth, fetchAuthDemo } from './authLink';
 import { cache } from './cache';
 import { errorLink } from './errorLink';
+import { logger } from './logger';
 import { Resolvers } from './resolver';
 import { subscriptionClient } from './subscriptionClient';
 
@@ -57,38 +60,55 @@ This must only be called once in the lifecyle!
 
     const wsLink = isFeatureEnabled(Features.Chat) ? new WebSocketLink(subscriptionClient) : null;
 
-    const links = ApolloLink.from(
-        [
-            new RetryLink({
-                attempts: {
-                    retryIf: (error, _operation) => {
-                        // in case of timeout, just retry the operation
-                        return error && error.statusCode === 502;
-                    },
+    const links = ApolloLink.from([
+        new RetryLink({
+            attempts: {
+                max: 3,
+                retryIf: (error, operation) => {
+                    const context = operation.getContext() as IApolloContext | undefined;
+                    if (context?.doNotRetry) {
+                        return false;
+                    }
+
+                    // in case of timeout, just retry the operation
+                    return error && (error.statusCode === 502 || error.statusCode === 429);
                 },
-            }),
+            },
 
-            errorLink,
+            // if we receive a throttle from the server, we know the time how long we need to wait
+            delay: (count, _operation, error) => {
+                const details = extract429Details(error);
 
-            !demoMode
-                ? createPersistedQueryLink({
-                    useGETForHashedQueries: true,
-                })
-                : undefined,
+                if (details.is429 && details.retryAfter) {
+                    logger.log('Received 429, waiting for', details.retryAfter);
+                    return details.retryAfter;
+                }
 
-            wsLink != null && !demoMode && !noWebsocket
-                ? ApolloLink.split(
-                    // split based on operation type
-                    ({ query }) => {
-                        const node = getMainDefinition(query);
-                        return node.kind === 'OperationDefinition' && node.operation === 'subscription';
-                    },
-                    wsLink,
-                    httpLink,
-                )
-                : httpLink,
-        ].filter((f) => f != null) as ApolloLink[],
-    );
+                // tslint:disable-next-line: insecure-random
+                return count * 300 * Math.random();
+            },
+        }),
+
+        errorLink,
+
+        !demoMode
+            ? createPersistedQueryLink({
+                useGETForHashedQueries: true,
+            })
+            : undefined,
+
+        wsLink != null && !demoMode && !noWebsocket
+            ? ApolloLink.split(
+                // split based on operation type
+                ({ query }) => {
+                    const node = getMainDefinition(query);
+                    return node.kind === 'OperationDefinition' && node.operation === 'subscription';
+                },
+                wsLink,
+                httpLink,
+            )
+            : httpLink,
+    ].filter((f) => f != null) as ApolloLink[]);
 
     client = new ApolloClient({
         cache,

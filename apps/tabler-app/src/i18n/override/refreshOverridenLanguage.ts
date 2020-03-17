@@ -3,6 +3,7 @@ import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { Translations } from '../../model/graphql/Translations';
 import { GetTranslationsQuery } from '../../queries/Admin/GetTranslationsQuery';
 import { logger } from './logger';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 export async function refreshOverridenLanguage(lang: string) {
     const client = cachedAolloClient();
@@ -12,6 +13,7 @@ export async function refreshOverridenLanguage(lang: string) {
             id: lang,
         },
         fetchPolicy: 'network-only',
+        context: createApolloContext('refreshOverridenLanguage'),
     });
 
     if (translations.data && translations.data.Translations) {

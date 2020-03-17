@@ -1,4 +1,4 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { IApolloContext } from '../types/IApolloContext';
@@ -11,7 +11,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
         this.context = config.context;
 
         this.data = new DataLoader<string, any>(
-            (ids: ReadonlyArray<string>) => useDataService(this.context, async (client) => {
+            (ids: ReadonlyArray<string>) => useDatabase(this.context, async (client) => {
                 const res = await client.query(`
                 select
                     hash,
@@ -30,10 +30,7 @@ export class GeocoderDataSource extends DataSource<IApolloContext> {
     }
 
     public readOne(hash: string): Promise<any | null> {
-        this.context.logger.log('readOne', hash);
+        this.context.logger.debug('readOne', hash);
         return this.data.load(hash);
     }
-
-
-    
 }

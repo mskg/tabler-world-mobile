@@ -25,6 +25,7 @@ export const light: Theme & { colors: { notification } } = {
         primary: '#f2f2f2',
         accent: ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT,
 
+        error: 'red',
         notification: 'red',
     },
 };

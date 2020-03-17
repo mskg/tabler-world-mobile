@@ -26,10 +26,18 @@ export const GetClubQuery = gql`
 
         meetingplace1 {
             ...AddressFragment
+            location {
+                longitude
+                latitude
+            }
         }
 
         meetingplace2 {
             ...AddressFragment
+            location {
+                longitude
+                latitude
+            }
         }
 
         account {

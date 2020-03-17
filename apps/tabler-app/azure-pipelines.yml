@@ -1,13 +1,6 @@
 # build number
 name: $(VERSION).$(PATCH)
 
-pool:
-  name: 'Hosted Ubuntu 1604'
-  # name: 'Default'
-  demands: npm
-  workspace:
-    clean: all
-
 variables:
   - name: VERSION
     value: 1.4
@@ -21,18 +14,39 @@ variables:
   #  1.2-test
   #  1.2-rc1, rc2, ...
   #  1.2-r, r1, r2, ...
+  - name: RELASE_CHANNEL_VERSION
+    value: '1.4-r'
+
+  - name: RELASE_CHANNEL_BUILD
+    value: $[counter(variables['RELASE_CHANNEL_VERSION'], 1)]
 
   - name: EXPO_RELEASE_CHANNEL
-    value: '1.4-dev'
+    value: $(RELASE_CHANNEL_VERSION)$(RELASE_CHANNEL_BUILD)
+
   - name: APP_LANGUAGES
-    value: 'en,de,nl,is,fi'
-  - group: 'expo'
+    value: 'en,de,nl,fi,is'
+
   - group: 'git-crypt'
+  - group: 'expo'
+
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
   - group: 'ENV Germany PROD'
+
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
+  - name: npm_config_cache
+    value: $(Pipeline.Workspace)/.npm
+
+  - group: "Apple Distribution"
+  - group: "Play Store"
+
+  - name: EXPO_SDK_VERSION
+    value: "36.0.0"
+  - name: TURTLE_VERSION
+    value: "0.13.10"
+  - name: XCODE_VERSION
+    value: "/Applications/Xcode_11.3.1.app/Contents/Developer"
 
 pr:
   branches:
@@ -42,7 +56,7 @@ pr:
 trigger:
   branches:
     include:
-      - manualonly
+      - release/v1.4
 
   paths:
     include:
@@ -56,54 +70,233 @@ trigger:
       - apps/tabler-app/assets/images/*
       - apps/tabler-app/config/app.json
 
-steps:
-# - powershell: |
-#     Write-Host 'Patch# $(PATCH)'
-#     $n = ([int]'$(PATCH)').tostring('000')
-#     Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
+stages:
+- stage: publish
+  pool:
+    vmImage: 'ubuntu-latest'
+    workspace:
+      clean: all
+  jobs:
+  - job: javascript
+    steps:
+    # - powershell: |
+    #     Write-Host 'Patch# $(PATCH)'
+    #     $n = ([int]'$(PATCH)').tostring('000')
+    #     Write-Host "##vso[build.updatebuildnumber]$(VERSION).$($n)"
 
-#   displayName: Define build#
+    #   displayName: Define build#
 
-- script: 'echo "$(git log -1 --pretty=%B)" > commit.txt'
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
-  displayName: Save commit message
+    - script: 'echo "$(git log -1 --pretty=%B)" > commit.txt'
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: Save commit message
 
-# prepare node environment
-- template: ./devops/node.yml
+    - publish: $(System.DefaultWorkingDirectory)/commit.txt
+      artifact: commit
 
-# yarn /
-- template: ./devops/yarn.yml
-  parameters:
-    SOURCEDIR: $(System.DefaultWorkingDirectory)
-    YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
+    # prepare node environment
+    - template: ./devops/node.yml
 
-# yarn /App
-- template: ./devops/yarn.yml
-  parameters:
-    SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
-    YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
+    # yarn /
+    - template: ./devops/yarn.yml
+      parameters:
+        SOURCEDIR: $(System.DefaultWorkingDirectory)
+        YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
-# Init expo environment
-- template: ./devops/init-expo.yml
-  parameters:
-    APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
-    APP_VERSION: $(build.buildNumber)
-    SOURCESDIR: $(System.DefaultWorkingDirectory)
+    # yarn /App
+    - template: ./devops/yarn.yml
+      parameters:
+        SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
+        YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
-- script: npm run licenses
-  workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
-  displayName: licenses
+    # Init expo environment
+    - template: ./devops/init-expo.yml
+      parameters:
+        APPDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
+        APP_VERSION: $(build.buildNumber)
+        SOURCESDIR: $(System.DefaultWorkingDirectory)
 
-# Publish expo
-- script: |
-    echo "Release is $EXPO_RELEASE_CHANNEL"
-    npx expo publish --non-interactive --max-workers 1 --release-channel $EXPO_RELEASE_CHANNEL
-    npx expo publish:history --release-channel $EXPO_RELEASE_CHANNEL -r > deployment.json
-  workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
-  displayName: publish
-  env:
-    SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
-    EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
+    - script: npm run licenses
+      workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
+      displayName: licenses
 
-# yarn /App
-- template: ./devops/publish.yml
+    # Publish expo
+    - script: |
+        echo "Release is $EXPO_RELEASE_CHANNEL"
+        npx expo publish --non-interactive --max-workers 2 --release-channel $EXPO_RELEASE_CHANNEL
+      workingDirectory: '$(System.DefaultWorkingDirectory)/apps/tabler-app'
+      displayName: publish
+      env:
+        SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+        EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
+
+    - publish: $(System.DefaultWorkingDirectory)/apps/tabler-app
+      artifact: app-config
+
+- stage: build
+  dependsOn: publish
+  pool:
+    vmImage: "macOS-latest"
+    workspace:
+      clean: all
+
+  jobs:
+    - job: android
+      steps:
+      - download: current
+        artifact: app-config
+
+      - template: ./devops/node.yml
+
+      - task: DownloadSecureFile@1
+        name: androidCertificate
+        inputs:
+          secureFile: "mobile-app.jks"
+
+      # select xcode version
+      - script: |
+          sudo xcode-select -s $(XCODE_VERSION)
+
+      - task: Cache@2
+        inputs:
+          key: '"npm" | "android" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+          path: $(npm_config_cache)
+
+      - task: Cache@2
+        inputs:
+          key: '"turtle" | "android" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+          path: /Users/runner/.turtle
+
+      - task: Cache@2
+        inputs:
+          key: '"gradle" | "android" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+          path: /Users/runner/.gradle/wrapper
+
+      # run turtle build
+      - script: |
+          npm install -g expo-cli
+          npm install -g turtle-cli@$(TURTLE_VERSION)
+
+          turtle setup:android --sdk-version $EXPO_SDK_VERSION
+
+          export EXPO_ANDROID_KEYSTORE_PASSWORD=$(ANDROID_KEYSTORE_PASSWORD)
+          export EXPO_ANDROID_KEY_PASSWORD=$(ANDROID_KEY_PASSWORD)
+          turtle build:android -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --keystore-path $(androidCertificate.secureFilePath) --keystore-alias $(ANDROID_KEYSTORE_ALIAS) --type app-bundle --release-channel $(EXPO_RELEASE_CHANNEL) -o app.aab
+
+        workingDirectory: $(PIPELINE.WORKSPACE)/app-config
+        env:
+          TURTLE_VERSION: $(TURTLE_VERSION)
+          EXPO_SDK_VERSION: $(EXPO_SDK_VERSION)
+          EXPO_USERNAME: $(EXPO_USERNAME)
+          EXPO_PASSWORD: $(EXPO_PASSWORD)
+          ANDROID_KEYSTORE_PASSWORD: $(ANDROID_KEYSTORE_PASSWORD)
+          ANDROID_KEY_PASSWORD: $(ANDROID_KEY_PASSWORD)
+          EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(PIPELINE.WORKSPACE)/app-config/app.aab
+          ArtifactName: android
+
+    - job: ios
+      steps:
+        - download: current
+          artifact: app-config
+
+        - template: ./devops/node.yml
+
+        - task: DownloadSecureFile@1
+          name: mobileprovision
+          inputs:
+            secureFile: "mobile-app.mobileprovision"
+
+        - task: DownloadSecureFile@1
+          name: iosCertificate
+          inputs:
+            secureFile: "mobile-app_dist.p12"
+
+        # select xcode version
+        - script: |
+            sudo xcode-select -s $(XCODE_VERSION)
+
+        - task: Cache@2
+          inputs:
+            key: '"npm" | "ios" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+            path: $(npm_config_cache)
+
+        - task: Cache@2
+          inputs:
+            key: '"turtle" | "ios" | "v1" | "$(EXPO_SDK_VERSION)" | "$(TURTLE_VERSION)"'
+            path: /Users/runner/.turtle
+
+        # run turtle build
+        - script: |
+            npm install -g expo-cli
+            npm install -g turtle-cli@$(TURTLE_VERSION)
+
+            turtle setup:ios --sdk-version $EXPO_SDK_VERSION
+
+            export EXPO_IOS_DIST_P12_PASSWORD=$(APPLE_P12_PASSWORD)
+            turtle build:ios -u $(EXPO_USERNAME) -p $(EXPO_PASSWORD) --team-id $(APPLE_TEAM_ID) --dist-p12-path $(iosCertificate.secureFilePath) --provisioning-profile-path $(mobileprovision.secureFilePath) --release-channel $(EXPO_RELEASE_CHANNEL) -o app.ipa
+          workingDirectory: $(PIPELINE.WORKSPACE)/app-config
+          env:
+            APPLE_TEAM_ID: $(APPLE_TEAM_ID)
+            TURTLE_VERSION: $(TURTLE_VERSION)
+            EXPO_SDK_VERSION: $(EXPO_SDK_VERSION)
+            APPLE_P12_PASSWORD: $(APPLE_P12_PASSWORD)
+            EXPO_USERNAME: $(EXPO_USERNAME)
+            EXPO_PASSWORD: $(EXPO_PASSWORD)
+            EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: $(PIPELINE.WORKSPACE)/app-config/app.ipa
+            ArtifactName: "ios"
+
+- stage: deploy
+  dependsOn: build
+  pool:
+    vmImage: "macOS-latest"
+    workspace:
+      clean: all
+
+  jobs:
+    - job: ios
+      steps:
+        - download: current
+          artifact: ios
+
+        - download: current
+          artifact: commit
+
+        # select xcode version
+        - script: |
+            sudo xcode-select -s $(XCODE_VERSION)
+
+        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+          displayName: 'Publish to the App Store TestFlight track'
+          inputs:
+            serviceEndpoint: 'Store markus...@ovfoundation'
+            appIdentifier: '$(APP_IOS_BUNDLE)'
+            ipaPath: $(PIPELINE.WORKSPACE)/ios/app.ipa
+            releaseNotes: $(PIPELINE.WORKSPACE)/commit/commit.txt
+            shouldSkipWaitingForProcessing: true
+
+
+    - job: android
+      steps:
+        - download: current
+          artifact: android
+
+        - download: current
+          artifact: commit
+
+        # select xcode version
+        - script: |
+            sudo xcode-select -s $(XCODE_VERSION)
+
+        - task: ms-vsclient.google-play.google-play-release-bundle.GooglePlayReleaseBundle@3
+          inputs:
+            serviceConnection: 'Google Play Store'
+            applicationId: '$(APP_ANDROID_PACKAGE)'
+            bundleFile: $(PIPELINE.WORKSPACE)/android/app.aab
+            changeLogFile: $(PIPELINE.WORKSPACE)/commit/commit.txt

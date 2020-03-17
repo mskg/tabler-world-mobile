@@ -41,3 +41,8 @@ steps:
   inputs:
     PathtoPublish: '.git-crypt'
     ArtifactName: ${{ parameters.ARTIFACT }}/.git-crypt
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'services/devops'
+    ArtifactName: ${{ parameters.ARTIFACT }}/services/devops

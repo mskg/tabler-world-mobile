@@ -5,11 +5,10 @@ import * as ExpoImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Theme, withTheme } from 'react-native-paper';
+import { Text, Theme, withTheme } from 'react-native-paper';
 import { isIphoneX } from '../helper/isIphoneX';
 import { I18N } from '../i18n/translation';
 import { FullScreenLoading } from './Loading';
-import { EmptyComponent } from './NoResults';
 
 type Props = {
     theme: Theme,
@@ -103,15 +102,15 @@ class ImagePickerBase extends React.Component<Props, State> {
 
     render() {
         const { hasPermission } = this.state;
-        if (hasPermission === null) {
+        if (hasPermission == null) {
             return (<FullScreenLoading />);
         }
 
-        if (hasPermission === false) {
-            return (
-                <EmptyComponent title={I18N.Component_ImagePicker.nocamera} />
-            );
-        }
+        // if (hasPermission === false) {
+        //     return (
+        //         <EmptyComponent title={I18N.Component_ImagePicker.nocamera} />
+        //     );
+        // }
 
         return (
             <View style={{ flex: 1 }}>
@@ -136,6 +135,12 @@ class ImagePickerBase extends React.Component<Props, State> {
                         </TouchableOpacity>
                     </View>
 
+                    {!hasPermission && (
+                        <View style={styles.permissionContainer}>
+                            <Text style={styles.permissionText}>{I18N.Component_ImagePicker.nocamera}</Text>
+                        </View>
+                    )}
+
                     <View
                         style={styles.bottomBar}
                     >
@@ -151,24 +156,30 @@ class ImagePickerBase extends React.Component<Props, State> {
                                     style={styles.smallButton}
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.touchable}
-                                onPress={this._takePicture}
-                            >
-                                <Ionicons
-                                    name="ios-radio-button-on"
-                                    style={styles.largeButton}
-                                />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.touchable}
-                                onPress={this._handleCameraType}
-                            >
-                                <Ionicons
-                                    name="ios-reverse-camera"
-                                    style={styles.smallButton}
-                                />
-                            </TouchableOpacity>
+
+                            {hasPermission && (
+                                <TouchableOpacity
+                                    style={styles.touchable}
+                                    onPress={this._takePicture}
+                                >
+                                    <Ionicons
+                                        name="ios-radio-button-on"
+                                        style={styles.largeButton}
+                                    />
+                                </TouchableOpacity>
+                            )}
+
+                            {hasPermission && (
+                                <TouchableOpacity
+                                    style={styles.touchable}
+                                    onPress={this._handleCameraType}
+                                >
+                                    <Ionicons
+                                        name="ios-reverse-camera"
+                                        style={styles.smallButton}
+                                    />
+                                </TouchableOpacity>
+                            )}
                         </View>
                     </View>
                 </Camera>
@@ -180,6 +191,21 @@ class ImagePickerBase extends React.Component<Props, State> {
 export const ImagePicker = withTheme(ImagePickerBase);
 
 const styles = StyleSheet.create({
+    permissionContainer: {
+        flex: 1,
+        // height: Dimensions.get('window').height,
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        marginHorizontal: 16,
+    },
+
+    permissionText: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: 'white',
+    },
+
     topBar: {
         flex: 1,
         alignItems: 'flex-start',

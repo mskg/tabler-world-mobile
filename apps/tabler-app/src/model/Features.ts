@@ -12,6 +12,11 @@ export enum Features {
     LocationHistory,
     DarkModeSwitch,
     Chat,
+
+    LocationWithoutAlways,
+    LocationWithoutBackground,
+
+    ToggleForegroundLocation,
 }
 
 export function isFeatureEnabled(feature: Features) {
@@ -27,7 +32,11 @@ export function isFeatureEnabled(feature: Features) {
         return Constants.manifest.releaseChannel == null /*dev*/ || Constants.manifest.releaseChannel.endsWith('-test');
     }
 
-    if (feature === Features.SendToAdressbook && Platform.OS === 'ios') {
+    if (feature === Features.SendToAdressbook) {
+        return true;
+    }
+
+    if (feature === Features.ToggleForegroundLocation && Platform.OS === 'android') {
         return true;
     }
 
@@ -37,6 +46,10 @@ export function isFeatureEnabled(feature: Features) {
 
     if (feature === Features.DarkModeSwitch) {
         return Appearance.getColorScheme() === 'no-preference';
+    }
+
+    if (feature === Features.LocationWithoutAlways || feature === Features.LocationWithoutBackground) {
+        return Constants.manifest.releaseChannel == null && Constants.isDevice;
     }
 
     return false;

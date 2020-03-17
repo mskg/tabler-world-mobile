@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        marginRight: 8,
+        marginRight: 16,
+        marginLeft: 16,
         height: 32,
     },
 });

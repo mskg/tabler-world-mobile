@@ -3,26 +3,20 @@ parameters:
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
 
 steps:
-- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
-  displayName: 'Use Yarn 1.17.3'
-  inputs:
-    versionSpec: 1.17.3
-    checkLatest: true
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
+    displayName: "Use Yarn 1.22.4"
+    inputs:
+      versionSpec: 1.22.4
+      checkLatest: true
 
-- powershell: |
-   Add-Content ~/.npmrc "always-auth=true`r`n//tabler-world.pkgs.visualstudio.com/_packaging/tabler-world/npm/registry/:_authToken=$(System.AccessToken)"
-   Get-Content  ~/.npmrc
-  displayName: 'PowerShell Script'
+  # - task: Cache@2
+  #   displayName: Cache Yarn packages
+  #   inputs:
+  #     key: "services | $(Agent.OS) | ${{ parameters.SOURCEDIR }}/yarn.lock"
+  #     path: ${{ parameters.YARN_CACHE_FOLDER }}
 
-- task: Cache@2
-  displayName: Cache Yarn packages
-  inputs:
-    key: 'services | $(Agent.OS) | ${{ parameters.SOURCEDIR }}/yarn.lock'
-    path: ${{ parameters.YARN_CACHE_FOLDER }}
-
-- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
-  displayName: install
-  inputs:
-    projectDirectory: ${{ parameters.SOURCEDIR }}
-    arguments: install
-<
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
+    displayName: install
+    inputs:
+      projectDirectory: ${{ parameters.SOURCEDIR }}
+      arguments: install --frozen-lockfile

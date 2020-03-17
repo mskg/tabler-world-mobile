@@ -12,6 +12,7 @@ import { ParameterName } from '../model/graphql/globalTypes';
 import { Me } from '../model/graphql/Me';
 import { GetMeQuery } from '../queries/Member/GetMeQuery';
 import { isSignedIn } from '../tasks/helper/isSignedIn';
+import { createApolloContext } from './createApolloContext';
 import { Categories, Logger } from './Logger';
 
 const logger = new Logger(Categories.UIComponents.ErrorReport);
@@ -31,11 +32,12 @@ export async function showSupportForm() {
                 const me = await client.query<Me>({
                     query: GetMeQuery,
                     fetchPolicy: 'cache-first',
+                    context: createApolloContext('showSupportForm'),
                 });
 
                 country = me.data?.Me?.association?.id || country;
             } catch (e) {
-                logger.error(e);
+                logger.log(e);
             }
         }
 
@@ -53,7 +55,7 @@ export async function showSupportForm() {
 Platform: ${Platform.OS} v${Platform.Version}
 App Version: ${Constants.nativeAppVersion}
 Build Version: ${Constants.manifest.version}
-Device Id: ${Constants.deviceId}
+Device Id: ${Constants.installationId}
 Time: ${new Date().toISOString()}
 `.replace(/\n/ig, '<br/>'),
             recipients: [supportUrl],
@@ -67,7 +69,7 @@ Time: ${new Date().toISOString()}
             Result: 'Error',
         });
 
-        logger.error(e);
+        logger.error('error-report', e);
         Alert.alert(I18N.Component_ErrorReport.noMail);
     }
 }

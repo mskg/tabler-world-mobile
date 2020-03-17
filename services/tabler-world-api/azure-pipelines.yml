@@ -2,12 +2,18 @@
 name: $(VERSION).$(rev:r)
 
 pool:
-  name: 'Hosted Ubuntu 1604'
-  demands: npm
+  vmImage: 'ubuntu-latest'
+  workspace:
+    clean: all
 
 variables:
-  VERSION: 1.4
-  PACKAGE_DIR: 'services/tabler-world-api'
+  - name: VERSION
+    value: 1.4
+  - name: PACKAGE_DIR
+    value: $(System.DefaultWorkingDirectory)/services/tabler-world-api
+
+  - group: AWS Germany
+  - group: ENV Germany Shared
 
 pr:
   branches:
@@ -17,7 +23,7 @@ pr:
 trigger:
   branches:
     include:
-      - manualonly
+      - release/v1.4
 
   paths:
     include:
@@ -25,21 +31,114 @@ trigger:
       - services/tabler-world-api/src/*
       - services/tabler-world-api/azure-pipelines.yml
 
-steps:
-# - template: ../devops/yarn.yml
+stages:
+- stage: compile
+  jobs:
+    - job: dev
+      variables:
+        - group: ENV Germany DEV
+      steps:
+        - template: ../devops/package-service.yml
+          parameters:
+            PACKAGE_DIR: $(PACKAGE_DIR)
+            INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+            AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
-- task: Npm@1
-  displayName: 'npm version'
-  inputs:
-    command: custom
-    workingDir: '$(PACKAGE_DIR)'
-    verbose: false
-    customCommand: 'version $(Build.BuildNumber)'
+    - job: test
+      variables:
+        - group: ENV Germany TEST
+      steps:
+        - template: ../devops/package-service.yml
+          parameters:
+            PACKAGE_DIR: $(PACKAGE_DIR)
+            INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+            AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
-- template: ../devops/publish-defaults.yml
+    - job: prod
+      variables:
+        - group: ENV Germany PROD
+      steps:
+        - template: ../devops/package-service.yml
+          parameters:
+            PACKAGE_DIR: $(PACKAGE_DIR)
+            INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+            AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(PACKAGE_DIR)'
-    ArtifactName: source/services/tabler-world-api
+- stage: dev
+  dependsOn: compile
+  jobs:
+  - deployment: aws
+    environment: tabler-world-dev
+    variables:
+      - group: ENV Germany DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: ../devops/service.yml
+              parameters:
+                INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+                AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+                PACKAGE_DIR: $(PACKAGE_DIR)
 
+            - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
+              displayName: 'db update'
+              inputs:
+                awsCredentials: AWS
+                regionName: $(AWS_DEFAULT_REGION)
+                functionName: 'tabler-world-api-$(INFRASTRUCTURE_RELEASE_CHANNEL)-database-update'
+                logRequest: true
+                logResponse: true
+
+
+- stage: test
+  dependsOn: dev
+  jobs:
+  - deployment: aws
+    environment: tabler-world-test
+    variables:
+      - group: ENV Germany TEST
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: ../devops/service.yml
+              parameters:
+                INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+                AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+                PACKAGE_DIR: $(PACKAGE_DIR)
+
+            - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
+              displayName: 'db update'
+              inputs:
+                awsCredentials: AWS
+                regionName: $(AWS_DEFAULT_REGION)
+                functionName: 'tabler-world-api-$(INFRASTRUCTURE_RELEASE_CHANNEL)-database-update'
+                logRequest: true
+                logResponse: true
+
+- stage: prod
+  dependsOn: test
+  jobs:
+  - deployment: aws
+    environment: tabler-world-prod
+    variables:
+      - group: ENV Germany PROD
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: ../devops/service.yml
+              parameters:
+                INFRASTRUCTURE_RELEASE_CHANNEL: $(INFRASTRUCTURE_RELEASE_CHANNEL)
+                AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+                PACKAGE_DIR: $(PACKAGE_DIR)
+
+            - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
+              displayName: 'db update'
+              inputs:
+                awsCredentials: AWS
+                regionName: $(AWS_DEFAULT_REGION)
+                functionName: 'tabler-world-api-$(INFRASTRUCTURE_RELEASE_CHANNEL)-database-update'
+                logRequest: true
+                logResponse: true

@@ -10,12 +10,16 @@
     },
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
-    "dependencies": {},
+    "dependencies": {
+        "lodash": "^4.17.15",
+        "uuid4": "^1.1.4"
+    },
     "peerDependencies": {
         "@mskg/tabler-world-aws": "0.0.1"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.42",
+        "@types/lodash": "^4.14.149",
         "typescript": "3.7.5"
     }
 }

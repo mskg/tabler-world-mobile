@@ -192,7 +192,7 @@ export class AuthPolicy {
 
             for (let i = 0; i < methods.length; i++) {
                 const curMethod = methods[i];
-                if (curMethod.conditions === null || curMethod.conditions.length === 0) {
+                if (curMethod.conditions == null || curMethod.conditions.length === 0) {
                     statement.Resource.push(curMethod.resourceArn);
                 } else {
                     const conditionalStatement = this.getEmptyStatement(effect);

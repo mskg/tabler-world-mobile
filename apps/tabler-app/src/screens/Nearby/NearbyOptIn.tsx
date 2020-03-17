@@ -12,6 +12,7 @@ import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { disableNearbyTablers } from '../../helper/geo/disable';
 import { enableNearbyTablers } from '../../helper/geo/enable';
 import { I18N } from '../../i18n/translation';
+import { Features, isFeatureEnabled } from '../../model/Features';
 import { IAppState } from '../../model/IAppState';
 import { startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
 import { showNearbySettings } from '../../redux/actions/navigation';
@@ -80,7 +81,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
 
         this.props.startWatchNearby();
 
-        if (!await Location.isBackgroundLocationAvailableAsync()) {
+        if (!await Location.isBackgroundLocationAvailableAsync() && !isFeatureEnabled(Features.LocationWithoutBackground)) {
             this.setState({ message: I18N.Screen_NearbyMembers.notsupported, canSet: false });
             return;
         }
@@ -96,13 +97,15 @@ class NearbyOptInBase extends PureComponent<Props, State> {
             return;
         }
 
-        if (Platform.OS === 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
-            this.setState({
-                message: I18N.Screen_NearbyMembers.always,
-                canSet: Platform.OS === 'ios',
-            });
+        if (!isFeatureEnabled(Features.LocationWithoutAlways)) {
+            if (Platform.OS === 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
+                this.setState({
+                    message: I18N.Screen_NearbyMembers.always,
+                    canSet: Platform.OS === 'ios',
+                });
 
-            return;
+                return;
+            }
         }
 
         if (this.state.message) {
@@ -111,13 +114,17 @@ class NearbyOptInBase extends PureComponent<Props, State> {
     }
 
     _tryopen = () => {
-        Linking.canOpenURL('app-settings:').then((supported) => {
-            if (!supported) {
-                logger.log('Can\'t handle settings url');
-            } else {
-                Linking.openURL('app-settings:');
-            }
-        }).catch(logger.error);
+        Linking.canOpenURL('app-settings:')
+            .then((supported) => {
+                if (!supported) {
+                    logger.log('Can\'t handle settings url');
+                } else {
+                    Linking.openURL('app-settings:');
+                }
+            })
+            .catch((err) => {
+                logger.error('linking-app-settings', err);
+            });
     }
 
     _enable = async () => {

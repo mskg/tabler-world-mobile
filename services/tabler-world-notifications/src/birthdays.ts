@@ -5,7 +5,7 @@ import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { Context } from 'aws-lambda';
 import { Message } from './helper/Message';
 import { BirthdayNotification } from './types/BirthdayNotification';
-import { BirthdaySendPayload } from './types/BirthdayPayload';
+import { BirthdayPayload } from './types/BirthdayPayload';
 
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
@@ -15,7 +15,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
             const watch = new StopWatch();
 
             const result = await client.query('select * from notification_birthdays');
-            const messages: PushNotification<BirthdaySendPayload>[] = [];
+            const messages: PushNotification<BirthdayPayload>[] = [];
 
             for (const row of result.rows) {
                 const br = row as BirthdayNotification;
@@ -28,11 +28,8 @@ export async function handler(_event: any, context: Context, _callback: (error: 
                     body: Message.lang(br.lang).text(`${br.firstname} ${br.lastname}`),
 
                     payload: {
-                        payload: {
-                            userid: br.userid,
-                            date: new Date(),
-                            id: br.bid,
-                        },
+                        id: br.bid,
+                        date: new Date(),
                     },
 
                     options: { sound: 'default' },

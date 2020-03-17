@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 // ====================================================
@@ -12,12 +13,20 @@ export interface newChatMessage_newChatMessage_payload {
   image: string | null;
 }
 
+export interface newChatMessage_newChatMessage_sender {
+  __typename: "Member";
+  id: number;
+  firstname: string | null;
+  lastname: string | null;
+  pic: string | null;
+}
+
 export interface newChatMessage_newChatMessage {
   __typename: "ChatMessage";
   id: string;
   eventId: string;
   payload: newChatMessage_newChatMessage_payload;
-  senderId: number | null;
+  sender: newChatMessage_newChatMessage_sender;
   receivedAt: any;
   /**
    * Message was delivered to the recipients

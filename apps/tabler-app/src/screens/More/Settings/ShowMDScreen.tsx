@@ -34,7 +34,7 @@ class ShowMDScreenBase extends AuditedScreen<{ theme } & NavigationInjectedProps
 
             this.setState({ text });
         } catch (e) {
-            logger.error(e, 'Failed to load MD', this.props.navigation.getParam('source'));
+            logger.error('md-screen', e, { source: this.props.navigation.getParam('source') });
         }
 
         this.audit.submit();

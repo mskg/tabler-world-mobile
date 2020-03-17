@@ -35,6 +35,18 @@ class DocViewer extends React.PureComponent<Props> {
         strong: {
             fontFamily: this.props.theme.fonts.medium,
         },
+
+        hr: {
+            ...styles.hr,
+            marginVertical: 16,
+            color: this.props.theme.colors.text,
+            height: StyleSheet.hairlineWidth,
+        },
+
+        link: {
+            ...styles.link,
+            color: this.props.theme.colors.accent,
+        },
     });
 
     rules = {
@@ -47,9 +59,15 @@ class DocViewer extends React.PureComponent<Props> {
 
     render() {
         return (
-            <Markdown style={this.styles} rules={this.rules}>{this.props.text}</Markdown>
+            <Markdown
+                style={this.styles}
+                rules={this.rules}
+            >
+                {this.props.text}
+            </Markdown>
         );
     }
 }
 
+// tslint:disable-next-line: export-name
 export default withTheme(DocViewer);

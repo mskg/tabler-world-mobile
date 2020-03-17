@@ -1,14 +1,11 @@
-import { IDataService } from '@mskg/tabler-world-rds-client';
+import { xAWS } from '@mskg/tabler-world-aws';
 import { AuthenticationError } from 'apollo-server-core';
-import { validateToken } from '../cognito/validateToken';
 import { isDebugMode } from '../debug/isDebugMode';
 import { resolveDebugPrincipal } from '../debug/resolveDebugPrincipal';
 import { Environment } from '../Environment';
-import { lookupPrincipal } from '../sql/lookupPrincipal';
 import { IPrincipal } from '../types/IPrincipal';
 
-type ResolverFunc = (email: string) => Promise<IPrincipal>;
-type ClientType = IDataService | ResolverFunc;
+const lambda: AWS.Lambda = new xAWS.Lambda();
 
 /**
  * Resolves the principal from the given WebSocket operation payload.
@@ -18,13 +15,12 @@ type ClientType = IDataService | ResolverFunc;
  */
 export async function resolvePrincipal(
     operation: { payload?: any },
-    client: ClientType,
 ) {
     const payload = operation.payload || {};
     let principal: IPrincipal;
 
     if (isDebugMode()) {
-        console.warn(`********* AUTHENTICATION DEBUG MODE *********`);
+        console.warn(`********* AUTHENTICATION DEBUG MODE **    *******`);
         principal = resolveDebugPrincipal(payload);
     } else {
         const { Authorization: token } = payload;
@@ -34,12 +30,19 @@ export async function resolvePrincipal(
             throw new AuthenticationError('Unauthorized (token)');
         }
 
-        const { email } = await validateToken(Environment.AWS_REGION as string, Environment.USERPOOL_ID as string, token);
+        const lambdaParams: AWS.Lambda.InvocationRequest = {
+            FunctionName: Environment.VALIDATE_ARN as string,
 
-        // we don't need additional validations here this is already the original function
-        principal = typeof (client) === 'function'
-            ? await client(email)
-            : await lookupPrincipal(client, email);
+            InvocationType: 'RequestResponse',
+            LogType: 'Tail',
+
+            Payload: JSON.stringify(token),
+        };
+
+        const result = await lambda.invoke(lambdaParams).promise();
+
+        // IPrincipal
+        principal = JSON.parse(result.Payload as string);
     }
 
     return principal;

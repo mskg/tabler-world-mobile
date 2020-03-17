@@ -29,6 +29,8 @@ import { styles } from '../Styles';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
 import { IAppState } from '../../../model/IAppState';
+import { QueryFailedError } from '../../../helper/QueryFailedError';
+import { createApolloContext } from '../../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -253,9 +255,10 @@ const ClubsScreenWithQuery = ({ fetchPolicy, screenProps, offline }) => (
                         variables={{
                             association: screenProps?.association,
                         }}
+                        context={createApolloContext('ClubsScreenWithQuery')}
                     >
                         {({ loading, data, error, refetch }) => {
-                            if (error) throw error;
+                            if (error) throw new QueryFailedError(error);
 
                             if (!loading && (data == null || data.Clubs == null)) {
                                 if (offline) {

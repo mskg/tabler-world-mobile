@@ -1,4 +1,5 @@
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { Logger } from '../../helper/Logger';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { Conversation, ConversationVariables } from '../../model/graphql/Conversation';
@@ -22,7 +23,7 @@ export class ChatMessageHandler implements INotificationHandler<ChatMessageNotif
 
     tryHandle(notification: ChatMessageNotification): NotificationHandlerResult {
         const activeConversation = getReduxStore().getState().chat.activeConversation;
-        if (activeConversation === null || notification.payload.conversationId !== activeConversation) {
+        if (activeConversation == null || notification.payload.conversationId !== activeConversation) {
             return NotificationHandlerResult.ShowNotification;
         }
 
@@ -30,18 +31,23 @@ export class ChatMessageHandler implements INotificationHandler<ChatMessageNotif
         return NotificationHandlerResult.Handeled;
     }
 
-    private updateConversation(notification: ChatMessageNotification) {
+    private async updateConversation(notification: ChatMessageNotification) {
         this.logger.debug('updateConversation', notification.payload.conversationId);
 
-        const client = cachedAolloClient();
-        client.query<Conversation, ConversationVariables>({
-            query: GetConversationQuery,
-            variables: {
-                id: notification.payload.conversationId,
-                dontMarkAsRead: true,
-            },
-            fetchPolicy: 'network-only',
-        });
+        try {
+            const client = cachedAolloClient();
+            client.query<Conversation, ConversationVariables>({
+                query: GetConversationQuery,
+                variables: {
+                    id: notification.payload.conversationId,
+                    dontMarkAsRead: true,
+                },
+                fetchPolicy: 'network-only',
+                context: createApolloContext('ChatMessageHandler'),
+            });
+        } catch (e) {
+            this.logger.log('Could not update conversation', e);
+        }
     }
 
     onClick(el: ChatMessageNotification, received: boolean) {

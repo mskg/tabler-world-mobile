@@ -1,8 +1,11 @@
+import { makeCacheKey } from '@mskg/tabler-world-cache';
 import { PushNotificationService } from '@mskg/tabler-world-push-client';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { keys, remove, uniq } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { IApolloContext } from '../types/IApolloContext';
+import { Metrics } from '../logging/Metrics';
+import { throw429 } from '../ratelimit/throw429';
 
 type QuerySettings = {
     name: string,
@@ -20,7 +23,7 @@ type SettingInput = {
 export const SettingsResolver = {
     Query: {
         Setting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const result = await client.query(
@@ -36,7 +39,7 @@ WHERE id = $1`,
         },
 
         Settings: async (_root: any, _args: any, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     const result = await client.query(
@@ -63,6 +66,15 @@ WHERE id = $1`,
 
     Mutation: {
         testPushNotifications: async (_root: any, _args: QuerySettings, context: IApolloContext) => {
+            const limit = context.getLimiter('testpush');
+            const result = await limit.use(context.principal.id);
+
+            if (result.rejected) {
+                context.logger.log('too many testPushNotifications');
+                context.metrics.increment(Metrics.ThrottleTestPush);
+                throw429(result.retryDelta);
+            }
+
             const service = new PushNotificationService();
             await service.send([{
                 member: context.principal.id,
@@ -78,7 +90,13 @@ WHERE id = $1`,
         },
 
         removeSetting: async (_root: any, args: QuerySettings, context: IApolloContext) => {
-            return useDataService(
+            // TODO: this is code duplication
+            await Promise.all([
+                context.cache.delete(makeCacheKey('Member', ['location', context.principal.id])),
+                context.cache.delete(makeCacheKey('Member', ['location:map', context.principal.id])),
+            ]);
+
+            return useDatabase(
                 context,
                 async (client) => {
                     await client.query(
@@ -105,11 +123,11 @@ WHERE id = $1
                     mapVersion: v12Check,
                     versions: {
                         default: async () => {
-                            context.logger.log('No change necessary, new client');
+                            context.logger.debug('No change necessary, new client');
                         },
 
                         old: async () => {
-                            const mapping = await useDataService(context, async (client) => await client.query(
+                            const mapping = await useDatabase(context, async (client) => await client.query(
                                 `select * from profile_mapping where oldid = ANY($1)`,
                                 [modifiedArgs.setting.value],
                             ));
@@ -119,21 +137,27 @@ WHERE id = $1
 
                             if (oldIds.length !== 0) {
                                 const arr = modifiedArgs.setting.value as number[];
-                                context.logger.log('Replacing', oldIds, 'with', newIds);
+                                context.logger.debug('Replacing', oldIds, 'with', newIds);
 
                                 remove(arr, (f) => oldIds.indexOf(f) !== -1);
                                 modifiedArgs.setting.value = uniq([...arr, ...newIds]);
 
-                                context.logger.log('Old', args.setting.value, 'result', modifiedArgs.setting.value);
+                                context.logger.debug('Old', args.setting.value, 'result', modifiedArgs.setting.value);
                             } else {
-                                context.logger.log('No mapping necessary');
+                                context.logger.debug('No mapping necessary');
                             }
                         },
                     },
                 });
             }
 
-            return useDataService(
+            // TODO: this is code duplication
+            await Promise.all([
+                context.cache.delete(makeCacheKey('Member', ['location', context.principal.id])),
+                context.cache.delete(makeCacheKey('Member', ['chat', context.principal.id])),
+            ]);
+
+            return useDatabase(
                 context,
                 async (client) => {
                     await client.query(

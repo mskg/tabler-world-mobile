@@ -1,0 +1,38 @@
+{
+    "name": "@mskg/tabler-world-lambda-subscriptions",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch"
+    },
+    "author": "Markus Kling",
+    "license": "Copyright 2020-present Markus Kling",
+    "dependencies": {
+        "@mskg/tabler-world-aws": "0.0.1",
+        "@mskg/tabler-world-cache": "0.0.1",
+        "apollo-datasource": "^0.7.0",
+        "apollo-server-core": "^2.10.1",
+        "crypto": "^1.0.1",
+        "graphql": "^14.6.0",
+        "graphql-subscriptions": "^1.1.0",
+        "ioredis": "^4.16.0",
+        "iterall": "1.2.2",
+        "lodash": "^4.17.11",
+        "ulid": "^2.3.0",
+        "uuid": "^3.4.0"
+    },
+    "devDependencies": {
+        "@mskg/tabler-world-yarn-tools": "0.0.1",
+        "@types/aws-lambda": "^8.10.42",
+        "@types/ioredis": "^4.14.8",
+        "@types/lodash": "4.14.149",
+        "@types/node": "^13.7.2",
+        "@types/redis": "^2.8.16",
+        "@types/uuid": "^3.4.7",
+        "aws-sdk": "^2.621.0",
+        "typescript": "3.7.5"
+    }
+}

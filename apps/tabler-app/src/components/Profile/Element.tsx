@@ -56,7 +56,7 @@ class ElementBase extends React.Component<ActionProps> {
                         <Caption>{field}</Caption>
                         {
                             typeof (text) === 'string'
-                                ? <Text selectable={Platform.OS === 'ios'} style={{ width: '100%' }}>{text}</Text>
+                                ? <Text selectable={Platform.OS === 'ios'} style={{ flex: 1 }}>{text}</Text>
                                 : text
                         }
                     </View>

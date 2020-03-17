@@ -6,9 +6,10 @@ import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { RemoveToken, RemoveTokenVariables } from '../../model/graphql/RemoveToken';
 import { TOKEN_KEY } from '../../tasks/Constants';
 import { logger } from './logger';
+import { createApolloContext } from '../../helper/createApolloContext';
 
-export function* removePushToken() {
-    const token = yield AsyncStorage.getItem(TOKEN_KEY);
+export async function removePushToken() {
+    const token = await AsyncStorage.getItem(TOKEN_KEY);
     if (token == null) {
         logger.debug('no token');
         return;
@@ -18,7 +19,7 @@ export function* removePushToken() {
 
     try {
         const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
-        yield client.mutate<RemoveToken, RemoveTokenVariables>({
+        await client.mutate<RemoveToken, RemoveTokenVariables>({
             mutation: gql`
 mutation RemoveToken($token: String!) {
     removeToken(token: $token)
@@ -26,9 +27,11 @@ mutation RemoveToken($token: String!) {
             variables: {
                 token,
             },
+
+            context: createApolloContext('pushtoken-remove'),
         });
 
-        yield AsyncStorage.removeItem(TOKEN_KEY);
+        await AsyncStorage.removeItem(TOKEN_KEY);
     } catch (error) {
         logger.log(error);
     }

@@ -18,6 +18,10 @@ export const MemberDetailsFragment = gql`
             value
         }
 
+        association {
+            isocode
+        }
+
         phonenumbers {
             type
             value
@@ -33,6 +37,11 @@ export const MemberDetailsFragment = gql`
             country
             street1
             street2
+
+            location {
+                longitude
+                latitude
+            }
         }
 
         companies {

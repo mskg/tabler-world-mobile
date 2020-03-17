@@ -107,7 +107,15 @@ functions:
     tracing: Active
 
     environment:
-      UserPoolId:
+      USERPOOL_ID:
+        Ref: CognitoUserPoolMyUserPool
+
+  validate:
+    handler: src/validate/lambda.handler
+    tracing: Active
+
+    environment:
+      USERPOOL_ID:
         Ref: CognitoUserPoolMyUserPool
 
   #
@@ -150,6 +158,10 @@ functions:
 
 resources:
   Resources:
+    ValidateLogGroup:
+      Properties:
+        RetentionInDays: "30"
+
     ChallengeLogGroup:
       Properties:
         RetentionInDays: "30"
@@ -315,6 +327,14 @@ resources:
           - Arn
       Export:
         Name: AuthorizerArn-${self:custom.stage}
+
+    ValidateTokenArn:
+      Value:
+        Fn::GetAtt:
+          - ValidateLambdaFunction
+          - Arn
+      Export:
+        Name: ValidateTokenArn-${self:custom.stage}
 
     UserPoolArn:
       Value:

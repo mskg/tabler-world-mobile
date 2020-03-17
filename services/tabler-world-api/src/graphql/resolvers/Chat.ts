@@ -1,15 +1,16 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import * as crypto from 'crypto';
-import { S3, UPLOAD_BUCKET } from '../helper/S3';
-import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../subscriptions';
-import { decodeIdentifier } from '../subscriptions/decodeIdentifier';
-import { encodeIdentifier } from '../subscriptions/encodeIdentifier';
-import { ConversationManager } from '../subscriptions/services/ConversationManager';
-import { pubsub } from '../subscriptions/services/pubsub';
-import { WebsocketEvent } from '../subscriptions/types/WebsocketEvent';
-import { getChatParams } from '../subscriptions/utils/getChatParams';
+import { AuditAction, StopWatch } from '@mskg/tabler-world-common';
+import { pubsub, WebsocketEvent } from '@mskg/tabler-world-lambda-subscriptions';
+import { randomBytes } from 'crypto';
+import { decodeIdentifier } from '../chat/helper/decodeIdentifier';
+import { encodeIdentifier } from '../chat/helper/encodeIdentifier';
+import { getChatParams } from '../chat/helper/getChatParams';
+import { ConversationManager } from '../chat/services/ConversationManager';
+import { Environment } from '../Environment';
+import { S3 } from '../helper/S3';
 import { IApolloContext } from '../types/IApolloContext';
 import { ISubscriptionContext } from '../types/ISubscriptionContext';
+import { conversationManager, eventManager, pushSubscriptionManager, subscriptionManager } from '../websocketServer';
 
 type SendMessageArgs = {
     message: {
@@ -66,21 +67,26 @@ export const ChatResolver = {
     Query: {
         // tslint:disable-next-line: variable-name
         Conversations: async (_root: {}, args: IteratorArgs, context: IApolloContext) => {
-            const params = await getChatParams();
+            const timer = new StopWatch();
+            try {
+                const params = await getChatParams();
 
-            const result = await conversationManager.getConversations(
-                context.principal.id,
-                {
-                    token: decodeIdentifier(args.token),
-                    pageSize: params.conversationsPageSize,
-                },
-            );
+                const result = await conversationManager.getConversations(
+                    context.principal.id,
+                    {
+                        token: decodeIdentifier(args.token),
+                        pageSize: params.conversationsPageSize,
+                    },
+                );
 
-            return {
-                // index is reverse, list is other way round
-                nodes: result.result.map((c) => ({ id: c })),
-                nextToken: encodeIdentifier(result.nextKey),
-            };
+                return {
+                    // index is reverse, list is other way round
+                    nodes: result.result.map((c) => ({ id: c })),
+                    nextToken: encodeIdentifier(result.nextKey),
+                };
+            } finally {
+                context.logger.log('Conversations took', timer.elapsedYs, 'ys');
+            }
         },
 
         // tslint:disable-next-line: variable-name
@@ -101,17 +107,20 @@ export const ChatResolver = {
     },
 
     Member: {
-        availableForChat: (root: { id: number }, _args: {}, context: IApolloContext) => {
+        availableForChat: (root: { id: number, availableForChat?: boolean }, _args: {}, context: IApolloContext) => {
             if (EXECUTING_OFFLINE) { return root.id !== context.principal.id; }
 
             return root.id !== context.principal.id
-                ? context.dataSources.conversations.isMemberAvailableForChat(root.id)
+                ? root.availableForChat != null
+                    ? root.availableForChat
+                    : context.dataSources.conversations.isMemberAvailableForChat(root.id)
                 : false;
         },
     },
 
     Conversation: {
-        id: (root: { id: string }) => {
+        id: (root: { id: string }, _args: any, context: IApolloContext) => {
+            context.auditor.add({ id: root.id, action: AuditAction.Read, type: 'conversation' });
             return encodeIdentifier(root.id);
         },
 
@@ -151,7 +160,7 @@ export const ChatResolver = {
 
                 if (otherMember.length > 0) {
                     const conv = await conversationManager.getUserConversation(channel, otherMember[0]);
-                    lastSeen = conv.lastSeen;
+                    lastSeen = conv?.lastSeen;
                 }
 
                 context.logger.log('otherMember', otherMember, 'lastSeen', lastSeen);
@@ -163,7 +172,7 @@ export const ChatResolver = {
                     conversationId: channel,
                     eventId: m.id,
 
-                    // payload
+                    // payload has it's own id which would override the id?
                     ...m.payload,
 
                     accepted: true,
@@ -181,9 +190,10 @@ export const ChatResolver = {
             const user = await context.dataSources.conversations.readUserConversation(channel, context.principal.id);
             const global = await context.dataSources.conversations.readConversation(channel);
 
-            context.logger.log('hasUnreadMessages', global, user);
+            context.logger.log('user', user, 'global', global);
 
-            if (user == null || global == null) { return true; }
+            if (user == null || global == null) { return false; }
+
             if (!user.lastSeen && global.lastMessage) { return true; }
             if (!global.lastMessage) { return false; }
 
@@ -191,6 +201,70 @@ export const ChatResolver = {
             return user.lastSeen < global.lastMessage;
         },
 
+        pic: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+
+            const result = await context.dataSources.conversations.readConversation(channel);
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return null; }
+
+            // const values = ;
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values.filter((v) => v !== context.principal.id));
+
+            return anyMembers.length > 0 ? anyMembers[0].pic : null;
+        },
+
+        subject: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+
+            const result = await context.dataSources.conversations.readConversation(channel);
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return 'Unknown'; }
+
+            // const values = ;
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values.filter((v) => v !== context.principal.id));
+
+            return anyMembers.length > 0 ? `${anyMembers[0].firstname} ${anyMembers[0].lastname}` : 'Unkown';
+        },
+
+        participants: async (root: { id: string }, _args: {}, context: IApolloContext) => {
+            const channel = decodeIdentifier(root.id);
+
+            const result = await context.dataSources.conversations.readConversation(channel);
+            const members = result ? result.members : null;
+            if (!members || members.values.length === 0) { return []; }
+
+            // const values = members.values.filter((v) => v !== context.principal.id);
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values);
+
+            return anyMembers.map((m) => {
+                // only in this case, we return
+                if (m.removed) {
+                    context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member-conversation' });
+
+                    return {
+                        id: m.id,
+                        firstname: m.firstname,
+                        lastname: m.lastname,
+                        iscallingidentity: m.id === context.principal.id,
+                    };
+                }
+
+                context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member' });
+                return {
+                    id: m.id,
+                    firstname: m.firstname,
+                    lastname: m.lastname,
+                    iscallingidentity: m.id === context.principal.id,
+                    member: m,
+                };
+            });
+        },
+
+        // Deprecated
         // tslint:disable-next-line: variable-name
         members: async (root: { id: string }, _args: {}, context: IApolloContext) => {
             const channel = decodeIdentifier(root.id);
@@ -199,8 +273,40 @@ export const ChatResolver = {
             const members = result ? result.members : null;
             if (!members || members.values.length === 0) { return []; }
 
-            const values = members.values.filter((v) => v !== context.principal.id);
-            return context.dataSources.members.readMany(values);
+            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+                members.values.filter((v) => v !== context.principal.id));
+
+            return anyMembers.map((m) => {
+                // only in this case, we return
+                if (m.removed) {
+                    context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member-conversation' });
+
+                    // this is only a workarround to not stop the old
+                    // app from working
+                    return {
+                        id: m.id,
+                        lastname: 'Past-Member',
+                        firstname: m.firstname,
+
+                        association: m.association,
+                        associationname: m.associationname,
+                        associationflag: m.associationflag,
+
+                        club: m.club,
+                        clubname: m.clubname,
+                        clubnumber: m.clubnumber,
+
+                        area: m.area,
+                        areaname: m.areaname,
+
+                        availableForChat: false,
+                        sharesLocation: false,
+                    };
+                }
+
+                context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member' });
+                return m;
+            });
         },
     },
 
@@ -216,7 +322,7 @@ export const ChatResolver = {
 
             const params = await getChatParams();
             const url = S3.getSignedUrl('getObject', {
-                Bucket: UPLOAD_BUCKET,
+                Bucket: Environment.S3.bucket,
                 Key: root.image,
                 Expires: params.attachmentsTTL,
             });
@@ -231,6 +337,11 @@ export const ChatResolver = {
     },
 
     ChatMessage: {
+        id: (root: { id: string }, _args: any, context: IApolloContext) => {
+            context.auditor.add({ id: root.id, action: AuditAction.Read, type: 'chatmessage' });
+            return root.id;
+        },
+
         receivedAt: (root: { receivedAt: number }) => {
             return new Date(root.receivedAt).toISOString();
         },
@@ -238,7 +349,7 @@ export const ChatResolver = {
         // could change this to lazy load
         // tslint:disable-next-line: variable-name
         sender: (root: any, _args: {}, context: IApolloContext) => {
-            return context.dataSources.members.readOne(root.senderId);
+            return context.dataSources.members.readOneManyWithAnyStatus(root.senderId);
         },
     },
 
@@ -254,12 +365,12 @@ export const ChatResolver = {
                 throw new Error('Access denied.');
             }
 
-            const filename = crypto.randomBytes(24).toString('hex');
+            const filename = randomBytes(24).toString('hex');
 
             const result = S3.createPresignedPost({
-                Bucket: UPLOAD_BUCKET,
+                Bucket: Environment.S3.bucket,
                 Conditions: [
-                    ['content-length-range', 100, 3 * 1000 * 1000],
+                    ['content-length-range', 100, Environment.S3.maxSize],
                     ['eq', '$Content-Type', 'image/jpeg'],
                 ],
                 Expires: 600, // 10 minutes
@@ -321,15 +432,18 @@ export const ChatResolver = {
 
             const id = ConversationManager.MakeConversationKey(context.principal.id, args.member);
 
-            const existing = await context.dataSources.conversations.readConversation(id);
-            if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
-                return {
-                    id,
+            // // if we read a cached value here we could end up with non conversation
+            // const existing = await conversationManager.getConversation(id);
+            // if ((existing?.members?.values || []).find((m) => m === context.principal.id)) {
+            //     return {
+            //         id,
 
-                    // most likely this is wrong as we are also part of the conversation
-                    members: existing?.members?.values.filter((f) => f === context.principal.id),
-                };
-            }
+            //         // most likely this is wrong as we are also part of the conversation
+            //         members: existing?.members?.values.filter((f) => f === context.principal.id),
+            //     };
+            // }
+
+            context.auditor.add({ id, action: AuditAction.Create, type: 'conversation' });
 
             await Promise.all([
                 conversationManager.addMembers(id, [context.principal.id, args.member]),
@@ -371,55 +485,61 @@ export const ChatResolver = {
                 getChatParams(),
             ]);
 
-            const channelMessage = await eventManager.post<ChatMessage>({
+            const channelMessage = await eventManager.post<ChatMessage & { conversationId: string }>({
                 triggers: [trigger],
+                sender: principalId,
 
-                payload: ({
-                    id: message.id,
+                trackDelivery: true,
+                volatile: false,
+                ttl: params.messageTTL,
+
+                payload: {
+                    conversationId: message.conversationId,
                     senderId: principalId,
+                    id: message.id,
+                    // we need the encoded identifier for the push notification
+
+                    // @ts-ignore
                     payload: {
-                        image: message.image,
                         type: message.image ? MessageType.image : MessageType.text,
+                        image: message.image,
                         text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
+
                     receivedAt: Date.now(),
-                } as ChatMessage),
+                },
 
                 pushNotification: {
-                    message: {
-                        title: `${member.firstname} ${member.lastname}`,
-                        body: text.length > 199 ? `${text.substr(0, 197)}...` : text,
-                        reason: 'chatmessage',
-                        options: {
-                            sound: 'default',
-                            ttl: 60 * 60 * 24,
-                            priority: 'high',
-                        },
+                    title: `${member.firstname} ${member.lastname}`,
+                    body: text.length > 199 ? `${text.substr(0, 197)}...` : text,
+                    reason: 'chatmessage',
+                    options: {
+                        sound: 'default',
+                        ttl: 60 * 60 * 24,
+                        priority: 'high',
                     },
-
-                    sender: principalId,
                 },
-                ttl: params.messageTTL,
-                trackDelivery: true,
             });
 
-            const [, conversation] = await Promise.all([
-                // TOOD: cloud be combined into onewrite
-                conversationManager.update(trigger, channelMessage[0]),
-                context.dataSources.conversations.readConversation(trigger),
-            ]);
+            await conversationManager.update(trigger, channelMessage[0].id);
+            const conversation = await conversationManager.getConversation(trigger);
 
             // this must be done after update as, as update removes all seen flags
             await conversationManager.updateLastSeen(trigger, principalId, channelMessage[0].id);
 
-            await eventManager.post<string>({
+            await eventManager.post({
                 triggers: (conversation?.members?.values || []).map((subscriber) => ConversationManager.MakeAllConversationKey(subscriber)),
-                // payload is the trigger
-                payload: trigger,
-                pushNotification: undefined,
-                ttl: params.messageTTL,
+                sender: principalId,
+                payload: { trigger, plain: true },
+
                 trackDelivery: false,
+                ttl: params.messageTTL,
+
+                volatile: true,
+                pushNotification: undefined,
             });
+
+            context.auditor.add({ id: channelMessage[0].id, action: AuditAction.Create, type: 'chatmessage' });
 
             return {
                 ...channelMessage[0].payload,
@@ -463,10 +583,10 @@ export const ChatResolver = {
             },
 
             // tslint:disable-next-line: variable-name
-            resolve: (channelMessage: WebsocketEvent<string>, _args: {}, _context: ISubscriptionContext) => {
+            resolve: (channelMessage: WebsocketEvent<{ trigger: string }>, _args: {}, _context: ISubscriptionContext) => {
                 return {
                     // eventId: channelMessage.id,
-                    id: channelMessage.payload,
+                    id: channelMessage.payload.trigger,
                 };
             },
         },

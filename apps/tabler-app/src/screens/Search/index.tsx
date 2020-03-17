@@ -110,7 +110,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
             }
             // tslint:disable-next-line: no-empty
         } catch (e) {
-            logger.error(e, 'Could not load addMyAssocFilter');
+            logger.error('search-screen-me', e);
         }
 
         return [];

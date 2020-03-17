@@ -1,11 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import MapView, { Region } from 'react-native-maps';
 import { FAB, IconButton, Searchbar, Surface, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -16,8 +15,12 @@ import { AuditScreenName as ScreenName } from '../../../analytics/AuditScreenNam
 import { withWhoopsErrorBoundary } from '../../../components/ErrorBoundary';
 import { FullScreenLoading } from '../../../components/Loading';
 import { CannotLoadWhileOffline } from '../../../components/NoResults';
+import { RefreshTracker } from '../../../components/RefreshTracker';
 import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
+import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
+import { createApolloContext } from '../../../helper/createApolloContext';
 import { filterData } from '../../../helper/filterData';
+import { QueryFailedError } from '../../../helper/QueryFailedError';
 import { I18N } from '../../../i18n/translation';
 import { ClubsMap, ClubsMapVariables, ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { IAppState } from '../../../model/IAppState';
@@ -28,8 +31,6 @@ import { darkStyles } from './darkStyles';
 import { ClubMarker } from './Marker';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
-import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
-import { RefreshTracker } from '../../../components/RefreshTracker';
 
 type State = {
     location?: Location.LocationData,
@@ -280,9 +281,10 @@ const ClubsScreenWithQuery = ({ fetchPolicy, screenProps, offline }) => (
                         variables={{
                             association: screenProps?.association,
                         }}
+                        context={createApolloContext('ClubsScreenWithQuery')}
                     >
                         {({ loading, data, error, refetch }) => {
-                            if (error) throw error;
+                            if (error) throw new QueryFailedError(error);
 
                             if (!loading && (data == null || data.Clubs == null)) {
                                 if (offline) {

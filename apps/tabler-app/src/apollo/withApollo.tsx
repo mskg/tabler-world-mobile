@@ -40,7 +40,7 @@ export function withApollo(App) {
 
                 await persistor.restore();
             } catch (e) {
-                logger.error(e, 'Failed to restore cache');
+                logger.error('apollo-cache', e);
 
                 try {
                     persistor.purge();

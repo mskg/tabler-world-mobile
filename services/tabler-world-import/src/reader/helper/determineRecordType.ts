@@ -17,8 +17,12 @@ export function determineRecordType(job: JobType, record: any): RecordType {
         return RecordType.club;
     }
 
-    if (job === JobType.groups) {
+    if (job === JobType.structure) {
         return RecordType.group;
+    }
+
+    if (job === JobType.archivedMembers) {
+        return RecordType.member;
     }
 
     return RecordType.member;

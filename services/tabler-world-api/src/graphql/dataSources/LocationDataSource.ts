@@ -1,20 +1,39 @@
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { cachedDataLoader, makeCacheKey } from '@mskg/tabler-world-cache';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
+import { getNearByParams } from '../helper/getNearByParams';
+import { ILocationStorage, PutLocation, QueryResult } from '../location/ILocationStorage';
 import { IApolloContext } from '../types/IApolloContext';
 
 export class LocationDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
 
-    private settings!: DataLoader<number, any>;
+    private sharing!: DataLoader<number, any>;
+    private map!: DataLoader<number, any>;
+
+    public constructor(private storage: ILocationStorage) {
+        super();
+    }
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
 
-        this.settings = new DataLoader<number, any>(
-            (ids: ReadonlyArray<number>) => useDataService(this.context, async (client) => {
-                const res = await client.query(
-                    `
+        if (this.storage.initialize) {
+            this.storage.initialize(config);
+        }
+
+        this.sharing = new DataLoader<number, any>(
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', ['location', k]),
+                // tslint:disable-next-line: variable-name
+                (_r, id) => makeCacheKey('Member', ['location', id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => {
+                        const res = await client.query(
+                            `
  select
     id
  from
@@ -23,19 +42,93 @@ export class LocationDataSource extends DataSource<IApolloContext> {
     id = ANY($1)
     and (settings->>'nearbymembers')::boolean = TRUE
  `,
-                    [ids],
-                );
+                            [ids],
+                        );
 
-                return ids.map((id) => res.rows.find((r) => r.id === id) != null);
-            }),
+                        return ids.map((id) => res.rows.find((r) => r.id === id) != null);
+                    },
+                ),
+                'LocationEnabled', // TODO: changeme
+            ),
+            {
+                cacheKeyFn: (k: number) => k,
+            },
+        );
+
+        this.map = new DataLoader<number, any>(
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', ['location:map', k]),
+                // tslint:disable-next-line: variable-name
+                (_r, id) => makeCacheKey('Member', ['location:map', id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => {
+                        const res = await client.query(
+                            `
+ select
+    id
+ from
+    usersettings
+ where
+    id = ANY($1)
+    and (settings->>'nearbymembersMap')::boolean = TRUE
+ `,
+                            [ids],
+                        );
+
+                        return ids.map((id) => res.rows.find((r) => r.id === id) != null);
+                    },
+                ),
+                'LocationEnabled', // TODO: changeme
+            ),
             {
                 cacheKeyFn: (k: number) => k,
             },
         );
     }
 
-    public async isMemberSharingLocation(id: number): Promise<boolean> {
-        this.context.logger.log('isMemberSharingLocation', id);
-        return this.settings.load(id);
+    public userLocation(): Promise<{ longitude: number, latitude: number } | undefined> {
+        return this.storage.locationOf(this.context.principal.id);
+    }
+
+    public async query(excludeOwnTable: boolean): Promise<QueryResult> {
+        const nearByQuery = await getNearByParams();
+
+        return this.storage.query(
+            this.context.principal.id,
+            nearByQuery.radius,
+            20,
+            excludeOwnTable,
+            nearByQuery.days,
+        );
+    }
+
+    public putLocation(loc: Pick<PutLocation, 'accuracy' | 'address' | 'latitude' | 'longitude' | 'speed'>): Promise<void> {
+        return this.storage.putLocation({
+            ...loc,
+
+            member: this.context.principal.id,
+            club: this.context.principal.club,
+            association: this.context.principal.association,
+            family: this.context.principal.family as string,
+
+            lastseen: new Date(),
+        });
+    }
+
+    public isMemberVisibleOnMap(id: number): Promise<boolean> {
+        this.context.logger.debug('isMemberVisibleOnMap', id);
+        return this.map.load(id);
+    }
+
+    public isMembersVisibleOnMap(ids: number[]): Promise<boolean[]> {
+        this.context.logger.debug('isMembersVisibleOnMap', ids);
+        return this.map.loadMany(ids);
+    }
+
+    public isMemberSharingLocation(id: number): Promise<boolean> {
+        this.context.logger.debug('isMemberSharingLocation', id);
+        return this.sharing.load(id);
     }
 }

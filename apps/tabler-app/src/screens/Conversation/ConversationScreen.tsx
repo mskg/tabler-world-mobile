@@ -1,5 +1,7 @@
+import { first } from 'lodash';
 import React from 'react';
 import { Platform, View } from 'react-native';
+import { User } from 'react-native-gifted-chat';
 import { Appbar, Text, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -11,9 +13,9 @@ import { ChatDisabledBanner } from '../../components/ChatDisabledBanner';
 import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { HandleAppState } from '../../components/HandleAppState';
 import { HandleScreenState } from '../../components/HandleScreenState';
-import { MemberAvatar } from '../../components/MemberAvatar';
 import { ScreenWithHeader } from '../../components/Screen';
-import { Conversation, ConversationVariables, Conversation_Conversation_members } from '../../model/graphql/Conversation';
+import { SimpleAvatar } from '../../components/SimpleAvatar';
+import { Conversation, ConversationVariables, Conversation_Conversation, Conversation_Conversation_participants_member } from '../../model/graphql/Conversation';
 import { IAppState } from '../../model/IAppState';
 import { IPendingChatMessage } from '../../model/IPendingChatMessage';
 import { ChatEdits } from '../../model/state/ChatState';
@@ -46,7 +48,10 @@ type Props = {
 };
 
 type State = {
-    member?: Conversation_Conversation_members,
+    member: Conversation_Conversation_participants_member | null,
+    showUserAvatar: boolean,
+
+    subject?: string,
     icon?: any,
 
     lastText?: string,
@@ -58,6 +63,8 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     constructor(props) {
         super(props, AuditScreenName.Conversation);
         this.state = {
+            member: null,
+            showUserAvatar: false,
             lastText: this.props.texts[this.getConversationId()]?.text,
             lastImage: this.props.texts[this.getConversationId()]?.image,
         };
@@ -89,7 +96,6 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         this.setState({ lastImage: image });
     }
 
-
     _onTextChanged = (text) => {
         if (__DEV__) { logger.log('_onTextChanged', text); }
         this.setState({ lastText: text });
@@ -115,7 +121,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     getTitle() {
-        return this.props.navigation.getParam('title');
+        return this.state.subject || this.props.navigation.getParam('title');
     }
 
     showProfile() {
@@ -131,20 +137,38 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
             });
 
             if (result) {
-                this.props.showProfile(result.Conversation!.members[0].id);
+                const otherMember = first(result.Conversation!.participants.filter((o) => !o.iscallingidentity));
+
+                if (otherMember?.member) {
+                    this.props.showProfile(otherMember.member.id);
+                }
             }
         }
     }
 
-    _assignIcon = (member: Conversation_Conversation_members) => {
-        if (this.state.icon || !member || member.pic == null || member.pic === '') { return; }
+    _assignIcon = (conversation: Conversation_Conversation) => {
+        if (this.state.icon) { return; }
+
+        const otherMembers = conversation.participants.filter((o) => !o.iscallingidentity);
+        const otherMember = otherMembers.length > 2 ? null : first(otherMembers);
 
         this.setState({
-            member,
+            subject: conversation.subject,
+            member: otherMember?.member ?? null,
+            showUserAvatar: otherMember == null, // only in case more than two members
             icon: (
                 <View key="icon" style={{ flex: 1, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <MemberAvatar member={member} />
-                    <Text numberOfLines={1} style={{ marginLeft: 8, fontFamily: this.props.theme.fonts.medium, fontSize: Platform.OS === 'ios' ? 17 : 20 }}>{this.getTitle()}</Text>
+                    {conversation.pic && <SimpleAvatar text={conversation.subject} pic={conversation.pic} />}
+                    <Text
+                        numberOfLines={1}
+                        style={{
+                            marginLeft: 8,
+                            fontFamily: this.props.theme.fonts.medium,
+                            fontSize: Platform.OS === 'ios' ? 17 : 20,
+                        }}
+                    >
+                        {conversation.subject}
+                    </Text>
                 </View>
             ),
         });
@@ -168,7 +192,13 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
     }
 
     _goBack = () => {
-        this.props.navigation.goBack(this.props.navigation.getParam('key'));
+        this.props.navigation.goBack();
+    }
+
+    _showProfile = (user: User) => {
+        if (user && user._id) {
+            this.props.showProfile(user._id as number);
+        }
     }
 
     render() {
@@ -179,7 +209,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                     content: [
                         <Appbar.BackAction key="back" color={this.props.theme.dark ? 'white' : 'black'} onPress={this._goBack} />,
                         !this.props.websocket ? this.waitingForNetwork() : (this.state.icon || this.defaultIcon()),
-                        <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
+                        this.state.member && <Appbar.Action key="new" icon="info-outline" onPress={() => this.showProfile()} />,
                     ],
                 }}
             >
@@ -200,15 +230,17 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
 
                 <ConversationQuery
                     conversationId={this.getConversationId()}
-                    partiesResolved={this._assignIcon}
+                    conversationResolved={this._assignIcon}
                 >
                     <Chat
-                        sendDisabled={!this.props.websocket || !this.props.chatEnabled}
+                        sendDisabled={!this.props.websocket || !this.props.chatEnabled || !this.state.member}
                         sendMessage={this._sendMessage}
                         onTextChanged={this._onTextChanged}
                         onImageChanged={this._onImageChanged}
                         text={this.state.lastText}
                         image={this.state.lastImage}
+                        onPressAvatar={this._showProfile}
+                        showUserAvatar={this.state.showUserAvatar}
                     />
                 </ConversationQuery>
             </ScreenWithHeader >
@@ -221,9 +253,7 @@ export const ConversationScreen =
         connect(
             (state: IAppState) => ({
                 websocket: state.connection.websocket,
-                chatEnabled: state.settings.notificationsOneToOneChat == null
-                    ? true
-                    : state.settings.notificationsOneToOneChat,
+                chatEnabled: state.settings.supportsNotifications,
                 pendingMessages: state.chat.pendingSend,
                 texts: state.chat.lastEdits,
             }),

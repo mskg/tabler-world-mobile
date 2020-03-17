@@ -10,7 +10,7 @@ import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
  * @param method
  * @param postdata
  */
-export async function downloadChunk(url: string, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
+export async function downloadChunk(url: string, limit: number, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
     const params = await getParameters('tw-api');
     const api = JSON.parse(params['tw-api']) as Param_Api;
 
@@ -21,7 +21,7 @@ export async function downloadChunk(url: string, method?: string, postdata?: str
     };
 
     const json = await client.callApi<any>(
-        `${url}&limit=${api.read_batch}`, method, postdata);
+        `${url}&limit=${limit}`, method, postdata);
 
     const results = [];
     results.push(... (json.results || json));

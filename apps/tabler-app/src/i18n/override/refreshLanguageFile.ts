@@ -33,14 +33,14 @@ export async function refreshLanguageFile(lang: string): Promise<boolean> {
         try { await FileSystem.deleteAsync(fileName); } catch { }
         if (response.status === 200) {
             await FileSystem.moveAsync({ from: tempFile, to: fileName });
-
             return true;
+        } else {
+            logger.log('Received invalid response or language file', response);
         }
 
-        logger.log(response);
         return false;
     } catch (e) {
-        logger.error(e, 'loadAdditionalLanguageFiles', lang);
+        logger.error('language-refreshfile', e, { lang });
         return false;
     }
 }

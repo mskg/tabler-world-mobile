@@ -31,7 +31,8 @@ export function testNotifications(handleNotification: (n: IExpoNotification) => 
         remote: true,
         data: {
             reason: 'birthday',
-            body: 'Birthday',
+            title: 'Er is jemand jarig!',
+            body: `Help me om Aart een fantastische dag te bezorgen!`,
             payload: {
                 id: 14225,
                 date: new Date(),

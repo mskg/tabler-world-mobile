@@ -1,0 +1,29 @@
+# leave it like it is
+database:
+  securityGroupIds:
+    Fn::ImportValue: DatabaseSecurityGroupId
+
+  subnetIds:
+    - Fn::ImportValue: DatabaseSubnetAId
+    - Fn::ImportValue: DatabaseSubnetBId
+    - Fn::ImportValue: DatabaseSubnetCId
+
+# We don't want hardcoded dependencies here
+# Otherwise this can never be undeployed without removing everything
+lambda:
+  securityGroupIds:
+    - 'sg-056222f7e4d719835' #default
+
+  subnetIds:
+    - 'subnet-032013b7eef038a2b' #a
+    - 'subnet-09d58c59d4a25f785' #b
+    - 'subnet-02f68b3905050414a' #c
+
+# Duplicated
+lambdaSecurityGroupIds:
+    - 'sg-056222f7e4d719835' #default
+
+lambdaSubnetIds:
+  - 'subnet-032013b7eef038a2b' #a
+  - 'subnet-09d58c59d4a25f785' #b
+  - 'subnet-02f68b3905050414a' #c

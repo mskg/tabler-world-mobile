@@ -2,6 +2,7 @@ import { GraphQLResponse } from 'apollo-server-core';
 import { GraphQLExtension } from 'apollo-server-lambda';
 import { print } from 'graphql';
 import { IApolloContext } from '../types/IApolloContext';
+import { Metrics } from './Metrics';
 
 export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
     // need to save variables
@@ -21,8 +22,11 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
     }) {
         try {
             const { context, graphqlResponse } = o;
+            context.logger.debug('LogErrorsExtension');
 
             if (graphqlResponse.errors) {
+                if (context.metrics) { context.metrics.increment(Metrics.GraphQLError); }
+
                 const query = context.requestCache.queryString || print(context.requestCache.queryString);
                 const variables = context.requestCache.variables;
 
@@ -30,9 +34,13 @@ export class LogErrorsExtension extends GraphQLExtension<IApolloContext> {
                     (err) => context.logger.error(
                         'Query', JSON.stringify(query),
                         'Variables', JSON.stringify(variables),
-                        'Error', JSON.stringify(err),
+                        'Error', err,
                     ),
                 );
+
+                graphqlResponse.errors.forEach((err) => {
+                    err.extensions!.requestId = context.lambdaContext?.awsRequestId;
+                });
             }
         } catch (e) {
             o.context.logger.error('Faild to log error', e);

@@ -12,6 +12,7 @@ import { IAppState } from '../../model/IAppState';
 import { GetLRUMembersQuery } from '../../queries/Search/GetLRUMembersQuery';
 import { showProfile } from '../../redux/actions/navigation';
 import _ from 'lodash';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Search);
 
@@ -46,6 +47,7 @@ class LRUBase extends React.Component<Props> {
                     ids: this.props.lru,
                 }}
                 fetchPolicy={this.props.fetchPolicy}
+                context={createApolloContext('LRUBase')}
             >
                 {({ data }) => {
                     if (data && data.Members != null && data.Members.length > 0) {

@@ -10,6 +10,8 @@ import { InlineLoading } from '../../components/Loading';
 import { makeMemberLink } from '../../helper/linking/makeMemberLink';
 import { Me } from '../../model/graphql/Me';
 import { GetMeQuery } from '../../queries/Member/GetMeQuery';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 class CodeScreenBase extends AuditedScreen<{ theme }> {
 
@@ -27,9 +29,12 @@ class CodeScreenBase extends AuditedScreen<{ theme }> {
                     backgroundColor: this.props.theme.colors.surface,
                 }}
             >
-                <Query<Me> query={GetMeQuery}>
+                <Query<Me>
+                    query={GetMeQuery}
+                    context={createApolloContext('CodeScreenBase')}
+                >
                     {({ data, error }) => {
-                        if (error) throw (error);
+                        if (error) throw new QueryFailedError(error);
                         if (!data || !data.Me) return <InlineLoading />;
 
                         return (

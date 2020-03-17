@@ -13,6 +13,7 @@ import { Assocations } from '../../model/graphql/Assocations';
 import { IAppState } from '../../model/IAppState';
 import { GetAssociationsQuery } from '../../queries/Structure/GetAssociationsQuery';
 import { showAssociation } from '../../redux/actions/navigation';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type OwnProps = {
     navigation: any,
@@ -76,6 +77,7 @@ class AssociationsListBase extends React.Component<Props> {
                         <Query<Assocations>
                             query={GetAssociationsQuery}
                             fetchPolicy={this.props.fetchPolicy}
+                            context={createApolloContext('AssociationsListBase')}
                         >
                             {({ data, loading }) => {
                                 return (

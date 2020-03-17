@@ -14,10 +14,12 @@ export type SettingsState = {
     optOutAnalytics: boolean;
 
     nearbyMembers?: boolean;
+    useForegroundService?: boolean;
     nearbyMembersMap?: boolean;
 
     hideOwnClubWhenNearby?: boolean;
 
+    supportsNotifications: boolean;
     notificationsBirthdays?: boolean;
     notificationsOneToOneChat?: boolean;
 };

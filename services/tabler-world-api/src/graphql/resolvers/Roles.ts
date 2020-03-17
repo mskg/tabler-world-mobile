@@ -1,5 +1,5 @@
 import { cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable: export-name
@@ -12,7 +12,7 @@ export const RolesResolver = {
                 makeCacheKey('Structure', ['roles', context.principal.association]),
                 () =>
 
-                    useDataService(
+                    useDatabase(
                         context,
                         async (client) => {
                             const res = await client.query(

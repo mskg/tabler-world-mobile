@@ -1,6 +1,6 @@
 import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
-import { sortBy } from 'lodash';
+import { sortBy, filter } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { removeFamily } from '../helper/removeFamily';
 import { IApolloContext } from '../types/IApolloContext';
@@ -22,22 +22,47 @@ function getSortKey(shortname: string) {
     return shortname;
 }
 
+type Role = {
+    role: string,
+    member: number,
+};
+
+/**
+ * We lookup all members as they have to be loaded anyway
+ *
+ * @param context
+ * @param roles
+ */
+async function ensureActiveMember(context: IApolloContext, roles?: Role[]) {
+    if (!roles) { return []; }
+
+    const result = await Promise.all(roles.map(async (r) => {
+        return {
+            ...r,
+            // returns null if the user is no longer valid
+            member: await context.dataSources.members.readOne(r.member),
+        };
+    }));
+
+    return result.filter((r) => r.member);
+}
+
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const StructureResolver = {
     Query: {
         Families: (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log('Families');
+            context.logger.debug('Families');
             return context.dataSources.structure.allFamilies();
         },
 
         Family: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Family', args);
+            context.logger.debug('Family', args);
             return context.dataSources.structure.getFamily(args.id || context.principal.family as string);
         },
 
         Associations: async (_root: any, _args: any, context: IApolloContext) => {
-            context.logger.log('Associations');
+            context.logger.debug('Associations');
 
             return byVersion({
                 context,
@@ -51,28 +76,37 @@ export const StructureResolver = {
         },
 
         Association: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Association', args);
+            context.logger.debug('Association', args);
             return context.dataSources.structure.getAssociation(args.id || context.principal.association);
         },
 
         Clubs: (_root: any, args: ByAssociation, context: IApolloContext) => {
-            context.logger.log('Clubs', args);
+            context.logger.debug('Clubs', args);
             return context.dataSources.structure.allClubs(args.association || context.principal.association);
         },
 
+
         Club: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Club', args);
+            context.logger.debug('Club', args);
             return context.dataSources.structure.getClub(args.id);
         },
 
         Areas: async (_root: any, args: ByAssociation, context: IApolloContext) => {
-            context.logger.log('Areas', args);
+            context.logger.debug('Areas', args);
             const areas = await context.dataSources.structure.allAreas(args.association || context.principal.association);
-            return sortBy(areas, (a) => getSortKey(a.shortname));
+
+            // there is areas without clubs, which doesn't really make sense
+            return filter(
+                sortBy(
+                    areas,
+                    (a) => getSortKey(a.shortname),
+                ),
+                (a) => (a.clubs && a.clubs.length > 0) || (a.board && a.board.length > 0),
+            );
         },
 
         Area: (_root: any, args: ById, context: IApolloContext) => {
-            context.logger.log('Area', args);
+            context.logger.debug('Area', args);
             return context.dataSources.structure.getArea(args.id);
         },
     },
@@ -98,12 +132,16 @@ export const StructureResolver = {
             return context.dataSources.structure.allAreas(root.association);
         },
 
-        board: (root: any, _args: any, _context: IApolloContext) => {
-            return root.board || [];
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
         },
 
-        boardassistants: (root: any, _args: any, _context: IApolloContext) => {
-            return root.boardassistants || [];
+        boardassistants: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.boardassistants);
+        },
+
+        isocode: (root: any) => {
+            return removeFamily(root.id).toUpperCase();
         },
     },
 
@@ -111,6 +149,30 @@ export const StructureResolver = {
         // -- DEPRECATED --
         club: (root: any, _args: any, _context: IApolloContext) => {
             return root.clubnumber;
+        },
+
+        meetingplace1: async (root: any, _args: any, _context: IApolloContext) => {
+            const address = root.meetingplace1;
+            if (address != null) {
+                return enrichAddress(
+                    address,
+                    removeFamily(root.association),
+                );
+            }
+
+            return null;
+        },
+
+        meetingplace2: async (root: any, _args: any, _context: IApolloContext) => {
+            const address = root.meetingplace2;
+            if (address != null) {
+                return enrichAddress(
+                    address,
+                    removeFamily(root.association),
+                );
+            }
+
+            return null;
         },
 
         location: async (root: any, _args: any, context: IApolloContext) => {
@@ -125,10 +187,10 @@ export const StructureResolver = {
 
             const hash = addressHash(address);
             if (hash == null) { return null; }
-            // context.logger.log(root, hash);
+            // context.logger.debug(root, hash);
 
             const coordinates = await context.dataSources.geocoder.readOne(hash);
-            // context.logger.log(root, hash, coordinates);
+            // context.logger.debug(root, hash, coordinates);
 
             return coordinates && coordinates.latitude
                 ? {
@@ -139,21 +201,21 @@ export const StructureResolver = {
         },
 
         area: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log("C.Area Loading", root);
+            // context.logger.debug("C.Area Loading", root);
             return context.dataSources.structure.getArea(
                 root.area,
             );
         },
 
         association: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log("C.Association Loading", root);
+            // context.logger.debug("C.Association Loading", root);
             return context.dataSources.structure.getAssociation(
                 root.association,
             );
         },
 
         family: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.log("C.Association Loading", root);
+            // context.logger.debug("C.Association Loading", root);
             return context.dataSources.structure.getFamily(
                 root.family,
             );
@@ -165,8 +227,12 @@ export const StructureResolver = {
             );
         },
 
-        board: (root: any, _args: any, _context: IApolloContext) => {
-            return root.board || [];
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
+        },
+
+        boardassistants: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.boardassistants);
         },
     },
 
@@ -186,7 +252,10 @@ export const StructureResolver = {
 
     AssociationRole: {
         member: (root: any, _args: any, context: IApolloContext) => {
-            return context.dataSources.members.readOne(root.member);
+            return typeof root.member === 'number'
+                ? context.dataSources.members.readOne(root.member)
+                // already loaded
+                : root.member;
         },
     },
 
@@ -215,8 +284,8 @@ export const StructureResolver = {
             return context.dataSources.structure.getAssociation(root.association);
         },
 
-        board: (root: any, _args: any, _context: IApolloContext) => {
-            return root.board || [];
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
         },
     },
 };

@@ -5,6 +5,7 @@ import { put, select } from 'redux-saga/effects';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { disableNearbyTablers } from '../../helper/geo/disable';
 import { enableNearbyTablers } from '../../helper/geo/enable';
 import { GetCloudSettings } from '../../model/graphql/GetCloudSettings';
@@ -33,6 +34,7 @@ query GetCloudSettings {
   nearbymembersMap: Setting (name: nearbymembersMap)
 }`,
         fetchPolicy: 'network-only',
+        context: createApolloContext('settings-restore'),
     });
 
     if (result.data.favorites != null) {
@@ -49,13 +51,13 @@ query GetCloudSettings {
             try {
                 yield enableNearbyTablers();
             } catch (e) {
-                logger.error(e, 'failed to enableNearbyTablers');
+                logger.error('setting-restore-nearby-enable', e);
             }
         } else {
             try {
                 yield disableNearbyTablers(false);
             } catch (e) {
-                logger.error(e, 'failed to disableNearbyTablers');
+                logger.error('setting-restore-nearby-disable', e);
             }
         }
     }
@@ -71,7 +73,8 @@ query GetCloudSettings {
 
     const notificationSettings: NotificationSettings = result.data?.notifications || {};
 
-    if (settingState.notificationsBirthdays !== notificationSettings.birthdays) {
+    // tslint:disable-next-line: triple-equals
+    if (settingState.notificationsBirthdays != notificationSettings.birthdays) {
         logger.debug('Restoring notificationsBirthdays', notificationSettings.birthdays);
 
         yield put(settingsActions.updateSetting({
@@ -82,7 +85,8 @@ query GetCloudSettings {
         }));
     }
 
-    if (settingState.notificationsOneToOneChat !== notificationSettings.personalChat) {
+    // tslint:disable-next-line: triple-equals
+    if (settingState.notificationsOneToOneChat != notificationSettings.personalChat) {
         logger.debug('Restoring notificationsOneToOneChat', notificationSettings.personalChat);
 
         yield put(settingsActions.updateSetting({

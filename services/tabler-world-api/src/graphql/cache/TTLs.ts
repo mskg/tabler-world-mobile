@@ -1,9 +1,12 @@
-import { getParameters, Param_TTLS } from '@mskg/tabler-world-config';
+import { defaultTTLs, getParameters, Param_TTLS } from '@mskg/tabler-world-config';
 
+// tslint:disable-next-line: variable-name
 export const TTLs = async () => {
-    const p = await getParameters('cachettl');
-    return JSON.parse(p.cachettl) as Param_TTLS;
-};
+    const p = await getParameters('cachettl', false);
+    const ttls = p.cachettl ? JSON.parse(p.cachettl) : {};
 
-// s
-export const DEFAULT_TTL = parseInt(process.env.TTL_DEFAULT || (60 * 60 * 24 * 2).toString(), 10);
+    return {
+        ...defaultTTLs,
+        ...ttls,
+    } as Param_TTLS;
+};

@@ -14,5 +14,5 @@ export function formatTimeAgo(time1: string | number) {
     }
 
     // hours
-    return moment(time1).format('LT');
+    return moment(time1).format('HH:mm');
 }

@@ -17,6 +17,6 @@ export async function runSend() {
 
         await sendPendingChatMessages();
     } catch (error) {
-        logger.error(error, 'runSend');
+        logger.error('task-fetch-send', error);
     }
 }

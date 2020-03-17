@@ -611,7 +611,7 @@ const en = {
 
     Component_Notifications: {
         chatDisabled: {
-            text: 'You disabled notifications for chat conversations. You will not be visible for other members and you will not not able to send and receive messages.',
+            text: 'You disabled notifications. You will not be visible for other members and you will not not able to send and receive messages.',
             button: 'Change',
         },
         Settings: {
@@ -637,6 +637,7 @@ const en = {
         date: 'D MMMM YYYY',
     },
 
+    // no longer used
     Timespan: {
         now: 'Now',
         seconds: 'seconds',
@@ -685,6 +686,10 @@ const en = {
                 title: 'Nearby Members',
                 text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
                 field: 'Share Your Location',
+            },
+            foreground: {
+                field: 'Foreground Location Updates',
+                text: 'If you turn this on, it will improve the accuracy of location updates in the background.',
             },
             map: {
                 title: 'Map Display',

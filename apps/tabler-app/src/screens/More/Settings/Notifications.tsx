@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { Divider, List, Portal, Switch, Text, Theme, withTheme } from 'react-native-paper';
+import { Divider, List, Portal, Switch, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { ActionNames } from '../../../analytics/ActionNames';
@@ -22,7 +22,6 @@ import { SettingsType, updateSetting } from '../../../redux/actions/settings';
 import { registerForPushNotifications } from '../../../tasks/registerForPushNotifications';
 import { Action } from './Action';
 import { Element } from './Element';
-import { styles } from './Styles';
 
 const logger = new Logger(Categories.Screens.Setting);
 
@@ -102,7 +101,9 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
             // forces a value push to server
             this.updateSetting({
                 name: 'notificationsBirthdays',
-                value: this.props.settings.notificationsBirthdays == null ? true : this.props.settings.notificationsBirthdays,
+                value: this.props.settings.notificationsBirthdays == null
+                    ? true
+                    : this.props.settings.notificationsBirthdays,
             });
 
             try {
@@ -111,7 +112,7 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
                     mutation: TestPushMutation,
                 });
             } catch (e) {
-                logger.error(e, 'testPushNotifications');
+                logger.error('settings-testpush', e);
             }
         }
 
@@ -142,7 +143,7 @@ class NotificationsSettingsScreenBase extends AuditedScreen<Props, State> {
 
                         {isFeatureEnabled(Features.Chat) && (
                             <List.Section title={I18N.Component_Notifications.Settings.onetoone.title}>
-                                <Text style={styles.text}>{I18N.Component_Notifications.Settings.onetoone.text}</Text>
+                                {/* <Text style={styles.text}>{I18N.Component_Notifications.Settings.onetoone.text}</Text> */}
                                 <Divider />
                                 <Element
                                     theme={this.props.theme}

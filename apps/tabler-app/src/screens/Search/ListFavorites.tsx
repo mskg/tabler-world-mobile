@@ -9,6 +9,7 @@ import { IAppState } from '../../model/IAppState';
 import { GetOfflineMembersQuery } from '../../queries/Member/GetOfflineMembersQuery';
 import { logger } from './logger';
 import { I18N } from '../../i18n/translation';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
@@ -69,12 +70,13 @@ class ListFavoritesBase extends React.Component<Props, State> {
             <Query<OfflineMembers>
                 query={GetOfflineMembersQuery}
                 fetchPolicy="cache-only"
+                context={createApolloContext('ListFavoritesBase')}
             >
                 {({ data, error }) => {
                     if (error) return null;
 
                     const r = result(data);
-                    if (r.length === 0) {
+                    if (!r || r.length === 0) {
                         return null;
                     }
 

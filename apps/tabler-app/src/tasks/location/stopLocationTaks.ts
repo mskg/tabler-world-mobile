@@ -8,7 +8,7 @@ export async function stopLocationTaks() {
     if (started) {
         logger.log('Stopping task', LOCATION_TASK_NAME);
 
-        await AsyncStorage.setItem(LOCATION_TASK_NAME, false.toString());
+        await AsyncStorage.removeItem(LOCATION_TASK_NAME);
         await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
     }
 }

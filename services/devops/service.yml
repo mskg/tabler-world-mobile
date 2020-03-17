@@ -1,0 +1,31 @@
+parameters:
+  INFRASTRUCTURE_RELEASE_CHANNEL: dev
+  AWS_DEFAULT_REGION: eu-west-1
+  PACKAGE_DIR: $(System.DefaultWorkingDirectory)
+
+steps:
+  - checkout: self
+
+  - template: ./yarn.yml
+    parameters:
+      SOURCEDIR: $(System.DefaultWorkingDirectory)
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: current
+      artifact: ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+      path: ${{ parameters.PACKAGE_DIR }}/package_${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+      displayName: Downloading package
+
+  - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+    inputs:
+      awsCredentials: AWS
+      regionName: ${{ parameters.AWS_DEFAULT_REGION }}
+      scriptType: inline
+      inlineScript: |
+        yarn serverless deploy --stage ${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }} --package package_${{ parameters.INFRASTRUCTURE_RELEASE_CHANNEL }}
+
+      disableAutoCwd: true
+      workingDirectory: ${{ parameters.PACKAGE_DIR }}
+
+    displayName: Deploying package

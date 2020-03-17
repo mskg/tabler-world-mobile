@@ -10,40 +10,40 @@ export enum LinkType {
 
 export function openLinkWithApp(protocol: LinkType, app: string, text: string) {
     switch (protocol) {
-    case LinkType.EMail:
-        LinkingHelper.sendEMail(app as MailApps, text);
-        break;
+        case LinkType.EMail:
+            LinkingHelper.sendEMail(app as MailApps, text);
+            break;
 
-    case LinkType.Internet:
-        LinkingHelper.openUrl(app as WebApps, text);
-        break;
+        case LinkType.Internet:
+            LinkingHelper.openUrl(app as WebApps, text);
+            break;
 
-    case LinkType.Message:
-        LinkingHelper.createSMS(app as MessagingApps, text);
-        break;
+        case LinkType.Message:
+            LinkingHelper.createSMS(app as MessagingApps, text);
+            break;
 
-    case LinkType.Phone:
-        LinkingHelper.makeCall(app as CallApps, text);
-        break;
+        case LinkType.Phone:
+            LinkingHelper.makeCall(app as CallApps, text);
+            break;
     }
 }
 
 export async function openLinkWithDefaultApp(type: LinkType, url: string) {
     switch (type) {
-    case LinkType.Internet:
-        OpenLink.url(url);
-        break;
+        case LinkType.Internet:
+            OpenLink.url(url);
+            break;
 
-    case LinkType.EMail:
-        OpenLink.email(url);
-        break;
+        case LinkType.EMail:
+            OpenLink.email(url);
+            break;
 
-    case LinkType.Phone:
-        OpenLink.call(url);
-        break;
+        case LinkType.Phone:
+            OpenLink.call(url);
+            break;
 
-    case LinkType.Message:
-        OpenLink.sms(url);
-        break;
+        case LinkType.Message:
+            OpenLink.sms(url);
+            break;
     }
 }

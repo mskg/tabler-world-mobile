@@ -1,11 +1,13 @@
 import { xHttps } from '@mskg/tabler-world-aws';
 import { StopWatch } from '@mskg/tabler-world-common';
 import { RequestOptions } from 'https';
-import HttpsProxyAgent from 'https-proxy-agent';
+import createHttpsProxyAgent from 'https-proxy-agent';
+import { Environment } from '../Environment';
 
 export class HttpClient {
-    private _maxTries = 3;
-    private _waitTime = 5000;
+    // tslint:disable: variable-name
+    private _maxTries = Environment.HttpClient.retries;
+    private _waitTime = Environment.HttpClient.waitTime;
     private _headers: { [key: string]: string } = {};
 
     constructor(
@@ -36,23 +38,23 @@ export class HttpClient {
 
     protected configureOptions(path: string, method: string): RequestOptions {
         const options: RequestOptions = {
-            port: this.port,
             method,
+            port: this.port,
             headers: {
                 'Content-Type': 'application/json',
                 ...this._headers,
             },
         };
 
-        const proxy = process.env.http_proxy;
+        const proxy = Environment.HttpClient.proxy;
         if (proxy != null) {
-            options.agent = new HttpsProxyAgent(proxy);
+            options.agent = createHttpsProxyAgent(proxy);
         }
 
         return {
             ...options,
-            host: this.host,
             path,
+            host: this.host,
         };
     }
 
@@ -68,19 +70,23 @@ export class HttpClient {
 
             const maxTries = this._maxTries;
             const waitTime = this._waitTime;
-            const run = this.run;
+            const run = this.run.bind(this);
             const stopWatch = new StopWatch();
 
             return new Promise<T>((resolve, reject) => {
                 try {
-                    const req = xHttps.request(options, async (res) => {
+                    const req = xHttps.request(options, (res) => {
                         if (res.statusCode === 429 && tryCount < maxTries - 1) {
                             const newTry = tryCount + 1;
 
                             console.log('[API] Got 429, sleeping ', newTry, 's');
-                            // tslint:disable-next-line: no-string-based-set-timeout
-                            await new Promise((r) => setTimeout(r, newTry * waitTime));
-                            return run(url, method, postdata, newTry);
+                            setTimeout(
+                                () => resolve(run(url, method, postdata, newTry)),
+                                // tslint:disable-next-line: insecure-random
+                                newTry * waitTime * Math.random(),
+                            );
+
+                            return;
                         }
 
                         if (res.statusCode !== 200) {
@@ -103,7 +109,7 @@ export class HttpClient {
                                 console.error('[API] on end', eEnd);
                                 return reject(eEnd);
                             } finally {
-                                console.debug('[API] Downloading from', options.host, options.port, options.path, options.method, 'took', stopWatch.stop(), 'ms');
+                                console.debug('[API] Downloading from', options.host, options.port, options.path, options.method, 'took', stopWatch.elapsedMs, 'ms');
                             }
                         });
                     });

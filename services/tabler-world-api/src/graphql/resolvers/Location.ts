@@ -1,9 +1,16 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { defaultParameters } from '@mskg/tabler-world-config-app';
-import { BigDataResult, convertToCityLocation } from '@mskg/tabler-world-geo-bigdata';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { BigDataResult, convertToCityLocation, GeoCityLocation } from '@mskg/tabler-world-geo-bigdata';
+import { pubsub, WebsocketEvent, withFilter } from '@mskg/tabler-world-lambda-subscriptions';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
+import Geohash from 'latlon-geohash';
+import { values } from 'lodash';
 import { getNearByParams } from '../helper/getNearByParams';
+import { Metrics } from '../logging/Metrics';
+import { throw429 } from '../ratelimit/throw429';
 import { IApolloContext } from '../types/IApolloContext';
+import { ISubscriptionContext } from '../types/ISubscriptionContext';
+import { eventManager, subscriptionManager } from '../websocketServer';
 
 type MyLocationInput = {
     location: {
@@ -15,12 +22,7 @@ type MyLocationInput = {
     },
 };
 
-type NearMembersInput = {
-    location: {
-        longitude: number,
-        latitude: number,
-    },
-
+type NearMembersQueryInput = {
     query?: {
         excludeOwnTable?: boolean,
     },
@@ -33,13 +35,44 @@ type UpdateLocationAddress = {
     }[],
 };
 
+type SubscriptionArgs = {
+    id: string;
+    type: 'start';
+    payload: any;
+};
+
+type Payload = {
+    plain: boolean,
+    member: number,
+};
+
+async function convertAddressToLocation(address: any): Promise<GeoCityLocation | undefined> {
+    if (!address) { return undefined; }
+
+    // old data, leave like it is
+    if (address.city || address.region) {
+        return {
+            name: address.city || address.region,
+            country: address.country,
+        };
+    }
+
+    const bigData: BigDataResult = address;
+    const nearBy = await getNearByParams();
+
+    return convertToCityLocation(
+        bigData,
+        nearBy.administrativePreferences || defaultParameters.geocoding.bigData,
+    );
+}
+
 // tslint:disable: export-name
 // tslint:disable: variable-name
 export const LocationResolver = {
 
     Member: {
         sharesLocation: (root: any, _args: {}, context: IApolloContext) => {
-            return context.dataSources.location.isMemberSharingLocation(root.id);
+            return root.sharesLocation ?? context.dataSources.location.isMemberSharingLocation(root.id);
         },
     },
 
@@ -52,19 +85,8 @@ export const LocationResolver = {
             };
         },
 
-        locationName: async (root: any, _args: {}, _context: IApolloContext) => {
-            // old data, leave like it is
-            if (root.address.city || root.address.region) {
-                return {
-                    name: root.address.city || root.address.region,
-                    country: root.address.country,
-                };
-            }
-
-            const bigData: BigDataResult = root.address;
-            const nearBy = await getNearByParams();
-
-            return convertToCityLocation(bigData, nearBy.administrativePreferences || defaultParameters.geocoding.bigData);
+        locationName: (root: any, _args: {}, _context: IApolloContext) => {
+            return convertAddressToLocation(root.address);
         },
     },
 
@@ -78,38 +100,26 @@ export const LocationResolver = {
         },
 
         location: (root: any, _args: {}, _context: IApolloContext) => {
-            return root.canshowonmap ? {
-                longitude: root.longitude,
-                latitude: root.latitude,
-            } : null;
+            return root.canshowonmap
+                ? root.location || {
+                    longitude: root.longitude,
+                    latitude: root.latitude,
+                }
+                : null;
         },
 
-        locationName: async (root: any, _args: {}, _context: IApolloContext) => {
-            // old data, leave like it is
-            if (root.address.city || root.address.region) {
-                return {
-                    name: root.address.city || root.address.region,
-                    country: root.address.country,
-                };
-            }
-
-            const bigData: BigDataResult = root.address;
-            const nearBy = await getNearByParams();
-
-            return convertToCityLocation(bigData, nearBy.administrativePreferences || defaultParameters.geocoding.bigData);
+        locationName: (root: any, _args: {}, _context: IApolloContext) => {
+            return convertAddressToLocation(root.address);
         },
 
         // TODO: deprecated
-        address: ({ address, canshowonmap, longitude, latitude }: any, _args: {}, _context: IApolloContext) => {
+        address: ({ address, canshowonmap, location }: any, _args: {}, _context: IApolloContext) => {
             // old data, leave like it is
             if (address.city || address.region) {
                 return {
                     // if we don't this, the address is resolved via geocoder
                     location: canshowonmap
-                        ? {
-                            longitude,
-                            latitude,
-                        }
+                        ? location
                         : { longitude: 0, latitude: 0 },
 
                     city: address.city,
@@ -125,70 +135,29 @@ export const LocationResolver = {
 
                 // if we don't this, the address is resolved via geocoder
                 location: canshowonmap
-                    ? {
-                        longitude,
-                        latitude,
-                    }
+                    ? location
                     : { longitude: 0, latitude: 0 },
             };
         },
     },
 
     Query: {
-        nearbyMembers: async (_root: any, args: NearMembersInput, context: IApolloContext) => {
-            context.logger.log('nearby', args);
+        nearbyMembers: async (_root: any, args: NearMembersQueryInput, context: IApolloContext) => {
+            context.logger.debug('nearby', args);
 
-            const userShares = context.dataSources.location.isMemberSharingLocation(context.principal.id);
-            const nearByQuery = getNearByParams();
+            const userShares = await context.dataSources.location.isMemberSharingLocation(context.principal.id);
+            if (!userShares) {
+                context.logger.log('member does not share location');
+                return [];
+            }
 
-            return await userShares
-                ? useDataService(
-                    context,
-                    async (client) => {
-                        const nearBy = await nearByQuery;
-                        const result = await client.query(
-                            `
-SELECT
-    member,
-    address,
-    lastseen,
-    speed,
-    canshowonmap,
-    ST_X (point::geometry) AS longitude,
-    ST_Y (point::geometry) AS latitude,
-    CAST(ST_Distance(
-        locations.point,
-        $1::geography
-    ) as integer) AS distance
-FROM
-    userlocations_match locations
-WHERE
-        member <> $2
-    and ST_DWithin(locations.point, $1::geography, ${nearBy.radius})
-    ${EXECUTING_OFFLINE ? '' : `and lastseen > (now() - '${nearBy.days} day'::interval)`}
-    ${args.query && args.query.excludeOwnTable ? 'and club <> $3' : ''}
-
-    and address is not null
-ORDER BY
-    locations.point <-> $1::geography
-LIMIT 20
-`,
-                            [
-                                `POINT(${args.location.longitude} ${args.location.latitude})`,
-                                context.principal.id,
-                                args.query && args.query.excludeOwnTable ? context.principal.club : undefined,
-                            ].filter(Boolean));
-
-                        return result.rows.length > 0 ? result.rows : [];
-                    },
-                )
-                : [];
+            return context.dataSources.location.query(args.query?.excludeOwnTable === true);
         },
 
         LocationHistory: async (_root: any, args: {}, context: IApolloContext) => {
-            context.logger.log('locationHistory', args);
+            context.logger.debug('locationHistory', args);
 
-            return await useDataService(
+            return await useDatabase(
                 context,
                 async (client) => {
                     const result = await client.query(
@@ -217,67 +186,55 @@ LIMIT 10
     },
 
     Mutation: {
-        putLocation: (_root: any, args: MyLocationInput, context: IApolloContext) => {
-            context.logger.log('putLocation', args);
+        putLocation: async (_root: any, args: MyLocationInput, context: IApolloContext) => {
+            const limit = context.getLimiter('location');
+            const result = await limit.use(context.principal.id);
 
-            useDataService(
-                context,
-                async (client) => {
-                    await client.query(
-                        `
-INSERT INTO userlocations(id, point, accuracy, speed, address, lastseen)
-VALUES($1, $2, $3, $4, $5, now())
-ON CONFLICT (id)
-DO UPDATE
-    SET point = excluded.point,
-        accuracy = excluded.accuracy,
-        address = excluded.address,
-        lastseen = excluded.lastseen,
-        speed = excluded.speed
-`,
-                        [
-                            context.principal.id,
-                            `POINT(${args.location.longitude} ${args.location.latitude})`,
-                            args.location.accuracy,
-                            Math.round(args.location.speed),
-                            args.location.address ? JSON.stringify(args.location.address) : null,
-                        ],
-                    );
-                    return true;
-                },
-            );
+            if (result.rejected) {
+                context.logger.log('too many putLocation');
+                context.metrics.increment(Metrics.ThrottleLocation);
+                throw429(result.retryDelta);
+            }
+
+            context.logger.debug('putLocation', args);
+            const db = context.dataSources.location.putLocation(args.location);
+
+            // events are sent directy offline, we have to wait for the db first in this case
+            if (EXECUTING_OFFLINE) { await db; }
+
+            // const canShowOnMap = await contextaph.dataSources.location.isMemberVisibleOnMap(context.principal.id);
+            const geo = Geohash.encode(args.location.longitude, args.location.latitude, 4);
+            const neighBors = values(Geohash.neighbours(geo));
+
+            const names = [geo, ...neighBors].map((hash) => `nearby:${hash}`);
+            const publishChannels = await subscriptionManager.hasSubscribers(names);
+
+            let events: Promise<any> = Promise.resolve();
+            if (publishChannels.length > 0) {
+                events = eventManager.post<Payload>({
+                    triggers: publishChannels,
+                    payload: {
+                        member: context.principal.id,
+                        plain: true,
+                    },
+                    sender: context.principal.id,
+                    trackDelivery: false,
+                    ttl: 60 * 60, // 1h
+                    volatile: true,
+                    pushNotification: undefined,
+                });
+            }
+
+            await Promise.all([db, events]);
         },
 
+        // deprecated
         updateLocationAddress: (_root: any, _args: UpdateLocationAddress, _context: IApolloContext) => {
-            // deprecated
             return;
-
-            //             context.logger.log('updateLocationAddress', args);
-
-            //             return useDataService(
-            //                 context,
-            //                 async (client) => {
-            //                     for (const update of args.corrections) {
-            //                         await client.query(
-            //                             `
-            // UPDATE userlocations
-            // SET address = $2
-            // WHERE id = $1 and address is null
-            // `,
-            //                             [
-            //                                 update.member,
-            //                                 JSON.stringify(update.address),
-            //                             ],
-            //                         );
-            //                     }
-
-            //                     return true;
-            //                 },
-            //             );
         },
 
         disableLocationServices: (_root: any, _args: {}, context: IApolloContext) => {
-            return useDataService(
+            return useDatabase(
                 context,
                 async (client) => {
                     await client.query(
@@ -292,6 +249,48 @@ WHERE id = $1
                 },
             );
         },
+    },
 
+    Subscription: {
+        locationUpdate: {
+            subscribe: async (root: SubscriptionArgs, args: NearMembersQueryInput, context: ISubscriptionContext, image: any) => {
+                const loc = await context.dataSources.location.userLocation();
+                if (!loc) {
+                    context.logger.log('location unkown??');
+                    throw new Error('Location unkonwn');
+                }
+
+                const hash = Geohash.encode(loc.longitude, loc.latitude, 4);
+
+                // we only subscribe to our circle
+                const names = [`nearby:${hash}`];
+                context.logger.debug('subscribe', loc, names);
+
+                if (root) {
+                    context.logger.debug('create subscription', names);
+
+                    await subscriptionManager.subscribe(
+                        context,
+                        root.id,
+                        names,
+                        image.rootValue.payload,
+                    );
+                }
+
+                // not for me
+                return withFilter(
+                    () => pubsub.asyncIterator(names),
+                    (event: WebsocketEvent<Payload>, _args: any, ctx: ISubscriptionContext): boolean => {
+                        // we want to receive our own location updates
+                        return EXECUTING_OFFLINE ? true : ctx.principal.id !== event.payload.member;
+                    },
+                )(root, args, context, image);
+            },
+
+            // tslint:disable-next-line: variable-name
+            resolve: async (_channelMessage: WebsocketEvent<GeoCityLocation>, _args: {}, context: ISubscriptionContext, image: any) => {
+                return LocationResolver.Query.nearbyMembers({}, image.variableValues, context);
+            },
+        },
     },
 };

@@ -23,33 +23,41 @@ export const createWriteToDatabaseHandler = (type: JobType): DataHandler => {
         return useDatabasePool({ logger: console }, api.concurrency.write, async (pool) => {
             console.log('Writing chunk of', records.length, type, 'records');
 
-            const inserts = await Promise.all(records.map(async (record) => {
+            const inserts = [];
+
+            for (const record of records) {
                 const recordType = determineRecordType(type, record);
                 const pkFunction = recordTypeToPrimaryKey(recordType);
                 const id = pkFunction(record);
                 const table = typeToTable(recordType);
 
-                console.log(recordType, id);
-
+                console.log('Trying to update', recordType, id);
                 const result = await pool.query(
                     `
-INSERT INTO ${table}(id, data, modifiedon)
-VALUES($1, $2, now())
+INSERT INTO ${table}(id, data, modifiedon, lastseen)
+VALUES($1, $2, now(), now())
 ON CONFLICT (id)
 DO UPDATE
-  SET data = excluded.data, modifiedon = excluded.modifiedon
-  WHERE ${table}.data::text <> excluded.data::text
+  SET
+    data = excluded.data,
+    modifiedon = case
+        when ${table}.data is null then excluded.modifiedon
+        when ${table}.data::text <> excluded.data::text then excluded.modifiedon
+        else ${table}.modifiedon
+    end,
+    lastseen = excluded.lastseen
+RETURNING modifiedon, lastseen
 `,
                     [id, JSON.stringify(removeEmptySlots(record))],
                 );
 
-                if (result.rowCount === 1) {
-                    console.log(id, 'modified');
-                    return { id, type: recordType } as ChangePointer;
+                // if they are identical, the row has been modified
+                // They do not equal without conversion to String?
+                if (String(result.rows[0].modifiedon) === String(result.rows[0].lastseen)) {
+                    console.log('Changed', recordType, id);
+                    inserts.push({ id, type: recordType } as ChangePointer);
                 }
-
-                return null;
-            }));
+            }
 
             return inserts.filter((i) => i != null) as ChangePointer[];
         });

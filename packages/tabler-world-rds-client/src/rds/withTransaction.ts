@@ -1,7 +1,7 @@
 
-import { Client } from 'pg';
+import { IDataService } from '../types/IDataService';
 
-export async function withTransaction<T>(client: Client, func: () => Promise<T>): Promise<T> {
+export async function withTransaction<T>(client: IDataService, func: () => Promise<T>): Promise<T> {
     try {
         await client.query('BEGIN');
         const result = await func();

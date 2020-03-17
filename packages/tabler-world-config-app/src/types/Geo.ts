@@ -36,6 +36,9 @@ interface ILocationTaskOptions {
 export type GeoParameters = {
     pollInterval: number,
     reverseGeocodeTimeout: number,
-} & ILocationTaskOptions;
+
+    android: ILocationTaskOptions,
+    ios: ILocationTaskOptions,
+};
 
 

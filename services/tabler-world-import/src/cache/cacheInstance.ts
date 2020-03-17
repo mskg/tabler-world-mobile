@@ -1,11 +1,10 @@
-import { DynamoDBCache } from '@mskg/tabler-world-cache';
+import { Environment } from '../Environment';
+import { dynamoDB } from './dynamoDB';
+import { NoCache } from './NoCache';
+import { redisCache } from './redisCache';
 
-export const cacheInstance = new DynamoDBCache(
-    {
-        region: process.env.AWS_REGION,
-    },
-    {
-        tableName: process.env.cache_table as string,
-    },
-    process.env.cache_version,
-);
+export const cacheInstance = Environment.Caching.disabled
+    ? new NoCache()
+    : Environment.Caching.useRedis
+        ? redisCache
+        : dynamoDB;

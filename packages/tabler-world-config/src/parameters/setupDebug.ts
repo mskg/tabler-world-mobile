@@ -1,10 +1,10 @@
 import LRU from 'lru-cache';
+import { ttls } from './defaults/ttls';
 import { mapName } from './mapName';
 import { Param_Api } from './types/Param_Api';
 import { Param_Database } from './types/Param_Database';
 import { Param_Nearby } from './types/Param_Nearby';
 import { Param_Translations } from './types/Param_Translation';
-import { Param_TTLS } from './types/Param_TTLS';
 
 export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('tw-api'), JSON.stringify({
@@ -38,20 +38,8 @@ export function setupDebug(memoryCache: LRU<string, string>) {
         },
     } as Param_Nearby));
 
-    const HOUR = 60 * 60;
-    const hours = (h: number) => h * HOUR;
-    memoryCache.set(mapName('cachettl'), JSON.stringify({
-        MemberOverview: hours(8),
-        ClubMembers: hours(8),
-        Member: 0,
-        Structure: 0,
-        StructureOverview: hours(24),
-        Albums: hours(4),
-        Documents: hours(4),
-        News: hours(4),
-        Principal: hours(1),
-        I18N: hours(24),
-    } as Param_TTLS));
+    memoryCache.set(mapName('cachettl'), JSON.stringify(ttls));
+    memoryCache.set(mapName('chat'), JSON.stringify({}));
 
     memoryCache.set(mapName('app'), JSON.stringify({
         urls: {

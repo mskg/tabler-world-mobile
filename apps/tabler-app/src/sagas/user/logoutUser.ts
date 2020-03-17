@@ -3,6 +3,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { Updates } from 'expo';
 import * as SecureStore from 'expo-secure-store';
+import * as TaskManager from 'expo-task-manager';
 import { AsyncStorage } from 'react-native';
 import { put } from 'redux-saga/effects';
 import { cachedAolloClient, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
@@ -17,10 +18,17 @@ import { logger } from './logger';
 export function* logoutUser(_: typeof actions.logoutUser.shape) {
     logger.debug('logoutUser');
 
-    try { yield removePushToken(); } catch (e) { logger.error(e, 'Failed to remove token'); }
-    try { yield disableNearbyTablers(); } catch (e) { logger.error(e, 'Failed to disable tracking'); }
+    try { yield removePushToken(); } catch (e) { logger.error('logout-push-token', e); }
+    try { yield disableNearbyTablers(); } catch (e) { logger.error('logout-nearby', e); }
 
     yield AsyncStorage.clear();
+
+    try {
+        yield TaskManager.unregisterAllTasksAsync();
+    } catch (e) {
+        logger.error('logout-tasks', e);
+    }
+
     yield SecureStore.deleteItemAsync(FILESTORAGE_KEY);
 
     yield put({ type: '__CLEAR__ALL__' });

@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 //==============================================================
@@ -94,11 +95,6 @@ export enum UserRole {
   i18n = "i18n",
   jobs = "jobs",
   locationhistory = "locationhistory",
-}
-
-export interface MyCurrentLocationInput {
-  longitude: number;
-  latitude: number;
 }
 
 export interface MyLocationInput {

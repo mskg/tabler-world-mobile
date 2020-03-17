@@ -1,8 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Theme, TouchableRipple } from 'react-native-paper';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import { logger } from '../../analytics/logger';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { Features, isFeatureEnabled } from '../../model/Features';
 import { CanMemberChat } from '../../model/graphql/CanMemberChat';
 import { IAppState } from '../../model/IAppState';
@@ -14,12 +17,11 @@ import { startConversation } from '../../redux/actions/navigation';
 import { FavoriteIcon } from '../FavoriteButton';
 import { SwipableItem, SwipeButtonsContainer } from '../SwipableItem';
 import { MemberListItem } from './MemberListItem';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type Props = {
     item: IMemberOverviewFragment;
     theme: Theme;
-    onPress?: (item: IMemberOverviewFragment) => void;
+    onPress?: (item: IMemberOverviewFragment | null | undefined) => void;
     margin?: number;
     height?: number;
 
@@ -91,17 +93,22 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
             return;
         }
 
-        const client = cachedAolloClient();
-        const result = await client.query<CanMemberChat>({
-            query: GetCanMemberChatQuery,
-            variables: {
-                id: this.props.item.id,
-            },
-            fetchPolicy: 'cache-first',
-        });
+        try {
+            const client = cachedAolloClient();
+            const result = await client.query<CanMemberChat>({
+                query: GetCanMemberChatQuery,
+                variables: {
+                    id: this.props.item.id,
+                },
+                fetchPolicy: 'cache-first',
+                context: createApolloContext('MemberItemWithSwipe'),
+            });
 
-        if (result.data.Member?.availableForChat) {
-            this.setState({ canChat: true });
+            if (result.data.Member?.availableForChat) {
+                this.setState({ canChat: true });
+            }
+        } catch (e) {
+            logger.log('Failed to get chat status', e);
         }
     }
 
@@ -245,7 +252,7 @@ export class MemberItemWithSwipeBase extends React.Component<Props, State> {
 export const MemberItemWithSwipe = connect(
     (state: IAppState) => ({
         favorites: state.filter.member.favorites,
-        chat: state.settings.notificationsOneToOneChat == null || state.settings.notificationsOneToOneChat,
+        chat: state.settings.supportsNotifications,
         email: state.auth.username,
     }),
     {

@@ -25,6 +25,7 @@ import { HEADER_MARGIN_TOP } from '../../theme/dimensions';
 import { logger } from './logger';
 import ProgressiveImage from './ProgressiveImage';
 import { styles } from './Styles';
+import { QueryFailedError } from '../../helper/QueryFailedError';
 
 type State = {
     viewGallery: boolean,
@@ -124,7 +125,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                 }
             })
             .catch((error) => {
-                logger.error(error);
+                logger.error('album-export', error);
             });
     })
 
@@ -158,7 +159,7 @@ class AlbumScreenBase extends AuditedScreen<Props & NavigationInjectedProps<IAlb
                 }}
             >
                 {({ loading, error, data, refetch }) => {
-                    if (error) throw error;
+                    if (error) throw new QueryFailedError(error);
                     this.data = data;
 
                     return (

@@ -6,17 +6,26 @@ import { MaterialTopTabBar } from 'react-navigation-tabs';
 import { connect } from 'react-redux';
 import { StandardHeader } from '../../components/Header';
 import { I18N } from '../../i18n/translation';
+import { IAppState } from '../../model/IAppState';
 import { showNearbySettings } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
+import { WaitingForNetwork } from '../Conversation/WaitingForNetwork';
 import { NearbyEnabled } from './NearbyEnabled';
 import { NearbyOptIn } from './NearbyOptIn';
 
 type Props = {
     theme: Theme,
     showNearbySettings: typeof showNearbySettings;
+    websocket: boolean;
 };
 
 class NearbyScreenBase extends React.Component<Props> {
+    waitingForNetwork() {
+        return (
+            <WaitingForNetwork key="network" />
+        );
+    }
+
     render() {
         const titleColor = color(this.props.theme.colors.text)
             .alpha(0.87)
@@ -64,8 +73,10 @@ class NearbyScreenBase extends React.Component<Props> {
                         showBack={false}
 
                         content={([
-                            <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Screen_NearbyMembers.title} />,
-                            // <Appbar.Action key="filter" icon="filter-list" onPress={() => {}} />,
+                            !this.props.websocket
+                                ? this.waitingForNetwork()
+                                : <Appbar.Content key="cnt" titleStyle={{ fontFamily: this.props.theme.fonts.medium }} title={I18N.Screen_NearbyMembers.title} />
+                            ,
                             <Appbar.Action key="settings" icon="settings" onPress={() => this.props.showNearbySettings()} />,
                         ])}
                     />
@@ -78,5 +89,5 @@ class NearbyScreenBase extends React.Component<Props> {
 }
 
 export const NearbyTabBar = connect(
-    null, { showNearbySettings },
+    (s: IAppState) => ({ websocket: s.connection.websocket }), { showNearbySettings },
 )(withTheme(NearbyScreenBase));

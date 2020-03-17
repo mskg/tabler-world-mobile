@@ -1,9 +1,9 @@
 import { StopWatch } from '@mskg/tabler-world-common';
+import { getParameters, Param_Api } from '@mskg/tabler-world-config';
 import { completeJob, startJob, writeJobLog } from '@mskg/tabler-world-jobs';
 import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { Context } from 'aws-lambda';
 import { continueExecution } from './helper/continueExecution';
-import { importWorkflow } from './helper/importWorkflow';
 import { pushCacheUpdates } from './helper/pushCacheUpdates';
 import { refreshViews } from './helper/refreshViews';
 import { setupJobContext } from './helper/setupJobContext';
@@ -29,9 +29,20 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
 
         const watch = new StopWatch();
 
-        const { processedRecords, modifications, totalRecords } = await importWorkflow(
+        const params = await getParameters('tw-api');
+        const api = JSON.parse(params['tw-api']) as Param_Api;
+
+        const { processedRecords, modifications, totalRecords } = await jobContext.configuration.workflow(
             event.type as JobType,
             jobContext.configuration.url, jobContext.configuration.method, jobContext.configuration.payload,
+
+            // not more than max
+            Math.min(
+                // more than min
+                Math.max(jobContext.configuration.defaultPagination, api.read_batch),
+                jobContext.configuration.maxPagination,
+            ),
+
             event.offset,
             event.maxRecords,
         );

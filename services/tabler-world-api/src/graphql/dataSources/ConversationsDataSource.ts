@@ -1,12 +1,32 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
-import { IDataService, useDataService } from '@mskg/tabler-world-rds-client';
+import { cachedDataLoader, makeCacheKey } from '@mskg/tabler-world-cache';
+import { IDataService, useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
-import { conversationManager } from '../subscriptions';
-import { Conversation, UserConversation } from '../subscriptions/services/ConversationManager';
+import { Conversation } from '../chat/types/Conversation';
+import { UserConversation } from '../chat/types/UserConversation';
 import { IApolloContext } from '../types/IApolloContext';
+import { conversationManager } from '../websocketServer';
 
-export async function isChatEnabled(client: IDataService, ids: ReadonlyArray<number>): Promise<boolean[]> {
+export async function isAvailableForChat(client: IDataService, ids: ReadonlyArray<number>): Promise<boolean[]> {
+    const res = await client.query(
+        `
+ select
+    id
+ from
+    usersettings
+ where
+        id = ANY($1)
+    and array_length(tokens, 1) > 0
+ `,
+        [ids],
+    );
+
+    return ids.map((id) => res.rows.find((r) => r.id === id) != null || EXECUTING_OFFLINE);
+}
+
+export async function isChatMuted(client: IDataService, ids: ReadonlyArray<number>): Promise<boolean[]> {
+    // we negate in SQL as the amount of users will be less than enabled
     const res = await client.query(
         `
  select
@@ -16,16 +36,16 @@ export async function isChatEnabled(client: IDataService, ids: ReadonlyArray<num
  where
         id = ANY($1)
     and (
-            settings->'notifications'->>'personalChat' is null
-        or  settings->'notifications'->>'personalChat' = 'true'
+            settings->'notifications'->>'personalChat' = 'false'
+        or  array_length(tokens, 1) = 0
     )
-    and array_length(tokens, 1) > 0
  `,
         [ids],
     );
 
-    return ids.map((id) => res.rows.find((r) => r.id === id) != null || EXECUTING_OFFLINE);
+    return ids.map((id) => res.rows.find((r) => r.id === id) != null);
 }
+
 
 export class ConversationsDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
@@ -33,6 +53,7 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
     private conversations!: DataLoader<string, any>;
     private userConversations!: DataLoader<{ id: string, member: number }, any>;
     private chatProperties!: DataLoader<number, any>;
+    private mutedProperties!: DataLoader<number, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -52,7 +73,34 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
         );
 
         this.chatProperties = new DataLoader<number, any>(
-            (ids: ReadonlyArray<number>) => useDataService(this.context, async (client) => isChatEnabled(client, ids)),
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', ['chat', 'enabled', k]),
+                // tslint:disable-next-line: variable-name
+                (_r, id) => makeCacheKey('Member', ['chat', 'enabled', id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => isAvailableForChat(client, ids),
+                ),
+                'ChatEnabled', // TODO: changeme
+            ),
+            {
+                cacheKeyFn: (k: number) => k,
+            },
+        );
+
+        this.mutedProperties = new DataLoader<number, any>(
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', ['chat', 'muted', k]),
+                // tslint:disable-next-line: variable-name
+                (_r, id) => makeCacheKey('Member', ['chat', 'muted', id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => isChatMuted(client, ids),
+                ),
+                'ChatEnabled', // TODO: changeme
+            ),
             {
                 cacheKeyFn: (k: number) => k,
             },
@@ -60,17 +108,22 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
     }
 
     public async isMembersAvailableForChat(ids: number[]): Promise<boolean[]> {
-        this.context.logger.log('isMembersAvailableForChat', ids);
+        this.context.logger.debug('isMembersAvailableForChat', ids);
         return this.chatProperties.loadMany(ids);
     }
 
+    public async isMembersMuted(ids: number[]): Promise<boolean[]> {
+        this.context.logger.debug('isMembersMuted', ids);
+        return this.mutedProperties.loadMany(ids);
+    }
+
     public async isMemberAvailableForChat(id: number): Promise<boolean> {
-        this.context.logger.log('isMemberAvailableForChat', id);
+        this.context.logger.debug('isMemberAvailableForChat', id);
         return this.chatProperties.load(id);
     }
 
     public async readConversation(id: string): Promise<Conversation | null> {
-        this.context.logger.log('readOne', id);
+        this.context.logger.debug('readOne', id);
 
         // because queue/delivery runs in the same thread, using cached data would corrupt reality
         if (EXECUTING_OFFLINE) {
@@ -81,11 +134,11 @@ export class ConversationsDataSource extends DataSource<IApolloContext> {
     }
 
     public async readUserConversation(id: string, member: number): Promise<UserConversation | null> {
-        this.context.logger.log('readOne', id);
+        this.context.logger.debug('readOne', id);
 
         // because queue/delivery runs run in the same thread, using cached data would corrupt reality
         if (EXECUTING_OFFLINE) {
-            return conversationManager.getUserConversation(id, member);
+            return (await conversationManager.getUserConversation(id, member)) ?? null;
         }
 
         return this.userConversations.load({ id, member });

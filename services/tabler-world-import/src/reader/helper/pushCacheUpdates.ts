@@ -16,14 +16,14 @@ export async function pushCacheUpdates(allModifications: ChangePointer[]) {
     const messageChunks = _(messages).chunk(10).value();
 
     for (const chunk of messageChunks) {
-        console.log('Sending chunk');
+        console.log('pushCacheUpdates', chunk.length);
         const sendBatch = await sqs.sendMessageBatch({
             QueueUrl: process.env.sqs_queue as string,
             Entries: chunk,
         }).promise();
 
-        if (sendBatch.Failed) {
-            console.error(sendBatch.Failed);
+        if (sendBatch.Failed && sendBatch.Failed.length > 0) {
+            console.error('pushCacheUpdates failed to send', sendBatch.Failed);
         }
     }
 }

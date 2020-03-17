@@ -11,11 +11,6 @@ export const Location = gql`
         location: GeoPoint
     }
 
-    input MyCurrentLocationInput {
-        longitude: Float!
-        latitude: Float!
-    }
-
     input MyLocationInput {
         longitude: Float!
         latitude: Float!
@@ -39,8 +34,12 @@ export const Location = gql`
     }
 
     extend type Query {
-        nearbyMembers(location: MyCurrentLocationInput!, query: NearbyMembersQueryInput): [NearbyMember!]
+        nearbyMembers(location: MyCurrentLocationInput, query: NearbyMembersQueryInput): [NearbyMember!]
         LocationHistory: [LocationHistory!] @auth(requires: locationhistory)
+    }
+
+    type Subscription {
+        locationUpdate (query: NearbyMembersQueryInput): [NearbyMember!]
     }
 
     type GeoPoint {
@@ -57,7 +56,7 @@ export const Location = gql`
         lastseen: Date!
 
         location: GeoPoint
-        locationName: LocationName!
+        locationName: LocationName
 
         accuracy: Float!
     }

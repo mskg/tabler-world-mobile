@@ -17,6 +17,7 @@ import { IAppState } from '../../model/IAppState';
 import { GetMyRolesQuery } from '../../queries/Admin/GetMyRolesQuery';
 import { Routes } from './Routes';
 import { NavigationItem } from './Settings/Action';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Menu);
 
@@ -53,6 +54,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
             const roles = await client.query<GetMyRoles>({
                 query: GetMyRolesQuery,
                 fetchPolicy: 'cache-first',
+                context: createApolloContext('menu-roles'),
             });
 
             if (roles.data && roles.data.MyRoles && roles.data.MyRoles.find((i) => i === UserRole.developer || i === UserRole.i18n)) {

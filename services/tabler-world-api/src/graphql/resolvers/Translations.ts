@@ -37,7 +37,7 @@ export const TranslationsResolver = {
                 let newValue: any;
 
                 // no content
-                if (term.translation.content === '' || term.translation.content === null) {
+                if (term.translation.content === '' || term.translation.content == null) {
                     continue;
                 }
 

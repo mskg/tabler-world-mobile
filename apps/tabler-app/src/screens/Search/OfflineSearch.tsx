@@ -10,6 +10,8 @@ import { IAppState } from '../../model/IAppState';
 import { GetOfflineMembersQuery } from '../../queries/Member/GetOfflineMembersQuery';
 import { Predicates } from '../Members/Predicates';
 import { logger } from './logger';
+import { QueryFailedError } from '../../helper/QueryFailedError';
+import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
@@ -87,9 +89,10 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
             <Query<OfflineMembers>
                 query={GetOfflineMembersQuery}
                 fetchPolicy="cache-only"
+                context={createApolloContext('OfflineSearchQueryBase')}
             >
                 {({ data, error }) => {
-                    if (error) throw error;
+                    if (error) throw new QueryFailedError(error);
 
                     return (
                         <MemberList

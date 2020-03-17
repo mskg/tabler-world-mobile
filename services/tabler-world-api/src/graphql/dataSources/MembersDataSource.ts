@@ -1,9 +1,10 @@
 import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-cache';
-import { useDataService } from '@mskg/tabler-world-rds-client';
+import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
 import { flatMap } from 'lodash';
 import { filter } from '../privacy/filter';
+import { filterFormerMember } from '../privacy/filterFormerMember';
 import { IApolloContext } from '../types/IApolloContext';
 
 // tslint:disable-next-line: variable-name
@@ -36,7 +37,9 @@ export const DefaultMemberColumns = [
 
 export class MembersDataSource extends DataSource<IApolloContext> {
     private context!: IApolloContext;
+
     private memberLoader!: DataLoader<number, any>;
+    private anyMemberLoader!: DataLoader<number, any>;
 
     public initialize(config: DataSourceConfig<IApolloContext>) {
         this.context = config.context;
@@ -46,7 +49,7 @@ export class MembersDataSource extends DataSource<IApolloContext> {
                 this.context,
                 (k) => makeCacheKey('Member', [k]),
                 (r) => makeCacheKey('Member', [r.id]),
-                (ids) => useDataService(
+                (ids) => useDatabase(
                     this.context,
                     async (client) => {
                         this.context.logger.log('DB reading members', ids);
@@ -70,15 +73,45 @@ and removed = FALSE`,
                 cacheKeyFn: (k: number) => k,
             },
         );
+
+        this.anyMemberLoader = new DataLoader<number, any>(
+            cachedDataLoader<number>(
+                this.context,
+                (k) => makeCacheKey('Member', [k]),
+                (r) => makeCacheKey('Member', [r.id]),
+                (ids) => useDatabase(
+                    this.context,
+                    async (client) => {
+                        this.context.logger.log('DB reading members', ids);
+
+                        const res = await client.query(
+                            `
+select *
+from profiles
+where
+    id = ANY($1)
+`,
+                            [ids],
+                        );
+
+                        return res.rows;
+                    },
+                ),
+                'Member',
+            ),
+            {
+                cacheKeyFn: (k: number) => k,
+            },
+        );
     }
 
     public async readFavorites(): Promise<any[] | null> {
         this.context.logger.log('readFavorites');
 
-        return await useDataService(
+        return await useDatabase(
             this.context,
             async (client) => {
-                this.context.logger.log('executing readFavorites');
+                this.context.logger.debug('executing readFavorites');
 
                 const res = await client.query(
                     `
@@ -117,10 +150,10 @@ where id = $1`,
             cachedLoad(
                 this.context,
                 makeCacheKey('Members', [this.context.principal.association, 'area', a]),
-                async () => await useDataService(
+                async () => await useDatabase(
                     this.context,
                     async (client) => {
-                        this.context.logger.log('executing readByTableAndAreas');
+                        this.context.logger.debug('executing readByTableAndAreas');
 
                         const res = await client.query(
                             `
@@ -149,10 +182,10 @@ where
         return await cachedLoad(
             this.context,
             makeCacheKey('Members', [this.context.principal.association, 'all']),
-            async () => await useDataService(
+            async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.log('executing readAll');
+                    this.context.logger.debug('executing readAll');
 
                     const res = await client.query(
                         `
@@ -173,16 +206,53 @@ and removed = FALSE`,
     }
 
     public async readClub(club: string): Promise<any[] | null> {
-        this.context.logger.log('readClub', club);
+        this.context.logger.debug('readClub', club);
         const clubDetails = await this.context.dataSources.structure.getClub(club);
+        return clubDetails ? this.readMany(clubDetails.members) : [];
+    }
 
-        return this.readMany(clubDetails.members);
+    public async readOneManyWithAnyStatus(id: number): Promise<any | null> {
+        this.context.logger.debug('readOne', id);
+
+        const member = await this.anyMemberLoader.load(id);
+        if (member == null) { return member; }
+
+        if (member.removed) {
+            return filterFormerMember(
+                member,
+            );
+        }
+
+        return filter(
+            this.context.principal,
+            member,
+        );
+    }
+
+    public async readManyWithAnyStatus(ids: number[]): Promise<any[]> {
+        if (ids == null || ids.length === 0) return [];
+
+        this.context.logger.debug('readMany', ids);
+        return (await this.anyMemberLoader.loadMany(ids)).map((member: any) => {
+            if (member == null) { return member; }
+
+            if (member.removed) {
+                return filterFormerMember(
+                    member,
+                );
+            }
+
+            return filter(
+                this.context.principal,
+                member,
+            );
+        });
     }
 
     public async readMany(ids: number[]): Promise<any[]> {
         if (ids == null || ids.length === 0) return [];
 
-        this.context.logger.log('readMany', ids);
+        this.context.logger.debug('readMany', ids);
         return (await this.memberLoader.loadMany(ids)).map((member: any) => {
             if (member == null) { return member; }
 
@@ -194,7 +264,7 @@ and removed = FALSE`,
     }
 
     public async readOne(id: number): Promise<any | null> {
-        this.context.logger.log('readOne', id);
+        this.context.logger.debug('readOne', id);
 
         const member = await this.memberLoader.load(id);
         if (member == null) { return member; }

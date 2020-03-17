@@ -1,16 +1,20 @@
+import moment from 'moment';
 import { I18N } from '../../i18n/translation';
 
-const toOne = (s: string) => s.substring(0, s.length - 1);
-
 export function formatTimespan(time1: number, time2?: number) {
+    return moment.duration(Math.abs(time1 - (time2 || 0))).humanize();
+}
+
+const toOne = (s: string) => s.substring(0, s.length - 1);
+export function formatFullTimespan(time1: number, time2?: number) {
     if (time2 == null) {
         // tslint:disable-next-line: no-parameter-reassignment
         time2 = 0;
     }
 
-    const period = Math.abs(time1 - time2) / 1000;
+    const period = Math.round(Math.abs(time1 - time2) / 1000);
 
-    let ts = 1;
+    let ts = period;
     let format = 'seconds';
 
     if (period > 31556926) {
