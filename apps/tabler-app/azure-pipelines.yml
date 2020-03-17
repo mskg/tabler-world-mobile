@@ -3,7 +3,7 @@ name: $(VERSION).$(PATCH)
 
 variables:
   - name: VERSION
-    value: 1.5
+    value: '1.5'
   - name: PATCH
     value: $[counter(variables['VERSION'], 0)]
   - name: ANDROID_VERSION
@@ -15,7 +15,7 @@ variables:
   #  1.2-rc1, rc2, ...
   #  1.2-r, r1, r2, ...
   - name: RELASE_CHANNEL_VERSION
-    value: '1.5-dev'
+    value: '1.5-rc'
 
   - name: RELASE_CHANNEL_BUILD
     value: $[counter(variables['RELASE_CHANNEL_VERSION'], 1)]
@@ -56,7 +56,7 @@ pr:
 trigger:
   branches:
     include:
-      - none
+      - release/v1.5
 
   paths:
     include:

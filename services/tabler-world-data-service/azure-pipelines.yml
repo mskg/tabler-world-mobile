@@ -7,7 +7,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: 1.5
+    value: '1.5'
   - name: PACKAGE_DIR
     value: $(System.DefaultWorkingDirectory)/services/tabler-world-data-service
 
@@ -22,7 +22,7 @@ pr:
 trigger:
   branches:
     include:
-      - none
+      - release/v1.5
 
   paths:
     include:
