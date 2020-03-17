@@ -104,6 +104,14 @@ export class MultiCommand {
         return this;
     }
 
+    public zrem(set: string, ...member: string[]) {
+        this.logger.debug('multi:zrem', set, member);
+        this.cmds += 1;
+
+        this.pipeline = this.pipeline.zrem(set, ...member);
+        return this;
+    }
+
     public geoadd(key: string, longitude: number, latitude: number, member: string) {
         this.logger.debug('multi:geoadd', key, longitude, latitude, member);
         this.cmds += 1;
@@ -121,11 +129,11 @@ export class MultiCommand {
         return this;
     }
 
-    public del(key: string) {
+    public del(...key: string[]) {
         this.logger.debug('multi:del', key);
         this.cmds += 1;
 
-        this.pipeline = this.pipeline.del(key);
+        this.pipeline = this.pipeline.del(...key);
         return this;
     }
 
