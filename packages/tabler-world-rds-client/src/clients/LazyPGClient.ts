@@ -52,7 +52,6 @@ export class LazyPGClient implements IDataService {
                 user: connection.user,
                 password,
                 database: connection.database,
-                // ssl mode = require
                 // https://github.com/brianc/node-postgres/issues/2089s
                 ssl: connection.ssl === false ? false : { rejectUnauthorized: false },
             });
