@@ -50,6 +50,7 @@ stages:
 
   - stage: test
     dependsOn: dev
+    condition: and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
     jobs:
       - deployment: aws
         environment: tabler-world-test
@@ -67,6 +68,7 @@ stages:
 
   - stage: prod
     dependsOn: test
+    condition: and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
     jobs:
       - deployment: aws
         environment: tabler-world-prod

@@ -254,6 +254,9 @@ stages:
 
 - stage: deploy
   dependsOn: build
+  condition:
+    and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
+
   pool:
     vmImage: "macOS-latest"
     workspace:
