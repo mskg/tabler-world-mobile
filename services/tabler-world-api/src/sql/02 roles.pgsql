@@ -94,9 +94,9 @@ where
 
 CREATE or replace FUNCTION get_role_reference(type text, assoc text, name text) RETURNS text AS $$
 DECLARE
-    associations_row associations%ROWTYPE;
-    areas_row areas%ROWTYPE;
-    clubs_row clubs%ROWTYPE;
+    associations_row public.associations%ROWTYPE;
+    areas_row public.areas%ROWTYPE;
+    clubs_row public.clubs%ROWTYPE;
 
 BEGIN
     if type = 'family' then
@@ -105,19 +105,19 @@ BEGIN
 
     if type = 'assoc' THEN
         SELECT * INTO associations_row
-        from associations
+        from public.associations
         where data->>'name' = name;
 
         return associations_row.id;
     end if;
 
     SELECT * INTO associations_row
-    from associations
+    from public.associations
     where data->>'name' = assoc;
 
     if type = 'area' THEN
         SELECT * INTO areas_row
-        from areas
+        from public.areas
         where
             data->>'name' = name
         AND id like associations_row.id || '_%';
@@ -127,7 +127,7 @@ BEGIN
 
     if type = 'club' THEN
         SELECT * INTO clubs_row
-        from clubs
+        from public.clubs
         where
             data->>'name' = name
         AND id like associations_row.id || '_%';

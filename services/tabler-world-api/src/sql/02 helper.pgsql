@@ -27,14 +27,14 @@ LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_area (assoc text, val text) returns text as $$
 BEGIN
-    return assoc || '_' || replace(val, '-' || remove_key_family(assoc), '');
+    return assoc || '_' || replace(val, '-' || public.remove_key_family(assoc), '');
 END;
 $$
 LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_club (assoc text, val text) returns text as $$
 BEGIN
-    return assoc || '_' || replace(val, '-' || remove_key_family(assoc), '');
+    return assoc || '_' || replace(val, '-' || public.remove_key_family(assoc), '');
 END;
 $$
 LANGUAGE plpgsql;
@@ -47,7 +47,7 @@ DECLARE
         letter text;
 BEGIN
     -- need to remove family prefixes
-    corrected := remove_key_family(id);
+    corrected := public.remove_key_family(id);
 
     number := regexp_replace(corrected, '[^0-9]+', '', 'g');
     letter := substring(id from (position('_' in corrected) + 1) for 1);
@@ -66,12 +66,12 @@ CREATE or replace FUNCTION make_short_reference (type text, id text) returns tex
 DECLARE result text;
         corrected text;
 BEGIN
-    corrected := remove_key_family(id);
+    corrected := public.remove_key_family(id);
 
     case
         when type = 'family' then result = 'RTI';
         when type = 'assoc' then result = 'RT' || upper(corrected);
-        when type = 'area' then result = make_area_number(corrected);
+        when type = 'area' then result = public.make_area_number(corrected);
         else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
     end case;
 
