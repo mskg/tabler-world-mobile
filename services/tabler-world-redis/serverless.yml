@@ -2,7 +2,6 @@ service: tabler-world-redis
 
 provider:
   name: aws
-  runtime: nodejs10.x
   region: eu-west-1
 
   deploymentBucket:
@@ -20,8 +19,7 @@ resources:
       Type: AWS::ElastiCache::SubnetGroup
       Properties:
         Description: ${self:provider.stackName}-sng
-        SubnetIds:
-          ${file(../devops/vpc.yml):lambdaSubnetIds}
+        SubnetIds: ${file(../devops/vpc.yml):lambdaSubnetIds}
 
     ElasticacheClusterReplicationGroup:
       Type: AWS::ElastiCache::ReplicationGroup
@@ -32,10 +30,9 @@ resources:
         NumCacheClusters: 1
         AutomaticFailoverEnabled: false # does not work with only one node
 
-        CacheNodeType: 'cache.t3.micro'
+        CacheNodeType: "cache.t3.micro"
 
-        SecurityGroupIds:
-          ${file(../devops/vpc.yml):lambdaSecurityGroupIds}
+        SecurityGroupIds: ${file(../devops/vpc.yml):lambdaSecurityGroupIds}
 
         CacheSubnetGroupName:
           Ref: CacheSubnetGroup
