@@ -1,3 +1,8 @@
+# v1.4 - Update 1
+
+## Fixes
+- Fixed an issue that specific foreground services were not started on Android. (#150)
+
 # v1.4
 
 ## Improvements
