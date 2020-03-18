@@ -134,4 +134,4 @@ where removed = false;
 
 CREATE UNIQUE INDEX idx_profiles_privacysettings_id
 ON profiles_privacysettings USING btree (id ASC)
-TABLESPACE pg_default;
+;

@@ -225,32 +225,31 @@ where
 
 CREATE UNIQUE INDEX idx_profiles_id
 ON public.profiles USING btree (id ASC)
-TABLESPACE pg_default;
+;
 
 -- CREATE INDEX idx_profiles_modifiedon
 -- ON public.profiles USING btree (modifiedon ASC)
--- TABLESPACE pg_default;
+-- ;
 
 -- CREATE UNIQUE INDEX idx_profiles_cursormodified
 -- ON public.profiles USING btree (cursor_modified ASC)
--- TABLESPACE pg_default;
+-- ;
 
 CREATE INDEX idx_profiles_id_removed
 ON public.profiles USING btree (id, removed)
-TABLESPACE pg_default;
-
+;
 -- CREATE INDEX idx_profiles_club
 -- ON public.profiles USING btree (association, club, removed)
--- TABLESPACE pg_default;
+-- ;
 
 CREATE INDEX idx_email_removed
 ON public.profiles USING btree (rtemail, removed)
-TABLESPACE pg_default;
+;
 
 -- CREATE INDEX idx_profiles_association_area
 -- ON public.profiles USING btree (association, area, removed)
--- TABLESPACE pg_default;
+-- ;
 
 -- CREATE INDEX idx_profiles_association
 -- ON public.profiles USING btree (association, removed)
--- TABLESPACE pg_default;
+-- ;
