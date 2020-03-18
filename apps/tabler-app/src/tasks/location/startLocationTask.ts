@@ -48,22 +48,24 @@ export async function startLocationTask(): Promise<boolean> {
                 exchangeTexts(
                     Platform.select({
                         ios: settings.ios,
-                        android: __DEV__
-                            ? {
-                                ...settings.android,
+                        android: {
+                            ...settings.android,
 
-                                // when on, it's on
-                                foregroundService: settings.android.foregroundService
-                                    ? settings.android.foregroundService
-                                    // user toggeled the switch
-                                    : foreground
-                                        ? {} // we just nneed to pass a value
-                                        : undefined,
+                            // when on, it's on
+                            foregroundService: settings.android.foregroundService
+                                ? settings.android.foregroundService
+                                // user toggeled the switch
+                                : foreground
+                                    ? { // we just nneed to pass a value
+                                        notificationBody: 'body',
+                                        notificationTitle: 'title',
+                                    }
+                                    : undefined,
 
-                                // emulator only support high accuracy updates
-                                accuracy: Location.Accuracy.High,
-                            }
-                            : settings.android,
+                            accuracy: __DEV__
+                                ? Location.Accuracy.High
+                                : settings.android.accuracy,
+                        },
                     }),
                 ),
             );
