@@ -5,29 +5,30 @@ import { AsyncStorage } from 'react-native';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { I18N } from '../../i18n/translation';
 import { SettingName } from '../../model/graphql/globalTypes';
-import { Pushlanguage, PushlanguageVariables } from '../../model/graphql/Pushlanguage';
+import { PushTimezone, PushTimezoneVariables } from '../../model/graphql/PushTimezone';
 
-const LANGUAGE_KEY = 'setting:language';
+const TIMEZONE_KEY = 'setting:timezone';
 
-export function* pushLanguage() {
+export function* pushTimezone() {
     const client: ApolloClient<NormalizedCacheObject> = cachedAolloClient();
 
-    const existingLanguage = yield AsyncStorage.getItem(LANGUAGE_KEY);
-    if (existingLanguage !== I18N.id) {
+    const kownTimezone = yield AsyncStorage.getItem(TIMEZONE_KEY);
+    const value = I18N.timezone;
 
-        yield client.mutate<Pushlanguage, PushlanguageVariables>({
+    if (kownTimezone !== value) {
+        yield client.mutate<PushTimezone, PushTimezoneVariables>({
             mutation: gql`
-mutation Pushlanguage($input: SettingInput!) {
+mutation PushTimezone($input: SettingInput!) {
     putSetting (setting: $input)
 }`,
             variables: {
                 input: {
-                    name: SettingName.language,
-                    value: I18N.id,
+                    value,
+                    name: SettingName.timezone,
                 },
             },
         });
 
-        yield AsyncStorage.setItem(LANGUAGE_KEY, I18N.id);
+        yield AsyncStorage.setItem(TIMEZONE_KEY, value);
     }
 }

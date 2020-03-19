@@ -88,6 +88,7 @@ export enum SettingName {
   nearbymembers = "nearbymembers",
   nearbymembersMap = "nearbymembersMap",
   notifications = "notifications",
+  timezone = "timezone",
 }
 
 export enum UserRole {

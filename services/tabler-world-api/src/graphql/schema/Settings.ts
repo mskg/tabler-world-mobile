@@ -9,6 +9,7 @@ export const Settings = gql`
         nearbymembersMap
         language
         notifications
+        timezone
     }
 
     input SettingInput {
