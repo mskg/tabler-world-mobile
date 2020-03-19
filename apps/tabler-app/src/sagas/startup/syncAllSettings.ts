@@ -4,6 +4,7 @@ import { IAppState } from '../../model/IAppState';
 import { AuthState } from '../../model/state/AuthState';
 import { singedIn } from '../../redux/actions/user';
 import { pushLanguage } from '../settings/pushLanguage';
+import { pushTimezone } from '../settings/pushTimezone';
 import { restoreSettingsFromCloud } from '../settings/restoreSettingsFromCloud';
 import { logger } from './logger';
 
@@ -19,5 +20,7 @@ export function* syncAllSettings() {
     yield updateParameters();
 
     yield fork(pushLanguage);
+    yield fork(pushTimezone);
+
     yield fork(restoreSettingsFromCloud);
 }

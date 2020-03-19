@@ -10,6 +10,7 @@ import { I18NType } from './I18NType';
 import { pluralize, PluralizeFunc } from './pluralize';
 import DEFAULT_LANGUAGE from './translations/defaultLanguage';
 import { formatNumber, FormatNumberFunc } from './formatNumber';
+import * as Localization from 'expo-localization';
 
 const logger = new Logger(Categories.App);
 
@@ -29,6 +30,7 @@ export function replaceCurrentLanguage(otherLang: any) {
     // moment is loaded with all available locales
     moment.locale((currentLanguage as I18NType).id);
 
+    currentLanguage.timezone = Localization.timezone;
     currentLanguage.format = format;
     currentLanguage.pluralize = pluralize;
     currentLanguage.formatDate = formatDate;
@@ -66,6 +68,7 @@ loadLanguage(getAppLanguage());
 
 // tslint:disable-next-line: export-name
 export const I18N: I18NType & {
+    timezone: string,
     format: FormatFunc,
     formatDate: FormatDateFunc,
     pluralize: PluralizeFunc,

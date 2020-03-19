@@ -45,6 +45,7 @@ export interface Club_Club_meetingplace1 {
   street2: string | null;
   postal_code: string | null;
   city: string | null;
+  country: string | null;
   location: Club_Club_meetingplace1_location | null;
 }
 
@@ -60,6 +61,7 @@ export interface Club_Club_meetingplace2 {
   street2: string | null;
   postal_code: string | null;
   city: string | null;
+  country: string | null;
   location: Club_Club_meetingplace2_location | null;
 }
 
