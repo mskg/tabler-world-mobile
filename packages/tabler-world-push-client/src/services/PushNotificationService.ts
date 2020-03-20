@@ -2,8 +2,8 @@ import { xAWS } from '@mskg/tabler-world-aws';
 import { SendMessageBatchRequestEntry } from 'aws-sdk/clients/sqs';
 import { chunk } from 'lodash';
 import uuid4 from 'uuid4';
-import { Environment } from './Environment';
-import { PushNotification } from './PushNotification';
+import { Environment } from '../Environment';
+import { PushNotification } from '../types/PushNotification';
 
 export class PushNotificationService {
     constructor(private url: string = Environment.PUSH_QUEUE) {

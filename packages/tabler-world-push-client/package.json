@@ -11,6 +11,7 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
+        "@mskg/tabler-world-auth-client": "0.0.1",
         "lodash": "^4.17.15",
         "uuid4": "^1.1.4"
     },

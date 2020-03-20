@@ -14,6 +14,7 @@ BEGIN;
 
 \i '00 setup.pgsql'
 \i '01 settings.pgsql'
+\i '01 userendpoints.pgsql'
 \i '01 tablers.pgsql'
 \i '01 clubs.pgsql'
 \i '01 areas.pgsql'

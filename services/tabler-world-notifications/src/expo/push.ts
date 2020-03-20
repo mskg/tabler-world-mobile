@@ -4,7 +4,7 @@ import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { SQSHandler } from 'aws-lambda';
 import { ExpoPushMessage } from 'expo-server-sdk';
 import { filter, flatMap, map, uniq } from 'lodash';
-import { ExpoPushNotificationManager } from './services/ExpoPushNotificationManager';
+import { ExpoPushNotificationManager } from '../services/ExpoPushNotificationManager';
 
 // we have a batchsize of 1, and max parallelism of 1
 // tslint:disable-next-line: export-name

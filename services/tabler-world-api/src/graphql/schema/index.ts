@@ -6,7 +6,7 @@ import { Deprecated } from './Deprecated';
 import { Jobs } from './Jobs';
 import { Location } from './Location';
 import { Member } from './Member';
-import { Mutation } from './Mutation';
+import { Endpoints } from './Endpoints';
 import { News } from './News';
 import { Parameters } from './Parameters';
 import { Query } from './Query';
@@ -26,7 +26,7 @@ export const schema = [
     Structure,
     // SyncMember,
     SearchMember,
-    Mutation,
+    Endpoints,
     Settings,
     Jobs,
     Albums,

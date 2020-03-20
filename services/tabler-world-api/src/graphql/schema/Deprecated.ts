@@ -34,6 +34,12 @@ export const Deprecated = gql`
     extend type Mutation {
         "Deprecated, don't use"
         updateLocationAddress(corrections: [AddressUpdateInput!]!): Boolean
+
+        "Deprecated, don't use"
+        removeToken(token: String!): Boolean
+
+        "Deprecated, don't use"
+        addToken(token: String!): Boolean
     }
 
     extend type Conversation {

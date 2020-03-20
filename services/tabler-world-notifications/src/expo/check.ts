@@ -4,8 +4,8 @@ import { withDatabase } from '@mskg/tabler-world-rds-client';
 import { Context } from 'aws-lambda';
 import Expo from 'expo-server-sdk';
 import _ from 'lodash';
-import { removeToken } from './services/removeToken';
-import { Receipts } from './types/Receipts';
+import { removeToken } from '../services/removeToken';
+import { Receipts } from '../types/Receipts';
 
 const expo = new Expo();
 

@@ -148,8 +148,17 @@ functions:
   #
   # Send push notificationos
   #
+  endpointmanager:
+    handler: src/endpointmanager/lambda.handler
+    timeout: 60
+    memorySize: 128
+    tracing: Active
+
+  #
+  # Send push notificationos
+  #
   push:
-    handler: src/push.handler
+    handler: src/expo/push.handler
     timeout: 60
     memorySize: 128
     reservedConcurrency: 1
@@ -165,7 +174,7 @@ functions:
   # Check push notifications
   #
   check:
-    handler: src/check.handler
+    handler: src/expo/check.handler
     timeout: 600
     tracing: Active
 
@@ -238,3 +247,11 @@ resources:
         Ref: FifoPushQueue
       Export:
         Name: FifoPushQueueUrl-${self:custom.stage}
+
+    EndpointManagerArn:
+      Value:
+        Fn::GetAtt:
+          - EndpointmanagerLambdaFunction
+          - Arn
+      Export:
+        Name: EndpointManagerArn-${self:custom.stage}

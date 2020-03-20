@@ -1,3 +1,5 @@
-export * from './PushNotification';
-export * from './PushNotificationService';
+export * from './services/EndpointService';
+export * from './services/PushNotificationService';
+export * from './types/Endpoint';
+export * from './types/PushNotification';
 

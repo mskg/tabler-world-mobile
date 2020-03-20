@@ -5,6 +5,7 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "@mskg/tabler-world-auth-client": "0.0.1",
         "@mskg/tabler-world-aws": "0.0.1",
         "@mskg/tabler-world-common": "0.0.1",
         "@mskg/tabler-world-jobs": "0.0.1",

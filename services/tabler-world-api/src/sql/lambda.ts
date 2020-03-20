@@ -8,6 +8,7 @@ const fileNames = [
     require('./00 setup.pgsql').default,
     require('./01 tablers.pgsql').default,
     require('./01 settings.pgsql').default,
+    require('./01 userendpoints.pgsql').default,
     require('./01 clubs.pgsql').default,
     require('./01 areas.pgsql').default,
     require('./01 associations.pgsql').default,

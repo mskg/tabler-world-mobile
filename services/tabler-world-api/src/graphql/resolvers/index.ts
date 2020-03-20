@@ -16,6 +16,7 @@ import { TokenResolver } from './Token';
 import { TranslationsResolver } from './Translations';
 import { UserResolver } from './User';
 import { UserRolesResolver } from './UserRoles';
+import { EndpointsResolver } from './Endpoints';
 
 // tslint:disable: export-name
 // tslint:disable: variable-name
@@ -37,5 +38,6 @@ export const resolvers = merge(
     UserRolesResolver,
     ChatResolver,
     TranslationsResolver,
+    EndpointsResolver,
     // DocumentsResolver,
 );
