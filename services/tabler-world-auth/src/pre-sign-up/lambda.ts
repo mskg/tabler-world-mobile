@@ -14,7 +14,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
             [event.request.userAttributes.email]);
 
         if (res.rowCount !== 1) {
-            throw new Error('You need to be a tabler and you can only sign-in with a \'roundtable.world\' e-mail address.');
+            throw new Error('You need to be an active member and have a valid TABLER.WORLD membership. Please sign-in with your \'@xxxx.roundtable.world\' e-mail address.');
         }
     });
 
