@@ -14,7 +14,7 @@
         "@mskg/tabler-world-aws": "0.0.1",
         "@mskg/tabler-world-cache": "0.0.1",
         "apollo-datasource": "^0.7.0",
-        "apollo-server-core": "^2.10.1",
+        "apollo-server-core": "^2.14.2",
         "crypto": "^1.0.1",
         "graphql": "^14.6.0",
         "graphql-subscriptions": "^1.1.0",

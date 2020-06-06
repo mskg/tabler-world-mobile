@@ -18,7 +18,7 @@
         "@types/request": "^2.48.1",
         "@types/websocket": "^1.0.0",
         "@types/zen-observable": "^0.8.0",
-        "apollo-server-core": "^2.9.6",
+        "apollo-server-core": "^2.14.2",
         "aws-lambda": "^0.1.2",
         "aws-lambda-graphql": "^0.13.0",
         "jest": "^25.1.0",

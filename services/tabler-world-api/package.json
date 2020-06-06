@@ -18,7 +18,7 @@
         "apollo-datasource-rest": "^0.7.0",
         "apollo-server": "^2.10.1",
         "apollo-server-caching": "^0.5.1",
-        "apollo-server-core": "^2.10.1",
+        "apollo-server-core": "^2.14.2",
         "apollo-server-lambda": "^2.10.1",
         "apollo-server-plugin-base": "^0.6.10",
         "aws-xray-sdk": "^2.4.0",
