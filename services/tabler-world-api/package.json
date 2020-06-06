@@ -16,7 +16,7 @@
         "@mskg/tabler-world-rds-client": "0.0.1",
         "@sentry/node": "^5.12.3",
         "apollo-datasource-rest": "^0.7.0",
-        "apollo-server": "^2.10.1",
+        "apollo-server": "^2.14.2",
         "apollo-server-caching": "^0.5.1",
         "apollo-server-core": "^2.10.1",
         "apollo-server-lambda": "^2.10.1",
