@@ -46,7 +46,7 @@
         "graphql": "^14.0.2",
         "graphql-subscriptions": "^1.0.0",
         "istanbul": "^1.0.0-alpha.2",
-        "lodash": "^4.17.1",
+        "lodash": "^4.17.19",
         "remap-istanbul": "^0.11.1",
         "rimraf": "^2.6.1",
         "sinon": "^6.1.4",

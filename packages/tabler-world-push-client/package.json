@@ -11,7 +11,7 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "uuid4": "^1.1.4"
     },
     "peerDependencies": {
