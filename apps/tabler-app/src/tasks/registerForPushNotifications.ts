@@ -1,7 +1,7 @@
 import { Notifications } from 'expo';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Categories, Logger } from '../helper/Logger';
 import { notificationState, storePushToken } from '../redux/actions/settings';
 import { getReduxStore } from '../redux/getRedux';

@@ -1,7 +1,7 @@
 import Auth from '@aws-amplify/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { UrlParameters } from '@mskg/tabler-world-config-app';
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import _ from 'lodash';
 import React from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
@@ -133,7 +133,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                     style: 'destructive',
                     onPress: async () => {
                         await enableDemoMode();
-                        Updates.reloadFromCache();
+                        Updates.reloadAsync();
                     },
                 },
             ],

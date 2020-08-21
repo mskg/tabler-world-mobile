@@ -17,7 +17,6 @@ import { cache } from './cache';
 import { errorLink } from './errorLink';
 import { logger } from './logger';
 import { Resolvers } from './resolver';
-import { subscriptionClient } from './subscriptionClient';
 
 let client: ApolloClient<NormalizedCacheObject>;
 let persistor: CachePersistor<NormalizedCacheObject>;
@@ -58,7 +57,11 @@ This must only be called once in the lifecyle!
         fetch: !demoMode ? fetchAuth : fetchAuthDemo,
     });
 
-    const wsLink = isFeatureEnabled(Features.Chat) ? new WebSocketLink(subscriptionClient) : null;
+    let wsLink: WebSocketLink | null = null;
+    if (isFeatureEnabled(Features.Chat)) {
+        const mod = require('./subscriptionClient');
+        wsLink = new WebSocketLink(mod.subscriptionClient);
+    }
 
     const links = ApolloLink.from([
         new RetryLink({

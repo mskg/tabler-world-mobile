@@ -1,6 +1,6 @@
 import Auth from '@aws-amplify/auth';
 import { Ionicons } from '@expo/vector-icons';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 import React from 'react';
 import { Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Banner, Button, Text, Theme, withTheme } from 'react-native-paper';

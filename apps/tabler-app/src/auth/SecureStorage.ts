@@ -1,6 +1,6 @@
 
 import * as SecureStore from 'expo-secure-store';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Categories, Logger } from '../helper/Logger';
 import { Mutex } from '../helper/Mutex';
 

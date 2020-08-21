@@ -1,5 +1,5 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { SplashScreen } from 'expo';
+import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React from 'react';
@@ -34,13 +34,9 @@ export function withPreCached(WrappedComponent) {
             isReady: false,
         };
 
-        constructor(props) {
-            super(props);
-            SplashScreen.preventAutoHide();
-        }
-
-        componentDidMount() {
-            this.loadAssetsAsync();
+        async componentDidMount() {
+            await SplashScreen.preventAutoHideAsync();
+            await this.loadAssetsAsync();
         }
 
         async loadAssetsAsync() {

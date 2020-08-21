@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { bootstrapApollo, getApolloCachePersistor } from '../../apollo/bootstrapApollo';

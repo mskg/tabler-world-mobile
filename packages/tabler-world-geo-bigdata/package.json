@@ -15,8 +15,8 @@
         "lodash": "*"
     },
     "devDependencies": {
-        "@types/lodash": "4.14.149",
+        "@types/lodash": "4.14.159",
         "lodash": "*",
-        "typescript": "3.7.5"
+        "typescript": "4.0.2"
     }
 }

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
@@ -122,7 +122,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                             },
                         });
 
-                        Updates.reloadFromCache();
+                        Updates.reloadAsync();
                     },
                 },
             ],
@@ -198,7 +198,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                     style: 'destructive',
                     onPress: async () => {
                         await getApolloCachePersistor().persist();
-                        Updates.reloadFromCache();
+                        Updates.reloadAsync();
                     },
                 },
             ],

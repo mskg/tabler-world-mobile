@@ -82,7 +82,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
 
                         const res = await client.query(`
     select *
-    from structure_familes
+    from structure_families
     where
         id = ANY($1)
     `, [ids]);

@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import React from 'react';
-import { AsyncStorage, Clipboard } from 'react-native';
+import { Clipboard } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
 import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/Logger';

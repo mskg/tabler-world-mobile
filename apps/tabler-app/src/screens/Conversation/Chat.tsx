@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { ScreenOrientation } from 'expo';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { CapturedPicture } from 'expo-camera/build/Camera.types';
 import * as FileSystem from 'expo-file-system';
 import * as ExpoImagePicker from 'expo-image-picker';

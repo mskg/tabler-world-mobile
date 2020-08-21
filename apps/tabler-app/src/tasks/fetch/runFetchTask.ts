@@ -1,6 +1,6 @@
 import { FetchParameters } from '@mskg/tabler-world-config-app';
 import * as BackgroundFetch from 'expo-background-fetch';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';

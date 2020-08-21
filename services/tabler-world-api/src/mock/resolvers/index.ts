@@ -1,4 +1,4 @@
-import { MockList } from 'graphql-tools';
+import { MockList } from '@graphql-tools/mock';
 import _ from 'lodash';
 import { Address } from './Address';
 import { Area } from './Area';

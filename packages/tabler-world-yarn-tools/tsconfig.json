@@ -3,6 +3,9 @@
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist",
-        "declaration": false
+        "declaration": false,
+        "sourceMap": false,
+        "skipLibCheck": true
+
     }
 }

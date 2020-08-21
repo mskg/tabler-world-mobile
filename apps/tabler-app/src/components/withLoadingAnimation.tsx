@@ -1,7 +1,7 @@
 import MaskedView from '@react-native-community/masked-view';
-import { SplashScreen } from 'expo';
+import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
-import { Animated, PixelRatio, StatusBar, StyleSheet, View, Platform } from 'react-native';
+import { Animated, PixelRatio, Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import Assets from '../Assets';
 
@@ -26,6 +26,7 @@ class LoadingAnimation extends React.Component<Props, State> {
         animationDone: false,
     };
 
+    //TOOD: refactor
     componentWillReceiveProps(nextProps: Props) {
         if (nextProps.isLoaded && !this.props.isLoaded) {
             Animated.timing(this.state.loadingProgress, {
@@ -123,7 +124,7 @@ export function withLoadingAnimation(WrappedComponent) {
                         {
                             appReady: true,
                         },
-                        () => SplashScreen.hide(),
+                        () => SplashScreen.hideAsync(),
                     );
                 },
                 1000,
