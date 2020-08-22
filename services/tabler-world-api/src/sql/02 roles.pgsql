@@ -19,8 +19,9 @@ drop view if exists tabler_roles cascade;
 --  club
 CREATE MATERIALIZED VIEW structure_groups
 as
-WITH RECURSIVE groups_objects (type, assoc, id, name, path, object) AS (
+WITH RECURSIVE groups_objects (family, type, assoc, id, name, path, object) AS (
   SELECT
+    id as family,
     'family' as type
     ,'null' as assoc
     ,data->>'id' as id
@@ -28,17 +29,18 @@ WITH RECURSIVE groups_objects (type, assoc, id, name, path, object) AS (
     ,ARRAY[data->>'id'] as path
     ,jsonb_array_elements(data->'children') as object
   FROM groups
-  where id = 'rti'
   UNION
 
-  SELECT type, assoc, id, name, path, jsonb_array_elements(children)
+  SELECT family, type, assoc, id, name, path, jsonb_array_elements(children)
   FROM (
     SELECT
+        family,
         -- based on the current node, the child gets a ...
         case
             WHEN object->>'name' = 'Associations' THEN 'assoc'
             when object->>'name' = 'Areas' THEN 'area'
             when object->>'name' = 'Tables' THEN 'club'
+            when object->>'name' = 'Circles' THEN 'club'
             else 'node'
         end as type
         -- we pull the association down to make that unique
@@ -54,16 +56,17 @@ WITH RECURSIVE groups_objects (type, assoc, id, name, path, object) AS (
     WHERE jsonb_array_length(object->'children') > 0
   ) s
 )
-SELECT type, assoc, id::int as parentId, (object->>'id')::int as id, path::int[], object->>'name' as name
+SELECT family, type, assoc, id::int as parentId, (object->>'id')::int as id, path::int[], object->>'name' as name
 FROM groups_objects
 ;
 
-create unique index idx_structure_groups_id on
-structure_groups (id);
+create unique index idx_structure_groups_family_id on
+structure_groups (family, id);
 
 create view structure_parentgroups as
 select
-    parent.type
+    parent.family
+    ,parent.type
     ,parent.assoc
     ,parent.name as parentname
     ,child.id
@@ -72,10 +75,12 @@ from
     structure_groups child
     ,structure_groups parent
 where
-        parent.id = child.parentid
+        parent.family = child.family
+    and parent.id = child.parentid
     and child.type = 'node'
 UNION ALL
 select
+    'rti',
     'family'
     ,NULL
     ,'Round Table International'
@@ -84,7 +89,22 @@ select
 from
     structure_groups
 where
-        type = 'family'
+        family = 'rti'
+    and type = 'family'
+    AND name <> 'Associations'
+UNION ALL
+select
+    'lci',
+    'family'
+    ,NULL
+    ,'Ladies Circle International'
+    ,id
+    ,name
+from
+    structure_groups
+where
+        family = 'lci'
+    and type = 'family'
     AND name <> 'Associations'
 ;
 
@@ -92,7 +112,9 @@ where
 -- Functions
 ------------------------------
 
-CREATE or replace FUNCTION get_role_reference(type text, assoc text, name text) RETURNS text AS $$
+drop function if exists get_role_reference (text, text, text);
+
+CREATE or replace FUNCTION get_role_reference(type text, family text, assoc text, name text) RETURNS text AS $$
 DECLARE
     associations_row public.associations%ROWTYPE;
     areas_row public.areas%ROWTYPE;
@@ -100,20 +122,24 @@ DECLARE
 
 BEGIN
     if type = 'family' then
-        return 'rti';
+        return family;
     end if;
 
     if type = 'assoc' THEN
         SELECT * INTO associations_row
         from public.associations
-        where data->>'name' = name;
+        where
+                data->>'name' = name
+            and id like family || '_%'; -- starts with that
 
         return associations_row.id;
     end if;
 
     SELECT * INTO associations_row
     from public.associations
-    where data->>'name' = assoc;
+    where
+            data->>'name' = assoc
+        and id like family || '_%';  -- starts with that
 
     if type = 'area' THEN
         SELECT * INTO areas_row
@@ -180,6 +206,7 @@ select
     ,structure_parentgroups.assoc as assoc
     ,get_role_reference(
        structure_parentgroups.type,
+       make_key_family(tabler.data->>'rt_generic_email'),
        structure_parentgroups.assoc,
        structure_parentgroups.parentname
      ) as refid

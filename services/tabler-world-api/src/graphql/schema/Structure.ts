@@ -97,7 +97,7 @@ export const Structure = gql`
 
         "Giving no id returns own organization"
         Association (id: ID): Association
-        Associations: [Association!]
+        Associations (family: ID): [Association!]
 
         # this is a wrong signature, needs to be changed to ID
         Club (id: String!): Club

@@ -20,10 +20,10 @@ select
 				from structure_tabler_roles tr
 				where
 				    tr.id = tabler.id
-				and (
-							function in (4306, 4307) -- member, honorary
-							or function < 100 -- board and assists for area, club, assoc
-					)
+				and 
+					    function in (4306, 4307) -- rti, member, honorary
+					or  function in (82538, 82542) -- lci, member, honorary
+                    or  function < 100 -- rti, board
 				)
 		THEN
 			-- member
@@ -59,6 +59,7 @@ select
 	,cast(coalesce(nullif(regexp_replace(data->>'rt_club_subdomain','[^0-9]+','','g'), ''), '1') as integer) clubnumber
 	,data->>'rt_club_name' as clubname
     ,make_short_reference(
+        make_key_family(data->>'rt_generic_email'),
         'club',
         make_key_club(
             make_key_association(
@@ -79,6 +80,7 @@ select
      ) area
 	,data->>'rt_area_name' as areaname
     ,make_short_reference(
+        make_key_family(data->>'rt_generic_email'),
         'area',
         make_key_area(
             make_key_association(
@@ -95,7 +97,11 @@ select
         data->>'rt_association_subdomain'
      ) as association
 	,data->>'rt_association_name' as associationname
-    ,make_short_reference('assoc', data->>'rt_association_subdomain') as associationshortname
+    ,make_short_reference(
+        make_key_family(data->>'rt_generic_email'),
+        'assoc', 
+        data->>'rt_association_subdomain'
+    ) as associationshortname
 	,(
        select url
        from assets
@@ -131,7 +137,10 @@ select
 						'name',
 						refname,
                         'shortname',
-                        make_short_reference(reftype, refid),
+                        make_short_reference(
+                            make_key_family(tabler.data->>'rt_generic_email'),
+                            reftype, refid
+                        ),
 						'id',
 						refid,
 						'type',

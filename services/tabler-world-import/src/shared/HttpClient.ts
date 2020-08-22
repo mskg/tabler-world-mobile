@@ -48,6 +48,7 @@ export class HttpClient {
 
         const proxy = Environment.HttpClient.proxy;
         if (proxy != null) {
+            // @ts-ignore
             options.agent = createHttpsProxyAgent(proxy);
         }
 

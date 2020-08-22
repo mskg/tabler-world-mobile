@@ -143,11 +143,11 @@ class SignInBase extends AuditedScreen<Props, State> {
     matchingPart = () => {
         if (!this.state.username) { return -1; }
 
-        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.roundtable\.world/)) {
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle)\.world/)) {
             return 11;
         }
 
-        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.roundtable\./)) {
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle)\./)) {
             return 9;
         }
 

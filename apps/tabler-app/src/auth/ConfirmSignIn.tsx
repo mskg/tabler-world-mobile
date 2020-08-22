@@ -149,6 +149,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="position">
+                            {/*
                             <Banner
                                 visible={true}
                                 actions={[
@@ -161,6 +162,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                     {I18N.Screen_SignIn.warning}
                                 </Text>
                             </Banner>
+                            */}
 
                             <Logo />
                             <Greeting

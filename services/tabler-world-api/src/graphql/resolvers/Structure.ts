@@ -1,6 +1,6 @@
 import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
-import { sortBy, filter } from 'lodash';
+import { filter, sortBy } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { removeFamily } from '../helper/removeFamily';
 import { IApolloContext } from '../types/IApolloContext';
@@ -10,8 +10,13 @@ type ById = {
 };
 
 type ByAssociation = {
-    association: string,
+    association?: string,
 };
+
+type ByFamily = {
+    family?: string,
+};
+
 
 function getSortKey(shortname: string) {
     const nbrs = shortname.replace(/[^0-9]/ig, '');
@@ -61,7 +66,7 @@ export const StructureResolver = {
             return context.dataSources.structure.getFamily(args.id || context.principal.family as string);
         },
 
-        Associations: async (_root: any, _args: any, context: IApolloContext) => {
+        Associations: async (_root: any, args: ByFamily, context: IApolloContext) => {
             context.logger.debug('Associations');
 
             return byVersion({
@@ -70,7 +75,7 @@ export const StructureResolver = {
 
                 versions: {
                     old: async () => [await context.dataSources.structure.getAssociation(context.principal.association)],
-                    default: () => context.dataSources.structure.allAssociations(),
+                    default: () => context.dataSources.structure.allAssociations(args.family || context.principal.family!),
                 },
             });
         },
@@ -215,7 +220,6 @@ export const StructureResolver = {
         },
 
         family: (root: any, _args: any, context: IApolloContext) => {
-            // context.logger.debug("C.Association Loading", root);
             return context.dataSources.structure.getFamily(
                 root.family,
             );

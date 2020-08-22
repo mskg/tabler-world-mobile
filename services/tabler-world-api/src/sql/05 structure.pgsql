@@ -54,7 +54,10 @@ select
      ) as area
 	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
     ,data->>'name' as name
-    ,make_short_reference('club', id) as shortname
+    ,make_short_reference(
+        make_key_family(data->>'hostname'),
+        'club', id
+    ) as shortname
     ,data->>'website' as website
 	,jsonb_strip_nulls(jsonb_build_object(
         'name',
@@ -175,7 +178,10 @@ select
         data->>'parent_subdomain'
      ) as association
     ,data->>'name' as name
-    ,make_short_reference('area', id) as shortname
+    ,make_short_reference(
+        make_key_family(data->>'hostname'),
+        'area', id
+    ) as shortname
     ,(
         select to_jsonb(array_to_json(array_agg(r)))
         from
@@ -226,7 +232,7 @@ select
         when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
         else data->>'logo'
      end as logo
-    ,make_short_reference('assoc', id) as shortname
+    ,make_short_reference(data->>'parent_subdomain', 'assoc', id) as shortname
    ,(
        select url
        from assets

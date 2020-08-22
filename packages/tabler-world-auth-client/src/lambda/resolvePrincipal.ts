@@ -58,7 +58,10 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
     if (resolvedPrincipal.version != null) {
         if (
             resolvedPrincipal.version !== '1.2'
-            || resolvedPrincipal.family !== Family.RTI
+            || (
+                resolvedPrincipal.family !== Family.RTI
+                && resolvedPrincipal.family !== Family.LCI
+            )
         ) {
             throw new AuthenticationError('Authorizer: Context (v1.2) not complete');
         }
