@@ -16,7 +16,7 @@
         "apollo-datasource": "^0.7.0",
         "apollo-server-core": "^2.16.1",
         "crypto": "^1.0.1",
-        "graphql": "^15.3.0",
+        "graphql": "^14.6.0",
         "graphql-subscriptions": "^1.1.0",
         "ioredis": "^4.16.0",
         "iterall": "1.3.0",
