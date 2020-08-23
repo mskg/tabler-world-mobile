@@ -12,6 +12,8 @@ export function filter(context: IPrincipal, member: AnyType): AnyType | null {
     if (DEBUG) { logger.debug('Principal', context, 'Member', member, 'Level', level); }
 
     // this cannot be handeled by the filter function
+    // we actually don't check here, if the calling party has cross family sharing enabeld
+    // or not. 
     if (context.family !== member.family && member[FieldNames.AllFamiliesOptIn] !== true) {
         return null;
     }

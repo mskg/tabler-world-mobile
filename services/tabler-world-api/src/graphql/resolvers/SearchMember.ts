@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
+import { FieldNames } from '../privacy/FieldNames';
 import { IApolloContext } from '../types/IApolloContext';
 
 type SearchInput = {
@@ -39,6 +40,9 @@ export const SearchMemberResolver = {
                 'cursor_lastfirst',
             ];
 
+            const thisMember = await context.dataSources.members.readOne(context.principal.id);
+            const allowCross = thisMember[FieldNames.AllFamiliesOptIn] === true;
+
             const terms = (args.query.text || '')
                 .split(' ')
                 .map((r) => r.trim())
@@ -70,7 +74,15 @@ export const SearchMemberResolver = {
             });
 
             parameters.push(context.principal.family);
-            filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+
+            if (allowCross) {
+                context.logger.debug('Allow cross family search');
+                filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+            } else {
+                context.logger.debug('Family search disabled');
+                // must match own family
+                filters.push(`family = $${parameters.length}`);
+            }
 
             // old only 'de
             byVersion({
