@@ -20,7 +20,7 @@ select
 				from structure_tabler_roles tr
 				where
 				    tr.id = tabler.id
-				and 
+				and
 					    function in (4306, 4307) -- rti, member, honorary
 					or  function in (82538, 82542) -- lci, member, honorary
                     or  function < 100 -- rti, board
@@ -99,7 +99,7 @@ select
 	,data->>'rt_association_name' as associationname
     ,make_short_reference(
         make_key_family(data->>'rt_generic_email'),
-        'assoc', 
+        'assoc',
         data->>'rt_association_subdomain'
     ) as associationshortname
 	,(
@@ -115,13 +115,15 @@ select
 	,(
 		select value
 		from jsonb_array_elements(data->'address') t
-		where t.value @> '{"address_type": 5}'
+		where t.value @> '{"address_type": 5}' or t.value @> '{"address_type": 4335}'
 		limit 1
 	) as address
 	,(
-		select value->'rows'->0->>'value'
+        -- for the ladies, it's the second field, fixme!
+		coalesce(value->'rows'->1->>'value', value->'rows'->0->>'value')
 		from jsonb_array_elements(data->'custom_fields') t
 		where t.value @> '{"rows": [{"key": "Name partner"}]}'
+            or t.value @> '{"rows": [{"key": "First name partner"}]}'
 	) as partner
 	,(
 		select jsonb_agg(role)

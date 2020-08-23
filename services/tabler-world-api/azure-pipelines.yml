@@ -83,6 +83,8 @@ stages:
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
+              continueOnError: true
+              timeoutInMinutes: 15
               inputs:
                 awsCredentials: AWS
                 regionName: $(AWS_DEFAULT_REGION)
@@ -113,6 +115,8 @@ stages:
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
+              continueOnError: true
+              timeoutInMinutes: 15
               inputs:
                 awsCredentials: AWS
                 regionName: $(AWS_DEFAULT_REGION)
@@ -142,6 +146,8 @@ stages:
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
+              continueOnError: true
+              timeoutInMinutes: 15
               inputs:
                 awsCredentials: AWS
                 regionName: $(AWS_DEFAULT_REGION)
