@@ -193,52 +193,110 @@ functions:
 
     events:
       - schedule:
-          name: ${self:service}-members-${self:custom.stage}
+          name: ${self:service}-rti-members-${self:custom.stage}
           description: Update members from TABLER.WORLD
 
           rate: ${self:custom.cron_rate.${self:custom.stage}}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
+            target: rti
             type: members
             mode: incremental
             offset: 0
             maxRecords: 5000
 
       - schedule:
-          name: ${self:service}-clubs-${self:custom.stage}
+          name: ${self:service}-lci-members-${self:custom.stage}
+          description: Update members from CIRCLER.WORLD
+
+          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: lci
+            type: members
+            mode: incremental
+            offset: 0
+            maxRecords: 5000
+
+      - schedule:
+          name: ${self:service}-rti-clubs-${self:custom.stage}
           description: Update clubs from TABLER.WORLD
 
           rate: cron(59 23 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
+            target: rti
             mode: full
             type: clubs
             offset: 0
             maxRecords: 5000
 
       - schedule:
-          name: ${self:service}-structure-${self:custom.stage}
+          name: ${self:service}-lci-clubs-${self:custom.stage}
+          description: Update clubs from CIRCLER.WORLD
+
+          rate: cron(59 23 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: lci
+            mode: full
+            type: clubs
+            offset: 0
+            maxRecords: 5000
+
+      - schedule:
+          name: ${self:service}-rti-structure-${self:custom.stage}
           description: Updates structure from TABLER.WORLD
 
           rate: cron(00 23 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
+            target: rti
             mode: full
             type: structure
             noRefreshViews: true
             noUpdateCache: true
 
       - schedule:
-          name: ${self:service}-members-archived-${self:custom.stage}
+          name: ${self:service}-lci-structure-${self:custom.stage}
+          description: Updates structure from CIRCLER.WORLD
+
+          rate: cron(00 23 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: lci
+            mode: full
+            type: structure
+            noRefreshViews: true
+            noUpdateCache: true
+
+      - schedule:
+          name: ${self:service}-rti-members-archived-${self:custom.stage}
           description: Remove archived members from TABLER.WORLD
 
           rate: cron(00 02 * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
+            target: rti
+            mode: incremental
+            type: archivedMembers
+
+      - schedule:
+          name: ${self:service}-lci-members-archived-${self:custom.stage}
+          description: Remove archived members from CIRCLER.WORLD
+
+          rate: cron(00 02 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: lci
             mode: incremental
             type: archivedMembers
 

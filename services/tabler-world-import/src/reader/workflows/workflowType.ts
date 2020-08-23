@@ -1,6 +1,7 @@
 
 import { ChangePointer } from '../types/ChangePointer';
 import { JobType } from '../types/JobType';
+import { TargetType } from '../types/TargetType';
 
 export type WorkflowResult = {
     processedRecords: number,
@@ -9,7 +10,7 @@ export type WorkflowResult = {
 };
 
 export type Workflow = (
-    type: JobType,
+    type: JobType, target: TargetType,
     url: string, method: string, postData: any,
     limit: number,
     offset?: number,

@@ -9,7 +9,10 @@ import { Param_Translations } from './types/Param_Translation';
 export function setupDebug(memoryCache: LRU<string, string>) {
     memoryCache.set(mapName('tw-api'), JSON.stringify({
         host: process.env.API_HOST,
-        key: process.env.API_KEY_PLAIN,
+        keys: {
+            rti: process.env.API_KEY_PLAIN,
+            lci: process.env.API_KEY_PLAIN,
+        },
         batch: parseInt(process.env.API_BATCH || '100', 10),
         read_batch: parseInt(process.env.API_READ_BATCH || '10', 10),
         concurrency: {

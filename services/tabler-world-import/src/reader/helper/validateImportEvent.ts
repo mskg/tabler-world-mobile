@@ -19,4 +19,8 @@ export function validateImportEvent(payload: any) {
     if (payload.maxRecords && typeof payload.maxRecords !== 'number') {
         throw new Error(`Invalid maxRecords ${payload.maxRecords}`);
     }
+
+    if (payload.target !== 'lci' && payload.target !== 'rti') {
+        throw new Error(`Invalid target ${payload.target}`);
+    }
 }
