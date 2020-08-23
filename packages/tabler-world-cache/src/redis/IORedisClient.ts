@@ -110,7 +110,7 @@ export class IORedisClient extends IORedisBaseClient {
 
     public evalsha(scriptSha: string, numKeys: number, ...args: (string | number)[]): Promise<any> {
         this.logger.debug('evalsha', scriptSha);
-        return this.client.evalsha(scriptSha, numKeys.toString(), args);
+        return this.client.evalsha(scriptSha, numKeys, args);
     }
 
     // tslint:disable-next-line: no-banned-terms
