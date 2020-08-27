@@ -120,7 +120,7 @@ select
 	) as address
 	,(
         -- for the ladies, it's the second field, fixme!
-		coalesce(value->'rows'->1->>'value', value->'rows'->0->>'value')
+		select coalesce(value->'rows'->1->>'value', value->'rows'->0->>'value')
 		from jsonb_array_elements(data->'custom_fields') t
 		where t.value @> '{"rows": [{"key": "Name partner"}]}'
             or t.value @> '{"rows": [{"key": "First name partner"}]}'
