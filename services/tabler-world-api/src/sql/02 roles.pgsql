@@ -112,7 +112,7 @@ where
 -- Functions
 ------------------------------
 
-drop function if exists get_role_reference (text, text, text);
+drop function if exists get_role_reference (text, text, text) cascade;
 
 CREATE or replace FUNCTION get_role_reference(type text, family text, assoc text, name text) RETURNS text AS $$
 DECLARE

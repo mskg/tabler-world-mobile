@@ -8,7 +8,7 @@ CREATE or replace FUNCTION remove_key_family (val text) returns text as $$
 BEGIN
     return regexp_replace(val, 'rti_|lci_|41i_|tci_', '', 'g');
 END;
-$$ 
+$$
 LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_family (val text) returns text as $$
@@ -65,7 +65,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-drop function if exists make_short_reference (text, text);
+drop function if exists make_short_reference (text, text) cascade;
 
 -- type: family, assoc, area, club
 CREATE or replace FUNCTION make_short_reference (family text, type text, id text) returns text as $$
