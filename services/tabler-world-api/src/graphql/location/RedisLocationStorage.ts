@@ -146,7 +146,7 @@ export class RedisLocationStorage implements ILocationStorage {
                     return;
                 }
 
-                if (r.member === this.context.principal.id) {
+                if (md.member === this.context.principal.id) {
                     // we exclue ourself
                     return;
                 }
