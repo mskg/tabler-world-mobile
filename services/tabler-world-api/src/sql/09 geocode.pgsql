@@ -111,7 +111,9 @@ select
     userlocations.speed,
     userlocations.lastseen,
     cast(coalesce(usersettings.settings->>'nearbymembersMap', 'false') as boolean) as canshowonmap,
-    userlocations.address
+    userlocations.address,
+    profiles.club as club,
+    profiles.family as family
 from
     userlocations
     inner join profiles on (profiles.id = userlocations.id and profiles.removed = false)

@@ -71,7 +71,8 @@ WHERE
         member <> $2
     and ST_DWithin(locations.point, $1::geography, ${radius})
     ${age ? `and lastseen > (now() - '${age} day'::interval)` : ''}
-    ${excludeOwnTable ? 'and club <> $3' : ''}
+    ${excludeOwnTable ? 'and club <> $4' : ''}
+    and family = $3
 
     and address is not null
 ORDER BY
@@ -81,6 +82,7 @@ LIMIT ${count}
                         [
                             `POINT(${point.longitude} ${point.latitude})`,
                             memberToMatch,
+                            this.context.principal.family,
                             excludeOwnTable ? this.context.principal.club : undefined,
                         ].filter(Boolean));
 

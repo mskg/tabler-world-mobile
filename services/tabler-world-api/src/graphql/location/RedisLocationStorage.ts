@@ -141,6 +141,11 @@ export class RedisLocationStorage implements ILocationStorage {
                     return;
                 }
 
+                // we remove those - quick fix
+                if (md.family !== this.context.principal.family) {
+                    return;
+                }
+
                 if (md.member === this.context.principal.id) {
                     // we exclue ourself
                     return;
