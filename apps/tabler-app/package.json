@@ -4,7 +4,7 @@
     "private": true,
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
-    "main": "entry.js",
+    "main": "index.js",
     "scripts": {
         "start": "ntl",
         "bump-cli": "yarn add expo-cli --dev",

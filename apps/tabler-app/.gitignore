@@ -8,7 +8,6 @@
 *.mobileprovision
 
 # generated scripts
-entry.js
 app.json
 dist/
 config/aws.json
