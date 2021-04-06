@@ -35,7 +35,12 @@ export function withPreCached(WrappedComponent) {
         };
 
         async componentDidMount() {
-            await SplashScreen.preventAutoHideAsync();
+            try {
+                await SplashScreen.preventAutoHideAsync();
+            }
+            // hot reload does not show the screen again, we have to mask this
+            catch { }
+
             await this.loadAssetsAsync();
         }
 

@@ -124,7 +124,7 @@ export function withLoadingAnimation(WrappedComponent) {
                         {
                             appReady: true,
                         },
-                        () => SplashScreen.hideAsync(),
+                        () => { try { SplashScreen.hideAsync(); } catch { } }
                     );
                 },
                 1000,
