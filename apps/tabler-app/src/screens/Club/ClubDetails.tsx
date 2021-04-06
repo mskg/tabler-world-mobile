@@ -226,7 +226,7 @@ class ClubDetailsBase extends React.Component<Props> {
                 <Placeholder ready={!this.props.loading || !members.isEmpty()} previewComponent={<SectionSquarePlaceholder />}>
                     {!members.isEmpty() && (
                         <>
-                            <Section theme={this.props.theme} icon={'md-contacts'} disableRipple={true}>
+                            <Section theme={this.props.theme} icon={'md-people'} disableRipple={true}>
                                 <ExpandableElement
                                     field={`${I18N.Screen_Club.members} (${members.size()})`}
                                     text={(
