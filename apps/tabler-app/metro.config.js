@@ -2,11 +2,12 @@ const { createMetroConfiguration } = require('expo-yarn-workspaces');
 
 const exp = createMetroConfiguration(__dirname);
 module.exports = {
-    ... exp,
+    ...exp,
     resolver: {
-        ... exp.resolver,
+        ...exp.resolver,
+        blacklistRE: /\.webpack/,
         assetExts: [
-            ... exp.resolver.assetExts,
+            ...exp.resolver.assetExts,
             "md",
             "svg"
         ]
