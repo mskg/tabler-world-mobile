@@ -1,10 +1,11 @@
-import { Notifications } from 'expo';
+import { Subscription } from '@unimodules/core';
 import Constants from 'expo-constants';
-import { EventSubscription } from 'fbemitter';
+import * as Notifications from 'expo-notifications';
+import { Notification, NotificationResponse } from 'expo-notifications';
 import React, { PureComponent } from 'react';
 import Assets from '../../Assets';
 import { Categories, Logger } from '../../helper/Logger';
-import { AppNotifications, IExpoNotification } from '../../model/NotificationPayload';
+import { AppNotifications } from '../../model/NotificationPayload';
 import { AdvertismentHandler } from './AdvertismentHandler';
 import { BirthdayHandler } from './BirthdayHandler';
 import { ChatMessageHandler } from './ChatMessageHandler';
@@ -20,7 +21,8 @@ type Props = {
 const TEST = false;
 
 class PushNotificationsBase extends PureComponent<Props> {
-    subscription!: EventSubscription;
+    receivedSubscription!: Subscription;
+    interactedSubscription!: Subscription;
     pushComponent!: PushNotificationBase | null;
 
     pendingNotifications: {
@@ -40,7 +42,8 @@ class PushNotificationsBase extends PureComponent<Props> {
     ];
 
     componentDidMount() {
-        this.subscription = Notifications.addListener(this._handleNotification);
+        this.receivedSubscription = Notifications.addNotificationReceivedListener(this._handleNotification);
+        this.interactedSubscription = Notifications.addNotificationResponseReceivedListener(this._handleInteraction);
 
         if (TEST && __DEV__) {
             const test = require('./testNotifications').testNotifications;
@@ -53,7 +56,8 @@ class PushNotificationsBase extends PureComponent<Props> {
     }
 
     componentWillUnmount() {
-        this.subscription.remove();
+        if (this.receivedSubscription) { this.receivedSubscription.remove(); }
+        if (this.interactedSubscription) { this.interactedSubscription.remove(); }
     }
 
     _showNext = () => {
@@ -80,37 +84,39 @@ class PushNotificationsBase extends PureComponent<Props> {
         }
     }
 
-    _handleNotification = (expoNotification: IExpoNotification) => {
+    _handleInteraction = (expoNotification: NotificationResponse) => {
+        logger.debug('received', expoNotification);
+        const data = expoNotification.notification.request.content.data as unknown as AppNotifications;
+
+        const handler = this.notificationHandlers.find((h) => h.canHandle(data));
+        if (!handler) {
+            logger.log('Could not find handler', data);
+            return;
+        }
+
+        handler.onClick(data, false);
+    }
+
+    _handleNotification = (expoNotification: Notification) => {
         try {
             logger.debug('received', expoNotification);
-            const { data: notification, origin } = expoNotification;
+            const data = expoNotification.request.content.data as unknown as AppNotifications;
 
-            // we cannot handle this
-            if (!notification) {
-                return;
-            }
-
-            const handler = this.notificationHandlers.find((h) => h.canHandle(notification));
+            const handler = this.notificationHandlers.find((h) => h.canHandle(data));
             if (!handler) {
-                logger.log('Could not find handler', notification);
+                logger.log('Could not find handler', data);
                 return;
             }
 
-            logger.log('handler is', expoNotification.data?.reason);
+            logger.log('handler is', data?.reason);
 
-            if (origin === 'received') {
-                if (handler.tryHandle(notification) !== NotificationHandlerResult.Handeled) {
-                    this.pendingNotifications.push({
-                        handler,
-                        notification,
-                    });
+            if (handler.tryHandle(data) !== NotificationHandlerResult.Handeled) {
+                this.pendingNotifications.push({
+                    handler,
+                    notification: data,
+                });
 
-                    if (!this.showing) { this._showNext(); }
-                }
-
-            } else {
-                // user clicked the notification
-                handler.onClick(notification, false);
+                if (!this.showing) { this._showNext(); }
             }
         } catch (e) {
             logger.error('handle-notification', e, { notification: expoNotification });

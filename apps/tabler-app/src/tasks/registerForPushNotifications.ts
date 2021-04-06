@@ -1,4 +1,4 @@
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -52,10 +52,10 @@ export async function registerForPushNotifications(force = false) {
         const token = await Notifications.getExpoPushTokenAsync();
 
         // tslint:disable-next-line: possible-timing-attack
-        if (token !== existingToken || force) {
+        if (token.data !== existingToken || force) {
             logger.log('token is', token);
             getReduxStore().dispatch(notificationState(false));
-            getReduxStore().dispatch(storePushToken(token));
+            getReduxStore().dispatch(storePushToken(token.data));
             getReduxStore().dispatch(notificationState(true));
         } else {
             getReduxStore().dispatch(notificationState(true));
