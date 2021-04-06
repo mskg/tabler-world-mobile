@@ -175,7 +175,7 @@ class ImagePickerBase extends React.Component<Props, State> {
                                     onPress={this._handleCameraType}
                                 >
                                     <Ionicons
-                                        name="ios-reverse-camera"
+                                        name="ios-camera-reverse"
                                         style={styles.smallButton}
                                     />
                                 </TouchableOpacity>

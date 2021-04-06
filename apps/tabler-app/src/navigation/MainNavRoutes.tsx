@@ -14,7 +14,7 @@ import { MainRoutes } from './MainRoutes';
 
 const IconWithBadgeBase = ({ tintColor, badge }) => (
     <View style={{ flexDirection: 'row' }}>
-        <Ionicons size={24} color={tintColor} name="md-chatboxes" />
+        <Ionicons size={24} color={tintColor} name="md-chatbubbles" />
         {badge > 0 && <Badge size={10} style={{ marginBottom: 15, marginLeft: -5 }} />}
     </View>
 );
