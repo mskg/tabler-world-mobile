@@ -10,7 +10,7 @@ function envToJSON(val: string) {
     }
 }
 
-export function resolveDebugPrincipal(authInfo: { [key: string]: string }): IPrincipal {
+export function resolveDebugPrincipal(authInfo: { [key: string]: string | undefined }): IPrincipal {
     const deviceId = authInfo['x-client-device'];
     let deviceConfig = null;
 
