@@ -222,7 +222,7 @@ select
         ) educations
     ) as educations
 
-	,data->>'rt_privacy_settings' as privacysettings
+	,data->'rt_privacy_settings' as privacysettings
     ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
     ,row_number() over(order by data->>'last_name', data->>'first_name') as cursor_lastfirst
 from tabler
