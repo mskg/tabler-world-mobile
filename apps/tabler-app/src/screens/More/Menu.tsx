@@ -86,7 +86,7 @@ class MenuScreenBase extends AuditedScreen<Props, State> {
                     {this.props.showExperiments && (
                         <List.Section>
                             <NavigationItem
-                                icon="md-paper"
+                                icon="md-newspaper"
                                 theme={this.props.theme}
                                 text={I18N.Screen_News.title}
                                 onPress={() => this.props.navigation.navigate(Routes.News)}
