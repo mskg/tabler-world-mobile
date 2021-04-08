@@ -155,7 +155,7 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                                 actions={[
                                 ]}
                                 image={({ size }) =>
-                                    <Ionicons name="md-alert" size={size} color={'red'} />
+                                    <Ionicons name="md-alert-circle" size={size} color={'red'} />
                                 }
                             >
                                 <Text style={{ color: 'red' }}>

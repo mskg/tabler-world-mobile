@@ -40,13 +40,14 @@ const en = {
     },
 
     Screen_SignIn: {
-        placeholderEMail: 'firstname.lastname@123-de.roundtable/ladiescircle.world',
+        placeholderEMail: 'firstname.lastname@123-de.{name}.world',
         placeholderCode: 'Your Password',
         continue: 'Login',
         confirm: 'Confirm',
         cancel: 'Cancel',
         welcomeBack: 'Welcome back,',
-        signin: 'please sign in with your \'.WORLD\' public e-mail address',
+        signin: 'Please choose the organization that your are associated with.',
+        email: 'Please sign in with your {name}.WORLD public e-mail address.',
         confirmTitle: 'Enter Password',
         codeWrong: 'Verification failed, you have to restart.',
         accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please contact your online team via e-mail.',
