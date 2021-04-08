@@ -21,7 +21,6 @@ import { toggleFavorite } from '../../redux/actions/filter';
 type Props = {
     top?: number,
 
-
     member: Member_Member
     theme: Theme,
 
@@ -51,11 +50,6 @@ class ActionsFabBase extends React.Component<Props> {
                 .replace('#id#', member.id.toString())
                 .replace('#lang#', I18N.id),
         );
-    }
-
-    _chat = async () => {
-        const { member } = this.props;
-        this.props.startConversation(member.id, `${member.firstname} ${member.lastname}`);
     }
 
     _contact = async () => {

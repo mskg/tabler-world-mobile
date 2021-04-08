@@ -1,6 +1,7 @@
 import * as actions from '../actions/user';
 import { INITIAL_STATE } from '../initialState';
 
+// tslint:disable-next-line: export-name
 export function userReducer(
     state = INITIAL_STATE.auth,
     action:
