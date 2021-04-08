@@ -330,7 +330,7 @@ class ChatBase extends React.Component<Props, State> {
                     }}
 
                     size={24}
-                    name="md-alert"
+                    name="md-alert-circle"
                     color="red"
                 />
             );

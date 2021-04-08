@@ -174,7 +174,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                                     },
                                 ]}
                                 image={({ size }) =>
-                                    <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                                    <Ionicons name="md-alert-circle" size={size} color={this.props.theme.colors.accent} />
                                 }
                             >
                                 {I18N.Settings.logout.demo}

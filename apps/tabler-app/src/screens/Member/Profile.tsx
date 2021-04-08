@@ -389,7 +389,7 @@ class ProfileBase extends React.Component<Props, State> {
                 ],
             },
             {
-                icon: 'md-pin',
+                icon: 'md-location',
                 highlight: OpenLink.canOpenUrl() && this.checkAddress(),
                 values: [
                     {
@@ -446,7 +446,7 @@ class ProfileBase extends React.Component<Props, State> {
                 ],
             },
             {
-                icon: 'md-pin',
+                icon: 'md-location',
                 values: [
                     {
                         field: I18N.Screen_NearbyMembers.title,

@@ -49,7 +49,8 @@ class MemberRoleCover extends React.Component<Props> {
                                 <Ionicons
                                     color={this.props.theme.colors.backdrop}
                                     size={coverStyle.width + 20}
-                                    name="ios-person" />
+                                    style={{marginLeft: -10}}
+                                    name="md-person" />
                             </View>
                         }
                         {...rest}

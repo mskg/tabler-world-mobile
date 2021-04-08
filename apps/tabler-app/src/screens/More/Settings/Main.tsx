@@ -306,7 +306,7 @@ class MainSettingsScreenBase extends AuditedScreen<Props, State> {
                                     },
                                 ]}
                                 image={({ size }) =>
-                                    <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                                    <Ionicons name="md-alert-circle" size={size} color={this.props.theme.colors.accent} />
                                 }
                             >
                                 {I18N.Screen_Settings.logout.demo}
