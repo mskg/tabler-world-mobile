@@ -90,13 +90,13 @@ export default withAppearanceProvider(
             withStore(
                 withPaperProvider(
                     withSkakeErrorReport(
-                        withLoadingAnimation(
+                        // withLoadingAnimation(
                             withAuthenticator(
                                 withWhoopsErrorBoundary(
                                     App,
                                 ),
                             ),
-                        ),
+                        // ),
                     ),
                 ),
             ),
