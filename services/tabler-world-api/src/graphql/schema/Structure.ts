@@ -86,9 +86,8 @@ export const Structure = gql`
         info: ClubInfo
 
         board: [AssociationRole!]!
-        boardassistants: [AssociationRole!]
-
-        members: [Member!]
+        boardassistants: [AssociationRole!]!
+        members: [Member!]!
     }
 
     extend type Query {

@@ -225,9 +225,13 @@ export const StructureResolver = {
             );
         },
 
-        members: (root: any, _args: any, context: IApolloContext) => {
-            return context.dataSources.members.readClub(
-                root.id,
+        members: async (root: any, _args: any, context: IApolloContext) => {
+            const data = await context.dataSources.members.readClub(root.id);
+
+            // can be null due to read access
+            return filter(
+                data,
+                (e) => e != null,
             );
         },
 
