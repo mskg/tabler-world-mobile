@@ -9,6 +9,12 @@ import { RoleType } from "./globalTypes";
 // GraphQL fragment: MemberOverviewFragment
 // ====================================================
 
+export interface MemberOverviewFragment_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface MemberOverviewFragment_club {
   __typename: "Club";
   id: string;
@@ -50,6 +56,7 @@ export interface MemberOverviewFragment {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: MemberOverviewFragment_family;
   club: MemberOverviewFragment_club;
   area: MemberOverviewFragment_area;
   association: MemberOverviewFragment_association;

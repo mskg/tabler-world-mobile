@@ -7,7 +7,11 @@ export const SearchMember = gql`
         availableForChat: Boolean
 
         sectors: [CompanySector!]
+
+        # should be roles
         roles: [String!]
+
+        families: [ID!]
 
         # should be ID!
         associations: [String!]

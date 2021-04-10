@@ -71,7 +71,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
         this.mounted = true;
 
         // if called without blur, settimeout, keyboard will never get dismissed?
-        if (this._searchBar != null) {
+        if (this._searchBar != null && !this.props.navigation.getParam('expandAssociations')) {
             setTimeout(() => {
                 if (this._searchBar != null) {
                     this._searchBar.blur();

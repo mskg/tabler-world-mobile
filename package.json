@@ -1,7 +1,8 @@
 {
     "private": true,
     "resolutions": {
-        "**/react-native-safe-area-view": "^1.1.1"
+        "**/react-native-safe-area-view": "1.1.1",
+        "**/graphql": "15.5.0"
     },
     "scripts": {
         "build-common": "yarn workspace @mskg/tabler-world-common run build && yarn workspace @mskg/tabler-world-aws run build && yarn workspace @mskg/tabler-world-config run build && yarn workspace @mskg/tabler-world-rds-client run build && yarn workspace @mskg/tabler-world-geo run build && yarn workspace @mskg/tabler-world-jobs run build && yarn workspace @mskg/tabler-world-auth-client run build && yarn workspace @mskg/tabler-world-push-client run build",

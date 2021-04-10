@@ -9,6 +9,12 @@ import { RoleType } from "./globalTypes";
 // GraphQL query operation: MembersByAreas
 // ====================================================
 
+export interface MembersByAreas_Me_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface MembersByAreas_Me_association {
   __typename: "Association";
   id: string;
@@ -33,11 +39,18 @@ export interface MembersByAreas_Me {
   __typename: "Member";
   id: number;
   pic: string | null;
+  family: MembersByAreas_Me_family;
   association: MembersByAreas_Me_association;
   area: MembersByAreas_Me_area;
   club: MembersByAreas_Me_club;
   firstname: string | null;
   lastname: string | null;
+}
+
+export interface MembersByAreas_MembersOverview_family {
+  __typename: "Family";
+  id: string;
+  name: string;
 }
 
 export interface MembersByAreas_MembersOverview_club {
@@ -81,6 +94,7 @@ export interface MembersByAreas_MembersOverview {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: MembersByAreas_MembersOverview_family;
   club: MembersByAreas_MembersOverview_club;
   area: MembersByAreas_MembersOverview_area;
   association: MembersByAreas_MembersOverview_association;

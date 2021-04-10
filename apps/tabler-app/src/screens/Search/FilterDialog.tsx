@@ -17,6 +17,7 @@ type OwnProps = {
     clear: () => void,
 
     toggleTag: (type: FilterTagType, value: string) => void,
+    toggleFamily: (type: FilterTagType, value: string) => void,
     toggleAssociation: (type: FilterTagType, value: string) => void,
 };
 
@@ -70,8 +71,9 @@ class FilterDialogBase extends React.Component<Props> {
                             <Divider />
                             <Filters
                                 filterTags={this.props.filterTags}
-                                toggleTag={this.props.toggleTag}
+                                toggleFamily={this.props.toggleFamily}
                                 toggleAssociation={this.props.toggleAssociation}
+                                toggleTag={this.props.toggleTag}
                             />
                         </ScrollView>
                     </List.Section>

@@ -38,5 +38,5 @@ export interface RolesFragment_boardassistants {
 export interface RolesFragment {
   __typename: "Club";
   board: RolesFragment_board[];
-  boardassistants: RolesFragment_boardassistants[] | null;
+  boardassistants: RolesFragment_boardassistants[];
 }

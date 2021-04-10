@@ -19,7 +19,7 @@ import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
-import { confirmSignIn } from '../redux/actions/user';
+import { confirmSignIn, setColor } from '../redux/actions/user';
 import { Background, EMail, Greeting, Logo } from './Background';
 import Input from './Input';
 import { styles } from './Styles';
@@ -28,6 +28,7 @@ type Props = {
     theme: Theme,
     username: string | undefined,
     confirmSignIn: typeof confirmSignIn,
+    setColor: typeof setColor,
 };
 
 type State = {
@@ -215,6 +216,18 @@ class SignInBase extends AuditedScreen<Props, State> {
         this.setState({ username: (text || '').trim().toLowerCase() });
     }
 
+    _adjustColors = (family) => {
+        this.setState({ family });
+
+        if (family === 'LADIESCIRCLE') {
+            this.props.setColor('lci');
+        } else if (family === '41ER') {
+            this.props.setColor('c41');
+        } else {
+            this.props.setColor('rti');
+        }
+    }
+
     // tslint:disable-next-line: max-func-body-length
     render() {
         const matchingPart = this.matchingPart();
@@ -238,16 +251,16 @@ class SignInBase extends AuditedScreen<Props, State> {
                                     value={this.state.family}
 
                                     items={[
-                                        { 'label': 'Ladies Circle International', value: 'LADIESCIRCLE' },
-                                        { 'label': 'Round Table International', value: 'ROUNDTABLE' },
-                                        { 'label': '41 International', value: '41ER' },
+                                        { label: 'Ladies Circle International', value: 'LADIESCIRCLE' },
+                                        { label: 'Round Table International', value: 'ROUNDTABLE' },
+                                        { label: '41 International', value: '41ER' },
                                     ]}
 
                                     Icon={() => {
                                         return <Ionicons name="md-chevron-down" size={20} />;
                                     }}
 
-                                    onValueChange={(family) => this.setState({ family })}
+                                    onValueChange={this._adjustColors}
                                     useNativeAndroidPickerStyle={false}
 
                                     textInputProps={{
@@ -358,10 +371,13 @@ class SignInBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export default connect(
     (state: IAppState) => ({
         username: state.auth.username,
-    }), {
-    confirmSignIn,
-},
+    }),
+    {
+        confirmSignIn,
+        setColor,
+    },
 )(withTheme(SignInBase));

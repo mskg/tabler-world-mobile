@@ -9,6 +9,12 @@ import { RoleType, NearbyMemberState } from "./globalTypes";
 // GraphQL subscription operation: LocationUpdate
 // ====================================================
 
+export interface LocationUpdate_locationUpdate_member_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface LocationUpdate_locationUpdate_member_club {
   __typename: "Club";
   id: string;
@@ -50,6 +56,7 @@ export interface LocationUpdate_locationUpdate_member {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: LocationUpdate_locationUpdate_member_family;
   club: LocationUpdate_locationUpdate_member_club;
   area: LocationUpdate_locationUpdate_member_area;
   association: LocationUpdate_locationUpdate_member_association;

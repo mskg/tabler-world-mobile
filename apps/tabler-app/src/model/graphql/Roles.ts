@@ -40,7 +40,7 @@ export interface Roles_Club {
   LastSync: number;
   id: string;
   board: Roles_Club_board[];
-  boardassistants: Roles_Club_boardassistants[] | null;
+  boardassistants: Roles_Club_boardassistants[];
 }
 
 export interface Roles {

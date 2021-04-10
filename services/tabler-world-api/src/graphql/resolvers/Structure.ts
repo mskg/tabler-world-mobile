@@ -1,8 +1,10 @@
+import { Family } from '@mskg/tabler-world-auth-client';
 import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
 import { filter, sortBy } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
 import { removeFamily } from '../helper/removeFamily';
+import { FieldNames } from '../privacy/FieldNames';
 import { IApolloContext } from '../types/IApolloContext';
 
 type ById = {
@@ -56,14 +58,22 @@ async function ensureActiveMember(context: IApolloContext, roles?: Role[]) {
 // tslint:disable: variable-name
 export const StructureResolver = {
     Query: {
-        Families: (_root: any, _args: any, context: IApolloContext) => {
+        Families: async (_root: any, _args: any, context: IApolloContext) => {
             context.logger.debug('Families');
+            const thisMember = await context.dataSources.members.readOne(context.principal.id);
+            const allowCross = thisMember[FieldNames.AllFamiliesOptIn] === true;
+
+            if (!allowCross) {
+                context.logger.debug('Can only read his own families');
+                return [await context.dataSources.structure.getFamily(context.principal.family!)];
+            }
+
             return context.dataSources.structure.allFamilies();
         },
 
         Family: (_root: any, args: ById, context: IApolloContext) => {
             context.logger.debug('Family', args);
-            return context.dataSources.structure.getFamily(args.id || context.principal.family as string);
+            return context.dataSources.structure.getFamily(args.id || context.principal.family!);
         },
 
         Associations: async (_root: any, args: ByFamily, context: IApolloContext) => {
@@ -113,6 +123,47 @@ export const StructureResolver = {
         Area: (_root: any, args: ById, context: IApolloContext) => {
             context.logger.debug('Area', args);
             return context.dataSources.structure.getArea(args.id);
+        },
+    },
+
+    Family: {
+        name: (root: any, _args: any, _context: IApolloContext) => {
+            switch (root.id) {
+                case Family.RTI:
+                    return 'Round Table International';
+
+                case Family.LCI:
+                    return 'Ladies Circle International';
+
+                case Family.OTI:
+                    return '41 International';
+
+                default:
+                    return '';
+            }
+        },
+
+        associations: (root: any, _args: any, context: IApolloContext) => {
+            if (root.associations) {
+                return Promise.all(
+                    root.associations.map(async (r: any) =>
+                        await context.dataSources.structure.getAssociation(r)),
+                );
+            }
+
+            return context.dataSources.structure.allAssociations(root.id);
+        },
+
+        board: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.board);
+        },
+
+        boardassistants: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.boardassistants);
+        },
+
+        regionalboard: (root: any, _args: any, context: IApolloContext) => {
+            return ensureActiveMember(context, root.regionalboard);
         },
     },
 

@@ -289,6 +289,57 @@ CREATE MATERIALIZED VIEW structure_families
 as
 select
     id
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname = 'Board'
+                and functionname not ilike '%regional chairman%'
+        ) r
+        ) as board
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname = 'Board Assistants'
+                and functionname not ilike '%regional chairman%'
+        ) r
+    ) as boardAssistants
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname in ('Board Assistants', 'Board')
+                and functionname ilike '%regional chairman%'
+        ) r
+    ) as regionalboard
+    ,(
+        select array_agg(id)
+        from structure_associations
+        where
+                family = families.id
+    ) as associations
 from families;
 
 create unique index idx_structure_families_id on

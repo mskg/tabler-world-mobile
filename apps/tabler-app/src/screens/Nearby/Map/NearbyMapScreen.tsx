@@ -232,7 +232,7 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
 
                             <FAB
                                 style={styles.fab}
-                                icon={({ size, color }) => <Ionicons style={{ paddingLeft: 1 }} size={size + 2} color={color} name="md-compass" />}
+                                icon={({ size, color }) => <Ionicons size={size + 2} color={color} name="md-compass" />}
                                 onPress={this._getLocationAsync}
                             />
                         </>

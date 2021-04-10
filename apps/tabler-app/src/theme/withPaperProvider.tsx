@@ -10,6 +10,7 @@ import { light as lightTheme } from './light';
 type Props = {
     colorScheme: string,
     darkMode: boolean,
+    accentColor: string,
 };
 
 class ProviderBase extends React.PureComponent<Props> {
@@ -19,7 +20,7 @@ class ProviderBase extends React.PureComponent<Props> {
         super(props);
     }
 
-    determineScheme() {
+    getBaseSchema() {
         const { colorScheme } = this.props;
 
         if (colorScheme === 'no-preference') {
@@ -27,6 +28,13 @@ class ProviderBase extends React.PureComponent<Props> {
         }
 
         return colorScheme === 'dark' ? darkTheme : lightTheme;
+    }
+
+    determineScheme() {
+        const s = this.getBaseSchema();
+        s.colors.accent = this.props.accentColor;
+
+        return s;
     }
 
     render() {
@@ -41,6 +49,7 @@ class ProviderBase extends React.PureComponent<Props> {
 const Provider = connect(
     (state: IAppState) => ({
         darkMode: state.settings.darkMode,
+        accentColor: state.auth.accentColor,
     }))(
         ProviderBase,
     );

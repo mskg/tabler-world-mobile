@@ -4,7 +4,16 @@ import { StyleSheet, View } from 'react-native';
 import { Checkbox, Divider, Text, TouchableRipple } from 'react-native-paper';
 import { Accordion } from './Accordion';
 
-export type FilterTagType = 'area' | 'role' | 'table' | 'sector' | 'association';
+export type FilterTagType = 'family' | 'area' | 'role' | 'table' | 'sector' | 'association';
+
+export const SortMap = {
+    family: 'A',
+    association: 'B',
+    area: 'C',
+    table: 'D',
+    role: 'E',
+    sector: 'F',
+}
 
 export type FilterTag = {
     type: FilterTagType,

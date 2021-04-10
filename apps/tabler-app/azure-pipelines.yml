@@ -15,7 +15,7 @@ variables:
   #  1.2-rc1, rc2, ...
   #  1.2-r, r1, r2, ...
   - name: RELASE_CHANNEL_VERSION
-    value: '1.5-rc'
+    value: '1.5-test'
 
   - name: RELASE_CHANNEL_BUILD
     value: $[counter(variables['RELASE_CHANNEL_VERSION'], 1)]
@@ -31,7 +31,7 @@ variables:
 
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
-  - group: 'ENV Germany PROD'
+  - group: 'ENV Germany TEST'
 
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
@@ -42,11 +42,11 @@ variables:
   - group: "Play Store"
 
   - name: EXPO_SDK_VERSION
-    value: "36.0.0"
+    value: "40.0.0"
   - name: TURTLE_VERSION
-    value: "0.13.10"
+    value: "0.21.2"
   - name: XCODE_VERSION
-    value: "/Applications/Xcode_11.3.1.app/Contents/Developer"
+    value: "/Applications/Xcode_12.4.app/Contents/Developer"
 
 pr:
   branches:

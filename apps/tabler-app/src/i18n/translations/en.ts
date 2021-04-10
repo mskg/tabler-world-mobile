@@ -74,13 +74,15 @@ const en = {
     Screen_Structure: {
         navigation: 'Directory',
         title: 'Association',
-        mytitle: 'My Association',
-        associations: 'Associations',
+        mytitle: 'My Directory',
+        families: 'Family',
+        associations: 'Association',
         clubs: 'Clubs',
         areas: 'Areas',
         president: 'President',
         board: 'Board',
         assist: 'Board Assistants',
+        regionalboard: 'Regional Board',
         details: 'Show Club',
     },
 
@@ -191,6 +193,10 @@ const en = {
         filter: 'Filter',
         expand: 'See All',
         collapse: 'See Less',
+        families: {
+            one: 'Family',
+            other: 'Families ({number})',
+        },
         associations: {
             one: 'Association',
             other: 'Associations ({number})',

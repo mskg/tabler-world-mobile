@@ -11,6 +11,12 @@ export const Structure = gql`
 
     type Family {
         id: ID!
+        name: String!
+
+        associations: [Association!]!
+        board: [AssociationRole!]!
+        boardassistants: [AssociationRole!]!
+        regionalboard: [AssociationRole!]!
     }
 
     type Association {
@@ -109,6 +115,7 @@ export const Structure = gql`
         "Giving no id returns own organization"
         Areas (association: ID): [Area!]
 
-        Roles: [String!]
+        "Giving no id returns own family"
+        Roles (family: ID): [String!]
     }
 `;

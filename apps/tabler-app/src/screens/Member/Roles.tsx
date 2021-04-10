@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { IRole } from '../../model/IRole';
 import { showArea, showAssociation, showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
+import color from 'color';
 
 type Props = {
     roles: IRole[],
@@ -43,6 +44,14 @@ class RolesBase extends React.PureComponent<Props> {
         return this.props.theme.colors.accent;
     }
 
+    getTextColor(role: IRole) {
+        if (color(this.getColor(role)).isDark()) {
+            return '#ffffff';
+        }
+
+        return undefined;
+    }
+
     render() {
         return (
             <View style={styles.chipContainer}>
@@ -51,9 +60,10 @@ class RolesBase extends React.PureComponent<Props> {
                         <Chip
                             style={[styles.chip, { backgroundColor: this.getColor(r) }]}
                             key={i}
+                            selectedColor={this.getTextColor(r)}
                             onPress={this.getOnPress(r)}
                         >
-                            {r.ref.shortname} <Text style={{ fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
+                            {r.ref.shortname} <Text style={{ color: this.getTextColor(r), fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
                         </Chip>
                     )).value()
                 )}
