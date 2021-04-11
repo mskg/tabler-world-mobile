@@ -9,6 +9,12 @@ import { RoleType, CompanySector } from "./globalTypes";
 // GraphQL query operation: Member
 // ====================================================
 
+export interface Member_Member_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface Member_Member_club {
   __typename: "Club";
   id: string;
@@ -123,6 +129,7 @@ export interface Member_Member {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: Member_Member_family;
   club: Member_Member_club;
   area: Member_Member_area;
   association: Member_Member_association;

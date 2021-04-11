@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ClubAvatar } from '../../../components/ClubAvatar';
 import { ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { showClub } from '../../../redux/actions/navigation';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_PIN } from '../../../theme/colors';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_PIN, ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../../../theme/colors';
 import { Pin } from './Pin';
 
 type Props = {
@@ -27,6 +27,15 @@ class MarkerBase extends React.Component<Props> {
         this.props.showClub(this.props.club.id);
     }
 
+    _color = () => {
+        // this is too close to the yellow on the map
+        if (!this.props.theme.dark && this.props.theme.colors.accent === ___DONT_USE_ME_DIRECTLY___COLOR_RTI) {
+            return ___DONT_USE_ME_DIRECTLY___COLOR_PIN;
+        }
+
+        return this.props.theme.colors.accent;
+    }
+
     render() {
         return (
             <Marker
@@ -38,7 +47,7 @@ class MarkerBase extends React.Component<Props> {
                 onCalloutPress={!customCallout ? this._showClub : undefined}
             >
                 <Pin
-                    color={this.props.theme.dark ? this.props.theme.colors.accent : ___DONT_USE_ME_DIRECTLY___COLOR_PIN}
+                    color={this._color()}
                     text={this.props.club.clubnumber.toString()}
                 />
 

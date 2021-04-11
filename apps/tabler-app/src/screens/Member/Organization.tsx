@@ -6,6 +6,7 @@ import { CachedImage } from '../../components/Image/CachedImage';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { showArea, showAssociation, showClub } from '../../redux/actions/navigation';
 import { styles } from './Styles';
+import color from 'color';
 
 type Props = {
     member: IMemberOverviewFragment,
@@ -17,22 +18,30 @@ type Props = {
 
 class OrganizationBase extends React.PureComponent<Props> {
     render() {
+        let textColor = this.props.theme.colors.text;
+        if (color(this.props.theme.colors.accent).isDark()) {
+            textColor = '#ffffff';
+        }
+
         return (
             <View style={styles.chipContainer}>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
+                    selectedColor={textColor}
                     onPress={() => this.props.showClub(this.props.member.club.id)}
                 >
                     {this.props.member.club.name}
                 </Chip>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
+                    selectedColor={textColor}
                     onPress={() => this.props.showArea(this.props.member.area.id)}
                 >
                     {this.props.member.area.name}
                 </Chip>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
+                    selectedColor={textColor}
                     avatar={this.props.member.association.flag ? (
                         <View>
                             <CachedImage

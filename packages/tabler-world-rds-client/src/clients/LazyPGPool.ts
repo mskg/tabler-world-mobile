@@ -53,7 +53,8 @@ export class LazyPGPool implements IPooledDataService {
                 password,
                 database: connection.database,
                 // https://github.com/brianc/node-postgres/issues/2089s
-                ssl: connection.ssl === false ? false : { rejectUnauthorized: false },
+                // tslint:disable-next-line: triple-equals
+                ssl: connection.ssl == false ? false : { rejectUnauthorized: false },
                 max: this.poolSize,
             });
 

@@ -13,6 +13,10 @@ LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_family (val text) returns text as $$
 BEGIN
+    if strpos(lower(val), 'ladiescircle') > 0 then
+        return 'lci';
+    end if;
+
     return 'rti';
 END;
 $$
@@ -61,19 +65,30 @@ END;
 $$
 LANGUAGE plpgsql;
 
+drop function if exists make_short_reference (text, text) cascade;
+
 -- type: family, assoc, area, club
-CREATE or replace FUNCTION make_short_reference (type text, id text) returns text as $$
+CREATE or replace FUNCTION make_short_reference (family text, type text, id text) returns text as $$
 DECLARE result text;
         corrected text;
 BEGIN
     corrected := public.remove_key_family(id);
 
-    case
-        when type = 'family' then result = 'RTI';
-        when type = 'assoc' then result = 'RT' || upper(corrected);
-        when type = 'area' then result = public.make_area_number(corrected);
-        else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
-    end case;
+    if family = 'lci' then
+        case
+            when type = 'family' then result = 'LCI';
+            when type = 'assoc' then result = 'LC' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = 'LC' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    else
+        case
+            when type = 'family' then result = 'RTI';
+            when type = 'assoc' then result = 'RT' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    end if;
 
     return result;
 END;

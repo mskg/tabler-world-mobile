@@ -1,4 +1,4 @@
-import { makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { AuthDirective } from './auth/AuthDirective';
 import { resolvers } from './resolvers';
 import { schema } from './schema';

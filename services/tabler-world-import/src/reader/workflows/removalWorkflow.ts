@@ -4,10 +4,11 @@ import { fetchParallel } from '../helper/fetchParallel';
 import { ChangePointer } from '../types/ChangePointer';
 import { JobType } from '../types/JobType';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
+import { TargetType } from '../types/TargetType';
 import { WorkflowResult } from './workflowType';
 
 export async function removalWorkflow(
-    type: JobType,
+    type: JobType, target: TargetType,
     url: string, method: string, postData: any,
     limit: number, offset: number = 0, maxRecords: number = Infinity.valueOf(),
 ): Promise<WorkflowResult> {
@@ -27,7 +28,7 @@ export async function removalWorkflow(
     const urlWithOffset = `${url}offset=${offset}`;
 
     // read data
-    const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(urlWithOffset, limit, method, postData);
+    const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(target, urlWithOffset, limit, method, postData);
     if (firstChunk != null) {
         // we preserve the total
         totalRecords = firstChunk.total;
@@ -39,7 +40,7 @@ export async function removalWorkflow(
             firstChunk.total = offset + maxRecords;
         }
 
-        await fetchParallel(firstChunk, modificationTracker, limit, method, postData);
+        await fetchParallel(target, firstChunk, modificationTracker, limit, method, postData);
     }
 
     return { processedRecords, modifications, totalRecords };

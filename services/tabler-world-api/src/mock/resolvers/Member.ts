@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { MockList } from 'graphql-tools';
+import { MockList } from '@graphql-tools/mock';
 import { Area } from './Area';
 import { Association } from './Association';
 import { Club } from './Club';

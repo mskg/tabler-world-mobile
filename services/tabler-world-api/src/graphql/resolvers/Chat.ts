@@ -502,7 +502,7 @@ export const ChatResolver = {
                     // @ts-ignore
                     payload: {
                         type: message.image ? MessageType.image : MessageType.text,
-                        image: message.image,
+                        image: message.image!,
                         text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
 
@@ -595,6 +595,7 @@ export const ChatResolver = {
             // tslint:disable-next-line: variable-name
             resolve: (channelMessage: WebsocketEvent<ChatMessageWithTransport>, _args: {}, _context: ISubscriptionContext) => {
                 return {
+                    // @ts-ignore
                     eventId: channelMessage.id,
                     conversationId: channelMessage.eventName,
                     delivered: channelMessage.delivered,

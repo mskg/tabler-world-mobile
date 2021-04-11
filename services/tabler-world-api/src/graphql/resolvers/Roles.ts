@@ -9,7 +9,7 @@ export const RolesResolver = {
         Roles: async (_root: any, _args: any, context: IApolloContext) => {
             return cachedLoad(
                 context,
-                makeCacheKey('Structure', ['roles', context.principal.association]),
+                makeCacheKey('Structure', ['roles', context.principal.family!]),
                 () =>
 
                     useDatabase(
@@ -21,8 +21,10 @@ select
     distinct functionname
 from
     structure_tabler_roles
+where
+    left(refid, 3) = $1
 order by 1`,
-                                [],
+                                [context.principal.family],
                             );
 
                             return res.rows.map((r) => r.functionname);

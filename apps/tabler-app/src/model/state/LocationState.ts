@@ -1,13 +1,13 @@
-import * as Location from 'expo-location';
-import { NearbyMembers_nearbyMembers } from '../graphql/NearbyMembers';
+import { LocationObject } from 'expo-location';
 import { GeoCityLocation } from '../GeoCityLocation';
+import { NearbyMembers_nearbyMembers } from '../graphql/NearbyMembers';
 
 export type LocationState = {
     throttleUntil?: number,
     timestamp?: number,
 
     pending?: boolean,
-    location?: Location.LocationData ,
+    location?: LocationObject ,
     address?: GeoCityLocation,
 
     nearbyMembers?: NearbyMembers_nearbyMembers[],

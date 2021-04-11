@@ -60,6 +60,12 @@ export class Predicates {
         };
     }
 
+    static families(families: HashMap<boolean, string> | null): Predicate {
+        return (member) => {
+            return families == null || families[member.family.id] === true || families[member.family.name] === true;
+        };
+    }
+
     static association(associations: HashMap<boolean, string> | null): Predicate {
         return (member) => {
             return associations == null || associations[member.association.name] === true || associations[member.association.id] === true;

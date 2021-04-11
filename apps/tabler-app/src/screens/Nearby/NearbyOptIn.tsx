@@ -1,4 +1,5 @@
 import * as Location from 'expo-location';
+import { LocationObject } from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React, { PureComponent } from 'react';
 import { Alert, Dimensions, Linking, Platform, View } from 'react-native';
@@ -35,7 +36,7 @@ type OwnProps = {
 type StateProps = {
     nearbyMembersEnabled?: boolean,
     isOffline: boolean,
-    currentLocation?: Location.LocationData,
+    currentLocation?: LocationObject,
 };
 
 type DispatchPros = {

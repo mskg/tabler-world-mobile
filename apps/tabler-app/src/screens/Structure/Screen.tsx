@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import color from 'color';
 import React from 'react';
 import { View } from 'react-native';

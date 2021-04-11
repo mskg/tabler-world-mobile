@@ -111,7 +111,7 @@ class NearbyMemberItemBase extends React.PureComponent<Props> {
                             <IconButton
                                 style={{ marginRight: 32 }}
                                 size={size}
-                                icon={({ size: iconSize, color: c }) => (<Ionicons name="md-chatboxes" color={c} size={iconSize} />)}
+                                icon={({ size: iconSize, color: c }) => (<Ionicons name="md-chatbubbles" color={c} size={iconSize} />)}
                                 color={this.props.theme.colors.accent}
                                 onPress={this._startConversation}
                             />

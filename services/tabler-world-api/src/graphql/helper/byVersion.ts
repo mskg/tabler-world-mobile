@@ -33,3 +33,7 @@ export function byVersion<T>({ context: { clientInfo: { version } }, versions, m
     const mappedVersion = mapVersion ? mapVersion(version) : version;
     return (versions[mappedVersion] || versions.default)();
 }
+
+export const v14Check = (version: string) => version.startsWith('1.4') || version.startsWith('1.3') || version.startsWith('1.2') || version.startsWith('1.1') || version.startsWith('1.0')
+    ? 'old'
+    : 'default';

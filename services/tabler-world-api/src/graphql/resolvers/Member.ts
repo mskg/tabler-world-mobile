@@ -61,6 +61,7 @@ export const MemberResolver = {
                 shortname: root.clubshortname,
                 association: root.association,
                 area: root.area,
+                family: root.family,
             };
         },
 

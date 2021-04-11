@@ -11,8 +11,8 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
-        "@mskg/tabler-world-common": "0.0.1",
         "@mskg/tabler-world-aws": "0.0.1",
+        "@mskg/tabler-world-common": "0.0.1",
         "@mskg/tabler-world-config": "0.0.1"
     },
     "peerDependencies": {
@@ -20,7 +20,7 @@
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.42",
-        "@types/pg": "7.14.1",
-        "typescript": "3.7.5"
+        "@types/pg": "7.14.4",
+        "typescript": "4.0.2"
     }
 }

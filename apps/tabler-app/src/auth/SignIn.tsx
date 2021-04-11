@@ -1,11 +1,12 @@
 import Auth from '@aws-amplify/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { UrlParameters } from '@mskg/tabler-world-config-app';
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import _ from 'lodash';
 import React from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
+import RNPickerSelect from 'react-native-picker-select';
 import { connect } from 'react-redux';
 import uuid4 from 'uuid4';
 import { ActionNames } from '../analytics/ActionNames';
@@ -18,8 +19,8 @@ import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { I18N } from '../i18n/translation';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
-import { confirmSignIn } from '../redux/actions/user';
-import { Background, Greeting, Logo } from './Background';
+import { confirmSignIn, setColor } from '../redux/actions/user';
+import { Background, EMail, Greeting, Logo } from './Background';
 import Input from './Input';
 import { styles } from './Styles';
 
@@ -27,12 +28,14 @@ type Props = {
     theme: Theme,
     username: string | undefined,
     confirmSignIn: typeof confirmSignIn,
+    setColor: typeof setColor,
 };
 
 type State = {
     username: string | undefined,
     working: boolean,
     error: string | null,
+    family: string,
 };
 
 const logger = new Logger(Categories.Screens.SignIn);
@@ -86,6 +89,7 @@ class SignInBase extends AuditedScreen<Props, State> {
             username: props.username,
             working: false,
             error: null,
+            family: 'ROUNDTABLE',
         };
     }
 
@@ -133,7 +137,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                     style: 'destructive',
                     onPress: async () => {
                         await enableDemoMode();
-                        Updates.reloadFromCache();
+                        Updates.reloadAsync();
                     },
                 },
             ],
@@ -143,11 +147,11 @@ class SignInBase extends AuditedScreen<Props, State> {
     matchingPart = () => {
         if (!this.state.username) { return -1; }
 
-        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.roundtable\.world/)) {
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle|41er)\.world/)) {
             return 11;
         }
 
-        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.roundtable\./)) {
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle|41er)\./)) {
             return 9;
         }
 
@@ -212,6 +216,18 @@ class SignInBase extends AuditedScreen<Props, State> {
         this.setState({ username: (text || '').trim().toLowerCase() });
     }
 
+    _adjustColors = (family) => {
+        this.setState({ family });
+
+        if (family === 'LADIESCIRCLE') {
+            this.props.setColor('lci');
+        } else if (family === '41ER') {
+            this.props.setColor('c41');
+        } else {
+            this.props.setColor('rti');
+        }
+    }
+
     // tslint:disable-next-line: max-func-body-length
     render() {
         const matchingPart = this.matchingPart();
@@ -223,22 +239,77 @@ class SignInBase extends AuditedScreen<Props, State> {
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="padding">
                             <Logo />
+
                             <Greeting
                                 title={I18N.Screen_SignIn.welcomeBack}
                                 subtitle={I18N.Screen_SignIn.signin}
                             />
 
+                            <View style={{ ...styles.inputContainer, paddingRight: 24 }}>
+                                <RNPickerSelect
+                                    placeholder={{}}
+                                    value={this.state.family}
+
+                                    items={[
+                                        { label: 'Ladies Circle International', value: 'LADIESCIRCLE' },
+                                        { label: 'Round Table International', value: 'ROUNDTABLE' },
+                                        { label: '41 International', value: '41ER' },
+                                    ]}
+
+                                    Icon={() => {
+                                        return <Ionicons name="md-chevron-down" size={20} />;
+                                    }}
+
+                                    onValueChange={this._adjustColors}
+                                    useNativeAndroidPickerStyle={false}
+
+                                    textInputProps={{
+                                        style: {
+                                            color: this.props.theme.colors.text,
+                                            fontFamily: this.props.theme.fonts.regular,
+                                            fontSize: 16,
+                                        },
+                                        underlineColorAndroid: 'transparent',
+                                    }}
+
+                                    style={{
+                                        viewContainer: {
+                                            height: 30,
+                                            alignItems: 'stretch',
+                                            borderBottomColor: this.props.theme.colors.accent,
+                                            borderBottomWidth: 1.5,
+                                        },
+                                        inputIOSContainer: {
+                                            height: 30,
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                        },
+                                    }}
+                                />
+                            </View>
+
+                            <EMail
+                                subtitle={I18N.format(I18N.Screen_SignIn.email, { name: this.state.family })}
+                            />
+
                             <View style={styles.inputContainer}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Input
-                                        placeholder={I18N.Screen_SignIn.placeholderEMail}
+                                        placeholder={I18N.format(I18N.Screen_SignIn.placeholderEMail, { name: this.state.family }).toLowerCase()}
                                         value={this.state.username}
                                         textContentType="emailAddress"
                                         onChangeText={this._changeText}
                                         placeholderTextColor={this.props.theme.colors.placeholder}
-                                        style={{ borderBottomColor: this.props.theme.colors.accent, color: this.props.theme.colors.text }}
+                                        style={{
+                                            borderBottomColor: this.props.theme.colors.accent,
+                                            color: this.props.theme.colors.text,
+                                        }}
                                     />
-                                    <View style={{ marginLeft: 4, minWidth: 20 }}>
+                                    <View style={{
+                                        marginBottom: 0,
+                                        marginLeft: 4,
+                                        minWidth: 20,
+                                    }}>
                                         {matches && (
                                             <Ionicons
                                                 size={24}
@@ -256,7 +327,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                                                     key={i.toString()}
                                                     style={[styles.hint, { color: i <= matchingPart ? this.props.theme.colors.accent : undefined }]}
                                                 >
-                                                    {p}
+                                                    {I18N.format(p, { name: this.state.family }).toLowerCase()}
                                                 </Text>
                                             ))
                                         }
@@ -300,10 +371,13 @@ class SignInBase extends AuditedScreen<Props, State> {
     }
 }
 
+// tslint:disable-next-line: export-name
 export default connect(
     (state: IAppState) => ({
         username: state.auth.username,
-    }), {
-    confirmSignIn,
-},
+    }),
+    {
+        confirmSignIn,
+        setColor,
+    },
 )(withTheme(SignInBase));

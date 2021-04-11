@@ -1,11 +1,11 @@
 import { ioRedisClient } from '../cache/ioRedisClient';
 
-export async function putLocation({ longitude, latitude, member, lastseen, speed, address, accuracy }: any) {
+export async function putLocation({ location, longitude, latitude, member, lastseen, speed, address, accuracy }: any) {
     // const params = getNearByParams();
     const multi = await ioRedisClient.multi();
 
     // point
-    multi.geoadd('nearby:geo', longitude, latitude, member.toString());
+    multi.geoadd(`nearby:geo:${location}`, longitude, latitude, member.toString());
 
     // details of last location
     multi.set(`nearby:${member}`, {

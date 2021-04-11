@@ -1,4 +1,4 @@
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 
 type QueryParams = {
     [key: string]: string | undefined;

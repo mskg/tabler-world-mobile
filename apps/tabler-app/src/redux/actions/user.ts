@@ -30,3 +30,11 @@ export const confirmSignIn = createAction<'@@user/auth/confirmSignIn', {username
 export const logoutUser = createAction<'@@user/auth/logout'>(
   '@@user/auth/logout',
 );
+
+
+/**
+ * Wipe authentication and data
+ */
+ export const setColor = createAction<'@@user/auth/setColor', 'rti' | 'lci' | 'c41'>(
+    '@@user/auth/setColor',
+  );

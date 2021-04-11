@@ -143,6 +143,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                 tension: 2,
                 friction: 8,
                 // speed: 12,
+                useNativeDriver: true,
             },
         ).start();
 
@@ -239,7 +240,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                     <TouchableRipple style={styles.touch} onPress={this._runFeedback}>
                         <View style={styles.row}>
                             <View style={styles.rowIcon}>
-                                <Ionicons name="md-microphone" size={32} />
+                                <Ionicons name="md-mic" size={32} />
                             </View>
                             <Text style={styles.rowText}>{I18N.Component_ErrorReport.feedback}</Text>
                         </View>
@@ -249,7 +250,7 @@ class ErrorReportBase extends React.Component<Props, State> {
                     <TouchableRipple style={styles.touch} onPress={this._runTranslation}>
                         <View style={styles.row}>
                             <View style={styles.rowIcon}>
-                                <Ionicons name="ios-paper" size={32} />
+                                <Ionicons name="md-newspaper" size={32} />
                             </View>
                             <Text style={styles.rowText}>{I18N.Component_ErrorReport.language}</Text>
                         </View>

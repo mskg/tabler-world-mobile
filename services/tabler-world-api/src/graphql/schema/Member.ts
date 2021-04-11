@@ -126,6 +126,7 @@ export const Member = gql`
     }
 
     type Member implements MemberListView {
+        # should be ID!
         id: Int!
         pic: String
 

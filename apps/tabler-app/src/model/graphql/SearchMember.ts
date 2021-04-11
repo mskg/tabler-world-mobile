@@ -9,6 +9,12 @@ import { CompanySector, RoleType } from "./globalTypes";
 // GraphQL query operation: SearchMember
 // ====================================================
 
+export interface SearchMember_SearchMember_nodes_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface SearchMember_SearchMember_nodes_club {
   __typename: "Club";
   id: string;
@@ -50,6 +56,7 @@ export interface SearchMember_SearchMember_nodes {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: SearchMember_SearchMember_nodes_family;
   club: SearchMember_SearchMember_nodes_club;
   area: SearchMember_SearchMember_nodes_area;
   association: SearchMember_SearchMember_nodes_association;
@@ -75,6 +82,7 @@ export interface SearchMember {
 export interface SearchMemberVariables {
   text: string;
   after?: string | null;
+  families?: string[] | null;
   associations?: string[] | null;
   areas?: string[] | null;
   roles?: string[] | null;

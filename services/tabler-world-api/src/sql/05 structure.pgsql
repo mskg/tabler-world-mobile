@@ -54,7 +54,10 @@ select
      ) as area
 	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
     ,data->>'name' as name
-    ,make_short_reference('club', id) as shortname
+    ,make_short_reference(
+        make_key_family(data->>'hostname'),
+        'club', id
+    ) as shortname
     ,data->>'website' as website
 	,jsonb_strip_nulls(jsonb_build_object(
         'name',
@@ -175,7 +178,10 @@ select
         data->>'parent_subdomain'
      ) as association
     ,data->>'name' as name
-    ,make_short_reference('area', id) as shortname
+    ,make_short_reference(
+        make_key_family(data->>'hostname'),
+        'area', id
+    ) as shortname
     ,(
         select to_jsonb(array_to_json(array_agg(r)))
         from
@@ -226,7 +232,7 @@ select
         when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
         else data->>'logo'
      end as logo
-    ,make_short_reference('assoc', id) as shortname
+    ,make_short_reference(data->>'parent_subdomain', 'assoc', id) as shortname
    ,(
        select url
        from assets
@@ -283,6 +289,57 @@ CREATE MATERIALIZED VIEW structure_families
 as
 select
     id
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname = 'Board'
+                and functionname not ilike '%regional chairman%'
+        ) r
+        ) as board
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname = 'Board Assistants'
+                and functionname not ilike '%regional chairman%'
+        ) r
+    ) as boardAssistants
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname in ('Board Assistants', 'Board')
+                and functionname ilike '%regional chairman%'
+        ) r
+    ) as regionalboard
+    ,(
+        select array_agg(id)
+        from structure_associations
+        where
+                family = families.id
+    ) as associations
 from families;
 
 create unique index idx_structure_families_id on

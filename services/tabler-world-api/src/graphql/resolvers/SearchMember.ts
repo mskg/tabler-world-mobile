@@ -1,8 +1,9 @@
 import { useDatabase } from '@mskg/tabler-world-rds-client';
-import _ from 'lodash';
+import _, { find } from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
-import { byVersion, v12Check } from '../helper/byVersion';
+import { byVersion, v12Check, v14Check } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
+import { FieldNames } from '../privacy/FieldNames';
 import { IApolloContext } from '../types/IApolloContext';
 
 type SearchInput = {
@@ -11,6 +12,7 @@ type SearchInput = {
         text: string,
         availableForChat: boolean,
 
+        families: string[],
         associations: string[],
         roles: string[],
         areas: string[],
@@ -39,6 +41,9 @@ export const SearchMemberResolver = {
                 'cursor_lastfirst',
             ];
 
+            const thisMember = await context.dataSources.members.readOne(context.principal.id);
+            const allowCross = thisMember[FieldNames.AllFamiliesOptIn] === true;
+
             const terms = (args.query.text || '')
                 .split(' ')
                 .map((r) => r.trim())
@@ -65,12 +70,36 @@ export const SearchMemberResolver = {
 (
         f_unaccent(lastname || ' ' || firstname) ILIKE f_unaccent($${parameters.length})
     or  f_unaccent(areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
-    or  f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
+    or  f_unaccent(lastname || ' ' || firstname || ', ' || clubname || ', ' || areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
 )`);
             });
 
-            parameters.push(context.principal.family);
-            filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+            if (allowCross) {
+                context.logger.debug('Allow cross family search');
+
+                // we got a filter
+                if (args.query.families && args.query.families.length > 0) {
+                    if (find(args.query.families, context.principal.family) != null) {
+                        parameters.push(context.principal.family);
+                        parameters.push(args.query.families);
+
+                        filters.push(`(family = $${parameters.length - 1} or (family = ANY ($${parameters.length}) and allfamiliesoptin = true))`);
+                    } else {
+                        parameters.push(args.query.families);
+                        filters.push(`(family = ANY ($${parameters.length}) and allfamiliesoptin = true)`);
+                    }
+                } else {
+                    // all those that opted in or his own family
+                    parameters.push(context.principal.family);
+                    filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+                }
+
+            } else {
+                parameters.push(context.principal.family);
+                context.logger.debug('Family search disabled');
+                // must match own family
+                filters.push(`family = $${parameters.length}`);
+            }
 
             // old only 'de
             byVersion({
@@ -87,7 +116,7 @@ export const SearchMemberResolver = {
                     default: () => {
                         if (args.query.associations != null && args.query.associations.length > 0) {
                             parameters.push(args.query.associations);
-                            filters.push(`associationname = ANY ($${parameters.length})`);
+                            filters.push(`association = ANY ($${parameters.length})`);
                         }
                     },
                 },
@@ -95,12 +124,40 @@ export const SearchMemberResolver = {
 
             if (args.query.areas != null && args.query.areas.length > 0) {
                 parameters.push(args.query.areas);
-                filters.push(`areaname = ANY ($${parameters.length})`);
+
+                byVersion({
+                    context,
+                    mapVersion: v14Check,
+
+                    versions: {
+                        old: () => {
+                            filters.push(`areaname = ANY ($${parameters.length})`);
+                        },
+
+                        default: () => {
+                            filters.push(`area = ANY ($${parameters.length})`);
+                        },
+                    },
+                });
             }
 
             if (args.query.clubs != null && args.query.clubs.length > 0) {
                 parameters.push(args.query.clubs);
-                filters.push(`clubname = ANY ($${parameters.length})`);
+
+                byVersion({
+                    context,
+                    mapVersion: v14Check,
+
+                    versions: {
+                        old: () => {
+                            filters.push(`clubname = ANY ($${parameters.length})`);
+                        },
+
+                        default: () => {
+                            filters.push(`club = ANY ($${parameters.length})`);
+                        },
+                    },
+                });
             }
 
             if (args.query.roles != null && args.query.roles.length > 0) {

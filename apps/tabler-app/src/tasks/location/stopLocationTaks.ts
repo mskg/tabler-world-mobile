@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { LOCATION_TASK_NAME } from '../Constants';
 import { logger } from './logger';
 

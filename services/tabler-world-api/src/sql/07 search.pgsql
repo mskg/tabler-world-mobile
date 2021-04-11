@@ -90,7 +90,7 @@ DROP INDEX if EXISTS profiles_search_text2;
 CREATE INDEX profiles_search_text2 ON profiles USING gin (
     cursor_lastfirst,
     f_unaccent(lastname || ' ' || firstname) gin_trgm_ops,
-    f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) gin_trgm_ops
+    f_unaccent(lastname || ' ' || firstname || ', ' || clubname || ', ' || areaname || ', ' || associationname) gin_trgm_ops
 );
 
 DROP INDEX if EXISTS profiles_search_text3;
@@ -98,7 +98,7 @@ CREATE INDEX profiles_search_text3 ON profiles USING gin (
     cursor_lastfirst,
     f_unaccent(lastname || ' ' || firstname) gin_trgm_ops,
     f_unaccent(clubname || ', ' || areaname || ', ' || associationname) gin_trgm_ops,
-    f_unaccent(lastname || ' ' || firstname || clubname || ', ' || areaname || ', ' || associationname) gin_trgm_ops
+    f_unaccent(lastname || ' ' || firstname || ', ' || clubname || ', ' || areaname || ', ' || associationname) gin_trgm_ops
 );
 
 DROP INDEX if EXISTS structure_search_text;

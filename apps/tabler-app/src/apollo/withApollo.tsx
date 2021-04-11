@@ -1,7 +1,7 @@
 import { ApolloClient } from 'apollo-client';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { Features, isFeatureEnabled } from '../model/Features';
@@ -19,38 +19,44 @@ type State = {
 export function withApollo(App) {
     return class extends React.PureComponent<{}, State> {
         async componentDidMount() {
-            const client = await bootstrapApollo({
-                demoMode: await isDemoModeEnabled(),
-                noWebsocket: !isFeatureEnabled(Features.Chat),
-            });
-
-            const persistor = getApolloCachePersistor();
 
             try {
-                const currentVersion = await AsyncStorage.getItem(SCHEMA_VERSION_KEY);
+                const client = await bootstrapApollo({
+                    demoMode: await isDemoModeEnabled(),
+                    noWebsocket: !isFeatureEnabled(Features.Chat),
+                });
 
-                if (currentVersion === SCHEMA_VERSION) {
-                    // We're good to go and can restore the cache.
-                    await persistor.restore();
-                } else {
-                    // We'll want to purge the outdated persisted cache
-                    await persistor.purge();
-                    await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
-                }
-
-                await persistor.restore();
-            } catch (e) {
-                logger.error('apollo-cache', e);
+                const persistor = getApolloCachePersistor();
 
                 try {
-                    persistor.purge();
-                    await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
-                    // tslint:disable-next-line: no-empty
-                } catch { }
-            }
+                    const currentVersion = await AsyncStorage.getItem(SCHEMA_VERSION_KEY);
 
-            this.setState({ client });
-            logger.log('Loaded Apollo.');
+                    if (currentVersion === SCHEMA_VERSION) {
+                        // We're good to go and can restore the cache.
+                        await persistor.restore();
+                    } else {
+                        // We'll want to purge the outdated persisted cache
+                        await persistor.purge();
+                        await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
+                    }
+
+                    await persistor.restore();
+                } catch (e) {
+                    logger.error('apollo-cache', e);
+
+                    try {
+                        persistor.purge();
+                        await AsyncStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
+                        // tslint:disable-next-line: no-empty
+                    } catch { }
+                }
+
+                this.setState({ client });
+                logger.log('Loaded Apollo.');
+
+            } catch (oe) {
+                logger.error('apollo-cache', oe);
+            }
         }
 
         render() {

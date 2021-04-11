@@ -26,8 +26,13 @@ export class RedisLocationStorage implements ILocationStorage {
         this.context = config.context;
     }
 
+    // we make one store per family
+    makeLocationKey() {
+        return `${REDIS_KEY_POSITION}:${this.context.principal.family}`;
+    }
+
     public async locationOf(member: number): Promise<Location | undefined> {
-        const result = await this.client.geopos(REDIS_KEY_POSITION, [member.toString()]);
+        const result = await this.client.geopos(this.makeLocationKey(), [member.toString()]);
         if (result.length === 1) {
             return result[0];
         }
@@ -54,7 +59,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
             // search by geolocation in radius, store in temp_radius
             multi.georadiusbymemberStoreDistance(
-                REDIS_KEY_POSITION,
+                this.makeLocationKey(),
                 memberToMatch.toString(),
                 radius * 1000,
                 'm',
@@ -229,7 +234,7 @@ export class RedisLocationStorage implements ILocationStorage {
             this.context.logger.log('Cleaning up', removals);
             const cleanup = await this.client.multi();
 
-            cleanup.hdel(REDIS_KEY_POSITION, removals.map((r) => r.toString()));
+            cleanup.hdel(this.makeLocationKey(), removals.map((r) => r.toString()));
             cleanup.del(...removals.map((r) => REDIS_KEY_MEMBER(r)));
             cleanup.zrem(REDIS_KEY_TTL, ...removals.map((r) => r.toString()));
 
@@ -253,7 +258,7 @@ export class RedisLocationStorage implements ILocationStorage {
 
         // point
         multi.geoadd(
-            REDIS_KEY_POSITION,
+            this.makeLocationKey(),
             longitude,
             latitude,
             member.toString(),

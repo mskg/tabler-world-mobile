@@ -7,6 +7,7 @@ async function cacheGeo(client: IDataService) {
     const ds = await client.query(`
  SELECT
     member,
+    family,
     address,
     lastseen,
     speed,

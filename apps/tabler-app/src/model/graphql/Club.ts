@@ -128,8 +128,8 @@ export interface Club_Club {
   meetingplace2: Club_Club_meetingplace2 | null;
   account: Club_Club_account | null;
   board: Club_Club_board[];
-  boardassistants: Club_Club_boardassistants[] | null;
-  members: Club_Club_members[] | null;
+  boardassistants: Club_Club_boardassistants[];
+  members: Club_Club_members[];
 }
 
 export interface Club {

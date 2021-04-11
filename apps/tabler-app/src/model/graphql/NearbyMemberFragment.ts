@@ -9,6 +9,12 @@ import { RoleType, NearbyMemberState } from "./globalTypes";
 // GraphQL fragment: NearbyMemberFragment
 // ====================================================
 
+export interface NearbyMemberFragment_member_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface NearbyMemberFragment_member_club {
   __typename: "Club";
   id: string;
@@ -50,6 +56,7 @@ export interface NearbyMemberFragment_member {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: NearbyMemberFragment_member_family;
   club: NearbyMemberFragment_member_club;
   area: NearbyMemberFragment_member_area;
   association: NearbyMemberFragment_member_association;

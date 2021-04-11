@@ -1,4 +1,4 @@
-import { MockList } from 'graphql-tools';
+import { MockList } from '@graphql-tools/mock';
 import { associationNames } from '../data';
 
 // tslint:disable: variable-name
