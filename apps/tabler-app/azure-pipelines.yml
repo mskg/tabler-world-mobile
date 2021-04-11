@@ -61,7 +61,6 @@ trigger:
   paths:
     include:
       - apps/tabler-app/tsconfig.json
-      - apps/tabler-app/yarn.lock
       - apps/tabler-app/azure-pipelines.yml
       - apps/tabler-app/src/*
       - apps/tabler-app/devops/*
@@ -100,12 +99,6 @@ stages:
     - template: ./devops/yarn.yml
       parameters:
         SOURCEDIR: $(System.DefaultWorkingDirectory)
-        YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
-
-    # yarn /App
-    - template: ./devops/yarn.yml
-      parameters:
-        SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
         YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
     # Init expo environment
