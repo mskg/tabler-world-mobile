@@ -12,6 +12,7 @@ export const Structure = gql`
     type Family {
         id: ID!
         name: String!
+        logo: String
 
         associations: [Association!]!
         board: [AssociationRole!]!

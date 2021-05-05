@@ -168,8 +168,8 @@ export const StructureResolver = {
     },
 
     Association: {
-        family: (root: any, _args: any, _context: IApolloContext) => {
-            return { id: root.family };
+        family: (root: any, _args: any, context: IApolloContext) => {
+            return context.dataSources.structure.getFamily(root.family);
         },
 
         // deprecated fixture, replaced by id

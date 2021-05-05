@@ -35,6 +35,7 @@ export const SearchMember = gql`
 
     input DirectoryQueryInput {
         text: String
+        families: [ID!]
     }
 
     union SearchDirectoryResult = Association | Area | Club

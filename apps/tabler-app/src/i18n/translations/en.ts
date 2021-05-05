@@ -75,6 +75,7 @@ const en = {
         navigation: 'Directory',
         title: 'Association',
         mytitle: 'My Directory',
+        myassociations: 'My Familie\'s Associations',
         families: 'Family',
         associations: 'Association',
         clubs: 'Clubs',
@@ -730,6 +731,11 @@ const en = {
     Component_ImagePicker: {
         nocamera: 'No camera permissions granted.',
         nogallery: 'Sorry, we need camera roll permissions to make this work.',
+    },
+
+    Screen_Families: {
+        title: 'Families',
+        associations: 'Associations',
     },
 };
 

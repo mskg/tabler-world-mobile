@@ -173,6 +173,7 @@ CREATE MATERIALIZED VIEW structure_areas
 as
 select
 	id
+    ,make_key_family(data->>'hostname') as family
     ,make_key_association(
         make_key_family(data->>'hostname'),
         data->>'parent_subdomain'
@@ -289,6 +290,13 @@ CREATE MATERIALIZED VIEW structure_families
 as
 select
     id
+    ,(
+       select url
+       from assets
+       where
+            type = 'family_logo'
+        and assets.id = families.id
+    ) as logo
     ,(
         select to_jsonb(array_to_json(array_agg(r)))
         from

@@ -10,6 +10,7 @@ import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Accordion } from '../../components/Accordion';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { CachedImage } from '../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { RefreshTracker } from '../../components/RefreshTracker';
@@ -18,7 +19,7 @@ import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation'
 import { createApolloContext } from '../../helper/createApolloContext';
 import { QueryFailedError } from '../../helper/QueryFailedError';
 import { I18N } from '../../i18n/translation';
-import { Family, Family_Family } from '../../model/graphql/Family';
+import { Family, Family_Association_family } from '../../model/graphql/Family';
 import { IAppState } from '../../model/IAppState';
 import { RoleNames } from '../../model/IRole';
 import { GetFamilyQuery } from '../../queries/Structure/GetFamilyQuery';
@@ -38,7 +39,7 @@ type Props = {
 };
 
 class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInjectedProps<StructureParams & TapOnNavigationParams>, State> {
-    flatList!: FlatList<Family_Family> | null;
+    flatList!: FlatList<Family_Association_family> | null;
 
     constructor(props) {
         super(props, AuditScreenName.Associations);
@@ -65,13 +66,23 @@ class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInj
         });
     }
 
-    _renderItem = ({ item, index }: { item: Family_Family, index: number }) => {
+    _renderItem = ({ item, index }: { item: Family_Association_family, index: number }) => {
         return (
             <Card key={item.id} style={styles.card}>
 
                 <Card.Title
                     title={item.name}
                 />
+
+                {item.logo && (
+                    <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
+                        <CachedImage
+                            style={styles.image}
+                            cacheGroup="association"
+                            uri={item.logo}
+                        />
+                    </View>
+                )}
 
                 {item.board.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Screen_Structure.president} expanded={index === 0}>
@@ -102,7 +113,7 @@ class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInj
         );
     }
 
-    _key = (item: Family_Family, _index: number) => {
+    _key = (item: Family_Association_family, _index: number) => {
         return item.id;
     }
 
@@ -117,12 +128,12 @@ class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInj
                             variables={{
                                 id: this.props.screenProps?.association,
                             }}
-                            context={createApolloContext('AssocationsScreenBase')}
+                            context={createApolloContext('FamiliesScreenBase')}
                         >
                             {({ loading, error, data, refetch }) => {
                                 if (error) throw new QueryFailedError(error);
 
-                                if (!loading && (data == null || data.Family == null)) {
+                                if (!loading && (data == null || data.Association == null)) {
                                     if (this.props.offline) {
                                         return <CannotLoadWhileOffline />;
                                     }
@@ -132,13 +143,13 @@ class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInj
 
                                 return (
                                     <Placeholder
-                                        ready={data != null && data.Family != null}
+                                        ready={data != null && data.Association?.family != null}
                                         previewComponent={<CardPlaceholder />}
                                     >
                                         <FlatList
                                             ref={(r) => this.flatList = r}
                                             contentContainerStyle={styles.container}
-                                            data={data && data.Family ? [data.Family] : []}
+                                            data={data && data.Association?.family ? [data.Association?.family] : []}
 
                                             refreshing={isRefreshing || loading}
                                             onRefresh={createRunRefresh(refetch)}

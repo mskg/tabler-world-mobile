@@ -33,6 +33,7 @@ CREATE MATERIALIZED VIEW structure_search
 as
 select
     type
+    ,family
     ,id
     ,name
     ,number
@@ -42,7 +43,9 @@ from
     select
         3 as searchorder
         ,'club' as type
-        ,structure_clubs.id, structure_clubs.name || ', ' || structure_areas.name || ', ' || structure_associations.name as name
+        ,structure_clubs.family as family
+        ,structure_clubs.id,
+        structure_clubs.name || ', ' || structure_areas.name || ', ' || structure_associations.name as name
         ,'club:' || clubnumber as number
     from structure_clubs, structure_areas, structure_associations
     where
@@ -54,7 +57,9 @@ from
     select
         2
         ,'area'
-        ,structure_areas.id, structure_areas.name || ', ' || structure_associations.name
+        ,structure_areas.family as family
+        ,structure_areas.id,
+        structure_areas.name || ', ' || structure_associations.name
         ,'area:' || coalesce(nullif(regexp_replace(structure_areas.shortname, '[^0-9]', '', 'g'), ''), '-1')
     from structure_areas, structure_associations
     where structure_areas.association = structure_associations.id
@@ -64,6 +69,7 @@ from
     select
         1
         ,'assoc'
+        ,family
         ,id
         ,name
         ,'assoc:' || name

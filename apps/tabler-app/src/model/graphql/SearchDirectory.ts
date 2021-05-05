@@ -74,5 +74,6 @@ export interface SearchDirectory {
 
 export interface SearchDirectoryVariables {
   text: string;
+  families?: string[] | null;
   after?: string | null;
 }

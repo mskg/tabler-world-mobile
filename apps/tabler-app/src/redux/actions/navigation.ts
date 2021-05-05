@@ -215,3 +215,8 @@ export const showFeedback = () => NavigationActions.navigate({
     routeName: MoreRoutes.Feedback,
 });
 
+export const showFamilies = () => NavigationActions.navigate({
+    routeName: HomeRoutes.Families,
+    params: {
+    },
+});

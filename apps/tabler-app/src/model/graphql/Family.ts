@@ -7,7 +7,7 @@
 // GraphQL query operation: Family
 // ====================================================
 
-export interface Family_Family_board_member {
+export interface Family_Association_family_board_member {
   __typename: "Member";
   id: number;
   pic: string | null;
@@ -15,13 +15,13 @@ export interface Family_Family_board_member {
   lastname: string | null;
 }
 
-export interface Family_Family_board {
+export interface Family_Association_family_board {
   __typename: "AssociationRole";
   role: string;
-  member: Family_Family_board_member;
+  member: Family_Association_family_board_member;
 }
 
-export interface Family_Family_boardassistants_member {
+export interface Family_Association_family_boardassistants_member {
   __typename: "Member";
   id: number;
   pic: string | null;
@@ -29,13 +29,13 @@ export interface Family_Family_boardassistants_member {
   lastname: string | null;
 }
 
-export interface Family_Family_boardassistants {
+export interface Family_Association_family_boardassistants {
   __typename: "AssociationRole";
   role: string;
-  member: Family_Family_boardassistants_member;
+  member: Family_Association_family_boardassistants_member;
 }
 
-export interface Family_Family_regionalboard_member {
+export interface Family_Association_family_regionalboard_member {
   __typename: "Member";
   id: number;
   pic: string | null;
@@ -43,19 +43,25 @@ export interface Family_Family_regionalboard_member {
   lastname: string | null;
 }
 
-export interface Family_Family_regionalboard {
+export interface Family_Association_family_regionalboard {
   __typename: "AssociationRole";
   role: string;
-  member: Family_Family_regionalboard_member;
+  member: Family_Association_family_regionalboard_member;
 }
 
-export interface Family_Family {
+export interface Family_Association_family {
   __typename: "Family";
   id: string;
   name: string;
-  board: Family_Family_board[];
-  boardassistants: Family_Family_boardassistants[];
-  regionalboard: Family_Family_regionalboard[];
+  board: Family_Association_family_board[];
+  boardassistants: Family_Association_family_boardassistants[];
+  regionalboard: Family_Association_family_regionalboard[];
+}
+
+export interface Family_Association {
+  __typename: "Association";
+  id: string;
+  family: Family_Association_family;
 }
 
 export interface Family_Me_family {
@@ -70,7 +76,10 @@ export interface Family_Me {
 }
 
 export interface Family {
-  Family: Family_Family | null;
+  /**
+   * Giving no id returns own organization
+   */
+  Association: Family_Association | null;
   Me: Family_Me;
 }
 

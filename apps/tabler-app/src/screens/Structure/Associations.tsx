@@ -70,19 +70,19 @@ class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & Navigat
         return (
             <Card key={item.id} style={styles.card}>
 
+                <Card.Title
+                    title={item.name}
+                />
+
                 {item.logo && (
                     <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
                         <CachedImage
                             style={styles.image}
-                            cacheGroup="club"
+                            cacheGroup="association"
                             uri={item.logo}
                         />
                     </View>
                 )}
-
-                <Card.Title
-                    title={item.name}
-                />
 
                 {item.id === 'de' && (
                     <Card.Content>

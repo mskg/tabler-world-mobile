@@ -64,6 +64,14 @@ export const AssociationTabs = createMaterialTopTabNavigator(
         // animationEnabled: true,
         tabBarPosition: 'top',
         backBehavior: 'history',
+
+        tabBarOptions: {
+            scrollEnabled: true,
+            tabStyle: {
+                width: 130,
+            },
+        },
+
         // optimizationsEnabled: true,
     },
 );

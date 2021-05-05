@@ -13,7 +13,7 @@ export const SortMap = {
     table: 'D',
     role: 'E',
     sector: 'F',
-}
+};
 
 export type FilterTag = {
     type: FilterTagType,
@@ -35,8 +35,12 @@ const Element = ({ theme, title, onPress, right }: {
         </TouchableRipple>
     );
 
+type FilterProps = {
+    title, data: any[], type, filter, onToggle, theme, expanded?: boolean,
+};
+
 export const FilterSection = (
-    { title, data, type, filter, onToggle, theme },
+    { title, data, type, filter, onToggle, theme, expanded }: FilterProps,
 ) => {
     if (data.length === 0) return (<React.Fragment key={type} />);
 
@@ -44,6 +48,7 @@ export const FilterSection = (
         <Accordion
             key={type}
             title={title}
+            expanded={expanded}
         >
             {
                 data.map((value, _position) => {

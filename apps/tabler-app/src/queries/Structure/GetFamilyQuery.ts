@@ -3,28 +3,33 @@ import { MemberFragment } from '../Member/MemberFragment';
 
 export const GetFamilyQuery = gql`
   query Family ($id: ID) {
-    Family (id: $id) {
+    Association (id: $id) {
         id
-        name
 
-        board {
-            role
-            member {
-                ...MemberFragment
+        family {
+            id
+            name
+            logo
+
+            board {
+                role
+                member {
+                    ...MemberFragment
+                }
             }
-        }
 
-        boardassistants {
-            role
-            member {
-                ...MemberFragment
+            boardassistants {
+                role
+                member {
+                    ...MemberFragment
+                }
             }
-        }
 
-        regionalboard {
-            role
-            member {
-                ...MemberFragment
+            regionalboard {
+                role
+                member {
+                    ...MemberFragment
+                }
             }
         }
     }

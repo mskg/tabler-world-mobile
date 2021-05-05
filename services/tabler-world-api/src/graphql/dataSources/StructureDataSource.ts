@@ -217,6 +217,7 @@ select *
 from structure_areas
 where
     association = $1
+    order by name
 `, [assoc]);
 
                     return res.rows;
@@ -242,6 +243,7 @@ where
 select *
 from structure_associations
 where family = $1
+order by name
 `, [family]);
 
                     return res.rows;
@@ -265,7 +267,7 @@ where family = $1
                     const res = await client.query(`
 select *
 from structure_families
-`);
+order by id`);
 
                     return res.rows;
                 },

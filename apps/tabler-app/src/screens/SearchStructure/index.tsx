@@ -1,12 +1,14 @@
-import { debounce } from 'lodash';
+import { debounce, remove } from 'lodash';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { Searchbar, Theme, withTheme } from 'react-native-paper';
+import { Appbar, Searchbar, Theme, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { MetricNames } from '../../analytics/MetricNames';
 import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
+import { FilterTag, FilterTagType } from '../../components/FilterSection';
 import { StandardHeader } from '../../components/Header';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Screen } from '../../components/Screen';
@@ -14,20 +16,23 @@ import { I18N } from '../../i18n/translation';
 import { SearchDirectory_SearchDirectory_nodes } from '../../model/graphql/SearchDirectory';
 import { IAppState } from '../../model/IAppState';
 import { addStructureSearch } from '../../redux/actions/history';
-import { showAssociation, showClub, showArea } from '../../redux/actions/navigation';
+import { showArea, showAssociation, showClub } from '../../redux/actions/navigation';
 import { HeaderStyles } from '../../theme/dimensions';
 import { AssociationsList } from './AssociationsList';
+import { FilterDialog } from './FilterDialog';
 import { logger } from './logger';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 
 type State = {
     searching: boolean,
     query: string,
     debouncedQuery: string,
     update: boolean,
+
+    filterTags: FilterTag[],
+    showFilter: boolean,
 };
 
 type OwnProps = {
@@ -60,6 +65,9 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
 
         searching: false,
         update: false,
+
+        showFilter: false,
+        filterTags: [],
     };
 
     constructor(props) {
@@ -88,7 +96,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
     _searchBar!: Searchbar | null;
 
     _adjustSearch = debounce(
-        (text) => {
+        (text, filters: FilterTag[]) => {
             if (!this.mounted) {
                 // due to async nature, we can already be unmounted
                 return;
@@ -103,6 +111,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
                 searching: true,
                 debouncedQuery: text,
                 update: !this.state.update,
+                filterTags: filters || [],
             });
         },
         250,
@@ -122,7 +131,7 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
             this._clearSearch();
         } else {
             this.setState({ query: text });
-            this._adjustSearch(text);
+            this._adjustSearch(text, this.state.filterTags);
         }
     }
 
@@ -143,6 +152,48 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
         // this.props.showProfile(item.id);
     }
 
+    _showFilterDialog = () => {
+        this.audit.increment(MetricNames.ShowFilterDialog);
+
+        if (this._searchBar) { this._searchBar.blur(); }
+        this.setState({ showFilter: !this.state.showFilter });
+    }
+
+    _onToggleFamily = (type: FilterTagType, value: string, id?: string) => {
+        const tags = this._onToggleTag(type, value, id, false);
+
+        const family = tags.filter((t) => t.type === 'family');
+        if (family.length > 0 || family.length === 0) {
+            remove(tags, (f: FilterTag) =>
+                f.type === 'association' || f.type === 'role' || f.type === 'area' || f.type === 'table');
+        }
+
+        this._adjustSearch(this.state.query, tags);
+    }
+
+    _onToggleTag = (type: FilterTagType, value: string, id?: string, refresh = true): FilterTag[] => {
+        logger.debug('toggle', type, value);
+
+        // @ts-ignore range is supported
+        this.audit.increment(`Toggle ${type}`);
+
+        const tags = [...this.state.filterTags];
+
+        if (remove(tags, (f: FilterTag) => f.type === type && f.value === value).length === 0) {
+            tags.push({
+                type,
+                value,
+                id,
+            });
+        }
+
+        if (refresh) {
+            this._adjustSearch(this.state.query, tags);
+        }
+
+        return tags;
+    }
+
     render() {
         return (
             <Screen>
@@ -160,9 +211,22 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
                 {this.state.searching && !this.props.offline && (
                     <OnlineSearchQuery
                         query={this.state.debouncedQuery}
+                        filterTags={this.state.filterTags}
                         itemSelected={this._itemSelected}
                     />
                 )}
+
+
+                <FilterDialog
+                    filterTags={this.state.filterTags}
+                    toggleFamily={this._onToggleFamily}
+                    toggleTag={this._onToggleTag}
+
+                    visible={this.state.showFilter}
+                    hide={() => this.setState({ showFilter: false })}
+                    clear={this._clearSearch}
+                />
+
 
                 <StandardHeader
                     style={[HeaderStyles.topBar, { backgroundColor: this.props.theme.colors.primary }]}
@@ -181,6 +245,11 @@ class SearchStructureScreenBase extends AuditedScreen<Props, State> {
                                     onChangeText={(text) => this.searchFilterFunction(text)}
                                 />
                             </View>
+                            <Appbar.Action
+                                color={this.props.theme.dark ? 'white' : 'black'}
+                                icon={'filter-list'}
+                                onPress={this._showFilterDialog}
+                            />
                         </View>
                     )}
                 />
