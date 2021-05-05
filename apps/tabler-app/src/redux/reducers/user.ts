@@ -34,9 +34,9 @@ export function userReducer(
             let userColor = ___DONT_USE_ME_DIRECTLY___COLOR_RTI;
 
             if (action.payload.username.match(/ladiescircle/ig)) {
-                accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_LCI;
+                userColor = ___DONT_USE_ME_DIRECTLY___COLOR_LCI;
             } else if (action.payload.username.match(/41er/ig)) {
-                accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_C41;
+                userColor = ___DONT_USE_ME_DIRECTLY___COLOR_C41;
             }
 
             return {

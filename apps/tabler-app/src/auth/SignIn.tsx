@@ -98,6 +98,10 @@ class SignInBase extends AuditedScreen<Props, State> {
         return uuid4();
     }
 
+    componentDidMount() {
+        setTimeout(() => this.props.setColor('rti'));
+    }
+
     async signIn(doThrow = false) {
         const { username } = this.state;
         logger.debug('Try sign In for', username);

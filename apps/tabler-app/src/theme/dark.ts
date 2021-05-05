@@ -1,8 +1,9 @@
-import { DarkTheme, Theme } from 'react-native-paper';
+import { DarkTheme } from 'react-native-paper';
+import { AppTheme } from './AppTheme';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR } from './colors';
 import { light } from './light';
 
-export const dark: Theme & { colors: { notification, navigation } } = {
+export const dark: AppTheme = {
     ...DarkTheme,
     roundness: 2,
     fonts: light.fonts,

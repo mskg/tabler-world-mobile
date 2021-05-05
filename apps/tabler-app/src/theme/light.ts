@@ -1,7 +1,8 @@
-import { Colors, DefaultTheme, Theme } from 'react-native-paper';
+import { Colors, DefaultTheme } from 'react-native-paper';
+import { AppTheme } from './AppTheme';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR } from './colors';
 
-export const light: Theme & { colors: { notification, navigation } } = {
+export const light: AppTheme = {
     ...DefaultTheme,
     roundness: 2,
     dark: false,
@@ -30,3 +31,5 @@ export const light: Theme & { colors: { notification, navigation } } = {
         notification: 'red',
     },
 };
+
+
