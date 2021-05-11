@@ -20,7 +20,7 @@
         "graphql-subscriptions": "^1.1.0",
         "ioredis": "^4.16.0",
         "iterall": "1.2.2",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.21",
         "ulid": "^2.3.0",
         "uuid": "^3.4.0"
     },

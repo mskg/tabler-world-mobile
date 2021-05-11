@@ -34,7 +34,7 @@
         "ioredis": "^4.16.0",
         "iterall": "1.2.2",
         "latlon-geohash": "1.1.0",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.21",
         "pg": "^7.18.1",
         "redis": "^3.0.2",
         "serverless-plugin-metric": "^1.2.2",
