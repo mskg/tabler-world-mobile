@@ -300,6 +300,60 @@ functions:
             mode: incremental
             type: archivedMembers
 
+      # 41 International
+      - schedule:
+          name: ${self:service}-c41-members-${self:custom.stage}
+          description: Update members from 41ER.WORLD
+
+          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: c41
+            type: members
+            mode: incremental
+            offset: 0
+            maxRecords: 5000
+
+      - schedule:
+          name: ${self:service}-c41-clubs-${self:custom.stage}
+          description: Update clubs from 41ER.WORLD
+
+          rate: cron(59 23 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: c41
+            mode: full
+            type: clubs
+            offset: 0
+            maxRecords: 5000
+
+      - schedule:
+          name: ${self:service}-c41-structure-${self:custom.stage}
+          description: Updates structure from 41ER.WORLD
+
+          rate: cron(00 23 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: c41
+            mode: full
+            type: structure
+            noRefreshViews: true
+            noUpdateCache: true
+
+      - schedule:
+          name: ${self:service}-c41-members-archived-${self:custom.stage}
+          description: Remove archived members from 41ER.WORLD
+
+          rate: cron(00 02 * * ? *)
+          enabled: ${self:custom.cron_enabled.${self:custom.stage}}
+
+          input:
+            target: c41
+            mode: incremental
+            type: archivedMembers
   #
   # Cache update
   #

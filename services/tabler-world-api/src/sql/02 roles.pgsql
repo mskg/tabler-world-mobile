@@ -106,6 +106,20 @@ where
         family = 'lci'
     and type = 'family'
     AND name <> 'Associations'
+UNION ALL
+select
+    'c41',
+    'family'
+    ,NULL
+    ,'41 International'
+    ,id
+    ,name
+from
+    structure_groups
+where
+        family = 'c41'
+    and type = 'family'
+    AND name <> 'Associations'
 ;
 
 ------------------------------

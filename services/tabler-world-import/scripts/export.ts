@@ -4,6 +4,7 @@ import { createWriteToDatabaseHandler } from '../src/reader/helper/createWriteTo
 import { downloadChunk } from '../src/reader/helper/downloadChunk';
 import { fetchParallel } from '../src/reader/helper/fetchParallel';
 import { JobType } from '../src/reader/types/JobType';
+import { TargetTypes } from '../src/reader/types/TargetType';
 
 
 let fileName = 0;
@@ -13,7 +14,7 @@ let fileName = 0;
 // }
 
 async function handleChunk(data: any[]) {
-    writeFileSync(__dirname + `/out-${++fileName}.json`, JSON.stringify(data, null, 4));
+    writeFileSync(`${__dirname}/out-${++fileName}.json`, JSON.stringify(data, null, 4));
 }
 
 function createHandler(db = true) {
@@ -45,11 +46,12 @@ async function test() {
     // const method = 'POST';
 
     const handler = createHandler();
+    const target: TargetTypes = 'c41';
 
-    const firstChunk = await downloadChunk(url, 25, method, payload);
+    const firstChunk = await downloadChunk(target, url, 25, method, payload);
     if (firstChunk != null) {
         await handler(firstChunk.data);
-        await fetchParallel(firstChunk, handler, 25, method, payload);
+        await fetchParallel(target, firstChunk, handler, 25, method, payload);
     }
 }
 

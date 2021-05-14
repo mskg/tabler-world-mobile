@@ -1,9 +1,9 @@
 import { AnyJobType } from './AnyJobType';
 import { AnyOperationMode } from './AnyOperationMode';
-import { TargetType } from './TargetType';
+import { TargetTypes } from './TargetType';
 
 export type ImportEvent = {
-    target: TargetType,
+    target: TargetTypes,
 
     type: AnyJobType;
     mode: AnyOperationMode;

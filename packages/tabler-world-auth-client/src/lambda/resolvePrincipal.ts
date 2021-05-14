@@ -61,6 +61,7 @@ export async function resolvePrincipal(client: IDataService, event: APIGatewayPr
             || (
                 resolvedPrincipal.family !== Family.RTI
                 && resolvedPrincipal.family !== Family.LCI
+                && resolvedPrincipal.family !== Family.C41
             )
         ) {
             throw new AuthenticationError('Authorizer: Context (v1.2) not complete');

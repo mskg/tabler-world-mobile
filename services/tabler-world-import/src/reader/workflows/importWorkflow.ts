@@ -5,10 +5,10 @@ import { createWriteToDatabaseHandler } from '../helper/createWriteToDatabaseHan
 import { downloadChunk } from '../helper/downloadChunk';
 import { fetchParallel } from '../helper/fetchParallel';
 import { WorkflowResult } from './workflowType';
-import { TargetType } from '../types/TargetType';
+import { TargetTypes } from '../types/TargetType';
 
 export async function importWorkflow(
-    type: JobType, target: TargetType,
+    type: JobType, target: TargetTypes,
     url: string, method: string, postData: any,
     limit: number, offset: number = 0, maxRecords: number = Infinity.valueOf(),
 ): Promise<WorkflowResult> {

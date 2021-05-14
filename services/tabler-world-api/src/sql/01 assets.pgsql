@@ -276,7 +276,7 @@ INSERT INTO assets (type, id, url) VALUES
     ('family_logo', 'lci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/lci.png'),
     ('family_logo', 'aci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/aci.png'),
     ('family_logo', 'tci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/tci.png'),
-    ('family_logo', '41er', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/41er.png')
+    ('family_logo', 'c41', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/41er.png')
 
 
 ON CONFLICT (type, id)

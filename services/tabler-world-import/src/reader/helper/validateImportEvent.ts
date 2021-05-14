@@ -1,4 +1,5 @@
 import { JobType } from '../types/JobType';
+import { TargetType } from '../types/TargetType';
 
 /**
  * Check if we have a valid ImportEvent
@@ -20,7 +21,7 @@ export function validateImportEvent(payload: any) {
         throw new Error(`Invalid maxRecords ${payload.maxRecords}`);
     }
 
-    if (payload.target !== 'lci' && payload.target !== 'rti') {
+    if (payload.target !== TargetType.RTI && payload.target !== TargetType.LCI && payload.target !== TargetType.C41) {
         throw new Error(`Invalid target ${payload.target}`);
     }
 }

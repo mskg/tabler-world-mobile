@@ -21,8 +21,9 @@ select
 				where
 				    tr.id = tabler.id
 				and
-					    function in (4306, 4307) -- rti, member, honorary
-					or  function in (82538, 82542) -- lci, member, honorary
+					    function in (4306, 4307) -- rti: member, honorary
+					or  function in (82538, 82542) -- lci: member, honorary
+                    or  function in (28408, 28411) -- c41: member, honorary
                     or  function < 100 -- rti, board
 				)
 		THEN

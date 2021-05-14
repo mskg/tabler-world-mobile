@@ -52,7 +52,8 @@ select
         ),
         data->>'parent_subdomain'
      ) as area
-	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
+--	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
+    ,cast(coalesce(nullif(regexp_replace(data->>'subdomain','[^0-9]+','','g'), ''), '1') as integer) clubnumber
     ,data->>'name' as name
     ,make_short_reference(
         make_key_family(data->>'hostname'),
@@ -159,8 +160,9 @@ where
     or data->>'rt_status' = 'preparation'
 order by 2, 3, 6;
 
-create unique index idx_structure_club_assoc_club on
-structure_clubs (association, clubnumber);
+-- not unique anymore due to C41 data
+-- create unique index idx_structure_club_assoc_club on
+-- structure_clubs (association, clubnumber);
 
 create unique index idx_structure_club_id on
 structure_clubs (id);
@@ -227,13 +229,23 @@ CREATE MATERIALIZED VIEW structure_associations
 as
 select
     id
-    ,data->>'parent_subdomain' as family
-    ,data->>'name' as name
+    ,case
+        when data->>'parent_subdomain' = '41int' then 'c41'
+        else data->>'parent_subdomain'
+    end as family
+    ,case
+        when id like 'c41_%' then coalesce(split_part(data->>'name', ' | ', 1), data->>'name')
+        else data->>'name'
+    end as name
     ,case
         when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
         else data->>'logo'
      end as logo
-    ,make_short_reference(data->>'parent_subdomain', 'assoc', id) as shortname
+    ,make_short_reference(
+        case
+            when data->>'parent_subdomain' = '41int' then 'c41'
+            else data->>'parent_subdomain'
+        end, 'assoc', id) as shortname
    ,(
        select url
        from assets

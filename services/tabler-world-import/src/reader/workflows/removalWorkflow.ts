@@ -4,11 +4,11 @@ import { fetchParallel } from '../helper/fetchParallel';
 import { ChangePointer } from '../types/ChangePointer';
 import { JobType } from '../types/JobType';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
-import { TargetType } from '../types/TargetType';
+import { TargetTypes } from '../types/TargetType';
 import { WorkflowResult } from './workflowType';
 
 export async function removalWorkflow(
-    type: JobType, target: TargetType,
+    type: JobType, target: TargetTypes,
     url: string, method: string, postData: any,
     limit: number, offset: number = 0, maxRecords: number = Infinity.valueOf(),
 ): Promise<WorkflowResult> {

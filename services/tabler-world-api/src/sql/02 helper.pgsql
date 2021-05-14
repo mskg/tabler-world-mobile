@@ -6,7 +6,7 @@ SET ROLE 'tw_read_dev';
 
 CREATE or replace FUNCTION remove_key_family (val text) returns text as $$
 BEGIN
-    return regexp_replace(val, 'rti_|lci_|41i_|tci_', '', 'g');
+    return regexp_replace(val, 'rti_|lci_|c41_|tci_', '', 'g');
 END;
 $$
 LANGUAGE plpgsql;
@@ -15,6 +15,10 @@ CREATE or replace FUNCTION make_key_family (val text) returns text as $$
 BEGIN
     if strpos(lower(val), 'ladiescircle') > 0 then
         return 'lci';
+    end if;
+
+    if strpos(lower(val), '41er') > 0 then
+        return 'c41';
     end if;
 
     return 'rti';
@@ -31,14 +35,16 @@ LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_area (assoc text, val text) returns text as $$
 BEGIN
-    return assoc || '_' || replace(val, '-' || public.remove_key_family(assoc), '');
+-- replace(val, '-' || public.remove_key_family(assoc), '');
+    return assoc || '_' || split_part(val, '-', 1);
 END;
 $$
 LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_club (assoc text, val text) returns text as $$
 BEGIN
-    return assoc || '_' || replace(val, '-' || public.remove_key_family(assoc), '');
+--    replace(val, '-' || public.remove_key_family(assoc), '');
+    return assoc || '_' || split_part(val, '-', 1);
 END;
 $$
 LANGUAGE plpgsql;
@@ -77,16 +83,23 @@ BEGIN
     if family = 'lci' then
         case
             when type = 'family' then result = 'LCI';
-            when type = 'assoc' then result = 'LC' || upper(corrected);
+            when type = 'assoc' then result = 'LC ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'LC' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'LC ' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    ELSIF family = 'c41' then
+        case
+            when type = 'family' then result = '41I';
+            when type = 'assoc' then result = '41I ' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = '41I ' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     else
         case
             when type = 'family' then result = 'RTI';
-            when type = 'assoc' then result = 'RT' || upper(corrected);
+            when type = 'assoc' then result = 'RT ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'RT ' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     end if;
 

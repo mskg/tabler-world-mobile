@@ -86,10 +86,10 @@ export const ParametersResolver = {
                         profile: 'https://lci.ladiescircle.world/#lang#/members/#id#/',
                         world_whitelist: ['*.ladiescircle.world'],
                     });
-                } else if (context.principal.family === Family.OTI) {
+                } else if (context.principal.family === Family.C41) {
                     findMerge(overrides, 'urls', {
-                        world: 'https://41int.41er.world/#lang#/',
-                        profile: 'https://41int.41er.world/#lang#/members/#id#/',
+                        world: 'https://c41nt.41er.world/#lang#/',
+                        profile: 'https://c41nt.41er.world/#lang#/members/#id#/',
                         world_whitelist: ['*.41er.world'],
                     });
                 }

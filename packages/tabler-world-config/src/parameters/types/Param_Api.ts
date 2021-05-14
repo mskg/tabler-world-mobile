@@ -4,6 +4,7 @@ export type Param_Api = {
     keys: {
         rti: string,
         lci: string,
+        c41: string,
     };
 
     batch: number;

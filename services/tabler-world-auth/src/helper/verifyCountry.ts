@@ -4,7 +4,11 @@ export function verifyCountry(email: string) {
     }
 
     const allowed = process.env.allowed_countries?.split(',') || [];
-    const found = allowed.find((ext) => email.endsWith(`-${ext}.roundtable.world`) || email.endsWith(`-${ext}.ladiescircle.world`));
+    const found = allowed.find((ext) =>
+        email.endsWith(`-${ext}.roundtable.world`)
+        || email.endsWith(`-${ext}.ladiescircle.world`)
+        || email.endsWith(`-${ext}.41er.world`),
+    );
 
     if (!found) {
         console.error('[verifyCountry]', email, 'unkown country');

@@ -21,6 +21,8 @@ where data->>'rt_generic_email' = $1
         let community = 5;
         if (email.match(/ladiescircle/ig)) {
             community = 4335;
+        } else if (email.match(/41er/ig)) {
+            community = 1414;
         }
 
         const foundId = await new Promise((resolve) => {

@@ -135,7 +135,7 @@ export const StructureResolver = {
                 case Family.LCI:
                     return 'Ladies Circle International';
 
-                case Family.OTI:
+                case Family.C41:
                     return '41 International';
 
                 default:

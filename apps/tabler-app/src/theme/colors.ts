@@ -8,7 +8,7 @@ export const ___DONT_USE_ME_DIRECTLY___COLOR_LCI = '#272A69';
 export const ___DONT_USE_ME_DIRECTLY___COLOR_AGORA = '#477A39';
 
 // contrast 1.6
-export const ___DONT_USE_ME_DIRECTLY___COLOR_C41 = '#2D5D96';
+export const ___DONT_USE_ME_DIRECTLY___COLOR_41I = '#2D5D96';
 
 // contrast > 5
 export const ___DONT_USE_ME_DIRECTLY___COLOR_TANGENT = '#BFBEBD';

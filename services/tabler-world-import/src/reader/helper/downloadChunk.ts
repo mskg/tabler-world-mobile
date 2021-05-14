@@ -2,7 +2,7 @@ import { getParameters, Param_Api } from '@mskg/tabler-world-config';
 import { parse } from 'url';
 import { HttpClient } from '../../shared/HttpClient';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
-import { TargetType } from '../types/TargetType';
+import { TargetTypes } from '../types/TargetType';
 
 /**
  * Download a TablerWorldApiChunk from the given url.
@@ -11,7 +11,7 @@ import { TargetType } from '../types/TargetType';
  * @param method
  * @param postdata
  */
-export async function downloadChunk(target: TargetType, url: string, limit: number, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
+export async function downloadChunk(target: TargetTypes, url: string, limit: number, method?: string, postdata?: string): Promise<TablerWorldApiChunk> {
     const params = await getParameters('tw-api');
     const api = JSON.parse(params['tw-api']) as Param_Api;
 

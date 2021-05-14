@@ -1,4 +1,4 @@
-import { ___DONT_USE_ME_DIRECTLY___COLOR_C41, ___DONT_USE_ME_DIRECTLY___COLOR_LCI, ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../../theme/colors';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_41I, ___DONT_USE_ME_DIRECTLY___COLOR_LCI, ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../../theme/colors';
 import * as actions from '../actions/user';
 import { INITIAL_STATE } from '../initialState';
 
@@ -21,7 +21,7 @@ export function userReducer(
             if (action.payload === 'lci') {
                 accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_LCI;
             } else if (action.payload === 'c41') {
-                accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_C41;
+                accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_41I;
             }
 
             return {
@@ -36,7 +36,7 @@ export function userReducer(
             if (action.payload.username.match(/ladiescircle/ig)) {
                 userColor = ___DONT_USE_ME_DIRECTLY___COLOR_LCI;
             } else if (action.payload.username.match(/41er/ig)) {
-                userColor = ___DONT_USE_ME_DIRECTLY___COLOR_C41;
+                userColor = ___DONT_USE_ME_DIRECTLY___COLOR_41I;
             }
 
             return {
