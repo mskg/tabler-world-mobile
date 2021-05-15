@@ -12,7 +12,9 @@ import { RoleType, CompanySector } from "./globalTypes";
 export interface OfflineMembers_OwnTable_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface OfflineMembers_OwnTable_club {
@@ -46,7 +48,6 @@ export interface OfflineMembers_OwnTable_roles_ref {
 export interface OfflineMembers_OwnTable_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: OfflineMembers_OwnTable_roles_ref;
 }
@@ -151,7 +152,9 @@ export interface OfflineMembers_OwnTable {
 export interface OfflineMembers_FavoriteMembers_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface OfflineMembers_FavoriteMembers_club {
@@ -185,7 +188,6 @@ export interface OfflineMembers_FavoriteMembers_roles_ref {
 export interface OfflineMembers_FavoriteMembers_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: OfflineMembers_FavoriteMembers_roles_ref;
 }

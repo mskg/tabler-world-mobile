@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { ClubAvatar } from '../../../components/ClubAvatar';
 import { ClubsMap_Clubs } from '../../../model/graphql/ClubsMap';
 import { showClub } from '../../../redux/actions/navigation';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_PIN, ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../../../theme/colors';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_PIN } from '../../../theme/colors';
+import { getFamilyColor } from '../../../theme/getFamilyColor';
 import { Pin } from './Pin';
 
 type Props = {
@@ -29,7 +30,7 @@ class MarkerBase extends React.Component<Props> {
 
     _color = () => {
         // this is too close to the yellow on the map
-        if (!this.props.theme.dark && this.props.theme.colors.accent === ___DONT_USE_ME_DIRECTLY___COLOR_RTI) {
+        if (!this.props.theme.dark && this.props.theme.colors.accent === getFamilyColor('rti')) {
             return ___DONT_USE_ME_DIRECTLY___COLOR_PIN;
         }
 
@@ -48,7 +49,11 @@ class MarkerBase extends React.Component<Props> {
             >
                 <Pin
                     color={this._color()}
-                    text={this.props.club.clubnumber.toString()}
+                    text={
+                        this.props.club.clubnumber !== 0
+                            ? this.props.club.clubnumber.toString()
+                            : this.props.club.name.substring(0, 2).toUpperCase()
+                    }
                 />
 
                 {customCallout &&
@@ -65,7 +70,11 @@ class MarkerBase extends React.Component<Props> {
                         <ClubAvatar
                             theme={this.props.theme}
                             source={this.props.club.logo}
-                            label={this.props.club.clubnumber.toString()}
+                            label={
+                                this.props.club.clubnumber !== 0
+                                    ? this.props.club.clubnumber.toString()
+                                    : this.props.club.name.substring(0, 2).toUpperCase()
+                            }
                             size={150}
                             style={{
                                 elevation: 0,

@@ -14,6 +14,7 @@ select
 			-- data->>'rt_status' = 'active'
 				data->>'rt_is_guest' = 'false'
 			and data->>'permission_level' = 'can_login'
+            and coalesce(data->>'is_deceased', 'false') = 'false'
 			--member
 			and id in (
 				select id
@@ -116,7 +117,10 @@ select
 	,(
 		select value
 		from jsonb_array_elements(data->'address') t
-		where t.value @> '{"address_type": 5}' or t.value @> '{"address_type": 4335}'
+		where
+                t.value @> '{"address_type": 5}'    -- rti
+             or t.value @> '{"address_type": 4335}' -- lci
+             or t.value @> '{"address_type": 1414}' -- c41
 		limit 1
 	) as address
 	,(

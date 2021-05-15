@@ -50,7 +50,9 @@ export interface MembersByAreas_Me {
 export interface MembersByAreas_MembersOverview_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface MembersByAreas_MembersOverview_club {
@@ -83,7 +85,6 @@ export interface MembersByAreas_MembersOverview_roles_ref {
 export interface MembersByAreas_MembersOverview_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: MembersByAreas_MembersOverview_roles_ref;
 }

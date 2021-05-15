@@ -1,4 +1,3 @@
-import { reverse } from 'lodash';
 import { RecordType } from '../../shared/RecordType';
 import { TargetType } from '../types/TargetType';
 
@@ -14,18 +13,27 @@ const determineFamily = (r: any) => {
     return TargetType.RTI;
 };
 
-const associationPK = (r: any) => `${determineFamily(r.hostname)}_${r.subdomain}`;
-const clubPK = (r: any) => {
-    const family = determineFamily(r.hostname);
+const removeLast = (s: string, delim: string = '-') => {
+    const splitted = s.split(delim);
+    const last = splitted.pop();
 
-    const parts = r.subdomain.split('-');
-    const assoc = parts[1];
-    const club = parts[0];
-
-    return `${family}_${assoc}_${club}`;
+    return {
+        last,
+        first: splitted.join(delim),
+    };
 };
 
-const areaPK = (r: any) => `${determineFamily(r.hostname)}_${reverse(r.subdomain.split('-')).join('_')}`;
+˚const associationPK = (r: any) => `${determineFamily(r.hostname)}_${r.subdomain}`;
+const clubPK = (r: any) => {
+    const family = determineFamily(r.hostname);
+    const parts = removeLast(r.subdomain);
+
+    return `${family}_${parts.last}_${parts.first}`;
+};
+
+// const areaPK = (r: any) => `${determineFamily(r.hostname)}_${reverse(r.subdomain.split('-')).join('_')}`;
+const areaPK = clubPK;
+
 const memberPK = (r: any) => r.id;
 const familyPK = (r: any) => {
     // does not match name in our records

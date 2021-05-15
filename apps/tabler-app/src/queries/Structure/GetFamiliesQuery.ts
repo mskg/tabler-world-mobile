@@ -3,6 +3,13 @@ import { MemberFragment } from '../Member/MemberFragment';
 
 export const GetFamiliesQuery = gql`
   query Families {
+    Me {
+        id
+        family {
+            id
+        }
+    }
+
     Families {
       id
       name

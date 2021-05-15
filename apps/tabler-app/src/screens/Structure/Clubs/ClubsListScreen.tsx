@@ -16,10 +16,13 @@ import { Placeholder } from '../../../components/Placeholder/Placeholder';
 import { RefreshTracker } from '../../../components/RefreshTracker';
 import { TapOnNavigationParams } from '../../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../../helper/cache/withCacheInvalidation';
+import { createApolloContext } from '../../../helper/createApolloContext';
 import { filterData } from '../../../helper/filterData';
+import { QueryFailedError } from '../../../helper/QueryFailedError';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
 import { Clubs, ClubsVariables, Clubs_Clubs } from '../../../model/graphql/Clubs';
+import { IAppState } from '../../../model/IAppState';
 import { GetClubsQuery } from '../../../queries/Structure/GetClubsQuery';
 import { homeScreen, showClub } from '../../../redux/actions/navigation';
 import { CardPlaceholder } from '../CardPlaceholder';
@@ -28,9 +31,6 @@ import { StructureParams } from '../StructureParams';
 import { styles } from '../Styles';
 import { Routes } from './Routes';
 import { Tab } from './Tab';
-import { IAppState } from '../../../model/IAppState';
-import { QueryFailedError } from '../../../helper/QueryFailedError';
-import { createApolloContext } from '../../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -96,17 +96,14 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
     _renderItem = (params) => {
         const item: Clubs_Clubs = params.item;
-
-        // remove RT
-        const name = item.name.substring(item.name.indexOf(' ') + 1);
         const showClubFunc = () => this.props.showClub(item.id);
 
         return (
             <Card style={styles.card}>
                 <CardTitle
-                    title={name}
-                    subtitle={`${item.area.name}, ${item.association.name}`}
-                    avatar={item.clubnumber}
+                    title={item.displayname}
+                    subtitle={`${item.area.name}, ${item.association.name}, ${item.family.name}`}
+                    avatar={item.clubnumber !== 0 ? item.clubnumber : item.displayname.substring(0, 2).toUpperCase()}
                 />
 
                 {item.logo && (

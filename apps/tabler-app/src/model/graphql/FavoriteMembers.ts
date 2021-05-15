@@ -12,7 +12,9 @@ import { RoleType, CompanySector } from "./globalTypes";
 export interface FavoriteMembers_FavoriteMembers_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface FavoriteMembers_FavoriteMembers_club {
@@ -46,7 +48,6 @@ export interface FavoriteMembers_FavoriteMembers_roles_ref {
 export interface FavoriteMembers_FavoriteMembers_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: FavoriteMembers_FavoriteMembers_roles_ref;
 }

@@ -11,9 +11,19 @@ import { MemberTitle } from './MemberTitle';
 import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
 
-const Embedded = ({ name, flag, ...props }) => {
+const Embedded = ({ name, flag, family, icon, ...props }) => {
     return (
         <View style={{ flexDirection: 'row' }}>
+            {icon && (
+                <View style={[styles.icon /*, { backgroundColor: getFamilyColor(family) }*/]}>
+                    <CachedImage
+                        cacheGroup="family"
+                        resizeMode="cover"
+                        uri={icon}
+                    />
+                </View>
+            )}
+
             {flag && (
                 <View style={styles.flag}>
                     <CachedImage
@@ -99,7 +109,7 @@ export class MemberListItem extends React.PureComponent<Props> {
                 onPress={this._onPress}
                 height={this.props.height}
                 title={this.props.title || <MemberTitle member={this.props.member} />}
-                subtitle={this.props.subtitle || <Embedded flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
+                subtitle={this.props.subtitle || <Embedded family={this.props.member?.family?.id} icon={this.props.member?.family?.icon} flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
                 left={this.props.left || this._left}
                 right={this.props.right || this._right}
                 bottom={this.props.bottom || this._renderBottom}

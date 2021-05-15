@@ -1,12 +1,12 @@
+import color from 'color';
 import React from 'react';
 import { View } from 'react-native';
 import { Chip, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { CachedImage } from '../../components/Image/CachedImage';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
-import { showArea, showAssociation, showClub } from '../../redux/actions/navigation';
+import { showArea, showAssociation, showClub, showFamily } from '../../redux/actions/navigation';
 import { styles } from './Styles';
-import color from 'color';
 
 type Props = {
     member: IMemberOverviewFragment,
@@ -14,6 +14,7 @@ type Props = {
     showClub: typeof showClub,
     showAssociation: typeof showAssociation,
     showArea: typeof showArea,
+    showFamily: typeof showFamily,
 };
 
 class OrganizationBase extends React.PureComponent<Props> {
@@ -57,6 +58,24 @@ class OrganizationBase extends React.PureComponent<Props> {
                 >
                     {this.props.member.association.name}
                 </Chip>
+                <Chip
+                    style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
+                    selectedColor={textColor}
+                    avatar={this.props.member.family.icon ? (
+                        <View>
+                            <CachedImage
+                                style={{ width: 24, height: 24, borderRadius: 12 }}
+                                cacheGroup={'other'}
+                                uri={this.props.member.family.icon}
+                                resizeMode={'cover'}
+                            />
+                        </View>
+                    ) : undefined
+                    }
+                    onPress={() => this.props.showFamily(this.props.member.family.id)}
+                >
+                    {this.props.member.family.name}
+                </Chip>
             </View >
         );
     }
@@ -64,6 +83,6 @@ class OrganizationBase extends React.PureComponent<Props> {
 
 export const Organization = connect(
     undefined,
-    { showClub, showAssociation, showArea },
+    { showClub, showAssociation, showFamily, showArea },
 )(
     withTheme(OrganizationBase));

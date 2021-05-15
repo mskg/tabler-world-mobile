@@ -19,18 +19,18 @@ export const DefaultMemberColumns = [
     'family',
 
     'association',
-    'associationshortname',
-    'associationname',
-    'associationflag',
+    // 'associationshortname',
+    // 'associationname',
+    // 'associationflag',
 
     'area',
-    'areaname',
-    'areashortname',
+    // 'areaname',
+    // 'areashortname',
 
     'club',
-    'clubnumber',
-    'clubname',
-    'clubshortname',
+    // 'clubnumber',
+    // 'clubname',
+    // 'clubshortname',
 
     'roles',
 ];

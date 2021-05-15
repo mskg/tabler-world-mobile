@@ -116,7 +116,7 @@ class AssociationsListBase extends React.Component<Props> {
                                                         source={r.flag}
                                                         size={48}
                                                     />
-                                                    <Caption numberOfLines={1}>{r.name.replace(/RT\s/ig, '')}</Caption>
+                                                    <Caption numberOfLines={1}>{r.name.replace(/^(41|RT|LC)\s/ig, '').trim()}</Caption>
                                                 </View>
                                             </TouchableRipple>
                                         ))}

@@ -11,6 +11,20 @@ export const styles = StyleSheet.create({
         height: 10,
     },
 
+    icon: {
+        marginRight: 4,
+        marginTop: 0,
+
+        // width: 13,
+        // height: 13,
+        // borderRadius: 13 / 2,
+
+        marginTop: 2,
+        width: 10,
+        height: 10,
+        borderRadius: 10 / 2,
+    },
+
     cardTitle: {
         height: ITEM_HEIGHT - (Platform.OS == 'ios' ? 0 : 8),
         // width: ITEM_WIDTH

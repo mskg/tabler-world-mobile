@@ -2,6 +2,7 @@ import { Family } from '@mskg/tabler-world-auth-client';
 import { AuditAction } from '@mskg/tabler-world-common';
 import _ from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
+import { fixC41AssociationName } from '../helper/fixC41AssociationName';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -42,42 +43,20 @@ export const MemberResolver = {
             return id;
         },
 
-        area: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                id: root.area,
-                association: root.association,
-                name: root.areaname,
-                shortname: root.areashortname,
-            };
+        area: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getArea(root.area);
         },
 
-        club: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                id: root.club,
-                // -- DEPRECATED --
-                club: root.clubnumber,
-                clubnumber: root.clubnumber,
-                name: root.clubname,
-                shortname: root.clubshortname,
-                association: root.association,
-                area: root.area,
-                family: root.family,
-            };
+        club: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getClub(root.club);
         },
 
-        association: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                name: root.associationname,
-                id: root.association,
-                shortname: root.associationshortname,
-                flag: root.associationflag,
-            };
+        association: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getAssociation(root.association);
         },
 
-        family: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                id: root.family,
-            };
+        family: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getFamily(root.family);
         },
 
         // only deliver it, if it contains usable data
@@ -95,7 +74,7 @@ export const MemberResolver = {
     // compatibility
     RoleRef: {
         name: (root: any, _args: any, context: IApolloContext) => {
-            return byVersion({
+            const originalName = byVersion({
                 context,
                 mapVersion: v12Check,
 
@@ -104,6 +83,8 @@ export const MemberResolver = {
                     default: () => root.name,
                 },
             });
+
+            return fixC41AssociationName(originalName);
         },
     },
 

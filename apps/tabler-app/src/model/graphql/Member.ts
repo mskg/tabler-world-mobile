@@ -12,7 +12,9 @@ import { RoleType, CompanySector } from "./globalTypes";
 export interface Member_Member_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface Member_Member_club {
@@ -46,7 +48,6 @@ export interface Member_Member_roles_ref {
 export interface Member_Member_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: Member_Member_roles_ref;
 }

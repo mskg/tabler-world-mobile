@@ -12,7 +12,9 @@ import { RoleType, NearbyMemberState } from "./globalTypes";
 export interface LocationUpdate_locationUpdate_member_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface LocationUpdate_locationUpdate_member_club {
@@ -45,7 +47,6 @@ export interface LocationUpdate_locationUpdate_member_roles_ref {
 export interface LocationUpdate_locationUpdate_member_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: LocationUpdate_locationUpdate_member_roles_ref;
 }

@@ -93,7 +93,6 @@ export const Member = gql`
 
     type Role {
         name: String!
-        level: String!
         group: String!
         ref: RoleRef!
     }

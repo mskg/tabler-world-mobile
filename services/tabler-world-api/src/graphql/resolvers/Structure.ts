@@ -3,6 +3,7 @@ import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
 import { filter, sortBy } from 'lodash';
 import { byVersion, v12Check } from '../helper/byVersion';
+import { fixC41AssociationName } from '../helper/fixC41AssociationName';
 import { removeFamily } from '../helper/removeFamily';
 import { FieldNames } from '../privacy/FieldNames';
 import { IApolloContext } from '../types/IApolloContext';
@@ -143,6 +144,22 @@ export const StructureResolver = {
             }
         },
 
+        shortname: (root: any, _args: any, _context: IApolloContext) => {
+            switch (root.id) {
+                case Family.RTI:
+                    return 'RTI';
+
+                case Family.LCI:
+                    return 'LCI';
+
+                case Family.C41:
+                    return '41I';
+
+                default:
+                    return '';
+            }
+        },
+
         associations: (root: any, _args: any, context: IApolloContext) => {
             if (root.associations) {
                 return Promise.all(
@@ -168,6 +185,10 @@ export const StructureResolver = {
     },
 
     Association: {
+        name: (root: any, _args: any, _context: IApolloContext) => {
+            return fixC41AssociationName(root.name);
+        },
+
         family: (root: any, _args: any, context: IApolloContext) => {
             return context.dataSources.structure.getFamily(root.family);
         },
@@ -292,6 +313,10 @@ export const StructureResolver = {
 
         boardassistants: (root: any, _args: any, context: IApolloContext) => {
             return ensureActiveMember(context, root.boardassistants);
+        },
+
+        displayname: (root: any, _args: any, _context: IApolloContext) => {
+            return root.name.replace(/^(RT|OT|Club 41)?(\d+|) /, '').trim();
         },
     },
 
