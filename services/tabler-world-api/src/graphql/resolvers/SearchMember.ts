@@ -67,11 +67,10 @@ export const SearchMemberResolver = {
             terms.forEach((term) => {
                 parameters.push(term);
                 filters.push(`
-(
         f_unaccent(lastname || ' ' || firstname) ILIKE f_unaccent($${parameters.length})
     or  f_unaccent(areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
     or  f_unaccent(lastname || ' ' || firstname || ', ' || clubname || ', ' || areaname || ', ' || associationname) ILIKE f_unaccent($${parameters.length})
-)`);
+`);
             });
 
             if (allowCross) {
@@ -79,19 +78,19 @@ export const SearchMemberResolver = {
 
                 // we got a filter
                 if (args.query.families && args.query.families.length > 0) {
-                    if (find(args.query.families, context.principal.family) != null) {
+                    if (find(args.query.families, (f) => f === context.principal.family) != null) {
                         parameters.push(context.principal.family);
                         parameters.push(args.query.families);
 
-                        filters.push(`(family = $${parameters.length - 1} or (family = ANY ($${parameters.length}) and allfamiliesoptin = true))`);
+                        filters.push(`family = $${parameters.length - 1} or (family = ANY ($${parameters.length}) and allfamiliesoptin = true)`);
                     } else {
                         parameters.push(args.query.families);
-                        filters.push(`(family = ANY ($${parameters.length}) and allfamiliesoptin = true)`);
+                        filters.push(`family = ANY ($${parameters.length}) and allfamiliesoptin = true`);
                     }
                 } else {
                     // all those that opted in or his own family
                     parameters.push(context.principal.family);
-                    filters.push(`(family = $${parameters.length} or allfamiliesoptin = true)`);
+                    filters.push(`family = $${parameters.length} or allfamiliesoptin = true`);
                 }
 
             } else {
@@ -208,9 +207,6 @@ where
                 );
             }
 
-
-            // context.logger.debug("Query is", filters.join(' AND '));
-
             return useDatabase(
                 context,
                 async (client) => {
@@ -218,7 +214,7 @@ where
                         `select  ${cols.join(',')}
 from profiles
 where
-        ${filters.join(' AND ')}
+        ${filters.map((f) => `(${f})`).join(' AND ')}
 order by cursor_lastfirst
 limit $1`,
                         parameters,

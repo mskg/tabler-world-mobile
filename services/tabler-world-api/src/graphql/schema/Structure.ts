@@ -4,7 +4,6 @@ import { gql } from 'apollo-server-lambda';
 // tslint:disable-next-line: export-name
 export const Structure = gql`
     type AssociationRole {
-        # member: Member!
         member: Member!
         role: String!
     }
@@ -12,7 +11,10 @@ export const Structure = gql`
     type Family {
         id: ID!
         name: String!
+        shortname: String!
+
         logo: String
+        icon: String
 
         associations: [Association!]!
         board: [AssociationRole!]!
@@ -73,8 +75,10 @@ export const Structure = gql`
         account: BankAccount
 
         clubnumber: Int!
+
         name: String!
         shortname: String!
+        displayname: String!
 
         logo: String
 

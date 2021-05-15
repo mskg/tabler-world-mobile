@@ -1,4 +1,4 @@
-import { ___DONT_USE_ME_DIRECTLY___COLOR_41I, ___DONT_USE_ME_DIRECTLY___COLOR_LCI, ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../../theme/colors';
+import { getFamilyColor } from '../../theme/getFamilyColor';
 import * as actions from '../actions/user';
 import { INITIAL_STATE } from '../initialState';
 
@@ -16,27 +16,19 @@ export function userReducer(
             return { ...state, state: 'signin' };
 
         case actions.setColor.type:
-            let accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_RTI;
-
-            if (action.payload === 'lci') {
-                accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_LCI;
-            } else if (action.payload === 'c41') {
-                accentColor = ___DONT_USE_ME_DIRECTLY___COLOR_41I;
-            }
-
             return {
                 ...state,
-                accentColor,
+                accentColor: getFamilyColor(action.payload),
             };
 
 
         case actions.confirmSignIn.type:
-            let userColor = ___DONT_USE_ME_DIRECTLY___COLOR_RTI;
+            let userColor = getFamilyColor('rti');
 
             if (action.payload.username.match(/ladiescircle/ig)) {
-                userColor = ___DONT_USE_ME_DIRECTLY___COLOR_LCI;
+                userColor = getFamilyColor('lci');
             } else if (action.payload.username.match(/41er/ig)) {
-                userColor = ___DONT_USE_ME_DIRECTLY___COLOR_41I;
+                userColor = getFamilyColor('c41');
             }
 
             return {

@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Caption, Card, Theme, TouchableRipple, withTheme } from 'react-native-paper';
+import { NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -41,7 +43,7 @@ type DispatchPros = {
     showAssociation: typeof showAssociation;
 };
 
-type Props = OwnProps & StateProps & DispatchPros;
+type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<{ family: string }>;
 
 const ITEM_WIDTH = 64;
 const ITEM_PADDING = 16;
@@ -93,7 +95,10 @@ class FamiliesScreenBase extends AuditedScreen<Props, State> {
                     </Accordion>
                 )}
 
-                <Accordion title={I18N.Screen_Families.associations}>
+                <Accordion
+                    style={styles.accordeon} title={I18N.Screen_Families.associations}
+                // expanded={item.id === this.props.navigation.getParam('family')}
+                >
                     <Card.Content
                         style={{
                             justifyContent: 'space-between',
@@ -123,7 +128,7 @@ class FamiliesScreenBase extends AuditedScreen<Props, State> {
                                         source={r.flag}
                                         size={48}
                                     />
-                                    <Caption numberOfLines={1}>{r.name.replace(/^(RT|LC)\s/ig, '')}</Caption>
+                                    <Caption numberOfLines={1}>{r.name.replace(/^(41|RT|LC)\s/ig, '').trim()}</Caption>
                                 </View>
                             </TouchableRipple>
                         ))}
@@ -161,6 +166,8 @@ class FamiliesScreenBase extends AuditedScreen<Props, State> {
                                         setTimeout(createRunRefresh(refetch));
                                     }
 
+                                    const orderBy = this.props.navigation.getParam('family') || data?.Me.family.id;
+
                                     return (
                                         <Placeholder
                                             ready={data != null && data.Families != null}
@@ -169,7 +176,12 @@ class FamiliesScreenBase extends AuditedScreen<Props, State> {
                                             <FlatList
                                                 ref={(r) => this.flatList = r}
                                                 contentContainerStyle={styles.container}
-                                                data={data?.Families || []}
+                                                data={
+                                                    _(data?.Families || [])
+                                                        .orderBy((a) => orderBy === a.id ? '0' : a.name)
+                                                        .toArray()
+                                                        .value()
+                                                }
 
                                                 refreshing={isRefreshing || loading}
                                                 onRefresh={createRunRefresh(refetch)}

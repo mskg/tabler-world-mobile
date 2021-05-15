@@ -12,7 +12,9 @@ import { CompanySector, RoleType } from "./globalTypes";
 export interface SearchMember_SearchMember_nodes_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface SearchMember_SearchMember_nodes_club {
@@ -45,7 +47,6 @@ export interface SearchMember_SearchMember_nodes_roles_ref {
 export interface SearchMember_SearchMember_nodes_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: SearchMember_SearchMember_nodes_roles_ref;
 }

@@ -10,7 +10,9 @@ export const MemberOverviewFragment = gql`
 
         family {
             id
+            icon
             name
+            shortname
         }
 
         club {
@@ -32,7 +34,7 @@ export const MemberOverviewFragment = gql`
 
         roles {
             name
-            level
+            # level
             group
 
             ref {

@@ -7,6 +7,17 @@
 // GraphQL query operation: Families
 // ====================================================
 
+export interface Families_Me_family {
+  __typename: "Family";
+  id: string;
+}
+
+export interface Families_Me {
+  __typename: "Member";
+  id: number;
+  family: Families_Me_family;
+}
+
 export interface Families_Families_associations {
   __typename: "Association";
   id: string;
@@ -69,5 +80,6 @@ export interface Families_Families {
 }
 
 export interface Families {
+  Me: Families_Me;
   Families: Families_Families[] | null;
 }

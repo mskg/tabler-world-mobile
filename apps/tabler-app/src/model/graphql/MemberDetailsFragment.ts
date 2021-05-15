@@ -12,7 +12,9 @@ import { RoleType, CompanySector } from "./globalTypes";
 export interface MemberDetailsFragment_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface MemberDetailsFragment_club {
@@ -46,7 +48,6 @@ export interface MemberDetailsFragment_roles_ref {
 export interface MemberDetailsFragment_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: MemberDetailsFragment_roles_ref;
 }

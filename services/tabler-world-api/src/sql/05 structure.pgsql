@@ -53,7 +53,7 @@ select
         data->>'parent_subdomain'
      ) as area
 --	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
-    ,cast(coalesce(nullif(regexp_replace(data->>'subdomain','[^0-9]+','','g'), ''), '1') as integer) clubnumber
+    ,cast(coalesce(nullif(regexp_replace(data->>'subdomain','[^0-9]+','','g'), ''), '0') as integer) clubnumber
     ,data->>'name' as name
     ,make_short_reference(
         make_key_family(data->>'hostname'),
@@ -233,10 +233,7 @@ select
         when data->>'parent_subdomain' = '41int' then 'c41'
         else data->>'parent_subdomain'
     end as family
-    ,case
-        when id like 'c41_%' then coalesce(split_part(data->>'name', ' | ', 1), data->>'name')
-        else data->>'name'
-    end as name
+    ,data->>'name' as name
     ,case
         when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
         else data->>'logo'
@@ -309,6 +306,13 @@ select
             type = 'family_logo'
         and assets.id = families.id
     ) as logo
+    ,(
+       select url
+       from assets
+       where
+            type = 'family_icon'
+        and assets.id = families.id
+    ) as icon
     ,(
         select to_jsonb(array_to_json(array_agg(r)))
         from

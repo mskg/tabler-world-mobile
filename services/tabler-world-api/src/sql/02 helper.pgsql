@@ -33,10 +33,23 @@ END;
 $$
 LANGUAGE plpgsql;
 
+-- removes the last element in the array of val split by delim
+CREATE or replace FUNCTION remove_last_element (val text, delim text) returns text as $$
+DECLARE
+    arr text[];
+    nbr int;
+BEGIN
+    arr := regexp_split_to_array(val, delim);
+    nbr := array_length(arr, 1) - 1;
+    return array_to_string(arr[1:nbr], delim);
+END;
+$$
+LANGUAGE plpgsql;
+
 CREATE or replace FUNCTION make_key_area (assoc text, val text) returns text as $$
 BEGIN
 -- replace(val, '-' || public.remove_key_family(assoc), '');
-    return assoc || '_' || split_part(val, '-', 1);
+    return assoc || '_' || public.remove_last_element(val, '-');
 END;
 $$
 LANGUAGE plpgsql;
@@ -44,7 +57,7 @@ LANGUAGE plpgsql;
 CREATE or replace FUNCTION make_key_club (assoc text, val text) returns text as $$
 BEGIN
 --    replace(val, '-' || public.remove_key_family(assoc), '');
-    return assoc || '_' || split_part(val, '-', 1);
+    return assoc || '_' || public.remove_last_element(val, '-');
 END;
 $$
 LANGUAGE plpgsql;
@@ -85,21 +98,21 @@ BEGIN
             when type = 'family' then result = 'LCI';
             when type = 'assoc' then result = 'LC ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'LC ' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     ELSIF family = 'c41' then
         case
             when type = 'family' then result = '41I';
-            when type = 'assoc' then result = '41I ' || upper(corrected);
+            when type = 'assoc' then result = '41 ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = '41I ' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     else
         case
             when type = 'family' then result = 'RTI';
             when type = 'assoc' then result = 'RT ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'RT ' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     end if;
 

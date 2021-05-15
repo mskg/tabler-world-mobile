@@ -12,7 +12,9 @@ import { RoleType, NearbyMemberState } from "./globalTypes";
 export interface NearbyMemberFragment_member_family {
   __typename: "Family";
   id: string;
+  icon: string | null;
   name: string;
+  shortname: string;
 }
 
 export interface NearbyMemberFragment_member_club {
@@ -45,7 +47,6 @@ export interface NearbyMemberFragment_member_roles_ref {
 export interface NearbyMemberFragment_member_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: NearbyMemberFragment_member_roles_ref;
 }

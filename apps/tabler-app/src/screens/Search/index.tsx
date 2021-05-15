@@ -27,6 +27,7 @@ import { OfflineSearchQuery } from './OfflineSearch';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
+import color from 'color';
 
 type State = {
     searching: boolean,
@@ -259,6 +260,11 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
+        let textColor = this.props.theme.colors.text;
+        if (color(this.props.theme.colors.accent).isDark()) {
+            textColor = '#ffffff';
+        }
+
         return (
             <Screen>
                 {this.state.searching && this.state.filterTags.length > 0 && (
@@ -271,6 +277,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                             style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
                                             key={`${f.type}:${f.value}`}
                                             selected={true}
+                                            selectedColor={textColor}
                                             onPress={() => this.toggleChip(f.type, f.value)}
                                         >
                                             {f.value}

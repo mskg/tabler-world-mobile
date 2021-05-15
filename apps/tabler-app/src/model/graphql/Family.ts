@@ -53,6 +53,7 @@ export interface Family_Association_family {
   __typename: "Family";
   id: string;
   name: string;
+  logo: string | null;
   board: Family_Association_family_board[];
   boardassistants: Family_Association_family_boardassistants[];
   regionalboard: Family_Association_family_regionalboard[];
