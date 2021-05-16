@@ -12,31 +12,7 @@ export const styles = StyleSheet.create({
     },
 
     family: {
-        marginRight: 4,
-
-        // width: 13,
-        // height: 13,
-        // borderRadius: 13 / 2,
-
         marginTop: 2,
-        height: 10,
-
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-
-    familyName: {
-        marginLeft: 3,
-        marginRight: 3,
-        fontSize: 8,
-    },
-
-    icon: {
-        marginLeft: 1,
-        width: 10,
-        height: 10,
-        borderRadius: 10 / 2,
     },
 
     cardTitle: {

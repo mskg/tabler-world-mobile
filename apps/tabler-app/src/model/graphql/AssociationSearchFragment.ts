@@ -7,6 +7,13 @@
 // GraphQL fragment: AssociationSearchFragment
 // ====================================================
 
+export interface AssociationSearchFragment_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+  shortname: string;
+}
+
 export interface AssociationSearchFragment {
   __typename: "Association";
   name: string;
@@ -14,4 +21,5 @@ export interface AssociationSearchFragment {
   logo: string | null;
   shortname: string;
   flag: string | null;
+  family: AssociationSearchFragment_family;
 }

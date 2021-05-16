@@ -1,8 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Caption, Text, Theme } from 'react-native-paper';
+import { Caption, Theme } from 'react-native-paper';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
-import { getFamilyColor, getTextColor } from '../../theme/getFamilyColor';
+import { FamilyBadge } from '../FamilyBadge';
 import { FavoriteButton } from '../FavoriteButton';
 import { CachedImage } from '../Image/CachedImage';
 import { MemberAvatar } from '../MemberAvatar';
@@ -13,23 +13,9 @@ import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
 
 const Embedded = ({ theme, name, flag, family, familyName, icon, ...props }) => {
-    const familyColor = getFamilyColor(family);
-    const textColor = getTextColor(family, theme);
-
     return (
         <View style={{ flexDirection: 'row' }}>
-            {icon && (
-                <View style={[styles.family, { backgroundColor: familyColor }]}>
-                    {/* <View style={styles.icon}>
-                        <CachedImage
-                            cacheGroup="family"
-                            resizeMode="cover"
-                            uri={icon}
-                        />
-                    </View> */}
-                    <View><Text style={[styles.familyName, { color: textColor }]}>{familyName}</Text></View>
-                </View>
-            )}
+            <FamilyBadge style={styles.family} theme={theme} family={family} familyName={familyName} />
 
             {flag && (
                 <View style={styles.flag}>
