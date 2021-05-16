@@ -13,7 +13,10 @@ You want to help use extend this App? It's open source! Go check it out on [GitH
 We're no longer hard to reach now. Just skake your device :)
 
 Yours in Table\
-[Markus Kling](tablerworld:/member?id=14225)
+[Markus Kling](tablerworld:/member?id=336775)
 
 RT129 Böblingen / Sindelfingen
 Round Table Germany
+
+OT129 Schönbuch
+41 Germany
