@@ -16,6 +16,9 @@ custom:
     keepOutputDirectory: true
     packager: "yarn"
     includeModules:
+      forceInclude:
+        - graphql
+
       forceExclude:
         - aws-sdk
 
