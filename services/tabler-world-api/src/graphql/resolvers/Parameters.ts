@@ -78,19 +78,19 @@ export const ParametersResolver = {
                     findMerge(overrides, 'urls', {
                         world: 'https://rti.roundtable.world/#lang#/',
                         profile: 'https://rti.roundtable.world/#lang#/members/#id#/',
-                        world_whitelist: ['*.roundtable.world'],
+                        world_whitelist: ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world'],
                     });
                 } else if (context.principal.family === Family.LCI) {
                     findMerge(overrides, 'urls', {
                         world: 'https://lci.ladiescircle.world/#lang#/',
                         profile: 'https://lci.ladiescircle.world/#lang#/members/#id#/',
-                        world_whitelist: ['*.ladiescircle.world'],
+                        world_whitelist: ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world'],
                     });
                 } else if (context.principal.family === Family.C41) {
                     findMerge(overrides, 'urls', {
-                        world: 'https://c41nt.41er.world/#lang#/',
-                        profile: 'https://c41nt.41er.world/#lang#/members/#id#/',
-                        world_whitelist: ['*.41er.world'],
+                        world: 'https://41int.41er.world/#lang#/',
+                        profile: 'https://41int.41er.world/#lang#/members/#id#/',
+                        world_whitelist: ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world'],
                     });
                 }
 
