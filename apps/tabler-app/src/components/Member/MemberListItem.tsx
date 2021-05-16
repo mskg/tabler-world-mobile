@@ -1,7 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Caption, Theme } from 'react-native-paper';
+import { Caption, Text, Theme } from 'react-native-paper';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
+import { getFamilyColor, getTextColor } from '../../theme/getFamilyColor';
 import { FavoriteButton } from '../FavoriteButton';
 import { CachedImage } from '../Image/CachedImage';
 import { MemberAvatar } from '../MemberAvatar';
@@ -11,16 +12,22 @@ import { MemberTitle } from './MemberTitle';
 import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
 
-const Embedded = ({ name, flag, family, icon, ...props }) => {
+const Embedded = ({ theme, name, flag, family, familyName, icon, ...props }) => {
+    const familyColor = getFamilyColor(family);
+    const textColor = getTextColor(family, theme);
+
     return (
         <View style={{ flexDirection: 'row' }}>
             {icon && (
-                <View style={[styles.icon /*, { backgroundColor: getFamilyColor(family) }*/]}>
-                    <CachedImage
-                        cacheGroup="family"
-                        resizeMode="cover"
-                        uri={icon}
-                    />
+                <View style={[styles.family, { backgroundColor: familyColor }]}>
+                    {/* <View style={styles.icon}>
+                        <CachedImage
+                            cacheGroup="family"
+                            resizeMode="cover"
+                            uri={icon}
+                        />
+                    </View> */}
+                    <View><Text style={[styles.familyName, { color: textColor }]}>{familyName}</Text></View>
                 </View>
             )}
 
@@ -109,7 +116,7 @@ export class MemberListItem extends React.PureComponent<Props> {
                 onPress={this._onPress}
                 height={this.props.height}
                 title={this.props.title || <MemberTitle member={this.props.member} />}
-                subtitle={this.props.subtitle || <Embedded family={this.props.member?.family?.id} icon={this.props.member?.family?.icon} flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
+                subtitle={this.props.subtitle || <Embedded theme={this.props.theme} family={this.props.member?.family?.id} familyName={this.props.member?.family?.shortname} icon={this.props.member?.family?.icon} flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
                 left={this.props.left || this._left}
                 right={this.props.right || this._right}
                 bottom={this.props.bottom || this._renderBottom}
