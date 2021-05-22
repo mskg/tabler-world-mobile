@@ -48,6 +48,12 @@ export class Predicates {
         };
     }
 
+    static favoriteClubs(favorites: HashMap<boolean>): Predicate {
+        return (member: IMemberOverviewFragment) => {
+            return favorites[member.club.id] === true;
+        };
+    }
+
     static sametable(club: string): Predicate {
         return (member: IMemberOverviewFragment) => {
             return member.club.id === club;

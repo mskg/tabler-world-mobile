@@ -1,6 +1,6 @@
+import { NetInfoStateType } from '@react-native-community/netinfo';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 import { IAppState } from '../model/IAppState';
-import { NetInfoStateType } from '@react-native-community/netinfo';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../theme/colors';
 
 // tslint:disable-next-line: export-name
@@ -66,6 +66,10 @@ export const INITIAL_STATE: IAppState = {
             showAssociationBoard: false,
 
             area: [],
+            favorites: {},
+        },
+
+        club: {
             favorites: {},
         },
     },

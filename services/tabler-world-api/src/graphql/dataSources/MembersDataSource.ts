@@ -2,7 +2,7 @@ import { cachedDataLoader, cachedLoad, makeCacheKey } from '@mskg/tabler-world-c
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import DataLoader from 'dataloader';
-import { flatMap } from 'lodash';
+import { flatMap, uniq, uniqBy } from 'lodash';
 import { filter } from '../privacy/filter';
 import { filterFormerMember } from '../privacy/filterFormerMember';
 import { IApolloContext } from '../types/IApolloContext';
@@ -105,8 +105,8 @@ where
         );
     }
 
-    public async readFavorites(): Promise<any[] | null> {
-        this.context.logger.log('readFavorites');
+    public async readFavorites(includeClubs?: boolean): Promise<any[] | null> {
+        this.context.logger.log('readFavorites', includeClubs);
 
         return await useDatabase(
             this.context,
@@ -115,24 +115,34 @@ where
 
                 const res = await client.query(
                     `
-select settings->'favorites' as favorites
+select settings->'favorites' as favorites, settings->'favoriteClubs' as favoriteclubs
 from usersettings
 where id = $1`,
                     [this.context.principal.id],
                 );
 
                 if (res.rowCount === 0) { return []; }
-                const favorites: number[] = res.rows[0].favorites;
 
-                if (favorites == null || favorites.length === 0) { return []; }
+                const favorites: number[] = res.rows[0].favorites || [];
+                const favoriteClubs: string[] = res.rows[0].favoriteclubs || [];
 
-                const result = await this.memberLoader.loadMany(
-                    favorites.filter((f) => typeof (f) === 'number' && !isNaN(f)),
-                );
+                this.context.logger.debug('favorites', favorites, 'favoriteclubs', favoriteClubs);
+                const result = [];
 
-                return result.map((member: any) => {
-                    if (member == null) { return member; }
+                if (favorites.length > 0) {
+                    result.push(
+                        ... await this.memberLoader.loadMany(
+                            favorites.filter((f) => typeof (f) === 'number' && !isNaN(f)),
+                        ));
+                }
 
+                if (includeClubs && favoriteClubs.length > 0) {
+                    result.push(
+                        ... await this.readClubs(favoriteClubs),
+                    );
+                }
+
+                return uniqBy(result, (r: any) => r?.id).filter((m) => m != null).map((member: any) => {
                     return filter(
                         this.context.principal,
                         member,
@@ -205,7 +215,16 @@ and removed = FALSE`,
         );
     }
 
-    public async readClub(club: string): Promise<any[] | null> {
+    public async readClubs(clubs: string[]): Promise<any[]> {
+        this.context.logger.debug('readClubs', clubs);
+
+        const cbs = await Promise.all(clubs.map((c) => this.context.dataSources.structure.getClub(c)));
+        const members = cbs.map((c) => c?.members).flat().filter((m) => m != null);
+
+        return members?.length > 0 ? this.readMany(uniq(members)) : [];
+    }
+
+    public async readClub(club: string): Promise<any[]> {
         this.context.logger.debug('readClub', club);
         const clubDetails = await this.context.dataSources.structure.getClub(club);
         return clubDetails ? this.readMany(clubDetails.members) : [];

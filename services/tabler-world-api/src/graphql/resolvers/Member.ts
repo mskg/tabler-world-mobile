@@ -25,9 +25,16 @@ type MemberFilter = {
         // deprectated
         areas?: number[],
         byArea?: string[],
+        // clubs?: string[],
 
         nationalBoard?: boolean,
         areaBoard?: boolean,
+    },
+};
+
+type FavoritesFilter = {
+    filter?: {
+        includeClubs?: boolean,
     },
 };
 
@@ -165,15 +172,21 @@ export const MemberResolver = {
                     }
                 }
 
-                return result.length > 0 ? _.uniqBy(result, (m) => m.id) : [];
+                // need to filter null results
+                return result.length > 0 ? _.uniqBy(result.filter((f) => f), (m) => m.id) : [];
             }
 
             return context.dataSources.members.readAll(context.principal.association);
         },
 
-        FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            const favorites = await context.dataSources.members.readFavorites();
-            return favorites ? favorites.filter((f) => f != null) : [];
+        FavoriteMembers: async (_root: any, args: FavoritesFilter, context: IApolloContext) => {
+            const favorites = await context.dataSources.members.readFavorites(
+                args?.filter?.includeClubs === true,
+            );
+
+            return favorites
+                ? favorites.filter((f) => f != null)
+                : [];
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {

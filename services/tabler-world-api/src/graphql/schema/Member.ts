@@ -166,16 +166,22 @@ export const Member = gql`
         areas: [Int!]
 
         byArea: [ID!]
+        # clubs: [ID!]
 
         nationalBoard: Boolean
         areaBoard: Boolean
     }
 
+    input FavoriteMembersInput {
+        includeClubs: Boolean
+    }
+
+
     extend type Query {
         #MembersList (filter: MemberFilterInput!): [MemberListView!]!
 
         OwnTable: [Member!]!
-        FavoriteMembers: [Member!]!
+        FavoriteMembers (filter: FavoriteMembersInput): [Member!]!
 
         # leave for compat with existing clint
         MembersOverview(filter: MemberFilterInput): [MemberListView!]!

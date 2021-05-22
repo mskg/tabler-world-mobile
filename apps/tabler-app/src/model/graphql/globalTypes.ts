@@ -83,6 +83,7 @@ export enum RoleType {
 }
 
 export enum SettingName {
+  favoriteClubs = "favoriteClubs",
   favorites = "favorites",
   language = "language",
   nearbymembers = "nearbymembers",
