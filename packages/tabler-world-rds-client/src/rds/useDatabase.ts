@@ -8,7 +8,7 @@ export async function useDatabase<T>(
     func: (client: IDataService) => Promise<T>,
 ): Promise<T> {
 
-    const client = new LazyPGClient(context.logger, context.logLevel === 'debug', context.metrics);
+    const client = new LazyPGClient(context.logger, context.sqlLogLevel === 'debug', context.metrics);
     try {
         return await func(client);
     } finally {
