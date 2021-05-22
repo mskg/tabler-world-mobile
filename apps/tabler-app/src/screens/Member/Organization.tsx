@@ -1,16 +1,16 @@
-import color from 'color';
 import React from 'react';
 import { View } from 'react-native';
-import { Chip, Theme, withTheme } from 'react-native-paper';
+import { Chip, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { CachedImage } from '../../components/Image/CachedImage';
 import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { showArea, showAssociation, showClub, showFamily } from '../../redux/actions/navigation';
+import { AppTheme } from '../../theme/AppTheme';
 import { styles } from './Styles';
 
 type Props = {
     member: IMemberOverviewFragment,
-    theme: Theme,
+    theme: AppTheme,
     showClub: typeof showClub,
     showAssociation: typeof showAssociation,
     showArea: typeof showArea,
@@ -19,30 +19,25 @@ type Props = {
 
 class OrganizationBase extends React.PureComponent<Props> {
     render() {
-        let textColor = this.props.theme.colors.text;
-        if (color(this.props.theme.colors.accent).isDark()) {
-            textColor = '#ffffff';
-        }
-
         return (
             <View style={styles.chipContainer}>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                    selectedColor={textColor}
+                    selectedColor={this.props.theme.colors.textOnAccent}
                     onPress={() => this.props.showClub(this.props.member.club.id)}
                 >
                     {this.props.member.club.name}
                 </Chip>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                    selectedColor={textColor}
+                    selectedColor={this.props.theme.colors.textOnAccent}
                     onPress={() => this.props.showArea(this.props.member.area.id)}
                 >
                     {this.props.member.area.name}
                 </Chip>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                    selectedColor={textColor}
+                    selectedColor={this.props.theme.colors.textOnAccent}
                     avatar={this.props.member.association.flag ? (
                         <View>
                             <CachedImage
@@ -60,7 +55,7 @@ class OrganizationBase extends React.PureComponent<Props> {
                 </Chip>
                 <Chip
                     style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
-                    selectedColor={textColor}
+                    selectedColor={this.props.theme.colors.textOnAccent}
                     avatar={this.props.member.family.icon ? (
                         <View>
                             <CachedImage

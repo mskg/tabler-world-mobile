@@ -1,19 +1,20 @@
 import _ from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
-import { Chip, Text, Theme, withTheme } from 'react-native-paper';
+import { Chip, Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IRole } from '../../model/IRole';
-import { showArea, showAssociation, showClub } from '../../redux/actions/navigation';
+import { showArea, showAssociation, showClub, showFamily } from '../../redux/actions/navigation';
+import { AppTheme } from '../../theme/AppTheme';
 import { styles } from './Styles';
-import color from 'color';
 
 type Props = {
     roles: IRole[],
-    theme: Theme,
+    theme: AppTheme,
     showClub: typeof showClub;
     showAssociation: typeof showAssociation;
     showArea: typeof showArea;
+    showFamily: typeof showFamily;
 };
 
 class RolesBase extends React.PureComponent<Props> {
@@ -30,23 +31,8 @@ class RolesBase extends React.PureComponent<Props> {
             return () => this.props.showArea(role.ref.id);
         }
 
-        return undefined;
-    }
-
-    getColor(role: IRole) {
-        if (
-            role.ref.type !== 'club'
-            && role.ref.type !== 'assoc'
-            && role.ref.type !== 'area') {
-            return this.props.theme.colors.primary;
-        }
-
-        return this.props.theme.colors.accent;
-    }
-
-    getTextColor(role: IRole) {
-        if (color(this.getColor(role)).isDark()) {
-            return '#ffffff';
+        if (role.ref.type === 'family') {
+            return () => this.props.showFamily(role.ref.id);
         }
 
         return undefined;
@@ -58,12 +44,12 @@ class RolesBase extends React.PureComponent<Props> {
                 {(
                     _(this.props.roles || []).orderBy((r) => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
                         <Chip
-                            style={[styles.chip, { backgroundColor: this.getColor(r) }]}
+                            style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
                             key={i}
-                            selectedColor={this.getTextColor(r)}
+                            selectedColor={this.props.theme.colors.textOnAccent}
                             onPress={this.getOnPress(r)}
                         >
-                            {r.ref.shortname} <Text style={{ color: this.getTextColor(r), fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
+                            {r.ref.shortname} <Text style={{ color: this.props.theme.colors.textOnAccent, fontFamily: this.props.theme.fonts.medium }}>{r.name}</Text>
                         </Chip>
                     )).value()
                 )}
@@ -76,4 +62,5 @@ export const Roles = connect(undefined, {
     showClub,
     showAssociation,
     showArea,
+    showFamily,
 })(withTheme(RolesBase));

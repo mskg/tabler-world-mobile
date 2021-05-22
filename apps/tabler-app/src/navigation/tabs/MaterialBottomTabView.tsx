@@ -3,10 +3,11 @@
 import color from 'color';
 import * as React from 'react';
 import { ViewStyle } from 'react-native';
-import { BottomNavigation, Theme, withTheme } from 'react-native-paper';
+import { BottomNavigation, withTheme } from 'react-native-paper';
 import {
     NavigationDescriptor, NavigationProp, ThemeContext
 } from 'react-navigation';
+import { AppTheme } from '../../theme/AppTheme';
 import { NavigationMaterialBottomTabConfig } from './types';
 
 type Options = {
@@ -27,7 +28,7 @@ type Props = React.ComponentProps<typeof BottomNavigation> &
             tintColor: string;
         }) => React.ReactNode;
     } & {
-        theme: Theme,
+        theme: AppTheme,
     };
 
 class MaterialBottomTabView extends React.Component<Props> {

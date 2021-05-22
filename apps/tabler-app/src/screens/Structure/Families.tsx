@@ -67,6 +67,9 @@ class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInj
     }
 
     _renderItem = ({ item, index }: { item: Family_Association_family, index: number }) => {
+        const presidents = item.board.filter((r) => r.role === RoleNames.President);
+        const board = item.board.filter((r) => r.role !== RoleNames.President);
+
         return (
             <Card key={item.id} style={styles.card}>
 
@@ -84,15 +87,15 @@ class FamilyScreenBase extends AuditedScreen<Props & ScreenProps & NavigationInj
                     </View>
                 )}
 
-                {item.board.length > 0 && (
+                {presidents.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Screen_Structure.president} expanded={index === 0}>
-                        <RoleAvatarGrid roles={item.board.filter((r) => r.role === RoleNames.President)} items={1} />
+                        <RoleAvatarGrid roles={presidents} items={1} />
                     </Accordion>
                 )}
 
-                {item.board.length > 0 && (
+                {board.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Screen_Structure.board} expanded={false}>
-                        <RoleAvatarGrid roles={item.board.filter((r) => r.role !== RoleNames.President)} items={2} />
+                        <RoleAvatarGrid roles={board} items={2} />
                     </Accordion>
                 )}
 

@@ -1,7 +1,6 @@
 import { NetInfoStateType } from '@react-native-community/netinfo';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 import { IAppState } from '../model/IAppState';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_RTI } from '../theme/colors';
 
 // tslint:disable-next-line: export-name
 export const INITIAL_STATE: IAppState = {
@@ -26,7 +25,7 @@ export const INITIAL_STATE: IAppState = {
         state: 'signin',
         username: undefined,
         signinState: undefined,
-        accentColor: ___DONT_USE_ME_DIRECTLY___COLOR_RTI,
+        accentColor: 'rti',
     },
 
     location: {

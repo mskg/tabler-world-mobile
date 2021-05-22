@@ -125,8 +125,12 @@ select
 	) as address
 	,(
         -- for the ladies, it's the second field, fixme!
-		select coalesce(value->'rows'->0->>'value', concat_ws(' ', value->'rows'->1->>'value', value->'rows'->2->>'value'))
-		from jsonb_array_elements(data->'custom_fields') t
+        select
+            case
+                when value->'rows'->1->>'value' is not null then trim(concat_ws(' ', value->'rows'->1->>'value', value->'rows'->0->>'value'))
+                else value->'rows'->0->>'value'
+            end
+        from jsonb_array_elements(data->'custom_fields') t
 		where  t.value @> '{"rows": [{"key": "Name partner"}]}'
             or t.value @> '{"rows": [{"key": "First name partner"}]}'
             or t.value @> '{"rows": [{"key": "Surname partner"}]}'

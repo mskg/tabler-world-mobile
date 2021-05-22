@@ -12,7 +12,7 @@ import { MemberTitle } from './MemberTitle';
 import { RoleChips } from './RoleChips';
 import { styles } from './Styles';
 
-const Embedded = ({ theme, name, flag, family, familyName, icon, ...props }) => {
+const Embedded = ({ theme, name, flag, family, familyName, ...props }) => {
     return (
         <View style={{ flexDirection: 'row' }}>
             <FamilyBadge style={styles.family} theme={theme} family={family} familyName={familyName} />
@@ -102,7 +102,7 @@ export class MemberListItem extends React.PureComponent<Props> {
                 onPress={this._onPress}
                 height={this.props.height}
                 title={this.props.title || <MemberTitle member={this.props.member} />}
-                subtitle={this.props.subtitle || <Embedded theme={this.props.theme} family={this.props.member?.family?.id} familyName={this.props.member?.family?.shortname} icon={this.props.member?.family?.icon} flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
+                subtitle={this.props.subtitle || <Embedded theme={this.props.theme} family={this.props.member?.family?.id} familyName={this.props.member?.family?.shortname} flag={this.props.member?.association?.flag} name={this.props.member?.club?.name} />}
                 left={this.props.left || this._left}
                 right={this.props.right || this._right}
                 bottom={this.props.bottom || this._renderBottom}

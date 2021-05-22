@@ -1,13 +1,16 @@
 import gql from 'graphql-tag';
 import React from 'react';
 import { Query } from 'react-apollo';
+import { Text } from 'react-native-paper';
 import { isRecordValid } from '../../helper/cache/isRecordValid';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { sortGroupRoles } from '../../helper/sortRoles';
+import { I18N } from '../../i18n/translation';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { Accordion } from '../Accordion';
 import { Placeholder } from '../Placeholder/Placeholder';
 import { RoleCard } from './RoleCard';
 import { RolesPlaceholder } from './RolesPlaceholder';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 type Props = {
     group: string,
@@ -80,16 +83,23 @@ class RoleAccordionSectionBase extends React.Component<Props, State> {
 
                         return (
                             <Placeholder ready={!loading && data != null} previewComponent={<RolesPlaceholder count={3} />}>
-                                {
-                                    grouped && grouped.map((r, i) => (
-                                        <RoleCard
-                                            key={r.member.id + r.role}
-                                            member={r.member}
-                                            role={r.role}
-                                            separator={i !== len - 1}
-                                        />
-                                    ))
-                                }
+                                <React.Fragment>
+                                    {
+                                        grouped && grouped.map((r, i) => (
+                                            <RoleCard
+                                                key={r.member.id + r.role}
+                                                member={r.member}
+                                                role={r.role}
+                                                separator={i !== len - 1}
+                                            />
+                                        ))
+                                    }
+                                    {
+                                        (!grouped || grouped.length === 0) && (
+                                            <Text style={{ marginLeft: 16, color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY }}>{I18N.Screen_Members.noresults}</Text>
+                                        )
+                                    }
+                                </React.Fragment>
                             </Placeholder>
                         );
                     }}

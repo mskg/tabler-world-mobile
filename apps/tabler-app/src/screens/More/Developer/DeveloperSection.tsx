@@ -1,20 +1,25 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import Constants from 'expo-constants';
 import React from 'react';
 import { Clipboard } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
+import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
+import { createApolloContext } from '../../../helper/createApolloContext';
 import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/Logger';
 import { getParameterValue } from '../../../helper/parameters/getParameterValue';
 import { I18N } from '../../../i18n/translation';
 import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
 import { ParameterName, UserRole } from '../../../model/graphql/globalTypes';
+import { IAppState } from '../../../model/IAppState';
 import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
+import { setColor } from '../../../redux/actions/user';
 import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN, TOKEN_KEY } from '../../../tasks/Constants';
 import { runFetchTask } from '../../../tasks/fetch/runFetchTask';
+import { Families } from '../../../theme/getFamilyColor';
 import { Action } from '../Settings/Action';
 import { Element } from '../Settings/Element';
-import { createApolloContext } from '../../../helper/createApolloContext';
+import { SelectionList } from '../Settings/SelectionList';
 
 type State = {
     token?: string | null,
@@ -31,6 +36,8 @@ type OwnProps = {
 };
 
 type StateProps = {
+    accentColor: Families,
+    setColor: typeof setColor,
 };
 
 type DispatchPros = {
@@ -146,6 +153,23 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                                 </>
                             )}
                         </List.Section>
+
+                        <List.Section title={'Style'}>
+                            <SelectionList
+                                theme={this.props.theme}
+                                field={'Color Scheme'}
+                                items={[
+                                    { label: 'RTI', value: 'rti' },
+                                    { label: 'LCI', value: 'lci' },
+                                    { label: '41i', value: 'c41' },
+                                ]}
+                                value={this.props.accentColor}
+                                onChange={(value) => {
+                                    this.props.setColor(value);
+                                }}
+                            />
+                            <Divider />
+                        </List.Section>
                     </>
                 )}
             </>
@@ -153,4 +177,10 @@ class DeveloperSectionBase extends React.Component<Props, State> {
     }
 }
 
-export const DeveloperSection = withTheme(DeveloperSectionBase);
+export const DeveloperSection = withTheme(connect(
+    (s: IAppState) => ({
+        accentColor: s.auth.accentColor,
+    }),
+    {
+        setColor,
+    })(DeveloperSectionBase));

@@ -15,6 +15,7 @@ import { ProfileHeader } from '../../components/Profile/Header';
 import createAnimatedComponentFrowardingRef from '../../helper/createAnimatedComponentFrowardingRef';
 import { I18N } from '../../i18n/translation';
 import { Member as MemberType } from '../../model/graphql/Member';
+import { IAppState } from '../../model/IAppState';
 import { addTablerLRU } from '../../redux/actions/history';
 import { IProfileParams } from '../../redux/actions/navigation';
 import { ActionsFab } from './ActionsFab';
@@ -33,6 +34,9 @@ type StateProps = {
     preview?: MemberType;
 
     addTablerLRU: typeof addTablerLRU;
+
+    diplayFirstNameFirst: boolean,
+    sortByLastName: boolean,
 };
 
 type Props = OwnProps & StateProps & NavigationInjectedProps<IProfileParams>;
@@ -80,7 +84,12 @@ class MemberBase extends AuditedScreen<Props> {
                     </AvatarPopup>
                     : undefined}
 
-                title={member ? `${member.firstname} ${member.lastname}` : undefined}
+                title={member
+                    ? this.props.diplayFirstNameFirst
+                        ? `${member.firstname} ${member.lastname}`
+                        : `${member.lastname} ${member.firstname}`
+                    : undefined
+                }
                 line1={member ? member.club.name : undefined}
                 line2={member ? `${member.area.name}, ${I18N.countryName(member.association.isocode)}, ${member.family.shortname}` : undefined}
 
@@ -121,7 +130,10 @@ class MemberBase extends AuditedScreen<Props> {
 }
 
 const Member = connect(
-    null,
+    (state: IAppState) => ({
+        diplayFirstNameFirst: state.settings.diplayFirstNameFirst,
+        sortByLastName: state.settings.sortByLastName,
+    }),
     { addTablerLRU },
 )(
     withTheme(

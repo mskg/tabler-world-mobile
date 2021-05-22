@@ -1,4 +1,3 @@
-import { getFamilyColor } from '../../theme/getFamilyColor';
 import * as actions from '../actions/user';
 import { INITIAL_STATE } from '../initialState';
 
@@ -18,17 +17,17 @@ export function userReducer(
         case actions.setColor.type:
             return {
                 ...state,
-                accentColor: getFamilyColor(action.payload),
+                accentColor: action.payload,
             };
 
 
         case actions.confirmSignIn.type:
-            let userColor = getFamilyColor('rti');
+            let userColor = 'rti';
 
             if (action.payload.username.match(/ladiescircle/ig)) {
-                userColor = getFamilyColor('lci');
+                userColor = 'lci';
             } else if (action.payload.username.match(/41er/ig)) {
-                userColor = getFamilyColor('c41');
+                userColor = 'c41';
             }
 
             return {

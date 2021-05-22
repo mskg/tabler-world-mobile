@@ -27,12 +27,12 @@ export const Logo = () => (
 export const Greeting = ({ title, subtitle }) => (
     <React.Fragment>
         <Headline style={styles.greeting}>{title}</Headline>
-        <Subheading style={styles.greeting2}>{subtitle}</Subheading>
+        <Subheading numberOfLines={1} style={styles.greeting2}>{subtitle}</Subheading>
     </React.Fragment>
 );
 
 export const EMail = ({ subtitle }) => (
     <React.Fragment>
-        <Subheading style={{...styles.greeting2, paddingTop: 10}}>{subtitle}</Subheading>
+        <Subheading style={{ ...styles.greeting2, paddingTop: 10 }}>{subtitle}</Subheading>
     </React.Fragment>
 );

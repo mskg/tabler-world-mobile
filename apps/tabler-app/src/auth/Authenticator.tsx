@@ -15,8 +15,9 @@ import { Me } from '../model/graphql/Me';
 import { IAppState } from '../model/IAppState';
 import { GetMeQuery } from '../queries/Member/GetMeQuery';
 import { INITIAL_STATE } from '../redux/initialState';
+import { Families } from '../theme/getFamilyColor';
 import { light } from '../theme/light';
-import { updateTheme } from '../theme/theming';
+import { updateThemeFromFamily } from '../theme/theming';
 import ConfirmSignIn from './ConfirmSignIn';
 import SignIn from './SignIn';
 
@@ -25,7 +26,7 @@ type Props = {
     app: React.ReactElement;
     // user?: IWhoAmI;
     optOutAnalytics: boolean,
-    accentColor: string,
+    accentColor: Families,
 };
 
 type State = {
@@ -108,7 +109,7 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 
     static getDerivedStateFromProps(props: Props, _state: State) {
         return {
-            theme: updateTheme(light, props.accentColor),
+            theme: updateThemeFromFamily(light, props.accentColor),
         };
     }
 

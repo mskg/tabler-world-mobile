@@ -1,17 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as ScreenOrientation from 'expo-screen-orientation';
 import { CapturedPicture } from 'expo-camera/build/Camera.types';
 import * as FileSystem from 'expo-file-system';
 import * as ExpoImagePicker from 'expo-image-picker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { StatusBar, Clipboard, EmitterSubscription, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, EmitterSubscription, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send, User } from 'react-native-gifted-chat';
-import { IconButton, Theme, withTheme } from 'react-native-paper';
+import { IconButton, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
 import { isIphoneX } from '../../helper/isIphoneX';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { AppTheme } from '../../theme/AppTheme';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { isPureEmojiString } from './emojiRegex';
 import { FixedChat } from './FixedChat';
@@ -26,7 +27,7 @@ const IMAGE_SIZE = 100;
 
 type Props = {
     userId: number,
-    theme: Theme,
+    theme: AppTheme,
 
     extraData?: any,
 
@@ -118,6 +119,8 @@ class ChatBase extends React.Component<Props, State> {
     _renderBubble = (props: any) => {
         return (
             <Bubble
+                {...props}
+
                 // @ts-ignore
                 wrapperStyle={{
                     left: {
@@ -133,6 +136,10 @@ class ChatBase extends React.Component<Props, State> {
                     left: {
                         color: this.props.theme.colors.text,
                     },
+
+                    right: {
+                        color: this.props.theme.colors.textOnAccent,
+                    },
                 }}
 
                 timeTextStyle={{
@@ -143,8 +150,6 @@ class ChatBase extends React.Component<Props, State> {
                         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
                     },
                 }}
-
-                {...props}
 
                 isCustomViewBottom={true}
                 renderCustomView={this._renderCustomView}
@@ -174,7 +179,6 @@ class ChatBase extends React.Component<Props, State> {
                 textProps={{
                     style: {
                         fontFamily: this.props.theme.fonts.regular,
-                        color: this.props.theme.colors.text,
                         ...messageTextStyle,
                     },
                 }}

@@ -5,12 +5,13 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../model/IAppState';
 import { AppTheme } from './AppTheme';
-import { determineTheme, updateTheme } from './theming';
+import { Families } from './getFamilyColor';
+import { determineTheme, updateThemeFromFamily } from './theming';
 
 type Props = {
     colorScheme: string,
     darkMode: boolean,
-    accentColor: string,
+    accentColor: Families,
 };
 
 type State = {
@@ -24,12 +25,12 @@ class ProviderBase extends React.PureComponent<Props, State> {
         super(props);
         this.state = {
             theme: ProviderBase.calcScheme(props),
-        }
+        };
     }
 
     // tslint:disable-next-line: function-name
     static calcScheme(props: Props) {
-        return updateTheme(
+        return updateThemeFromFamily(
             determineTheme(
                 props.colorScheme, props.darkMode,
             ),

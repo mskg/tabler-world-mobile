@@ -1,7 +1,7 @@
 import { debounce, remove, sortBy } from 'lodash';
 import React from 'react';
 import { TouchableWithoutFeedback, View } from 'react-native';
-import { Appbar, Chip, Divider, Searchbar, Theme, withTheme } from 'react-native-paper';
+import { Appbar, Chip, Divider, Searchbar, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
@@ -19,6 +19,7 @@ import { IAppState } from '../../model/IAppState';
 import { GetMeQuery } from '../../queries/Member/GetMeQuery';
 import { addTablerSearch } from '../../redux/actions/history';
 import { showProfile } from '../../redux/actions/navigation';
+import { AppTheme } from '../../theme/AppTheme';
 import { HeaderStyles } from '../../theme/dimensions';
 import { FilterDialog } from './FilterDialog';
 import { logger } from './logger';
@@ -27,7 +28,6 @@ import { OfflineSearchQuery } from './OfflineSearch';
 import { OnlineSearchQuery } from './OnlineSearch';
 import { SearchHistory } from './SearchHistory';
 import { styles } from './styles';
-import color from 'color';
 
 type State = {
     searching: boolean,
@@ -40,7 +40,7 @@ type State = {
 };
 
 type OwnProps = {
-    theme: Theme,
+    theme: AppTheme,
 };
 
 type StateProps = {
@@ -260,11 +260,6 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
     }
 
     render() {
-        let textColor = this.props.theme.colors.text;
-        if (color(this.props.theme.colors.accent).isDark()) {
-            textColor = '#ffffff';
-        }
-
         return (
             <Screen>
                 {this.state.searching && this.state.filterTags.length > 0 && (
@@ -277,7 +272,7 @@ class SearchScreenBase extends AuditedScreen<Props, State> {
                                             style={[styles.chip, { backgroundColor: this.props.theme.colors.accent }]}
                                             key={`${f.type}:${f.value}`}
                                             selected={true}
-                                            selectedColor={textColor}
+                                            selectedColor={this.props.theme.colors.textOnAccent}
                                             onPress={() => this.toggleChip(f.type, f.value)}
                                         >
                                             {f.value}

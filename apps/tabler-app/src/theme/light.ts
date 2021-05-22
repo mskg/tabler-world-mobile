@@ -1,6 +1,6 @@
 import { Colors, DefaultTheme } from 'react-native-paper';
 import { AppTheme } from './AppTheme';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT, ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR } from './colors';
+import { ___DONT_USE_ME_DIRECTLY___COLOR_BACKDROP } from './colors';
 
 export const light: AppTheme = {
     ...DefaultTheme,
@@ -16,16 +16,15 @@ export const light: AppTheme = {
 
     colors: {
         ...DefaultTheme.colors,
-        backdrop: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
+        backdrop: ___DONT_USE_ME_DIRECTLY___COLOR_BACKDROP,
 
         surface: Colors.white,
         background: '#eceef2',
-        // background: "green",
-        // surface: "red",
 
         primary: '#f2f2f2',
-        accent: ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT,
-        navigation: ___DONT_USE_ME_DIRECTLY___COLOR_BOTTOM_BAR,
+        textOnAccent: DefaultTheme.colors.text,
+
+        navigation: ___DONT_USE_ME_DIRECTLY___COLOR_BACKDROP,
 
         error: 'red',
         notification: 'red',

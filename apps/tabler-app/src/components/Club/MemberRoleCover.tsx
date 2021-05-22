@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Caption, Surface, Theme, withTheme } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { IAppState } from '../../model/IAppState';
 import { CachedImage } from '../Image/CachedImage';
 
 // const logger = new Logger(Categories.Screens.Structure);
@@ -16,6 +18,9 @@ type Props = {
     pic?: string | null,
     firstname?: string | null,
     lastname?: string | null,
+
+    diplayFirstNameFirst: boolean,
+    sortByLastName: boolean,
 
     label?: string | null,
 };
@@ -49,7 +54,7 @@ class MemberRoleCover extends React.Component<Props> {
                                 <Ionicons
                                     color={this.props.theme.colors.backdrop}
                                     size={coverStyle.width + 20}
-                                    style={{marginLeft: -10}}
+                                    style={{ marginLeft: -10 }}
                                     name="md-person" />
                             </View>
                         }
@@ -59,7 +64,11 @@ class MemberRoleCover extends React.Component<Props> {
 
                 <View style={[styles.name, nameStyle, { backgroundColor: this.props.theme.colors.background }]}>
                     <Caption numberOfLines={1} style={[styles.caption, { fontFamily: this.props.theme.fonts.medium }]}>
-                        {this.props.firstname} {this.props.lastname}
+                        {
+                            this.props.diplayFirstNameFirst ?
+                                `${this.props.firstname} ${this.props.lastname}`
+                                : `${this.props.lastname} ${this.props.firstname}`
+                        }
                     </Caption>
 
                     {this.props.label && <Caption numberOfLines={1} style={styles.caption}>
@@ -122,4 +131,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withTheme(MemberRoleCover);
+// tslint:disable-next-line: export-name
+export default withTheme(
+    connect((state: IAppState) => ({
+        diplayFirstNameFirst: state.settings.diplayFirstNameFirst,
+        sortByLastName: state.settings.sortByLastName,
+    }))(MemberRoleCover),
+);
