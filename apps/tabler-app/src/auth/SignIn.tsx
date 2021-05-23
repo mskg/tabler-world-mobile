@@ -140,6 +140,7 @@ class SignInBase extends AuditedScreen<Props, State> {
                     text: I18N.Screen_SignIn.confirm,
                     style: 'destructive',
                     onPress: async () => {
+                        this.props.setColor('rti');
                         await enableDemoMode();
                         Updates.reloadAsync();
                     },

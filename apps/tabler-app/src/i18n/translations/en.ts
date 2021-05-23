@@ -691,7 +691,7 @@ const en = {
             title: 'Nearby Members',
             on: {
                 title: 'Nearby Members',
-                text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
+                text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location. This feature is currently limited to members of the same family.',
                 field: 'Share Your Location',
             },
             foreground: {

@@ -1,6 +1,5 @@
 import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
-import * as Permissions from 'expo-permissions';
 import React, { PureComponent } from 'react';
 import { Alert, Dimensions, Linking, Platform, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
@@ -87,7 +86,8 @@ class NearbyOptInBase extends PureComponent<Props, State> {
             return;
         }
 
-        const result = await Permissions.askAsync(Permissions.LOCATION);
+        const result = await Location.getPermissionsAsync();
+        logger.log('Permissiong result is', result);
 
         if (result.status !== 'granted') {
             this.setState({
@@ -99,7 +99,9 @@ class NearbyOptInBase extends PureComponent<Props, State> {
         }
 
         if (!isFeatureEnabled(Features.LocationWithoutAlways)) {
-            if (Platform.OS === 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
+            if (Platform.OS === 'ios' && result.scope !== 'always') {
+                logger.log('scope does not match', result.scope);
+
                 this.setState({
                     message: I18N.Screen_NearbyMembers.always,
                     canSet: Platform.OS === 'ios',
@@ -110,6 +112,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
         }
 
         if (this.state.message) {
+            logger.debug('removing message');
             this.setState({ message: undefined });
         }
     }

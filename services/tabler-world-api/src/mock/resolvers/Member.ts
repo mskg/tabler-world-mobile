@@ -1,9 +1,10 @@
-import faker from 'faker';
 import { MockList } from '@graphql-tools/mock';
+import faker from 'faker';
+import { clubNames, memberNames } from '../data';
 import { Area } from './Area';
 import { Association } from './Association';
 import { Club } from './Club';
-import { clubNames, memberNames } from '../data';
+import { Family } from './Family';
 
 export const Member = (root?: any, args?: any, context?: any, _info?: any) => {
     // this is a dirty hack to allow generating the list
@@ -43,6 +44,7 @@ export const Member = (root?: any, args?: any, context?: any, _info?: any) => {
             ? null
             : new MockList(faker.random.number({ min: 0, max: 3 })),
 
+        family: () => Family(),
         association: () => Association(),
         club: () => Club({ club: member.club }, args, context, _info),
         area: () => Area({ area: club.area }, args, context, _info),

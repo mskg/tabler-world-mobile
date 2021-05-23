@@ -98,21 +98,21 @@ BEGIN
             when type = 'family' then result = 'LCI';
             when type = 'assoc' then result = 'LC ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'LC' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     ELSIF family = 'c41' then
         case
             when type = 'family' then result = '41I';
             when type = 'assoc' then result = '41 ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = '41C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     else
         case
             when type = 'family' then result = 'RTI';
             when type = 'assoc' then result = 'RT ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
-            else result = 'C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+            else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     end if;
 

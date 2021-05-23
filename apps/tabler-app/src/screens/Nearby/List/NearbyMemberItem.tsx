@@ -13,7 +13,7 @@ import { formatDistance } from '../../../helper/formatting/formatDistance';
 import { formatTimespan } from '../../../helper/formatting/formatTimespan';
 import { I18N } from '../../../i18n/translation';
 import { Features, isFeatureEnabled } from '../../../model/Features';
-import { MemberOverviewFragment, MemberOverviewFragment_roles } from '../../../model/graphql/MemberOverviewFragment';
+import { MemberOverviewFragment_roles } from '../../../model/graphql/MemberOverviewFragment';
 import { NearbyMembers_nearbyMembers_member } from '../../../model/graphql/NearbyMembers';
 import { IAppState } from '../../../model/IAppState';
 import { showProfile, startConversation } from '../../../redux/actions/navigation';
