@@ -13,7 +13,7 @@
         "@mskg/tabler-world-rds-client": "0.0.1",
         "@mskg/tabler-world-yarn-tools": "0.0.1",
         "@sentry/node": "^5.12.3",
-        "apollo-server-caching": "^0.5.1",
+        "apollo-server-caching": "^0.7.0",
         "apollo-server-core": "^2.10.1",
         "aws-xray-sdk": "^2.4.0",
         "https": "^1.0.0",
