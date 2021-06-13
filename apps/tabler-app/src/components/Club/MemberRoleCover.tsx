@@ -53,8 +53,9 @@ class MemberRoleCover extends React.Component<Props> {
                             <View style={[styles.container, coverStyle]}>
                                 <Ionicons
                                     color={this.props.theme.colors.backdrop}
-                                    size={coverStyle.width + 20}
-                                    style={{ marginLeft: -10 }}
+                                    size={coverStyle.width * 88 / 94} // icon is not squared
+                                    // style={{ marginTop: -10 }}
+                                    style={{ paddingTop: -20 }}
                                     name="md-person" />
                             </View>
                         }

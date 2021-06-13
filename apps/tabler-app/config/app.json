@@ -95,6 +95,12 @@
                 "googleMaps": {}
             }
         },
+        "androidNavigationBar": {
+            "visible": "sticky-immersive"
+        },
+        "androidStatusBar": {
+            "backgroundColor": "#ffffff00"
+        },
         "notification": {
             "icon": "./assets/images/logo_Android_notifications.png",
             "color": "#ffbf35"
