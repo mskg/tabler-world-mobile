@@ -72,9 +72,9 @@ custom:
 
     prod:
       inc:
-        rti: cron(0 3-20 * * * *)
-        lci: cron(20 3-20 * * * *)
-        c41: cron(40 3-20 * * * *)
+        rti: cron(0 3-20 * * ? *)
+        lci: cron(20 3-20 * * ? *)
+        c41: cron(40 3-20 * * ? *)
 
       clubs:
         rti: cron(0 21 * * ? *)
