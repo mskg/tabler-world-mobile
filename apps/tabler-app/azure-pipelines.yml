@@ -278,8 +278,8 @@ stages:
             ipaPath: $(PIPELINE.WORKSPACE)/ios/app.ipa
             releaseNotes: $(PIPELINE.WORKSPACE)/commit/commit.txt
 
-            fastlaneToolsVersion: 'SpecificVersion'
-            fastlaneToolsSpecificVersion: '2.183.0'
+            # fastlaneToolsVersion: 'SpecificVersion'
+            # fastlaneToolsSpecificVersion: '2.183.0'
             # shouldSkipWaitingForProcessing: true
 
 
