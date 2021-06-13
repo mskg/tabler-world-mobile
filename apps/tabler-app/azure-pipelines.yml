@@ -274,12 +274,12 @@ stages:
           inputs:
             serviceEndpoint: 'Store ovfoundation Key'
             appIdentifier: '$(APP_IOS_BUNDLE)'
-            appSpecificId: $(APPLE_APP_ID)
+            # appSpecificId: $(APPLE_APP_ID)
             ipaPath: $(PIPELINE.WORKSPACE)/ios/app.ipa
             releaseNotes: $(PIPELINE.WORKSPACE)/commit/commit.txt
 
             # fastlaneToolsVersion: 'SpecificVersion'
-            # fastlaneToolsSpecificVersion: '2.183.0'
+            # fastlaneToolsSpecificVersion: '2.183.2'
             # shouldSkipWaitingForProcessing: true
 
 
