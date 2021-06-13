@@ -47,7 +47,7 @@ type Props = OwnProps & StateProps & DispatchPros & NavigationInjectedProps<{ fa
 
 const ITEM_WIDTH = 64;
 const ITEM_PADDING = 16;
-const NUM_ELEMENTS = 3;
+// const NUM_ELEMENTS = 3;
 
 class FamiliesScreenBase extends AuditedScreen<Props, State> {
     flatList!: FlatList<Families_Families> | null;

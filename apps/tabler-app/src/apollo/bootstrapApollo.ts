@@ -74,7 +74,7 @@ This must only be called once in the lifecyle!
                     }
 
                     // in case of timeout, just retry the operation
-                    return error && (error.statusCode === 502 || error.statusCode === 429);
+                    return error?.statusCode === 502 || error?.statusCode === 429;
                 },
             },
 
