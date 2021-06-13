@@ -264,7 +264,7 @@ functions:
             type: members
             mode: incremental
             offset: 0
-            maxRecords: 5000
+            maxRecords: 4000
 
       - schedule:
           name: ${self:service}-lci-members-${self:custom.stage}
@@ -278,7 +278,7 @@ functions:
             type: members
             mode: incremental
             offset: 0
-            maxRecords: 5000
+            maxRecords: 4000
 
       - schedule:
           name: ${self:service}-rti-clubs-${self:custom.stage}
@@ -292,7 +292,7 @@ functions:
             mode: full
             type: clubs
             offset: 0
-            maxRecords: 5000
+            maxRecords: 4000
 
       - schedule:
           name: ${self:service}-lci-clubs-${self:custom.stage}
@@ -306,7 +306,7 @@ functions:
             mode: full
             type: clubs
             offset: 0
-            maxRecords: 5000
+            maxRecords: 4000
 
       - schedule:
           name: ${self:service}-rti-structure-${self:custom.stage}
@@ -373,7 +373,7 @@ functions:
             type: members
             mode: incremental
             offset: 0
-            maxRecords: 5000
+            maxRecords: 4000
 
       - schedule:
           name: ${self:service}-c41-clubs-${self:custom.stage}
@@ -387,7 +387,7 @@ functions:
             mode: full
             type: clubs
             offset: 0
-            maxRecords: 5000
+            maxRecords: 4000
 
       - schedule:
           name: ${self:service}-c41-structure-${self:custom.stage}
