@@ -330,7 +330,8 @@ class SignInBase extends AuditedScreen<Props, State> {
                                             loginParts.map((p, i) => (
                                                 <Text
                                                     key={i.toString()}
-                                                    style={[styles.hint, { color: i <= matchingPart ? this.props.theme.colors.accent : undefined }]}
+                                                    style={[styles.hint, { color: i <= matchingPart ? this.props.theme.colors.accent : this.props.theme.colors.text }]}
+                                                    numberOfLines={1}
                                                 >
                                                     {I18N.format(p, { name: this.state.family }).toLowerCase()}
                                                 </Text>

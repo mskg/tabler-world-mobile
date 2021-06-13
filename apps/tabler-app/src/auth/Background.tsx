@@ -27,7 +27,7 @@ export const Logo = () => (
 export const Greeting = ({ title, subtitle }) => (
     <React.Fragment>
         <Headline style={styles.greeting}>{title}</Headline>
-        <Subheading numberOfLines={1} style={styles.greeting2}>{subtitle}</Subheading>
+        <Subheading style={styles.greeting2}>{subtitle}</Subheading>
     </React.Fragment>
 );
 

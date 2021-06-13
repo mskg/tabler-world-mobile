@@ -11,6 +11,7 @@ export default ({ placeholder, style, ...props }) => (
         // placeholderTextColor="#a0a0a0"
         // onChangeText={value => onChangeText(type, value)}
         underlineColorAndroid="transparent"
+        numberOfLines={1}
         {...props}
     />
 );
