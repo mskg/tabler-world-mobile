@@ -14,11 +14,12 @@ function* doWaitRetry(effect, initialDelay, ...args) {
         tryCount += 1;
 
         try {
-            return yield effect(args);
+            return yield effect(...args);
         } catch (error) {
             logger.error('saga:waitretry', error, { try: tryCount, delay: nextDelay });
         }
 
+        // tslint:disable-next-line: insecure-random
         const nextDelayTime = nextDelay * tryCount * Math.random();
 
         logger.debug('delaying for', Math.round(nextDelayTime / 1000), '(s) try', tryCount);
@@ -32,5 +33,5 @@ function* doWaitRetry(effect, initialDelay, ...args) {
 export function waitRetry(generator) {
     return function* (...args) {
         return yield doWaitRetry(generator, 1000, ...args);
-    }
+    };
 }
