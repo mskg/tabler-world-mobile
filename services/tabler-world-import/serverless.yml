@@ -29,10 +29,67 @@ custom:
   sqs_geo: ${self:service}-geocode-${self:custom.stage}
 
   # import schedule
+  # cron
   cron_rate:
-    dev: rate(24 hours)
-    test: cron(30 09 * * ? *)
-    prod: rate(1 hour)
+    dev: # disabled, 1
+      inc:
+        rti: cron(0 0 * * ? *)
+        lci: cron(10 0 * * ? *)
+        c41: cron(20 0 * * ? *)
+      clubs:
+        rti: cron(30 0 * * ? *)
+        lci: cron(35 0 * * ? *)
+        c41: cron(40 0 * * ? *)
+      structure:
+        rti: cron(45 0 * * ? *)
+        lci: cron(50 0 * * ? *)
+        c41: cron(55 0 * * ? *)
+      archived:
+        rti: cron(57 1 * * ? *)
+        lci: cron(58 1 * * ? *)
+        c41: cron(59 1 * * ? *)
+
+    test: # disabled
+      inc:
+        rti: cron(0 1 * * ? *)
+        lci: cron(20 1 * * ? *)
+        c41: cron(40 1 * * ? *)
+
+      clubs:
+        rti: cron(0 2 * * ? *)
+        lci: cron(20 2 * * ? *)
+        c41: cron(40 2 * * ? *)
+
+      structure:
+        rti: cron(45 2 * * ? *)
+        lci: cron(50 2 * * ? *)
+        c41: cron(55 2 * * ? *)
+
+      archived:
+        rti: cron(50 1 * * ? *)
+        lci: cron(53 1 * * ? *)
+        c41: cron(59 1 * * ? *)
+
+    prod:
+      inc:
+        rti: cron(0 3-20 * * * *)
+        lci: cron(20 3-20 * * * *)
+        c41: cron(40 3-20 * * * *)
+
+      clubs:
+        rti: cron(0 21 * * ? *)
+        lci: cron(20 21 * * ? *)
+        c41: cron(40 21 * * ? *)
+
+      structure:
+        rti: cron(0 22 * * ? *)
+        lci: cron(20 22 * * ? *)
+        c41: cron(40 22 * * ? *)
+
+      archived:
+        rti: cron(15 23 * * ? *)
+        lci: cron(35 23 * * ? *)
+        c41: cron(45 23 * * ? *)
 
   cron_enabled:
     dev: false
@@ -199,7 +256,7 @@ functions:
           name: ${self:service}-rti-members-${self:custom.stage}
           description: Update members from TABLER.WORLD
 
-          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          rate: ${self:custom.cron_rate.${self:custom.stage}.inc.rti}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -213,7 +270,7 @@ functions:
           name: ${self:service}-lci-members-${self:custom.stage}
           description: Update members from CIRCLER.WORLD
 
-          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          rate: ${self:custom.cron_rate.${self:custom.stage}.inc.lci}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -227,7 +284,7 @@ functions:
           name: ${self:service}-rti-clubs-${self:custom.stage}
           description: Update clubs from TABLER.WORLD
 
-          rate: cron(59 23 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.clubs.rti}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -241,7 +298,7 @@ functions:
           name: ${self:service}-lci-clubs-${self:custom.stage}
           description: Update clubs from CIRCLER.WORLD
 
-          rate: cron(59 23 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.clubs.lci}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -255,7 +312,7 @@ functions:
           name: ${self:service}-rti-structure-${self:custom.stage}
           description: Updates structure from TABLER.WORLD
 
-          rate: cron(00 23 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.structure.rti}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -269,7 +326,7 @@ functions:
           name: ${self:service}-lci-structure-${self:custom.stage}
           description: Updates structure from CIRCLER.WORLD
 
-          rate: cron(00 23 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.structure.lci}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -283,7 +340,7 @@ functions:
           name: ${self:service}-rti-members-archived-${self:custom.stage}
           description: Remove archived members from TABLER.WORLD
 
-          rate: cron(00 02 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.archived.rti}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -295,7 +352,7 @@ functions:
           name: ${self:service}-lci-members-archived-${self:custom.stage}
           description: Remove archived members from CIRCLER.WORLD
 
-          rate: cron(00 02 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.archived.lci}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -308,7 +365,7 @@ functions:
           name: ${self:service}-c41-members-${self:custom.stage}
           description: Update members from 41ER.WORLD
 
-          rate: ${self:custom.cron_rate.${self:custom.stage}}
+          rate: ${self:custom.cron_rate.${self:custom.stage}.inc.c41}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -322,7 +379,7 @@ functions:
           name: ${self:service}-c41-clubs-${self:custom.stage}
           description: Update clubs from 41ER.WORLD
 
-          rate: cron(59 23 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.clubs.c41}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -336,7 +393,7 @@ functions:
           name: ${self:service}-c41-structure-${self:custom.stage}
           description: Updates structure from 41ER.WORLD
 
-          rate: cron(00 23 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.structure.c41}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
@@ -350,7 +407,7 @@ functions:
           name: ${self:service}-c41-members-archived-${self:custom.stage}
           description: Remove archived members from 41ER.WORLD
 
-          rate: cron(00 02 * * ? *)
+          rate: ${self:custom.cron_rate.${self:custom.stage}.archived.c41}
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
           input:
