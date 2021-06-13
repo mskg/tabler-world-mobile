@@ -125,15 +125,20 @@ select
 	) as address
 	,(
         -- for the ladies, it's the second field, fixme!
-        select
-            case
-                when value->'rows'->1->>'value' is not null then trim(concat_ws(' ', value->'rows'->1->>'value', value->'rows'->0->>'value'))
-                else value->'rows'->0->>'value'
-            end
-        from jsonb_array_elements(data->'custom_fields') t
-		where  t.value @> '{"rows": [{"key": "Name partner"}]}'
-            or t.value @> '{"rows": [{"key": "First name partner"}]}'
-            or t.value @> '{"rows": [{"key": "Surname partner"}]}'
+        select string_agg(jv, ' ')
+        from (
+            -- for the ladies, it's the second field, fixme!
+            select jr->>'value' as jv, jr->>'key' as jk
+            from
+                jsonb_array_elements(data->'custom_fields') fields,
+                jsonb_array_elements(fields->'rows') jr
+    		where  jr->>'key' in (
+                'First name partner',
+                'Surname partner',
+                'Name partner'
+            )
+            order by jk -- first before surename
+        ) fieldsquery
 	) as partner
 	,(
 		select jsonb_agg(role)
