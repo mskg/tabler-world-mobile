@@ -124,7 +124,7 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
             metrics: new Metric(),
 
             logger: new ConsoleLogger(eventId, connectionId),
-            // sqlLogLevel: 'debug',
+            sqlLogLevel: Environment.DB.sqlLogLevel,
 
             auditor: new Audit(eventId, `${principal.id}:${principal.email}`, context.device),
             cache: cacheInstance,

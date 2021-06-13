@@ -2,7 +2,7 @@ import { Family } from '@mskg/tabler-world-auth-client';
 import { addressHash, enrichAddress } from '@mskg/tabler-world-geo';
 import * as DateParser from 'date-and-time';
 import { filter, sortBy } from 'lodash';
-import { byVersion, v12Check } from '../helper/byVersion';
+import { byVersion, olderEqualV12 } from '../helper/byVersion';
 import { fixC41AssociationName } from '../helper/fixC41AssociationName';
 import { removeFamily } from '../helper/removeFamily';
 import { FieldNames } from '../privacy/FieldNames';
@@ -82,7 +82,7 @@ export const StructureResolver = {
 
             return byVersion({
                 context,
-                mapVersion: v12Check,
+                mapVersion: olderEqualV12,
 
                 versions: {
                     old: async () => [await context.dataSources.structure.getAssociation(context.principal.association)],

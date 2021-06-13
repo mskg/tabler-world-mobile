@@ -1,7 +1,7 @@
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import _, { find } from 'lodash';
 import { DefaultMemberColumns } from '../dataSources/MembersDataSource';
-import { byVersion, v12Check, v14Check } from '../helper/byVersion';
+import { byVersion, olderEqualV12, olderEqualV14 } from '../helper/byVersion';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { FieldNames } from '../privacy/FieldNames';
 import { IApolloContext } from '../types/IApolloContext';
@@ -73,7 +73,8 @@ export const SearchMemberResolver = {
 `);
             });
 
-            if (allowCross) {
+            // we only support this in the new version
+            if (allowCross && olderEqualV14(context.clientInfo.version) === 'default') {
                 context.logger.debug('Allow cross family search');
 
                 // we got a filter
@@ -103,7 +104,7 @@ export const SearchMemberResolver = {
             // old only 'de
             byVersion({
                 context,
-                mapVersion: v12Check,
+                mapVersion: olderEqualV12,
 
                 versions: {
                     // only
@@ -115,7 +116,21 @@ export const SearchMemberResolver = {
                     default: () => {
                         if (args.query.associations != null && args.query.associations.length > 0) {
                             parameters.push(args.query.associations);
-                            filters.push(`association = ANY ($${parameters.length})`);
+
+                            byVersion({
+                                context,
+                                mapVersion: olderEqualV14,
+
+                                versions: {
+                                    old: () => {
+                                        filters.push(`associationname = ANY ($${parameters.length})`);
+                                    },
+
+                                    default: () => {
+                                        filters.push(`association = ANY ($${parameters.length})`);
+                                    },
+                                },
+                            });
                         }
                     },
                 },
@@ -126,7 +141,7 @@ export const SearchMemberResolver = {
 
                 byVersion({
                     context,
-                    mapVersion: v14Check,
+                    mapVersion: olderEqualV14,
 
                     versions: {
                         old: () => {
@@ -145,7 +160,7 @@ export const SearchMemberResolver = {
 
                 byVersion({
                     context,
-                    mapVersion: v14Check,
+                    mapVersion: olderEqualV14,
 
                     versions: {
                         old: () => {

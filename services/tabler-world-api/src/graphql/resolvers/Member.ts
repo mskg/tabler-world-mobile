@@ -1,7 +1,7 @@
 import { Family } from '@mskg/tabler-world-auth-client';
 import { AuditAction } from '@mskg/tabler-world-common';
 import _ from 'lodash';
-import { byVersion, v12Check } from '../helper/byVersion';
+import { byVersion, olderEqualV12 } from '../helper/byVersion';
 import { fixC41AssociationName } from '../helper/fixC41AssociationName';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
@@ -83,7 +83,7 @@ export const MemberResolver = {
         name: (root: any, _args: any, context: IApolloContext) => {
             const originalName = byVersion({
                 context,
-                mapVersion: v12Check,
+                mapVersion: olderEqualV12,
 
                 versions: {
                     old: () => root.shortname,

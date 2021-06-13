@@ -86,7 +86,7 @@
         "deploy": "service deploy",
         "package": "service package",
         "remove": "service remove",
-        "dev": "yarn run dynamodb && service dev --useWorkerThreads --useChildProcesses",
+        "dev": "yarn run dynamodb && SQL_LOG_LEVEL=debug service dev --useWorkerThreads --useChildProcesses",
         "dev-cache": "yarn run dynamodb && service dev --useWorkerThreads --useChildProcesses --skipCacheInvalidation",
         "test": "jest",
         "start": "ntl",
