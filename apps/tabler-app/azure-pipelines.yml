@@ -31,7 +31,7 @@ variables:
 
   - group: 'AWS Germany'
   - group: 'ENV Germany Shared'
-  - group: 'ENV Germany TEST'
+  - group: 'ENV Germany PROD'
 
   - name: YARN_CACHE_FOLDER
     value: $(Pipeline.Workspace)/.yarn
