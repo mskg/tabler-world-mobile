@@ -55,6 +55,7 @@ export class LazyPGClient implements IDataService {
                 // https://github.com/brianc/node-postgres/issues/2089s
                 // tslint:disable-next-line: triple-equals
                 ssl: connection.ssl == false ? false : { rejectUnauthorized: false },
+                application_name: process.env.AWS_LAMBDA_FUNCTION_NAME || process.title || 'unknown',
             });
 
             this.logger.debug('[SQL]', 'connect');

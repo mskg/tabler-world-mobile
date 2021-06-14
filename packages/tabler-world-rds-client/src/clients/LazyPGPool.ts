@@ -56,6 +56,7 @@ export class LazyPGPool implements IPooledDataService {
                 // tslint:disable-next-line: triple-equals
                 ssl: connection.ssl == false ? false : { rejectUnauthorized: false },
                 max: this.poolSize,
+                application_name: process.env.AWS_LAMBDA_FUNCTION_NAME || process.title || 'unknown',
             });
 
             this.logger.debug('[SQL]', 'connect');
