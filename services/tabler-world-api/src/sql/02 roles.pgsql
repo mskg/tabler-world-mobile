@@ -253,5 +253,12 @@ structure_tabler_roles (id, groupid, functionname, start_date, end_date);
 create index idx_structure_roles_ref on
 structure_tabler_roles (reftype, refid, groupname);
 
-create index idx_structure_roles_member on
-structure_tabler_roles (id);
+-- create index idx_structure_roles_member on
+-- structure_tabler_roles (id);
+
+create index idx_structure_roles_member_function on
+structure_tabler_roles using gin (id, function);
+
+create index idx_structure_roles_member_functionname on
+structure_tabler_roles using gin (id, functionname, refid);
+

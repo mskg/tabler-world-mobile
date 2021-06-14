@@ -4,7 +4,11 @@ drop materialized view if exists profiles CASCADE;
 
 create materialized view profiles
 as
-select * from (
+select
+    *
+    ,row_number() over(order by lastname, firstname) as cursor_lastfirst
+    -- ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
+from (
 select
 	id
 	,modifiedon
@@ -22,10 +26,11 @@ select
 				where
 				    tr.id = tabler.id
 				and
-					    function in (4306, 4307) -- rti: member, honorary
-					or  function in (82538, 82542) -- lci: member, honorary
-                    or  function in (28408, 28411) -- c41: member, honorary
-                    or  function < 100 -- rti, board
+				    function in (
+                         4306, 4307     -- rti: member, honorary
+				        ,82538, 82542   -- lci: member, honorary
+                        ,28408, 28411   -- c41: member, honorary
+                    )
 				)
 		THEN
 			-- member
@@ -58,20 +63,7 @@ select
         ),
         data->>'rt_club_subdomain'
      ) club
-	,cast(coalesce(nullif(regexp_replace(data->>'rt_club_subdomain','[^0-9]+','','g'), ''), '1') as integer) clubnumber
 	,data->>'rt_club_name' as clubname
-    ,make_short_reference(
-        make_key_family(data->>'rt_generic_email'),
-        'club',
-        make_key_club(
-            make_key_association(
-                make_key_family(data->>'rt_generic_email'),
-                data->>'rt_association_subdomain'
-            ),
-            data->>'rt_club_subdomain'
-        )
-     ) as clubshortname
-
     -- area
 	,make_key_area(
         make_key_association(
@@ -81,17 +73,6 @@ select
         data->>'rt_area_subdomain'
      ) area
 	,data->>'rt_area_name' as areaname
-    ,make_short_reference(
-        make_key_family(data->>'rt_generic_email'),
-        'area',
-        make_key_area(
-            make_key_association(
-                make_key_family(data->>'rt_generic_email'),
-                data->>'rt_association_subdomain'
-            ),
-            data->>'rt_area_subdomain'
-        )
-     ) as areashortname
 
     -- association
 	,make_key_association(
@@ -99,19 +80,6 @@ select
         data->>'rt_association_subdomain'
      ) as association
 	,data->>'rt_association_name' as associationname
-    ,make_short_reference(
-        make_key_family(data->>'rt_generic_email'),
-        'assoc',
-        data->>'rt_association_subdomain'
-    ) as associationshortname
-	,(
-       select url
-       from assets
-       where
-            type = 'flag'
-        and assets.id = data->>'rt_association_subdomain'
-    ) as associationflag
-
     ,make_key_family(data->>'rt_generic_email') as family
     ,cast(data->>'rt_all_families_optin' as boolean) as allfamiliesoptin
 	,(
@@ -238,8 +206,6 @@ select
     ) as educations
 
 	,data->'rt_privacy_settings' as privacysettings
-    ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
-    ,row_number() over(order by data->>'last_name', data->>'first_name') as cursor_lastfirst
 from tabler
 ) formatted
 where
