@@ -1,13 +1,4 @@
 {
-    "Permissions": {
-        "NSCameraUsageDescription": "ROUND TABLE Family.App uses the camera to scan barcodes of other members.",
-        "NSContactsUsageDescription": "ROUND TABLE Family.App updates your phonebook with member details.",
-        "NSCalendarsUsageDescription": "ROUND TABLE Family.App updates your calendar with event and birthday details.",
-        "NSLocationWhenInUseUsageDescription": "ROUND TABLE Family.App shows other members and clubs arround your current location.",
-        "NSLocationAlwaysUsageDescription": "ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.",
-        "NSPhotoLibraryUsageDescription": "You can send pictures to other members in ROUND TABLE Family.App."
-    },
     "Component_Whoops": {
         "title": "Whoops?",
         "try": "Try Again",
@@ -20,10 +11,10 @@
         "text": "Your feedback helps us improve ROUND TABLE Family.App.",
         "report": "Something isn't working?",
         "feedback": "Some functionality is missing? You have an idea?",
-        "language": "Typo? Wrong terms? Translation is really bad?",
         "subject": "ROUND TABLE Family.App Issue",
         "noMail": "You seem to have no mail client installed?",
-        "template": "Please describe what happened:"
+        "template": "Please describe what happened:",
+        "language": "Typo? Wrong terms? Translation is really bad?"
     },
     "Screen_Image": {
         "title_Member": "Member Info",
@@ -40,9 +31,9 @@
         "continue": "Login",
         "confirm": "Confirm",
         "cancel": "Cancel",
+        "warning": "IMPORTANT! You can now logon with your TABLER.WORLD password. E-mails will no longer be sent.",
         "welcomeBack": "Welcome back,",
         "signin": "Please choose the organization that your are associated with.",
-        "email": "Please sign in with your {name}.WORLD public e-mail address.",
         "confirmTitle": "Enter Password",
         "codeWrong": "Verification failed, you have to restart.",
         "accessDenied": "You cannot use this app with your login. If you feel that this is wrong, please contact your online team via e-mail.",
@@ -52,7 +43,8 @@
         "demo": {
             "title": "Demo Mode",
             "text": "After confirmation, we will restart the application. To exit the demo, goto Settings | Logout."
-        }
+        },
+        "email": "Please sign in with your {name}.WORLD public e-mail address."
     },
     "Screen_Pair": {
         "action": "Exchange contact details",
@@ -68,16 +60,16 @@
         "navigation": "Directory",
         "title": "Association",
         "mytitle": "My Directory",
-        "myassociations": "My Familie's Associations",
-        "families": "Family",
         "associations": "Association",
         "clubs": "Clubs",
         "areas": "Areas",
         "president": "President",
         "board": "Board",
         "assist": "Board Assistants",
-        "regionalboard": "Regional Board",
-        "details": "Show Club"
+        "details": "Show Club",
+        "myassociations": "My Familie's Associations",
+        "families": "Family",
+        "regionalboard": "Regional Board"
     },
     "Screen_Club": {
         "title": "Club",
@@ -177,10 +169,6 @@
         "filter": "Filter",
         "expand": "See All",
         "collapse": "See Less",
-        "families": {
-            "one": "Family",
-            "other": "Families ({number})"
-        },
         "associations": {
             "one": "Association",
             "other": "Associations ({number})"
@@ -200,6 +188,10 @@
         "sectors": {
             "one": "Sector",
             "other": "Sectors ({number})"
+        },
+        "families": {
+            "one": "Family",
+            "other": "Families ({number})"
         }
     },
     "Sectors": {
@@ -663,10 +655,6 @@
                 "text": "If you turn it on, other members can see in which city your are. We don't store your location history, only your last known location. This feature is currently limited to members of the same family.",
                 "field": "Share Your Location"
             },
-            "foreground": {
-                "field": "Foreground Location Updates",
-                "text": "If you turn this on, it will improve the accuracy of location updates in the background."
-            },
             "map": {
                 "title": "Map Display",
                 "text": "If you turn this on additionaly, other members can see exactly where you are.",
@@ -675,6 +663,10 @@
             "filter": {
                 "title": "Filter",
                 "field": "Hide Your own Club"
+            },
+            "foreground": {
+                "field": "Foreground Location Updates",
+                "text": "If you turn this on, it will improve the accuracy of location updates in the background."
             }
         }
     },
@@ -696,6 +688,15 @@
     "Component_ImagePicker": {
         "nocamera": "No camera permissions granted.",
         "nogallery": "Sorry, we need camera roll permissions to make this work."
+    },
+    "Permissions": {
+        "NSCameraUsageDescription": "ROUND TABLE Family.App uses the camera to scan barcodes of other members.",
+        "NSContactsUsageDescription": "ROUND TABLE Family.App updates your phonebook with member details.",
+        "NSCalendarsUsageDescription": "ROUND TABLE Family.App updates your calendar with event and birthday details.",
+        "NSLocationWhenInUseUsageDescription": "ROUND TABLE Family.App shows other members and clubs arround your current location.",
+        "NSLocationAlwaysUsageDescription": "ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.",
+        "NSPhotoLibraryUsageDescription": "You can send pictures to other members in ROUND TABLE Family.App."
     },
     "Screen_Families": {
         "title": "Families",
