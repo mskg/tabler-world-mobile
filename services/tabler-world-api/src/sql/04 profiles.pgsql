@@ -32,6 +32,19 @@ select
                         ,28408, 28411   -- c41: member, honorary
                     )
 				)
+            and exists (
+                select 1
+                from clubs
+                where
+                    clubs.id = make_key_club(
+                        make_key_association(
+                            make_key_family(data->>'rt_generic_email'),
+                            data->>'rt_association_subdomain'
+                        ),
+                        data->>'rt_club_subdomain'
+                    )
+                    and data->>'rt_status' in ('active', 'formation', 'preparation')
+            )
 		THEN
 			-- member
 			FALSE

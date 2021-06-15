@@ -16,3 +16,6 @@ WITH (
 ALTER TABLE clubs
     add column if not EXISTS lastseen timestamptz(0)
 ;
+
+create index if not exists idx_clubs_id_status on
+    clubs using gin (id, (data->>'rt_status'));
