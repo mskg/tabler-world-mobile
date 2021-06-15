@@ -5,7 +5,13 @@ drop materialized view if exists profiles CASCADE;
 create materialized view profiles
 as
 select
-    *
+    formatted.*
+    , case
+      when formatted.active_member and active_clubs.id is not null then
+        false
+      else
+        true
+      end as removed
     ,row_number() over(order by lastname, firstname) as cursor_lastfirst
     -- ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
 from (
@@ -31,28 +37,15 @@ select
 				        ,82538, 82542   -- lci: member, honorary
                         ,28408, 28411   -- c41: member, honorary
                     )
-				)
-            and exists (
-                select 1
-                from clubs
-                where
-                    clubs.id = make_key_club(
-                        make_key_association(
-                            make_key_family(data->>'rt_generic_email'),
-                            data->>'rt_association_subdomain'
-                        ),
-                        data->>'rt_club_subdomain'
-                    )
-                    and data->>'rt_status' in ('active', 'formation', 'preparation')
-            )
+			)
 		THEN
 			-- member
-			FALSE
+			TRUE
 		ELSE
 			-- removed
-			TRUE
+			FALSE
 		END
-	) as removed
+	) as active_member
 	,data->>'title' as title
 	,TRIM(data->>'first_name') as firstname
 	,TRIM(data->>'last_name') as lastname
@@ -220,12 +213,12 @@ select
 
 	,data->'rt_privacy_settings' as privacysettings
 from tabler
-) formatted
+) formatted left join active_clubs on formatted.club = active_clubs.id
 where
-        family is not null
-    and association is not null
-    and area is not null
-    and club is not null
+        formatted.family is not null
+    and formatted.association is not null
+    and formatted.area is not null
+    and formatted.club is not null
 ;
 
 CREATE UNIQUE INDEX idx_profiles_id

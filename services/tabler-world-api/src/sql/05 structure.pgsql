@@ -82,7 +82,7 @@ select
     ,NULLIF(data->>'logo', (
         select data->>'logo'
         from associations
-        where id = make_key_association(make_key_family(clubs.data->>'hostname'), clubs.data->>'parent_subdomain')
+        where id = make_key_association(make_key_family(active_clubs.data->>'hostname'), active_clubs.data->>'parent_subdomain')
     )) as logo
     ,(
         select jsonb_object_agg(map_club_keys(rr->>'key'), rr->>'value')
@@ -118,7 +118,7 @@ select
                     profiles.id = structure_tabler_roles.id
                 and removed = false
                 and reftype = 'club'
-                and refid = clubs.id
+                and refid = active_clubs.id
                 and groupname = 'Board'
         ) r
     ) as board
@@ -132,7 +132,7 @@ select
                     profiles.id = structure_tabler_roles.id
                 and removed = false
                 and reftype = 'club'
-                and refid = clubs.id
+                and refid = active_clubs.id
                 and groupname = 'Board Assistants'
         ) r
     ) as boardAssistants
@@ -148,16 +148,12 @@ select
                     profiles.id = structure_tabler_roles.id
                 and removed = false
                 and reftype = 'club'
-                and refid = clubs.id
+                and refid = active_clubs.id
                 and groupname = 'Members'
                 and functionname = 'Member'
             )
     ) as members
-from clubs
-where
-        data->>'rt_status' = 'active'
-    or data->>'rt_status' = 'formation'
-    or data->>'rt_status' = 'preparation'
+from active_clubs
 order by 2, 3, 6;
 
 -- not unique anymore due to C41 data

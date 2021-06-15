@@ -19,3 +19,14 @@ ALTER TABLE clubs
 
 create index if not exists idx_clubs_id_status on
     clubs using gin (id, (data->>'rt_status'));
+
+
+drop view if exists active_clubs cascade;
+
+create view active_clubs as
+select
+    *
+from clubs
+where
+    data->>'rt_status' in ('active', 'formation', 'preparation')
+;
