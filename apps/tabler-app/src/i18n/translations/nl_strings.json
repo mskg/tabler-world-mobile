@@ -8,10 +8,10 @@
     },
     "Component_ErrorReport": {
         "title": "Meld een probleem",
-        "text": "Feedback?! Top! Daarmee help je ons TABLER.APP te verbeteren.",
+        "text": "Feedback?! Top! Daarmee help je ons ROUND TABLE Family.App verbeteren.",
         "report": "Iets werkt niet?",
         "feedback": "Mis je functies? Heb je een goed idee?",
-        "subject": "TABLER.APP problemen",
+        "subject": "ROUND TABLE Family.App problemen",
         "noMail": "Het lijkt erop dat je geen mail account hebt ingesteld?",
         "template": "Zou je willen omschrijven wat er gebeurde?",
         "language": "Typo? Verkeerde voorwaarden? Vertaling is echt slecht?"
@@ -26,24 +26,25 @@
         "accept": "Accepteren"
     },
     "Screen_SignIn": {
-        "placeholderEMail": "voornaam.achternaam@123-nl.roundtable.world",
+        "placeholderEMail": "voornaam.achternaam@123-nl.{name}.world",
         "placeholderCode": "Wachtwoord",
         "continue": "Login",
         "confirm": "Bevestigen",
         "cancel": "Annuleren",
         "warning": "BELANGRIJK! Je kunt je nu aanmelden met je TABLER.WORLD-wachtwoord. E-mails worden niet langer verzonden.",
         "welcomeBack": "Welkom terug,",
-        "signin": "meld je aan met je openbare e-mailadres van TABLER.WORLD",
+        "signin": "Kies de associatie waar je lid van bent. ",
         "confirmTitle": "Voer wachtwoord in",
         "codeWrong": "Verificatie mislukt, je moet opnieuw opstarten.",
-        "accessDenied": "Je kunt deze app niet gebruiken met je login. Als je denkt dat dit onjuist is kun je contact opnemen met het TABLER.WORLD-team via e-mail.",
+        "accessDenied": "Je kunt deze app niet gebruiken met je login. Als je denkt dat dit onjuist is, kun je contact opnemen met het .World Team via e-mail.",
         "codeVerify": "Kon wachtwoord niet verifiëren, nog {probeert} pogingen.",
         "demoMode": "Probeer de app",
-        "join": "Hoe kun je deelnemen aan Round Table?",
+        "join": "Hoe wordt je lid van de Round Table Family?",
         "demo": {
             "title": "Demo modus",
             "text": "Na bevestiging zullen we de applicatie opnieuw opstarten. Ga naar Instellingen | Uitloggen, om de demo af te sluiten."
-        }
+        },
+        "email": ""
     },
     "Screen_Pair": {
         "action": "Contactgegevens uitwisselen",
@@ -58,14 +59,17 @@
     "Screen_Structure": {
         "navigation": "Register",
         "title": "Vereniging",
-        "mytitle": "Mijn vereniging",
-        "associations": "Verenigingen",
+        "mytitle": "Mijn Directory",
+        "associations": "Vereniging",
         "clubs": "Clubs",
         "areas": "Districten",
         "president": "President",
         "board": "Bestuur",
         "assist": "Bestuursassistenten",
-        "details": "Show Club"
+        "details": "Show Club",
+        "myassociations": "",
+        "families": "",
+        "regionalboard": ""
     },
     "Screen_Club": {
         "title": "Club",
@@ -92,7 +96,7 @@
         "expand": "Alles zien"
     },
     "Screen_World": {
-        "title": "TABLER.WORLD",
+        "title": "Jouw Family.WORLD",
         "tab": "Online"
     },
     "Screen_Albums": {
@@ -118,12 +122,12 @@
             "cancel": "Annuleren"
         },
         "Fields": {
-            "chat": "TABLER.APP Chat",
+            "chat": "ROUND TABLE Family.App Chat",
             "home": "Thuisadres",
             "birthday": "Verjaardag",
             "partner": "Partner",
-            "roles": "RT Functies (dit jaar)",
-            "rtorg": "RT Organisatie",
+            "roles": "Functies (dit jaar)",
+            "rtorg": "Organisatie",
             "companies": "Bedrijf",
             "educations": "Onderwijs",
             "joined": "Installatie datum"
@@ -133,7 +137,7 @@
             "call": "bellen",
             "mail": "mail",
             "chat": "Stuur een bericht naar {name}",
-            "openweb": "Weergeven op TABLER.WORLD",
+            "openweb": "Online weergeven",
             "favadd": "Toevoegen aan favorieten",
             "remfav": "Verwijder van favorieten",
             "contact": "Telefoonboek bijwerken",
@@ -145,7 +149,7 @@
         }
     },
     "EMailNames": {
-        "rt": "TABLER.WORLD",
+        "rt": "Family.WORLD",
         "home": "Prive",
         "work": "Werk",
         "other": "Anders"
@@ -184,6 +188,10 @@
         "sectors": {
             "one": "Sector",
             "other": "Sectoren ({number})"
+        },
+        "families": {
+            "one": "",
+            "other": ""
         }
     },
     "Sectors": {
@@ -234,7 +242,7 @@
         "hideAll": "Verberg alle leden van mijn vereniging",
         "favorites": "Favorieten",
         "toggleFavorits": "Alle favorieten",
-        "toggleOwnTable": "Mijn eigen tafelronde",
+        "toggleOwnTable": "Mijn eigen club",
         "toggleAssociationBoard": "Het bestuur en de assistenten van mijn vereniging",
         "toggleAreaBoard": "De raad van adviseurs van mijn vereniging"
     },
@@ -267,8 +275,8 @@
             "locationservices": "Locatievoorzieningen"
         },
         "texts": {
-            "contacts": "Leden kunnen worden gesynchroniseerd met de standaardaccountgegevens van je telefoon. Als leden worden verwijderd uit TABLER.WORLD, blijven je contacten behouden. De eigenschappen van de contacten worden opgeheven bij elke wijziging in TABLER.WORLD.",
-            "experiments": "Dit zijn experimentele en niet-ondersteunde functies van de TABLER.APP en kunnen op elk gewenst moment verdwijnen."
+            "contacts": "Leden kunnen worden gesynchroniseerd met de standaardaccountgegevens van je telefoon. Als leden worden verwijderd uit ROUND TABLE Family.WORLD, blijven je contacten behouden. De eigenschappen van de contacten worden opgeheven bij elke wijziging in ROUND TABLE Family.WORLD.",
+            "experiments": "Dit zijn experimentele en niet-ondersteunde functies van de ROUND TABLE Family.APP en kunnen op elk gewenst moment verdwijnen."
         },
         "contactpermissions": "Locatiemachtigingen zijn vereist om deze functie te gebruiken. Verleen toestemming via de instellingen van de telefoon.",
         "locationpermission": "Geen toegang tot je locatie. Verleen toestemming via de instellingen van de telefoon.",
@@ -289,7 +297,7 @@
             "lastSync": "Laatste synchronisatie",
             "channel": "Distributiekanaal",
             "syncFavorites": "Favorieten synchroniseren",
-            "syncOwnTable": "Synchroniseer eigen tafelleden",
+            "syncOwnTable": "Synchroniseer eigen clubleden",
             "sortOrder": "Sorteervolgorde",
             "displayOrder": "Bestelling weergeven",
             "experiments": "Albums & Nieuws",
@@ -644,7 +652,7 @@
             "title": "Leden in de buurt",
             "on": {
                 "title": "Leden in de buurt",
-                "text": "Als je het inschakelt, kunnen andere leden zien in welke stad je bent. We slaan je locatiegeschiedenis niet op, alleen uw laatst bekende locatie.",
+                "text": "Als je dit inschakelt, kunnen andere leden zien in welke stad je bent. We slaan je locatiegeschiedenis niet op, alleen uw laatst bekende locatie. Deze feature is momenteel slechts beschikbaar voor leden van je eigen Family",
                 "field": "Deel je locatie"
             },
             "map": {
@@ -682,12 +690,16 @@
         "nogallery": "Sorry, we hebben toegang tot foto's nodig om dit te laten werken."
     },
     "Permissions": {
-        "NSCameraUsageDescription": "TABLER.APP gebruikt de camera om barcodes van andere leden te scannen.",
-        "NSContactsUsageDescription": "TABLER.APP update je telefoonboek met leden details.",
-        "NSCalendarsUsageDescription": "TABLER.APP update je agenda met evenementen en verjaardagen.",
-        "NSLocationWhenInUseUsageDescription": "TABLER.APP laat andere leden en clubs in je omgeving zien.",
-        "NSLocationAlwaysUsageDescription": "TABLER.APP gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen.",
-        "NSPhotoLibraryUsageDescription": "U kunt foto's naar andere leden sturen in TABLER.APP."
+        "NSCameraUsageDescription": "ROUND TABLE Family.App gebruikt de camera om barcodes van andere leden te scannen.",
+        "NSContactsUsageDescription": "ROUND TABLE Family.App update je telefoonboek met details van leden. ",
+        "NSCalendarsUsageDescription": "ROUND TABLE Family.App update je agenda met evenementen en verjaardagen.",
+        "NSLocationWhenInUseUsageDescription": "ROUND TABLE Family.App laat andere leden en clubs in je omgeving zien.",
+        "NSLocationAlwaysUsageDescription": "ROUND TABLE Family.App gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "ROUND TABLE Family.App gebruikt je locatie en geeft andere leden de mogelijkheid om met je in contact te komen.",
+        "NSPhotoLibraryUsageDescription": "U kunt foto's naar andere leden sturen in ROUND TABLE Family.App."
+    },
+    "Screen_Families": {
+        "title": "",
+        "associations": ""
     }
 }
