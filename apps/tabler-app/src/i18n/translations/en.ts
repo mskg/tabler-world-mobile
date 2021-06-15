@@ -1,12 +1,12 @@
 const en = {
     Permissions: {
-        NSCameraUsageDescription: 'ROUND TABLE Family.APP uses the camera to scan barcodes of other members.',
-        NSContactsUsageDescription: 'ROUND TABLE Family.APP updates your phonebook with member details.',
-        NSCalendarsUsageDescription: 'ROUND TABLE Family.APP updates your calendar with event and birthday details.',
-        NSLocationWhenInUseUsageDescription: 'ROUND TABLE Family.APP shows other members and clubs arround your current location.',
-        NSLocationAlwaysUsageDescription: 'ROUND TABLE Family.APP tracks your position to allow other members to get in touch with you.',
-        NSLocationAlwaysAndWhenInUseUsageDescription: 'ROUND TABLE Family.APP tracks your position to allow other members to get in touch with you.',
-        NSPhotoLibraryUsageDescription: 'You can send pictures to other members in ROUND TABLE Family.APP.',
+        NSCameraUsageDescription: 'ROUND TABLE Family.App uses the camera to scan barcodes of other members.',
+        NSContactsUsageDescription: 'ROUND TABLE Family.App updates your phonebook with member details.',
+        NSCalendarsUsageDescription: 'ROUND TABLE Family.App updates your calendar with event and birthday details.',
+        NSLocationWhenInUseUsageDescription: 'ROUND TABLE Family.App shows other members and clubs arround your current location.',
+        NSLocationAlwaysUsageDescription: 'ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.',
+        NSLocationAlwaysAndWhenInUseUsageDescription: 'ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.',
+        NSPhotoLibraryUsageDescription: 'You can send pictures to other members in ROUND TABLE Family.App.',
     },
 
     Component_Whoops: {
@@ -19,11 +19,11 @@ const en = {
 
     Component_ErrorReport: {
         title: 'Report a problem',
-        text: 'Your feedback helps us improve ROUND TABLE Family.APP.',
+        text: 'Your feedback helps us improve ROUND TABLE Family.App.',
         report: 'Something isn\'t working?',
         feedback: 'Some functionality is missing? You have an idea?',
         language: 'Typo? Wrong terms? Translation is really bad?',
-        subject: 'ROUND TABLE Family.APP Issue',
+        subject: 'ROUND TABLE Family.App Issue',
         noMail: 'You seem to have no mail client installed?',
         template: 'Please describe what happened:',
     },
@@ -144,7 +144,7 @@ const en = {
             cancel: 'Cancel',
         },
         Fields: {
-            chat: 'ROUND TABLE Family.APP Chat',
+            chat: 'ROUND TABLE Family.App Chat',
             home: 'Home Address',
             birthday: 'Birthday',
             partner: 'Partner',
@@ -304,7 +304,7 @@ const en = {
         },
         texts: {
             contacts: 'Members can be synchronized to your phone\'s default Contacts\' Acccount. If members are removed online, your contacts stay. Properties of the contacts are overriden on every change.',
-            experiments: 'These are experimental and unsupported features of the ROUND TABLE Family.APP and may dissapear at any time.',
+            experiments: 'These are experimental and unsupported features of the ROUND TABLE Family.App and may dissapear at any time.',
         },
         contactpermissions: 'Location permissions are required in order to use this feature. Please grant permission through the phone\'s settings area.',
         locationpermission: 'Cannot access your location. Please grant permission through the phone\'s settings area.',
