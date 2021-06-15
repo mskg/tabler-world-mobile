@@ -72,7 +72,7 @@ export async function komoot(address: IAddress): Promise<NodeGeocoder.Entry | nu
         // ) as string,
     };
 
-    const api = new HttpClient('photon.komoot.de');
+    const api = new HttpClient(process.env.geocoder_photon_url || 'photon.komoot.io');
     api.maxTries = 1;
     api.waitTime = 5000;
 
