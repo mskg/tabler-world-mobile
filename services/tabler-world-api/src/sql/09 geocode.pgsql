@@ -137,6 +137,9 @@ WITH (
     OIDS = FALSE
 );
 
+drop index if exists userlocations_history_id;
+CREATE INDEX userlocations_history_id ON userlocations_history (id, lastseen);
+
 drop function if exists userlocations_audit cascade;
 
 CREATE FUNCTION userlocations_audit()

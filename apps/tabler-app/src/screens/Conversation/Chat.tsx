@@ -5,7 +5,7 @@ import * as ExpoImagePicker from 'expo-image-picker';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, EmitterSubscription, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, EmitterSubscription, Image, Keyboard, KeyboardAvoidingView, LayoutAnimation, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send, User } from 'react-native-gifted-chat';
 import { IconButton, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
@@ -449,6 +449,8 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _openPicker = () => {
+        LayoutAnimation.linear();
+
         this.setState(
             { imagePickerOpen: true },
             () => ScreenOrientation.unlockAsync(),
@@ -456,6 +458,8 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _closePicker = () => {
+        LayoutAnimation.linear();
+
         this.setState(
             { imagePickerOpen: false },
             () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP),
@@ -469,18 +473,12 @@ class ChatBase extends React.Component<Props, State> {
                     style={[styles.footer, { backgroundColor: this.props.theme.colors.primary }]}
                 />
 
-                <Modal
-                    animationType="slide"
-                    transparent={false}
+                <ImagePicker
                     visible={this.state.imagePickerOpen}
-                    onRequestClose={this._closePicker}
-                >
-                    <ImagePicker
-                        onClose={this._closePicker}
-                        onGalleryPictureSelected={this._onGalleryImage}
-                        onCameraPictureSelected={this._onCameraImage}
-                    />
-                </Modal>
+                    onClose={this._closePicker}
+                    onGalleryPictureSelected={this._onGalleryImage}
+                    onCameraPictureSelected={this._onCameraImage}
+                />
 
                 <FixedChat
                     user={{ _id: this.props.userId }}
