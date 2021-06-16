@@ -23,7 +23,7 @@ custom:
   warm_enabled:
     dev: false
     test: false
-    prod: true
+    prod: false
 
   bundle:
     dev: false
