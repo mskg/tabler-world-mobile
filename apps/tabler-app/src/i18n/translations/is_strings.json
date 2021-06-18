@@ -11,7 +11,7 @@
         "text": "Athugasemdir þínar hjálpa okkur að bæta ROUND TABLE Family.App.",
         "report": "Er eitthvað ekki að virka?",
         "feedback": "Hefur þú góða hugmynd að einhverju sem vantar í appið?",
-        "subject": "TABLER.APP Vandamálalýsing",
+        "subject": "ROUND TABLE Family.App Vandamálalýsing",
         "noMail": "Þú ert ekki með neitt póstforrit sett upp",
         "template": "Segðu okkur hvað gerðist:",
         "language": "Stafsetningavilla? Rangir skilmálar? Þýðingin alveg skelfileg?"
@@ -26,17 +26,17 @@
         "accept": "Samþykja"
     },
     "Screen_SignIn": {
-        "placeholderEMail": "fornafn.nafnorð@123-is.{name}.world",
+        "placeholderEMail": "fornafn.eftirnafn@123-is.{name}.world",
         "placeholderCode": "Lykilorðið þitt",
         "continue": "Skrá inn",
         "confirm": "Staðfesta",
         "cancel": "Hætta við",
         "warning": "MIKILVÆGT! Þú getur núna skráð þig inn með TABLER.WORLD lykilorðinu þínu. Sendum ekki út tölvupóst lengur.",
         "welcomeBack": "Velkominn aftur,",
-        "signin": "vinsamlegast skráðu þig inn með TABLER.WORLD netfanginu þínu",
+        "signin": "Veldu hér að neðan hvaða samtök þú ert meðlimur í.",
         "confirmTitle": "Sláðu inn lykilorð",
         "codeWrong": "Staðfesting mistókst, þú verður að endurræsa.",
-        "accessDenied": "Þú getur ekki notað þetta forrit fyrir innskráningu þína. Ef þér finnst að þetta sé rangt vinsamlegast farðu í TABLER.WORLD teymið með tölvupósti.",
+        "accessDenied": "Þú getur ekki notað forritið með þessu notenda og/eða lykilorði. Ef þér finnst það vera rangt sendu skeyti á hjálparteymi þitt.",
         "codeVerify": "Gat ekki staðfest lykilorð. {tries} tilraun(ir) eftir.",
         "demoMode": "Prófaðu forritið",
         "join": "Hvernig get ég tekið þátt?",
@@ -44,7 +44,7 @@
             "title": "Prufuhamur",
             "text": "Eftir staðfestingu munum við endurræsa forritið. Til að fara út úr kynningu, farðu í Stillingar | Að skrá þig út."
         },
-        "email": "Vinsamlegast skráðu þig inn með {name} .WORLD almenningsnetfanginu þínu."
+        "email": "Skráðu þig inn með {name}.WORLD netfanginu þínu."
     },
     "Screen_Pair": {
         "action": "Skiptast á upplýsingum",
@@ -67,7 +67,7 @@
         "board": "Stjórn",
         "assist": "Aðstoðarmenn stjórnar",
         "details": "Sýna klúbb",
-        "myassociations": "Félög fjölskyldu minnar",
+        "myassociations": "Aðildarfélög minnar hreyfingar",
         "families": "Fjölskylda",
         "regionalboard": "Svæðisstjórn"
     },
@@ -96,7 +96,7 @@
         "expand": "Sjá allt"
     },
     "Screen_World": {
-        "title": "Family.WORLD",
+        "title": "Þitt Family.WORLD",
         "tab": "Tengdur"
     },
     "Screen_Albums": {
@@ -122,12 +122,12 @@
             "cancel": "Hætta við"
         },
         "Fields": {
-            "chat": "TABLER.APP Spjall",
+            "chat": "RT Family.App Spjall",
             "home": "Heimilisfangið",
             "birthday": "Afmælisdagur",
             "partner": "Maki",
-            "roles": "RT embætti (á yfirstandandi ári)",
-            "rtorg": "Skipulag RT",
+            "roles": "Embætti (á yfirstandandi ári)",
+            "rtorg": "Skipurit",
             "companies": "Atvinna",
             "educations": "Menntun",
             "joined": "Félagi síðan"
@@ -137,7 +137,7 @@
             "call": "hringja",
             "mail": "póstur",
             "chat": "Sendu {name} skilaboð",
-            "openweb": "Sýna á TABLER.WORLD",
+            "openweb": "Sýna í vafra",
             "favadd": "Bæta við í uppáhalds",
             "remfav": "Fjarlægja úr uppáhalds",
             "contact": "Uppfæra símaskrá",
@@ -191,7 +191,7 @@
         },
         "families": {
             "one": "Fjölskylda",
-            "other": "Fjölskylda ({number})"
+            "other": "Fjölskyldur ({number})"
         }
     },
     "Sectors": {
@@ -275,8 +275,8 @@
             "locationservices": "Staðsetningaþjónustur"
         },
         "texts": {
-            "contacts": "Hægt er að samræma meðlimi við tengiliði í símanum þínum. Ef meðlimir eru fjarlægðir úr TABLER.WORLD, eru tengiliðirnir þínir áfram þar. Verða breytingar á eiginleikum tengiliðanna breytast þeir ekki í símanum sjálfkrafa.",
-            "experiments": "Þetta eru tilraunakenndir og óstöðugir eiginleikar ROUND TABLE Family.App og geta horfið hvenær sem er."
+            "contacts": "Hægt er að samræma meðlimi við tengiliði í símanum þínum. Ef meðlimir eru fjarlægðir á netinu, eru tengiliðirnir áfram skráðir í símanum þínum. Verða breytingar á tengiliðunum breytast þeir hinsvegar ekki í símanum sjálfkrafa.",
+            "experiments": "Þetta eru tilraunakenndir og óstöðugir eiginleikar forritsins og geta horfið hvenær sem er."
         },
         "contactpermissions": "Staðsetningarheimildir eru nauðsynlegar til að nota þennan eiginleika. Vinsamlegast veittu leyfi í gegnum stillingasvæði símans.",
         "locationpermission": "Get ekki fengið aðgang að staðsetningu þinni. Vinsamlegast veittu leyfi í gegnum stillingasvæði símans.",
@@ -297,7 +297,7 @@
             "lastSync": "Síðasta samræming",
             "channel": "Dreifingarrás",
             "syncFavorites": "Samræma uppáhalds",
-            "syncOwnTable": "Samstilla meðlimi eigin töflu",
+            "syncOwnTable": "Samstilla meðlimi eigin klúbbs",
             "sortOrder": "Flokkun",
             "displayOrder": "Sýna röð",
             "experiments": "Albúm og fréttir",
@@ -652,7 +652,7 @@
             "title": "Félagar í næsta nágrenni",
             "on": {
                 "title": "Félagar í næsta nágrenni",
-                "text": "Ef þú kveikir á því geta aðrir meðlimir séð í hvaða borg þú ert. Við geymum ekki staðsetningarferil þinn, aðeins síðustu þekktu staðsetningu.",
+                "text": "Ef þú kveikir á eiginleikanum geta aðrir meðlimir séð í hvaða borg þú ert. Við geymum ekki staðsetningarferil þinn, aðeins síðustu þekktu staðsetningu.",
                 "field": "Deila staðsetingu minni"
             },
             "map": {
@@ -690,13 +690,13 @@
         "nogallery": "Því miður, við þurfum heimildir á myndavélarrúllum til að þetta virki."
     },
     "Permissions": {
-        "NSCameraUsageDescription": "ROUND TABLE Family.App notar myndavélina á símanum til að skanna barkóða annara félaga.",
-        "NSContactsUsageDescription": "ROUND TABLE Family.App uppfærir símaskrá þína með upplýsingum um valda félaga.",
-        "NSCalendarsUsageDescription": "ROUND TABLE Family.App færir afmælisdaga og viðburði inn í dagatalið þitt.",
-        "NSLocationWhenInUseUsageDescription": "ROUND TABLE Family.App sýnir aðrar félaga og klúbba nálægt staðsetningu þinni.",
-        "NSLocationAlwaysUsageDescription": "ROUND TABLE Family.App fylgist með staðsetningu þinni svo aðrir félagar geta haft samband við þig.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "ROUND TABLE Family.App fylgist með staðsetningu þinni svo aðrir félagar geta haft samband við þig.",
-        "NSPhotoLibraryUsageDescription": "Þú getur sent myndir til annara félaga í ROUND TABLE Family.App."
+        "NSCameraUsageDescription": "Forritið notar myndavélina á símanum til að skanna barkóða annara félaga.",
+        "NSContactsUsageDescription": "Forritið uppfærir símaskrá þína með upplýsingum um valda félaga.",
+        "NSCalendarsUsageDescription": "Forritið færir afmælisdaga og viðburði inn í dagatalið þitt.",
+        "NSLocationWhenInUseUsageDescription": "Forritið sýnir hvar aðrir félaga og klúbbar eru nálægt staðsetningu þinni.",
+        "NSLocationAlwaysUsageDescription": "Forritið fylgist með staðsetningu þinni svo aðrir félagar geta haft samband við þig.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Forritið fylgist með staðsetningu þinni svo aðrir félagar geta haft samband við þig.",
+        "NSPhotoLibraryUsageDescription": "Þú getur sent myndir til annara félaga í forritinu."
     },
     "Screen_Families": {
         "title": "Fjölskyldur",
