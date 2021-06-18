@@ -15,7 +15,7 @@ variables:
   #  1.2-rc1, rc2, ...
   #  1.2-r, r1, r2, ...
   - name: RELASE_CHANNEL_VERSION
-    value: '1.5-rc'
+    value: '1.5-r'
 
   - name: RELASE_CHANNEL_BUILD
     value: $[counter(variables['RELASE_CHANNEL_VERSION'], 1)]

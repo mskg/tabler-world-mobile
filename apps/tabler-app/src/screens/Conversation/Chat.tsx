@@ -5,7 +5,7 @@ import * as ExpoImagePicker from 'expo-image-picker';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Clipboard, EmitterSubscription, Image, Keyboard, KeyboardAvoidingView, LayoutAnimation, Platform, Share as ShareNative, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, EmitterSubscription, Image, Keyboard, LayoutAnimation, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send, User } from 'react-native-gifted-chat';
 import { IconButton, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
@@ -59,8 +59,8 @@ type State = {
         height: number,
     },
 
-    verticalOffset: number,
-    useKeyboardPadding: boolean,
+    // verticalOffset: number,
+    // useKeyboardPadding: boolean,
 };
 
 class ChatBase extends React.Component<Props, State> {
@@ -70,8 +70,8 @@ class ChatBase extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            verticalOffset: (StatusBar.currentHeight || 0) + 44 + 10 /* ? */,
-            useKeyboardPadding: false,
+            // verticalOffset: (StatusBar.currentHeight || 0) + 44 + 10 /* ? */,
+            // useKeyboardPadding: false,
             imagePickerOpen: false,
             pickedImage: this.props.image ?
                 {
@@ -83,19 +83,19 @@ class ChatBase extends React.Component<Props, State> {
         };
     }
 
-    componentDidMount() {
-        if (Platform.OS === 'android') {
-            this.keyboardShow = Keyboard.addListener('keyboardDidShow', () => {
-                logger.debug('keyboardDidShow', this.state.verticalOffset);
-                this.setState({ useKeyboardPadding: true });
-            });
+    // componentDidMount() {
+    //     if (Platform.OS === 'android') {
+    //         this.keyboardShow = Keyboard.addListener('keyboardDidShow', () => {
+    //             logger.debug('keyboardDidShow', this.state.verticalOffset);
+    //             this.setState({ useKeyboardPadding: true });
+    //         });
 
-            this.keyboardHide = Keyboard.addListener('keyboardDidHide', () => {
-                logger.debug('keyboardDidHide');
-                this.setState({ useKeyboardPadding: false });
-            });
-        }
-    }
+    //         this.keyboardHide = Keyboard.addListener('keyboardDidHide', () => {
+    //             logger.debug('keyboardDidHide');
+    //             this.setState({ useKeyboardPadding: false });
+    //         });
+    //     }
+    // }
 
     componentWillUnmount() {
         if (this.keyboardShow) { this.keyboardShow.remove(); }
@@ -176,7 +176,7 @@ class ChatBase extends React.Component<Props, State> {
         return (
             <Message
                 {...props}
-                textProps={{
+                messageTextProps={{
                     style: {
                         fontFamily: this.props.theme.fonts.regular,
                         ...messageTextStyle,
@@ -449,6 +449,7 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _openPicker = () => {
+        Keyboard.dismiss();
         LayoutAnimation.linear();
 
         this.setState(
@@ -533,14 +534,14 @@ class ChatBase extends React.Component<Props, State> {
                     text={this.props.text}
                     image={this.props.image}
                 />
-
+                {/*
                 {Platform.OS === 'android' && (
                     <KeyboardAvoidingView
                         enabled={this.state.useKeyboardPadding}
                         behavior={'padding'}
-                        keyboardVerticalOffset={this.state.verticalOffset}
+                        keyboardVerticalOffset={0}
                     />
-                )}
+                )} */}
             </View>
         );
     }
