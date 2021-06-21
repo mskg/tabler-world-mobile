@@ -212,7 +212,10 @@ select
     ) as educations
 
 	,data->'rt_privacy_settings' as privacysettings
-from tabler
+from
+    tabler
+where
+    data->>'rt_generic_email' is not null and data->>'rt_generic_email' <> ''
 ) formatted left join active_clubs on formatted.club = active_clubs.id
 where
         formatted.family is not null
