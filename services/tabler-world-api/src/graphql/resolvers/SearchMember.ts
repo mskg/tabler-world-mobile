@@ -115,7 +115,6 @@ export const SearchMemberResolver = {
 
                     default: () => {
                         if (args.query.associations != null && args.query.associations.length > 0) {
-                            parameters.push(args.query.associations);
 
                             byVersion({
                                 context,
@@ -123,10 +122,13 @@ export const SearchMemberResolver = {
 
                                 versions: {
                                     old: () => {
-                                        filters.push(`associationname = ANY ($${parameters.length})`);
+                                        // undo fixC41AssociationName
+                                        parameters.push(args.query.associations.map((a) => `${a}%`));
+                                        filters.push(`associationname like ANY ($${parameters.length})`);
                                     },
 
                                     default: () => {
+                                        parameters.push(args.query.associations);
                                         filters.push(`association = ANY ($${parameters.length})`);
                                     },
                                 },
