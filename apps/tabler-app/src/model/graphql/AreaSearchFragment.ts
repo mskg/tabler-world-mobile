@@ -7,11 +7,19 @@
 // GraphQL fragment: AreaSearchFragment
 // ====================================================
 
+export interface AreaSearchFragment_association_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+  shortname: string;
+}
+
 export interface AreaSearchFragment_association {
   __typename: "Association";
   id: string;
   name: string;
   flag: string | null;
+  family: AreaSearchFragment_association_family;
 }
 
 export interface AreaSearchFragment {

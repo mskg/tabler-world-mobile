@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { LOCATION_TASK_NAME } from '../Constants';
 
 export async function isLocationTaskEnabled() {

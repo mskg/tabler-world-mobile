@@ -52,6 +52,10 @@ export const Environment = {
         maxTTL: process.env.REDIS_MAXTTL,
     },
 
+    DB: {
+        sqlLogLevel: process.env.SQL_LOG_LEVEL || 'error',
+    },
+
     DynamoDB: {
         table: process.env.CACHE_TABLE,
         defautTTL: parseInt(process.env.TTL_DEFAULT || (60 * 60 * 24 * 2).toString(), 10),

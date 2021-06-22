@@ -1,7 +1,7 @@
 import { FetchParameters } from '@mskg/tabler-world-config-app';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { ParameterName } from '../model/graphql/globalTypes';
 import { FETCH_TASKNAME } from './Constants';

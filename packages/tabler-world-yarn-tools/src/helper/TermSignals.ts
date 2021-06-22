@@ -49,7 +49,7 @@ export class TermSignals {
     /**
      * Terminate parent process helper
      */
-    public terminateProcess(code?: number, signal?: string): void {
+    public terminateProcess(code?: number, signal?: string): void | true {
         if (signal !== undefined) {
             return process.kill(process.pid, signal);
         }

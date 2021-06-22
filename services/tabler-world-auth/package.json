@@ -8,16 +8,16 @@
         "@mskg/tabler-world-aws": "0.0.1",
         "@mskg/tabler-world-rds-client": "0.0.1",
         "@mskg/tabler-world-yarn-tools": "0.0.1",
-        "aws-xray-sdk": "^2.4.0",
+        "aws-xray-sdk": "^3.1.0",
         "crypto-secure-random-digit": "^1.0.7",
         "fs": "^0.0.2",
-        "pg": "^7.18.1",
+        "pg": "^8.3.2",
         "request": "^2.88.2"
     },
     "devDependencies": {
         "@mskg/tabler-world-yarn-tools": "0.0.1",
         "@types/aws-lambda": "^8.10.42",
-        "@types/node": "^13.7.2",
+        "@types/node": "^14.6.0",
         "@types/pg": "^7.14.1",
         "aws-sdk": "^2.621.0",
         "file-loader": "^5.0.2",
@@ -27,8 +27,8 @@
         "serverless-plugin-aws-alerts": "^1.2.4",
         "serverless-sync-s3buckets": "^1.0.1",
         "serverless-webpack": "^5.3.0",
-        "ts-loader": "^6.0.1",
-        "typescript": "3.7.5",
+        "ts-loader": "^8.0.2",
+        "typescript": "4.0.2",
         "webpack": "^4.41.6"
     },
     "files": [

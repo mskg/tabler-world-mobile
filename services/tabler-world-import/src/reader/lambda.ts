@@ -33,7 +33,7 @@ export async function handler(rawEvent: ImportEvent | ContinueEvent | Compressed
         const api = JSON.parse(params['tw-api']) as Param_Api;
 
         const { processedRecords, modifications, totalRecords } = await jobContext.configuration.workflow(
-            event.type as JobType,
+            event.type as JobType, event.target,
             jobContext.configuration.url, jobContext.configuration.method, jobContext.configuration.payload,
 
             // not more than max

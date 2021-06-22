@@ -7,7 +7,11 @@ export const SearchMember = gql`
         availableForChat: Boolean
 
         sectors: [CompanySector!]
+
+        # should be roles
         roles: [String!]
+
+        families: [ID!]
 
         # should be ID!
         associations: [String!]
@@ -31,6 +35,7 @@ export const SearchMember = gql`
 
     input DirectoryQueryInput {
         text: String
+        families: [ID!]
     }
 
     union SearchDirectoryResult = Association | Area | Club

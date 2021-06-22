@@ -11,17 +11,17 @@
     "author": "Markus Kling",
     "license": "Copyright 2019-present Markus Kling",
     "dependencies": {
-        "lru-cache": "^5.1.1"
+        "lru-cache": "^6.0.0"
     },
     "peerDependencies": {
         "@mskg/tabler-world-aws": "0.0.1",
         "lodash": "*"
     },
     "devDependencies": {
-        "@types/lodash": "4.14.149",
+        "@types/lodash": "4.14.159",
         "@types/lru-cache": "^5.1.0",
-        "@types/node": "^13.7.2",
-        "typescript": "3.7.5",
-        "lodash": "*"
+        "@types/node": "^14.6.0",
+        "lodash": "*",
+        "typescript": "4.0.2"
     }
 }

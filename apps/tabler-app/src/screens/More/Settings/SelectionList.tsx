@@ -25,6 +25,7 @@ export const SelectionList = ({ theme, field, items, value, onChange, onClose }:
                     underlineColorAndroid: 'transparent',
                 }}
                 useNativeAndroidPickerStyle={false}
+                Icon={() => null}
                 style={{
                     viewContainer: styles.select,
                     inputIOSContainer: styles.selectContainer,

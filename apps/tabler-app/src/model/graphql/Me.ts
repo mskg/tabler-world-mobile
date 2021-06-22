@@ -7,6 +7,12 @@
 // GraphQL query operation: Me
 // ====================================================
 
+export interface Me_Me_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface Me_Me_association {
   __typename: "Association";
   id: string;
@@ -31,6 +37,7 @@ export interface Me_Me {
   __typename: "Member";
   id: number;
   pic: string | null;
+  family: Me_Me_family;
   association: Me_Me_association;
   area: Me_Me_area;
   club: Me_Me_club;

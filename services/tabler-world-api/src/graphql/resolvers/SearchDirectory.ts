@@ -1,11 +1,13 @@
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import _ from 'lodash';
+import { FieldNames } from '../privacy/FieldNames';
 import { IApolloContext } from '../types/IApolloContext';
 
 type SearchInput = {
     after: string,
     query: {
-        text: string,
+        text?: string,
+        families?: string[],
     },
 };
 
@@ -52,6 +54,22 @@ export const SearchDirectoryResolver = {
                     filters.push(`f_unaccent(name) ILIKE f_unaccent($${parameters.length})`);
                 });
             }
+
+            const thisMember = await context.dataSources.members.readOne(context.principal.id);
+            const allowCross = thisMember[FieldNames.AllFamiliesOptIn] === true;
+
+            if (allowCross) {
+                if (args.query.families && args.query.families.length > 0) {
+                    parameters.push(args.query.families);
+                    filters.push(`family = ANY ($${parameters.length})`);
+                }
+            } else {
+                parameters.push(context.principal.family);
+                context.logger.debug('Family search disabled');
+                // must match own family
+                filters.push(`family = $${parameters.length}`);
+            }
+
 
             // context.logger.debug("Query is", filters.join(' AND '));
 

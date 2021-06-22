@@ -1,11 +1,16 @@
 import { getParameters, Param_Api } from '@mskg/tabler-world-config';
-import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
+import { RequestOptions, RESTDataSource, Request } from 'apollo-datasource-rest';
 import { TTLs } from '../cache/TTLs';
 import { IApolloContext } from '../types/IApolloContext';
 
 export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
     constructor() {
         super();
+    }
+
+    protected cacheKeyFor(request: Request): string {
+        const key = super.cacheKeyFor(request);
+        return `${this.context.principal.family}::${key}`;
     }
 
     public async resolveURL(request: RequestOptions) {
@@ -22,7 +27,9 @@ export class TablerWorldAPI extends RESTDataSource<IApolloContext> {
         const params = await getParameters('tw-api');
         const api = JSON.parse(params['tw-api']) as Param_Api;
 
-        request.headers.set('Authorization', `Token ${api.key}`);
+        // @ts-ignore
+        const key = api.keys[this.context.principal.family!];
+        request.headers.set('Authorization', `Token ${key}`);
     }
 
     public async getAllAlbums(): Promise<any[]> {

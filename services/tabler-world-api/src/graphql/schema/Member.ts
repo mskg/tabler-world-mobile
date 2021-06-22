@@ -93,7 +93,6 @@ export const Member = gql`
 
     type Role {
         name: String!
-        level: String!
         group: String!
         ref: RoleRef!
     }
@@ -126,6 +125,7 @@ export const Member = gql`
     }
 
     type Member implements MemberListView {
+        # should be ID!
         id: Int!
         pic: String
 
@@ -166,16 +166,22 @@ export const Member = gql`
         areas: [Int!]
 
         byArea: [ID!]
+        # clubs: [ID!]
 
         nationalBoard: Boolean
         areaBoard: Boolean
     }
 
+    input FavoriteMembersInput {
+        includeClubs: Boolean
+    }
+
+
     extend type Query {
         #MembersList (filter: MemberFilterInput!): [MemberListView!]!
 
         OwnTable: [Member!]!
-        FavoriteMembers: [Member!]!
+        FavoriteMembers (filter: FavoriteMembersInput): [Member!]!
 
         # leave for compat with existing clint
         MembersOverview(filter: MemberFilterInput): [MemberListView!]!

@@ -15,7 +15,7 @@ export function sortRoles(roles?: IAssociationRole[] | null): IAssociationRole[]
                 logger.log('Failed to map', r.role);
             }
 
-            return mapped || 99;
+            return (mapped || 99) + r.member.lastname;
         })
         // .groupBy(r => r.member)
         // .map((v, k) => ({
@@ -30,6 +30,7 @@ type Role = {
     role: string,
     member: {
         id: number,
+        lastname?: string,
     },
 };
 
@@ -42,7 +43,7 @@ export function sortGroupRoles<T extends Role>(roles?: T[] | null): T[] | undefi
         .map((v, _k) => ({
             member: v[0].member,
             role: _(v).map((f) => f.role).toArray().value().join(', '),
-            sortrole: RoleOrderByMapping[v[0].role] || 99,
+            sortrole: (RoleOrderByMapping[v[0].role] || 99) + v[0].member.lastname,
         }))
         .sortBy((r) => r.sortrole)
         .toArray()

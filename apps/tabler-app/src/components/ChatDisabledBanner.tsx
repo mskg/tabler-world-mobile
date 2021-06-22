@@ -62,7 +62,7 @@ export class ChatDisabledBannerBase extends React.Component<Props, State> {
                         },
                     ]}
                     image={({ size }) =>
-                        <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                        <Ionicons name="md-alert-circle" size={size} color={this.props.theme.colors.accent} />
                     }
                 >
                     {I18N.Component_Notifications.chatDisabled.text}

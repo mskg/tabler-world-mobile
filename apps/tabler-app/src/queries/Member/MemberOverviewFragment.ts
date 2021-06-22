@@ -8,26 +8,33 @@ export const MemberOverviewFragment = gql`
         firstname
         lastname
 
+        family {
+            id
+            icon
+            name
+            shortname
+        }
+
         club {
            id
            name
            clubnumber
-       }
+        }
 
-       area {
+        area {
            id
            name
-       }
+        }
 
-       association {
-            id
-            name
-            flag
-       }
+        association {
+           id
+           name
+           flag
+        }
 
         roles {
             name
-            level
+            # level
             group
 
             ref {

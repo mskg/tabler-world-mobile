@@ -50,12 +50,13 @@ async function convertAddressToLocation(address: any): Promise<GeoCityLocation |
     if (!address) { return undefined; }
 
     // old data, leave like it is
-    if (address.city || address.region) {
+    if ((address.city || address.region) && address.country) {
         return {
             name: address.city || address.region,
             country: address.country,
         };
     }
+
 
     const bigData: BigDataResult = address;
     const nearBy = await getNearByParams();
@@ -115,7 +116,7 @@ export const LocationResolver = {
         // TODO: deprecated
         address: ({ address, canshowonmap, location }: any, _args: {}, _context: IApolloContext) => {
             // old data, leave like it is
-            if (address.city || address.region) {
+            if ((address.city || address.region) && (address.isoCountryCode || address.country)) {
                 return {
                     // if we don't this, the address is resolved via geocoder
                     location: canshowonmap

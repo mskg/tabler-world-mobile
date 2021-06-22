@@ -1,5 +1,5 @@
 export async function timeout<T>(promise: Promise<T>, timeoutMillis: number): Promise<T> {
-    let timer: NodeJS.Timeout;
+    let timer: number;
 
     return Promise.race([
         promise,

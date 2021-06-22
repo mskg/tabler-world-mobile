@@ -1,4 +1,4 @@
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import _ from 'lodash';
 import React from 'react';
 import { Alert, Platform, StyleSheet, View } from 'react-native';
@@ -119,7 +119,7 @@ class TranslationSectionBase extends React.Component<Props, State> {
                         style: 'destructive',
                         onPress: async () => {
                             await setOverridenLanguage(lang);
-                            await Updates.reloadFromCache();
+                            await Updates.reloadAsync();
                         },
                     },
                 ],
@@ -162,7 +162,7 @@ class TranslationSectionBase extends React.Component<Props, State> {
                     style: 'destructive',
                     onPress: async () => {
                         await clearOverridenLanguage();
-                        await Updates.reloadFromCache();
+                        await Updates.reloadAsync();
                     },
                 },
             ],

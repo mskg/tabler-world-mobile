@@ -8,10 +8,10 @@
     },
     "Component_ErrorReport": {
         "title": "Ein Problem melden",
-        "text": "Dein Feedback hilft uns die TABLER.APP zu verbessern.",
+        "text": "Dein Feedback hilft uns die ROUND TABLE Family.App zu verbessern.",
         "report": "Geht etwas nicht?",
         "feedback": "Es fehlt etwas? Du hast eine Idee?",
-        "subject": "TABLER.APP Problem",
+        "subject": "ROUND TABLE Family.App Problem",
         "noMail": "Kann es sein, dass Du keine E-Mails versenden kannst?",
         "template": "Beschreibe bitte was passiert ist:",
         "language": "Tippfehler? Schlechte Übersetzung?"
@@ -26,24 +26,25 @@
         "accept": "Fortfahren"
     },
     "Screen_SignIn": {
-        "placeholderEMail": "vorname.nachname@123-de.roundtable.world",
+        "placeholderEMail": "vorname.nachname@123-de.{name}.world",
         "placeholderCode": "Passwort",
         "continue": "Anmelden",
         "confirm": "Bestätigen",
         "cancel": "Abbrechen",
         "warning": "WICHTIG! Du kannst Dich jetzt mit Deinem TABLER.WORLD Passwort anmelden. Es werden keine E-Mails mehr verschickt.",
         "welcomeBack": "Willkommen zurück,",
-        "signin": "melde Dich mit Deiner öffentlichen TABLER.WORLD E-Mail-Adresse an",
+        "signin": "melde Dich mit Deiner öffentlichen ROUND TABLE Family E-Mail-Adresse an",
         "confirmTitle": "Bitte gib Dein Passwort ein",
         "codeWrong": "Du konntest nicht verifiziert werden, Du must von vorne anfangen.",
-        "accessDenied": "Mit dieser Anmeldungen kannst Du diese App nicht verweden. Wenn Du das Gefühl hast, dass das nicht stimmmen kann, dann kontaktiere das TABLER.WORLD Team bitte via E-Mail.",
+        "accessDenied": "Mit dieser Anmeldungen kannst Du diese App nicht verweden. Wenn Du das Gefühl hast, dass das nicht stimmen kann, dann kontaktiere das online Team bitte via E-Mail.",
         "codeVerify": "Dein Passwort konnte nicht verifiziert werden. Du hast noch {tries} Versuche übrig.",
         "demoMode": "App ausprobieren",
         "join": "Mitglied werden?",
         "demo": {
             "title": "Demonstration",
             "text": "Nach Bestätigung wird die App neu gestartet. Zum Verlassen, bitte unter Einstellungen | abmelden wählen."
-        }
+        },
+        "email": "Bitte melde Dich mit Deiner {name}.WORLD öffentlichen E-Mail Adresse an."
     },
     "Screen_Pair": {
         "action": "Visitenkarten tauschen",
@@ -58,14 +59,17 @@
     "Screen_Structure": {
         "navigation": "Verzeichnis",
         "title": "Assoziation",
-        "mytitle": "Meine Assoziation",
+        "mytitle": "Mein Verzeichnis",
         "associations": "Assoziationen",
         "clubs": "Tische",
         "areas": "Distrikte",
         "president": "Präsident",
         "board": "Präsidium",
         "assist": "Referenten",
-        "details": "Tisch anzeigen"
+        "details": "Tisch anzeigen",
+        "myassociations": "Assoziationen meiner Familie",
+        "families": "Familie",
+        "regionalboard": "Regionales Präsidium"
     },
     "Screen_Club": {
         "title": "Tisch",
@@ -92,7 +96,7 @@
         "expand": "Alle anzeigen"
     },
     "Screen_World": {
-        "title": "TABLER.WORLD",
+        "title": "Deine Family.WORLD",
         "tab": "Online"
     },
     "Screen_Albums": {
@@ -118,12 +122,12 @@
             "cancel": "Abbrechen"
         },
         "Fields": {
-            "chat": "TABLER.APP Chat",
+            "chat": "ROUND TABLE Family.App Chat",
             "home": "Privatadresse",
             "birthday": "Geburtstag",
             "partner": "Partnerin/Partner",
-            "roles": "RT Ämter (dieses Jahr)",
-            "rtorg": "RT Organisation",
+            "roles": "Ämter (dieses Jahr)",
+            "rtorg": "Organisation",
             "companies": "Firma",
             "educations": "Ausbildung",
             "joined": "Eintrittsdatum"
@@ -133,7 +137,7 @@
             "call": "Anrufen",
             "mail": "E-Mail",
             "chat": "Schreib {name} eine Nachricht",
-            "openweb": "Auf TABLER.WORLD anzeigen",
+            "openweb": "Online anzeigen",
             "favadd": "Zu Favoriten hinzufügen",
             "remfav": "Aus den Favoriten entfernen",
             "contact": "Ins Telefonbuch übertragen",
@@ -145,7 +149,7 @@
         }
     },
     "EMailNames": {
-        "rt": "TABLER.WORLD",
+        "rt": "Family.WORLD",
         "home": "Private E-Mail",
         "work": "Geschäftliche E-Mail",
         "other": "E-Mail"
@@ -184,6 +188,10 @@
         "sectors": {
             "one": "Sparte",
             "other": "Sparten ({number})"
+        },
+        "families": {
+            "one": "Familie",
+            "other": "Familien ({number})"
         }
     },
     "Sectors": {
@@ -234,7 +242,7 @@
         "hideAll": "Keine Mitglieder anzeigen",
         "favorites": "Favoriten",
         "toggleFavorits": "All Favoriten",
-        "toggleOwnTable": "Mitglieder meines Tisches",
+        "toggleOwnTable": "Mitglieder meines Clubs",
         "toggleAssociationBoard": "Präsidium und Referenten meiner Assoziation",
         "toggleAreaBoard": "Beirat meiner Assoziation"
     },
@@ -267,8 +275,8 @@
             "locationservices": "Ortungsdienste"
         },
         "texts": {
-            "contacts": "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten jemand aus TABLER.WORLD entfernt werden, verbleibn diese auf Deinem Telefon. Mit jeder Änderung in TABLER.WORLD werden die Mitglieder auf Deinem Telefon aktualisiert.",
-            "experiments": "Dies sind experimentelle und nicht unterstützte Funktionen der TABLER.APP. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
+            "contacts": "Mitglieder könnten in das Telefonbuch synchronisiert werden. Sollten ein Mitglied entfernt werden, verbleiben seine auf Deinem Telefon. Mit jeder Änderung werden die Daten auf Deinem Telefon aktualisiert.",
+            "experiments": "Dies sind experimentelle und nicht unterstützte Funktionen der ROUND TABLE Family.App. Diese Erweiterungen können jederzeit und ohne Vorwarnung verschwinden."
         },
         "contactpermissions": "Die App kann nicht auf Deine Mitglieder zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
         "locationpermission": "Die App kann nicht auf Deinen Standort zugreifen. Bitte erteile die entsprechenden Berechtigungen in den Einstellungen Deines Telefons.",
@@ -289,7 +297,7 @@
             "lastSync": "Letzte Synchronisierung",
             "channel": "Kanal",
             "syncFavorites": "Favoriten synchronisieren",
-            "syncOwnTable": "Tischmitglieder synchronisieren",
+            "syncOwnTable": "Mitglieder des eigenen Clubs synchronisieren",
             "sortOrder": "Sortierung",
             "displayOrder": "Anzeige",
             "experiments": "Alben und Neuigkeiten",
@@ -682,12 +690,16 @@
         "nogallery": "Wir benötigen Zugriff auf Deine Bilder."
     },
     "Permissions": {
-        "NSCameraUsageDescription": "TABLER.APP verwendet die Kamera, um Barcodes anderer Mitglieder zu scannen.",
-        "NSContactsUsageDescription": "TABLER.APP aktualisiert dein Telefonbuch mit den Mitgliederdaten.",
-        "NSCalendarsUsageDescription": "TABLER.APP aktualisiert deinen Kalender mit Event- und Geburtstagsdetails.",
-        "NSLocationWhenInUseUsageDescription": "TABLER.APP zeigt andere Mitglieder und Clubs rund um deinen aktuellen Standort.",
-        "NSLocationAlwaysUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
-        "NSPhotoLibraryUsageDescription": "Du kannst anderen Mitgliedern Bilder in TABLER.APP senden."
+        "NSCameraUsageDescription": "ROUND TABLE Family.App verwendet die Kamera, um Barcodes anderer Mitglieder zu scannen.",
+        "NSContactsUsageDescription": "ROUND TABLE Family.App aktualisiert dein Telefonbuch mit den Mitgliederdaten.",
+        "NSCalendarsUsageDescription": "ROUND TABLE Family.App aktualisiert deinen Kalender mit Event- und Geburtstagsdetails.",
+        "NSLocationWhenInUseUsageDescription": "ROUND TABLE Family.App zeigt andere Mitglieder und Clubs rund um deinen aktuellen Standort.",
+        "NSLocationAlwaysUsageDescription": "ROUND TABLE Family.App verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "ROUND TABLE Family.App verfolgt deine Position, damit andere Mitglieder mit dir in Kontakt treten können.",
+        "NSPhotoLibraryUsageDescription": "Du kannst anderen Mitgliedern Bilder in der ROUND TABLE Family.App senden."
+    },
+    "Screen_Families": {
+        "title": "Familien",
+        "associations": "Assoziationen"
     }
 }

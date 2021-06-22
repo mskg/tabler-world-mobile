@@ -3,7 +3,10 @@ import gql from 'graphql-tag';
 export const ClubOverviewFragment = gql`
     fragment ClubOverviewFragment on Club {
         id
+
         name
+        displayname
+
         clubnumber
         logo
 
@@ -17,6 +20,11 @@ export const ClubOverviewFragment = gql`
             name
             id
             association
+        }
+
+        family {
+            id
+            name
         }
     }
 `;

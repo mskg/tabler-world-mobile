@@ -1,7 +1,6 @@
 import { EXECUTING_OFFLINE, xAWS } from '@mskg/tabler-world-aws';
 import { keys, values } from 'lodash';
 import LRU from 'lru-cache';
-import { isArray } from 'util';
 import { Environments } from './Environments';
 import { mapName } from './mapName';
 import { setupDebug } from './setupDebug';
@@ -51,10 +50,13 @@ export async function getParameters(
     env: Environments = process.env.STAGE as Environments,
 ): Promise<MapType> {
     // we need to reverse the encoding for the result
-    const parameterNames = (isArray(name) ? name : [name]).reduce((p, c) => {
-        p[mapName(c, env)] = c;
-        return p;
-    }, {} as { [key: string]: string });
+    const parameterNames = (Array.isArray(name) ? name : [name]).reduce(
+        (p, c) => {
+            p[mapName(c, env)] = c;
+            return p;
+        },
+        {} as { [key: string]: string },
+    );
 
     const req = {
         Names: keys(parameterNames),
@@ -99,7 +101,7 @@ export async function getParameters(
         values(parameterNames).forEach(
             (n) => {
                 if (!params[n as ParameterNames]) {
-                    throw new Error('Configuration error, parameter ' + n + ' is not defined');
+                    throw new Error(`Configuration error, parameter ${n} is not defined`);
                 }
             },
         );

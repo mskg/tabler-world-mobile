@@ -7,6 +7,12 @@
 // GraphQL fragment: MeFragment
 // ====================================================
 
+export interface MeFragment_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface MeFragment_association {
   __typename: "Association";
   id: string;
@@ -31,6 +37,7 @@ export interface MeFragment {
   __typename: "Member";
   id: number;
   pic: string | null;
+  family: MeFragment_family;
   association: MeFragment_association;
   area: MeFragment_area;
   club: MeFragment_club;

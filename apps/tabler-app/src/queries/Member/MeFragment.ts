@@ -5,6 +5,11 @@ export const MeFragment = gql`
         id
         pic
 
+        family {
+            id
+            name
+        }
+
         association {
             id
             name

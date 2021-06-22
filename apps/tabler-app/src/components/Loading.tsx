@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
-import { ___DONT_USE_ME_DIRECTLY___COLOR_ACCENT } from '../theme/colors';
+import { ActivityIndicator, withTheme } from 'react-native-paper';
 
 export const FullScreenLoading = (...props: any[]) =>
     <View style={StyleSheet.absoluteFill}>
@@ -11,7 +10,13 @@ export const FullScreenLoading = (...props: any[]) =>
     </View>
     ;
 
-export const InlineLoading = (...props: any[]) => <ActivityIndicator size="large" color={___DONT_USE_ME_DIRECTLY___COLOR_ACCENT} {...props} />;
+class InlineLoadingBase extends React.Component<{ theme }> {
+    render() {
+        return <ActivityIndicator size="large" color={this.props.theme.colors.accent} />;
+    }
+}
+
+export const InlineLoading = withTheme(InlineLoadingBase);
 
 const styles = StyleSheet.create({
     image: {

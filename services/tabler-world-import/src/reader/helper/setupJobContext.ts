@@ -46,7 +46,7 @@ export async function setupJobContext(rawEvent: ImportEvent | ContinueEvent | Co
         throw new Error(`Unknown mode ${activeMode}`);
     }
 
-    const jobName = `update::${event.type}::${activeMode}::${recursionLevel}`;
+    const jobName = `import::${event.target}::${event.type}::${activeMode}::${recursionLevel}`;
 
     return {
         event,

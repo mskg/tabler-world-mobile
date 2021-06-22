@@ -6,6 +6,7 @@ export type TimeoutParameters = {
     members: number,
     member: number,
 
+    families: number,
     associations: number,
     areas: number,
 

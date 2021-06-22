@@ -22,5 +22,11 @@ export const MemberAvatarFragment = gql`
             name
             flag
         }
+
+        family {
+            id
+            name
+            shortname
+        }
     }
 `;

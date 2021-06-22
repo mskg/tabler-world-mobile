@@ -11,8 +11,12 @@ export const styles = StyleSheet.create({
         height: 10,
     },
 
+    family: {
+        marginTop: 2,
+    },
+
     cardTitle: {
-        height: ITEM_HEIGHT - (Platform.OS == 'ios' ? 0 : 8),
+        height: ITEM_HEIGHT - (Platform.OS === 'ios' ? 0 : 8),
         // width: ITEM_WIDTH
     },
 

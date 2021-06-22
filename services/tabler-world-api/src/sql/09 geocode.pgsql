@@ -111,7 +111,9 @@ select
     userlocations.speed,
     userlocations.lastseen,
     cast(coalesce(usersettings.settings->>'nearbymembersMap', 'false') as boolean) as canshowonmap,
-    userlocations.address
+    userlocations.address,
+    profiles.club as club,
+    profiles.family as family
 from
     userlocations
     inner join profiles on (profiles.id = userlocations.id and profiles.removed = false)
@@ -134,6 +136,9 @@ CREATE TABLE IF NOT EXISTS userlocations_history
 WITH (
     OIDS = FALSE
 );
+
+drop index if exists userlocations_history_id;
+CREATE INDEX userlocations_history_id ON userlocations_history (id, lastseen);
 
 drop function if exists userlocations_audit cascade;
 

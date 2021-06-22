@@ -1,5 +1,4 @@
 import { GeoParameters } from '@mskg/tabler-world-config-app';
-import { LocationData } from 'expo-location';
 import { cancel, delay, fork, select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { createApolloContext } from '../../helper/createApolloContext';
@@ -9,13 +8,13 @@ import { ParameterName } from '../../model/graphql/globalTypes';
 import { LocationUpdate, LocationUpdateVariables } from '../../model/graphql/LocationUpdate';
 import { NearbyMembers, NearbyMembersVariables } from '../../model/graphql/NearbyMembers';
 import { IAppState } from '../../model/IAppState';
+import { LocationState } from '../../model/state/LocationState';
 import { GetNearbyMembersQuery } from '../../queries/Location/GetNearbyMembersQuery';
 import { LocationUpdateSubscription } from '../../queries/Location/LocationUpdateSubscription';
 import { setNearby, startWatchNearby, stopWatchNearby } from '../../redux/actions/location';
 import { getReduxStore } from '../../redux/getRedux';
 import { updateLocation } from '../../tasks/location/updateLocation';
 import { logger } from './logger';
-import { LocationState } from '../../model/state/LocationState';
 
 function refreshByQuery(enabled: boolean) {
     const store = getReduxStore();
@@ -110,7 +109,7 @@ function* watch() {
             hourAgo.setHours(hourAgo.getHours() - 1);
 
             if (nearbyMembers && !offline && (
-            !location.location                              // no location at all
+                !location.location                              // no location at all
                 || !location.timestamp                      // compiler
                 || (location.timestamp < hourAgo.valueOf()) // location is older than 1 hour
             )) {

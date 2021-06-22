@@ -7,11 +7,19 @@
 // GraphQL query operation: SearchDirectory
 // ====================================================
 
+export interface SearchDirectory_SearchDirectory_nodes_Area_association_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+  shortname: string;
+}
+
 export interface SearchDirectory_SearchDirectory_nodes_Area_association {
   __typename: "Association";
   id: string;
   name: string;
   flag: string | null;
+  family: SearchDirectory_SearchDirectory_nodes_Area_association_family;
 }
 
 export interface SearchDirectory_SearchDirectory_nodes_Area {
@@ -35,6 +43,13 @@ export interface SearchDirectory_SearchDirectory_nodes_Club_area {
   name: string;
 }
 
+export interface SearchDirectory_SearchDirectory_nodes_Club_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+  shortname: string;
+}
+
 export interface SearchDirectory_SearchDirectory_nodes_Club {
   __typename: "Club";
   id: string;
@@ -43,6 +58,14 @@ export interface SearchDirectory_SearchDirectory_nodes_Club {
   clubnumber: number;
   association: SearchDirectory_SearchDirectory_nodes_Club_association;
   area: SearchDirectory_SearchDirectory_nodes_Club_area;
+  family: SearchDirectory_SearchDirectory_nodes_Club_family;
+}
+
+export interface SearchDirectory_SearchDirectory_nodes_Association_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+  shortname: string;
 }
 
 export interface SearchDirectory_SearchDirectory_nodes_Association {
@@ -52,6 +75,7 @@ export interface SearchDirectory_SearchDirectory_nodes_Association {
   logo: string | null;
   shortname: string;
   flag: string | null;
+  family: SearchDirectory_SearchDirectory_nodes_Association_family;
 }
 
 export type SearchDirectory_SearchDirectory_nodes = SearchDirectory_SearchDirectory_nodes_Area | SearchDirectory_SearchDirectory_nodes_Club | SearchDirectory_SearchDirectory_nodes_Association;
@@ -74,5 +98,6 @@ export interface SearchDirectory {
 
 export interface SearchDirectoryVariables {
   text: string;
+  families?: string[] | null;
   after?: string | null;
 }

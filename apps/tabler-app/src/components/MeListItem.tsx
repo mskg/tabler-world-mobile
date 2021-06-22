@@ -71,7 +71,7 @@ class MeListItemBase extends React.PureComponent<Props> {
                 title={<Title>{me.firstname} {me.lastname}</Title>}
                 subtitle={I18N.Screen_Pair.action}
 
-                right={({ size }) => <Ionicons name="md-qr-scanner" size={size} />}
+                right={({ size }) => <Ionicons name="md-qr-code" size={size} />}
             />
         );
     }

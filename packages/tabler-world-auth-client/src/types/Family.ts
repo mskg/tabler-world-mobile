@@ -2,5 +2,5 @@ export enum Family {
     RTI = 'rti',
     LCI = 'lci',
     TCI = 'tci',
-    OTI = '41i',
+    C41 = 'c41',
 }

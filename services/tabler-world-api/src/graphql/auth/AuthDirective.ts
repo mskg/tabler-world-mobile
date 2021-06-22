@@ -1,5 +1,5 @@
 import { hasRole } from '@mskg/tabler-world-auth-client';
-import { SchemaDirectiveVisitor } from 'apollo-server-lambda';
+import { SchemaDirectiveVisitor } from '@graphql-tools/utils';
 import { defaultFieldResolver, GraphQLField, GraphQLInterfaceType, GraphQLObjectType } from 'graphql';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -9,19 +9,19 @@ type Enriched = {
 };
 
 export class AuthDirective extends SchemaDirectiveVisitor {
-    public visitObject(type: GraphQLObjectType & Enriched) {
-        this.ensureFieldsWrapped(type);
-        type._requiredAuthRole = this.args.requires;
+    public visitObject(type: GraphQLObjectType) {
+        this.ensureFieldsWrapped(type as GraphQLObjectType & Enriched);
+        (type as GraphQLObjectType & Enriched)._requiredAuthRole = this.args.requires;
     }
 
     // Visitor methods for nested types like fields and arguments
     // also receive a details object that provides information about
     // the parent and grandparent types.
-    public visitFieldDefinition(field: GraphQLField<any, any> & Enriched, details: {
+    public visitFieldDefinition(field: GraphQLField<any, any>, details: {
         objectType: GraphQLObjectType | GraphQLInterfaceType;
     }) {
         this.ensureFieldsWrapped(details.objectType as GraphQLObjectType<any, any> & Enriched);
-        field._requiredAuthRole = this.args.requires;
+        (field as GraphQLField<any, any> & Enriched)._requiredAuthRole = this.args.requires;
     }
 
     private ensureFieldsWrapped(objectType: GraphQLObjectType<any, any> & Enriched) {

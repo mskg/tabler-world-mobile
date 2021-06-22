@@ -5,8 +5,8 @@ const hours = (h: number) => h * HOUR;
 const days = (d: number) => hours(24 * d);
 
 export const ttls = {
-    MemberOverview: 0,
-    StructureOverview: 0,
+    MemberOverview: hours(8),
+    StructureOverview: hours(8),
 
     Member: days(7),
     Structure: days(7),

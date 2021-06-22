@@ -1,3 +1,4 @@
+import { WatchQueryFetchPolicy } from 'apollo-client';
 import { sortBy, values } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
@@ -5,13 +6,12 @@ import { View } from 'react-native';
 import { Divider, Theme, withTheme } from 'react-native-paper';
 import { FilterSection, FilterTag, FilterTagType } from '../../components/FilterSection';
 import { InlineLoading } from '../../components/Loading';
-import { I18N } from '../../i18n/translation';
-import { AssociationsAndRolesFilters } from '../../model/graphql/AssociationsAndRolesFilters';
-import { GetAssociationsAndRolesFiltersQuery } from '../../queries/Search/GetAssociationsAndRolesFiltersQuery';
-import { AssociationFilters } from './AssociationFilters';
-import { logger } from './logger';
-import { WatchQueryFetchPolicy } from 'apollo-client';
 import { createApolloContext } from '../../helper/createApolloContext';
+import { I18N } from '../../i18n/translation';
+import { MeAnFamiliesFilter } from '../../model/graphql/MeAnFamiliesFilter';
+import { GetMeAnFamiliesFilterQuery } from '../../queries/Search/GetMeAnFamiliesFilterQuery';
+import { FamilyFilters } from './FamilyFilters';
+import { logger } from './logger';
 
 type OwnProps = {
     theme: Theme,
@@ -19,6 +19,7 @@ type OwnProps = {
     fetchPolicy?: WatchQueryFetchPolicy,
 
     toggleTag: (type: FilterTagType, value: string) => void,
+    toggleFamily: (type: FilterTagType, value: string) => void,
     toggleAssociation: (type: FilterTagType, value: string) => void,
 };
 
@@ -35,10 +36,10 @@ class FiltersBase extends React.Component<Props> {
     render() {
 
         return (
-            <Query<AssociationsAndRolesFilters>
-                query={GetAssociationsAndRolesFiltersQuery}
+            <Query<MeAnFamiliesFilter>
+                query={GetMeAnFamiliesFilterQuery}
                 fetchPolicy={this.props.fetchPolicy}
-                context={createApolloContext('FiltersBase')}
+                context={createApolloContext('FamilyFilters')}
             >
                 {({ data, error }) => {
                     // ok for now
@@ -48,8 +49,7 @@ class FiltersBase extends React.Component<Props> {
                     }
 
                     if (data == null
-                        || data.Associations == null
-                        || data.Roles == null
+                        || data.Families == null
                     ) {
                         return (<View style={{ marginHorizontal: 16 }}><InlineLoading /></View>);
                     }
@@ -57,29 +57,21 @@ class FiltersBase extends React.Component<Props> {
                     return (
                         <>
                             <FilterSection
-                                title={I18N.pluralize(I18N.Screen_Search.associations, data.Associations.length)}
-                                type="association"
+                                title={I18N.pluralize(I18N.Screen_Search.families, data.Families.length)}
+                                type="family"
                                 filter={this.props.filterTags}
-                                data={sortBy(data.Associations, (a) => a.id === data?.Me.association.id ? 'A' : a.name)}
-                                onToggle={this.props.toggleAssociation}
+                                data={sortBy(data.Families, (a) => a.id === data?.Me.family.id ? 'A' : a.name)}
+                                onToggle={this.props.toggleFamily}
                                 theme={this.props.theme}
                             />
                             <Divider />
 
-                            <AssociationFilters
+                            <FamilyFilters
+                                meAssociatonId={data.Me.association.id}
                                 filterTags={this.props.filterTags}
                                 toggleTag={this.props.toggleTag}
+                                toggleAssociation={this.props.toggleAssociation}
                             />
-
-                            <FilterSection
-                                title={I18N.pluralize(I18N.Screen_Search.roles, data.Roles.length)}
-                                type="role"
-                                filter={this.props.filterTags}
-                                data={data.Roles}
-                                onToggle={this.props.toggleTag}
-                                theme={this.props.theme}
-                            />
-                            <Divider />
 
                             <FilterSection
                                 title={I18N.pluralize(I18N.Screen_Search.sectors, Object.keys(I18N.Sectors).length)}

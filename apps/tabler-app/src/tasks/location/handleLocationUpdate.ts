@@ -1,4 +1,4 @@
-import * as Location from 'expo-location';
+import { LocationObject } from 'expo-location';
 import _ from 'lodash';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
@@ -14,7 +14,7 @@ import { getReduxStore } from '../../redux/getRedux';
 import { logger } from './logger';
 
 // tslint:disable-next-line: export-name
-export async function handleLocationUpdate(locations: Location.LocationData[], enable = false, force = false): Promise<boolean> {
+export async function handleLocationUpdate(locations: LocationObject[], enable = false, force = false): Promise<boolean> {
     try {
         logger.debug('handleLocationUpdate', locations);
 
@@ -25,7 +25,7 @@ export async function handleLocationUpdate(locations: Location.LocationData[], e
             return false;
         }
 
-        const location = _(locations).maxBy((l) => l.timestamp) as Location.LocationData;
+        const location = _(locations).maxBy((l) => l.timestamp) as LocationObject;
         if (location == null) {
             logger.log('No location found?');
             return false;

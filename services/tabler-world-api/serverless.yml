@@ -287,7 +287,7 @@ functions:
   #
   database-update:
     handler: src/sql/lambda.handler
-    timeout: 600
+    timeout: 900
 
     vpc: ${file(../devops/vpc.yml):lambda}
 

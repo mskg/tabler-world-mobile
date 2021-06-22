@@ -4,34 +4,50 @@ import { useColorScheme } from 'react-native-appearance';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { IAppState } from '../model/IAppState';
-import { dark as darkTheme } from './dark';
-import { light as lightTheme } from './light';
+import { AppTheme } from './AppTheme';
+import { Families } from './getFamilyColor';
+import { determineTheme, updateThemeFromFamily } from './theming';
 
 type Props = {
     colorScheme: string,
     darkMode: boolean,
+    accentColor: Families,
 };
 
-class ProviderBase extends React.PureComponent<Props> {
+type State = {
+    theme: AppTheme;
+};
+
+class ProviderBase extends React.PureComponent<Props, State> {
     subscription;
 
     constructor(props: Props) {
         super(props);
+        this.state = {
+            theme: ProviderBase.calcScheme(props),
+        };
     }
 
-    determineScheme() {
-        const { colorScheme } = this.props;
+    // tslint:disable-next-line: function-name
+    static calcScheme(props: Props) {
+        return updateThemeFromFamily(
+            determineTheme(
+                props.colorScheme, props.darkMode,
+            ),
+            props.accentColor,
+        );
+    }
 
-        if (colorScheme === 'no-preference') {
-            return this.props.darkMode ? darkTheme : lightTheme;
-        }
-
-        return colorScheme === 'dark' ? darkTheme : lightTheme;
+    // tslint:disable-next-line: function-name
+    static getDerivedStateFromProps(props: Props, _state?: State) {
+        return {
+            theme: ProviderBase.calcScheme(props),
+        };
     }
 
     render() {
         return (
-            <PaperProvider theme={this.determineScheme()}>
+            <PaperProvider theme={this.state.theme}>
                 {this.props.children}
             </PaperProvider>
         );
@@ -41,6 +57,7 @@ class ProviderBase extends React.PureComponent<Props> {
 const Provider = connect(
     (state: IAppState) => ({
         darkMode: state.settings.darkMode,
+        accentColor: state.auth.accentColor,
     }))(
         ProviderBase,
     );

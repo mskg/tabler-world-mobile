@@ -2,6 +2,7 @@
 export type UrlParameters = {
     profile: string,
     world: string,
+
     world_whitelist: string[],
     feedback: string,
 

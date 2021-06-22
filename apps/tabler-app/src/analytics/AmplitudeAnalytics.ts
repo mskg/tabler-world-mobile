@@ -9,7 +9,7 @@ const ensureStrings = (o: any) => {
     if (o == null) return null;
     const result = {};
 
-    Object.keys(o).forEach(key => {
+    Object.keys(o).forEach((key) => {
         let val = o[key];
 
         if (typeof (val) !== 'string' && val != null) {
@@ -29,7 +29,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
     constructor(apiKey: string) {
         logger.log('Boostrapping AmplitudeAnalytics');
         this.init = Amplitude
-            .initialize(apiKey)
+            .initializeAsync(apiKey)
             .then(() => logger.log('Amplitude initialized'));
     }
 
@@ -46,7 +46,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
 
         if (id != null) {
             // ensure it's a string
-            this.init.then(() => Amplitude.setUserId('' + id));
+            this.init.then(() => Amplitude.setUserIdAsync(`${id}`));
         }
 
         const reduced = ensureStrings(attributes);
@@ -60,7 +60,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
     trackPageView(screen: string, attributes?: Params, metrics?: Metrics): void {
         if (this.disabled) { return; }
 
-        this.init.then(() => Amplitude.logEventWithProperties(
+        this.init.then(() => Amplitude.logEventWithPropertiesAsync(
             `View ${screen}`,
             {
                 ...(ensureStrings(attributes) || {}),
@@ -75,7 +75,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
     trackEvent(event: string, attributes?: Params, metrics?: Metrics): void {
         if (this.disabled) { return; }
 
-        this.init.then(() => Amplitude.logEventWithProperties(
+        this.init.then(() => Amplitude.logEventWithPropertiesAsync(
             `Event ${event}`,
             {
                 ...(ensureStrings(attributes) || {}),
@@ -90,7 +90,7 @@ export class AmplitudeAnalytics implements IAnalyticsProvider {
     trackAction(screen: string, action: string, attributes?: Params, metrics?: Metrics): void {
         if (this.disabled) { return; }
 
-        this.init.then(() => Amplitude.logEventWithProperties(
+        this.init.then(() => Amplitude.logEventWithPropertiesAsync(
             `Action ${screen} ${action}`,
             {
                 ...(ensureStrings(attributes) || {}),

@@ -1,7 +1,7 @@
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { RemoveToken, RemoveTokenVariables } from '../../model/graphql/RemoveToken';
 import { TOKEN_KEY } from '../../tasks/Constants';

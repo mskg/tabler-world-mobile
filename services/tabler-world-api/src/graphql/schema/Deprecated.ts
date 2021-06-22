@@ -23,6 +23,11 @@ export const Deprecated = gql`
         success: Boolean!
     }
 
+    extend type Role {
+        "Deprecated, don't use"
+        level: String!
+    }
+
     extend type NearbyMember {
         "Deprecated, don't use"
         canshowonmap: Boolean!

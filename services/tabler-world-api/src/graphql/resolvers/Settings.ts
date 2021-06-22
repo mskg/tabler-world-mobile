@@ -2,10 +2,10 @@ import { makeCacheKey } from '@mskg/tabler-world-cache';
 import { PushNotificationService } from '@mskg/tabler-world-push-client';
 import { useDatabase } from '@mskg/tabler-world-rds-client';
 import { keys, remove, uniq } from 'lodash';
-import { byVersion, v12Check } from '../helper/byVersion';
-import { IApolloContext } from '../types/IApolloContext';
+import { byVersion, olderEqualV12 } from '../helper/byVersion';
 import { Metrics } from '../logging/Metrics';
 import { throw429 } from '../ratelimit/throw429';
+import { IApolloContext } from '../types/IApolloContext';
 
 type QuerySettings = {
     name: string,
@@ -120,7 +120,7 @@ WHERE id = $1
             if (modifiedArgs.setting.name === 'favorites') {
                 await byVersion({
                     context,
-                    mapVersion: v12Check,
+                    mapVersion: olderEqualV12,
                     versions: {
                         default: async () => {
                             context.logger.debug('No change necessary, new client');

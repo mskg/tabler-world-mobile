@@ -1,8 +1,8 @@
 import { resolve } from 'path';
-import slsw from 'serverless-webpack';
+import sls from 'serverless-webpack';
 import nodeExternals from 'webpack-node-externals';
 
-export default function createConfig(path: string = __dirname) {
+export default function createConfig(slsw: typeof sls, path: string = __dirname) {
     console.log('Resolving', resolve(path, '../../node_modules'));
 
     return {
@@ -15,12 +15,12 @@ export default function createConfig(path: string = __dirname) {
         // this bundles these two dependencies, but removes the indirect depencency to aws-sdk
         externals: [
             nodeExternals({
-                whitelist: [/^@mskg/i],
+                allowlist: [/^@mskg/i],
             }),
 
             nodeExternals({
                 modulesDir: resolve(path, '../../node_modules'),
-                whitelist: [/^@mskg/i],
+                allowlist: [/^@mskg/i],
             }),
         ],
 

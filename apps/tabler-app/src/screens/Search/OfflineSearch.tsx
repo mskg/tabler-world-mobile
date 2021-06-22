@@ -67,10 +67,12 @@ class OfflineSearchQueryBase extends React.Component<Props, State> {
                 const tables = this.props.filterTags.filter((r) => r.type === 'table').reduce((p, v) => { p[v.value] = true; return p; }, {});
                 const areas = this.props.filterTags.filter((r) => r.type === 'area').reduce((p, v) => { p[v.value] = true; return p; }, {});
                 const associations = this.props.filterTags.filter((r) => r.type === 'association').reduce((p, v) => { p[v.value] = true; return p; }, {});
+                const families = this.props.filterTags.filter((r) => r.type === 'family').reduce((p, v) => { p[v.value] = true; return p; }, {});
 
                 // const newData = result
                 const predicate = Predicates.and(
                     Predicates.text(this.props.query),
+                    Object.keys(families).length > 0 ? Predicates.families(families) : null,
                     Object.keys(roles).length > 0 ? Predicates.role(roles) : null,
                     Object.keys(tables).length > 0 ? Predicates.table(tables) : null,
                     Object.keys(areas).length > 0 ? Predicates.area(areas) : null,

@@ -2,13 +2,14 @@ import React from 'react';
 import { FlatList, Platform, View } from 'react-native';
 import { Caption, Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { FamilyBadge } from '../../components/FamilyBadge';
+import { FlagAvatar as FlagAvatarBase } from '../../components/FlagAvatar';
 import { renderDivider } from '../../components/ListRenderer';
 import { EmptyComponent } from '../../components/NoResults';
 import { I18N } from '../../i18n/translation';
 import { SearchDirectory_SearchDirectory_nodes } from '../../model/graphql/SearchDirectory';
 import { IWhoAmI } from '../../model/IWhoAmI';
 import { CardTitle } from '../Structure/CardTitle';
-import { FlagAvatar as FlagAvatarBase } from '../../components/FlagAvatar';
 
 type OwnProps = {
     theme: Theme,
@@ -42,6 +43,19 @@ const FlagAvatar = ({ flag, name }) => {
         />
     );
 };
+
+const Embedded = ({ theme, name, family, familyName, ...props }) => {
+    return (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <FamilyBadge theme={theme} family={family} familyName={familyName} />
+
+            <Caption {...props}>
+                {name}
+            </Caption>
+        </View>
+    );
+};
+
 
 export class StructureSearchListBase extends React.Component<Props> {
     _flatList!: FlatList<SearchDirectory_SearchDirectory_nodes> | null;
@@ -79,7 +93,12 @@ export class StructureSearchListBase extends React.Component<Props> {
                             <CardTitle
                                 title={item.name}
                                 subtitle={
-                                    `${item.area.name}, ${item.association.name}`
+                                    <Embedded
+                                        name={`${item.area.name}, ${item.association.name}`}
+                                        family={item.family.id}
+                                        familyName={item.family.shortname}
+                                        theme={this.props.theme}
+                                    />
                                 }
                                 avatar={<FlagAvatar name={item.association.id} flag={item.association.flag} />}
                             />

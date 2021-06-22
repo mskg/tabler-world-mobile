@@ -24,12 +24,20 @@ export interface ClubOverviewFragment_association {
   association: string;
 }
 
+export interface ClubOverviewFragment_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface ClubOverviewFragment {
   __typename: "Club";
   id: string;
   name: string;
+  displayname: string;
   clubnumber: number;
   logo: string | null;
   area: ClubOverviewFragment_area;
   association: ClubOverviewFragment_association;
+  family: ClubOverviewFragment_family;
 }

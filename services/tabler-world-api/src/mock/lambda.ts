@@ -1,6 +1,7 @@
 import { EXECUTING_OFFLINE } from '@mskg/tabler-world-aws';
 import { ApolloServer } from 'apollo-server-lambda';
-import { addMockFunctionsToSchema, makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { addMocksToSchema } from '@graphql-tools/mock';
 import { LogErrorsExtension } from '../graphql/logging/LogErrorsExtension';
 import { schema } from '../graphql/schema';
 import { rootResolver } from './resolvers';
@@ -12,14 +13,14 @@ const executableSchema = makeExecutableSchema({
     typeDefs: schema,
 });
 
-addMockFunctionsToSchema({
+const schemaWithMocks = addMocksToSchema({
     mocks: rootResolver,
     schema: executableSchema,
     preserveResolvers: true,
 });
 
 const server = new ApolloServer({
-    schema: executableSchema,
+    schema: schemaWithMocks,
 
     extensions: [
         () => new LogErrorsExtension(),

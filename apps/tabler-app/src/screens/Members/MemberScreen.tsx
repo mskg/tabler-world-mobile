@@ -47,7 +47,10 @@ type OwnProps = {
 
 type StateProps = {
     areas: HashMap<boolean, string> | null,
+
     favorites: HashMap<boolean>,
+    favoriteClubs: HashMap<boolean>,
+
     showFavorites: boolean,
     showOwntable: boolean,
     showAreaBoard: boolean,
@@ -140,6 +143,7 @@ class MembersScreenBase extends AuditedScreen<Props, State> {
 
         this.state.dataSource.filter = Predicates.or(
             nextProps.showFavorites ? Predicates.favorite(this.props.favorites) : null,
+            nextProps.showFavorites ? Predicates.favoriteClubs(this.props.favoriteClubs) : null,
             nextProps.showOwntable && me != null && me.club != null ? Predicates.sametable(me.club.id) : null,
             nextProps.areas != null ? Predicates.area(nextProps.areas) : Predicates.all,
             nextProps.showAreaBoard ? Predicates.areaBoard() : null,
@@ -250,6 +254,7 @@ export const MemberScreen = connect(
 
         areas: state.filter.member.area,
         favorites: state.filter.member.favorites,
+        favoriteClubs: state.filter.club.favorites,
 
         sortBy: state.settings.sortByLastName ? 'lastname' : 'firstname',
         diplayFirstNameFirst: state.settings.diplayFirstNameFirst,

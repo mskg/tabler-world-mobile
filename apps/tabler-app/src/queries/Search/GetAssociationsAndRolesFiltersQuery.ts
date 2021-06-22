@@ -1,20 +1,12 @@
 import gql from 'graphql-tag';
 
 export const GetAssociationsAndRolesFiltersQuery = gql`
-    query AssociationsAndRolesFilters {
-        Me {
-            id
-
-            association {
-                id
-            }
-        }
-
-        Associations {
+    query AssociationsAndRolesFilters ($family: ID!) {
+        Associations (family: $family) {
             id
             name
         }
 
-        Roles
+        Roles (family: $family)
     }
 `;

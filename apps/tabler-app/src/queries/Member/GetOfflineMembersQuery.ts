@@ -7,7 +7,7 @@ export const GetOfflineMembersQuery = gql`
         ...MemberDetailsFragment
     }
 
-    FavoriteMembers {
+    FavoriteMembers (filter: { includeClubs: true }) {
         ...MemberDetailsFragment
     }
   }

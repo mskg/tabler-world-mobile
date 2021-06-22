@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { reduce } from 'lodash';
 import * as actions from '../actions/filter';
 import { INITIAL_STATE } from '../initialState';
 
@@ -19,7 +19,13 @@ export function filterReducer(
         | typeof actions.toggleOwnTable.shape
         | typeof actions.replaceFavorites.shape
         | typeof actions.toggleAreaBoard.shape
-        | typeof actions.toggleAssociationBoard.shape,
+        | typeof actions.toggleAssociationBoard.shape
+
+        | typeof actions.toggleFavoriteClub.shape
+        | typeof actions.replaceFavoriteClubs.shape
+        | typeof actions.removeFavoriteClub.shape
+        | typeof actions.addFavoriteClub.shape
+    ,
 ): Result {
     switch (action.type) {
         // case actions.addDistrict.type: {
@@ -132,7 +138,7 @@ export function filterReducer(
         }
 
         case actions.replaceFavorites.type: {
-            const newFavorites = _.reduce(
+            const newFavorites = reduce(
                 action.payload,
                 (r, v) => { r[v] = true; return r; },
                 { length: 0 });
@@ -174,6 +180,67 @@ export function filterReducer(
                 member: {
                     ...state.member,
                     showAssociationBoard: !state.member.showAssociationBoard,
+                },
+            };
+        }
+
+        case actions.removeFavoriteClub.type: {
+            const favorites = { ...(state.club.favorites || {}) };
+            delete favorites[action.payload.id];
+
+            return {
+                ...state,
+                club: {
+                    ...state.club,
+                    favorites,
+                },
+            };
+        }
+
+        case actions.addFavoriteClub.type: {
+            const favorites = { ...(state.club.favorites || {}) };
+            favorites[action.payload.id] = true;
+
+            return {
+                ...state,
+                club: {
+                    ...state.club,
+                    favorites,
+                },
+            };
+        }
+
+        case actions.toggleFavoriteClub.type: {
+            const favorites = { ...(state.club.favorites || {}) };
+
+            if (favorites[action.payload.id] === true) {
+                delete favorites[action.payload.id];
+            } else {
+                favorites[action.payload.id] = true;
+            }
+
+            return {
+                ...state,
+                club: {
+                    ...state.club,
+                    favorites,
+                },
+            };
+        }
+
+        case actions.replaceFavoriteClubs.type: {
+            const newFavorites = reduce(
+                action.payload,
+                (r, v) => { r[v] = true; return r; },
+                { length: 0 });
+
+            newFavorites.length = Object.keys(newFavorites).length;
+
+            return {
+                ...state,
+                club: {
+                    ...state.club,
+                    favorites: newFavorites,
                 },
             };
         }

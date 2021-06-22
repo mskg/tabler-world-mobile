@@ -18,6 +18,13 @@ where data->>'rt_generic_email' = $1
             return false;
         }
 
+        let community = 5;
+        if (email.match(/ladiescircle/ig)) {
+            community = 4335;
+        } else if (email.match(/41er/ig)) {
+            community = 1414;
+        }
+
         const foundId = await new Promise((resolve) => {
             // Download the JWKs and save it as PEM
             request(
@@ -28,7 +35,7 @@ where data->>'rt_generic_email' = $1
                     body: {
                         password,
                         username: res.rows[0].uname,
-                        community_id: 5,
+                        community_id: community,
                     },
                 },
 

@@ -29,6 +29,7 @@ export function* restoreSettingsFromCloud(/* _a: typeof settingsActions.restoreS
         query: gql`
 query GetCloudSettings {
   favorites: Setting (name: favorites)
+  favoriteClubs: Setting (name: favoriteClubs)
   notifications: Setting (name: notifications)
   nearbymembers: Setting (name: nearbymembers)
   nearbymembersMap: Setting (name: nearbymembersMap)
@@ -40,6 +41,11 @@ query GetCloudSettings {
     if (result.data.favorites != null) {
         logger.debug('Restoring favorites', result.data.favorites);
         yield put(filterActions.replaceFavorites(result.data.favorites));
+    }
+
+    if (result.data.favoriteClubs != null) {
+        logger.debug('Restoring favoriteClubs', result.data.favoriteClubs);
+        yield put(filterActions.replaceFavoriteClubs(result.data.favoriteClubs));
     }
 
     const settingState: SettingsState = yield select((state: IAppState) => state.settings);

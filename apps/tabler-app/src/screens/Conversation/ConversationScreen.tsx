@@ -45,12 +45,15 @@ type Props = {
 
     texts: ChatEdits,
     setText: typeof setText;
+
+    diplayFirstNameFirst: boolean,
 };
 
 type State = {
     member: Conversation_Conversation_participants_member | null,
     showUserAvatar: boolean,
 
+    title?: string,
     subject?: string,
     icon?: any,
 
@@ -120,10 +123,6 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         return this.props.navigation.getParam('id') as string;
     }
 
-    getTitle() {
-        return this.state.subject || this.props.navigation.getParam('title');
-    }
-
     showProfile() {
         if (this.state.member) {
             this.props.showProfile(this.state.member.id);
@@ -152,7 +151,14 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
         const otherMembers = conversation.participants.filter((o) => !o.iscallingidentity);
         const otherMember = otherMembers.length > 2 ? null : first(otherMembers);
 
+        const title = otherMember?.member
+            ? this.props.diplayFirstNameFirst
+                ? `${otherMember.firstname} ${otherMember.lastname}`
+                : `${otherMember.lastname} ${otherMember.firstname}`
+            : conversation.subject;
+
         this.setState({
+            title,
             subject: conversation.subject,
             member: otherMember?.member ?? null,
             showUserAvatar: otherMember == null, // only in case more than two members
@@ -167,7 +173,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                             fontSize: Platform.OS === 'ios' ? 17 : 20,
                         }}
                     >
-                        {conversation.subject}
+                        {title}
                     </Text>
                 </View>
             ),
@@ -180,7 +186,7 @@ class ConversationScreenBase extends AuditedScreen<Props & NavigationInjectedPro
                 key="cnt"
                 style={{ paddingLeft: this.state.icon ? 0 : 12 }}
                 titleStyle={{ fontFamily: this.props.theme.fonts.medium }}
-                title={this.getTitle()}
+                title={this.state.title || this.props.navigation.getParam('title')}
             />
         );
     }
@@ -256,6 +262,7 @@ export const ConversationScreen =
                 chatEnabled: state.settings.supportsNotifications,
                 pendingMessages: state.chat.pendingSend,
                 texts: state.chat.lastEdits,
+                diplayFirstNameFirst: state.settings.diplayFirstNameFirst,
             }),
             {
                 showProfile,

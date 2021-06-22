@@ -1,5 +1,5 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import { ScreenOrientation } from 'expo';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import React from 'react';
 import { UIManager } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -28,6 +28,7 @@ import { SubscribeToConversationUpdates } from './screens/Conversations/Subscrib
 import { bootstrapTasks } from './tasks/bootstrapTasks';
 import { withAppearanceProvider } from './theme/withAppearanceProvider';
 import { withPaperProvider } from './theme/withPaperProvider';
+import { SafeAreaProvider } from 'react-native-safe-area-view';
 
 const logger = new Logger(Categories.App);
 logger.log('Bootstrap');
@@ -67,7 +68,7 @@ const App = () => {
     dispatch(checkNetwork());
 
     return (
-        <>
+        <SafeAreaProvider>
             <StandardStatusBar />
             <Reloader />
             <ActionSheetProvider>
@@ -77,7 +78,7 @@ const App = () => {
             <PushNotifications />
             <SubscribeToConversationUpdates />
             <Linking />
-        </>
+        </SafeAreaProvider>
     );
 };
 
@@ -89,13 +90,13 @@ export default withAppearanceProvider(
             withStore(
                 withPaperProvider(
                     withSkakeErrorReport(
-                        withLoadingAnimation(
+                        // withLoadingAnimation(
                             withAuthenticator(
                                 withWhoopsErrorBoundary(
                                     App,
                                 ),
                             ),
-                        ),
+                        // ),
                     ),
                 ),
             ),

@@ -1,11 +1,16 @@
-const defaultAssetExts = require("metro-config/src/defaults/defaults").assetExts;
+const { createMetroConfiguration } = require('expo-yarn-workspaces');
 
+const exp = createMetroConfiguration(__dirname);
 module.exports = {
+    ...exp,
     resolver: {
+        ...exp.resolver,
+        blacklistRE: /\.webpack/,
         assetExts: [
-            ...defaultAssetExts,
+            ...exp.resolver.assetExts,
             "md",
-            "svg",
-        ],
-    },
+            "svg"
+        ]
+    }
 };
+

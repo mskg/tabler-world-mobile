@@ -21,10 +21,14 @@ export const Urls: UrlParameters = {
     // tslint:disable-next-line: no-http-string
     feedback: 'http://feedback.app.roundtable.world/',
 
+    // this is always false if the user logges in NOT from RTI
+    // this is corrected by serverside parameter handling
     profile: 'https://rti.roundtable.world/#lang#/members/#id#/',
-
     world: 'https://rti.roundtable.world/#lang#/',
+
     world_whitelist: [
         '*.roundtable.world',
+        '*.ladiescircle.world',
+        '*.41er.world',
     ],
 };

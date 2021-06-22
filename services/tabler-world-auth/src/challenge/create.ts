@@ -13,7 +13,7 @@ export const handler: CognitoUserPoolTriggerHandler = async (event, context) => 
         verifyCountry(event.request.userAttributes.email);
 
         if (!await verifyUser(context, event.request.userAttributes.email)) {
-            throw new Error('"Sorry, we don\'t know you. Are you still an active tabler?"');
+            throw new Error('"Sorry, we don\'t know you. Are you still an active member?"');
         }
 
         // This is a new auth session

@@ -103,6 +103,8 @@ export class SubscriptionClient {
         webSocketImpl?: any,
         webSocketProtocols?: string | string[],
     ) {
+        debugger 
+
         const {
             connectionCallback = undefined,
             connectionParams = {},
@@ -534,6 +536,7 @@ export class SubscriptionClient {
     }
 
     private connect() {
+        debugger
         this.client = new this.wsImpl(this.url, this.wsProtocols);
 
         this.checkMaxConnectTimeout();

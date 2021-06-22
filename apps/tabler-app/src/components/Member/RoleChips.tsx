@@ -19,7 +19,7 @@ export class RoleChips extends React.PureComponent<Props> {
             .rgb()
             .string();
 
-        return _(this.props.roles).orderBy(r => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
+        return _(this.props.roles).orderBy((r) => r.ref.type === 'assoc' ? 1 : r.ref.type === 'area' ? 2 : 3).map((r, i) => (
             <RoleChip
                 key={i}
                 color={this.props.theme.colors.primary}

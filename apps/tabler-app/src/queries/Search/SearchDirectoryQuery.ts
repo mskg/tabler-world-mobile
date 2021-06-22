@@ -4,10 +4,11 @@ import { DirectoryFragments } from '../Structure/DirectoryFragments';
 export const SearchDirectoryQuery = gql`
     query SearchDirectory (
             $text: String!,
+            $families: [ID!]
             $after: String
         ) {
         SearchDirectory(query: {
-            text: $text
+            text: $text, families: $families,
         }, after: $after) @connection(key: "SearchDirectory") {
             nodes {
                 __typename

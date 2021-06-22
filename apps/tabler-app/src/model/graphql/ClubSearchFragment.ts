@@ -20,6 +20,13 @@ export interface ClubSearchFragment_area {
   name: string;
 }
 
+export interface ClubSearchFragment_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+  shortname: string;
+}
+
 export interface ClubSearchFragment {
   __typename: "Club";
   id: string;
@@ -28,4 +35,5 @@ export interface ClubSearchFragment {
   clubnumber: number;
   association: ClubSearchFragment_association;
   area: ClubSearchFragment_area;
+  family: ClubSearchFragment_family;
 }

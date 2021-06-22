@@ -1,10 +1,9 @@
-
-export interface IExpoNotification {
-    origin: 'selected' | 'received';
-    remote: boolean;
-    isMultiple: boolean;
-    data?: AppNotifications;
-}
+// export interface IExpoNotification {
+//     origin: 'selected' | 'received';
+//     remote: boolean;
+//     isMultiple: boolean;
+//     data?: AppNotifications;
+// }
 
 type Reasons = 'birthday' | 'chatmessage' | 'advertisment' | 'test';
 
@@ -52,5 +51,3 @@ export type AppNotifications = BirthdayNotification
     | ChatMessageNotification
     | AdMessageNotification
     | TestMessageNotification;
-
-

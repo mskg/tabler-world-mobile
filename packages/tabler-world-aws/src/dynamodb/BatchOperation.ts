@@ -169,6 +169,7 @@ export abstract class BatchOperation<
         }
 
         this.throttled.delete(backoffWaiter);
+        // @ts-ignore
         delete table.tableThrottling;
     }
 

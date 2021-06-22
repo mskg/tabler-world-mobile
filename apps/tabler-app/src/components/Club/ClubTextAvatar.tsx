@@ -20,34 +20,34 @@ class ClubTextAvatar extends React.Component<Props> {
         const textColor = this.props.color || (color(backgroundColor).lighten() ? 'rgba(0, 0, 0, .54)' : 'white');
 
         return (
-      <View
-        style={[
-            {
-                width: size,
-                height: size,
-                borderRadius: size / 2,
-                backgroundColor,
-            },
-            styles.container,
-            restStyle,
-        ]}
-      >
-        <Text
-          style={[
-              styles.text,
-              {
-                  color: textColor,
-              // need to reduce the size to allow 3 letters
-                  fontSize: size / 2 - 3,
-                  lineHeight: size,
-              },
-          ]}
-          numberOfLines={1}
-        >
-          {label}
-        </Text>
-      </View>
-      );
+            <View
+                style={[
+                    {
+                        width: size,
+                        height: size,
+                        borderRadius: size / 2,
+                        backgroundColor,
+                    },
+                    styles.container,
+                    restStyle,
+                ]}
+            >
+                <Text
+                    style={[
+                        styles.text,
+                        {
+                            color: textColor,
+                            // need to reduce the size to allow 3 letters
+                            fontSize: size / 2 - 3,
+                            lineHeight: size,
+                        },
+                    ]}
+                    numberOfLines={1}
+                >
+                    {label}
+                </Text>
+            </View>
+        );
     }
 }
 

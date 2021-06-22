@@ -2,7 +2,7 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Categories, Logger } from '../helper/Logger';
 import { Features, isFeatureEnabled } from '../model/Features';
 import { FETCH_TASKNAME, LOCATION_TASK_NAME } from './Constants';

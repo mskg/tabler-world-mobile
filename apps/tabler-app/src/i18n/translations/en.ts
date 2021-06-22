@@ -1,12 +1,12 @@
 const en = {
     Permissions: {
-        NSCameraUsageDescription: 'TABLER.APP uses the camera to scan barcodes of other members.',
-        NSContactsUsageDescription: 'TABLER.APP updates your phonebook with member details.',
-        NSCalendarsUsageDescription: 'TABLER.APP updates your calendar with event and birthday details.',
-        NSLocationWhenInUseUsageDescription: 'TABLER.APP shows other members and clubs arround your current location.',
-        NSLocationAlwaysUsageDescription: 'TABLER.APP tracks your position to allow other members to get in touch with you.',
-        NSLocationAlwaysAndWhenInUseUsageDescription: 'TABLER.APP tracks your position to allow other members to get in touch with you.',
-        NSPhotoLibraryUsageDescription: 'You can send pictures to other members in TABLER.APP.',
+        NSCameraUsageDescription: 'ROUND TABLE Family.App uses the camera to scan barcodes of other members.',
+        NSContactsUsageDescription: 'ROUND TABLE Family.App updates your phonebook with member details.',
+        NSCalendarsUsageDescription: 'ROUND TABLE Family.App updates your calendar with event and birthday details.',
+        NSLocationWhenInUseUsageDescription: 'ROUND TABLE Family.App shows other members and clubs arround your current location.',
+        NSLocationAlwaysUsageDescription: 'ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.',
+        NSLocationAlwaysAndWhenInUseUsageDescription: 'ROUND TABLE Family.App tracks your position to allow other members to get in touch with you.',
+        NSPhotoLibraryUsageDescription: 'You can send pictures to other members in ROUND TABLE Family.App.',
     },
 
     Component_Whoops: {
@@ -19,11 +19,11 @@ const en = {
 
     Component_ErrorReport: {
         title: 'Report a problem',
-        text: 'Your feedback helps us improve TABLER.APP.',
+        text: 'Your feedback helps us improve ROUND TABLE Family.App.',
         report: 'Something isn\'t working?',
         feedback: 'Some functionality is missing? You have an idea?',
         language: 'Typo? Wrong terms? Translation is really bad?',
-        subject: 'TABLER.APP Issue',
+        subject: 'ROUND TABLE Family.App Issue',
         noMail: 'You seem to have no mail client installed?',
         template: 'Please describe what happened:',
     },
@@ -40,20 +40,20 @@ const en = {
     },
 
     Screen_SignIn: {
-        placeholderEMail: 'firstname.lastname@123-de.roundtable.world',
+        placeholderEMail: 'firstname.lastname@123-de.{name}.world',
         placeholderCode: 'Your Password',
         continue: 'Login',
         confirm: 'Confirm',
         cancel: 'Cancel',
-        warning: 'IMPORTANT! You can now logon with your TABLER.WORLD password. E-mails will no longer be sent.',
         welcomeBack: 'Welcome back,',
-        signin: 'please sign in with your TABLER.WORLD public e-mail address',
+        signin: 'Please choose the organization that your are associated with.',
+        email: 'Please sign in with your {name}.WORLD public e-mail address.',
         confirmTitle: 'Enter Password',
         codeWrong: 'Verification failed, you have to restart.',
-        accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please contact the TABLER.WORLD team via e-mail.',
+        accessDenied: 'You cannot use this app with your login. If you feel that this is wrong, please contact your online team via e-mail.',
         codeVerify: 'Could not verify password, {tries} tries left.',
         demoMode: 'Try the App',
-        join: 'How to join Round Table?',
+        join: 'How to join our Family?',
         demo: {
             title: 'Demo Mode',
             text: 'After confirmation, we will restart the application. To exit the demo, goto Settings | Logout.',
@@ -74,13 +74,16 @@ const en = {
     Screen_Structure: {
         navigation: 'Directory',
         title: 'Association',
-        mytitle: 'My Association',
-        associations: 'Associations',
+        mytitle: 'My Directory',
+        myassociations: 'My Familie\'s Associations',
+        families: 'Family',
+        associations: 'Association',
         clubs: 'Clubs',
         areas: 'Areas',
         president: 'President',
         board: 'Board',
         assist: 'Board Assistants',
+        regionalboard: 'Regional Board',
         details: 'Show Club',
     },
 
@@ -110,7 +113,7 @@ const en = {
     },
 
     Screen_World: {
-        title: 'TABLER.WORLD',
+        title: 'YOUR Family.WORLD',
         tab: 'Online',
     },
 
@@ -141,12 +144,12 @@ const en = {
             cancel: 'Cancel',
         },
         Fields: {
-            chat: 'TABLER.APP Chat',
+            chat: 'ROUND TABLE Family.App Chat',
             home: 'Home Address',
             birthday: 'Birthday',
             partner: 'Partner',
-            roles: 'RT Functions (this year)',
-            rtorg: 'RT Organization',
+            roles: 'Functions (this year)',
+            rtorg: 'Organization',
             companies: 'Company',
             educations: 'Education',
             joined: 'Date Joined',
@@ -156,7 +159,7 @@ const en = {
             call: 'call',
             mail: 'mail',
             chat: 'Send a message to {name}',
-            openweb: 'Show on TABLER.WORLD',
+            openweb: 'Show online',
             favadd: 'Add to Favorites',
             remfav: 'Remove from Favorites',
             contact: 'Update Phonebook',
@@ -169,7 +172,7 @@ const en = {
     },
 
     EMailNames: {
-        rt: 'TABLER.WORLD',
+        rt: 'Family.WORLD',
         home: 'Private',
         work: 'Work',
         other: 'Other',
@@ -191,6 +194,10 @@ const en = {
         filter: 'Filter',
         expand: 'See All',
         collapse: 'See Less',
+        families: {
+            one: 'Family',
+            other: 'Families ({number})',
+        },
         associations: {
             one: 'Association',
             other: 'Associations ({number})',
@@ -262,7 +269,7 @@ const en = {
         hideAll: 'Hide all my Association Members',
         favorites: 'Favorites',
         toggleFavorits: 'All Favorites',
-        toggleOwnTable: 'My own Table',
+        toggleOwnTable: 'My own Club',
         toggleAssociationBoard: 'My Association\'s Board and -Assists',
         toggleAreaBoard: 'My Association\'s Board of Advisors',
     },
@@ -296,8 +303,8 @@ const en = {
             locationservices: 'Location Services',
         },
         texts: {
-            contacts: 'Members can be synchronized to your phone\'s default Contacts\' Acccount. If members are removed from TABLER.WORLD, your contacts stay. Properties of the contacts are overriden on every change in TABLER.WORLD.',
-            experiments: 'These are experimental and unsupported features of the TABLER.APP and may dissapear at any time.',
+            contacts: 'Members can be synchronized to your phone\'s default Contacts\' Acccount. If members are removed online, your contacts stay. Properties of the contacts are overriden on every change.',
+            experiments: 'These are experimental and unsupported features of the ROUND TABLE Family.App and may dissapear at any time.',
         },
         contactpermissions: 'Location permissions are required in order to use this feature. Please grant permission through the phone\'s settings area.',
         locationpermission: 'Cannot access your location. Please grant permission through the phone\'s settings area.',
@@ -318,7 +325,7 @@ const en = {
             lastSync: 'Last Synchronization',
             channel: 'Distribution Channel',
             syncFavorites: 'Synchronize Favorites',
-            syncOwnTable: 'Synchronize own Table\'s Members',
+            syncOwnTable: 'Synchronize own Club\'s Members',
             sortOrder: 'Sort Order',
             displayOrder: 'Display Order',
             experiments: 'Albums & News',
@@ -684,7 +691,7 @@ const en = {
             title: 'Nearby Members',
             on: {
                 title: 'Nearby Members',
-                text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location.',
+                text: 'If you turn it on, other members can see in which city your are. We don\'t store your location history, only your last known location. This feature is currently limited to members of the same family.',
                 field: 'Share Your Location',
             },
             foreground: {
@@ -724,6 +731,11 @@ const en = {
     Component_ImagePicker: {
         nocamera: 'No camera permissions granted.',
         nogallery: 'Sorry, we need camera roll permissions to make this work.',
+    },
+
+    Screen_Families: {
+        title: 'Families',
+        associations: 'Associations',
     },
 };
 

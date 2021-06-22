@@ -9,6 +9,7 @@
 
 export interface GetCloudSettings {
   favorites: any | null;
+  favoriteClubs: any | null;
   notifications: any | null;
   nearbymembers: any | null;
   nearbymembersMap: any | null;

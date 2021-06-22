@@ -2,19 +2,22 @@ import _ from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Theme, withTheme } from 'react-native-paper';
+import { FilterTag } from '../../components/FilterSection';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { QueryFailedError } from '../../helper/QueryFailedError';
 import { SearchDirectory, SearchDirectoryVariables, SearchDirectory_SearchDirectory_nodes } from '../../model/graphql/SearchDirectory';
 import { SearchDirectoryQuery } from '../../queries/Search/SearchDirectoryQuery';
 import { logger } from './logger';
 import { StructureSearchList } from './StructureSearchList';
-import { QueryFailedError } from '../../helper/QueryFailedError';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 type State = {
 };
 
 type OwnProps = {
     theme: Theme,
+
     query: string,
+    filterTags: FilterTag[],
 
     itemSelected: (item: SearchDirectory_SearchDirectory_nodes) => void,
 };
@@ -38,6 +41,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                 variables={{
                     text: this.props.query,
                     after: null,
+                    families: this.props.filterTags.filter((f: FilterTag) => f.type === 'family').map((f: FilterTag) => f.id!),
                 }}
                 context={createApolloContext('OnlineSearchQuerybase')}
             >
@@ -62,6 +66,7 @@ class OnlineSearchQueryBase extends React.Component<Props, State> {
                                 fetchMore({
                                     variables: {
                                         text: this.props.query,
+                                        families: this.props.filterTags.filter((f: FilterTag) => f.type === 'family').map((f: FilterTag) => f.id!),
                                         after: result ? result.pageInfo.endCursor : null,
                                     },
                                     context: createApolloContext('OnlineSearchQuerybase-more'),

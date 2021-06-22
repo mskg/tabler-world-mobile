@@ -1,4 +1,4 @@
-import { ScreenOrientation } from 'expo';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React from 'react';

@@ -8,10 +8,10 @@
     },
     "Component_ErrorReport": {
         "title": "Ilmoita ongelmasta",
-        "text": "Palautteesi auttaa meitä parantamaan TABLER.APPia.",
+        "text": "Palautteesi auttaa meitä parantamaan ROUND TABLE Family.Appia.",
         "report": "Jokin ei toimi?",
         "feedback": "Joitakin toimintoja puuttuu? Sinulla on idea?",
-        "subject": "TABLER.APP Issue",
+        "subject": "ROUND TABLE Family.App Issue",
         "noMail": "Sähköpostiohjelmaa ei löytynyt.",
         "template": "Kuvaile, mitä tapahtui:",
         "language": "Kirjoitusvirheitä? Vääriä termejä? Käännös huono?"
@@ -26,7 +26,7 @@
         "accept": "Hyväksy"
     },
     "Screen_SignIn": {
-        "placeholderEMail": "etunimi.sukunimi@nnn-fi.roundtable.world",
+        "placeholderEMail": "etunimi.sukunimi@nnn-fi.{name}.world",
         "placeholderCode": "Salasanasi",
         "continue": "Kirjaudu sisään",
         "confirm": "Vahvista",
@@ -43,7 +43,8 @@
         "demo": {
             "title": "Esittelytila",
             "text": "Vahvistuksen jälkeen sovellus käynnistyy uudelleen. Esittelytilasta poistuaksesi mene Asetukset | Kirjaudu ulos."
-        }
+        },
+        "email": ""
     },
     "Screen_Pair": {
         "action": "Vaihda yhteystietoja",
@@ -65,7 +66,10 @@
         "president": "Presidentti",
         "board": "Hallitus",
         "assist": "Hallituksen toimihenkilöt",
-        "details": "Näytä klubi"
+        "details": "Näytä klubi",
+        "myassociations": "",
+        "families": "",
+        "regionalboard": ""
     },
     "Screen_Club": {
         "title": "Klubi",
@@ -92,7 +96,7 @@
         "expand": "Näytä kaikki"
     },
     "Screen_World": {
-        "title": "TABLER.WORLD",
+        "title": "Family.WORLD",
         "tab": "Online"
     },
     "Screen_Albums": {
@@ -118,12 +122,12 @@
             "cancel": "Peruutta"
         },
         "Fields": {
-            "chat": "TABLER.APP keskustelu",
+            "chat": "ROUND TABLE Family.App keskustelu",
             "home": "Kotiosoite",
             "birthday": "Syntymäpäivä",
             "partner": "Puoliso",
-            "roles": "RT virat (tänä vuonna)",
-            "rtorg": "RT Organisaatio",
+            "roles": "Virat (tänä vuonna)",
+            "rtorg": "Organisaatio",
             "companies": "Yhtiö",
             "educations": "Koulutus",
             "joined": "Liittymispäivämäärä"
@@ -145,7 +149,7 @@
         }
     },
     "EMailNames": {
-        "rt": "TABLER.WORLD",
+        "rt": "Family.WORLD",
         "home": "Yksityinen",
         "work": "Työ",
         "other": "Muu"
@@ -184,6 +188,10 @@
         "sectors": {
             "one": "Ala",
             "other": "Alat ({number})"
+        },
+        "families": {
+            "one": "",
+            "other": ""
         }
     },
     "Sectors": {
@@ -268,7 +276,7 @@
         },
         "texts": {
             "contacts": "Jäsenet voidaan synkronoida puhelimen oletusyhteystiedot -tiliin. Vaikka jäsen poistettaisiin TABLER.WORLDista tiedot säilyvät yhteystiedoissasi. Henkilön tiedot päivitetään aina kun ne päivittyvät TABLER.WORLDissa.",
-            "experiments": "Nämä ovat kokeellisia ja tuen ulkopuolisia ominaisuuksia TABLER.APPissa. Ne voivat poistua saatavilta ilman erillistä ilmoitusta. "
+            "experiments": "Nämä ovat kokeellisia ja tuen ulkopuolisia ominaisuuksia ROUND TABLE Family.Appissa. Ne voivat poistua saatavilta ilman erillistä ilmoitusta."
         },
         "contactpermissions": "Sijainti käyttöoikeudet tarvitaan tätä ominaisuutta varte. Anna lupa sijainnin käyttöön puhelimen asetuksissa.",
         "locationpermission": "Ei voida käyttää sijaintia. Anna lupa sijainnin käyttöön puhelimen asetuksissa.",
@@ -682,12 +690,16 @@
         "nogallery": "Tarvitsemme luvan kameraan tätä ominaisuutta varten."
     },
     "Permissions": {
-        "NSCameraUsageDescription": "TABLER.APP käyttää kameraa muiden jäsenten QR-koodin lukemiseen.",
-        "NSContactsUsageDescription": "TABLER.APP päivittää osoitekirjasi jäsenien tiedoilla.",
-        "NSCalendarsUsageDescription": "TABLER.APP päivittää kalenterisi tapahtumien ja syntymäpäivien tiedoilla.",
-        "NSLocationWhenInUseUsageDescription": "TABLER.APP näyttää muut jäsenet ja klubit nykyisen sijaintisi lähellä.",
-        "NSLocationAlwaysUsageDescription": "TABLER.APP seuraa sijaintiasi jotta muiden jäsenten on mahdollista ottaa sinuun yhteyttä.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "TABLER.APP seuraa sijaintiasi jotta muiden jäsenten on mahdollista ottaa sinuun yhteyttä.",
-        "NSPhotoLibraryUsageDescription": "Voit lähettää kuvia muille TABLER.APPin käyttäjille."
+        "NSCameraUsageDescription": "ROUND TABLE Family.App käyttää kameraa muiden jäsenten QR-koodin lukemiseen.",
+        "NSContactsUsageDescription": "ROUND TABLE Family.App päivittää osoitekirjasi jäsenien tiedoilla.",
+        "NSCalendarsUsageDescription": "ROUND TABLE Family.App päivittää kalenterisi tapahtumien ja syntymäpäivien tiedoilla.",
+        "NSLocationWhenInUseUsageDescription": "ROUND TABLE Family.App näyttää muut jäsenet ja klubit nykyisen sijaintisi lähellä.",
+        "NSLocationAlwaysUsageDescription": "ROUND TABLE Family.App seuraa sijaintiasi jotta muiden jäsenten on mahdollista ottaa sinuun yhteyttä.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "ROUND TABLE Family.App seuraa sijaintiasi jotta muiden jäsenten on mahdollista ottaa sinuun yhteyttä.",
+        "NSPhotoLibraryUsageDescription": "Voit lähettää kuvia muille ROUND TABLE Family.Appin käyttäjille."
+    },
+    "Screen_Families": {
+        "title": "",
+        "associations": ""
     }
 }

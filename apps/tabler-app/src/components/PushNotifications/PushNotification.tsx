@@ -118,7 +118,7 @@ export class PushNotificationBase extends React.Component<Props, State> {
         } else {
             // 2. If not leaving screen -> slide back to original position
             this.clearTimerIfExist();
-            Animated.timing(containerDragOffsetY, { toValue: 0, duration: SLIDE_DURATION })
+            Animated.timing(containerDragOffsetY, { toValue: 0, duration: SLIDE_DURATION, useNativeDriver: false })
                 .start((/*{ finished }*/) => {
                     // Reset a new countdown
                     this._countdownToSlideOut();
@@ -134,7 +134,7 @@ export class PushNotificationBase extends React.Component<Props, State> {
         const { containerScale } = this.state;
 
         Animated
-            .spring(containerScale, { toValue: 0.95, friction: 8 })
+            .spring(containerScale, { toValue: 0.95, friction: 8, useNativeDriver: false })
             .start();
     }
 
@@ -146,7 +146,7 @@ export class PushNotificationBase extends React.Component<Props, State> {
         const { containerScale } = this.state;
 
         Animated
-            .spring(containerScale, { toValue: 1, friction: 8 })
+            .spring(containerScale, { toValue: 1, friction: 8, useNativeDriver: false })
             .start();
     }
 
@@ -169,7 +169,7 @@ export class PushNotificationBase extends React.Component<Props, State> {
         const { containerSlideOffsetY } = this.state;
 
         Animated
-            .timing(containerSlideOffsetY, { toValue: 1, duration: duration || SLIDE_DURATION })
+            .timing(containerSlideOffsetY, { toValue: 1, duration: duration || SLIDE_DURATION, useNativeDriver: false })
             .start(() => {
                 this._countdownToSlideOut();
             });
@@ -188,7 +188,7 @@ export class PushNotificationBase extends React.Component<Props, State> {
         const { containerSlideOffsetY } = this.state;
 
         Animated
-            .timing(containerSlideOffsetY, { toValue: 0, duration: duration || SLIDE_DURATION })
+            .timing(containerSlideOffsetY, { toValue: 0, duration: duration || SLIDE_DURATION, useNativeDriver: false })
             .start(() => {
                 this.setState(
                     { show: false },

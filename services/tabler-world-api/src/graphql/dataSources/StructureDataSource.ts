@@ -82,7 +82,7 @@ export class StructureDataSource extends DataSource<IApolloContext> {
 
                         const res = await client.query(`
     select *
-    from structure_familes
+    from structure_families
     where
         id = ANY($1)
     `, [ids]);
@@ -210,13 +210,14 @@ where
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.debug('DB reading allAreas');
+                    this.context.logger.debug('DB reading allAreas', assoc);
 
                     const res = await client.query(`
 select *
 from structure_areas
 where
     association = $1
+    order by name
 `, [assoc]);
 
                     return res.rows;
@@ -229,19 +230,21 @@ where
     /**
      * Currently this limits the result to only the current organization of the user
      */
-    public async allAssociations() {
+    public async allAssociations(family: string) {
         return await cachedLoad(
             this.context,
-            makeCacheKey('Structure', ['associations', 'all']),
+            makeCacheKey('Structure', [family, 'associations', 'all']),
             async () => await useDatabase(
                 this.context,
                 async (client) => {
-                    this.context.logger.debug('DB reading allAssociations');
+                    this.context.logger.debug('DB reading allAssociations', family);
 
                     const res = await client.query(`
 select *
 from structure_associations
-`);
+where family = $1
+order by name
+`, [family]);
 
                     return res.rows;
                 },
@@ -264,7 +267,7 @@ from structure_associations
                     const res = await client.query(`
 select *
 from structure_families
-`);
+order by id`);
 
                     return res.rows;
                 },

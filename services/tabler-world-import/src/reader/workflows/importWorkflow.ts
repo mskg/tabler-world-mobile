@@ -5,9 +5,10 @@ import { createWriteToDatabaseHandler } from '../helper/createWriteToDatabaseHan
 import { downloadChunk } from '../helper/downloadChunk';
 import { fetchParallel } from '../helper/fetchParallel';
 import { WorkflowResult } from './workflowType';
+import { TargetTypes } from '../types/TargetType';
 
 export async function importWorkflow(
-    type: JobType,
+    type: JobType, target: TargetTypes,
     url: string, method: string, postData: any,
     limit: number, offset: number = 0, maxRecords: number = Infinity.valueOf(),
 ): Promise<WorkflowResult> {
@@ -27,7 +28,7 @@ export async function importWorkflow(
     const urlWithOffset = `${url}offset=${offset}`;
 
     // read data
-    const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(urlWithOffset, limit, method, postData);
+    const firstChunk: TablerWorldApiChunk<any> = await downloadChunk(target, urlWithOffset, limit, method, postData);
     if (firstChunk != null) {
         // we preserve the total
         totalRecords = firstChunk.total;
@@ -39,7 +40,7 @@ export async function importWorkflow(
             firstChunk.total = offset + maxRecords;
         }
 
-        await fetchParallel(firstChunk, modificationTracker, limit, method, postData);
+        await fetchParallel(target, firstChunk, modificationTracker, limit, method, postData);
     }
 
     return { processedRecords, modifications, totalRecords };

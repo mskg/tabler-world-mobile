@@ -9,6 +9,14 @@ import { RoleType, CompanySector } from "./globalTypes";
 // GraphQL query operation: OfflineMembers
 // ====================================================
 
+export interface OfflineMembers_OwnTable_family {
+  __typename: "Family";
+  id: string;
+  icon: string | null;
+  name: string;
+  shortname: string;
+}
+
 export interface OfflineMembers_OwnTable_club {
   __typename: "Club";
   id: string;
@@ -40,7 +48,6 @@ export interface OfflineMembers_OwnTable_roles_ref {
 export interface OfflineMembers_OwnTable_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: OfflineMembers_OwnTable_roles_ref;
 }
@@ -123,6 +130,7 @@ export interface OfflineMembers_OwnTable {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: OfflineMembers_OwnTable_family;
   club: OfflineMembers_OwnTable_club;
   area: OfflineMembers_OwnTable_area;
   association: OfflineMembers_OwnTable_association;
@@ -139,6 +147,14 @@ export interface OfflineMembers_OwnTable {
   educations: OfflineMembers_OwnTable_educations[] | null;
   socialmedia: OfflineMembers_OwnTable_socialmedia | null;
   sharesLocation: boolean | null;
+}
+
+export interface OfflineMembers_FavoriteMembers_family {
+  __typename: "Family";
+  id: string;
+  icon: string | null;
+  name: string;
+  shortname: string;
 }
 
 export interface OfflineMembers_FavoriteMembers_club {
@@ -172,7 +188,6 @@ export interface OfflineMembers_FavoriteMembers_roles_ref {
 export interface OfflineMembers_FavoriteMembers_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: OfflineMembers_FavoriteMembers_roles_ref;
 }
@@ -255,6 +270,7 @@ export interface OfflineMembers_FavoriteMembers {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: OfflineMembers_FavoriteMembers_family;
   club: OfflineMembers_FavoriteMembers_club;
   area: OfflineMembers_FavoriteMembers_area;
   association: OfflineMembers_FavoriteMembers_association;

@@ -3,7 +3,9 @@ import { Query } from 'react-apollo';
 import { FlatList, View } from 'react-native';
 import { Card, Paragraph, Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps } from 'react-navigation';
+import { connect } from 'react-redux';
 import { AuditedScreen } from '../../analytics/AuditedScreen';
+import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { Accordion } from '../../components/Accordion';
 import { RoleAvatarGrid } from '../../components/Club/RoleAvatarGrid';
@@ -11,21 +13,20 @@ import { withWhoopsErrorBoundary } from '../../components/ErrorBoundary';
 import { CachedImage } from '../../components/Image/CachedImage';
 import { CannotLoadWhileOffline } from '../../components/NoResults';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
+import { ReadMore } from '../../components/ReadMore';
 import { RefreshTracker } from '../../components/RefreshTracker';
 import { TapOnNavigationParams } from '../../components/ReloadNavigationOptions';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
+import { createApolloContext } from '../../helper/createApolloContext';
+import { QueryFailedError } from '../../helper/QueryFailedError';
 import { I18N } from '../../i18n/translation';
 import { Association, Association_Association } from '../../model/graphql/Association';
+import { IAppState } from '../../model/IAppState';
 import { RoleNames } from '../../model/IRole';
 import { GetAssociationQuery } from '../../queries/Structure/GetAssociationQuery';
 import { CardPlaceholder } from './CardPlaceholder';
 import { ScreenProps, StructureParams } from './StructureParams';
 import { styles } from './Styles';
-import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
-import { IAppState } from '../../model/IAppState';
-import { connect } from 'react-redux';
-import { QueryFailedError } from '../../helper/QueryFailedError';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 // const logger = new Logger(Categories.Screens.Structure);
 
@@ -67,27 +68,31 @@ class AssociationsScreenBase extends AuditedScreen<Props & ScreenProps & Navigat
     }
 
     _renderItem = ({ item, index }: { item: Association_Association, index: number }) => {
+        const presidents = item.board.filter((r) => r.role === RoleNames.President);
+        const board = item.board.filter((r) => r.role !== RoleNames.President);
+
         return (
             <Card key={item.id} style={styles.card}>
-
-                {item.logo && (
-                    <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
-                        <CachedImage
-                            style={styles.image}
-                            cacheGroup="club"
-                            uri={item.logo}
-                        />
-                    </View>
-                )}
 
                 <Card.Title
                     title={item.name}
                 />
 
-                {item.id === 'de' && (
-                    <Card.Content>
-                        <Paragraph>
-                            {`LEBENSFREUNDE
+                {item.logo && (
+                    <View style={[styles.imageContainer, { backgroundColor: this.props.theme.colors.surface }]}>
+                        <CachedImage
+                            style={styles.image}
+                            cacheGroup="association"
+                            uri={item.logo}
+                        />
+                    </View>
+                )}
+
+                {item.id === 'rti_de' && (
+                    <Card.Content style={{ paddingTop: 8, paddingBottom: 8 }}>
+                        <ReadMore maxHeight={100}>
+                            <Paragraph style={{ flex: 1 }} ellipsizeMode="tail">
+                                {`LEBENSFREUNDE
 
 Tabler sind Freunde des Lebens. Sie leben gern und sind sich bewusst, dass es vielen nicht so gut geht. Sie möchten ihre Lebensfreude teilen mit jenen, die nicht so viel Glück hatten oder haben.
 
@@ -96,19 +101,41 @@ Tabler sind Freunde fürs Leben. Sie haben Freunde auf der ganzen Welt, völlig 
 #weilwirdasmachen
 #lebensfreunde
 #tableraufreisen`}
-                        </Paragraph>
+                            </Paragraph>
+                        </ReadMore>
                     </Card.Content>
                 )}
 
-                {item.board.length > 0 && (
+                {item.id === 'c41_de' && (
+                    <Card.Content style={{ paddingTop: 8, paddingBottom: 8 }}>
+                        <ReadMore maxHeight={100}>
+                            <Paragraph style={{ flex: 1 }} ellipsizeMode="tail">
+                                {`Ziele von Old Tablers Deutschland
+
+Im Bewusstsein der Leitworte „unite, maintain, promote“ verfolgt „Old Tablers Deutschland” (OTD) folgende Ziele:
+
+1. Gewinnung, Erhalt und Förderung nationaler und internationaler Freundschaften gemäß des Leitgedankens „Wir sind Tabler“.
+
+2. Beibehaltung hoher Ideale im beruflichen und gesellschaftlichen Leben, im Bekenntnis zu Freiheit, Gerechtigkeit, Solidarität und Toleranz.
+
+3. Unterstützung der Aktivitäten von Round Table Deutschland und den dort zusammengeschlossenen Tischen sowie befreundeter Vereinigungen im Bewusstsein der Verantwortung gegenüber der Allgemeinheit.
+
+4. Wahrung, Stärkung und Förderung der Freundschaft zu Round Table Deutschland und Verbreitung von Old Tablers und Round Table in ganz Deutschland.`}
+                            </Paragraph>
+                        </ReadMore>
+                    </Card.Content>
+                )
+                }
+
+                {presidents.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Screen_Structure.president} expanded={index === 0}>
-                        <RoleAvatarGrid roles={item.board.filter((r) => r.role === RoleNames.President)} items={1} />
+                        <RoleAvatarGrid roles={presidents} items={1} />
                     </Accordion>
                 )}
 
-                {item.board.length > 0 && (
+                {board.length > 0 && (
                     <Accordion style={styles.accordeon} title={I18N.Screen_Structure.board} expanded={false}>
-                        <RoleAvatarGrid roles={item.board.filter((r) => r.role !== RoleNames.President)} items={2} />
+                        <RoleAvatarGrid roles={board} items={2} />
                     </Accordion>
                 )}
 

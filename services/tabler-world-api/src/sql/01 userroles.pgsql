@@ -11,7 +11,8 @@ WITH (
 );
 
 INSERT INTO userroles (id, roles) VALUES
-    (14225, ARRAY['jobs', 'developer', 'i18n', 'locationhistory'])
+    (14225, ARRAY['jobs', 'developer', 'i18n', 'locationhistory']),
+    (336775, ARRAY['jobs', 'developer', 'i18n', 'locationhistory'])
 
 ON CONFLICT (id)
 DO

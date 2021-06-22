@@ -1,4 +1,4 @@
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import { AppStateStatus } from 'react-native';
 import { put } from 'redux-saga/effects';
 import { updateAvailable } from '../../redux/actions/state';

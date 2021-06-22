@@ -4,7 +4,7 @@ import { getReduxStore } from '../redux/getRedux';
 import { isAuthenticationError } from './isAuthenticationError';
 import { logger } from './logger';
 
-export async function getCurrentIdentity(): Promise<string> {
+export async function getCurrentIdentity(): Promise<string> {    
     try {
         const session = await Auth.currentSession();
         await Auth.currentCredentials();
@@ -21,6 +21,7 @@ export async function getCurrentIdentity(): Promise<string> {
             getReduxStore().dispatch(logoutUser());
         }
 
+        logger.error('current-identity', e);
         throw e;
     }
 }

@@ -106,6 +106,7 @@ export class SwipableItem extends React.Component<Props, States> {
                         dx: this.state.panDistance.x,
                     },
                 ],
+                { useNativeDriver: false },
             ),
 
             onPanResponderRelease: (_evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
@@ -148,6 +149,7 @@ export class SwipableItem extends React.Component<Props, States> {
                 y: 0,
             },
             friction: 10,
+            useNativeDriver: false,
         }).start();
     }
 

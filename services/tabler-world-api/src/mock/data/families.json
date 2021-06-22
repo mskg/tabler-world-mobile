@@ -1,0 +1,17 @@
+[
+    {
+        "id": "rti",
+        "name": "Round Table International",
+        "shortname": "RTI"
+    },
+    {
+        "id": "lci",
+        "name": "Ladies Circle International",
+        "shortname": "LCI"
+    },
+    {
+        "id": "c41",
+        "name": "41 International",
+        "shortname": "41I"
+    }
+]

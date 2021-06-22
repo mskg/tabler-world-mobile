@@ -10,6 +10,12 @@ export const DirectoryFragments = gql`
         id
         name
         flag
+
+        family {
+          id
+          name
+          shortname
+        }
       }
     }
 
@@ -20,14 +26,20 @@ export const DirectoryFragments = gql`
       clubnumber
 
       association {
-          id
-          name
-          flag
+        id
+        name
+        flag
       }
 
       area {
-          id
-          name
+        id
+        name
+      }
+
+      family {
+        id
+        name
+        shortname
       }
     }
 
@@ -37,5 +49,11 @@ export const DirectoryFragments = gql`
       logo
       shortname
       flag
+
+      family {
+        id
+        name
+        shortname
+      }
     }
 `;

@@ -1,6 +1,6 @@
+import { NetInfoStateType } from '@react-native-community/netinfo';
 import { CallApps, MailApps, MessagingApps, WebApps } from '../helper/LinkingHelper';
 import { IAppState } from '../model/IAppState';
-import { NetInfoStateType } from '@react-native-community/netinfo';
 
 // tslint:disable-next-line: export-name
 export const INITIAL_STATE: IAppState = {
@@ -25,6 +25,7 @@ export const INITIAL_STATE: IAppState = {
         state: 'signin',
         username: undefined,
         signinState: undefined,
+        accentColor: 'rti',
     },
 
     location: {
@@ -64,6 +65,10 @@ export const INITIAL_STATE: IAppState = {
             showAssociationBoard: false,
 
             area: [],
+            favorites: {},
+        },
+
+        club: {
             favorites: {},
         },
     },

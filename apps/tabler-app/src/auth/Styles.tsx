@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
     headingImage: {
         width: '100%',
         height: 100,
+        marginLeft: -8,
     },
 
     errorMessage: {
@@ -32,7 +33,7 @@ export const styles = StyleSheet.create({
 
     inputContainer: {
         // maxHeight: 50,
-        marginTop: 20,
+        marginTop: 10,
 
         flexDirection: 'column',
         marginBottom: 16,
@@ -55,7 +56,8 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
 
-        marginBottom: 40,
+        marginTop: 20,
+        marginBottom: 30,
     },
 
     container: {
@@ -69,7 +71,8 @@ export const styles = StyleSheet.create({
     greeting: {
         marginTop: 20,
     },
+
     greeting2: {
-        marginTop: 5,
+        marginTop: 10,
     },
 });
