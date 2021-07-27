@@ -241,14 +241,23 @@ export const ChatResolver = {
                 members.values);
 
             return anyMembers.map((m) => {
+                if (m == null) {
+                    return {
+                        id: -1,
+                        firstname: 'Removed',
+                        lastname: 'Unknown',
+                    };
+                }
+
                 // only in this case, we return
                 if (m.removed) {
                     context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member-conversation' });
 
                     return {
                         id: m.id,
-                        firstname: m.firstname,
-                        lastname: m.lastname,
+                        firstname: m.firstname || 'Removed',
+                        lastname: m.lastname || 'Unknown',
+
                         iscallingidentity: m.id === context.principal.id,
                     };
                 }
