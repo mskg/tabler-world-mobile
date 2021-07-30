@@ -61,6 +61,9 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
+const UNKNONW_FIRST = 'Unknown';
+const UNKNONW_LAST = '(Removed)';
+
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
 export const ChatResolver = {
@@ -208,11 +211,15 @@ export const ChatResolver = {
             const members = result ? result.members : null;
             if (!members || members.values.length === 0) { return null; }
 
-            // const values = ;
-            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+            let anyMembers = await context.dataSources.members.readManyWithAnyStatus(
                 members.values.filter((v) => v !== context.principal.id));
 
-            return anyMembers.length > 0 ? anyMembers[0].pic : null;
+            // cloud have been removed
+            anyMembers = anyMembers.filter((m) => m != null);
+
+            return anyMembers.length > 0
+                ? anyMembers[0].pic
+                : null;
         },
 
         subject: async (root: { id: string }, _args: {}, context: IApolloContext) => {
@@ -220,13 +227,17 @@ export const ChatResolver = {
 
             const result = await context.dataSources.conversations.readConversation(channel);
             const members = result ? result.members : null;
-            if (!members || members.values.length === 0) { return 'Unknown'; }
+            if (!members || members.values.length === 0) { return UNKNONW_FIRST; }
 
-            // const values = ;
-            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+            let anyMembers = await context.dataSources.members.readManyWithAnyStatus(
                 members.values.filter((v) => v !== context.principal.id));
 
-            return anyMembers.length > 0 ? `${anyMembers[0].firstname} ${anyMembers[0].lastname}` : 'Unkown';
+            // cloud have been removed
+            anyMembers = anyMembers.filter((m) => m != null);
+
+            return anyMembers.length > 0
+                ? `${anyMembers[0].firstname} ${anyMembers[0].lastname}`
+                : `${UNKNONW_FIRST} ${UNKNONW_LAST}`;
         },
 
         participants: async (root: { id: string }, _args: {}, context: IApolloContext) => {
@@ -244,8 +255,8 @@ export const ChatResolver = {
                 if (m == null) {
                     return {
                         id: -1,
-                        firstname: 'Removed',
-                        lastname: 'Unknown',
+                        firstname: UNKNONW_FIRST,
+                        lastname: UNKNONW_LAST,
                     };
                 }
 
@@ -255,8 +266,8 @@ export const ChatResolver = {
 
                     return {
                         id: m.id,
-                        firstname: m.firstname || 'Removed',
-                        lastname: m.lastname || 'Unknown',
+                        firstname: m.firstname || UNKNONW_FIRST,
+                        lastname: m.lastname || UNKNONW_LAST,
 
                         iscallingidentity: m.id === context.principal.id,
                     };
