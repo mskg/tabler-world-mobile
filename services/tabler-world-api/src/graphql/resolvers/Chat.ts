@@ -62,7 +62,7 @@ type ChatMessageWithTransport = {
 } & ChatMessage;
 
 const UNKNONW_FIRST = 'Unknown';
-const UNKNONW_LAST = '(Removed)';
+const UNKNONW_LAST = 'Removed';
 
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
@@ -257,6 +257,7 @@ export const ChatResolver = {
                         id: -1,
                         firstname: UNKNONW_FIRST,
                         lastname: UNKNONW_LAST,
+                        iscallingidentity: false,
                     };
                 }
 
@@ -450,6 +451,8 @@ export const ChatResolver = {
                 throw new Error('You cannot chat with yourself.');
             }
 
+            // TODO: we need to check if the other side exists
+
             const id = ConversationManager.MakeConversationKey(context.principal.id, args.member);
 
             // // if we read a cached value here we could end up with non conversation
@@ -496,6 +499,8 @@ export const ChatResolver = {
                     throw new Error('Access denied.');
                 }
             }
+
+            // TODO: we need to check, if the conversation is still valid
 
             const trigger = decodeIdentifier(message.conversationId);
             const text = message.text || 'New message';
