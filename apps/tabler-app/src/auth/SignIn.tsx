@@ -1,6 +1,8 @@
 import Auth from '@aws-amplify/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { UrlParameters } from '@mskg/tabler-world-config-app';
+import { Buffer } from 'buffer';
+import * as Random from 'expo-random';
 import * as Updates from 'expo-updates';
 import _ from 'lodash';
 import React from 'react';
@@ -8,7 +10,6 @@ import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View }
 import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import { connect } from 'react-redux';
-import uuid4 from 'uuid4';
 import { ActionNames } from '../analytics/ActionNames';
 import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
@@ -94,8 +95,12 @@ class SignInBase extends AuditedScreen<Props, State> {
     }
 
     async getRandomString(_bytes: number) {
-        // TOOD: will move to cryto in expo v33
-        return uuid4();
+        const bytes = await Random.getRandomBytesAsync(_bytes);
+
+        const password = Buffer.from(bytes).toString('base64');
+        logger.log('>>>', password);
+
+        return password;
     }
 
     componentDidMount() {

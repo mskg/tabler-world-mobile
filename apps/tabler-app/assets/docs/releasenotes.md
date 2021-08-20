@@ -1,3 +1,8 @@
+# v1.5 - Update 1
+
+## Fixes
+- Fixed an issue that prevented some Android users from beeing able to create a new user account.
+
 # v1.5
 - Round Table Family version
 
