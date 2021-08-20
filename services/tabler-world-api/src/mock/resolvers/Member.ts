@@ -25,7 +25,7 @@ export const Member = (root?: any, args?: any, context?: any, _info?: any) => {
         firstname: member.first,
         lastname: member.last,
         pic: member.pic && pictures.length > memberId
-            ? `https://cdn.fakercloud.com/avatars/${(pictures[memberId]}`
+            ? `https://cdn.fakercloud.com/avatars/${pictures[memberId]}`
             : undefined,
 
         birthdate: () => faker.datatype.boolean() ? faker.date.past(30).toISOString() : null,
