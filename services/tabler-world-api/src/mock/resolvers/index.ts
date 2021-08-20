@@ -51,7 +51,7 @@ export const rootResolver = {
             .value(),
 
         nearbyMembers: () => new MockList(
-            faker.random.number({ min: 5, max: 20 }),
+            faker.datatype.number({ min: 5, max: 20 }),
         ),
 
         Roles,
