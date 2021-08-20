@@ -301,4 +301,5 @@ stages:
             applicationId: '$(APP_ANDROID_PACKAGE)'
             bundleFile: $(PIPELINE.WORKSPACE)/android/app.aab
             changeLogFile: $(PIPELINE.WORKSPACE)/commit/commit.txt
+            track: 'internal'
             changesNotSentForReview: true
