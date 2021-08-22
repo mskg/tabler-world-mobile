@@ -1,6 +1,6 @@
 import { UrlParameters } from '@mskg/tabler-world-config-app';
 import * as Contacts from 'expo-contacts';
-import { Image, Platform } from 'react-native';
+import { Image } from 'react-native';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Member_Member } from '../../model/graphql/Member';
@@ -20,11 +20,11 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
 
         [Contacts.Fields.Company]: member.association.name,
 
-        // android does not display department, we abuse title
-        [Contacts.Fields.JobTitle]: Platform.select({
-            ios: '',
-            android: member.club.name,
-        }),
+        // // android does not display department, we abuse title
+        // [Contacts.Fields.JobTitle]: Platform.select({
+        //     ios: '',
+        //     android: member.club.name,
+        // }),
 
         [Contacts.Fields.Department]: member.club.name,
         [Contacts.Fields.ContactType]: Contacts.ContactTypes.Person,
