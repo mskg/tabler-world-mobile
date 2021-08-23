@@ -269,14 +269,14 @@ stages:
         - script: |
             sudo xcode-select -s $(XCODE_VERSION)
 
-        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+        - task: AppStoreRelease@1
           displayName: 'Publish to the App Store TestFlight track'
           inputs:
             serviceEndpoint: 'Store ovfoundation Key'
             appIdentifier: '$(APP_IOS_BUNDLE)'
             # appSpecificId: $(APPLE_APP_ID)
             ipaPath: $(PIPELINE.WORKSPACE)/ios/app.ipa
-            releaseNotes: $(PIPELINE.WORKSPACE)/commit/commit.txt
+            releaseNotes: 
 
             # fastlaneToolsVersion: 'SpecificVersion'
             # fastlaneToolsSpecificVersion: '2.183.2'
@@ -295,11 +295,10 @@ stages:
         - script: |
             sudo xcode-select -s $(XCODE_VERSION)
 
-        - task: ms-vsclient.google-play.google-play-release-bundle.GooglePlayReleaseBundle@3
+        - task: GooglePlayReleaseBundle@3
           inputs:
             serviceConnection: 'Google Play Store'
             applicationId: '$(APP_ANDROID_PACKAGE)'
-            bundleFile: $(PIPELINE.WORKSPACE)/android/app.aab
-            changeLogFile: $(PIPELINE.WORKSPACE)/commit/commit.txt
+            bundleFile: '$(PIPELINE.WORKSPACE)/android/app.aab'
+            changeLogFile: '$(PIPELINE.WORKSPACE)/commit/commit.txt'
             track: 'internal'
-            changesNotSentForReview: true
