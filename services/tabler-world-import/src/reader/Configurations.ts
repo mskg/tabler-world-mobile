@@ -87,6 +87,7 @@ export const CONFIGURATIONS: configType = {
             workflow: importWorkflow,
             payload: () => {
                 const date = new Date();
+                date.setDate(date.getDate() - 1); // 1 day back
 
                 return JSON.stringify({
                     operator: 'AND',
