@@ -32,7 +32,7 @@
         "@types/node": "^13.7.2",
         "@types/redis": "^2.8.16",
         "@types/uuid": "^3.4.7",
-        "aws-sdk": "^2.621.0",
+        "aws-sdk": "^2.814.0",
         "typescript": "3.7.5"
     }
 }

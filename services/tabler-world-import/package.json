@@ -35,7 +35,7 @@
         "@types/node": "^13.7.2",
         "@types/node-geocoder": "^3.19.1",
         "@types/pg": "^7.14.1",
-        "aws-sdk": "^2.621.0",
+        "aws-sdk": "^2.814.0",
         "file-loader": "^5.0.2",
         "ntl": "^5.0.0",
         "@types/ioredis": "^4.14.8",

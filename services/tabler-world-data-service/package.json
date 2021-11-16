@@ -16,7 +16,7 @@
         "@types/aws-lambda": "^8.10.42",
         "@types/node": "^13.7.2",
         "@types/pg": "^7.14.1",
-        "aws-sdk": "^2.621.0",
+        "aws-sdk": "^2.814.0",
         "file-loader": "^5.0.2",
         "ntl": "^5.0.0",
         "serverless": "^1.64.0",
