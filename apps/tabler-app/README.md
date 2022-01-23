@@ -13,6 +13,13 @@
 
 If you want to use the locaal
 
+## Manually install iOS Simulator
+1. Check https://expo.io/--/api/v2/versions
+1. download `curl https://expo.io/--/api/v2/versions | jq '.sdkVersions | ."40.0.0" | .iosClientUrl'` where `40.0.0` is the desired SDK
+1. Extract tgz
+1. `open -a simulator`
+1. `xcrun simctl install booted /path/to/tgz` 
+
 ## Android Emulator
 
 1. Download https://developer.android.com/studio#downloads

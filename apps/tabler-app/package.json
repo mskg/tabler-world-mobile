@@ -9,7 +9,7 @@
         "start": "ntl",
         "bump-cli": "yarn add expo-cli --dev",
         "licenses": "license-checker --production --json | node config/3rdparty.js > ./assets/docs/licenses.md",
-        "config:aws": "bash -c 'source ~/.bashrc && aws cloudformation list-exports > ./config/aws.json'",
+        "config:aws": "aws cloudformation list-exports > ./config/aws.json",
         "config": "yarn run config:aws && yarn run config:app",
         "config:app": "run-env node config/create.js",
         "dev": "yarn expo start",

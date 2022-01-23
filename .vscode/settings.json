@@ -34,28 +34,6 @@
     "[yaml]": {
         "editor.tabSize": 2
     },
-    "todohighlight.include": [
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.ts",
-        "**/*.tsx"
-    ],
-    "redisXplorer.config": {
-        "profiles": [
-            {
-                "name": "prod",
-                "host": "localhost",
-                "accessKey": "",
-                "filter": "test*",
-                "port": "6380"
-            }
-        ],
-        "scanLimit": 200
-    },
-    "redis-console.host": "localhost",
-    "redis-console.port": 6379,
-    "redis-console.password": "",
-    "redis-console.hostIpFamily": 4,
     "files.autoSaveDelay": 10000,
     "files.autoSave": "onFocusChange"
 }
