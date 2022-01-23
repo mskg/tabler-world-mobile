@@ -9,7 +9,6 @@
         // Use -bullseye variants on local on arm64/Apple Silicon.
         "args": {
             "VARIANT": "16-bullseye",
-            "TARGETPLATFORM": "arm64"
         }
     },
     // Set *default* container specific settings.json values on container create.

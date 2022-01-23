@@ -26,9 +26,9 @@ WORKDIR /workspaces
 ARG TARGETPLATFORM
 
 # we need to rebuild sqllite drivers if we are on mac m1 aarch64
-ARG TARGETPLATFORM="arm64"
+ARG TARGETPLATFORM="linux/amd64"
 COPY patch.properties /workspaces/sqllite_patch.properties
-RUN if [ "$TARGETPLATFORM" = "arm64" ]; then \
+RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
     echo "**** build tools ****" \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y gant gcc swig git wget openjdk-11-jdk-headless \
