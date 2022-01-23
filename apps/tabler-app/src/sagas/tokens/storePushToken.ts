@@ -1,7 +1,7 @@
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { select, take } from 'redux-saga/effects';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { AddToken, AddTokenVariables } from '../../model/graphql/AddToken';

@@ -12,7 +12,7 @@ export const ChatMessage = (root?: any, args?: any, context?: any, _info?: any) 
         context.messageId = messageId + 1; // we preserve it for iteration
     }
 
-    const member = Member({ member: faker.random.boolean() ? 1 : 3 });
+    const member = Member({ member: faker.datatype.boolean() ? 1 : 3 });
 
     return {
         id: messageId,

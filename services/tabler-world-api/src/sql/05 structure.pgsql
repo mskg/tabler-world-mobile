@@ -52,9 +52,13 @@ select
         ),
         data->>'parent_subdomain'
      ) as area
-	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
+--	,cast(regexp_replace(data->>'subdomain','[^0-9]+','','g') as integer) clubnumber
+    ,cast(coalesce(nullif(regexp_replace(data->>'subdomain','[^0-9]+','','g'), ''), '0') as integer) clubnumber
     ,data->>'name' as name
-    ,make_short_reference('club', id) as shortname
+    ,make_short_reference(
+        make_key_family(data->>'hostname'),
+        'club', id
+    ) as shortname
     ,data->>'website' as website
 	,jsonb_strip_nulls(jsonb_build_object(
         'name',
@@ -78,7 +82,7 @@ select
     ,NULLIF(data->>'logo', (
         select data->>'logo'
         from associations
-        where id = make_key_association(make_key_family(clubs.data->>'hostname'), clubs.data->>'parent_subdomain')
+        where id = make_key_association(make_key_family(active_clubs.data->>'hostname'), active_clubs.data->>'parent_subdomain')
     )) as logo
     ,(
         select jsonb_object_agg(map_club_keys(rr->>'key'), rr->>'value')
@@ -114,7 +118,7 @@ select
                     profiles.id = structure_tabler_roles.id
                 and removed = false
                 and reftype = 'club'
-                and refid = clubs.id
+                and refid = active_clubs.id
                 and groupname = 'Board'
         ) r
     ) as board
@@ -128,7 +132,7 @@ select
                     profiles.id = structure_tabler_roles.id
                 and removed = false
                 and reftype = 'club'
-                and refid = clubs.id
+                and refid = active_clubs.id
                 and groupname = 'Board Assistants'
         ) r
     ) as boardAssistants
@@ -144,20 +148,17 @@ select
                     profiles.id = structure_tabler_roles.id
                 and removed = false
                 and reftype = 'club'
-                and refid = clubs.id
+                and refid = active_clubs.id
                 and groupname = 'Members'
                 and functionname = 'Member'
             )
     ) as members
-from clubs
-where
-        data->>'rt_status' = 'active'
-    or data->>'rt_status' = 'formation'
-    or data->>'rt_status' = 'preparation'
+from active_clubs
 order by 2, 3, 6;
 
-create unique index idx_structure_club_assoc_club on
-structure_clubs (association, clubnumber);
+-- not unique anymore due to C41 data
+-- create unique index idx_structure_club_assoc_club on
+-- structure_clubs (association, clubnumber);
 
 create unique index idx_structure_club_id on
 structure_clubs (id);
@@ -170,12 +171,16 @@ CREATE MATERIALIZED VIEW structure_areas
 as
 select
 	id
+    ,make_key_family(data->>'hostname') as family
     ,make_key_association(
         make_key_family(data->>'hostname'),
         data->>'parent_subdomain'
      ) as association
     ,data->>'name' as name
-    ,make_short_reference('area', id) as shortname
+    ,make_short_reference(
+        make_key_family(data->>'hostname'),
+        'area', id
+    ) as shortname
     ,(
         select to_jsonb(array_to_json(array_agg(r)))
         from
@@ -220,13 +225,20 @@ CREATE MATERIALIZED VIEW structure_associations
 as
 select
     id
-    ,data->>'parent_subdomain' as family
+    ,case
+        when data->>'parent_subdomain' = '41int' then 'c41'
+        else data->>'parent_subdomain'
+    end as family
     ,data->>'name' as name
     ,case
         when data->>'logo' = 'https://static.roundtable.world/static/images/logo/rti-large.png' then null
         else data->>'logo'
      end as logo
-    ,make_short_reference('assoc', id) as shortname
+    ,make_short_reference(
+        case
+            when data->>'parent_subdomain' = '41int' then 'c41'
+            else data->>'parent_subdomain'
+        end, 'assoc', id) as shortname
    ,(
        select url
        from assets
@@ -283,6 +295,71 @@ CREATE MATERIALIZED VIEW structure_families
 as
 select
     id
+    ,(
+       select url
+       from assets
+       where
+            type = 'family_logo'
+        and assets.id = families.id
+    ) as logo
+    ,(
+       select url
+       from assets
+       where
+            type = 'family_icon'
+        and assets.id = families.id
+    ) as icon
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname = 'Board'
+                and functionname not ilike '%regional chairman%'
+        ) r
+        ) as board
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname = 'Board Assistants'
+                and functionname not ilike '%regional chairman%'
+        ) r
+    ) as boardAssistants
+    ,(
+        select to_jsonb(array_to_json(array_agg(r)))
+        from
+        (
+            select structure_tabler_roles.id as member, functionname as role
+            from structure_tabler_roles, profiles
+            where
+                    structure_tabler_roles.id = profiles.id
+                and removed = false
+                and reftype = 'family'
+                and refid = families.id
+                and groupname in ('Board Assistants', 'Board')
+                and functionname ilike '%regional chairman%'
+        ) r
+    ) as regionalboard
+    ,(
+        select array_agg(id)
+        from structure_associations
+        where
+                family = families.id
+    ) as associations
 from families;
 
 create unique index idx_structure_families_id on

@@ -1,4 +1,4 @@
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 import { Audit } from '../analytics/Audit';
 import { AuditEventName } from '../analytics/AuditEventName';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';

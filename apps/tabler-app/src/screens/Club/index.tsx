@@ -7,7 +7,7 @@ import { AuditPropertyNames } from '../../analytics/AuditPropertyNames';
 import { AuditScreenName } from '../../analytics/AuditScreenName';
 import { AnimatedHeader } from '../../components/AnimatedHeader';
 import { ClubAvatar } from '../../components/ClubAvatar';
-import { withWhoopsErrorBoundary, withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
+import { withGoHomeErrorBoundary } from '../../components/ErrorBoundary';
 import { AvatarPopup } from '../../components/Profile/AvatarPopup';
 import { MEMBER_HEADER_HEIGHT, MEMBER_HEADER_SCROLL_HEIGHT } from '../../components/Profile/Dimensions';
 import { ProfileHeader } from '../../components/Profile/Header';
@@ -58,7 +58,11 @@ class ClubBase extends AuditedScreen<Props> {
                 avatar={club ? (
                     <AvatarPopup title={I18N.Screen_Image.title_Club} pic={club.logo}>
                         <AnimatedAvatar
-                            label={club.clubnumber}
+                            label={
+                                club.clubnumber !== 0
+                                    ? club.clubnumber
+                                    : club.displayname.substring(0, 2).toUpperCase()
+                            }
                             source={club.logo}
                         />
                     </AvatarPopup>
@@ -67,8 +71,8 @@ class ClubBase extends AuditedScreen<Props> {
 
                 loading={club == null}
                 title={club ? club.name : undefined}
-                line1={club ? club.association.name : undefined}
-                line2={club ? club.area.name : undefined}
+                line1={club ? club.area.name : undefined}
+                line2={club ? `${club.association.name}, ${club.family.name}` : undefined}
 
                 distance={distance}
                 scrollY={scrollY}

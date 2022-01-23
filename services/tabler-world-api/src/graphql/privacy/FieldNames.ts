@@ -17,12 +17,17 @@ export enum FieldNames {
 
 // tslint:disable-next-line: variable-name
 export const system_fields = [
-    'id',
-    'family',
-    'area', 'areaname', 'areashortname',
-    'association', 'associationname', 'associationshortname', 'associationflag',
-    'club', 'clubnumber', 'clubname', 'clubshortname',
+    FieldNames.Id,
+
+    FieldNames.Family,
+    FieldNames.Area, 'areaname', 'areashortname',
+    FieldNames.Association, 'associationname', 'associationshortname', 'associationflag',
+    FieldNames.Club, 'clubnumber', 'clubname', 'clubshortname',
+
     'roles', 'modifiedon',
+
+    // need to add this to be able to use it later
+    FieldNames.AllFamiliesOptIn,
 ];
 
 // tslint:disable-next-line: variable-name
@@ -32,11 +37,13 @@ export const standard_fields = [
 
 // tslint:disable-next-line: variable-name
 export const former_fields = [
-    'id',
-    'family',
-    'area', 'areaname', 'areashortname',
-    'association', 'associationname', 'associationshortname', 'associationflag',
-    'club', 'clubnumber', 'clubname', 'clubshortname',
+    FieldNames.Id,
+
+    FieldNames.Family,
+    FieldNames.Area, 'areaname', 'areashortname',
+    FieldNames.Association, 'associationname', 'associationshortname', 'associationflag',
+    FieldNames.Club, 'clubnumber', 'clubname', 'clubshortname',
+
     'firstname', 'lastname',
     'removed',
 ];

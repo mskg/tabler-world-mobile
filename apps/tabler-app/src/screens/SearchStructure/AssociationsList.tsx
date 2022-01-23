@@ -8,12 +8,12 @@ import { Circle } from '../../components/Placeholder/Circle';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { TextImageAvatar } from '../../components/TextImageAvatar';
 import { withCacheInvalidation } from '../../helper/cache/withCacheInvalidation';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { I18N } from '../../i18n/translation';
 import { Assocations } from '../../model/graphql/Assocations';
 import { IAppState } from '../../model/IAppState';
 import { GetAssociationsQuery } from '../../queries/Structure/GetAssociationsQuery';
 import { showAssociation } from '../../redux/actions/navigation';
-import { createApolloContext } from '../../helper/createApolloContext';
 
 type OwnProps = {
     navigation: any,
@@ -51,7 +51,7 @@ class AssociationsListBase extends React.Component<Props> {
                 <View
                     style={styles.container}
                 >
-                    <List.Subheader>{I18N.Screen_Structure.associations}</List.Subheader>
+                    <List.Subheader>{I18N.Screen_Structure.myassociations}</List.Subheader>
                     <TouchableRipple onPress={this._toggle}>
                         <Caption style={{ color: this.props.theme.colors.accent }}>{this.state.expanded ? I18N.Screen_Search.collapse : I18N.Screen_Search.expand}</Caption>
                     </TouchableRipple>
@@ -116,7 +116,7 @@ class AssociationsListBase extends React.Component<Props> {
                                                         source={r.flag}
                                                         size={48}
                                                     />
-                                                    <Caption numberOfLines={1}>{r.name.replace(/RT\s/ig, '')}</Caption>
+                                                    <Caption numberOfLines={1}>{r.name.replace(/^(41|RT|LC)\s/ig, '').trim()}</Caption>
                                                 </View>
                                             </TouchableRipple>
                                         ))}

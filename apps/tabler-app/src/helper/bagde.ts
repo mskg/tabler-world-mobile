@@ -1,4 +1,4 @@
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { allowsPushNotifications } from './allowsPushNotifications';
 import { Logger, Categories } from './Logger';
@@ -11,7 +11,7 @@ export async function setBadgeNumber(val: number) {
         if (Platform.OS === 'ios') {
             const notifications = await allowsPushNotifications();
             if (notifications) {
-                await Notifications.setBadgeNumberAsync(0);
+                await Notifications.setBadgeCountAsync(0);
             }
         }
     } catch (e) {
@@ -24,7 +24,7 @@ export async function getBadgeNumber(): Promise<number | undefined> {
         const notifications = await allowsPushNotifications();
 
         if (notifications) {
-            return await Notifications.getBadgeNumberAsync();
+            return await Notifications.getBadgeCountAsync();
         }
     }
 

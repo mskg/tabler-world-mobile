@@ -1,4 +1,5 @@
-import { AppStateStatus, AsyncStorage } from 'react-native';
+import { AppStateStatus } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { getAppLanguage } from '../../i18n/getAppLanguage';
 import { bootstrapLanguage } from '../../i18n/bootstrapLanguage';
 import { refreshLanguageFile } from '../../i18n/override/refreshLanguageFile';

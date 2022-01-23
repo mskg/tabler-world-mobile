@@ -9,7 +9,7 @@ export function useDataService<T>(
 ): Promise<T> {
     return func(new LambdaClient(
         context.logger,
-        context.logLevel === 'debug',
+        context.sqlLogLevel === 'debug',
         context.metrics,
     ));
 }

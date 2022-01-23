@@ -1,7 +1,8 @@
 import { Family } from '@mskg/tabler-world-auth-client';
 import { AuditAction } from '@mskg/tabler-world-common';
 import _ from 'lodash';
-import { byVersion, v12Check } from '../helper/byVersion';
+import { byVersion, olderEqualV12 } from '../helper/byVersion';
+import { fixC41AssociationName } from '../helper/fixC41AssociationName';
 import { SECTOR_MAPPING } from '../helper/Sectors';
 import { IApolloContext } from '../types/IApolloContext';
 
@@ -24,9 +25,16 @@ type MemberFilter = {
         // deprectated
         areas?: number[],
         byArea?: string[],
+        // clubs?: string[],
 
         nationalBoard?: boolean,
         areaBoard?: boolean,
+    },
+};
+
+type FavoritesFilter = {
+    filter?: {
+        includeClubs?: boolean,
     },
 };
 
@@ -42,41 +50,20 @@ export const MemberResolver = {
             return id;
         },
 
-        area: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                id: root.area,
-                association: root.association,
-                name: root.areaname,
-                shortname: root.areashortname,
-            };
+        area: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getArea(root.area);
         },
 
-        club: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                id: root.club,
-                // -- DEPRECATED --
-                club: root.clubnumber,
-                clubnumber: root.clubnumber,
-                name: root.clubname,
-                shortname: root.clubshortname,
-                association: root.association,
-                area: root.area,
-            };
+        club: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getClub(root.club);
         },
 
-        association: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                name: root.associationname,
-                id: root.association,
-                shortname: root.associationshortname,
-                flag: root.associationflag,
-            };
+        association: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getAssociation(root.association);
         },
 
-        family: (root: any, _args: {}, _context: IApolloContext) => {
-            return {
-                id: root.family,
-            };
+        family: (root: any, _args: {}, context: IApolloContext) => {
+            return context.dataSources.structure.getFamily(root.family);
         },
 
         // only deliver it, if it contains usable data
@@ -94,15 +81,17 @@ export const MemberResolver = {
     // compatibility
     RoleRef: {
         name: (root: any, _args: any, context: IApolloContext) => {
-            return byVersion({
+            const originalName = byVersion({
                 context,
-                mapVersion: v12Check,
+                mapVersion: olderEqualV12,
 
                 versions: {
                     old: () => root.shortname,
                     default: () => root.name,
                 },
             });
+
+            return fixC41AssociationName(originalName);
         },
     },
 
@@ -183,15 +172,21 @@ export const MemberResolver = {
                     }
                 }
 
-                return result.length > 0 ? _.uniqBy(result, (m) => m.id) : [];
+                // need to filter null results
+                return result.length > 0 ? _.uniqBy(result.filter((f) => f), (m) => m.id) : [];
             }
 
             return context.dataSources.members.readAll(context.principal.association);
         },
 
-        FavoriteMembers: async (_root: any, _args: MemberFilter, context: IApolloContext) => {
-            const favorites = await context.dataSources.members.readFavorites();
-            return favorites ? favorites.filter((f) => f != null) : [];
+        FavoriteMembers: async (_root: any, args: FavoritesFilter, context: IApolloContext) => {
+            const favorites = await context.dataSources.members.readFavorites(
+                args?.filter?.includeClubs === true,
+            );
+
+            return favorites
+                ? favorites.filter((f) => f != null)
+                : [];
         },
 
         OwnTable: async (_root: any, _args: MemberFilter, context: IApolloContext) => {

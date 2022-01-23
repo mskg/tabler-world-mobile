@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import color from 'color';
 import React from 'react';
 import { View } from 'react-native';
@@ -8,7 +7,7 @@ import { MaterialTopTabBar } from 'react-navigation-tabs';
 import { connect } from 'react-redux';
 import { StandardHeader } from '../../components/Header';
 import { I18N } from '../../i18n/translation';
-import { showAssociation, showStructureSearch } from '../../redux/actions/navigation';
+import { showAssociation, showFamilies, showStructureSearch } from '../../redux/actions/navigation';
 import { TOTAL_HEADER_HEIGHT } from '../../theme/dimensions';
 import { StructureParams } from './StructureParams';
 
@@ -16,6 +15,7 @@ type Props = {
     theme: Theme,
     showAssociation: typeof showAssociation;
     showStructureSearch: typeof showStructureSearch;
+    showFamilies: typeof showFamilies;
 };
 
 type State = {
@@ -91,7 +91,7 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
                                 <Appbar.Action
                                     key="world"
                                     icon={'language'}
-                                    onPress={() => this.props.showStructureSearch(true)}
+                                    onPress={() => this.props.showFamilies()}
                                 />
                             ) : null,
 
@@ -111,4 +111,4 @@ class ScreenWithBarBase extends React.Component<Props & NavigationInjectedProps<
 }
 
 // tslint:disable-next-line: export-name
-export const StructureScreen = connect(null, { showAssociation, showStructureSearch })(withTheme(ScreenWithBarBase));
+export const StructureScreen = connect(null, { showAssociation, showStructureSearch, showFamilies })(withTheme(ScreenWithBarBase));

@@ -9,7 +9,7 @@ export async function useDatabasePool<T>(
     func: (pool: IPooledDataService) => Promise<T>,
 ): Promise<T> {
 
-    const pool = new LazyPGPool(poolSize, context.logger, context.logLevel === 'debug', context.metrics);
+    const pool = new LazyPGPool(poolSize, context.logger, context.sqlLogLevel === 'debug', context.metrics);
     try {
         return await func(pool);
     } finally {

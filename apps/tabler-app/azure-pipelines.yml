@@ -15,7 +15,7 @@ variables:
   #  1.2-rc1, rc2, ...
   #  1.2-r, r1, r2, ...
   - name: RELASE_CHANNEL_VERSION
-    value: '1.5-rc'
+    value: '1.5-r'
 
   - name: RELASE_CHANNEL_BUILD
     value: $[counter(variables['RELASE_CHANNEL_VERSION'], 1)]
@@ -42,11 +42,11 @@ variables:
   - group: "Play Store"
 
   - name: EXPO_SDK_VERSION
-    value: "36.0.0"
+    value: "40.0.0"
   - name: TURTLE_VERSION
-    value: "0.13.10"
+    value: "0.21.2"
   - name: XCODE_VERSION
-    value: "/Applications/Xcode_11.3.1.app/Contents/Developer"
+    value: "/Applications/Xcode_12.4.app/Contents/Developer"
 
 pr:
   branches:
@@ -61,7 +61,6 @@ trigger:
   paths:
     include:
       - apps/tabler-app/tsconfig.json
-      - apps/tabler-app/yarn.lock
       - apps/tabler-app/azure-pipelines.yml
       - apps/tabler-app/src/*
       - apps/tabler-app/devops/*
@@ -100,12 +99,6 @@ stages:
     - template: ./devops/yarn.yml
       parameters:
         SOURCEDIR: $(System.DefaultWorkingDirectory)
-        YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
-
-    # yarn /App
-    - template: ./devops/yarn.yml
-      parameters:
-        SOURCEDIR: $(System.DefaultWorkingDirectory)/apps/tabler-app
         YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)
 
     # Init expo environment
@@ -246,6 +239,7 @@ stages:
             EXPO_USERNAME: $(EXPO_USERNAME)
             EXPO_PASSWORD: $(EXPO_PASSWORD)
             EXPO_RELEASE_CHANNEL: $(EXPO_RELEASE_CHANNEL)
+            SPACESHIP_SKIP_2FA_UPGRADE: 1
 
         - task: PublishPipelineArtifact@1
           inputs:
@@ -275,14 +269,18 @@ stages:
         - script: |
             sudo xcode-select -s $(XCODE_VERSION)
 
-        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+        - task: AppStoreRelease@1
           displayName: 'Publish to the App Store TestFlight track'
           inputs:
-            serviceEndpoint: 'Store markus...@ovfoundation'
+            serviceEndpoint: 'Store ovfoundation Key'
             appIdentifier: '$(APP_IOS_BUNDLE)'
+            # appSpecificId: $(APPLE_APP_ID)
             ipaPath: $(PIPELINE.WORKSPACE)/ios/app.ipa
-            releaseNotes: $(PIPELINE.WORKSPACE)/commit/commit.txt
-            shouldSkipWaitingForProcessing: true
+            releaseNotes: 
+
+            # fastlaneToolsVersion: 'SpecificVersion'
+            # fastlaneToolsSpecificVersion: '2.183.2'
+            # shouldSkipWaitingForProcessing: true
 
 
     - job: android
@@ -297,9 +295,10 @@ stages:
         - script: |
             sudo xcode-select -s $(XCODE_VERSION)
 
-        - task: ms-vsclient.google-play.google-play-release-bundle.GooglePlayReleaseBundle@3
+        - task: GooglePlayReleaseBundle@3
           inputs:
             serviceConnection: 'Google Play Store'
             applicationId: '$(APP_ANDROID_PACKAGE)'
-            bundleFile: $(PIPELINE.WORKSPACE)/android/app.aab
-            changeLogFile: $(PIPELINE.WORKSPACE)/commit/commit.txt
+            bundleFile: '$(PIPELINE.WORKSPACE)/android/app.aab'
+            changeLogFile: '$(PIPELINE.WORKSPACE)/commit/commit.txt'
+            track: 'internal'

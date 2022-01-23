@@ -22,6 +22,7 @@ export const subscriptionClient = new SubscriptionClient(
             Authorization: await getCurrentIdentity(),
         }),
     },
+    WebSocket,
 );
 
 const INACTIVE_TIMEOUT = 5 * 1000;
@@ -97,7 +98,6 @@ subscriptionClient.use([{
 
 subscriptionClient.onConnecting(() => {
     try {
-
         getReduxStore().dispatch(updateWebsocket(false));
         logger.debug('[WS] connecting');
     } catch (e) {

@@ -36,9 +36,11 @@ export function getConfigValue<T extends ConfigTypes = string>(key: Key): T {
         if (Platform.OS === 'android') {
             // default redirect to localhost for android emulator
             // tslint:disable-next-line: no-http-string
-            return 'ws://10.0.2.2:3001' as T;
-        } if (Platform.OS === 'ios') {
-            return 'ws://localhost:3001' as T;
+            return 'ws://10.0.2.2:3001/' as T;
+        }
+
+        if (Platform.OS === 'ios') {
+            return 'ws://localhost:3001/' as T;
         }
     }
 

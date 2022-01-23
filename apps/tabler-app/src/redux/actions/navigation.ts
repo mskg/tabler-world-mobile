@@ -166,6 +166,14 @@ export const showAssociation = (id: string, name: string) => NavigationActions.n
     },
 });
 
+export const showFamily = (id: string) => NavigationActions.navigate({
+    routeName: HomeRoutes.Families,
+    key: `${HomeRoutes.Families}:${id}`,
+    params: {
+        family: id,
+    },
+});
+
 export const showArea = (id: string) => {
     let assoc = id;
     let name: string | undefined;
@@ -215,3 +223,8 @@ export const showFeedback = () => NavigationActions.navigate({
     routeName: MoreRoutes.Feedback,
 });
 
+export const showFamilies = () => NavigationActions.navigate({
+    routeName: HomeRoutes.Families,
+    params: {
+    },
+});

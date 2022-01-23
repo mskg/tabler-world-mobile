@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { LocationObject } from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import _ from 'lodash';
 import React from 'react';
@@ -33,7 +34,7 @@ import { Routes } from './Routes';
 import { Tab } from './Tab';
 
 type State = {
-    location?: Location.LocationData,
+    location?: LocationObject,
     centerOn?: Region,
     marginBottom: number,
 
@@ -249,13 +250,13 @@ class ClubsScreenBase extends AuditedScreen<Props, State> {
 
                 <FAB
                     style={styles.fab2}
-                    icon={({ size, color }) => <Ionicons style={{ paddingLeft: 3 }} size={size + 2} color={color} name="md-refresh" />}
+                    icon={({ size, color }) => <Ionicons size={size + 2} color={color} name="md-refresh-circle" />}
                     onPress={() => this.props.refresh()}
                 />
 
                 <FAB
                     style={styles.fab}
-                    icon={({ size, color }) => <Ionicons style={{ paddingLeft: 1 }} size={size + 2} color={color} name="md-compass" />}
+                    icon={({ size, color }) => <Ionicons size={size + 2} color={color} name="md-compass" />}
                     onPress={this._getLocationAsync}
                 />
 

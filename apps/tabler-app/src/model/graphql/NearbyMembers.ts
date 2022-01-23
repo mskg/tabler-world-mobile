@@ -9,6 +9,14 @@ import { RoleType, NearbyMemberState } from "./globalTypes";
 // GraphQL query operation: NearbyMembers
 // ====================================================
 
+export interface NearbyMembers_nearbyMembers_member_family {
+  __typename: "Family";
+  id: string;
+  icon: string | null;
+  name: string;
+  shortname: string;
+}
+
 export interface NearbyMembers_nearbyMembers_member_club {
   __typename: "Club";
   id: string;
@@ -39,7 +47,6 @@ export interface NearbyMembers_nearbyMembers_member_roles_ref {
 export interface NearbyMembers_nearbyMembers_member_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: NearbyMembers_nearbyMembers_member_roles_ref;
 }
@@ -50,6 +57,7 @@ export interface NearbyMembers_nearbyMembers_member {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: NearbyMembers_nearbyMembers_member_family;
   club: NearbyMembers_nearbyMembers_member_club;
   area: NearbyMembers_nearbyMembers_member_area;
   association: NearbyMembers_nearbyMembers_member_association;

@@ -6,6 +6,7 @@ import { I18N } from '../../i18n/translation';
 import { AreasScreen } from './Areas';
 import { AssociationsScreen } from './Associations';
 import ClubsScreen from './Clubs';
+import { FamiliesScreen } from './Families';
 import { Routes } from './Routes';
 import { StructureScreen } from './Screen';
 
@@ -27,10 +28,17 @@ const Label = Animated.createAnimatedComponent(withTheme(LabelBase));
 
 export const AssociationTabs = createMaterialTopTabNavigator(
     {
+        [Routes.Families]: {
+            screen: FamiliesScreen,
+            navigationOptions: {
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Structure.families} />,
+            },
+        },
+
         [Routes.Associations]: {
             screen: AssociationsScreen,
             navigationOptions: {
-                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Structure.title} />,
+                tabBarLabel: ({ tintColor }) => <Label color={tintColor} text={I18N.Screen_Structure.associations} />,
             },
         },
 
@@ -56,6 +64,14 @@ export const AssociationTabs = createMaterialTopTabNavigator(
         // animationEnabled: true,
         tabBarPosition: 'top',
         backBehavior: 'history',
+
+        tabBarOptions: {
+            scrollEnabled: true,
+            tabStyle: {
+                width: 130,
+            },
+        },
+
         // optimizationsEnabled: true,
     },
 );

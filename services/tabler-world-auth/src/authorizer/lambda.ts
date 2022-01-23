@@ -1,6 +1,6 @@
 import { AuthPolicy, HttpVerb, IPrincipal, lookupPrincipal, principalToTransport, validateToken } from '@mskg/tabler-world-auth-client';
 import { withClient } from '@mskg/tabler-world-rds-client';
-import { CustomAuthorizerEvent, CustomAuthorizerResult, Handler } from 'aws-lambda';
+import { APIGatewayAuthorizerResultContext, CustomAuthorizerEvent, CustomAuthorizerResult, Handler } from 'aws-lambda';
 import { isDemoKey } from '../helper/isDemoKey';
 
 const UNAUTHORIZED = 'Unauthorized'; // should result in 401
@@ -78,7 +78,7 @@ export const handler: Handler<CustomAuthorizerEvent, CustomAuthorizerResult | vo
         policy.allowMethod(HttpVerb.POST, '/graphql');
 
         const result = policy.build();
-        result.context = principalToTransport(principal, principalId);
+        result.context = principalToTransport(principal, principalId) as unknown as APIGatewayAuthorizerResultContext;
 
         // this enforces rate throtteling on the API
         result.usageIdentifierKey = `tabler-world-api-lambda-authorizer-${stage}`;

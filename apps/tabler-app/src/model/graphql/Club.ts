@@ -24,6 +24,12 @@ export interface Club_Club_association {
   association: string;
 }
 
+export interface Club_Club_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface Club_Club_info {
   __typename: "ClubInfo";
   second_meeting: string | null;
@@ -114,10 +120,12 @@ export interface Club_Club {
   __typename: "Club";
   id: string;
   name: string;
+  displayname: string;
   clubnumber: number;
   logo: string | null;
   area: Club_Club_area;
   association: Club_Club_association;
+  family: Club_Club_family;
   LastSync: number;
   website: string | null;
   facebook: string | null;
@@ -128,8 +136,8 @@ export interface Club_Club {
   meetingplace2: Club_Club_meetingplace2 | null;
   account: Club_Club_account | null;
   board: Club_Club_board[];
-  boardassistants: Club_Club_boardassistants[] | null;
-  members: Club_Club_members[] | null;
+  boardassistants: Club_Club_boardassistants[];
+  members: Club_Club_members[];
 }
 
 export interface Club {

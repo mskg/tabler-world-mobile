@@ -49,15 +49,16 @@ export class ReadMore extends React.Component<Props, State> {
         // Get the height of the text now that number of lines has been set
         // const limitedHeight = await measureHeightAsync(this._text);
         if (fullHeight > this.props.maxHeight) {
-            this.setState({
-                shouldShowReadMore: true,
-            },
-                          () => {
-                              this.props.onReady && this.props.onReady();
-                          },
+            this.setState(
+                {
+                    shouldShowReadMore: true,
+                },
+                () => {
+                    if (this.props.onReady) { this.props.onReady(); }
+                },
             );
         } else {
-            this.props.onReady && this.props.onReady();
+            if (this.props.onReady) { this.props.onReady(); }
         }
     }
 
@@ -95,7 +96,7 @@ export class ReadMore extends React.Component<Props, State> {
         this.setState({ showAllText: false });
     }
 
-    _maybeRenderReadMore() {
+    _maybeRenderReadMore = () => {
         const { shouldShowReadMore, showAllText } = this.state;
 
         if (shouldShowReadMore && !showAllText) {
@@ -108,7 +109,7 @@ export class ReadMore extends React.Component<Props, State> {
                     {I18N.Component_ReadMore.more}
                 </Text>
             );
-        }  if (shouldShowReadMore && showAllText) {
+        } if (shouldShowReadMore && showAllText) {
             if (this.props.renderRevealedFooter) {
                 return this.props.renderRevealedFooter(this._handlePressReadLess);
             }
@@ -123,7 +124,7 @@ export class ReadMore extends React.Component<Props, State> {
 }
 
 function measureHeightAsync(c): Promise<number> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         c.measure((_x: number, _y: number, _w: number, h: number) => {
             resolve(h);
         });
@@ -131,12 +132,12 @@ function measureHeightAsync(c): Promise<number> {
 }
 
 function nextFrameAsync(): Promise<void> {
-    return new Promise(resolve => requestAnimationFrame(() => resolve()));
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 
 const styles = StyleSheet.create({
     button: {
         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
-        marginTop: 5,
+        marginTop: 10,
     },
 });

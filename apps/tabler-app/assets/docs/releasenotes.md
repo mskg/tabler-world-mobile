@@ -1,3 +1,13 @@
+# v1.5 - Update 1
+
+## Fixes
+- Fixed an issue that prevented some Android users from beeing able to create a new user account
+- When using the export to adress book feature on Android, firstname was duplicated in middle namne
+- Fixed an issue that exported contacts do not contain pictures
+
+# v1.5
+- Round Table Family version
+
 # v1.4 - Update 1
 
 ## Fixes

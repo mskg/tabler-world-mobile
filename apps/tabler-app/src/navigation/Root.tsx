@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { AlbumScreen } from '../screens/Album';
 import { ClubScreen } from '../screens/Club';
 import { ConversationScreen } from '../screens/Conversation/ConversationScreen';
+import { FamiliesScreen } from '../screens/Families';
 import { FilterScreen } from '../screens/Filter';
 import { LocationHistoryScreen } from '../screens/LocationHistory';
 import { MemberScreen } from '../screens/Member';
@@ -34,6 +35,7 @@ const Navigator = createAppContainer(createStackNavigator(
         [HomeRoutes.SearchStructure]: { screen: SearchStructureScreen },
         [HomeRoutes.NearbySettings]: { screen: NearbySettingsScreen },
         [HomeRoutes.LocationHistory]: { screen: LocationHistoryScreen },
+        [HomeRoutes.Families]: { screen: FamiliesScreen },
     },
     {
         initialRouteName: HomeRoutes.Home,

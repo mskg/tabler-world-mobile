@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
+import { LocationObject } from 'expo-location';
 import React, { PureComponent } from 'react';
-import { Alert, Dimensions, Linking, Platform, View } from 'react-native';
+import { Alert, Dimensions, Linking, PermissionsAndroid, Platform, View } from 'react-native';
 import { Theme, withTheme } from 'react-native-paper';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -26,6 +26,7 @@ type State = {
     message?: string,
     canSet?: boolean,
     enabling?: boolean,
+    checkedonce?: boolean,
 };
 
 type OwnProps = {
@@ -35,7 +36,7 @@ type OwnProps = {
 type StateProps = {
     nearbyMembersEnabled?: boolean,
     isOffline: boolean,
-    currentLocation?: Location.LocationData,
+    currentLocation?: LocationObject,
 };
 
 type DispatchPros = {
@@ -53,12 +54,21 @@ const MAX_HEIGHT = Dimensions.get('window').height - TOTAL_HEADER_HEIGHT - BOTTO
 class NearbyOptInBase extends PureComponent<Props, State> {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            checkedonce: false,
+        };
     }
 
-    _focus = () => {
+    _focus = async () => {
         logger.debug('_focus startWatchNearby');
-        this.props.startWatchNearby();
+
+        if (!this.state.checkedonce) {
+            await this.evaluatePermissions();
+        }
+
+        if (this.props.nearbyMembersEnabled) {
+            this.props.startWatchNearby();
+        }
     }
 
     _blur = () => {
@@ -67,73 +77,116 @@ class NearbyOptInBase extends PureComponent<Props, State> {
     }
 
     // wen went from foreground to background
-    _onAppActive = () => {
+    _onAppActive = async () => {
         logger.debug('_onAppActive');
-        this._focus();
-        this.didFocus();
+
+        await this.evaluatePermissions();
+
+        if (this.state.enabling) {
+            await this._enable(false);
+        } else {
+            this._focus();
+        }
     }
 
-    async didFocus() {
+    async checkAndroidBackgroundPermission(): Promise<boolean> {
+        logger.debug('Android?', Platform.OS, 'Version?', Platform.Version);
+        if (Platform.OS === 'android' && Platform.Version >= 29) { // Android 10
+            const androidResult = await PermissionsAndroid.check(
+                PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+            );
+
+            logger.debug('checkAndroidBackgroundPermission result is', androidResult);
+            return androidResult;
+        }
+
+        return true;
+    }
+
+    async evaluatePermissions() {
         // prevent checking if not enabled
         if (!this.props.nearbyMembersEnabled) {
             return;
         }
 
-        this.props.startWatchNearby();
-
         if (!await Location.isBackgroundLocationAvailableAsync() && !isFeatureEnabled(Features.LocationWithoutBackground)) {
-            this.setState({ message: I18N.Screen_NearbyMembers.notsupported, canSet: false });
+            this.setState({ message: I18N.Screen_NearbyMembers.notsupported, canSet: false, checkedonce: true });
             return;
         }
 
-        const result = await Permissions.askAsync(Permissions.LOCATION);
+        if (!(await this.checkAndroidBackgroundPermission())) {
+            this.setState({
+                message: I18N.Screen_NearbyMembers.always,
+                canSet: true,
+                checkedonce: true,
+            });
+
+            return;
+        }
+
+        const result = await Location.getPermissionsAsync();
+        logger.log('Permissiong result is', result);
 
         if (result.status !== 'granted') {
             this.setState({
                 message: I18N.Screen_NearbyMembers.permissions,
                 canSet: Platform.OS === 'ios',
+                checkedonce: true,
             });
 
             return;
         }
 
         if (!isFeatureEnabled(Features.LocationWithoutAlways)) {
-            if (Platform.OS === 'ios' && (!result.permissions.location || !result.permissions.location.ios || result.permissions.location.ios.scope !== 'always')) {
+            if (Platform.OS === 'ios' && result.scope !== 'always') {
+                logger.log('scope does not match', result.scope);
+
                 this.setState({
                     message: I18N.Screen_NearbyMembers.always,
                     canSet: Platform.OS === 'ios',
+                    checkedonce: true,
                 });
 
                 return;
             }
         }
 
+        this.props.startWatchNearby();
+
         if (this.state.message) {
-            this.setState({ message: undefined });
+            logger.debug('removing message');
+            this.setState({ message: undefined, checkedonce: true });
         }
     }
 
     _tryopen = () => {
-        Linking.canOpenURL('app-settings:')
-            .then((supported) => {
-                if (!supported) {
-                    logger.log('Can\'t handle settings url');
-                } else {
-                    Linking.openURL('app-settings:');
-                }
-            })
-            .catch((err) => {
-                logger.error('linking-app-settings', err);
-            });
+        if (Platform.OS === 'android') {
+            this._enable(true);
+        } else {
+            Linking.canOpenURL('app-settings:')
+                .then((supported) => {
+                    if (!supported) {
+                        logger.log('Can\'t handle settings url');
+                    } else {
+                        Linking.openURL('app-settings:');
+                    }
+                })
+                .catch((err) => {
+                    logger.error('linking-app-settings', err);
+                });
+        }
     }
 
-    _enable = async () => {
+    _enable = async (force = true) => {
+        logger.debug('_enable');
         this.setState({ enabling: true });
 
         try {
-            await enableNearbyTablers();
+            await enableNearbyTablers(force);
             // this.props.startWatchNearby();
-        } catch {
+        } catch (e) {
+            logger.error('enable nearby tablers', e);
+
             // tslint:disable-next-line: no-empty
             try { disableNearbyTablers(); } catch { }
             // this.props.stopWatchNearby();
@@ -142,7 +195,7 @@ class NearbyOptInBase extends PureComponent<Props, State> {
         }
 
         this.setState({ enabling: false });
-        this.didFocus();
+        this.evaluatePermissions();
     }
 
     render() {

@@ -48,6 +48,7 @@ export class HttpClient {
 
         const proxy = Environment.HttpClient.proxy;
         if (proxy != null) {
+            // @ts-ignore
             options.agent = createHttpsProxyAgent(proxy);
         }
 
@@ -79,11 +80,14 @@ export class HttpClient {
                         if (res.statusCode === 429 && tryCount < maxTries - 1) {
                             const newTry = tryCount + 1;
 
-                            console.log('[API] Got 429, sleeping ', newTry, 's');
+                            // tslint:disable-next-line: insecure-random
+                            const sleepTime = Math.pow(2, newTry - 1) * waitTime * Math.random();
+
+                            console.log('[API] Got 429, try ', newTry, 'sleepTime', Math.round(sleepTime / 1000), 's');
                             setTimeout(
                                 () => resolve(run(url, method, postdata, newTry)),
                                 // tslint:disable-next-line: insecure-random
-                                newTry * waitTime * Math.random(),
+                                sleepTime,
                             );
 
                             return;

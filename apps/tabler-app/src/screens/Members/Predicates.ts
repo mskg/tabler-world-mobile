@@ -48,6 +48,12 @@ export class Predicates {
         };
     }
 
+    static favoriteClubs(favorites: HashMap<boolean>): Predicate {
+        return (member: IMemberOverviewFragment) => {
+            return favorites[member.club.id] === true;
+        };
+    }
+
     static sametable(club: string): Predicate {
         return (member: IMemberOverviewFragment) => {
             return member.club.id === club;
@@ -57,6 +63,12 @@ export class Predicates {
     static area(areas: HashMap<boolean, string> | null): Predicate {
         return (member) => {
             return areas == null || areas[member.area.id] === true || areas[member.area.name] === true;
+        };
+    }
+
+    static families(families: HashMap<boolean, string> | null): Predicate {
+        return (member) => {
+            return families == null || families[member.family.id] === true || families[member.family.name] === true;
         };
     }
 

@@ -2,16 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { Camera, Constants } from 'expo-camera';
 import { CapturedPicture } from 'expo-camera/build/Camera.types';
 import * as ExpoImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Text, Theme, withTheme } from 'react-native-paper';
+import { Portal, Text, Theme, withTheme } from 'react-native-paper';
 import { isIphoneX } from '../helper/isIphoneX';
 import { I18N } from '../i18n/translation';
 import { FullScreenLoading } from './Loading';
 
 type Props = {
     theme: Theme,
+    visible: boolean;
 
     onClose?: () => void;
     onCameraPictureSelected?: (photo: CapturedPicture) => void;
@@ -76,7 +76,7 @@ class ImagePickerBase extends React.Component<Props, State> {
     }
 
     _pickImage = async () => {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const { status } = await ExpoImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (status !== 'granted') {
             alert(I18N.Component_ImagePicker.nogallery);
@@ -100,90 +100,94 @@ class ImagePickerBase extends React.Component<Props, State> {
         );
     }
 
+    // tslint:disable: max-func-body-length
     render() {
+        if (!this.props.visible) { return null; }
+
         const { hasPermission } = this.state;
+
         if (hasPermission == null) {
-            return (<FullScreenLoading />);
+            return (
+                <Portal>
+                    <FullScreenLoading />
+                </Portal>
+            );
         }
 
-        // if (hasPermission === false) {
-        //     return (
-        //         <EmptyComponent title={I18N.Component_ImagePicker.nocamera} />
-        //     );
-        // }
-
         return (
-            <View style={{ flex: 1 }}>
-                <StatusBar hidden={true} />
-                <Camera
-                    style={{ flex: 1 }}
-                    type={this.state.cameraType}
-                    ref={(ref) => { this.camera = ref; }}
-                    zoom={0}
-                >
-                    <View
-                        style={styles.topBar}
-                    >
-                        <TouchableOpacity
-                            style={styles.touchable}
-                            onPress={this._close}
-                        >
-                            <Ionicons
-                                name="md-close"
-                                style={styles.closeButton}
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                    {!hasPermission && (
-                        <View style={styles.permissionContainer}>
-                            <Text style={styles.permissionText}>{I18N.Component_ImagePicker.nocamera}</Text>
-                        </View>
-                    )}
-
-                    <View
-                        style={styles.bottomBar}
+            <Portal>
+                <View style={{ flex: 1 }}>
+                    <StatusBar hidden={true} />
+                    <Camera
+                        style={{ flex: 1 }}
+                        type={this.state.cameraType}
+                        ref={(ref) => { this.camera = ref; }}
+                        zoom={0}
                     >
                         <View
-                            style={styles.bottomBarContainer}
+                            style={styles.topBar}
                         >
                             <TouchableOpacity
                                 style={styles.touchable}
-                                onPress={this._pickImage}
+                                onPress={this._close}
                             >
                                 <Ionicons
-                                    name="md-images"
-                                    style={styles.smallButton}
+                                    name="md-close"
+                                    style={styles.closeButton}
                                 />
                             </TouchableOpacity>
+                        </View>
 
-                            {hasPermission && (
+                        {!hasPermission && (
+                            <View style={styles.permissionContainer}>
+                                <Text style={styles.permissionText}>{I18N.Component_ImagePicker.nocamera}</Text>
+                            </View>
+                        )}
+
+                        <View
+                            style={styles.bottomBar}
+                        >
+                            <View
+                                style={styles.bottomBarContainer}
+                            >
                                 <TouchableOpacity
                                     style={styles.touchable}
-                                    onPress={this._takePicture}
+                                    onPress={this._pickImage}
                                 >
                                     <Ionicons
-                                        name="ios-radio-button-on"
-                                        style={styles.largeButton}
-                                    />
-                                </TouchableOpacity>
-                            )}
-
-                            {hasPermission && (
-                                <TouchableOpacity
-                                    style={styles.touchable}
-                                    onPress={this._handleCameraType}
-                                >
-                                    <Ionicons
-                                        name="ios-reverse-camera"
+                                        name="md-images"
                                         style={styles.smallButton}
                                     />
                                 </TouchableOpacity>
-                            )}
+
+                                {hasPermission && (
+                                    <TouchableOpacity
+                                        style={styles.touchable}
+                                        onPress={this._takePicture}
+                                    >
+                                        <Ionicons
+                                            name="ios-radio-button-on"
+                                            style={styles.largeButton}
+                                        />
+                                    </TouchableOpacity>
+                                )}
+
+                                {hasPermission && (
+                                    <TouchableOpacity
+                                        style={styles.touchable}
+                                        onPress={this._handleCameraType}
+                                    >
+                                        <Ionicons
+                                            name="ios-camera-reverse"
+                                            style={styles.smallButton}
+                                        />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
                         </View>
-                    </View>
-                </Camera>
-            </View >
+                    </Camera>
+                </View >
+            </Portal>
         );
     }
 }

@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { LocationObject } from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import _, { remove } from 'lodash';
 import React from 'react';
@@ -23,7 +24,7 @@ import { NearbyEnabled } from '../NearbyEnabled';
 import { Pin } from './Pin';
 
 type State = {
-    location?: Location.LocationData,
+    location?: LocationObject,
     centerOn?: Region,
     marginBottom: number,
     regionChanged: boolean,
@@ -231,7 +232,7 @@ class NearbyMapScreenBase extends AuditedScreen<Props, State> {
 
                             <FAB
                                 style={styles.fab}
-                                icon={({ size, color }) => <Ionicons style={{ paddingLeft: 1 }} size={size + 2} color={color} name="md-compass" />}
+                                icon={({ size, color }) => <Ionicons size={size + 2} color={color} name="md-compass" />}
                                 onPress={this._getLocationAsync}
                             />
                         </>

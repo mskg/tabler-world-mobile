@@ -131,7 +131,7 @@ export class ConversationsScreenBase extends AuditedScreen<Props, State> {
                         (
                             <Appbar.Action
                                 key="new"
-                                icon={({ color, size }) => <Ionicons size={size} color={color} name="md-create" />}
+                                icon={({ color, size }) => <Ionicons size={size} color={color} name="md-create-outline" />}
                                 disabled={!this.props.chatEnabled}
                                 onPress={() => this.props.startConversation()}
                             />

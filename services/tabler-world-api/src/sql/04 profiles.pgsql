@@ -4,7 +4,17 @@ drop materialized view if exists profiles CASCADE;
 
 create materialized view profiles
 as
-select * from (
+select
+    formatted.*
+    , case
+      when formatted.active_member and active_clubs.id is not null then
+        false
+      else
+        true
+      end as removed
+    ,row_number() over(order by lastname, firstname) as cursor_lastfirst
+    -- ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
+from (
 select
 	id
 	,modifiedon
@@ -14,25 +24,28 @@ select
 			-- data->>'rt_status' = 'active'
 				data->>'rt_is_guest' = 'false'
 			and data->>'permission_level' = 'can_login'
+            and coalesce(data->>'is_deceased', 'false') = 'false'
 			--member
 			and id in (
 				select id
 				from structure_tabler_roles tr
 				where
 				    tr.id = tabler.id
-				and (
-							function in (4306, 4307) -- member, honorary
-							or function < 100 -- board and assists for area, club, assoc
-					)
-				)
+				and
+				    function in (
+                         4306, 4307     -- rti: member, honorary
+				        ,82538, 82542   -- lci: member, honorary
+                        ,28408, 28411   -- c41: member, honorary
+                    )
+			)
 		THEN
 			-- member
-			FALSE
+			TRUE
 		ELSE
 			-- removed
-			TRUE
+			FALSE
 		END
-	) as removed
+	) as active_member
 	,data->>'title' as title
 	,TRIM(data->>'first_name') as firstname
 	,TRIM(data->>'last_name') as lastname
@@ -56,19 +69,7 @@ select
         ),
         data->>'rt_club_subdomain'
      ) club
-	,cast(coalesce(nullif(regexp_replace(data->>'rt_club_subdomain','[^0-9]+','','g'), ''), '1') as integer) clubnumber
 	,data->>'rt_club_name' as clubname
-    ,make_short_reference(
-        'club',
-        make_key_club(
-            make_key_association(
-                make_key_family(data->>'rt_generic_email'),
-                data->>'rt_association_subdomain'
-            ),
-            data->>'rt_club_subdomain'
-        )
-     ) as clubshortname
-
     -- area
 	,make_key_area(
         make_key_association(
@@ -78,16 +79,6 @@ select
         data->>'rt_area_subdomain'
      ) area
 	,data->>'rt_area_name' as areaname
-    ,make_short_reference(
-        'area',
-        make_key_area(
-            make_key_association(
-                make_key_family(data->>'rt_generic_email'),
-                data->>'rt_association_subdomain'
-            ),
-            data->>'rt_area_subdomain'
-        )
-     ) as areashortname
 
     -- association
 	,make_key_association(
@@ -95,27 +86,33 @@ select
         data->>'rt_association_subdomain'
      ) as association
 	,data->>'rt_association_name' as associationname
-    ,make_short_reference('assoc', data->>'rt_association_subdomain') as associationshortname
-	,(
-       select url
-       from assets
-       where
-            type = 'flag'
-        and assets.id = data->>'rt_association_subdomain'
-    ) as associationflag
-
     ,make_key_family(data->>'rt_generic_email') as family
     ,cast(data->>'rt_all_families_optin' as boolean) as allfamiliesoptin
 	,(
 		select value
 		from jsonb_array_elements(data->'address') t
-		where t.value @> '{"address_type": 5}'
+		where
+                t.value @> '{"address_type": 5}'    -- rti
+             or t.value @> '{"address_type": 4335}' -- lci
+             or t.value @> '{"address_type": 1414}' -- c41
 		limit 1
 	) as address
 	,(
-		select value->'rows'->0->>'value'
-		from jsonb_array_elements(data->'custom_fields') t
-		where t.value @> '{"rows": [{"key": "Name partner"}]}'
+        -- for the ladies, it's the second field, fixme!
+        select string_agg(jv, ' ')
+        from (
+            -- for the ladies, it's the second field, fixme!
+            select jr->>'value' as jv, jr->>'key' as jk
+            from
+                jsonb_array_elements(data->'custom_fields') fields,
+                jsonb_array_elements(fields->'rows') jr
+    		where  jr->>'key' in (
+                'First name partner',
+                'Surname partner',
+                'Name partner'
+            )
+            order by jk -- first before surename
+        ) fieldsquery
 	) as partner
 	,(
 		select jsonb_agg(role)
@@ -131,7 +128,10 @@ select
 						'name',
 						refname,
                         'shortname',
-                        make_short_reference(reftype, refid),
+                        make_short_reference(
+                            make_key_family(tabler.data->>'rt_generic_email'),
+                            reftype, refid
+                        ),
 						'id',
 						refid,
 						'type',
@@ -211,16 +211,17 @@ select
         ) educations
     ) as educations
 
-	,data->>'rt_privacy_settings' as privacysettings
-    ,row_number() over(order by cast(coalesce(data->>'last_modified', '1979-01-30') as timestamptz(0))) as cursor_modified
-    ,row_number() over(order by data->>'last_name', data->>'first_name') as cursor_lastfirst
-from tabler
-) formatted
+	,data->'rt_privacy_settings' as privacysettings
+from
+    tabler
 where
-        family is not null
-    and association is not null
-    and area is not null
-    and club is not null
+    data->>'rt_generic_email' is not null and data->>'rt_generic_email' <> ''
+) formatted left join active_clubs on formatted.club = active_clubs.id
+where
+        formatted.family is not null
+    and formatted.association is not null
+    and formatted.area is not null
+    and formatted.club is not null
 ;
 
 CREATE UNIQUE INDEX idx_profiles_id

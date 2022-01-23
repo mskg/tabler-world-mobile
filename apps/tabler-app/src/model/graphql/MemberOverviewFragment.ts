@@ -9,6 +9,14 @@ import { RoleType } from "./globalTypes";
 // GraphQL fragment: MemberOverviewFragment
 // ====================================================
 
+export interface MemberOverviewFragment_family {
+  __typename: "Family";
+  id: string;
+  icon: string | null;
+  name: string;
+  shortname: string;
+}
+
 export interface MemberOverviewFragment_club {
   __typename: "Club";
   id: string;
@@ -39,7 +47,6 @@ export interface MemberOverviewFragment_roles_ref {
 export interface MemberOverviewFragment_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: MemberOverviewFragment_roles_ref;
 }
@@ -50,6 +57,7 @@ export interface MemberOverviewFragment {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: MemberOverviewFragment_family;
   club: MemberOverviewFragment_club;
   area: MemberOverviewFragment_area;
   association: MemberOverviewFragment_association;

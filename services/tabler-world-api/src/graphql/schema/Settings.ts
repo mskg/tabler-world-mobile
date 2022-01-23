@@ -5,6 +5,7 @@ export const Settings = gql`
 
     enum SettingName {
         favorites
+        favoriteClubs
         nearbymembers
         nearbymembersMap
         language

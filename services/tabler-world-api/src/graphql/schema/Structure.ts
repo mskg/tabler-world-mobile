@@ -4,13 +4,22 @@ import { gql } from 'apollo-server-lambda';
 // tslint:disable-next-line: export-name
 export const Structure = gql`
     type AssociationRole {
-        # member: Member!
         member: Member!
         role: String!
     }
 
     type Family {
         id: ID!
+        name: String!
+        shortname: String!
+
+        logo: String
+        icon: String
+
+        associations: [Association!]!
+        board: [AssociationRole!]!
+        boardassistants: [AssociationRole!]!
+        regionalboard: [AssociationRole!]!
     }
 
     type Association {
@@ -66,8 +75,10 @@ export const Structure = gql`
         account: BankAccount
 
         clubnumber: Int!
+
         name: String!
         shortname: String!
+        displayname: String!
 
         logo: String
 
@@ -86,9 +97,8 @@ export const Structure = gql`
         info: ClubInfo
 
         board: [AssociationRole!]!
-        boardassistants: [AssociationRole!]
-
-        members: [Member!]
+        boardassistants: [AssociationRole!]!
+        members: [Member!]!
     }
 
     extend type Query {
@@ -97,7 +107,7 @@ export const Structure = gql`
 
         "Giving no id returns own organization"
         Association (id: ID): Association
-        Associations: [Association!]
+        Associations (family: ID): [Association!]
 
         # this is a wrong signature, needs to be changed to ID
         Club (id: String!): Club
@@ -110,6 +120,7 @@ export const Structure = gql`
         "Giving no id returns own organization"
         Areas (association: ID): [Area!]
 
-        Roles: [String!]
+        "Giving no id returns own family"
+        Roles (family: ID): [String!]
     }
 `;

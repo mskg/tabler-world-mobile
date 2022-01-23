@@ -1,5 +1,6 @@
 import { AsyncPool, AsyncThrottle } from '@mskg/tabler-world-common';
 import { TablerWorldApiChunk } from '../types/TablerWorldApiChunk';
+import { TargetTypes } from '../types/TargetType';
 import { downloadChunk } from './downloadChunk';
 import { getConfiguration } from './getConfiguration';
 import { pushChanges } from './pushChanges';
@@ -18,6 +19,7 @@ const throttledDownload: downlodChunkType = AsyncThrottle(downloadChunk, 800, 1)
  * @param payload Subsent calls need e.g. a filter?
  */
 export async function fetchParallel(
+    target: TargetTypes,
     chunk: TablerWorldApiChunk,
     handler: (data: any[]) => Promise<any>,
     limit: number,
@@ -35,7 +37,7 @@ export async function fetchParallel(
         ? 0
         : chunk.offset;
 
-    const downloadFunc = (nextUrl: string): Promise<TablerWorldApiChunk<any>> => throttledDownload(nextUrl, limit, method, payload);
+    const downloadFunc = (nextUrl: string): Promise<TablerWorldApiChunk<any>> => throttledDownload(target, nextUrl, limit, method, payload);
 
     do {
         start += limit;

@@ -80,7 +80,7 @@ class ProfileHeaderBase extends React.Component<Props> {
             extrapolate: 'clamp',
         });
 
-        if (__DEV__) { logger.debug('headerTranslate', headerTranslate); }
+        // if (__DEV__) { logger.debug('headerTranslate', headerTranslate); }
 
         const fabTop = scrollY.interpolate({
             inputRange: [0, distance],

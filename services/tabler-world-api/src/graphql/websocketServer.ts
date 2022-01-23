@@ -122,7 +122,10 @@ const server = new SubscriptionServer<IConnectionContext, ISubscriptionContext>(
             principal: principal as IPrincipal,
             getLimiter: createLimiter,
             metrics: new Metric(),
+
             logger: new ConsoleLogger(eventId, connectionId),
+            sqlLogLevel: Environment.DB.sqlLogLevel,
+
             auditor: new Audit(eventId, `${principal.id}:${principal.email}`, context.device),
             cache: cacheInstance,
             clientInfo: context,
