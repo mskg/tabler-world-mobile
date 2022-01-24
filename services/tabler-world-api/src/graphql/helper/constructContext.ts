@@ -1,6 +1,7 @@
 import { ConsoleLogger, Metric } from '@mskg/tabler-world-common';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { cacheInstance } from '../cache/cacheInstance';
+import { Environment } from '../Environment';
 import { createLimiter } from '../ratelimit/createLimiter';
 import { IApolloContext } from '../types/IApolloContext';
 import { extractDeviceID, extractPlatform, extractVersion } from './extractVersion';
@@ -21,9 +22,11 @@ export const constructContext = async ({ event, context }: Params): Promise<IApo
         lambdaContext: context,
 
         cache: cacheInstance,
-        logger: new ConsoleLogger(),
-        requestCache: {},
 
+        logger: new ConsoleLogger(),
+        sqlLogLevel: Environment.DB.sqlLogLevel,
+
+        requestCache: {},
         metrics: new Metric(),
 
         // @ts-ignore

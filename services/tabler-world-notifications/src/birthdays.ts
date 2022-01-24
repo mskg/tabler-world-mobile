@@ -14,7 +14,7 @@ export async function handler(_event: any, context: Context, _callback: (error: 
         return await withDatabase(context, async (client) => {
             const watch = new StopWatch();
 
-            const result = await client.query('select * from notification_birthdays');
+            const result = await client.query('select * from notification_birthdays where localhour = 9');
             const messages: PushNotification<BirthdayPayload>[] = [];
 
             for (const row of result.rows) {

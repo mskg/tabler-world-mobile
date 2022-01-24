@@ -5,23 +5,24 @@ import { Theme, TouchableRipple, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../apollo/bootstrapApollo';
 import { MemberListItem } from '../../components/Member/MemberListItem';
+import { SimpleAvatar } from '../../components/SimpleAvatar';
 import { SwipableItem, SwipeButtonsContainer } from '../../components/SwipableItem';
-import { TextImageAvatar } from '../../components/TextImageAvatar';
+import { createApolloContext } from '../../helper/createApolloContext';
 import { GetConversations, GetConversations_Conversations_nodes } from '../../model/graphql/GetConversations';
 import { RemoveConversation, RemoveConversationVariables } from '../../model/graphql/RemoveConversation';
+import { IAppState } from '../../model/IAppState';
+import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
 import { GetConversationsQuery } from '../../queries/Conversations/GetConversationsQuery';
 import { RemoveConversationMutation } from '../../queries/Conversations/RemoveConversationMutation';
 import { showConversation } from '../../redux/actions/navigation';
+import { updateBadgeFromConversations } from './chatHelpers';
 import { LastMessage } from './LastMessage';
 import { UnreadMessages } from './UnreadMessages';
-import { IMemberOverviewFragment } from '../../model/IMemberOverviewFragment';
-import { createApolloContext } from '../../helper/createApolloContext';
-import { SimpleAvatar } from '../../components/SimpleAvatar';
-import { updateBadgeFromConversations } from './chatHelpers';
 
 type OwnProps = {
     theme: Theme,
     conversation: GetConversations_Conversations_nodes,
+    diplayFirstNameFirst: boolean,
 };
 
 type StateProps = {
@@ -112,6 +113,15 @@ class ConversationListItemBase extends React.PureComponent<Props> {
         });
     }
 
+    getTitle(node: GetConversations_Conversations_nodes) {
+        const otherParticipant = first(this.props.conversation.participants.filter((p) => !p.iscallingidentity));
+        if (!otherParticipant) return node.subject;
+
+        return this.props.diplayFirstNameFirst
+            ? `${otherParticipant.firstname} ${otherParticipant.lastname}`
+            : `${otherParticipant.lastname} ${otherParticipant.firstname}`;
+    }
+
     render() {
         // might be null what is ok
         const otherParticipant = first(this.props.conversation.participants.filter((p) => !p.iscallingidentity));
@@ -154,7 +164,7 @@ class ConversationListItemBase extends React.PureComponent<Props> {
                     member={otherParticipant?.member as IMemberOverviewFragment}
                     theme={this.props.theme}
 
-                    title={this.props.conversation.subject || ''}
+                    title={this.getTitle(this.props.conversation)}
                     subtitle={otherParticipant?.member ? undefined : 'Past Member'}
 
                     left={() => (
@@ -181,6 +191,10 @@ class ConversationListItemBase extends React.PureComponent<Props> {
     }
 }
 
-export const ConversationListItem = withTheme(connect(null, {
-    showConversation,
-})(ConversationListItemBase));
+export const ConversationListItem = withTheme(connect(
+    (state: IAppState) => ({
+        diplayFirstNameFirst: state.settings.diplayFirstNameFirst,
+    }),
+    {
+        showConversation,
+    })(ConversationListItemBase));

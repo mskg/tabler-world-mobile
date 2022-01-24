@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
+import { LogBox } from 'react-native';
 import * as Sentry from 'sentry-expo';
-import { format as formatWithOptions, inspect } from 'util';
+import { inspect } from 'util';
 
 export let PRESERVE_CONSOLE = false;
 
@@ -87,7 +88,7 @@ export class Categories {
     };
 }
 
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 let FILTER: RegExp | undefined; // /Chat|API/ig;
 const MAX = 24;
 
@@ -177,7 +178,7 @@ export class Logger {
             // tslint:disable-next-line: no-console
             console.log(
                 Constants.installationId,
-                `[INFO] [${this.category.padEnd(MAX)}]`,
+                `[INFO ] [${this.category.padEnd(MAX)}]`,
                 formattedMessage,
             );
         }

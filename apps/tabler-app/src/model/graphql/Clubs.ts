@@ -24,14 +24,22 @@ export interface Clubs_Clubs_association {
   association: string;
 }
 
+export interface Clubs_Clubs_family {
+  __typename: "Family";
+  id: string;
+  name: string;
+}
+
 export interface Clubs_Clubs {
   __typename: "Club";
   id: string;
   name: string;
+  displayname: string;
   clubnumber: number;
   logo: string | null;
   area: Clubs_Clubs_area;
   association: Clubs_Clubs_association;
+  family: Clubs_Clubs_family;
 }
 
 export interface Clubs_Me_club {

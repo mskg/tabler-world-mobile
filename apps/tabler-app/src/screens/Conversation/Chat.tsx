@@ -1,17 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
-import { ScreenOrientation } from 'expo';
 import { CapturedPicture } from 'expo-camera/build/Camera.types';
 import * as FileSystem from 'expo-file-system';
 import * as ExpoImagePicker from 'expo-image-picker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { StatusBar, Clipboard, EmitterSubscription, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Clipboard, EmitterSubscription, Image, Keyboard, LayoutAnimation, Platform, Share as ShareNative, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Bubble, Composer, Message, Send, User } from 'react-native-gifted-chat';
-import { IconButton, Theme, withTheme } from 'react-native-paper';
+import { IconButton, withTheme } from 'react-native-paper';
 import { ImagePicker } from '../../components/ImagePicker';
 import { isIphoneX } from '../../helper/isIphoneX';
 import { Categories, Logger } from '../../helper/Logger';
 import { I18N } from '../../i18n/translation';
+import { AppTheme } from '../../theme/AppTheme';
 import { ___DONT_USE_ME_DIRECTLY___COLOR_GRAY } from '../../theme/colors';
 import { isPureEmojiString } from './emojiRegex';
 import { FixedChat } from './FixedChat';
@@ -26,7 +27,7 @@ const IMAGE_SIZE = 100;
 
 type Props = {
     userId: number,
-    theme: Theme,
+    theme: AppTheme,
 
     extraData?: any,
 
@@ -58,8 +59,8 @@ type State = {
         height: number,
     },
 
-    verticalOffset: number,
-    useKeyboardPadding: boolean,
+    // verticalOffset: number,
+    // useKeyboardPadding: boolean,
 };
 
 class ChatBase extends React.Component<Props, State> {
@@ -69,8 +70,8 @@ class ChatBase extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            verticalOffset: (StatusBar.currentHeight || 0) + 44 + 10 /* ? */,
-            useKeyboardPadding: false,
+            // verticalOffset: (StatusBar.currentHeight || 0) + 44 + 10 /* ? */,
+            // useKeyboardPadding: false,
             imagePickerOpen: false,
             pickedImage: this.props.image ?
                 {
@@ -82,19 +83,19 @@ class ChatBase extends React.Component<Props, State> {
         };
     }
 
-    componentDidMount() {
-        if (Platform.OS === 'android') {
-            this.keyboardShow = Keyboard.addListener('keyboardDidShow', () => {
-                logger.debug('keyboardDidShow', this.state.verticalOffset);
-                this.setState({ useKeyboardPadding: true });
-            });
+    // componentDidMount() {
+    //     if (Platform.OS === 'android') {
+    //         this.keyboardShow = Keyboard.addListener('keyboardDidShow', () => {
+    //             logger.debug('keyboardDidShow', this.state.verticalOffset);
+    //             this.setState({ useKeyboardPadding: true });
+    //         });
 
-            this.keyboardHide = Keyboard.addListener('keyboardDidHide', () => {
-                logger.debug('keyboardDidHide');
-                this.setState({ useKeyboardPadding: false });
-            });
-        }
-    }
+    //         this.keyboardHide = Keyboard.addListener('keyboardDidHide', () => {
+    //             logger.debug('keyboardDidHide');
+    //             this.setState({ useKeyboardPadding: false });
+    //         });
+    //     }
+    // }
 
     componentWillUnmount() {
         if (this.keyboardShow) { this.keyboardShow.remove(); }
@@ -118,6 +119,8 @@ class ChatBase extends React.Component<Props, State> {
     _renderBubble = (props: any) => {
         return (
             <Bubble
+                {...props}
+
                 // @ts-ignore
                 wrapperStyle={{
                     left: {
@@ -133,6 +136,10 @@ class ChatBase extends React.Component<Props, State> {
                     left: {
                         color: this.props.theme.colors.text,
                     },
+
+                    right: {
+                        color: this.props.theme.colors.textOnAccent,
+                    },
                 }}
 
                 timeTextStyle={{
@@ -143,8 +150,6 @@ class ChatBase extends React.Component<Props, State> {
                         color: ___DONT_USE_ME_DIRECTLY___COLOR_GRAY,
                     },
                 }}
-
-                {...props}
 
                 isCustomViewBottom={true}
                 renderCustomView={this._renderCustomView}
@@ -171,10 +176,9 @@ class ChatBase extends React.Component<Props, State> {
         return (
             <Message
                 {...props}
-                textProps={{
+                messageTextProps={{
                     style: {
                         fontFamily: this.props.theme.fonts.regular,
-                        color: this.props.theme.colors.text,
                         ...messageTextStyle,
                     },
                 }}
@@ -330,7 +334,7 @@ class ChatBase extends React.Component<Props, State> {
                     }}
 
                     size={24}
-                    name="md-alert"
+                    name="md-alert-circle"
                     color="red"
                 />
             );
@@ -445,6 +449,9 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _openPicker = () => {
+        Keyboard.dismiss();
+        LayoutAnimation.linear();
+
         this.setState(
             { imagePickerOpen: true },
             () => ScreenOrientation.unlockAsync(),
@@ -452,6 +459,8 @@ class ChatBase extends React.Component<Props, State> {
     }
 
     _closePicker = () => {
+        LayoutAnimation.linear();
+
         this.setState(
             { imagePickerOpen: false },
             () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP),
@@ -465,18 +474,12 @@ class ChatBase extends React.Component<Props, State> {
                     style={[styles.footer, { backgroundColor: this.props.theme.colors.primary }]}
                 />
 
-                <Modal
-                    animationType="slide"
-                    transparent={false}
+                <ImagePicker
                     visible={this.state.imagePickerOpen}
-                    onRequestClose={this._closePicker}
-                >
-                    <ImagePicker
-                        onClose={this._closePicker}
-                        onGalleryPictureSelected={this._onGalleryImage}
-                        onCameraPictureSelected={this._onCameraImage}
-                    />
-                </Modal>
+                    onClose={this._closePicker}
+                    onGalleryPictureSelected={this._onGalleryImage}
+                    onCameraPictureSelected={this._onCameraImage}
+                />
 
                 <FixedChat
                     user={{ _id: this.props.userId }}
@@ -531,14 +534,14 @@ class ChatBase extends React.Component<Props, State> {
                     text={this.props.text}
                     image={this.props.image}
                 />
-
+                {/*
                 {Platform.OS === 'android' && (
                     <KeyboardAvoidingView
                         enabled={this.state.useKeyboardPadding}
                         behavior={'padding'}
-                        keyboardVerticalOffset={this.state.verticalOffset}
+                        keyboardVerticalOffset={0}
                     />
-                )}
+                )} */}
             </View>
         );
     }

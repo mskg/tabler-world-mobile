@@ -9,6 +9,11 @@ export type FilterState = {
         showAreaBoard: boolean;
 
         favorites: HashMap<boolean>;
+
         area: HashMap<boolean, string> | null;
+    };
+
+    club: {
+        favorites: HashMap<boolean>;
     };
 };

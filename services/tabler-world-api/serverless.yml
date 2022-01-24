@@ -18,14 +18,14 @@ custom:
 
   webpack:
     keepOutputDirectory: true
-    packager: 'yarn'
+    packager: "yarn"
     includeModules:
       forceExclude:
         - aws-sdk
-#
+  #
   cache_table:
     Fn::ImportValue: CacheTableName-${self:custom.stage}
-  cache_version: '1.3#v3'
+  cache_version: "1.3#v3"
 
   email: ${env:ALERT_EMAIL}
 
@@ -97,20 +97,20 @@ custom:
         period: 60
         evaluationPeriods: 1
         comparisonOperator: GreaterThanThreshold
-        pattern: 'Process exited before completing'
+        pattern: "Process exited before completing"
 
   # domain
   customDomain:
     domainName: ${self:custom.domainname}
-    certificateName: '*.app.roundtable.world'
+    certificateName: "*.app.roundtable.world"
     createRoute53Record: true
-    endpointType: 'regional'
+    endpointType: "regional"
     websockets:
       domainName: ${self:custom.wsdomainname}
-      certificateName: '*.app.roundtable.world'
+      certificateName: "*.app.roundtable.world"
       createRoute53Record: true
-      endpointType: 'regional'
-      stage: '${self:custom.stage}'
+      endpointType: "regional"
+      stage: "${self:custom.stage}"
 
   # chat
   dynamodb:
@@ -130,7 +130,7 @@ custom:
     # Ordinary, this value is localhost. But you can modify this value to use other S3 server.
     # host: 0.0.0.0
     port: 8005
-    directory: /tmp  # this directory must be already created.
+    directory: /tmp # this directory must be already created.
     # Uncomment the first line only if you want to use cors with specified policy
     # Uncomment the second line only if you don't want to use cors
     # Not uncomment the these lines only if your wanto use cors with default policy
@@ -200,7 +200,7 @@ provider:
     blockPublicAccess: true
     serverSideEncryption: AES256
 
-  runtime: nodejs10.x
+  runtime: nodejs12.x
 
   memorySize: 128
   versionFunctions: false
@@ -209,23 +209,22 @@ provider:
     apiGateway: true
 
   # allow to redefine variables for debug purposes
-  environment:
-    ${file(serverless.env.yml):${self:custom.stage}}
+  environment: ${file(serverless.env.yml):${self:custom.stage}}
 
   apiKeys:
     - app:
-      - name: tabler-world-api-lambda-authorizer-${self:custom.stage}
-        # this is hardcoded also in code, move?
-        value: tabler-world-api-lambda-authorizer-${self:custom.stage}
+        - name: tabler-world-api-lambda-authorizer-${self:custom.stage}
+          # this is hardcoded also in code, move?
+          value: tabler-world-api-lambda-authorizer-${self:custom.stage}
 
     - demo:
-      - name: tabler-world-demo-${self:custom.stage}
-        value: ${self:custom.demo_api_key}
+        - name: tabler-world-demo-${self:custom.stage}
+          value: ${self:custom.demo_api_key}
 
   apiGateway:
     minimumCompressionSize: 1024
     apiKeySourceType: AUTHORIZER
-#    websocketsApiKeySelectionExpression: "$context.authorizer.usageIdentifierKey"
+  #    websocketsApiKeySelectionExpression: "$context.authorizer.usageIdentifierKey"
 
   # Limited by API Keys
   usagePlan:
@@ -288,10 +287,9 @@ functions:
   #
   database-update:
     handler: src/sql/lambda.handler
-    timeout: 600
+    timeout: 900
 
-    vpc:
-      ${file(../devops/vpc.yml):lambda}
+    vpc: ${file(../devops/vpc.yml):lambda}
 
     environment:
       db_role: tw_read_${self:custom.stage}
@@ -307,15 +305,15 @@ functions:
     tracing: Active
 
     events:
-        - http:
-            path: graphql-demo
-            method: post
-            authorizer:
-              type: CUSTOM
-              authorizerId:
-                Ref: CustomApiGatewayAuthorizer
-            cors: true
-            private: true
+      - http:
+          path: graphql-demo
+          method: post
+          authorizer:
+            type: CUSTOM
+            authorizerId:
+              Ref: CustomApiGatewayAuthorizer
+          cors: true
+          private: true
 
   #
   # graphql
@@ -326,11 +324,9 @@ functions:
     memorySize: 256
     tracing: Active
 
-    environment:
-      ${file(serverless.env.yml):api}
+    environment: ${file(serverless.env.yml):api}
 
-    vpc:
-      ${file(../devops/vpc.yml):lambda}
+    vpc: ${file(../devops/vpc.yml):lambda}
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -350,59 +346,58 @@ functions:
         # the specific table for the stage
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
-          - !GetAtt [ connectionsTable, Arn ]
+          - !GetAtt [connectionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ connectionsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ subscriptionsTable, Arn ]
+            - ""
+            - - !GetAtt [connectionsTable, Arn]
+              - "/index/*"
+          - !GetAtt [subscriptionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/*'
+            - ""
+            - - !GetAtt [subscriptionsTable, Arn]
+              - "/index/*"
           - !Join
-            - ''
-            - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/connection'
-          - !GetAtt [ conversationsTable, Arn ]
+            - ""
+            - - !GetAtt [subscriptionsTable, Arn]
+              - "/index/connection"
+          - !GetAtt [conversationsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ conversationsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ eventsTable, Arn ]
-          - !GetAtt [ pushSubscriptionsTable, Arn ]
+            - ""
+            - - !GetAtt [conversationsTable, Arn]
+              - "/index/*"
+          - !GetAtt [eventsTable, Arn]
+          - !GetAtt [pushSubscriptionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ pushSubscriptionsTable, Arn ]
-              - '/index/*'
+            - ""
+            - - !GetAtt [pushSubscriptionsTable, Arn]
+              - "/index/*"
 
       - Effect: Allow
         Action:
-          - 'execute-api:Invoke'
-          - 'execute-api:ManageConnections'
+          - "execute-api:Invoke"
+          - "execute-api:ManageConnections"
         Resource: !Join
-          - ''
-          - - 'arn:aws:execute-api:${self:provider.region}:'
-            - !Ref 'AWS::AccountId'
-            - ':'
+          - ""
+          - - "arn:aws:execute-api:${self:provider.region}:"
+            - !Ref "AWS::AccountId"
+            - ":"
             - !Ref WebsocketsApi
-            - '/${self:custom.stage}/*'
+            - "/${self:custom.stage}/*"
 
       - Effect: "Allow"
         Action:
-         - "s3:*"
+          - "s3:*"
         Resource: !Join
-          - ''
-          - - 'arn:aws:s3:::'
+          - ""
+          - - "arn:aws:s3:::"
             - !Ref bucketAttachments
-            - '/*'
+            - "/*"
 
       - Effect: Allow
         Action:
           - sqs:SendMessage
           - sqs:SendMessageBatch
-        Resource:
-          ${self:custom.push_queue_arn}
+        Resource: ${self:custom.push_queue_arn}
 
     events:
       - http:
@@ -433,11 +428,9 @@ functions:
     tracing: Active
     timeout: 30
 
-    environment:
-      ${file(serverless.env.yml):api}
+    environment: ${file(serverless.env.yml):api}
 
-    vpc:
-      ${file(../devops/vpc.yml):lambda}
+    vpc: ${file(../devops/vpc.yml):lambda}
 
     events:
       - websocket:
@@ -445,24 +438,24 @@ functions:
           cors: true
 
       - websocket:
-         route: $disconnect
+          route: $disconnect
 
       - websocket:
-         route: $default
+          route: $default
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - 'execute-api:Invoke'
-          - 'execute-api:ManageConnections'
+          - "execute-api:Invoke"
+          - "execute-api:ManageConnections"
         Resource: !Join
-          - ''
-          - - 'arn:aws:execute-api:${self:provider.region}:'
-            - !Ref 'AWS::AccountId'
-            - ':'
+          - ""
+          - - "arn:aws:execute-api:${self:provider.region}:"
+            - !Ref "AWS::AccountId"
+            - ":"
             - !Ref WebsocketsApi
-            - '/${self:custom.stage}/*'
+            - "/${self:custom.stage}/*"
 
       - Effect: Allow
         Action:
@@ -480,31 +473,31 @@ functions:
         # the specific table for the stage
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
-          - !GetAtt [ connectionsTable, Arn ]
+          - !GetAtt [connectionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ connectionsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ subscriptionsTable, Arn ]
+            - ""
+            - - !GetAtt [connectionsTable, Arn]
+              - "/index/*"
+          - !GetAtt [subscriptionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/*'
+            - ""
+            - - !GetAtt [subscriptionsTable, Arn]
+              - "/index/*"
           - !Join
-            - ''
-            - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/connection'
-          - !GetAtt [ conversationsTable, Arn ]
+            - ""
+            - - !GetAtt [subscriptionsTable, Arn]
+              - "/index/connection"
+          - !GetAtt [conversationsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ conversationsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ eventsTable, Arn ]
-          - !GetAtt [ pushSubscriptionsTable, Arn ]
+            - ""
+            - - !GetAtt [conversationsTable, Arn]
+              - "/index/*"
+          - !GetAtt [eventsTable, Arn]
+          - !GetAtt [pushSubscriptionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ pushSubscriptionsTable, Arn ]
-              - '/index/*'
+            - ""
+            - - !GetAtt [pushSubscriptionsTable, Arn]
+              - "/index/*"
 
   #
   # publish messagees
@@ -517,11 +510,9 @@ functions:
     dependsOn:
       - websocketErrorQueue
 
-    environment:
-      ${file(serverless.env.yml):api}
+    environment: ${file(serverless.env.yml):api}
 
-    vpc:
-      ${file(../devops/vpc.yml):lambda}
+    vpc: ${file(../devops/vpc.yml):lambda}
 
     events:
       - stream:
@@ -537,10 +528,9 @@ functions:
           destinations:
             onFailure:
               type: sqs
-              arn:
-                !GetAtt
-                  - websocketErrorQueue
-                  - Arn
+              arn: !GetAtt
+                - websocketErrorQueue
+                - Arn
 
     iamRoleStatementsInherit: true
     iamRoleStatements:
@@ -560,31 +550,31 @@ functions:
         # the specific table for the stage
         Resource:
           - Fn::ImportValue: CacheTableArn-${self:custom.stage}
-          - !GetAtt [ connectionsTable, Arn ]
+          - !GetAtt [connectionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ connectionsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ subscriptionsTable, Arn ]
+            - ""
+            - - !GetAtt [connectionsTable, Arn]
+              - "/index/*"
+          - !GetAtt [subscriptionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/*'
+            - ""
+            - - !GetAtt [subscriptionsTable, Arn]
+              - "/index/*"
           - !Join
-            - ''
-            - - !GetAtt [ subscriptionsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ conversationsTable, Arn ]
+            - ""
+            - - !GetAtt [subscriptionsTable, Arn]
+              - "/index/*"
+          - !GetAtt [conversationsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ conversationsTable, Arn ]
-              - '/index/*'
-          - !GetAtt [ eventsTable, Arn ]
-          - !GetAtt [ pushSubscriptionsTable, Arn ]
+            - ""
+            - - !GetAtt [conversationsTable, Arn]
+              - "/index/*"
+          - !GetAtt [eventsTable, Arn]
+          - !GetAtt [pushSubscriptionsTable, Arn]
           - !Join
-            - ''
-            - - !GetAtt [ pushSubscriptionsTable, Arn ]
-              - '/index/*'
+            - ""
+            - - !GetAtt [pushSubscriptionsTable, Arn]
+              - "/index/*"
 
       - Effect: Allow
         Action:
@@ -592,35 +582,33 @@ functions:
           - dynamodb:GetRecords
           - dynamodb:GetShardIterator
           - dynamodb:ListStreams
-        Resource: !GetAtt [ eventsTable, StreamArn ]
+        Resource: !GetAtt [eventsTable, StreamArn]
 
       - Effect: Allow
         Action:
-          - 'execute-api:Invoke'
-          - 'execute-api:ManageConnections'
+          - "execute-api:Invoke"
+          - "execute-api:ManageConnections"
         Resource: !Join
-          - ''
-          - - 'arn:aws:execute-api:${self:provider.region}:'
-            - !Ref 'AWS::AccountId'
-            - ':'
+          - ""
+          - - "arn:aws:execute-api:${self:provider.region}:"
+            - !Ref "AWS::AccountId"
+            - ":"
             - !Ref WebsocketsApi
-            - '/${self:custom.stage}/*'
+            - "/${self:custom.stage}/*"
 
       - Effect: Allow
         Action:
           - sqs:SendMessage
           - sqs:SendMessageBatch
-        Resource:
-          ${self:custom.push_queue_arn}
+        Resource: ${self:custom.push_queue_arn}
 
       - Effect: Allow
         Action:
           - sqs:SendMessage
           - sqs:SendMessageBatch
-        Resource:
-          !GetAtt
-            - websocketErrorQueue
-            - Arn
+        Resource: !GetAtt
+          - websocketErrorQueue
+          - Arn
 
 resources:
   Resources:
@@ -649,7 +637,7 @@ resources:
           Rules:
             - Id: removal-${self:custom.bucket}
               Status: Disabled # disable for now
-              ExpirationInDays: '17'
+              ExpirationInDays: "17"
 
     connectionsTable:
       Type: AWS::DynamoDB::Table
@@ -863,13 +851,13 @@ resources:
           Ref: ApiGatewayRestApi
         Type: TOKEN
         AuthorizerUri:
-         Fn::Join:
-          - ""
-          - - "arn:aws:apigateway:"
-            - Ref: "AWS::Region"
-            - ":lambda:path/2015-03-31/functions/"
-            - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
-            - "/invocations"
+          Fn::Join:
+            - ""
+            - - "arn:aws:apigateway:"
+              - Ref: "AWS::Region"
+              - ":lambda:path/2015-03-31/functions/"
+              - Fn::ImportValue: AuthorizerArn-${self:custom.stage}
+              - "/invocations"
 
   Outputs:
     ApiUrl:
@@ -889,18 +877,16 @@ resources:
         Name: ApiGatewayRestApiId-${self:custom.stage}
 
     ApiGatewayRestApiRootResourceId:
-      Value:
-         !GetAtt
-          - ApiGatewayRestApi
-          - RootResourceId
+      Value: !GetAtt
+        - ApiGatewayRestApi
+        - RootResourceId
       Export:
         Name: ApiGatewayRestApiRootResourceId-${self:custom.stage}
 
     ApiArn:
       Value:
-        !GetAtt
-          # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
-          - GraphqlLambdaFunction
-          - Arn
+        !GetAtt # functions are renamed acording to https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/resources.md
+        - GraphqlLambdaFunction
+        - Arn
       Export:
         Name: ApiArn-${self:custom.stage}

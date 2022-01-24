@@ -43,7 +43,7 @@ for (let i = 0; i < NUMBER_OF_MEMBERS; ++i) {
         club: club + 1,
         first: faker.name.firstName(),
         last: faker.name.lastName(),
-        pic: faker.random.boolean() ? faker.image.avatar() : null,
+        pic: faker.datatype.boolean() ? faker.image.avatar() : null,
     });
 }
 
@@ -67,7 +67,7 @@ for (let i = 0; i < NUMER_OF_CLUBS + 1; ++i) {
         id: i,
         area: area + 1,
         name: faker.address.city(),
-        pic: faker.random.boolean() ? faker.image.city(500) + "?random=" + faker.random.number() : null,
+        pic: faker.datatype.boolean() ? faker.image.city(500) + "?random=" + faker.datatype.number() : null,
     });
 }
 

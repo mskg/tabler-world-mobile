@@ -1,5 +1,5 @@
 import { defaultParameters, FetchParameters, GeocodingParameters, GeoParameters, TimeoutParameters, UrlParameters } from '@mskg/tabler-world-config-app';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { ParameterName } from '../../model/graphql/globalTypes';
 
 const defaults = {

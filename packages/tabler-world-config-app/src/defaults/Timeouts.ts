@@ -9,6 +9,7 @@ export const Timeouts: TimeoutParameters = {
     members: hours(6),
     member: hours(6),
     associations: hours(12),
+    families: hours(12),
     areas: hours(12),
     clubs: hours(12),
     club: hours(6),

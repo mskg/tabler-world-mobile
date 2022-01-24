@@ -5,7 +5,7 @@ import { randomLocation } from './randomLocation';
 // tslint:disable: prefer-template
 
 export const NearbyMember = (_root: any, _args: any, context: any, _info: any) => {
-    context.memberId = faker.random.number({
+    context.memberId = faker.datatype.number({
         min: 2, max: 100,
     });
 
@@ -16,7 +16,7 @@ export const NearbyMember = (_root: any, _args: any, context: any, _info: any) =
                 last = context.lastDistance;
             }
 
-            const result = last + faker.random.number({
+            const result = last + faker.datatype.number({
                 min: 100,
                 max: 10 * 1000,
             });

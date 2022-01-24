@@ -52,7 +52,7 @@ class LocationHistoryScreenBase extends React.Component<Props, State> {
                         visible={true}
                         actions={[]}
                         image={({ size }) =>
-                            <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                            <Ionicons name="md-alert-circle" size={size} color={this.props.theme.colors.accent} />
                         }
                     >
                         This is only enabled during testing to allow you check and validate your location history.

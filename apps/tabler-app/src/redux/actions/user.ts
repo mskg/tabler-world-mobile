@@ -5,7 +5,7 @@ import { createAction } from './action';
  * signIn = loggedOut -> confirmSignIn -> ...
  */
 export const signin = createAction<'@@user/auth/signin'>(
-  '@@user/auth/signin',
+    '@@user/auth/signin',
 );
 
 /**
@@ -13,20 +13,28 @@ export const signin = createAction<'@@user/auth/signin'>(
  * signIn = loggedOut -> confirmSignIn -> ...
  */
 export const singedIn = createAction<'@@user/auth/singedIn'>(
-  '@@user/auth/singedIn',
+    '@@user/auth/singedIn',
 );
 
 /**
  * Authentication state confirmSignIn
  * signIn = loggedOut -> confirmSignIn -> ...
  */
-export const confirmSignIn = createAction<'@@user/auth/confirmSignIn', {username: string, state: any}>(
-  '@@user/auth/confirmSignIn',
+export const confirmSignIn = createAction<'@@user/auth/confirmSignIn', { username: string, state: any }>(
+    '@@user/auth/confirmSignIn',
 );
 
 /**
  * Wipe authentication and data
  */
 export const logoutUser = createAction<'@@user/auth/logout'>(
-  '@@user/auth/logout',
+    '@@user/auth/logout',
+);
+
+
+/**
+ * Wipe authentication and data
+ */
+export const setColor = createAction<'@@user/auth/setColor', 'rti' | 'lci' | 'c41'>(
+    '@@user/auth/setColor',
 );

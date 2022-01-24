@@ -1,4 +1,4 @@
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Audit } from '../analytics/Audit';

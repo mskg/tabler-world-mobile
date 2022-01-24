@@ -1,4 +1,5 @@
 import * as Location from 'expo-location';
+import { LocationObject } from 'expo-location';
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { IAppState } from '../../model/IAppState';
@@ -12,7 +13,7 @@ type OwnProps = {
 type StateProps = {
     nearbyMembersEnabled?: boolean,
     isOffline: boolean,
-    currentLocation?: Location.LocationData,
+    currentLocation?: LocationObject,
 };
 
 type Props = OwnProps & StateProps;

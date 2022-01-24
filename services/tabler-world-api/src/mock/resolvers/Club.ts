@@ -1,7 +1,7 @@
 import faker from 'faker';
 import _ from 'lodash';
-import { Area } from './Area';
 import { clubNames, memberNames } from '../data';
+import { Area } from './Area';
 import { Member } from './Member';
 import { randomLocation } from './randomLocation';
 import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
@@ -11,7 +11,7 @@ import { AssistRoles, BoardRoles, PresidentRoles } from './Roles';
 
 export const Club = (root: any, args: any, _context: any, _info: any) => {
     const clubId = (root || {}).club || (args || {}).id
-        || faker.random.number({ min: 1, max: 31 });
+        || faker.datatype.number({ min: 1, max: 31 });
 
     const club = clubNames[clubId - 1] || {};
     const members = _(memberNames)

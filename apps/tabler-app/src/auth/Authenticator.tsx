@@ -8,32 +8,37 @@ import { Audit } from '../analytics/Audit';
 import { AuditPropertyNames } from '../analytics/AuditPropertyNames';
 import { cachedAolloClient } from '../apollo/bootstrapApollo';
 import Reloader from '../components/Reloader';
+import { createApolloContext } from '../helper/createApolloContext';
 import { isDemoModeEnabled } from '../helper/demoMode';
 import { Categories, Logger } from '../helper/Logger';
 import { Me } from '../model/graphql/Me';
 import { IAppState } from '../model/IAppState';
 import { GetMeQuery } from '../queries/Member/GetMeQuery';
 import { INITIAL_STATE } from '../redux/initialState';
+import { Families } from '../theme/getFamilyColor';
 import { light } from '../theme/light';
+import { updateThemeFromFamily } from '../theme/theming';
 import ConfirmSignIn from './ConfirmSignIn';
 import SignIn from './SignIn';
-import { createApolloContext } from '../helper/createApolloContext';
 
 type Props = {
     authState: typeof INITIAL_STATE.auth.state;
     app: React.ReactElement;
     // user?: IWhoAmI;
     optOutAnalytics: boolean,
+    accentColor: Families,
 };
 
 type State = {
     demoMode?: boolean,
+    theme: any,
 };
 
 const logger = new Logger(Categories.UIComponents.Authenticator);
 class AuthenticatorBase extends PureComponent<Props, State> {
-
-    state: State = {};
+    state: State = {
+        theme: light,
+    };
 
     async componentDidMount() {
         if (this.props.authState === 'singedIn') {
@@ -102,19 +107,25 @@ class AuthenticatorBase extends PureComponent<Props, State> {
         }
     }
 
+    static getDerivedStateFromProps(props: Props, _state: State) {
+        return {
+            theme: updateThemeFromFamily(light, props.accentColor),
+        };
+    }
+
     render() {
         if (this.state.demoMode == null) return null;
 
         if (!this.state.demoMode && this.props.authState === 'confirm') {
             return (
-                <PaperProvider theme={light}>
+                <PaperProvider theme={this.state.theme}>
                     <Reloader />
                     <ConfirmSignIn />
                 </PaperProvider>
             );
         } if (!this.state.demoMode && this.props.authState === 'signin') {
             return (
-                <PaperProvider theme={light}>
+                <PaperProvider theme={this.state.theme}>
                     <Reloader />
                     <SignIn />
                 </PaperProvider>
@@ -128,4 +139,5 @@ class AuthenticatorBase extends PureComponent<Props, State> {
 export const Authenticator = connect((state: IAppState) => ({
     authState: state.auth.state,
     optOutAnalytics: state.settings.optOutAnalytics,
+    accentColor: state.auth.accentColor,
 }))(AuthenticatorBase);

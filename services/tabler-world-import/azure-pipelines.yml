@@ -7,7 +7,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: '0.1'
+    value: '1.6'
   - name: PACKAGE_DIR
     value: $(System.DefaultWorkingDirectory)/services/tabler-world-import
 
@@ -21,8 +21,11 @@ pr:
 
 trigger:
   branches:
+    exclude:
+        - develop
+
     include:
-      - develop
+      - release/v1.6
 
   paths:
     include:

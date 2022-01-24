@@ -18,7 +18,7 @@ type Props = {
 class ClubsSectionBase extends React.Component<Props> {
     render() {
         if (this.props.clubs == null || this.props.clubs.length === 0) return null;
-        const print = orderBy(this.props.clubs, (c) => c.clubnumber);
+        const print = orderBy(this.props.clubs, (c) => c.clubnumber !== 0 ? c.clubnumber : c.name);
 
         return (
             <Accordion style={styles.accordeon} title={I18N.Screen_Structure.clubs}>

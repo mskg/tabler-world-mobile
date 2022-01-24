@@ -6,13 +6,21 @@ SET ROLE 'tw_read_dev';
 
 CREATE or replace FUNCTION remove_key_family (val text) returns text as $$
 BEGIN
-    return regexp_replace(val, 'rti_|lci_|41i_|tci_', '', 'g');
+    return regexp_replace(val, 'rti_|lci_|c41_|tci_', '', 'g');
 END;
 $$
 LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_family (val text) returns text as $$
 BEGIN
+    if strpos(lower(val), 'ladiescircle') > 0 then
+        return 'lci';
+    end if;
+
+    if strpos(lower(val), '41er') > 0 then
+        return 'c41';
+    end if;
+
     return 'rti';
 END;
 $$
@@ -25,16 +33,31 @@ END;
 $$
 LANGUAGE plpgsql;
 
+-- removes the last element in the array of val split by delim
+CREATE or replace FUNCTION remove_last_element (val text, delim text) returns text as $$
+DECLARE
+    arr text[];
+    nbr int;
+BEGIN
+    arr := regexp_split_to_array(val, delim);
+    nbr := array_length(arr, 1) - 1;
+    return array_to_string(arr[1:nbr], delim);
+END;
+$$
+LANGUAGE plpgsql;
+
 CREATE or replace FUNCTION make_key_area (assoc text, val text) returns text as $$
 BEGIN
-    return assoc || '_' || replace(val, '-' || remove_key_family(assoc), '');
+-- replace(val, '-' || public.remove_key_family(assoc), '');
+    return assoc || '_' || public.remove_last_element(val, '-');
 END;
 $$
 LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_club (assoc text, val text) returns text as $$
 BEGIN
-    return assoc || '_' || replace(val, '-' || remove_key_family(assoc), '');
+--    replace(val, '-' || public.remove_key_family(assoc), '');
+    return assoc || '_' || public.remove_last_element(val, '-');
 END;
 $$
 LANGUAGE plpgsql;
@@ -47,7 +70,7 @@ DECLARE
         letter text;
 BEGIN
     -- need to remove family prefixes
-    corrected := remove_key_family(id);
+    corrected := public.remove_key_family(id);
 
     number := regexp_replace(corrected, '[^0-9]+', '', 'g');
     letter := substring(id from (position('_' in corrected) + 1) for 1);
@@ -61,19 +84,37 @@ END;
 $$
 LANGUAGE plpgsql;
 
+drop function if exists make_short_reference (text, text) cascade;
+
 -- type: family, assoc, area, club
-CREATE or replace FUNCTION make_short_reference (type text, id text) returns text as $$
+CREATE or replace FUNCTION make_short_reference (family text, type text, id text) returns text as $$
 DECLARE result text;
         corrected text;
 BEGIN
-    corrected := remove_key_family(id);
+    corrected := public.remove_key_family(id);
 
-    case
-        when type = 'family' then result = 'RTI';
-        when type = 'assoc' then result = 'RT' || upper(corrected);
-        when type = 'area' then result = make_area_number(corrected);
-        else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
-    end case;
+    if family = 'lci' then
+        case
+            when type = 'family' then result = 'LCI';
+            when type = 'assoc' then result = 'LC ' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = 'LC' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    ELSIF family = 'c41' then
+        case
+            when type = 'family' then result = '41I';
+            when type = 'assoc' then result = '41 ' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = '41C' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    else
+        case
+            when type = 'family' then result = 'RTI';
+            when type = 'assoc' then result = 'RT ' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = 'RT' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    end if;
 
     return result;
 END;

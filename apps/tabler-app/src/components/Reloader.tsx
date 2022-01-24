@@ -1,4 +1,4 @@
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import React from 'react';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
@@ -22,7 +22,7 @@ export class ReloaderBase extends React.Component<{showReloadDialog, checkAppSta
                     {
                         text: I18N.Component_Loader.accept,
                         onPress: () => {
-                            Updates.reloadFromCache();
+                            Updates.reloadAsync();
                         },
                     },
                 ],

@@ -12,8 +12,11 @@ custom:
 
   webpack:
     keepOutputDirectory: true
-    packager: 'yarn'
+    packager: "yarn"
     includeModules:
+      forceInclude:
+        - graphql
+
       forceExclude:
         - aws-sdk
 
@@ -38,7 +41,6 @@ custom:
     alarms:
       - functionErrors
 
-
 # individually would result in the same package three times
 package:
   individually: false
@@ -54,14 +56,13 @@ provider:
     blockPublicAccess: true
     serverSideEncryption: AES256
 
-  runtime: nodejs10.x
+  runtime: nodejs12.x
 
   memorySize: 128
   timeout: 20
   versionFunctions: false
 
-  environment:
-    ${file(serverless.env.yml):${self:custom.stage}}
+  environment: ${file(serverless.env.yml):${self:custom.stage}}
 
   iamRoleStatements:
     - Effect: Allow
@@ -71,8 +72,8 @@ provider:
       Resource:
         - "*"
       Condition:
-        'ForAllValues:StringLike':
-          'ses:Recipients':
+        "ForAllValues:StringLike":
+          "ses:Recipients":
             - "*.roundtable.world"
 
     # connect to data service
@@ -216,7 +217,6 @@ resources:
           - CUSTOM_AUTH_FLOW_ONLY
         RefreshTokenValidity: 3650
 
-
     # The federated identity for our user pool to auth with
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
@@ -257,66 +257,64 @@ resources:
       Properties:
         Path: /
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
-                Federated: 'cognito-identity.amazonaws.com'
+                Federated: "cognito-identity.amazonaws.com"
               Action:
-                - 'sts:AssumeRoleWithWebIdentity'
+                - "sts:AssumeRoleWithWebIdentity"
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud':
+                  "cognito-identity.amazonaws.com:aud":
                     Ref: CognitoIdentityPool
-                'ForAnyValue:StringLike':
-                  'cognito-identity.amazonaws.com:amr': unauthenticated
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": unauthenticated
 
         Policies:
           - PolicyName: CognitoAuthorizedPolicy
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
                     - mobileanalytics:PutEvents
                     - mobiletargeting:PutEvents
                     - mobiletargeting:UpdateEndpoint
-                  Resource: '*'
-
+                  Resource: "*"
 
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
         Path: /
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
-                Federated: 'cognito-identity.amazonaws.com'
+                Federated: "cognito-identity.amazonaws.com"
               Action:
-                - 'sts:AssumeRoleWithWebIdentity'
+                - "sts:AssumeRoleWithWebIdentity"
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud':
+                  "cognito-identity.amazonaws.com:aud":
                     Ref: CognitoIdentityPool
-                'ForAnyValue:StringLike':
-                  'cognito-identity.amazonaws.com:amr': authenticated
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": authenticated
 
         Policies:
           - PolicyName: CognitoAuthorizedPolicy
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
                     - mobileanalytics:PutEvents
                     - cognito-sync:*
                     - cognito-identity:*
                     - mobiletargeting:UpdateEndpoint
                     - mobiletargeting:PutEvents
-                  Resource: '*'
-
+                  Resource: "*"
 
   # Print out the Id of the User Pool and Identity Pool that are created
   Outputs:

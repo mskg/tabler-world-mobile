@@ -1,5 +1,5 @@
 export enum OperationMode {
-    full = "full",
-    incremental = "incremental",
+    full = 'full',
+    incremental = 'incremental',
 }
 

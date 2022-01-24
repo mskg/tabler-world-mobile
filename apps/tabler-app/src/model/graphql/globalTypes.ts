@@ -83,11 +83,13 @@ export enum RoleType {
 }
 
 export enum SettingName {
+  favoriteClubs = "favoriteClubs",
   favorites = "favorites",
   language = "language",
   nearbymembers = "nearbymembers",
   nearbymembersMap = "nearbymembersMap",
   notifications = "notifications",
+  timezone = "timezone",
 }
 
 export enum UserRole {

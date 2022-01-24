@@ -269,7 +269,18 @@ INSERT INTO assets (type, id, url) VALUES
     ('flag', 'za', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/za.png'),
     ('flag', 'zm', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/zm.png'),
     ('flag', 'zw', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/zw.png'),
-    ('flag', 'ea', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/ea.png')
+    ('flag', 'ea', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/ea.png'),
+
+
+    ('family_logo', 'rti', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/rti.png'),
+    ('family_logo', 'lci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/lci.png'),
+    ('family_logo', 'aci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/aci.png'),
+    ('family_logo', 'tci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/tci.png'),
+    ('family_logo', 'c41', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/41er.png'),
+
+    ('family_icon', 'rti', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/icon_rti.png'),
+    ('family_icon', 'lci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/icon_lci.png'),
+    ('family_icon', 'c41', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/icon_41er.png')
 
 
 ON CONFLICT (type, id)

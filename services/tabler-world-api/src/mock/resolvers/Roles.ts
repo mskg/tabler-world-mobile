@@ -37,15 +37,15 @@ export const AssociationRole = () => ({
 export const RoleRef = () => {
     return faker.random.arrayElement([
         {
-            id: () => 'de_' + faker.random.number({ min: 1, max: 300 }),
-            name: () => 'RT' + faker.random.number({ min: 1, max: 300 }),
-            shortname: () => 'RT' + faker.random.number({ min: 1, max: 300 }),
+            id: () => 'de_' + faker.datatype.number({ min: 1, max: 300 }),
+            name: () => 'RT' + faker.datatype.number({ min: 1, max: 300 }),
+            shortname: () => 'RT' + faker.datatype.number({ min: 1, max: 300 }),
             type: () => 'club',
         },
         {
-            id: () => 'de_' + faker.random.number({ min: 1, max: 16 }),
-            name: () => 'Distrikt ' + faker.random.number({ min: 1, max: 16 }),
-            shortname: () => 'D' + faker.random.number({ min: 1, max: 16 }),
+            id: () => 'de_' + faker.datatype.number({ min: 1, max: 16 }),
+            name: () => 'Distrikt ' + faker.datatype.number({ min: 1, max: 16 }),
+            shortname: () => 'D' + faker.datatype.number({ min: 1, max: 16 }),
             type: () => 'area',
         },
         {
@@ -58,7 +58,7 @@ export const RoleRef = () => {
 };
 
 export const Role = () => {
-    return faker.random.boolean()
+    return faker.datatype.boolean()
         ? {
             name: () => faker.random.arrayElement([...PresidentRoles, ...BoardRoles]),
             level: () => '',

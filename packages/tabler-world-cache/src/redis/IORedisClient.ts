@@ -39,9 +39,9 @@ export class IORedisClient extends IORedisBaseClient {
     public async geopos(key: string, member: string[]): Promise<({ longitude: number, latitude: number } | undefined)[]> {
         this.logger.debug('geopos', key, member);
 
-        // @ts-ignore Wrong types
         const vals = await this.client.geopos(key, ...member);
         return vals.map(
+            // @ts-ignore Wrong types
             (val: string[]) =>
                 val
                     ? {
@@ -110,7 +110,7 @@ export class IORedisClient extends IORedisBaseClient {
 
     public evalsha(scriptSha: string, numKeys: number, ...args: (string | number)[]): Promise<any> {
         this.logger.debug('evalsha', scriptSha);
-        return this.client.evalsha(scriptSha, numKeys.toString(), args);
+        return this.client.evalsha(scriptSha, numKeys, args);
     }
 
     // tslint:disable-next-line: no-banned-terms

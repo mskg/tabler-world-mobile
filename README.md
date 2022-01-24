@@ -1,6 +1,6 @@
 # Round Table International - TABLER.APP
 
-![Logo](./apps/tabler-app/assets/art/logo_App_Logo.png)
+![Logo](./apps/tabler-app/assets/art/tablerworld.png)
 
 'One community, one web' has evolved from a dream and a vision to a hard fact solution. Two years ago all associations of RTI came together and gave a core team a great task to produce a solution that would empower all our members to table and connect online. You will be the first to adopt, adapt and improve on a tabling and administration platform by tablers for tablers as we take a giant leap forward – Bringing Tabling into the 21st century!
 

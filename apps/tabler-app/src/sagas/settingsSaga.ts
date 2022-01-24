@@ -4,10 +4,10 @@ import * as filterActions from '../redux/actions/filter';
 import * as settingsActions from '../redux/actions/settings';
 import { checkAndDisableNotifications } from './settings/checkAndDisableNotifications';
 import { checkLinking } from './settings/checkLinking';
-import { pushLanguage } from './settings/pushLanguage';
 import { restoreSettingsFromCloud } from './settings/restoreSettingsFromCloud';
 import { saveFavoritesToCloud } from './settings/saveFavoritesToCloud';
 import { saveNotificationSettingsToCloud } from './settings/saveNotificationSettingsToCloud';
+import { waitRetry } from './waitRetry';
 
 export function* settingsSaga(): SagaIterator {
     yield all([
@@ -15,8 +15,10 @@ export function* settingsSaga(): SagaIterator {
         fork(checkAndDisableNotifications),
 
         // restore settings
-        takeLatest(settingsActions.restoreSettings.type, restoreSettingsFromCloud),
-        takeLatest(settingsActions.storeLanguage.type, pushLanguage),
+        takeLatest(
+            settingsActions.restoreSettings.type,
+            waitRetry(restoreSettingsFromCloud),
+        ),
 
         // mark record as modified on favorite toggle
         debounce(
@@ -26,9 +28,12 @@ export function* settingsSaga(): SagaIterator {
                 filterActions.addFavorite.type,
                 filterActions.removeFavorite.type,
             ],
-            saveFavoritesToCloud,
+            waitRetry(saveFavoritesToCloud),
         ),
 
-        takeEvery(settingsActions.updateSetting.type, saveNotificationSettingsToCloud),
+        takeEvery(
+            settingsActions.updateSetting.type,
+            waitRetry(saveNotificationSettingsToCloud),
+        ),
     ]);
 }

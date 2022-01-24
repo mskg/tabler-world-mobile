@@ -1,10 +1,10 @@
 import Auth from '@aws-amplify/auth';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
-import { Updates } from 'expo';
+import * as Updates from 'expo-updates';
 import * as SecureStore from 'expo-secure-store';
 import * as TaskManager from 'expo-task-manager';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { put } from 'redux-saga/effects';
 import { cachedAolloClient, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
 import { setBadgeNumber } from '../../helper/bagde';
@@ -44,5 +44,5 @@ export function* logoutUser(_: typeof actions.logoutUser.shape) {
     yield setBadgeNumber(0);
 
     yield Auth.signOut();
-    yield Updates.reloadFromCache();
+    yield Updates.reloadAsync();
 }

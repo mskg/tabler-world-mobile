@@ -1,6 +1,7 @@
 import { GeoParameters } from '@mskg/tabler-world-config-app';
 import * as Location from 'expo-location';
-import { AsyncStorage, Platform } from 'react-native';
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { getParameterValue } from '../../helper/parameters/getParameterValue';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
@@ -48,22 +49,24 @@ export async function startLocationTask(): Promise<boolean> {
                 exchangeTexts(
                     Platform.select({
                         ios: settings.ios,
-                        android: __DEV__
-                            ? {
-                                ...settings.android,
+                        android: {
+                            ...settings.android,
 
-                                // when on, it's on
-                                foregroundService: settings.android.foregroundService
-                                    ? settings.android.foregroundService
-                                    // user toggeled the switch
-                                    : foreground
-                                        ? {} // we just nneed to pass a value
-                                        : undefined,
+                            // when on, it's on
+                            foregroundService: settings.android.foregroundService
+                                ? settings.android.foregroundService
+                                // user toggeled the switch
+                                : foreground
+                                    ? { // we just nneed to pass a value
+                                        notificationBody: 'body',
+                                        notificationTitle: 'title',
+                                    }
+                                    : undefined,
 
-                                // emulator only support high accuracy updates
-                                accuracy: Location.Accuracy.High,
-                            }
-                            : settings.android,
+                            accuracy: __DEV__
+                                ? Location.Accuracy.High
+                                : settings.android.accuracy,
+                        },
                     }),
                 ),
             );

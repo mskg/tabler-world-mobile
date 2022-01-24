@@ -41,7 +41,3 @@ export const notificationState = createAction<'@@settings/notificationsAvailable
 export const restoreSettings = createAction<'@@settings/restoreSettings'>(
     '@@settings/restoreSettings',
 );
-
-export const storeLanguage = createAction<'@@settings/storeLanguage'>(
-    '@@settings/storeLanguage',
-);

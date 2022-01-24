@@ -1,2 +1,4 @@
 let tools = require("@mskg/tabler-world-yarn-tools");
-module.exports = tools.webpack(__dirname);
+var slsw = require('serverless-webpack');
+
+module.exports = tools.webpack(slsw, __dirname);

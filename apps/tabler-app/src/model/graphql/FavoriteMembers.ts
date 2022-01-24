@@ -9,6 +9,14 @@ import { RoleType, CompanySector } from "./globalTypes";
 // GraphQL query operation: FavoriteMembers
 // ====================================================
 
+export interface FavoriteMembers_FavoriteMembers_family {
+  __typename: "Family";
+  id: string;
+  icon: string | null;
+  name: string;
+  shortname: string;
+}
+
 export interface FavoriteMembers_FavoriteMembers_club {
   __typename: "Club";
   id: string;
@@ -40,7 +48,6 @@ export interface FavoriteMembers_FavoriteMembers_roles_ref {
 export interface FavoriteMembers_FavoriteMembers_roles {
   __typename: "Role";
   name: string;
-  level: string;
   group: string;
   ref: FavoriteMembers_FavoriteMembers_roles_ref;
 }
@@ -123,6 +130,7 @@ export interface FavoriteMembers_FavoriteMembers {
   pic: string | null;
   firstname: string | null;
   lastname: string | null;
+  family: FavoriteMembers_FavoriteMembers_family;
   club: FavoriteMembers_FavoriteMembers_club;
   area: FavoriteMembers_FavoriteMembers_area;
   association: FavoriteMembers_FavoriteMembers_association;

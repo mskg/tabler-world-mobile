@@ -12,7 +12,7 @@ custom:
 
   webpack:
     keepOutputDirectory: true
-    packager: 'yarn'
+    packager: "yarn"
     includeModules:
       forceExclude:
         - aws-sdk
@@ -55,8 +55,7 @@ custom:
         period: 60
         evaluationPeriods: 1
         comparisonOperator: GreaterThanThreshold
-        pattern: 'Process exited before completing'
-
+        pattern: "Process exited before completing"
 
 # we want seperate files to minimize depenencies in files
 package:
@@ -67,7 +66,7 @@ provider:
   stage: dev
   region: eu-west-1
 
-  runtime: nodejs10.x
+  runtime: nodejs12.x
 
   deploymentBucket:
     name: tabler-world-deployments
@@ -82,11 +81,9 @@ provider:
     apiGateway: true
 
   # allow to redefine variables for debug purposes
-  environment:
-    ${file(serverless.env.yml):${self:custom.stage}}
+  environment: ${file(serverless.env.yml):${self:custom.stage}}
 
-  vpc:
-    ${file(../devops/vpc.yml):lambda}
+  vpc: ${file(../devops/vpc.yml):lambda}
 
   # global role definition
   iamRoleStatements:
@@ -144,8 +141,8 @@ functions:
           name: ${self:service}-birthdays-${self:custom.stage}
           description: Sends push notifications from TABLER.WORLD
 
-          ## 07 UTC => 9 GMT+2
-          rate: cron(0 07 * * ? *)
+          ## every hour 1 minute later
+          rate: cron(1 * * * ? *)
           enabled: ${self:custom.cron_enabled.${self:custom.stage}}
 
   #

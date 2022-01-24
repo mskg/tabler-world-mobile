@@ -6,10 +6,15 @@ export async function downloadPic(picUri: string, id: number) {
 
         logger.debug('has image', picUri);
 
-        const { uri } = await FileSystem.downloadAsync(
+        const { uri, status } = await FileSystem.downloadAsync(
             picUri,
-            FileSystem.cacheDirectory + `contact_${id}`,
+            FileSystem.cacheDirectory + `contact_${id}.jpg`,
         );
+
+        if (status !== 200) {
+            logger.log('status is', status);
+            return null;
+        }
 
         logger.debug('wrote image to', uri);
         return uri;

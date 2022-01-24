@@ -1,6 +1,6 @@
 import Auth from '@aws-amplify/auth';
 import { Ionicons } from '@expo/vector-icons';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 import React from 'react';
 import { Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, View } from 'react-native';
 import { Banner, Button, Text, Theme, withTheme } from 'react-native-paper';
@@ -14,7 +14,7 @@ import { parseLink } from '../helper/linking/parseLink';
 import { Categories, Logger } from '../helper/Logger';
 import { I18N } from '../i18n/translation';
 import { IAppState } from '../model/IAppState';
-import { restoreSettings, storeLanguage } from '../redux/actions/settings';
+import { restoreSettings } from '../redux/actions/settings';
 import { signin, singedIn } from '../redux/actions/user';
 import { Background, Greeting, Logo } from './Background';
 import Input from './Input';
@@ -26,7 +26,6 @@ type Props = {
     singedIn: typeof singedIn;
     signin: typeof signin,
     restoreSettings: typeof restoreSettings,
-    storeLanguage: typeof storeLanguage,
 };
 
 type State = {
@@ -150,18 +149,20 @@ class ConfirmBase extends AuditedScreen<Props, State> {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.container}>
                         <KeyboardAvoidingView behavior="position">
+                            {/*
                             <Banner
                                 visible={true}
                                 actions={[
                                 ]}
                                 image={({ size }) =>
-                                    <Ionicons name="md-alert" size={size} color={'red'} />
+                                    <Ionicons name="md-alert-circle" size={size} color={'red'} />
                                 }
                             >
                                 <Text style={{ color: 'red' }}>
                                     {I18N.Screen_SignIn.warning}
                                 </Text>
                             </Banner>
+                            */}
 
                             <Logo />
                             <Greeting
@@ -228,6 +229,5 @@ export default connect(
         restoreSettings,
         singedIn,
         signin,
-        storeLanguage,
     },
 )(withTheme(ConfirmBase));

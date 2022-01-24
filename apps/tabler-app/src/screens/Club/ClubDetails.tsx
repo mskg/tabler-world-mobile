@@ -6,6 +6,7 @@ import { ActionButton } from '../../components/ActionButton';
 import { RoleScrollView } from '../../components/Club/RoleScrollView';
 import { Placeholder } from '../../components/Placeholder/Placeholder';
 import { Square } from '../../components/Placeholder/Square';
+import { AddressElement } from '../../components/Profile/AddressElement';
 import { Element } from '../../components/Profile/Element';
 import { Section } from '../../components/Profile/Section';
 import { SectionPlaceholder, SectionSquarePlaceholder } from '../../components/Profile/SectionPlaceholder';
@@ -19,7 +20,6 @@ import { Club_Club } from '../../model/graphql/Club';
 import { IAddress } from '../../model/IAddress';
 import { ExpandableElement } from './ExpandableElement';
 import { styles } from './Styles';
-import { AddressElement } from '../../components/Profile/AddressElement';
 
 type Props = {
     theme: Theme,
@@ -144,19 +144,21 @@ class ClubDetailsBase extends React.Component<Props> {
                             <Element field={I18N.Screen_Club.meetings} text={[first_meeting, second_meeting].filter(Boolean).join('\n')} />
                             {/* <Element field={I18N.Club.second} text={second_meeting} /> */}
 
-                            <Element
-                                onPress={this.handleAddress(club.meetingplace1)}
-                                field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 1 })}
-                                text={(
-                                    <AddressElement
-                                        text={place1}
-                                        location={club.meetingplace1?.location}
-                                        onPress={this.handleAddress(club.meetingplace1)}
-                                    />
-                                )}
-                            />
+                            {club.meetingplace1 && (
+                                <Element
+                                    onPress={this.handleAddress(club.meetingplace1)}
+                                    field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 1 })}
+                                    text={(
+                                        <AddressElement
+                                            text={place1}
+                                            location={club.meetingplace1?.location}
+                                            onPress={this.handleAddress(club.meetingplace1)}
+                                        />
+                                    )}
+                                />
+                            )}
 
-                            {places === 2 && (
+                            {places === 2 && club.meetingplace2 && (
                                 <Element
                                     onPress={this.handleAddress(club.meetingplace2)}
                                     field={I18N.pluralize(I18N.Screen_Club.place, places, { place: 2 })}
@@ -226,7 +228,7 @@ class ClubDetailsBase extends React.Component<Props> {
                 <Placeholder ready={!this.props.loading || !members.isEmpty()} previewComponent={<SectionSquarePlaceholder />}>
                     {!members.isEmpty() && (
                         <>
-                            <Section theme={this.props.theme} icon={'md-contacts'} disableRipple={true}>
+                            <Section theme={this.props.theme} icon={'md-people'} disableRipple={true}>
                                 <ExpandableElement
                                     field={`${I18N.Screen_Club.members} (${members.size()})`}
                                     text={(

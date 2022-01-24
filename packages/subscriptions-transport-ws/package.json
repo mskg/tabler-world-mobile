@@ -25,9 +25,6 @@
         "lint": "tslint --format stylish --project ./tsconfig.json",
         "watch": "tsc -w",
         "testonly": "mocha --exit --reporter spec --full-trace ./dist/test/**/*.js",
-        "coverage": "node ./node_modules/istanbul/lib/cli.js cover _mocha -- --exit --full-trace ./dist/test/tests.js",
-        "postcoverage": "remap-istanbul --input coverage/coverage.raw.json --type lcovonly --output coverage/lcov.info",
-        "browser-compile": "webpack --config \"./unpkg-webpack.config.js\"",
         "prepublishOnly": "npm run clean && npm run compile && npm run browser-compile",
         "postinstall": "tsc"
     },
@@ -39,20 +36,17 @@
         "@types/graphql": "^14.0.0",
         "@types/is-promise": "^2.1.0",
         "@types/lodash": "^4.14.109",
-        "@types/node": "^8.0.8",
+        "@types/node": "^14.6.0",
         "@types/sinon": "^5.0.1",
         "@types/ws": "^5.1.2",
         "chai": "^4.0.2",
-        "graphql": "^14.0.2",
+        "graphql": "^14.6.0",
         "graphql-subscriptions": "^1.0.0",
-        "istanbul": "^1.0.0-alpha.2",
         "lodash": "^4.17.1",
-        "remap-istanbul": "^0.11.1",
         "rimraf": "^2.6.1",
         "sinon": "^6.1.4",
         "tslint": "^6.0.0",
-        "typescript": "^2.9.1",
-        "webpack": "^4.41.6"
+        "typescript": "^4.0.2"
     },
     "typings": "dist/index.d.ts",
     "typescript": {

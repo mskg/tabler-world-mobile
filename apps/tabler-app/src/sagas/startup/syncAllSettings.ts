@@ -1,10 +1,12 @@
-import { fork, select, take } from 'redux-saga/effects';
+import { all, fork, select, take } from 'redux-saga/effects';
 import { updateParameters } from '../../helper/parameters/updateParameters';
 import { IAppState } from '../../model/IAppState';
 import { AuthState } from '../../model/state/AuthState';
 import { singedIn } from '../../redux/actions/user';
 import { pushLanguage } from '../settings/pushLanguage';
+import { pushTimezone } from '../settings/pushTimezone';
 import { restoreSettingsFromCloud } from '../settings/restoreSettingsFromCloud';
+import { waitRetry } from '../waitRetry';
 import { logger } from './logger';
 
 export function* syncAllSettings() {
@@ -16,8 +18,11 @@ export function* syncAllSettings() {
         yield take(singedIn.type);
     }
 
-    yield updateParameters();
+    yield waitRetry(updateParameters)();
 
-    yield fork(pushLanguage);
-    yield fork(restoreSettingsFromCloud);
+    yield all([
+        fork(waitRetry(pushLanguage)),
+        fork(waitRetry(pushTimezone)),
+        fork(waitRetry(restoreSettingsFromCloud)),
+    ]);
 }

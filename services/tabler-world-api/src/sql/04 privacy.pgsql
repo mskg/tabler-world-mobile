@@ -79,12 +79,12 @@ drop materialized view if exists profiles_privacysettings cascade;
 create materialized view profiles_privacysettings as
 select
     id
-    ,get_privacylevel(privacysettings::jsonb, 'gender') as gender
-    ,get_privacylevel(privacysettings::jsonb, 'education') as education
-    ,get_privacylevel(privacysettings::jsonb, 'custom-field-category-110') as partner
-    ,get_privacylevel(privacysettings::jsonb, 'company-position') as company
-    ,get_privacylevel(privacysettings::jsonb, 'birth_date') as birth_date
-    ,get_privacylevel(privacysettings::jsonb, 'address-' || coalesce(address->>'id', '')) as address
+    ,get_privacylevel(privacysettings, 'gender') as gender
+    ,get_privacylevel(privacysettings, 'education') as education
+    ,get_privacylevel(privacysettings, 'custom-field-category-110') as partner
+    ,get_privacylevel(privacysettings, 'company-position') as company
+    ,get_privacylevel(privacysettings, 'birth_date') as birth_date
+    ,get_privacylevel(privacysettings, 'address-' || coalesce(address->>'id', '')) as address
     ,(
         select jsonb_agg(phone)
         from  (
@@ -93,7 +93,7 @@ select
                     'id'
                     ,phone->>'id'
                     ,'level'
-                    ,get_privacylevel(privacysettings::jsonb, 'phone-' || coalesce(phone->>'id', ''))
+                    ,get_privacylevel(privacysettings, 'phone-' || coalesce(phone->>'id', ''))
                 ) as phone
             from (
                 select
@@ -115,7 +115,7 @@ select
                     'id'
                     ,email->>'id'
                     ,'level'
-                    ,get_privacylevel(privacysettings::jsonb, 'secondary-email-' || coalesce(email->>'id', ''))
+                    ,get_privacylevel(privacysettings, 'secondary-email-' || coalesce(email->>'id', ''))
                 ) as email
             from (
                 select
@@ -134,4 +134,4 @@ where removed = false;
 
 CREATE UNIQUE INDEX idx_profiles_privacysettings_id
 ON profiles_privacysettings USING btree (id ASC)
-TABLESPACE pg_default;
+;

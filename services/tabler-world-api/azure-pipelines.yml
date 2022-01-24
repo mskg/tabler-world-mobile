@@ -8,7 +8,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: '0.1'
+    value: '1.6'
   - name: PACKAGE_DIR
     value: $(System.DefaultWorkingDirectory)/services/tabler-world-api
 
@@ -22,8 +22,11 @@ pr:
 
 trigger:
   branches:
-    include:
+    exclude:
       - develop
+
+    include:
+      - release/v1.6
 
   paths:
     include:
@@ -83,6 +86,8 @@ stages:
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
+              continueOnError: true
+              timeoutInMinutes: 15
               inputs:
                 awsCredentials: AWS
                 regionName: $(AWS_DEFAULT_REGION)
@@ -113,6 +118,8 @@ stages:
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
+              continueOnError: true
+              timeoutInMinutes: 15
               inputs:
                 awsCredentials: AWS
                 regionName: $(AWS_DEFAULT_REGION)
@@ -142,6 +149,8 @@ stages:
 
             - task: AmazonWebServices.aws-vsts-tools.LambdaInvokeFunction.LambdaInvokeFunction@1
               displayName: 'db update'
+              continueOnError: true
+              timeoutInMinutes: 15
               inputs:
                 awsCredentials: AWS
                 regionName: $(AWS_DEFAULT_REGION)

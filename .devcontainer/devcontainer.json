@@ -1,0 +1,73 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.5/containers/typescript-node
+{
+    "name": "Node.js & TypeScript",
+    "build": {
+        "dockerfile": "Dockerfile",
+        // Update 'VARIANT' to pick a Node version: 16, 14, 12.
+        // Append -bullseye or -buster to pin to an OS version.
+        // Use -bullseye variants on local on arm64/Apple Silicon.
+        "args": {
+            "VARIANT": "16-bullseye",
+        }
+    },
+    // Set *default* container specific settings.json values on container create.
+    "settings": {},
+    "containerEnv": {
+        "TZ": "Europe/Berlin",
+        "AWS_PROFILE": "rti",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+    },
+    // two named volumes
+    "mounts": [
+        // keep yarn cache
+        "source=tabler-world-yarncache,target=/home/node/.cache/yarn,type=volume",
+        // command history
+        "source=tabler-world-bashhistory,target=/commandhistory,type=volume",
+        // ssh keys and aws
+        "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind",
+        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/node/.aws,type=bind",
+        // node modules as container, makes it much faster
+        "target=${containerWorkspaceFolder}/node_modules",
+        "target=${containerWorkspaceFolder}/apps/tabler-app/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-api/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-auth/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-auth-redirect/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-data-service/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-import/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-notifications/node_modules",
+        "target=${containerWorkspaceFolder}/services/tabler-world-redis/node_modules",
+        "target=${containerWorkspaceFolder}/packages/serverless-domain-manager/node_modules",
+        "target=${containerWorkspaceFolder}/packages/subscriptions-transport-ws/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-auth-client/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-aws/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-cache/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-common/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-config/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-config-app/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-geo/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-geo-bigdata/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-jobs/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-lambda-subscriptions/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-push-client/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-rds-client/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-tslint-rules/node_modules",
+        "target=${containerWorkspaceFolder}/packages/tabler-world-yarn-tools/node_modules"
+    ],
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+        "dbaeumer.vscode-eslint",
+        "amazonwebservices.aws-toolkit-vscode",
+        "ms-azure-devops.azure-pipelines",
+        "apollographql.vscode-apollo",
+        "eamodio.gitlens",
+        "ckolkman.vscode-postgres"
+    ],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": "sudo chown -R node /home/node/.cache/yarn && sudo chown -R node /workspaces && sudo /etc/init.d/redis-server start",
+    "remoteUser": "node",
+    "features": {
+        // "git": "latest",
+        // "azure-cli": "latest"
+    }
+}

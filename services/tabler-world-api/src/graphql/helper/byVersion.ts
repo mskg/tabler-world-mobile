@@ -25,7 +25,7 @@ type Args<T> = {
 //     };
 // }
 
-export const v12Check = (version: string) => version.startsWith('1.1') || version.startsWith('1.0')
+export const olderEqualV12 = (version: string) => version.startsWith('1.1') || version.startsWith('1.0')
     ? 'old'
     : 'default';
 
@@ -33,3 +33,7 @@ export function byVersion<T>({ context: { clientInfo: { version } }, versions, m
     const mappedVersion = mapVersion ? mapVersion(version) : version;
     return (versions[mappedVersion] || versions.default)();
 }
+
+export const olderEqualV14 = (version: string) => version.startsWith('1.4') || version.startsWith('1.3') || version.startsWith('1.2') || version.startsWith('1.1') || version.startsWith('1.0')
+    ? 'old'
+    : 'default';

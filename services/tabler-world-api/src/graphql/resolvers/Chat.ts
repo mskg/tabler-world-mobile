@@ -61,6 +61,9 @@ type ChatMessageWithTransport = {
     delivered?: boolean | null,
 } & ChatMessage;
 
+const UNKNONW_FIRST = 'Unknown';
+const UNKNONW_LAST = 'Removed';
+
 // tslint:disable: export-name
 // tslint:disable-next-line: variable-name
 export const ChatResolver = {
@@ -208,11 +211,15 @@ export const ChatResolver = {
             const members = result ? result.members : null;
             if (!members || members.values.length === 0) { return null; }
 
-            // const values = ;
-            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+            let anyMembers = await context.dataSources.members.readManyWithAnyStatus(
                 members.values.filter((v) => v !== context.principal.id));
 
-            return anyMembers.length > 0 ? anyMembers[0].pic : null;
+            // cloud have been removed
+            anyMembers = anyMembers.filter((m) => m != null);
+
+            return anyMembers.length > 0
+                ? anyMembers[0].pic
+                : null;
         },
 
         subject: async (root: { id: string }, _args: {}, context: IApolloContext) => {
@@ -220,13 +227,17 @@ export const ChatResolver = {
 
             const result = await context.dataSources.conversations.readConversation(channel);
             const members = result ? result.members : null;
-            if (!members || members.values.length === 0) { return 'Unknown'; }
+            if (!members || members.values.length === 0) { return UNKNONW_FIRST; }
 
-            // const values = ;
-            const anyMembers = await context.dataSources.members.readManyWithAnyStatus(
+            let anyMembers = await context.dataSources.members.readManyWithAnyStatus(
                 members.values.filter((v) => v !== context.principal.id));
 
-            return anyMembers.length > 0 ? `${anyMembers[0].firstname} ${anyMembers[0].lastname}` : 'Unkown';
+            // cloud have been removed
+            anyMembers = anyMembers.filter((m) => m != null);
+
+            return anyMembers.length > 0
+                ? `${anyMembers[0].firstname} ${anyMembers[0].lastname}`
+                : `${UNKNONW_FIRST} ${UNKNONW_LAST}`;
         },
 
         participants: async (root: { id: string }, _args: {}, context: IApolloContext) => {
@@ -241,14 +252,24 @@ export const ChatResolver = {
                 members.values);
 
             return anyMembers.map((m) => {
+                if (m == null) {
+                    return {
+                        id: -1,
+                        firstname: UNKNONW_FIRST,
+                        lastname: UNKNONW_LAST,
+                        iscallingidentity: false,
+                    };
+                }
+
                 // only in this case, we return
                 if (m.removed) {
                     context.auditor.add({ id: m.id, action: AuditAction.Read, type: 'member-conversation' });
 
                     return {
                         id: m.id,
-                        firstname: m.firstname,
-                        lastname: m.lastname,
+                        firstname: m.firstname || UNKNONW_FIRST,
+                        lastname: m.lastname || UNKNONW_LAST,
+
                         iscallingidentity: m.id === context.principal.id,
                     };
                 }
@@ -430,6 +451,8 @@ export const ChatResolver = {
                 throw new Error('You cannot chat with yourself.');
             }
 
+            // TODO: we need to check if the other side exists
+
             const id = ConversationManager.MakeConversationKey(context.principal.id, args.member);
 
             // // if we read a cached value here we could end up with non conversation
@@ -477,6 +500,8 @@ export const ChatResolver = {
                 }
             }
 
+            // TODO: we need to check, if the conversation is still valid
+
             const trigger = decodeIdentifier(message.conversationId);
             const text = message.text || 'New message';
 
@@ -502,7 +527,7 @@ export const ChatResolver = {
                     // @ts-ignore
                     payload: {
                         type: message.image ? MessageType.image : MessageType.text,
-                        image: message.image,
+                        image: message.image!,
                         text: message.text ? message.text.substring(0, params.maxTextLength) : undefined,
                     },
 
@@ -595,6 +620,7 @@ export const ChatResolver = {
             // tslint:disable-next-line: variable-name
             resolve: (channelMessage: WebsocketEvent<ChatMessageWithTransport>, _args: {}, _context: ISubscriptionContext) => {
                 return {
+                    // @ts-ignore
                     eventId: channelMessage.id,
                     conversationId: channelMessage.eventName,
                     delivered: channelMessage.delivered,

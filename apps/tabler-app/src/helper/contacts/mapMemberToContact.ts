@@ -1,6 +1,6 @@
 import { UrlParameters } from '@mskg/tabler-world-config-app';
 import * as Contacts from 'expo-contacts';
-import { Platform } from 'react-native';
+import { Image } from 'react-native';
 import { I18N } from '../../i18n/translation';
 import { ParameterName } from '../../model/graphql/globalTypes';
 import { Member_Member } from '../../model/graphql/Member';
@@ -15,19 +15,16 @@ import { removeNulls } from './removeNulls';
 export async function mapMemberToContact(member: Member_Member): Promise<Contacts.Contact> {
     // @ts-ignore all fields are present
     let contact: Contacts.Contact = {
-        [Contacts.Fields.FirstName]: Platform.select({
-            ios: member.firstname,
-            android: `${member.firstname} ${member.lastname}`,
-        }),
-
+        [Contacts.Fields.FirstName]: member.firstname,
         [Contacts.Fields.LastName]: member.lastname || '',
+
         [Contacts.Fields.Company]: member.association.name,
 
-        // android does not display department, we abuse title
-        [Contacts.Fields.JobTitle]: Platform.select({
-            ios: '',
-            android: member.club.name,
-        }),
+        // // android does not display department, we abuse title
+        // [Contacts.Fields.JobTitle]: Platform.select({
+        //     ios: '',
+        //     android: member.club.name,
+        // }),
 
         [Contacts.Fields.Department]: member.club.name,
         [Contacts.Fields.ContactType]: Contacts.ContactTypes.Person,
@@ -75,9 +72,27 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
         const uri = await downloadPic(member.pic, member.id);
 
         if (uri != null) {
+            const waitSize: any = await new Promise(
+                (resolve, reject) =>
+                    Image.getSize(
+                        uri,
+                        (width: number, height: number) => resolve({ width, height }),
+                        reject,
+                    ),
+            );
+
             contact = {
                 ...contact,
-                [Contacts.Fields.RawImage]: { uri },
+                [Contacts.Fields.Image]: {
+                    uri,
+                    width: waitSize.width,
+                    height: waitSize.height,
+                },
+                [Contacts.Fields.RawImage]: {
+                    uri,
+                    width: waitSize.width,
+                    height: waitSize.height,
+                },
             };
         }
     }
@@ -107,8 +122,8 @@ export async function mapMemberToContact(member: Member_Member): Promise<Contact
     const profiles: Contacts.SocialProfile[] = [];
     profiles.push({
         id: '',
-        label: 'TABLER.WORLD',
-        service: 'TABLER.WORLD',
+        label: I18N.EMailNames.rt,
+        service: I18N.EMailNames.rt,
         username: twUrl,
         url: makeMemberLink(member.id),
     });

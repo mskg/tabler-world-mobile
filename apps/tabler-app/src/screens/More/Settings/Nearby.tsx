@@ -144,9 +144,11 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                     } else {
                         await disableNearbyTablers();
                     }
-                } catch {
+                } catch (e) {
+                    logger.error('toggleLocationServices', e);
+
                     if (!this.props.settings.nearbyMembers) {
-                        try { disableNearbyTablers(); } catch { }
+                        try { await disableNearbyTablers(); } catch { }
                     }
 
                     Alert.alert(I18N.Screen_Settings.locationfailed);
@@ -174,7 +176,7 @@ class NearbySettingsScreenBase extends AuditedScreen<Props, State> {
                                     },
                                 ]}
                                 image={({ size }) =>
-                                    <Ionicons name="md-alert" size={size} color={this.props.theme.colors.accent} />
+                                    <Ionicons name="md-alert-circle" size={size} color={this.props.theme.colors.accent} />
                                 }
                             >
                                 {I18N.Settings.logout.demo}

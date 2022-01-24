@@ -13,6 +13,13 @@
 
 If you want to use the locaal
 
+## Manually install iOS Simulator
+1. Check https://expo.io/--/api/v2/versions
+1. download `curl https://expo.io/--/api/v2/versions | jq '.sdkVersions | ."40.0.0" | .iosClientUrl'` where `40.0.0` is the desired SDK
+1. Extract tgz
+1. `open -a simulator`
+1. `xcrun simctl install booted /path/to/tgz` 
+
 ## Android Emulator
 
 1. Download https://developer.android.com/studio#downloads
@@ -34,15 +41,15 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 ```bash
 sdkmanager "emulator"
-sdkmanager "system-images;android-29;google_apis_playstore;x86_64"
-sdkmanager "platforms;android-29"
+sdkmanager "system-images;android-30;google_apis_playstore;x86_64"
+sdkmanager "platforms;android-30"
 sdkmanager "platform-tools"
 ```
 
 6. Create image named *expo*
 
 ```bash
-avdmanager create avd -n expo -k "system-images;android-29;google_apis_playstore;x86_64" --device pixel
+avdmanager create avd -n expo -k "system-images;android-30;google_apis_playstore;x86_64" --device pixel
 
 for f in ~/.android/avd/*.avd/config.ini; do echo 'hw.keyboard=yes' >> "$f"; done
 

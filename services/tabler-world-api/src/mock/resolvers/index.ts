@@ -1,5 +1,6 @@
-import { MockList } from 'graphql-tools';
+import { MockList } from '@graphql-tools/mock';
 import _ from 'lodash';
+import { clubNames, memberNames } from '../data';
 import { Address } from './Address';
 import { Area } from './Area';
 import { Association } from './Association';
@@ -9,8 +10,8 @@ import { ChatMessagePayload } from './ChatMessagePayload';
 import { BankAccount, Club, ClubInfo } from './Club';
 import { Company } from './Company';
 import { Conversation } from './Conversation';
-import { clubNames, memberNames } from '../data';
 import { Education } from './Education';
+import { Family } from './Family';
 import { Member } from './Member';
 import { NearbyMember } from './NearbyMember';
 import { AssociationRole, Role, RoleRef, Roles } from './Roles';
@@ -35,6 +36,7 @@ export const rootResolver = {
         MembersOverview: () => new MockList(memberNames.length - 1),
 
         // SearchDirectory: () => new MockList(20),
+        Families: () => new MockList(3),
 
         Associations: () => new MockList(20),
 
@@ -49,7 +51,7 @@ export const rootResolver = {
             .value(),
 
         nearbyMembers: () => new MockList(
-            faker.random.number({ min: 5, max: 20 }),
+            faker.datatype.number({ min: 5, max: 20 }),
         ),
 
         Roles,
@@ -63,6 +65,7 @@ export const rootResolver = {
         }),
     }),
 
+    Family,
     Member,
     Address,
     Club,

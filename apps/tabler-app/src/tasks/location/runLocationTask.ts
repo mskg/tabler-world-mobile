@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Audit } from '../../analytics/Audit';
 import { AuditEventName } from '../../analytics/AuditEventName';
 import { bootstrapApollo, getApolloCachePersistor } from '../../apollo/bootstrapApollo';
@@ -10,6 +10,7 @@ import { logger } from '../fetch/logger';
 import { isSignedIn } from '../helper/isSignedIn';
 import { handleLocationUpdate } from './handleLocationUpdate';
 import { isLocationTaskEnabled } from './isLocationTaskEnabled';
+import { LocationObject } from 'expo-location';
 
 export async function runLocationTask({ data, error }) {
     try {
@@ -25,7 +26,7 @@ export async function runLocationTask({ data, error }) {
             return;
         }
 
-        const locations: Location.LocationData[] = (data as any)?.locations;
+        const locations: LocationObject[] = (data as any)?.locations;
         if (locations) {
             await persistorRehydrated();
             const demoMode = await isDemoModeEnabled();

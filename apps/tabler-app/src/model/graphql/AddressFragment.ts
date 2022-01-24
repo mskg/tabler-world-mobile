@@ -13,4 +13,5 @@ export interface AddressFragment {
   street2: string | null;
   postal_code: string | null;
   city: string | null;
+  country: string | null;
 }

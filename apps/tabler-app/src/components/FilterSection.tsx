@@ -4,7 +4,16 @@ import { StyleSheet, View } from 'react-native';
 import { Checkbox, Divider, Text, TouchableRipple } from 'react-native-paper';
 import { Accordion } from './Accordion';
 
-export type FilterTagType = 'area' | 'role' | 'table' | 'sector' | 'association';
+export type FilterTagType = 'family' | 'area' | 'role' | 'table' | 'sector' | 'association';
+
+export const SortMap = {
+    family: 'A',
+    association: 'B',
+    area: 'C',
+    table: 'D',
+    role: 'E',
+    sector: 'F',
+};
 
 export type FilterTag = {
     type: FilterTagType,
@@ -26,8 +35,12 @@ const Element = ({ theme, title, onPress, right }: {
         </TouchableRipple>
     );
 
+type FilterProps = {
+    title, data: any[], type, filter, onToggle, theme, expanded?: boolean,
+};
+
 export const FilterSection = (
-    { title, data, type, filter, onToggle, theme },
+    { title, data, type, filter, onToggle, theme, expanded }: FilterProps,
 ) => {
     if (data.length === 0) return (<React.Fragment key={type} />);
 
@@ -35,6 +48,7 @@ export const FilterSection = (
         <Accordion
             key={type}
             title={title}
+            expanded={expanded}
         >
             {
                 data.map((value, _position) => {
