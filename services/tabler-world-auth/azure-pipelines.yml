@@ -7,7 +7,7 @@ pool:
 
 variables:
   - name: VERSION
-    value: '1.5'
+    value: '1.6'
   - name: PACKAGE_DIR
     value: $(System.DefaultWorkingDirectory)/services/tabler-world-auth
 
@@ -21,8 +21,11 @@ pr:
 
 trigger:
   branches:
+    exclude:
+      - develop
+
     include:
-      - release/v1.5
+      - release/v1.6
 
   paths:
     include:

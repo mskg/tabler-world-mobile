@@ -22,8 +22,11 @@ pr:
 
 trigger:
   branches:
+    exclude:
+      - develop
+
     include:
-      - release/v1.5
+      - release/v1.6
 
   paths:
     include:
