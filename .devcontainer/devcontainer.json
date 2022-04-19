@@ -27,6 +27,7 @@
         // ssh keys and aws
         "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind",
         "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/node/.aws,type=bind",
+        "source=${env:HOME}${env:USERPROFILE}/.gnupg,target=/home/node/.gnupg,type=bind",
         // node modules as container, makes it much faster
         "target=${containerWorkspaceFolder}/node_modules",
         "target=${containerWorkspaceFolder}/apps/tabler-app/node_modules",
