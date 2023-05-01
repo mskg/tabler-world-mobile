@@ -11,15 +11,15 @@ import { Button, Text, Theme, withTheme } from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import { connect } from 'react-redux';
 import { ActionNames } from '../analytics/ActionNames';
-import { AuditedScreen } from '../analytics/AuditedScreen';
 import { AuditScreenName } from '../analytics/AuditScreenName';
-import { startDemo as enableDemoMode } from '../helper/demoMode';
+import { AuditedScreen } from '../analytics/AuditedScreen';
 import { Categories, Logger } from '../helper/Logger';
 import { OpenLink } from '../helper/OpenLink';
+import { startDemo as enableDemoMode } from '../helper/demoMode';
 import { getParameterValue } from '../helper/parameters/getParameterValue';
 import { I18N } from '../i18n/translation';
-import { ParameterName } from '../model/graphql/globalTypes';
 import { IAppState } from '../model/IAppState';
+import { ParameterName } from '../model/graphql/globalTypes';
 import { confirmSignIn, setColor } from '../redux/actions/user';
 import { Background, EMail, Greeting, Logo } from './Background';
 import Input from './Input';
@@ -157,11 +157,11 @@ class SignInBase extends AuditedScreen<Props, State> {
     matchingPart = () => {
         if (!this.state.username) { return -1; }
 
-        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle|41er)\.world/)) {
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle|41er|agoraclub)\.world/)) {
             return 11;
         }
 
-        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle|41er)\./)) {
+        if (this.state.username.match(/[a-z]+\.[a-z]+@\d{1,4}-[a-z]{2}\.(roundtable|ladiescircle|41er|agoraclub)\./)) {
             return 9;
         }
 
@@ -233,6 +233,8 @@ class SignInBase extends AuditedScreen<Props, State> {
             this.props.setColor('lci');
         } else if (family === '41ER') {
             this.props.setColor('c41');
+        } else if (family === 'AGORACLUB') {
+            this.props.setColor('aci');
         } else {
             this.props.setColor('rti');
         }
@@ -262,6 +264,7 @@ class SignInBase extends AuditedScreen<Props, State> {
 
                                     items={[
                                         { label: 'Ladies Circle International', value: 'LADIESCIRCLE' },
+                                        { label: 'Agora Club International', value: 'AGORACLUB' },
                                         { label: 'Round Table International', value: 'ROUNDTABLE' },
                                         { label: '41 International', value: '41ER' },
                                     ]}

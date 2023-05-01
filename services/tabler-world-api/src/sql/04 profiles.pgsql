@@ -36,6 +36,7 @@ select
                          4306, 4307     -- rti: member, honorary
 				        ,82538, 82542   -- lci: member, honorary
                         ,28408, 28411   -- c41: member, honorary
+                        ,153642, 153643 -- aci: member, honorary
                     )
 			)
 		THEN

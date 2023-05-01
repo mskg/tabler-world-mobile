@@ -5,13 +5,13 @@ import { Clipboard } from 'react-native';
 import { Divider, List, Theme, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { cachedAolloClient } from '../../../apollo/bootstrapApollo';
+import { PRESERVE_CONSOLE, enableConsole } from '../../../helper/Logger';
 import { createApolloContext } from '../../../helper/createApolloContext';
-import { enableConsole, PRESERVE_CONSOLE } from '../../../helper/Logger';
 import { getParameterValue } from '../../../helper/parameters/getParameterValue';
 import { I18N } from '../../../i18n/translation';
+import { IAppState } from '../../../model/IAppState';
 import { GetMyRoles } from '../../../model/graphql/GetMyRoles';
 import { ParameterName, UserRole } from '../../../model/graphql/globalTypes';
-import { IAppState } from '../../../model/IAppState';
 import { GetMyRolesQuery } from '../../../queries/Admin/GetMyRolesQuery';
 import { setColor } from '../../../redux/actions/user';
 import { FETCH_LAST_DATA_RUN, FETCH_LAST_RUN, TOKEN_KEY } from '../../../tasks/Constants';
@@ -162,6 +162,7 @@ class DeveloperSectionBase extends React.Component<Props, State> {
                                     { label: 'RTI', value: 'rti' },
                                     { label: 'LCI', value: 'lci' },
                                     { label: '41i', value: 'c41' },
+                                    { label: 'ACI', value: 'aci' },
                                 ]}
                                 value={this.props.accentColor}
                                 onChange={(value) => {

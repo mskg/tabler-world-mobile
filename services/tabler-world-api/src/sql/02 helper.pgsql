@@ -6,13 +6,17 @@ SET ROLE 'tw_read_dev';
 
 CREATE or replace FUNCTION remove_key_family (val text) returns text as $$
 BEGIN
-    return regexp_replace(val, 'rti_|lci_|c41_|tci_', '', 'g');
+    return regexp_replace(val, 'rti_|lci_|c41_|tci_|aci_', '', 'g');
 END;
 $$
 LANGUAGE plpgsql;
 
 CREATE or replace FUNCTION make_key_family (val text) returns text as $$
 BEGIN
+    if strpos(lower(val), 'agoraclub') > 0 then
+        return 'aci';
+    end if;
+
     if strpos(lower(val), 'ladiescircle') > 0 then
         return 'lci';
     end if;
@@ -99,6 +103,13 @@ BEGIN
             when type = 'assoc' then result = 'LC ' || upper(corrected);
             when type = 'area' then result = public.make_area_number(corrected);
             else result = 'LC' || regexp_replace(corrected, '[^0-9]+', '', 'g');
+        end case;
+    ELSIF family = 'aci' then
+        case
+            when type = 'family' then result = 'ACI';
+            when type = 'assoc' then result = 'AC ' || upper(corrected);
+            when type = 'area' then result = public.make_area_number(corrected);
+            else result = 'AC' || regexp_replace(corrected, '[^0-9]+', '', 'g');
         end case;
     ELSIF family = 'c41' then
         case

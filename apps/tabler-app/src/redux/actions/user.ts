@@ -35,6 +35,6 @@ export const logoutUser = createAction<'@@user/auth/logout'>(
 /**
  * Wipe authentication and data
  */
-export const setColor = createAction<'@@user/auth/setColor', 'rti' | 'lci' | 'c41'>(
+export const setColor = createAction<'@@user/auth/setColor', 'rti' | 'lci' | 'c41' | 'aci'>(
     '@@user/auth/setColor',
 );

@@ -14,7 +14,7 @@ export const handler: PreSignUpTriggerHandler = async (event, context) => {
             [event.request.userAttributes.email]);
 
         if (res.rowCount !== 1) {
-            throw new Error('You need to be an active member of LCI, RTI, or 41I and have a valid Family.WORLD membership. Please sign-in with your \'*@*.world\' e-mail address.');
+            throw new Error('You need to be an active member of LCI, ACI, RTI, or 41I and have a valid Family.WORLD membership. Please sign-in with your \'*@*.world\' e-mail address.');
         }
     });
 

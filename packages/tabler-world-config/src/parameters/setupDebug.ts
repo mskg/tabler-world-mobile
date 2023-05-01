@@ -13,6 +13,7 @@ export function setupDebug(memoryCache: LRU<string, string>) {
             rti: process.env.API_KEY_PLAIN,
             lci: process.env.API_KEY_PLAIN,
             c41: process.env.API_KEY_PLAIN,
+            aci: process.env.API_KEY_PLAIN,
         },
         batch: parseInt(process.env.API_BATCH || '100', 10),
         read_batch: parseInt(process.env.API_READ_BATCH || '10', 10),

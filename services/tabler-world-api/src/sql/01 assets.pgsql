@@ -271,7 +271,6 @@ INSERT INTO assets (type, id, url) VALUES
     ('flag', 'zw', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/zw.png'),
     ('flag', 'ea', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/flags/ea.png'),
 
-
     ('family_logo', 'rti', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/rti.png'),
     ('family_logo', 'lci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/lci.png'),
     ('family_logo', 'aci', 'https://tabler-world-assets.s3-accelerate.amazonaws.com/families/aci.png'),

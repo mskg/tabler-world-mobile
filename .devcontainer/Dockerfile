@@ -57,6 +57,10 @@ RUN echo "*** aws_cli ***" \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y awscli
 
+RUN echo "*** postgresql ***" \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get install -y postgresql
+
 # bash history
 RUN echo "*** bash history ***" \
     && SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \

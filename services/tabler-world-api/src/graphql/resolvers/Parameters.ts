@@ -73,24 +73,32 @@ export const ParametersResolver = {
                     });
                 }
 
+                const WHITE_LIST = ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world', '*.agoraclub.world'];
+
                 // this always depends on the logged-in user
                 if (context.principal.family === Family.RTI) {
                     findMerge(overrides, 'urls', {
                         world: 'https://rti.roundtable.world/#lang#/',
                         profile: 'https://rti.roundtable.world/#lang#/members/#id#/',
-                        world_whitelist: ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world'],
+                        world_whitelist: WHITE_LIST,
                     });
                 } else if (context.principal.family === Family.LCI) {
                     findMerge(overrides, 'urls', {
                         world: 'https://lci.ladiescircle.world/#lang#/',
                         profile: 'https://lci.ladiescircle.world/#lang#/members/#id#/',
-                        world_whitelist: ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world'],
+                        world_whitelist: WHITE_LIST,
                     });
                 } else if (context.principal.family === Family.C41) {
                     findMerge(overrides, 'urls', {
                         world: 'https://41int.41er.world/#lang#/',
                         profile: 'https://41int.41er.world/#lang#/members/#id#/',
-                        world_whitelist: ['*.roundtable.world', '*.ladiescircle.world', '*.41er.world'],
+                        world_whitelist: WHITE_LIST,
+                    });
+                } else if (context.principal.family === Family.ACI) {
+                    findMerge(overrides, 'urls', {
+                        world: 'https://aci.agoraclub.world/#lang#/',
+                        profile: 'https://aci.agoraclub.world/#lang#/members/#id#/',
+                        world_whitelist: WHITE_LIST,
                     });
                 }
 

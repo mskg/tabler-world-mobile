@@ -5,6 +5,8 @@ export type Param_Api = {
         rti: string,
         lci: string,
         c41: string,
+        aci: string,
+        tci: string,
     };
 
     batch: number;

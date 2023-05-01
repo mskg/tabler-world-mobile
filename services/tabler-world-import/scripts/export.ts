@@ -17,8 +17,8 @@ async function handleChunk(data: any[]) {
     writeFileSync(`${__dirname}/out-${++fileName}.json`, JSON.stringify(data, null, 4));
 }
 
-function createHandler(db = true) {
-    if (db) { return createWriteToDatabaseHandler(JobType.members); }
+function createHandler(db = true, type = JobType.members) {
+    if (db) { return createWriteToDatabaseHandler(type); }
     return handleChunk;
 }
 
@@ -45,8 +45,8 @@ async function test() {
     const method = 'GET';
     // const method = 'POST';
 
-    const handler = createHandler();
-    const target: TargetTypes = 'c41';
+    const handler = createHandler(true, JobType.members);
+    const target: TargetTypes = 'aci';
 
     const firstChunk = await downloadChunk(target, url, 25, method, payload);
     if (firstChunk != null) {

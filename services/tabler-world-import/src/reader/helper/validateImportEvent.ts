@@ -21,7 +21,7 @@ export function validateImportEvent(payload: any) {
         throw new Error(`Invalid maxRecords ${payload.maxRecords}`);
     }
 
-    if (payload.target !== TargetType.RTI && payload.target !== TargetType.LCI && payload.target !== TargetType.C41) {
+    if (payload.target !== TargetType.RTI && payload.target !== TargetType.LCI && payload.target !== TargetType.C41 && payload.target !== TargetType.ACI) {
         throw new Error(`Invalid target ${payload.target}`);
     }
 }

@@ -139,6 +139,9 @@ export const StructureResolver = {
                 case Family.C41:
                     return '41 International';
 
+                case Family.ACI:
+                    return 'Agora Club International';
+
                 default:
                     return '';
             }
@@ -154,6 +157,9 @@ export const StructureResolver = {
 
                 case Family.C41:
                     return '41I';
+
+                case Family.ACI:
+                    return 'ACI';
 
                 default:
                     return '';

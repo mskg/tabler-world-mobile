@@ -34,62 +34,77 @@ custom:
     dev: # disabled, 1
       inc:
         rti: cron(0 0 * * ? *)
-        lci: cron(10 0 * * ? *)
+        lci: cron( 0 * * ? *)
         c41: cron(20 0 * * ? *)
+        act: cron(30 0 * * ? *)
+
       clubs:
         rti: cron(30 0 * * ? *)
         lci: cron(35 0 * * ? *)
         c41: cron(40 0 * * ? *)
+        act: cron(45 0 * * ? *)
+
       structure:
         rti: cron(45 0 * * ? *)
         lci: cron(50 0 * * ? *)
         c41: cron(55 0 * * ? *)
+        act: cron(59 0 * * ? *)
+
       archived:
         rti: cron(57 1 * * ? *)
         lci: cron(58 1 * * ? *)
         c41: cron(59 1 * * ? *)
+        act: cron(30 0 * * ? *)
 
     test: # disabled
       inc:
         rti: cron(0 1 * * ? *)
         lci: cron(20 1 * * ? *)
         c41: cron(40 1 * * ? *)
+        act: cron(30 0 * * ? *)
 
       clubs:
         rti: cron(0 2 * * ? *)
         lci: cron(20 2 * * ? *)
         c41: cron(40 2 * * ? *)
+        act: cron(30 0 * * ? *)
 
       structure:
         rti: cron(45 2 * * ? *)
         lci: cron(50 2 * * ? *)
         c41: cron(55 2 * * ? *)
+        act: cron(30 0 * * ? *)
 
       archived:
         rti: cron(50 1 * * ? *)
         lci: cron(53 1 * * ? *)
         c41: cron(59 1 * * ? *)
+        act: cron(30 0 * * ? *)
 
     prod:
       inc:
         rti: cron(0 3-20 * * ? *)
         lci: cron(20 3-20 * * ? *)
         c41: cron(40 3-20 * * ? *)
+        act: cron(30 0 * * ? *)
 
       clubs:
         rti: cron(0 21 * * ? *)
         lci: cron(20 21 * * ? *)
         c41: cron(40 21 * * ? *)
+        act: cron(30 0 * * ? *)
 
       structure:
         rti: cron(0 22 * * ? *)
         lci: cron(20 22 * * ? *)
         c41: cron(40 22 * * ? *)
+        act: cron(30 0 * * ? *)
 
       archived:
         rti: cron(15 23 * * ? *)
         lci: cron(35 23 * * ? *)
         c41: cron(45 23 * * ? *)
+        act: cron(30 0 * * ? *)
 
   cron_enabled:
     dev: false

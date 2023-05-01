@@ -6,5 +6,6 @@ export function removeFamily(id: string) {
         .replace(`${Family.RTI}_`, '')
         .replace(`${Family.LCI}_`, '')
         .replace(`${Family.C41}_`, '')
+        .replace(`${Family.ACI}_`, '')
         .replace(`${Family.TCI}_`, '');
 }

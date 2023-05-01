@@ -120,6 +120,20 @@ where
         family = 'c41'
     and type = 'family'
     AND name <> 'Associations'
+UNION ALL
+select
+    'aci',
+    'family'
+    ,NULL
+    ,'Agora Club International'
+    ,id
+    ,name
+from
+    structure_groups
+where
+        family = 'aci'
+    and type = 'family'
+    AND name <> 'Associations'
 ;
 
 ------------------------------

@@ -6,6 +6,10 @@ const determineFamily = (r: any) => {
         return TargetType.LCI;
     }
 
+    if (r && (r as string).match(/agoraclub/i)) {
+        return TargetType.ACI;
+    }
+
     if (r && (r as string).match(/41er/i)) {
         return TargetType.C41;
     }
@@ -46,6 +50,10 @@ const familyPK = (r: any) => {
 const groupPK = (r: any) => {
     if (JSON.stringify(r).match(/ladies circle/i)) {
         return TargetType.LCI;
+    }
+
+    if (JSON.stringify(r).match(/agora/i)) {
+        return TargetType.ACI;
     }
 
     if (JSON.stringify(r).match(/41er/i)) {
